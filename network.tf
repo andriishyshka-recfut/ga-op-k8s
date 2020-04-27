@@ -12,7 +12,7 @@ resource "google_compute_network" "vpc" {
 }
 
 
-resource "google_compute_subnetwork" "private" {
+resource "google_compute_subnetwork" "net" {
   name          = "test-subnetwork"
   ip_cidr_range = "172.27.0.0/24"
   region        = var.region
@@ -45,4 +45,26 @@ resource "google_compute_router_nat" "nat" {
     enable = true
     filter = "ERRORS_ONLY"
   }
+}
+
+resource "google_compute_firewall" "bastion-ssh" {
+  name          = "bastion-ssh"
+  network       = google_compute_network.vpc.name
+  direction     = "INGRESS"
+  source_ranges = ["78.26.204.32/32"]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  target_tags = ["dmz"]
+}
+
+resource "google_compute_route" "dmz-default" {
+  name         = "dmz-default"
+  dest_range   = "0.0.0.0/0"
+  network      = google_compute_network.vpc.name
+  next_hop_gateway = "default-internet-gateway"
+  priority     = 1000
 }
