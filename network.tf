@@ -61,10 +61,30 @@ resource "google_compute_firewall" "bastion-ssh" {
   target_tags = ["dmz"]
 }
 
+resource "google_compute_firewall" "bastion-to-infra" {
+  name          = "bastion-to-infra"
+  network       = google_compute_network.vpc.name
+  direction     = "INGRESS"
+  source_tags = ["dmz"]
+  target_tags = ["infra"]
+
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22-10000"]
+  }
+
+}
+
+
 resource "google_compute_route" "dmz-default" {
   name         = "dmz-default"
   dest_range   = "0.0.0.0/0"
   network      = google_compute_network.vpc.name
   next_hop_gateway = "default-internet-gateway"
   priority     = 1000
+  tags = ["dmz"]
 }
