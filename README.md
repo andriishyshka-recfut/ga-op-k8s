@@ -19,3 +19,8 @@ Best pracitces accourding to [Scalable and Manageable: A Deep-Dive Into GKE Netw
 4  use http load balancing
 5. private cluster with cloud nat
 6. master authorized networks for access
+
+
+
+CNCF security projects:
+- [falco](https://falco.org/docs/) can be used with [fluentd](https://sysdig.com/blog/kubernetes-security-logging-fluentd-falco/)
