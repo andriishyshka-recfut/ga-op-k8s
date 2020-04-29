@@ -9,6 +9,9 @@
 
 
 resource "google_container_cluster" "infra" {
+
+  provider = google-beta
+
   name     = "infra"
   location = var.region
   network = google_compute_network.vpc.self_link
@@ -65,12 +68,17 @@ resource "google_container_cluster" "infra" {
     horizontal_pod_autoscaling {
       disabled = false
     }
+    gce_persistent_disk_csi_driver_config {
+      enabled = true
+    }
   }
 
 }
 
 
 resource "google_container_node_pool" "infra_preemptible_nodes" {
+
+  provider = google-beta
   name       = "infra-node-pool"
   location   = var.region
   cluster    = google_container_cluster.infra.name
