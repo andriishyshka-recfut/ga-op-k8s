@@ -14,12 +14,14 @@ resource "google_compute_network" "vpc" {
 
 resource "google_compute_subnetwork" "net" {
   name          = "test-subnetwork"
-  ip_cidr_range = "172.27.0.0/24"
+  ip_cidr_range = "172.27.0.0/22"
   region        = var.region
   network       = google_compute_network.vpc.self_link
+  // https://cloud.google.com/vpc/docs/configure-private-google-access
+  private_ip_google_access  = true
   secondary_ip_range {
     range_name    = "tf-test-secondary-range-update1"
-    ip_cidr_range = "192.168.1.0/24"
+    ip_cidr_range = "192.168.0.0/22"
   }
 }
 
@@ -80,11 +82,11 @@ resource "google_compute_firewall" "bastion-to-infra" {
 }
 
 
-resource "google_compute_route" "dmz-default" {
-  name         = "dmz-default"
+resource "google_compute_route" "default" {
+  name         = "default"
   dest_range   = "0.0.0.0/0"
   network      = google_compute_network.vpc.name
   next_hop_gateway = "default-internet-gateway"
   priority     = 1000
-  tags = ["dmz"]
+  #tags = ["dmz","infra"]
 }

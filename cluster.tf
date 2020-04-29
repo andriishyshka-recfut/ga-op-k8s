@@ -14,6 +14,7 @@ resource "google_container_cluster" "infra" {
   network = google_compute_network.vpc.self_link
   subnetwork = google_compute_subnetwork.net.name
   default_max_pods_per_node = 8
+  min_master_version = 1.15
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
   # node pool and immediately delete it.
@@ -31,23 +32,17 @@ resource "google_container_cluster" "infra" {
   node_config {
     tags = ["infra"]
     service_account = google_service_account.gke-sa.unique_id
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
   }
 
-  //addons_config {
-//
-    //// Enable network policy (Calico)
-    //network_policy_config {
-      //disabled = false
-    //}
-  //}
-  //network_policy {
-    //enabled = "true"
-  //}
-    // Configure the cluster to have private nodes and private control plane access only
+// Configure the cluster to have private nodes and private control plane access only
   private_cluster_config {
     enable_private_endpoint = "true"
     enable_private_nodes    = "true"
-    master_ipv4_cidr_block  = "172.27.0.240/28"
+    master_ipv4_cidr_block  = "172.26.0.0/28"
   }
 
   master_authorized_networks_config {
@@ -61,7 +56,15 @@ resource "google_container_cluster" "infra" {
   ip_allocation_policy {
     cluster_secondary_range_name  = element(google_compute_subnetwork.net.secondary_ip_range,0).range_name
     services_secondary_range_name = element(google_compute_subnetwork.net.secondary_ip_range,1).range_name
+  }
 
+  addons_config {
+    http_load_balancing {
+      disabled = true
+      }
+    horizontal_pod_autoscaling {
+      disabled = false
+    }
   }
 
 }
@@ -71,19 +74,32 @@ resource "google_container_node_pool" "infra_preemptible_nodes" {
   name       = "infra-node-pool"
   location   = var.region
   cluster    = google_container_cluster.infra.name
-  node_count = 3
+  node_count = 1
+  version = 1.15
 
   node_config {
     preemptible  = true
     machine_type = "n1-standard-1"
+    tags = ["infra"]
+    service_account = google_service_account.gke-sa.unique_id
 
     metadata = {
       disable-legacy-endpoints = "true"
     }
 
+
     oauth_scopes = [
       "https://www.googleapis.com/auth/logging.write",
       "https://www.googleapis.com/auth/monitoring",
     ]
+  }
+  management {
+    auto_repair  = "true"
+    auto_upgrade = "false"
+  }
+
+  timeouts {
+    create = "60m"
+    update = "20m"
   }
 }
