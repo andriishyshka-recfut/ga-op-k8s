@@ -71,7 +71,12 @@ resource "google_container_cluster" "infra" {
     gce_persistent_disk_csi_driver_config {
       enabled = true
     }
+    istio_config {
+      disabled = false
+      auth = "AUTH_MUTUAL_TLS"
+    }
   }
+
 
 }
 
