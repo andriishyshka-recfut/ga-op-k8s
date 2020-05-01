@@ -73,7 +73,7 @@ resource "google_container_cluster" "infra" {
     }
     istio_config {
       disabled = false
-      //auth = "AUTH_MUTUAL_TLS"
+      auth = "AUTH_MUTUAL_TLS"
     }
   }
 
