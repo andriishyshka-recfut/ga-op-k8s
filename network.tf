@@ -20,8 +20,12 @@ resource "google_compute_subnetwork" "net" {
   // https://cloud.google.com/vpc/docs/configure-private-google-access
   private_ip_google_access  = true
   secondary_ip_range {
-    range_name    = "tf-test-secondary-range-update1"
+    range_name    = "cluster-secondary-range"
     ip_cidr_range = "192.168.0.0/22"
+  }
+  secondary_ip_range {
+    range_name    = "services-secondary-range"
+    ip_cidr_range = "192.168.4.0/22"
   }
 }
 

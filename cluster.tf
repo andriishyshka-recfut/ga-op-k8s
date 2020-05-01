@@ -16,7 +16,7 @@ resource "google_container_cluster" "infra" {
   location = var.region
   network = google_compute_network.vpc.self_link
   subnetwork = google_compute_subnetwork.net.name
-  default_max_pods_per_node = 8
+  default_max_pods_per_node = 16
   min_master_version = 1.15
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -73,11 +73,13 @@ resource "google_container_cluster" "infra" {
     }
     istio_config {
       disabled = false
-      auth = "AUTH_MUTUAL_TLS"
+      //auth = "AUTH_MUTUAL_TLS"
     }
   }
 
-
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 
