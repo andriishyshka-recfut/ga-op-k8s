@@ -1,3 +1,15 @@
+output "vpc_name" {
+  value = "vpc"
+}
+
+output "bastion_hostname"{
+  value = "bastion"
+}
+
+output "bastion_zone" {
+  value = "europe-west3-b"
+}
+
 output "bastion_subnet_range" {
   value = "10.100.0.0/24"
 }

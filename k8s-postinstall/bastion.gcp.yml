@@ -1,0 +1,5 @@
+plugin: gcp_compute
+projects:
+  - terraform-k8s-spin-up
+auth_kind: serviceaccount
+service_account_file: ~/terraform_key.json

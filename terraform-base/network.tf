@@ -1,7 +1,7 @@
 
 
 resource "google_compute_network" "vpc" {
-  name = "vpc"
+  name = module.common-vars.vpc_name
   auto_create_subnetworks = "false"
   routing_mode = "GLOBAL"
   delete_default_routes_on_create = "true"
@@ -82,5 +82,6 @@ resource "google_compute_route" "dmz-default" {
   network      = google_compute_network.vpc.name
   next_hop_gateway = "default-internet-gateway"
   priority     = 1000
-  tags = ["dmz"]
+  // We should have this route for all becouse I can't find how to tag GKE cluster to use this route during provisioning
+  //tags = ["dmz"]
 }

@@ -1,9 +1,9 @@
 
 
 resource "google_compute_instance" "bastion" {
-  name = "bastion"
+  name = module.common-vars.bastion_hostname
   machine_type = "g1-small"
-  zone = format("%s-a", var.region)
+  zone = module.common-vars.bastion_zone
   tags = ["dmz"]
 
   // Specify the Operating System Family and version.

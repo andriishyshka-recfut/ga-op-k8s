@@ -1,20 +1,11 @@
 
-//resource "google_project_service" "cloudresourcemanager" {
-  //service =  "cloudresourcemanager.googleapis.com"
-//}
-//
-//resource "google_project_service" "container" {
-  //service =  "container.googleapis.com"
-//}
-
-
 resource "google_container_cluster" "infra" {
 
   provider = google-beta
 
   name     = "infra"
   location = var.region
-  network = google_compute_network.vpc.self_link
+  network = data.google_compute_network.vpc.self_link
   subnetwork = google_compute_subnetwork.net.name
   default_max_pods_per_node = 16
   min_master_version = 1.15
@@ -51,14 +42,16 @@ resource "google_container_cluster" "infra" {
   master_authorized_networks_config {
     cidr_blocks {
       display_name = "bastion"
-      cidr_block   = format("%s/32", google_compute_instance.bastion.network_interface.0.network_ip)
+      cidr_block   = format("%s/32", data.google_compute_instance.bastion.network_interface.0.network_ip)
     }
   }
 
   // Allocate IPs in our subnetwork
   ip_allocation_policy {
-    cluster_secondary_range_name  = element(google_compute_subnetwork.net.secondary_ip_range,0).range_name
-    services_secondary_range_name = element(google_compute_subnetwork.net.secondary_ip_range,1).range_name
+    cluster_ipv4_cidr_block = module.common-vars.infra_pods_subnet_range
+    services_ipv4_cidr_block = module.common-vars.infra_services_subnet_range
+    //cluster_secondary_range_name  = element(google_compute_subnetwork.net.secondary_ip_range,0).range_name
+    //services_secondary_range_name = element(google_compute_subnetwork.net.secondary_ip_range,1).range_name
   }
 
   addons_config {
@@ -80,6 +73,9 @@ resource "google_container_cluster" "infra" {
   lifecycle {
     ignore_changes = all
   }
+  depends_on = [
+    google_compute_subnetwork.net
+  ]
 }
 
 
