@@ -1,12 +1,12 @@
 provider "google" {
-  project = "test-terraform2"
+  project = "test-terraform3"
   region  = "europe-west3"
   #zone    = "us-central1-c"
   version = "v3.19.0"
 }
 
 provider "google-beta" {
-  project = "test-terraform2"
+  project = "test-terraform3"
   region  = "europe-west3"
   #zone    = "us-central1-c"
   version = "v3.19.0"
@@ -14,7 +14,7 @@ provider "google-beta" {
 
 terraform {
   backend "gcs" {
-    bucket  = "terraform-state-test112"
+    bucket  = "terraform-state-111"
     prefix  = "terraform-infra/state"
   }
 }

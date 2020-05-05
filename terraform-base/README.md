@@ -4,10 +4,10 @@
 Before first time run(or after `terraform destroy` ) you have to create bucket for storing tf state and service account (to run terraform with)
 
 
-1. Create Service account, Bucket and download key (project and bucket should be same as in rpovider.tf and bucket.tf)
+1. Create Service account, Bucket and download key (project and bucket should be same as in provider.tf and bucket.tf)
 ```
-export PROJECT=test-terraform2
-export BUCKET_NAME=terraform-state-test112
+export PROJECT=test-terraform3
+export BUCKET_NAME=terraform-state-111
 
 rm ~/terraform_key.json
 gcloud config set project ${PROJECT}

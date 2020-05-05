@@ -1,5 +1,9 @@
 plugin: gcp_compute
 projects:
-  - test-terraform2
+  - test-terraform3
 auth_kind: serviceaccount
 service_account_file: ~/terraform_key.json
+keyed_groups:
+  - prefix: gcp
+    key: labels
+

@@ -51,12 +51,26 @@ resource "google_compute_firewall" "bastion-ssh" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22","63212"]
+    ports    = ["22"]
   }
 
   target_tags = ["dmz"]
 }
 
+resource "google_compute_firewall" "bastion-vpn" {
+  name          = "bastion-ssh"
+  network       = google_compute_network.vpc.name
+  direction     = "INGRESS"
+  //source_ranges = ["78.26.204.32/32"]
+  source_ranges = ["0.0.0.0/0"]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["19595","17806"]
+  }
+
+  target_tags = ["dmz"]
+}
 resource "google_compute_firewall" "bastion-to-infra" {
   name          = "bastion-to-infra"
   network       = google_compute_network.vpc.name

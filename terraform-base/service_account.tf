@@ -3,15 +3,16 @@ locals {
   admin_enabled_apis = [
     "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com",
-    "compute.googleapis.com"
+    "compute.googleapis.com",
+    "container.googleapis.com"
 
     ]
   }
 resource "google_project_service" "enabled-apis" {
   for_each = toset(local.admin_enabled_apis)
   service  = each.value
-  disable_dependent_services = false
-  disable_on_destroy         = true
+  //disable_dependent_services = false
+  //disable_on_destroy         = true
 }
 
 variable "service_account_iam_roles" {
