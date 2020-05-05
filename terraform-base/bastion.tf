@@ -5,6 +5,9 @@ resource "google_compute_instance" "bastion" {
   machine_type = "g1-small"
   zone = module.common-vars.bastion_zone
   tags = ["dmz"]
+  labels = {
+    name = "bastion"
+  }
 
   // Specify the Operating System Family and version.
   boot_disk {

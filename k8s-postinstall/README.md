@@ -2,6 +2,9 @@
 
 
 
+https://docs.ansible.com/ansible/latest/scenario_guides/guide_gce.html
+pip3 install google-auth --user
+
 
 After cluster provision in we need to change ingress service type to nodeport:
 ```

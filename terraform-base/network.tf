@@ -47,11 +47,11 @@ resource "google_compute_firewall" "bastion-ssh" {
   network       = google_compute_network.vpc.name
   direction     = "INGRESS"
   //source_ranges = ["78.26.204.32/32"]
-  source_ranges = ["69.164.208.72/32","35.185.38.145/32"]
+  source_ranges = ["78.26.204.32/32","69.164.208.72/32","35.185.38.145/32"]
 
   allow {
     protocol = "tcp"
-    ports    = ["22"]
+    ports    = ["22","63212"]
   }
 
   target_tags = ["dmz"]

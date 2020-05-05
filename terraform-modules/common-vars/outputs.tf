@@ -11,7 +11,7 @@ output "bastion_zone" {
 }
 
 output "bastion_subnet_range" {
-  value = "10.100.0.0/24"
+  value = "172.18.0.0/24"
 }
 
 output "infra_nodes_subnet_range" {
