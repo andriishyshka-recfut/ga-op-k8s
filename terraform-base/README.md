@@ -6,8 +6,8 @@ Before first time run(or after `terraform destroy` ) you have to create bucket f
 
 1. Create Service account, Bucket and download key (project and bucket should be same as in provider.tf and bucket.tf)
 ```
-export PROJECT=test-terraform3
-export BUCKET_NAME=terraform-state-111
+export PROJECT=ardent-rarity-239115
+export BUCKET_NAME=terraform-state-222
 
 rm ~/terraform_key.json
 gcloud config set project ${PROJECT}
