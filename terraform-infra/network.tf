@@ -2,7 +2,7 @@
 
 
 resource "google_compute_subnetwork" "net" {
-  name          = "test-subnetwork"
+  name          = "infra-subnetwork"
   ip_cidr_range = module.common-vars.infra_nodes_subnet_range
   region        = var.region
   network       = data.google_compute_network.vpc.self_link

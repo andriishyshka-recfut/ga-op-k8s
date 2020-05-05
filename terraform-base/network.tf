@@ -58,7 +58,7 @@ resource "google_compute_firewall" "bastion-ssh" {
 }
 
 resource "google_compute_firewall" "bastion-vpn" {
-  name          = "bastion-ssh"
+  name          = "bastion-vpn"
   network       = google_compute_network.vpc.name
   direction     = "INGRESS"
   //source_ranges = ["78.26.204.32/32"]

@@ -7,7 +7,7 @@ resource "google_container_cluster" "infra" {
   location = var.region
   network = data.google_compute_network.vpc.self_link
   subnetwork = google_compute_subnetwork.net.name
-  default_max_pods_per_node = 16
+  default_max_pods_per_node = 32
   min_master_version = 1.15
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -48,10 +48,10 @@ resource "google_container_cluster" "infra" {
 
   // Allocate IPs in our subnetwork
   ip_allocation_policy {
-    cluster_ipv4_cidr_block = module.common-vars.infra_pods_subnet_range
-    services_ipv4_cidr_block = module.common-vars.infra_services_subnet_range
-    //cluster_secondary_range_name  = element(google_compute_subnetwork.net.secondary_ip_range,0).range_name
-    //services_secondary_range_name = element(google_compute_subnetwork.net.secondary_ip_range,1).range_name
+    //cluster_ipv4_cidr_block = module.common-vars.infra_pods_subnet_range
+    //services_ipv4_cidr_block = module.common-vars.infra_services_subnet_range
+    cluster_secondary_range_name  = element(google_compute_subnetwork.net.secondary_ip_range,0).range_name
+    services_secondary_range_name = element(google_compute_subnetwork.net.secondary_ip_range,1).range_name
   }
 
   addons_config {

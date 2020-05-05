@@ -9,7 +9,7 @@ data "google_compute_network" "vpc" {
 
 
 variable "region" {
-  default = "us-east1"
+  default = "us-east4"
 }
 
 module "common-vars" {
