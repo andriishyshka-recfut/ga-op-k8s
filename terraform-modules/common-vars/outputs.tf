@@ -7,7 +7,7 @@ output "bastion_hostname"{
 }
 
 output "bastion_zone" {
-  value = "us-east-1-b"
+  value = "us-east1-b"
 }
 
 output "bastion_subnet_range" {

@@ -1,6 +1,6 @@
 provider "google" {
   project = "ardent-rarity-239115"
-  region  = "us-east1"
+  region  = "us-east4"
   #zone    = "us-central1-c"
   version = "v3.19.0"
 }
