@@ -4,5 +4,5 @@ module "common-vars" {
 
 
 variable "region" {
-  default = "europe-west3"
+  default = "us-east1"
 }
