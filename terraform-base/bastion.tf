@@ -16,6 +16,9 @@ resource "google_compute_instance" "bastion" {
     }
   }
 
+  scheduling {
+    preemptible = true
+  }
 
   // Define a network interface in the correct subnet.
   network_interface {
