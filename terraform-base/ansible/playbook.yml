@@ -1,7 +1,24 @@
 ---
 - hosts: gcp_name_bastion
   connection: ssh
+  become: true
   vars:
     ansible_ssh_private_key_file: "../ssh-key-ansible-sa"
   tasks:
     - debug: msg="{{ ansible_hostname }}"
+
+    - name: install prerequisits for outline server
+      shell: |
+        set +e
+        curl -sS https://get.docker.com/ | sh
+        wget -q https://raw.githubusercontent.com/Jigsaw-Code/outline-server/master/src/server_manager/install_scripts/install_server.sh
+        chmod +x install_server.sh
+
+    - name: install outline
+      shell: |
+       bash -c "./install_server.sh --api-port 19595 --keys-port 17806"
+      register: outline_creds
+
+    - debug: msg="{{ item }}"
+      with_items: "{{ outline_creds.stdout_lines }}"
+      when: "'apiUrl' in item"
