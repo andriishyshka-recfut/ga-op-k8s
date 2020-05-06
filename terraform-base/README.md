@@ -44,3 +44,10 @@ terraform plan
 terraform apply
 
 ```
+
+5. Run ansible playbook :
+```
+cd ansible
+ansible-playbook playbook.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) --private-key ../ssh-key-ansible-sa
+
+```

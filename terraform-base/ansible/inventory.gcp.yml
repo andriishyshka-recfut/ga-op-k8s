@@ -1,9 +1,8 @@
 plugin: gcp_compute
 projects:
-  - test-terraform3
+  - silent-eye-276318
 auth_kind: serviceaccount
 service_account_file: ~/terraform_key.json
 keyed_groups:
   - prefix: gcp
     key: labels
-

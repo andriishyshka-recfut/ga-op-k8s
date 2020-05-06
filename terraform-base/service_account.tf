@@ -4,7 +4,8 @@ locals {
     "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com",
     "compute.googleapis.com",
-    "container.googleapis.com"
+    "container.googleapis.com",
+    "oslogin.googleapis.com"
 
     ]
   }
@@ -26,7 +27,10 @@ variable "service_account_iam_roles" {
     "roles/iam.serviceAccountUser",
     "roles/resourcemanager.projectIamAdmin",
     "roles/storage.objectAdmin",
-    "roles/serviceusage.serviceUsageAdmin"
+    "roles/serviceusage.serviceUsageAdmin",
+    "roles/compute.instanceAdmin",
+    "roles/compute.instanceAdmin.v1",
+    "roles/compute.osAdminLogin"
   ]
   description = <<-EOF
   List of the default IAM roles to attach to the service account on the

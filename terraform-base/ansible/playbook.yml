@@ -1,4 +1,7 @@
 ---
 - hosts: gcp_name_bastion
+  connection: ssh
+  vars:
+    ansible_ssh_private_key_file: "../ssh-key-ansible-sa"
   tasks:
-    - debug: msg="{{ ansible_hostaname }}"
+    - debug: msg="{{ ansible_hostname }}"
