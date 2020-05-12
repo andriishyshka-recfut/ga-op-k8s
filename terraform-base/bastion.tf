@@ -1,4 +1,10 @@
 
+resource "google_compute_address" "static" {
+  name = "ipv4-address"
+}
+
+
+
 
 resource "google_compute_instance" "bastion" {
   name = module.common-vars.bastion_hostname
@@ -12,7 +18,7 @@ resource "google_compute_instance" "bastion" {
   // Specify the Operating System Family and version.
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-9"
+      image = "debian-cloud/debian-10"
     }
   }
 
@@ -27,7 +33,7 @@ resource "google_compute_instance" "bastion" {
 
     // Add an ephemeral external IP.
     access_config {
-      // Ephemeral IP
+      nat_ip = google_compute_address.static.address
     }
   }
 
@@ -40,15 +46,14 @@ resource "google_compute_instance" "bastion" {
 }
 
 
-// Apload temp key to be able run ansible
+// Upload temp key to be able run ansible
 
 data "external" "data" {
-  program = ["sh", "./data.sh"]
+  program = ["sh", "../data.sh"]
 }
 
 data "google_client_openid_userinfo" "me" {
 }
-
 
 
 resource "google_os_login_ssh_public_key" "cache" {

@@ -65,8 +65,8 @@ resource "google_compute_firewall" "bastion-vpn" {
   source_ranges = ["0.0.0.0/0"]
 
   allow {
-    protocol = "tcp"
-    ports    = ["19595","17806"]
+    protocol = "udp"
+    ports    = ["51820"]
   }
 
   target_tags = ["dmz"]

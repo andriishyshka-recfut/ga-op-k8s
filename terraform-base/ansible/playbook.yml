@@ -7,18 +7,142 @@
   tasks:
     - debug: msg="{{ ansible_hostname }}"
 
-    - name: install prerequisits for outline server
-      shell: |
-        set +e
-        curl -sS https://get.docker.com/ | sh
-        wget -q https://raw.githubusercontent.com/Jigsaw-Code/outline-server/master/src/server_manager/install_scripts/install_server.sh
-        chmod +x install_server.sh
 
-    - name: install outline
-      shell: |
-       bash -c "./install_server.sh --api-port 19595 --keys-port 17806"
-      register: outline_creds
+    - name: install prerequisits
+      apt:
+       update_cache: yes
+       pkg:
+        - wireguard
+        - bc
+        - linux-headers-4.19.0-8-cloud-amd64
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg2
+        - software-properties-common
+        - unzip
+        - python-docker
+      retries: 3
+      delay: 3
+      register: result
+      until: not result.failed
 
-    - debug: msg="{{ item }}"
-      with_items: "{{ outline_creds.stdout_lines }}"
-      when: "'apiUrl' in item"
+    - name: Add Docker GPG key
+      apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+      retries: 3
+      delay: 3
+      register: result
+      until: not result.failed
+
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable
+      retries: 3
+      delay: 3
+      register: result
+      until: not result.failed
+
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        update_cache: yes
+      retries: 3
+      delay: 3
+      register: result
+      until: not result.failed
+
+
+    - name: Create temp directory
+      file:
+        path: /tmp/subspace
+        state: directory
+        mode: '0755'
+
+    - name: Unpack subspace sources
+      unarchive:
+        src: https://github.com/subspacecloud/subspace/archive/master.zip
+        dest: /tmp/subspace
+        remote_src: yes
+      retries: 3
+      delay: 3
+      register: result
+      until: not result.failed
+
+    - name: Copy Dockerfile
+      copy:
+        src: Dockerfile.build
+        dest: /tmp/subspace/subspace-master/Dockerfile.build
+
+    - name: Build image with  latest binary of subspace
+      docker_image:
+        name: subspacebuild:latest
+        build:
+          path: /tmp/subspace/subspace-master
+          dockerfile: /tmp/subspace/subspace-master/Dockerfile.build
+        source: build
+
+    - name: Remove previous binary
+      file:
+        path: /tmp/subspace/subspace-master/subspace-linux-amd64
+        state: absent
+
+    - name: Copy binary to host
+      docker_container:
+        name: subspacebuild
+        image: subspacebuild:latest
+        command: cp /usr/bin/subspace /tmp/subspace-linux-amd64
+        volumes:
+          - /tmp/subspace/subspace-master/:/tmp
+
+    - name: Build new subspace image
+      docker_image:
+        name: subspace:latest
+        build:
+          path: /tmp/subspace/subspace-master
+        source: build
+
+    - name: Update sysctl
+      sysctl:
+        name: "{{ item }}"
+        value: '1'
+        sysctl_set: yes
+        state: present
+      with_items:
+        - net.ipv6.conf.all.forwarding
+        - net.ipv4.ip_forward
+
+    - name: Load required modules
+      modprobe:
+        state: present
+        name: "{{ item }}"
+      with_items:
+        - wireguard
+        - iptable_nat
+        - ip6table_nat
+
+    - name: Make modules persistent
+      lineinfile:
+        path: /etc/modules-load.d/modules.conf
+        line: "{{ item }}"
+        state: present
+      with_items:
+        - wireguard
+        - iptable_nat
+        - ip6table_nat
+
+    - name: Run subspace container
+      docker_container:
+        name: subspace
+        image: subspace:latest
+        network_mode: host
+        state: started
+        restart_policy: always
+        capabilities:
+          - NET_ADMIN
+        volumes:
+          - /usr/bin/wg:/usr/bin/wg
+          - /data:/data
+        env:
+          SUBSPACE_HTTP_HOST: bastion.biriukov.tech

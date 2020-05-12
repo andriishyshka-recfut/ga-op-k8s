@@ -1,0 +1,34 @@
+---
+- hosts: gcp_name_bastion
+  connection: ssh
+  become: true
+  vars:
+    sa_key_json: lookup('env','GOOGLE_CREDENTIALS')
+
+  tasks:
+    - debug: msg="{{ ansible_hostname }}"
+
+    - name: install prerequisits
+      apt:
+        pkg:
+         - kubectl
+
+    - name: Copy sa_key json
+
+    - name: Retrive .kube/config
+
+    - name: Copy istio ingress patch
+
+    - name: Apply istio ingress patch
+
+    - name: Get nodePort mapping
+
+    - name: Get nodeips
+
+    - name: flush or create iptables chain
+      shell: |
+        iptables -N nodePortBalancer -t nat || iptables -F nodePortBalancer -t nat
+
+    - name: Create balancing rules for port 80
+
+    - name: Create Balancing rules for port 443
