@@ -136,25 +136,6 @@
         - iptable_nat
         - ip6table_nat
 
-    #- name: Run subspace container
-      #docker_container:
-        #name: subspace
-        #image: subspace:latest
-        #network_mode: host
-        #state: started
-        #restart_policy: always
-        #capabilities:
-          #- NET_ADMIN
-        #volumes:
-          #- /usr/bin/wg:/usr/bin/wg
-          #- /data:/data
-        #env:
-          #SUBSPACE_HTTP_HOST: "bastion.biriukov.tech"
-          #SUBSPACE_HTTP_INSECURE: "true"
-          #SUBSPACE_LETSENCRYPT: "false"
-          #SUBSPACE_HTTP_ADDR: ":8080"
-
-
     - name: Create docker-compose workdir
       file:
         path: "/etc/bastion-compose"
@@ -192,12 +173,25 @@
       args:
         creates: "{{ compose_dest }}/data/certbot/conf/live/{{ bastion_dns }}/privkey.pem"
 
+    - name: Retrive subspace ip
+      docker_container_info:
+        name: nginx
+      register: nginx_container_info
 
-  #  - name: docker-compose run
-  #    docker_compose:
-  #      remove_orphans: "yes"
-  #      build: no
-  #      project_src: "/etc/bastion-compose/"
-  #    register: compose
+    - debug: msg="Will try to reach subspace from  {{ nginx_container_info.container.NetworkSettings.Networks['bastion-compose_default'].Gateway| to_nice_json }}"
 
-  #  - debug: msg="{{ compose | to_nice_json }}"
+
+    - name: Update https configuration
+      template:
+        src: "{{ item }}"
+        dest: "{{ compose_dest }}/data/nginx/"
+      with_items:
+        - default-stream.conf
+        - subspace-http.conf
+
+    - name: Restart nginx container
+      shell: |
+        cd {{ compose_dest }}
+        docker-compose stop nginx &&\
+         docker-compose rm -f  nginx &&\
+          docker-compose up -d nginx
