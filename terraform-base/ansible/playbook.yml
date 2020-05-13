@@ -4,6 +4,9 @@
   become: true
   vars:
     ansible_ssh_private_key_file: "../ssh-key-ansible-sa"
+    bastion_dns: "bastion.biriukov.tech"
+    compose_dest: "/etc/bastion-compose"
+    letsencrypt_email: "stepan@biriukov.tech"
   tasks:
     - debug: msg="{{ ansible_hostname }}"
 
@@ -22,6 +25,7 @@
         - software-properties-common
         - unzip
         - python-docker
+        - docker-compose
       retries: 3
       delay: 3
       register: result
@@ -132,17 +136,68 @@
         - iptable_nat
         - ip6table_nat
 
-    - name: Run subspace container
-      docker_container:
-        name: subspace
-        image: subspace:latest
-        network_mode: host
-        state: started
-        restart_policy: always
-        capabilities:
-          - NET_ADMIN
-        volumes:
-          - /usr/bin/wg:/usr/bin/wg
-          - /data:/data
-        env:
-          SUBSPACE_HTTP_HOST: bastion.biriukov.tech
+    #- name: Run subspace container
+      #docker_container:
+        #name: subspace
+        #image: subspace:latest
+        #network_mode: host
+        #state: started
+        #restart_policy: always
+        #capabilities:
+          #- NET_ADMIN
+        #volumes:
+          #- /usr/bin/wg:/usr/bin/wg
+          #- /data:/data
+        #env:
+          #SUBSPACE_HTTP_HOST: "bastion.biriukov.tech"
+          #SUBSPACE_HTTP_INSECURE: "true"
+          #SUBSPACE_LETSENCRYPT: "false"
+          #SUBSPACE_HTTP_ADDR: ":8080"
+
+
+    - name: Create docker-compose workdir
+      file:
+        path: "/etc/bastion-compose"
+        state: directory
+        mode: '0755'
+
+    - name: Copy docker-compose.yaml and other files
+      copy:
+        src: "{{ item }}"
+        dest: "{{ compose_dest }}"
+      with_items:
+        - "nginx.conf"
+
+    - name: Generate docker-compose.yaml
+      template:
+        src: docker-compose.yaml.j2
+        dest: "{{ compose_dest }}/docker-compose.yaml"
+
+    - name: Create nginx conf.d
+      file:
+        path: "{{ compose_dest }}/data/nginx"
+        state: directory
+        mode: '0755'
+
+    - name: Copy http config to get certificate from Let's Encrypt
+      copy:
+          src: default-http.conf
+          dest: "{{ compose_dest }}/data/nginx/"
+
+    - name: Retrieve certificates
+      shell: |
+        cd {{ compose_dest }}
+        docker-compose up -d
+        docker-compose exec certbot  certbot certonly --webroot --webroot-path /var/www/certbot --force-renewal -d {{ bastion_dns }} --email {{ letsencrypt_email }} --agree-tos --no-eff-email
+      args:
+        creates: "{{ compose_dest }}/data/certbot/conf/live/{{ bastion_dns }}/privkey.pem"
+
+
+  #  - name: docker-compose run
+  #    docker_compose:
+  #      remove_orphans: "yes"
+  #      build: no
+  #      project_src: "/etc/bastion-compose/"
+  #    register: compose
+
+  #  - debug: msg="{{ compose | to_nice_json }}"
