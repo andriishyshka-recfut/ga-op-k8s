@@ -1,34 +1,22 @@
 ---
+- hosts: localhost
+  connection: local
+  become: False
+  vars:
+    sa_key_json: lookup('env','GOOGLE_CREDENTIALS')
+    kube_config: lookup('env','KUBECONFIG')
+    project: lookup('env','GOOGLE_PROJECT')
+  tasks:
+
+   - debug: msg="{{ ansible_hostname }}"
+
+   - name: Make istio GW NodePort
+     shell: |
+      export KUBECONFIG=./kubeconfig
+      gcloud auth activate-service-account $(gcloud iam service-accounts list --format=json --filter="email ~ terraform" | jq '.[0].email' -j) --key-file $GOOGLE_CREDENTIALS --project {{ project }}
+     when:
 - hosts: gcp_name_bastion
   connection: ssh
   become: true
-  vars:
-    sa_key_json: lookup('env','GOOGLE_CREDENTIALS')
-
   tasks:
     - debug: msg="{{ ansible_hostname }}"
-
-    - name: install prerequisits
-      apt:
-        pkg:
-         - kubectl
-
-    - name: Copy sa_key json
-
-    - name: Retrive .kube/config
-
-    - name: Copy istio ingress patch
-
-    - name: Apply istio ingress patch
-
-    - name: Get nodePort mapping
-
-    - name: Get nodeips
-
-    - name: flush or create iptables chain
-      shell: |
-        iptables -N nodePortBalancer -t nat || iptables -F nodePortBalancer -t nat
-
-    - name: Create balancing rules for port 80
-
-    - name: Create Balancing rules for port 443

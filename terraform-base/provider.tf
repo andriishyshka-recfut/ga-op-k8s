@@ -1,7 +1,4 @@
 provider "google" {
-  project = "silent-eye-276318"
-  region  = "us-east4"
-  #zone    = "us-central1-c"
   version = "v3.19.0"
 }
 
