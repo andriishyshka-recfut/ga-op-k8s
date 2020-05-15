@@ -5,6 +5,7 @@ locals {
     "iam.googleapis.com",
     "compute.googleapis.com",
     "container.googleapis.com",
+    "dns.googleapis.com",
     "oslogin.googleapis.com"
 
     ]
@@ -30,6 +31,7 @@ variable "service_account_iam_roles" {
     "roles/serviceusage.serviceUsageAdmin",
     "roles/compute.instanceAdmin",
     "roles/compute.instanceAdmin.v1",
+    "roles/dns.admin",
     "roles/compute.osAdminLogin"
   ]
   description = <<-EOF
@@ -56,4 +58,5 @@ resource "google_project_iam_member" "service-account" {
   lifecycle {
     prevent_destroy = true
   }
+
 }

@@ -14,14 +14,21 @@ output "bastion_subnet_range" {
   value = "172.18.0.0/24"
 }
 
-output "infra_nodes_subnet_range" {
-  value = "10.100.1.0/24"
+
+variable "cluster_settings" {
+  default = {
+    "infra" = {
+      "domain" = "geminia.com"
+      "subdomain" = "infra"
+      "nodes_subnet_range" = "10.100.1.0/24"
+      "pods_subnet_range" = "10.100.8.0/21"
+      "services_subnet_range" = "10.100.16.0/21"
+      "master_ipv4_cidr_block" = "172.26.0.0/28"
+    }
+  }
+
 }
 
-output "infra_pods_subnet_range" {
-  value = "10.100.8.0/21"
-}
-
-output "infra_services_subnet_range" {
-  value = "10.100.16.0/21"
+output "cluster_settings" {
+  value = "${var.cluster_settings}"
 }

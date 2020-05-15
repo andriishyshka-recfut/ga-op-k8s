@@ -84,6 +84,12 @@
         src: Dockerfile.build
         dest: /tmp/subspace/subspace-master/Dockerfile.build
 
+    - name: Update NAMESERVER in entrypoint script
+      lineinfile:
+        path: /tmp/subspace/subspace-master/entrypoint.sh
+        regex: 'export NAMESERVER="1.1.1.1"'
+        line: 'export NAMESERVER="169.254.169.254"'
+
     - name: Build image with  latest binary of subspace
       docker_image:
         name: subspacebuild:latest

@@ -77,3 +77,11 @@
         regexp: "{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend"
         line: "*.{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend ;"
         path: "{{ compose_dest }}/data/nginx/default-stream.conf"
+
+    - name: Revoke gcloud and delete kubeconfig
+      shell: |
+        gcloud auth revoke $(gcloud iam service-accounts list --format=json --filter="email ~ terraform" | jq '.[0].email' -j)
+        rm {{ kube_config }}
+      delegate_to: localhost
+      become: False
+      changed_when: True

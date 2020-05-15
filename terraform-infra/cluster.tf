@@ -36,7 +36,7 @@ resource "google_container_cluster" "infra" {
   private_cluster_config {
     enable_private_endpoint = "true"
     enable_private_nodes    = "true"
-    master_ipv4_cidr_block  = "172.26.0.0/28"
+    master_ipv4_cidr_block  = module.common-vars.cluster_settings[var.cluster].master_ipv4_cidr_block
   }
 
   master_authorized_networks_config {
@@ -48,8 +48,6 @@ resource "google_container_cluster" "infra" {
 
   // Allocate IPs in our subnetwork
   ip_allocation_policy {
-    //cluster_ipv4_cidr_block = module.common-vars.infra_pods_subnet_range
-    //services_ipv4_cidr_block = module.common-vars.infra_services_subnet_range
     cluster_secondary_range_name  = element(google_compute_subnetwork.net.secondary_ip_range,0).range_name
     services_secondary_range_name = element(google_compute_subnetwork.net.secondary_ip_range,1).range_name
   }
