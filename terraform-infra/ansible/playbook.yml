@@ -32,6 +32,7 @@
     cluster_name: "infra"
     domain: "biriukov.tech"
     compose_dest: "/etc/bastion-compose"
+    kube_config: "{{ lookup('env','KUBECONFIG') }}"
 
   tasks:
     - debug: msg="{{ ansible_hostname }}"
@@ -77,6 +78,14 @@
         regexp: "{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend"
         line: "*.{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend ;"
         path: "{{ compose_dest }}/data/nginx/default-stream.conf"
+
+    - name: Restart nginx container
+      shell: |
+        cd {{ compose_dest }}
+        docker-compose stop nginx &&\
+         docker-compose rm -f  nginx &&\
+          docker-compose up -d nginx
+
 
     - name: Revoke gcloud and delete kubeconfig
       shell: |
