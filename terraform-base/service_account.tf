@@ -41,6 +41,9 @@ variable "service_account_iam_roles" {
 resource "google_service_account" "terraform" {
   account_id   = "terraform"
   display_name = "Terraform Runner Service Account"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_project_iam_member" "service-account" {
@@ -50,4 +53,7 @@ resource "google_project_iam_member" "service-account" {
   depends_on = [
     google_project_service.enabled-apis
   ]
+  lifecycle {
+    prevent_destroy = true
+  }
 }

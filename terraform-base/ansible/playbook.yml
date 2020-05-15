@@ -7,9 +7,14 @@
     bastion_dns: "bastion.biriukov.tech"
     compose_dest: "/etc/bastion-compose"
     letsencrypt_email: "stepan@biriukov.tech"
+    letsencrypt_staging: "--staging"
   tasks:
     - debug: msg="{{ ansible_hostname }}"
 
+    - name: update system
+      apt:
+        update_cache: yes
+        name: '*'
 
     - name: install prerequisits
       apt:
@@ -168,8 +173,8 @@
     - name: Retrieve certificates
       shell: |
         cd {{ compose_dest }}
-        docker-compose up -d
-        docker-compose exec certbot  certbot certonly --webroot --webroot-path /var/www/certbot --force-renewal -d {{ bastion_dns }} --email {{ letsencrypt_email }} --agree-tos --no-eff-email
+        docker-compose up -d && sleep 30
+        docker-compose exec certbot  certbot certonly --webroot --webroot-path /var/www/certbot --force-renewal -d {{ bastion_dns }} --email {{ letsencrypt_email }} --agree-tos --no-eff-email {{ letsencrypt_staging }}
       args:
         creates: "{{ compose_dest }}/data/certbot/conf/live/{{ bastion_dns }}/privkey.pem"
 
@@ -195,3 +200,12 @@
         docker-compose stop nginx &&\
          docker-compose rm -f  nginx &&\
           docker-compose up -d nginx
+
+    - name: Autoclean dependecnies
+      apt:
+        autoclean: yes
+        autoremove: yes
+
+    - name: Reboot
+      reboot:
+        reboot_timeout: 3600

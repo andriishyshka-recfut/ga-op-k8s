@@ -1,0 +1,6 @@
+upstream {{ cluster_name }}_backend {
+
+{% for server in node_ips.stdout.split(" ") %}
+    server {{ server }}:{{ nodePort }} ;
+{% endfor %}
+}

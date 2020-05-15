@@ -3,9 +3,13 @@
   connection: local
   become: False
   vars:
-    sa_key_json: lookup('env','GOOGLE_CREDENTIALS')
-    kube_config: lookup('env','KUBECONFIG')
-    project: lookup('env','GOOGLE_PROJECT')
+    sa_key_json: "{{ lookup('env','GOOGLE_CREDENTIALS') }}"
+    kube_config: "{{ lookup('env','KUBECONFIG') }}"
+    project: "{{ lookup('env','GOOGLE_PROJECT') }}"
+    region: "{{ lookup('env','GOOGLE_REGION') }}"
+    cluster_name: "infra"
+    domain: "biriukov.tech"
+    compose_dest: "/etc/bastion-compose"
   tasks:
 
    - debug: msg="{{ ansible_hostname }}"
@@ -13,10 +17,63 @@
    - name: Make istio GW NodePort
      shell: |
       export KUBECONFIG=./kubeconfig
-      gcloud auth activate-service-account $(gcloud iam service-accounts list --format=json --filter="email ~ terraform" | jq '.[0].email' -j) --key-file $GOOGLE_CREDENTIALS --project {{ project }}
-     when:
+      gcloud auth activate-service-account \
+        $(gcloud iam service-accounts list --format=json --filter="email ~ terraform" | jq '.[0].email' -j) \
+        --key-file $GOOGLE_CREDENTIALS --project {{ project }}
+      gcloud container clusters get-credentials infra --region {{ region }}
+      kubectl patch svc istio-ingressgateway --type=json \
+        -p="$(cat files/istio-ingress-patch.json)" --dry-run=true \
+        -o yaml -n istio-system | kubectl apply -f -
+
 - hosts: gcp_name_bastion
   connection: ssh
   become: true
+  vars:
+    cluster_name: "infra"
+    domain: "biriukov.tech"
+    compose_dest: "/etc/bastion-compose"
+
   tasks:
     - debug: msg="{{ ansible_hostname }}"
+
+    - name: Get mapping of istio gw NodePort
+      shell: |
+        kubectl get svc istio-ingressgateway -o json -n istio-system
+      register: nodeport_mapping
+      delegate_to: localhost
+      become: False
+      changed_when: False
+
+    - debug: msg="nodePort is {{ item.nodePort }}"
+      with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
+      when: item.name == 'https'
+
+    - name: set nodePort
+      set_fact:
+        nodePort:  "{{ item.nodePort }}"
+      with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
+      when: item.name == 'https'
+
+    - name: Get node ips
+      shell: |
+        kubectl get nodes -o jsonpath="{.items[*].status.addresses[?(@.type == 'InternalIP')].address}"
+      register: node_ips
+      delegate_to: localhost
+      become: False
+      changed_when: False
+
+    - debug: msg="InternalIp is {{ item }}"
+      with_items: '{{ node_ips.stdout.split(" ") }}'
+
+    - name: Add upstream for new cluster on bastion
+      template:
+        src: "upstream.conf.j2"
+        dest: "{{ compose_dest }}/data/nginx/{{ cluster_name }}-stream.conf"
+
+    - name: Configure upstream for cluster in default-stream.conf
+      lineinfile:
+        insertbefore: "default                  default_backend;"
+        #insertafter: "map $ssl_preread_server_name $name {"
+        regexp: "{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend"
+        line: "*.{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend ;"
+        path: "{{ compose_dest }}/data/nginx/default-stream.conf"
