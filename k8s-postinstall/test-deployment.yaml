@@ -1,49 +1,54 @@
-##################################################################################################
-# httpbin service
-##################################################################################################
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx
+#  labels:
+  #  istio-injection: enabled
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: minio
+  name: nginx
+  namespace: nginx
   labels:
-    app: minio
+    app: nginx
 spec:
   ports:
   - name: http
     port: 80
-    targetPort: 9000
+    targetPort: 80
   selector:
-    app: minio
+    app: nginx
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: minio
+  name: nginx
+  namespace: nginx
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: minio
+      app: nginx
       version: v1
   template:
     metadata:
       labels:
-        app: minio
+        app: nginx
         version: v1
     spec:
       containers:
-      - image: minio/minio
+      - image: nginx
         imagePullPolicy: IfNotPresent
-        name: minio
-        command: ["server","/data"]
+        name: nginx
         ports:
-        - containerPort: 9000
+        - containerPort: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sleep
+  namespace: nginx
 spec:
   replicas: 1
   selector:

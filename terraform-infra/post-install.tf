@@ -21,6 +21,20 @@ output "pub_certificate" {
   value = data.external.data.result["pub_certificate"]
 }
 
-output "please_run" {
-  value = "ansible-playbook ansible/playbook.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) --private-key ./ssh-key-ansible-sa"
+resource "null_resource" "ansible_playbook" {
+
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
+  provisioner "local-exec" {
+    command = "cd ansible && ansible-playbook playbook.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) --private-key ../ssh-key-ansible-sa"
+    environment = {
+    CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
+    CLUSTER = var.cluster
+    }
+  }
+  depends_on = [
+    google_container_node_pool.infra_preemptible_nodes
+  ]
 }

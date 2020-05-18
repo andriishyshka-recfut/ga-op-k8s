@@ -15,3 +15,7 @@ variable "region" {
 module "common-vars" {
   source = "../terraform-modules/common-vars"
 }
+
+variable "cluster" {
+  default = "infra"
+}

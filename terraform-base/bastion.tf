@@ -43,6 +43,18 @@ resource "google_compute_instance" "bastion" {
     enable-oslogin = "TRUE"
   }
 
+  provisioner "remote-exec" {
+    inline = [
+      "echo",
+    ]
+    connection {
+    type     = "ssh"
+    user     = "sa_${data.google_service_account.me.unique_id}"
+    private_key = file("./ssh-key-ansible-sa")
+    host     = google_compute_address.static.address
+  }
+  }
+
 }
 
 
@@ -54,6 +66,10 @@ data "external" "data" {
 
 data "google_client_openid_userinfo" "me" {
 }
+data "google_service_account" "me" {
+  account_id = element(split("@",data.google_client_openid_userinfo.me.email),0)
+}
+
 
 
 resource "google_os_login_ssh_public_key" "cache" {
@@ -67,4 +83,21 @@ output "expiration_date" {
 }
 output "pub_certificate" {
   value = data.external.data.result["pub_certificate"]
+}
+resource "null_resource" "ansible_playbook" {
+
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
+  provisioner "local-exec" {
+    command = "cd ansible && ansible-playbook playbook.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) --private-key ../ssh-key-ansible-sa"
+    environment = {
+    CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
+    }
+  }
+  depends_on = [
+    google_compute_instance.bastion,
+    google_os_login_ssh_public_key.cache
+  ]
 }

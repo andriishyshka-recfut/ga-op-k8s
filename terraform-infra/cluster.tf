@@ -3,7 +3,7 @@ resource "google_container_cluster" "infra" {
 
   provider = google-beta
 
-  name     = "infra"
+  name     = module.common-vars.cluster_settings[var.cluster].subdomain
   location = var.region
   network = data.google_compute_network.vpc.self_link
   subnetwork = google_compute_subnetwork.net.name
@@ -63,8 +63,9 @@ resource "google_container_cluster" "infra" {
       enabled = true
     }
     istio_config {
+      //disabled = true
       disabled = false
-      auth = "AUTH_MUTUAL_TLS"
+      //auth = "AUTH_MUTUAL_TLS"
     }
   }
 

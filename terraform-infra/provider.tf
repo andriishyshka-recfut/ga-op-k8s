@@ -12,7 +12,3 @@ terraform {
     prefix  = "terraform-infra/state"
   }
 }
-
-variable "cluster" {
-  default = "infra"
-}

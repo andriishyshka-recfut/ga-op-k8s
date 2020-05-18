@@ -18,7 +18,7 @@ output "bastion_subnet_range" {
 variable "cluster_settings" {
   default = {
     "infra" = {
-      "domain" = "geminia.com"
+      "domain" = "digaweb.local"
       "subdomain" = "infra"
       "nodes_subnet_range" = "10.100.1.0/24"
       "pods_subnet_range" = "10.100.8.0/21"
