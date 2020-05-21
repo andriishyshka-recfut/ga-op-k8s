@@ -10,10 +10,10 @@ spec:
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
-  name: ingress-cert
+  name: test-workload-cert
   namespace: istio-system
 spec:
-  secretName: istio-ingressgateway-certs
+  secretName: test-workload-cert
   commonName: nginx.infra.digaweb.local
   issuerRef:
     name: ca-issuer
