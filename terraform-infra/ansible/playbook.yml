@@ -36,14 +36,20 @@
         --user=$(gcloud config get-value core/account)
       istioctl manifest apply  \
         --set values.gateways.istio-ingressgateway.sds.enabled=true \
-        --set values.gateways.istio-ingressgateway.type=NodePort \
-      #  --set values.cni.cniBinDir=/home/kubernetes/bin \
-      #  --set components.cni.enabled=true \
-      #  --set components.cni.namespace=kube-system
-      #kubectl apply -f generated-manifest.yaml || kubectl apply -f generated-manifest.yaml
-      #kubectl patch svc istio-ingressgateway --type=json \
-      #  -p="$(cat files/istio-ingress-patch.json)" --dry-run=true \
-      #  -o yaml -n istio-system | kubectl apply -f -
+        --set values.gateways.istio-ingressgateway.type=NodePort
+        # Setting those options suggested in docs to enable k8s native ingress support but there are issue
+        # https://github.com/istio/istio/issues/22697
+        #--set values.global.k8sIngress.enabled=true \
+        #--set values.global.k8sIngress.enableHttps=true \
+        #--set values.global.k8sIngress.gatewayName=ingressgateway \
+        # Not setting cni options because it is not ubiquitous right now (GKE and openshift nativelly support it)
+        #  --set values.cni.cniBinDir=/home/kubernetes/bin \
+        #  --set components.cni.enabled=true \
+        #  --set components.cni.namespace=kube-system
+        # Patching was required only for native GKE istio.
+        #kubectl patch svc istio-ingressgateway --type=json \
+        #  -p="$(cat files/istio-ingress-patch.json)" --dry-run=true \
+        #  -o yaml -n istio-system | kubectl apply -f -
 
    - name: Install cert-manager
      shell: |
