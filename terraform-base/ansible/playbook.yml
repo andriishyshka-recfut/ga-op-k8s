@@ -14,7 +14,7 @@
     - name: update system
       apt:
         update_cache: yes
-        name: '*'
+        upgrade: dist
 
     - name: install prerequisits
       apt:

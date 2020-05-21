@@ -41,3 +41,23 @@ resource "google_dns_record_set" "wildcard" {
 
   rrdatas = [data.google_compute_instance.bastion.network_interface.0.network_ip]
 }
+
+
+#https://istio.io/docs/setup/platform-setup/gke/
+resource "google_compute_firewall" "master-to-infra" {
+  name          = "master-to-infra"
+  network       = data.google_compute_network.vpc.self_link
+  direction     = "INGRESS"
+  source_ranges = [ module.common-vars.cluster_settings[var.cluster].master_ipv4_cidr_block ]
+  target_tags = ["infra"]
+
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["15017"]
+  }
+
+}

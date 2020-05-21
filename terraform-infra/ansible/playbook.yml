@@ -11,27 +11,51 @@
     cluster_settings: "{{ lookup('env','CLUSTER_SETTINGS') | from_json }}"
     domain: "{{ cluster_settings[cluster_name].domain }}"
     compose_dest: "/etc/bastion-compose"
+    istio_version: "1.5.4"
   tasks:
 
    - debug: msg="{{ ansible_hostname }}"
 
-   - name: Make istio GW NodePort
+   - name: UNpack istio
+     unarchive:
+      src: https://github.com/istio/istio/releases/download/{{ istio_version }}/istio-{{ istio_version }}-linux.tar.gz
+      dest: "{{ playbook_dir }}"
+      remote_src: yes
+
+   - name: Try to install istio
      shell: |
+      set -e
+      export PATH={{ playbook_dir }}/istio-{{ istio_version }}/bin:$PATH
       export KUBECONFIG=./kubeconfig
       gcloud auth activate-service-account \
         $(gcloud iam service-accounts list --format=json --filter="email ~ terraform" | jq '.[0].email' -j) \
         --key-file $GOOGLE_CREDENTIALS --project {{ project }}
       gcloud container clusters get-credentials infra --region {{ region }}
-      kubectl patch svc istio-ingressgateway --type=json \
-        -p="$(cat files/istio-ingress-patch.json)" --dry-run=true \
-        -o yaml -n istio-system | kubectl apply -f -
+      kubectl create clusterrolebinding cluster-admin-binding \
+        --clusterrole=cluster-admin \
+        --user=$(gcloud config get-value core/account)
+      istioctl manifest apply  \
+        --set values.gateways.istio-ingressgateway.sds.enabled=true \
+        --set values.gateways.istio-ingressgateway.type=NodePort \
+      #  --set values.cni.cniBinDir=/home/kubernetes/bin \
+      #  --set components.cni.enabled=true \
+      #  --set components.cni.namespace=kube-system
+      #kubectl apply -f generated-manifest.yaml || kubectl apply -f generated-manifest.yaml
+      #kubectl patch svc istio-ingressgateway --type=json \
+      #  -p="$(cat files/istio-ingress-patch.json)" --dry-run=true \
+      #  -o yaml -n istio-system | kubectl apply -f -
 
    - name: Install cert-manager
      shell: |
-          helm repo add jetstack https://charts.jetstack.io
-          helm repo update
-          #kubectl create ns cert-manager
-          helm install cert-manager jetstack/cert-manager --namespace kube-system --version v0.15.0 --set installCRDs=true
+      export KUBECONFIG=./kubeconfig
+      helm repo add jetstack https://charts.jetstack.io
+      helm repo update
+      #kubectl create ns cert-manager
+      helm install cert-manager \
+        jetstack/cert-manager \
+        --namespace kube-system \
+        --version v0.15.0 \
+        --set installCRDs=true
 
 - hosts: gcp_name_bastion
   connection: ssh
@@ -85,7 +109,7 @@
         insertbefore: "default                  default_backend;"
         #insertafter: "map $ssl_preread_server_name $name {"
         regexp: "{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend"
-        line: "*.{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend ;"
+        line: "~.{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend ;"
         path: "{{ compose_dest }}/data/nginx/default-stream.conf"
 
     - name: Restart nginx container

@@ -1,3 +1,6 @@
+data "google_container_engine_versions" "version" {
+  location = var.region
+}
 
 resource "google_container_cluster" "infra" {
 
@@ -8,7 +11,7 @@ resource "google_container_cluster" "infra" {
   network = data.google_compute_network.vpc.self_link
   subnetwork = google_compute_subnetwork.net.name
   default_max_pods_per_node = 32
-  min_master_version = 1.15
+  min_master_version = data.google_container_engine_versions.version.latest_master_version
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
   # node pool and immediately delete it.
@@ -52,7 +55,13 @@ resource "google_container_cluster" "infra" {
     services_secondary_range_name = element(google_compute_subnetwork.net.secondary_ip_range,1).range_name
   }
 
+  network_policy {
+    enabled = true
+  }
   addons_config {
+    network_policy_config {
+      disabled = false
+    }
     http_load_balancing {
       disabled = true
       }
@@ -63,8 +72,8 @@ resource "google_container_cluster" "infra" {
       enabled = true
     }
     istio_config {
-      //disabled = true
-      disabled = false
+      disabled = true
+      //disabled = false
       //auth = "AUTH_MUTUAL_TLS"
     }
   }
@@ -84,12 +93,16 @@ resource "google_container_node_pool" "infra_preemptible_nodes" {
   name       = "infra-node-pool"
   location   = var.region
   cluster    = google_container_cluster.infra.name
+  autoscaling  {
+    min_node_count = 1
+    max_node_count = 2
+  }
   node_count = 1
-  version = 1.15
+  version = data.google_container_engine_versions.version.latest_node_version
 
   node_config {
     preemptible  = true
-    machine_type = "n1-standard-1"
+    machine_type = "e2-standard-2"
     tags = ["infra"]
     service_account = google_service_account.gke-sa.unique_id
 
