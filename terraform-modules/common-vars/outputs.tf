@@ -25,6 +25,10 @@ variable "cluster_settings" {
       "pods_subnet_range" = "10.100.8.0/21"
       "services_subnet_range" = "10.100.16.0/21"
       "master_ipv4_cidr_block" = "172.26.0.0/28"
+      // this variable may be changed only before install. Istio has custom upgrade process
+      // https://istio.io/docs/setup/upgrade/
+      "istio_version" = "1.5.4"
+      "cert_manager_version" = "v0.15.0"
     }
   }
 

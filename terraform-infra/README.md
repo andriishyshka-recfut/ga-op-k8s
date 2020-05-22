@@ -21,9 +21,16 @@ Best pracitces accourding to [Scalable and Manageable: A Deep-Dive Into GKE Netw
 6. master authorized networks for access
 
 
-
 CNCF security projects:
 - [falco](https://falco.org/docs/) can be used with [fluentd](https://sysdig.com/blog/kubernetes-security-logging-fluentd-falco/)
+
+#Before you begin
+```
+pip install kubernetes --user
+pip install openshift --user
+
+
+```
 
 # RUN
 
@@ -40,6 +47,6 @@ export GOOGLE_PROJECT=silent-eye-276318
 ```
 terraform init
 terraform plan
-terraform apply 
+terraform apply
 
 ```

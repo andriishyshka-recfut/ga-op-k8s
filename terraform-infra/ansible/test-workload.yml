@@ -1,0 +1,53 @@
+- hosts: localhost
+  connection: local
+  become: False
+  vars_files:
+    - vars/main.yml
+  tasks:
+
+    - name: Put cluster_ca_certificate
+      copy:
+        dest: "{{ playbook_dir }}/istio-{{ istio_version }}/clstr_ca.crt"
+        content: "{{ k8s_cluster_ca_certificate }}"
+
+    - name: Create test certificate
+      k8s:
+          state: present
+          definition: "{{ lookup ('template','k8s-test-certificate.yaml') }}"
+          api_key: "{{ k8s_api_key }}"
+          host: "{{ k8s_host_url }}"
+          ca_cert: "{{ playbook_dir }}/istio-{{ istio_version }}/clstr_ca.crt"
+      #shell: |
+        #echo "{{ lookup ('template','k8s-test-certificate.yaml')}}" | kubectl apply -f -
+        #kubectl get secrets {{ test_workload_name }}-cert -n istio-system
+      #register: result
+      #retries: 3
+      #delay: 10
+      #until: result.stdout.find("-cert") != -1
+      #changed_when: True
+
+    - name:  create test workload
+      k8s:
+          state: present
+          definition: "{{ lookup ('template','k8s-test-workload.yaml') }}"
+          api_key: "{{ k8s_api_key }}"
+          host: "{{ k8s_host_url }}"
+          ca_cert: "{{ playbook_dir }}/istio-{{ istio_version }}/clstr_ca.crt"
+
+    - name:  try https://{{ test_workload_name }}.{{ cluster_name }}.{{ domain }} with curl
+      shell: |
+          curl -kv https://{{ test_workload_name }}.{{ cluster_name }}.{{ domain }}
+      register: result
+      retries: 3
+      delay: 10
+      until: result.stdout.find("Thank you for using nginx.") != -1
+
+    - debug: msg="{{ result.stdout_lines }}"
+
+    #- name: Revoke gcloud and delete kubeconfig
+      #shell: |
+        #gcloud auth revoke $(gcloud iam service-accounts list --format=json --filter="email ~ terraform" | jq '.[0].email' -j)
+        #rm {{ kube_config }}
+      #delegate_to: localhost
+      #become: False
+      #changed_when: True
