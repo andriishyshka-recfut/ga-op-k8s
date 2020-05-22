@@ -17,6 +17,7 @@ output "bastion_subnet_range" {
 
 variable "cluster_settings" {
   default = {
+    "test_workload_name" = "test",
     "infra" = {
       "domain" = "digaweb.local"
       "subdomain" = "infra"

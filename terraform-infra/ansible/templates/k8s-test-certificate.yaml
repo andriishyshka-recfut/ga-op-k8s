@@ -5,16 +5,15 @@ metadata:
   namespace: istio-system
 spec:
   selfSigned: {}
-
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
-  name: test-workload-cert
+  name: {{ test_workload_name }}-cert
   namespace: istio-system
 spec:
-  secretName: test-workload-cert
-  commonName: nginx.infra.digaweb.local
+  secretName: {{ test_workload_name }}-cert
+  commonName: {{ test_workload_name }}.{{ cluster_name }}.{{ domain }}
   issuerRef:
     name: ca-issuer
     kind: Issuer

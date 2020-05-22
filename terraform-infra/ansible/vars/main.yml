@@ -1,0 +1,11 @@
+
+sa_key_json: "{{ lookup('env','GOOGLE_CREDENTIALS') }}"
+kube_config: "{{ lookup('env','KUBECONFIG') }}"
+project: "{{ lookup('env','GOOGLE_PROJECT') }}"
+region: "{{ lookup('env','GOOGLE_REGION') }}"
+cluster_name: "{{ lookup('env','CLUSTER') }}"
+cluster_settings: "{{ lookup('env','CLUSTER_SETTINGS') | from_json }}"
+domain: "{{ cluster_settings[cluster_name].domain }}"
+compose_dest: "/etc/bastion-compose"
+istio_version: "1.5.4"
+test_workload_name: "{{ cluster_settings.test_workload_name }}"
