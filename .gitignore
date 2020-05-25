@@ -6,3 +6,4 @@ ssh-key*
 kubeconfig
 
 istio-*
+tmp/
