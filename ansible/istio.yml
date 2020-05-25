@@ -10,7 +10,7 @@
 
   - name: Unpack istio
     unarchive:
-      src: https://github.com/istio/istio/releases/download/{{ istio_version }}/istio-{{ istio_version }}-linux.tar.gz
+      src: https://github.com/istio/istio/releases/download/{{ istio_version }}/istio-{{ istio_version }}-linux-amd64.tar.gz
       dest: "{{ playbook_dir }}"
       remote_src: yes
 
@@ -19,12 +19,23 @@
       dest: "{{ playbook_dir }}/istio-{{ istio_version }}/clstr_ca.crt"
       content: "{{ k8s_cluster_ca_certificate }}"
 
+  - name: Create a k8s namespace
+    k8s:
+      name: istio-system
+      api_version: v1
+      kind: Namespace
+      state: present
+      api_key: "{{ k8s_api_key }}"
+      host: "{{ k8s_host_url }}"
+      ca_cert: "{{ playbook_dir }}/istio-{{ istio_version }}/clstr_ca.crt"
+
   - name: Generate istio install manifest
     shell: |
       export PATH={{ playbook_dir }}/istio-{{ istio_version }}/bin:$PATH
       istioctl manifest generate  \
         --set values.gateways.istio-ingressgateway.sds.enabled=true \
-        --set values.gateways.istio-ingressgateway.type=NodePort > {{ playbook_dir }}/istio-{{ istio_version }}/install-manifest.yaml
+        --set values.gateways.istio-ingressgateway.type=NodePort 2>/dev/null > {{ playbook_dir }}/istio-{{ istio_version }}/install-manifest.yaml
+        sed -i '/Config not found: .\/kubeconfig/d' {{ playbook_dir }}/istio-{{ istio_version }}/install-manifest.yaml
         # Setting those options suggested in docs to enable k8s native ingress support but there are issue
         # https://github.com/istio/istio/issues/22697
         #--set values.global.k8sIngress.enabled=true \
@@ -59,7 +70,8 @@
     register: manifest_apply
     retries: 3
     delay: 11
-    ignore_errors: True
+    until: manifest_apply.rc == 0
+    #ignore_errors: True
 
   - debug: msg="{{ manifest_apply | to_nice_json }}"
 

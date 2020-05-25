@@ -3,26 +3,26 @@
 
 resource "google_compute_subnetwork" "net" {
   name          = "infra-subnetwork"
-  ip_cidr_range = module.common-vars.cluster_settings[var.cluster].nodes_subnet_range
+  ip_cidr_range = var.settings.cluster_settings[var.cluster].nodes_subnet_range
   region        = var.region
   network       = data.google_compute_network.vpc.self_link
   // https://cloud.google.com/vpc/docs/configure-private-google-access
   private_ip_google_access  = true
   secondary_ip_range {
     range_name    = "pods-secondary-range"
-    ip_cidr_range = module.common-vars.cluster_settings[var.cluster].pods_subnet_range
+    ip_cidr_range = var.settings.cluster_settings[var.cluster].pods_subnet_range
   }
   secondary_ip_range {
     range_name    = "services-secondary-range"
-    ip_cidr_range = module.common-vars.cluster_settings[var.cluster].services_subnet_range
+    ip_cidr_range = var.settings.cluster_settings[var.cluster].services_subnet_range
   }
 }
 
 
 resource "google_dns_managed_zone" "k8s-zone" {
-  name        = "${module.common-vars.cluster_settings[var.cluster].subdomain}-private-zone"
-  dns_name    = "${module.common-vars.cluster_settings[var.cluster].subdomain}.${module.common-vars.cluster_settings[var.cluster].domain}."
-  description = "DNS zone for ${module.common-vars.cluster_settings[var.cluster].subdomain} k8s cluster"
+  name        = "${var.settings.cluster_settings[var.cluster].subdomain}-private-zone"
+  dns_name    = "${var.settings.cluster_settings[var.cluster].subdomain}.${var.settings.cluster_settings[var.cluster].domain}."
+  description = "DNS zone for ${var.settings.cluster_settings[var.cluster].subdomain} k8s cluster"
   visibility = "private"
 
   private_visibility_config {
@@ -48,7 +48,7 @@ resource "google_compute_firewall" "master-to-infra" {
   name          = "master-to-infra"
   network       = data.google_compute_network.vpc.self_link
   direction     = "INGRESS"
-  source_ranges = [ module.common-vars.cluster_settings[var.cluster].master_ipv4_cidr_block ]
+  source_ranges = [ var.settings.cluster_settings[var.cluster].master_ipv4_cidr_block ]
   target_tags = ["infra"]
 
   allow {

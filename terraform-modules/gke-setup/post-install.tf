@@ -6,7 +6,9 @@ data "external" "data" {
 
 data "google_client_openid_userinfo" "me" {
 }
-
+data "google_service_account" "me" {
+  account_id = element(split("@",data.google_client_openid_userinfo.me.email),0)
+}
 data "google_client_config" "default" {
 }
 
@@ -30,7 +32,7 @@ resource "helm_release" "cert-manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = module.common-vars.cluster_settings[var.cluster].cert_manager_version
+  version    = var.settings.cluster_settings[var.cluster].cert_manager_version
   namespace  = "kube-system"
   set {
     name = "installCRDs"
@@ -44,13 +46,13 @@ resource "helm_release" "cert-manager" {
 resource "null_resource" "ansible_istio_playbook" {
   triggers = {
     //always_run = "${timestamp()}"
-    // istio_version_change = module.common-vars.cluster_settings[var.cluster].istio_version
+    // istio_version_change = var.settings.cluster_settings[var.cluster].istio_version
     gke_cluster_change = google_container_cluster.infra.id
   }
   provisioner "local-exec" {
-    command = "cd ansible && ansible-playbook istio.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) "
+    command = "cd  ${path.root}/../ansible && ansible-playbook istio.yml --user   sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3.7'"
     environment = {
-    CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
+    CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
     CLUSTER = var.cluster
     ANSIBLE_STDOUT_CALLBACK = "debug"
     HOST  = "https://${google_container_cluster.infra.endpoint}"
@@ -70,9 +72,9 @@ resource "null_resource" "ansible_bastion_playbook" {
     gke_cluster_change = google_container_cluster.infra.id
   }
   provisioner "local-exec" {
-    command = "cd ansible && ansible-playbook bastion.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) "
+    command = "cd  ${path.root}/../ansible && ansible-playbook bastion.yml --user  sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3.7' "
     environment = {
-    CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
+    CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
     CLUSTER = var.cluster
     ANSIBLE_STDOUT_CALLBACK = "debug"
     HOST  = "https://${google_container_cluster.infra.endpoint}"
@@ -91,9 +93,9 @@ resource "null_resource" "ansible_post_install_verification_playbook" {
     always_run = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "cd ansible && ansible-playbook test-workload.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) "
+    command = "cd ${path.root}/../ansible && ansible-playbook test-workload.yml --user  sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3.7' "
     environment = {
-    CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
+    CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
     CLUSTER = var.cluster
     ANSIBLE_STDOUT_CALLBACK = "debug"
     HOST  = "https://${google_container_cluster.infra.endpoint}"

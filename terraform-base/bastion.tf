@@ -88,7 +88,7 @@ resource "null_resource" "ansible_playbook" {
   }
 
   provisioner "local-exec" {
-    command = "cd ansible && ansible-playbook playbook.yml --user sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3.7' "
+    command = "cd ../ansible && ansible-playbook bastion-provision.yml --user sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3.7' "
     environment = {
     CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
     BASTION_DNS = module.common-vars.bastion_dns

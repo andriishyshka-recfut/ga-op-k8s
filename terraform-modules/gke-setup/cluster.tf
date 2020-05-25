@@ -6,7 +6,7 @@ resource "google_container_cluster" "infra" {
 
   provider = google-beta
 
-  name     = module.common-vars.cluster_settings[var.cluster].subdomain
+  name     = var.settings.cluster_settings[var.cluster].subdomain
   location = var.region
   network = data.google_compute_network.vpc.self_link
   subnetwork = google_compute_subnetwork.net.name
@@ -39,7 +39,7 @@ resource "google_container_cluster" "infra" {
   private_cluster_config {
     enable_private_endpoint = "true"
     enable_private_nodes    = "true"
-    master_ipv4_cidr_block  = module.common-vars.cluster_settings[var.cluster].master_ipv4_cidr_block
+    master_ipv4_cidr_block  = var.settings.cluster_settings[var.cluster].master_ipv4_cidr_block
   }
 
   master_authorized_networks_config {
