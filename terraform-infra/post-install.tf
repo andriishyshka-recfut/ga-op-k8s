@@ -48,7 +48,7 @@ resource "null_resource" "ansible_istio_playbook" {
     gke_cluster_change = google_container_cluster.infra.id
   }
   provisioner "local-exec" {
-    command = "cd ansible && ansible-playbook istio.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) --private-key ../ssh-key-ansible-sa"
+    command = "cd ansible && ansible-playbook istio.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) "
     environment = {
     CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
     CLUSTER = var.cluster
@@ -56,7 +56,6 @@ resource "null_resource" "ansible_istio_playbook" {
     HOST  = "https://${google_container_cluster.infra.endpoint}"
     API_KEY = data.google_client_config.default.access_token
     CLUSTER_CA_CERTIFICATE = base64decode(google_container_cluster.infra.master_auth[0].cluster_ca_certificate,)
-    KUBECONFIG = "${md5(timestamp())}"
     }
   }
   depends_on = [
@@ -71,7 +70,7 @@ resource "null_resource" "ansible_bastion_playbook" {
     gke_cluster_change = google_container_cluster.infra.id
   }
   provisioner "local-exec" {
-    command = "cd ansible && ansible-playbook bastion.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) --private-key ../ssh-key-ansible-sa"
+    command = "cd ansible && ansible-playbook bastion.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) "
     environment = {
     CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
     CLUSTER = var.cluster
@@ -79,7 +78,6 @@ resource "null_resource" "ansible_bastion_playbook" {
     HOST  = "https://${google_container_cluster.infra.endpoint}"
     API_KEY = data.google_client_config.default.access_token
     CLUSTER_CA_CERTIFICATE = base64decode(google_container_cluster.infra.master_auth[0].cluster_ca_certificate,)
-    KUBECONFIG = "${md5(timestamp())}"
     }
   }
   depends_on = [
@@ -93,7 +91,7 @@ resource "null_resource" "ansible_post_install_verification_playbook" {
     always_run = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "cd ansible && ansible-playbook test-workload.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) --private-key ../ssh-key-ansible-sa"
+    command = "cd ansible && ansible-playbook test-workload.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) "
     environment = {
     CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
     CLUSTER = var.cluster
@@ -101,7 +99,6 @@ resource "null_resource" "ansible_post_install_verification_playbook" {
     HOST  = "https://${google_container_cluster.infra.endpoint}"
     API_KEY = data.google_client_config.default.access_token
     CLUSTER_CA_CERTIFICATE = base64decode(google_container_cluster.infra.master_auth[0].cluster_ca_certificate,)
-    KUBECONFIG = "${md5(timestamp())}"
     }
   }
   depends_on = [

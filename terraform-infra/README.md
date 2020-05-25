@@ -29,7 +29,8 @@ CNCF security projects:
 pip install kubernetes --user
 pip install openshift --user
 
-
+# Run new ssh-agent
+eval(ssh-agent)
 ```
 
 # RUN
@@ -49,4 +50,6 @@ terraform init
 terraform plan
 terraform apply
 
+# Stop ssh-agent
+ssh-agent -k
 ```

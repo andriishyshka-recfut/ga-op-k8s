@@ -22,7 +22,7 @@
        pkg:
         - wireguard
         - bc
-        - linux-headers-4.19.0-8-cloud-amd64
+        - linux-headers-cloud-amd64
         - apt-transport-https
         - ca-certificates
         - curl
