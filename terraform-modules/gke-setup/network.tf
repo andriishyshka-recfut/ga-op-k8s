@@ -2,7 +2,7 @@
 
 
 resource "google_compute_subnetwork" "net" {
-  name          = "infra-subnetwork"
+  name          = "${var.cluster}-subnetwork"
   ip_cidr_range = var.settings.cluster_settings[var.cluster].nodes_subnet_range
   region        = var.settings.cluster_settings[var.cluster].region
   network       = data.google_compute_network.vpc.self_link
@@ -44,12 +44,12 @@ resource "google_dns_record_set" "wildcard" {
 
 
 #https://istio.io/docs/setup/platform-setup/gke/
-resource "google_compute_firewall" "master-to-infra" {
-  name          = "master-to-infra"
+resource "google_compute_firewall" "master-to-cluster" {
+  name          = "master-to-${var.cluster}"
   network       = data.google_compute_network.vpc.self_link
   direction     = "INGRESS"
   source_ranges = [ var.settings.cluster_settings[var.cluster].master_ipv4_cidr_block ]
-  target_tags = ["infra"]
+  target_tags = ["${var.cluster}"]
 
   allow {
     protocol = "icmp"
@@ -58,6 +58,24 @@ resource "google_compute_firewall" "master-to-infra" {
   allow {
     protocol = "tcp"
     ports    = ["15017"]
+  }
+
+}
+
+resource "google_compute_firewall" "bastion-to-cluster" {
+  name          = "bastion-to-${var.cluster}"
+  network       = data.google_compute_network.vpc.self_link
+  direction     = "INGRESS"
+  source_tags = ["dmz"]
+  target_tags = ["${var.cluster}"]
+
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22-1000","30000-32767"]
   }
 
 }

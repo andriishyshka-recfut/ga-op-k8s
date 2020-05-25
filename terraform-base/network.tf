@@ -85,23 +85,6 @@ resource "google_compute_firewall" "bastion-vpn" {
 
   target_tags = ["dmz"]
 }
-resource "google_compute_firewall" "bastion-to-infra" {
-  name          = "bastion-to-infra"
-  network       = google_compute_network.vpc.name
-  direction     = "INGRESS"
-  source_tags = ["dmz"]
-  target_tags = ["infra"]
-
-  allow {
-    protocol = "icmp"
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = ["22-1000","30000-32767"]
-  }
-
-}
 
 
 resource "google_compute_route" "dmz-default" {

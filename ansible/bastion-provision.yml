@@ -2,12 +2,8 @@
 - hosts: gcp_name_bastion
   connection: ssh
   become: true
-  vars:
-    ansible_ssh_private_key_file: "../ssh-key-ansible-sa"
-    bastion_dns: "bastion.biriukov.tech"
-    compose_dest: "/etc/bastion-compose"
-    letsencrypt_email: "stepan@biriukov.tech"
-    letsencrypt_staging: "--staging"
+  vars_files:
+    - vars/main.yml
   tasks:
     - debug: msg="{{ ansible_hostname }}"
 

@@ -13,8 +13,8 @@ variable "service_account_iam_roles" {
 }
 
 resource "google_service_account" "gke-sa" {
-  account_id   = "k8s-cluster-sa"
-  display_name = "GKE Security Service Account"
+  account_id   = "k8s-${var.cluster}-sa"
+  display_name = "${var.cluster} GKE Security Service Account "
 }
 
 resource "google_project_iam_member" "service-account" {

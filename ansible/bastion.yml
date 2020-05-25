@@ -1,24 +1,4 @@
 
-  #- name: Check if cert-manager already installed
-    #shell: |
-      #kubectl get deploy cert-manager -n kube-system
-    #changed_when: False
-    #ignore_errors: True
-    #register: cert_manager_verify
-#
-  #- name: Install cert-manager
-    #shell: |
-      #export KUBECONFIG={{ kube_config }}
-      #helm repo add jetstack https://charts.jetstack.io
-      #helm repo update
-      ##kubectl create ns cert-manager
-      #helm install cert-manager \
-        #jetstack/cert-manager \
-        #--namespace kube-system \
-        #--version v0.15.0 \
-        #--set installCRDs=true
-    #when: cert_manager_verify.stdout.find("cert-manager   1/1") == -1
-
 - hosts: gcp_name_bastion
   connection: ssh
   become: true
@@ -30,7 +10,7 @@
     - name: Get mapping of istio gw NodePort
       shell: |
         kubectl --server {{ k8s_host_url }} \
-          --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/clstr_ca.crt \
+          --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt \
           get svc istio-ingressgateway -o json -n istio-system
       register: nodeport_mapping
       delegate_to: localhost
@@ -50,7 +30,7 @@
     - name: Get node ips
       shell: |
         kubectl --server {{ k8s_host_url }} \
-          --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/clstr_ca.crt \
+          --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt \
           get nodes -o jsonpath="{.items[*].status.addresses[?(@.type == 'InternalIP')].address}"
       register: node_ips
       delegate_to: localhost
@@ -65,18 +45,40 @@
         src: "upstream.conf.j2"
         dest: "{{ compose_dest }}/data/nginx/{{ cluster_name }}-stream.conf"
 
-    - name: Configure upstream for cluster in default-stream.conf
-      lineinfile:
-        insertbefore: "default                  default_backend;"
-        #insertafter: "map $ssl_preread_server_name $name {"
-        regexp: "{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend"
-        line: "~.{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend ;"
-        path: "{{ compose_dest }}/data/nginx/default-stream.conf"
+    - name: Update https configuration
+      template:
+        src: "{{ item }}"
+        dest: "{{ compose_dest }}/data/nginx/"
+      with_items:
+        - default-stream.conf
 
-    - name: Restart nginx container
+    # - name: Configure upstream for cluster in default-stream.conf
+    #   lineinfile:
+    #     insertbefore: "default                  default_backend;"
+    #     #insertafter: "map $ssl_preread_server_name $name {"
+    #     regexp: "{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend"
+    #     line: "~.{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend ;"
+    #     path: "{{ compose_dest }}/data/nginx/default-stream.conf"
+
+    - name: Wait a random time to avoid race condition
+      pause:
+        seconds: "{{ 10 | random }}"
+
+    - name: Reload nginx container
       shell: |
-        cd {{ compose_dest }}
-        docker-compose stop nginx &&\
-         docker-compose rm -f  nginx &&\
-          docker-compose up -d nginx
+        docker restart nginx
       changed_when: True
+      register: reload
+      retries: 2
+      delay: "{{ 10 | random }}"
+      until: reload.rc == 0
+
+    - name: Validate that nginx container running
+      shell: |
+        sleep 10
+        docker inspect --format="{{ '{{' }}.State.Status{{ '}}' }}" nginx
+      changed_when: False
+      retries: 5
+      delay: 5
+      register: inspect_status
+      until: inspect_status.stdout.find("running") != -1

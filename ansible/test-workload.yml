@@ -12,7 +12,7 @@
 
     - name: Put cluster_ca_certificate
       copy:
-        dest: "{{ temp_dir }}/clstr_ca.crt"
+        dest: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
         content: "{{ k8s_cluster_ca_certificate }}"
 
     - name: Create test certificate
@@ -21,7 +21,7 @@
           definition: "{{ lookup ('template','k8s-test-certificate.yaml') }}"
           api_key: "{{ k8s_api_key }}"
           host: "{{ k8s_host_url }}"
-          ca_cert: "{{ temp_dir }}/clstr_ca.crt"
+          ca_cert: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
 
     - name:  create test workload
       k8s:
@@ -29,7 +29,7 @@
           definition: "{{ lookup ('template','k8s-test-workload.yaml') }}"
           api_key: "{{ k8s_api_key }}"
           host: "{{ k8s_host_url }}"
-          ca_cert: "{{ temp_dir }}/clstr_ca.crt"
+          ca_cert: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
 
     #- name:  try https://{{ test_workload_name }}.{{ cluster_name }}.{{ domain }} with curl
       #shell: |

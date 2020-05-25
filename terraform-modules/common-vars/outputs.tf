@@ -21,8 +21,8 @@ output "bastion_subnet_range" {
 
 variable "cluster_settings" {
   default = {
-    "test_workload_name" = "test",
     "infra" = {
+      "test_workload_name" = "test"
       "region" = "us-east4"
       "domain" = "digaweb.local"
       "subdomain" = "infra"
@@ -30,6 +30,21 @@ variable "cluster_settings" {
       "pods_subnet_range" = "10.100.8.0/21"
       "services_subnet_range" = "10.100.16.0/21"
       "master_ipv4_cidr_block" = "172.26.0.0/28"
+      // this variable may be changed only before install. Istio has custom upgrade process
+      // https://istio.io/docs/setup/upgrade/
+      "istio_version" = "1.6.0"
+      "cert_manager_version" = "v0.15.0"
+    }
+    "dev" = {
+      "test_workload_name" = "test"
+      "region" = "us-east4"
+      "region" = "us-east4"
+      "domain" = "digaweb.local"
+      "subdomain" = "dev"
+      "nodes_subnet_range" = "10.101.1.0/24"
+      "pods_subnet_range" = "10.101.8.0/21"
+      "services_subnet_range" = "10.101.16.0/21"
+      "master_ipv4_cidr_block" = "172.26.0.16/28"
       // this variable may be changed only before install. Istio has custom upgrade process
       // https://istio.io/docs/setup/upgrade/
       "istio_version" = "1.6.0"

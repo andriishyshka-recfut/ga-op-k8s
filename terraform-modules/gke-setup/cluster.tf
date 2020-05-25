@@ -2,7 +2,7 @@ data "google_container_engine_versions" "version" {
   location = var.settings.cluster_settings[var.cluster].region
 }
 
-resource "google_container_cluster" "infra" {
+resource "google_container_cluster" "cluster" {
 
   provider = google-beta
 
@@ -27,7 +27,7 @@ resource "google_container_cluster" "infra" {
     }
   }
   node_config {
-    tags = ["infra"]
+    tags = ["${var.cluster}"]
     service_account = google_service_account.gke-sa.unique_id
     oauth_scopes = [
       "https://www.googleapis.com/auth/logging.write",
@@ -87,12 +87,12 @@ resource "google_container_cluster" "infra" {
 }
 
 
-resource "google_container_node_pool" "infra_preemptible_nodes" {
+resource "google_container_node_pool" "cluster_preemptible_nodes" {
 
   provider = google-beta
-  name       = "infra-node-pool"
+  name       = "${var.cluster}-node-pool"
   location   = var.settings.cluster_settings[var.cluster].region
-  cluster    = google_container_cluster.infra.name
+  cluster    = google_container_cluster.cluster.name
   autoscaling  {
     min_node_count = 1
     max_node_count = 2
@@ -103,7 +103,7 @@ resource "google_container_node_pool" "infra_preemptible_nodes" {
   node_config {
     preemptible  = true
     machine_type = "e2-standard-2"
-    tags = ["infra"]
+    tags = ["${var.cluster}"]
     service_account = google_service_account.gke-sa.unique_id
 
     metadata = {
