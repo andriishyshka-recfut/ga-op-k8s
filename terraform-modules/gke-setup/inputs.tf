@@ -8,7 +8,6 @@ data "google_compute_network" "vpc" {
 }
 
 
-variable "region" {}
 
 variable "settings" {}
 

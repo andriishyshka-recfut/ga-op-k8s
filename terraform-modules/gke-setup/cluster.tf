@@ -1,5 +1,5 @@
 data "google_container_engine_versions" "version" {
-  location = var.region
+  location = var.settings.cluster_settings[var.cluster].region
 }
 
 resource "google_container_cluster" "infra" {
@@ -7,7 +7,7 @@ resource "google_container_cluster" "infra" {
   provider = google-beta
 
   name     = var.settings.cluster_settings[var.cluster].subdomain
-  location = var.region
+  location = var.settings.cluster_settings[var.cluster].region
   network = data.google_compute_network.vpc.self_link
   subnetwork = google_compute_subnetwork.net.name
   default_max_pods_per_node = 32
@@ -91,7 +91,7 @@ resource "google_container_node_pool" "infra_preemptible_nodes" {
 
   provider = google-beta
   name       = "infra-node-pool"
-  location   = var.region
+  location   = var.settings.cluster_settings[var.cluster].region
   cluster    = google_container_cluster.infra.name
   autoscaling  {
     min_node_count = 1

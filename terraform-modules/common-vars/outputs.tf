@@ -23,6 +23,7 @@ variable "cluster_settings" {
   default = {
     "test_workload_name" = "test",
     "infra" = {
+      "region" = "us-east4"
       "domain" = "digaweb.local"
       "subdomain" = "infra"
       "nodes_subnet_range" = "10.100.1.0/24"

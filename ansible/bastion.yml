@@ -30,7 +30,7 @@
     - name: Get mapping of istio gw NodePort
       shell: |
         kubectl --server {{ k8s_host_url }} \
-          --token {{ k8s_api_key }} --certificate-authority {{ playbook_dir }}/istio-{{ istio_version }}/clstr_ca.crt \
+          --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/clstr_ca.crt \
           get svc istio-ingressgateway -o json -n istio-system
       register: nodeport_mapping
       delegate_to: localhost
@@ -50,7 +50,7 @@
     - name: Get node ips
       shell: |
         kubectl --server {{ k8s_host_url }} \
-          --token {{ k8s_api_key }} --certificate-authority {{ playbook_dir }}/istio-{{ istio_version }}/clstr_ca.crt \
+          --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/clstr_ca.crt \
           get nodes -o jsonpath="{.items[*].status.addresses[?(@.type == 'InternalIP')].address}"
       register: node_ips
       delegate_to: localhost

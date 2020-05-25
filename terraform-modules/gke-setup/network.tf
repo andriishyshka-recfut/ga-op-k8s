@@ -4,7 +4,7 @@
 resource "google_compute_subnetwork" "net" {
   name          = "infra-subnetwork"
   ip_cidr_range = var.settings.cluster_settings[var.cluster].nodes_subnet_range
-  region        = var.region
+  region        = var.settings.cluster_settings[var.cluster].region
   network       = data.google_compute_network.vpc.self_link
   // https://cloud.google.com/vpc/docs/configure-private-google-access
   private_ip_google_access  = true

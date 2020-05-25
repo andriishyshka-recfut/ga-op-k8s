@@ -8,5 +8,4 @@ module "gke-setup" {
 
   settings = module.common-vars
   cluster = "infra"
-  region = "us-east4"
 }
