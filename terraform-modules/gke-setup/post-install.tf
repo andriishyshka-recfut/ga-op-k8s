@@ -50,7 +50,7 @@ resource "null_resource" "ansible_istio_playbook" {
     gke_cluster_change = google_container_cluster.cluster.id
   }
   provisioner "local-exec" {
-    command = "cd  ${path.root}/../ansible && ansible-playbook istio.yml --user   sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3.7'"
+    command = "cd  ${path.root}/../ansible && ansible-playbook istio.yml --user   sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3'"
     environment = {
     CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
     CLUSTER = var.cluster
@@ -72,7 +72,7 @@ resource "null_resource" "ansible_bastion_playbook" {
     gke_cluster_change = google_container_cluster.cluster.id
   }
   provisioner "local-exec" {
-    command = "cd  ${path.root}/../ansible && ansible-playbook bastion.yml --user  sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3.7' "
+    command = "cd  ${path.root}/../ansible && ansible-playbook bastion.yml --user  sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3' "
     environment = {
     CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
     CLUSTER = var.cluster
@@ -94,7 +94,7 @@ resource "null_resource" "ansible_post_install_verification_playbook" {
     always_run = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "cd ${path.root}/../ansible && ansible-playbook test-workload.yml --user  sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3.7' "
+    command = "cd ${path.root}/../ansible && ansible-playbook test-workload.yml --user  sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3' "
     environment = {
     CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
     CLUSTER = var.cluster
