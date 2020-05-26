@@ -1,6 +1,28 @@
-## k8s project
+# k8s project
+
+### Architecture
+
+
+![](gke_arch.svg)
+
+
 
 K8S project contain terraform configs, ansible playbooks and other scripts to provision infrastructure.
+This GKE setup inspired by best practices according to [Scalable and Manageable: A Deep-Dive Into GKE Networking Best Practices](https://youtu.be/fI-5LkBDap8) and [private cluster example](https://github.com/GoogleCloudPlatform/gke-private-cluster-demo/blob/master/terraform):
+
+1. Regional  cluster
+2. VPC-Native
+3. Max pods per node
+4  use http load balancing
+5. private cluster with cloud nat
+6. master authorized networks for access
+
+
+Currently all workloads accessible only over Nginx load balancer on bastion host(which accessible only over wireguard VPN). Nginx doing TCP proxying of TLS traffic based on DNS domain. Traffic is proxied to istio Gateway( which is configured as nodeport). TLS offloading is handled inside cluster by istio gateway. For each cluster we create a separate private DNS zone (with `*` record pointing to nginx). DNS also accessible only through VPN connection. Access to kubernetes APIs are also available through bastion VPN connection.
+
+
+### Directory structure
+
 
 Directory tree :
 ```
