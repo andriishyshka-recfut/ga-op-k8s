@@ -18,7 +18,7 @@ export BUCKET_NAME=terraform-state-222
 
 export GOOGLE_CREDENTIALS=~/terraform_key.json
 export GOOGLE_REGION=us-east4
-export GOOGLE_PROJECT=silent-eye-276318
+export GOOGLE_PROJECT=ardent-rarity-239115
 
 rm ~/terraform_key.json
 gcloud config set project ${PROJECT}
