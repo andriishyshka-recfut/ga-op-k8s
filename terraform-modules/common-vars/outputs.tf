@@ -1,7 +1,7 @@
 # Bastion section
 output "vpc_name" { value = "vpc" } // name of new vpc to create with terraform-base
 output "bastion_hostname"{ value = "bastion" } // hostname for bastion VM. VM labeled with this value and ansble with gcp inventory can access it.
-output "bastion_dns"{ value = "bastion.biriukov.tech" } // DNS name of bastion. Used to configure load Balancer and subspace. Certificate requested from Let's Encrypt during provisining with ansible
+output "bastion_dns"{ value = "b.digaweb.com" } // DNS name of bastion. Used to configure load Balancer and subspace. Certificate requested from Let's Encrypt during provisining with ansible
 output "bastion_zone" { value = "us-east4-b" } // Zone where to spin up bastion VM
 output "bastion_subnet_range" { value = "172.18.0.0/24" } // Specific subnet range for DMZ resources (like bastion)
 
