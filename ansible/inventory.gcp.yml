@@ -1,0 +1,8 @@
+plugin: gcp_compute
+projects:
+  - ardent-rarity-239115
+auth_kind: serviceaccount
+service_account_file: ~/terraform_key.json
+keyed_groups:
+  - prefix: gcp
+    key: labels

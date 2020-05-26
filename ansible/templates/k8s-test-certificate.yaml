@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: ca-issuer
+  namespace: istio-system
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: {{ test_workload_name }}-cert
+  namespace: istio-system
+spec:
+  secretName: {{ test_workload_name }}-cert
+  commonName: {{ test_workload_name }}.{{ cluster_name }}.{{ domain }}
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer

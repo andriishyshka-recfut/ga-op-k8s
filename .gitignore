@@ -1,0 +1,10 @@
+.terraform*
+terraform.tfstate*
+
+ssh-key*
+
+kubeconfig
+
+istio-*
+tmp/
+tmp-*/

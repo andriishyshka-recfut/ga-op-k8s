@@ -1,0 +1,84 @@
+
+- hosts: gcp_name_bastion
+  connection: ssh
+  become: true
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - debug: msg="{{ ansible_hostname }}"
+
+    - name: Get mapping of istio gw NodePort
+      shell: |
+        kubectl --server {{ k8s_host_url }} \
+          --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt \
+          get svc istio-ingressgateway -o json -n istio-system
+      register: nodeport_mapping
+      delegate_to: localhost
+      become: False
+      changed_when: False
+
+    - debug: msg="nodePort is {{ item.nodePort }}"
+      with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
+      when: item.name == 'https'
+
+    - name: set nodePort
+      set_fact:
+        nodePort:  "{{ item.nodePort }}"
+      with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
+      when: item.name == 'https'
+
+    - name: Get node ips
+      shell: |
+        kubectl --server {{ k8s_host_url }} \
+          --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt \
+          get nodes -o jsonpath="{.items[*].status.addresses[?(@.type == 'InternalIP')].address}"
+      register: node_ips
+      delegate_to: localhost
+      become: False
+      changed_when: False
+
+    - debug: msg="InternalIp is {{ item }}"
+      with_items: '{{ node_ips.stdout.split(" ") }}'
+
+    - name: Add upstream for new cluster on bastion
+      template:
+        src: "upstream.conf.j2"
+        dest: "{{ compose_dest }}/data/nginx/{{ cluster_name }}-stream.conf"
+
+    - name: Update https configuration
+      template:
+        src: "{{ item }}"
+        dest: "{{ compose_dest }}/data/nginx/"
+      with_items:
+        - default-stream.conf
+
+    # - name: Configure upstream for cluster in default-stream.conf
+    #   lineinfile:
+    #     insertbefore: "default                  default_backend;"
+    #     #insertafter: "map $ssl_preread_server_name $name {"
+    #     regexp: "{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend"
+    #     line: "~.{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend ;"
+    #     path: "{{ compose_dest }}/data/nginx/default-stream.conf"
+
+    - name: Wait a random time to avoid race condition
+      pause:
+        seconds: "{{ 10 | random }}"
+
+    - name: Reload nginx container
+      shell: |
+        docker restart nginx
+      changed_when: True
+      register: reload
+      retries: 2
+      delay: "{{ 10 | random }}"
+      until: reload.rc == 0
+
+    - name: Validate that nginx container running
+      shell: |
+        sleep 10
+        docker inspect --format="{{ '{{' }}.State.Status{{ '}}' }}" nginx
+      changed_when: False
+      retries: 5
+      delay: 5
+      register: inspect_status
+      until: inspect_status.stdout.find("running") != -1

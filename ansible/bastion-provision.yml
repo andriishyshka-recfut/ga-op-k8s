@@ -1,0 +1,213 @@
+---
+- hosts: gcp_name_bastion
+  connection: ssh
+  become: true
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - debug: msg="{{ ansible_hostname }}"
+
+    - name: update system
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: install prerequisits
+      apt:
+       update_cache: yes
+       pkg:
+        - wireguard
+        - bc
+        - linux-headers-cloud-amd64
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg2
+        - software-properties-common
+        - unzip
+        - python-docker
+        - docker-compose
+      retries: 3
+      delay: 3
+      register: result
+      until: not result.failed
+
+    - name: Add Docker GPG key
+      apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+      retries: 3
+      delay: 3
+      register: result
+      until: not result.failed
+
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable
+      retries: 3
+      delay: 3
+      register: result
+      until: not result.failed
+
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        update_cache: yes
+      retries: 3
+      delay: 3
+      register: result
+      until: not result.failed
+
+
+    - name: Create temp directory
+      file:
+        path: /tmp/subspace
+        state: directory
+        mode: '0755'
+
+    - name: Unpack subspace sources
+      unarchive:
+        src: https://github.com/subspacecloud/subspace/archive/master.zip
+        dest: /tmp/subspace
+        remote_src: yes
+      retries: 3
+      delay: 3
+      register: result
+      until: not result.failed
+
+    - name: Copy Dockerfile
+      copy:
+        src: Dockerfile.build
+        dest: /tmp/subspace/subspace-master/Dockerfile.build
+
+    - name: Update NAMESERVER in entrypoint script
+      lineinfile:
+        path: /tmp/subspace/subspace-master/entrypoint.sh
+        regex: 'export NAMESERVER="1.1.1.1"'
+        line: 'export NAMESERVER="169.254.169.254"'
+
+    - name: Build image with  latest binary of subspace
+      docker_image:
+        name: subspacebuild:latest
+        build:
+          path: /tmp/subspace/subspace-master
+          dockerfile: /tmp/subspace/subspace-master/Dockerfile.build
+        source: build
+
+    - name: Remove previous binary
+      file:
+        path: /tmp/subspace/subspace-master/subspace-linux-amd64
+        state: absent
+
+    - name: Copy binary to host
+      docker_container:
+        name: subspacebuild
+        image: subspacebuild:latest
+        command: cp /usr/bin/subspace /tmp/subspace-linux-amd64
+        volumes:
+          - /tmp/subspace/subspace-master/:/tmp
+
+    - name: Build new subspace image
+      docker_image:
+        name: subspace:latest
+        build:
+          path: /tmp/subspace/subspace-master
+        source: build
+
+    - name: Update sysctl
+      sysctl:
+        name: "{{ item }}"
+        value: '1'
+        sysctl_set: yes
+        state: present
+      with_items:
+        - net.ipv6.conf.all.forwarding
+        - net.ipv4.ip_forward
+
+    - name: Load required modules
+      modprobe:
+        state: present
+        name: "{{ item }}"
+      with_items:
+        - wireguard
+        - iptable_nat
+        - ip6table_nat
+
+    - name: Make modules persistent
+      lineinfile:
+        path: /etc/modules-load.d/modules.conf
+        line: "{{ item }}"
+        state: present
+      with_items:
+        - wireguard
+        - iptable_nat
+        - ip6table_nat
+
+    - name: Create docker-compose workdir
+      file:
+        path: "/etc/bastion-compose"
+        state: directory
+        mode: '0755'
+
+    - name: Copy docker-compose.yaml and other files
+      copy:
+        src: "{{ item }}"
+        dest: "{{ compose_dest }}"
+      with_items:
+        - "nginx.conf"
+
+    - name: Generate docker-compose.yaml
+      template:
+        src: docker-compose.yaml.j2
+        dest: "{{ compose_dest }}/docker-compose.yaml"
+
+    - name: Create nginx conf.d
+      file:
+        path: "{{ compose_dest }}/data/nginx"
+        state: directory
+        mode: '0755'
+
+    - name: Copy http config to get certificate from Let's Encrypt
+      copy:
+          src: default-http.conf
+          dest: "{{ compose_dest }}/data/nginx/"
+
+    - name: Retrieve certificates
+      shell: |
+        cd {{ compose_dest }}
+        docker-compose up -d && sleep 30
+        docker-compose exec certbot  certbot certonly --webroot --webroot-path /var/www/certbot --force-renewal -d {{ bastion_dns }} --email {{ letsencrypt_email }} --agree-tos --no-eff-email {{ letsencrypt_staging }}
+      args:
+        creates: "{{ compose_dest }}/data/certbot/conf/live/{{ bastion_dns }}/privkey.pem"
+
+    - name: Retrive subspace ip
+      docker_container_info:
+        name: nginx
+      register: nginx_container_info
+
+    - debug: msg="Will try to reach subspace from  {{ nginx_container_info.container.NetworkSettings.Networks['bastion-compose_default'].Gateway| to_nice_json }}"
+
+
+    - name: Update https configuration
+      template:
+        src: "{{ item }}"
+        dest: "{{ compose_dest }}/data/nginx/"
+      with_items:
+        - default-stream.conf
+        - subspace-http.conf
+
+    - name: Restart nginx container
+      shell: |
+        cd {{ compose_dest }}
+        docker-compose stop nginx &&\
+         docker-compose rm -f  nginx &&\
+          docker-compose up -d nginx
+
+    - name: Autoclean dependecnies
+      apt:
+        autoclean: yes
+        autoremove: yes
+
+    - name: Reboot
+      reboot:
+        reboot_timeout: 3600

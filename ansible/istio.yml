@@ -1,0 +1,98 @@
+---
+- hosts: localhost
+  connection: local
+  become: False
+  vars_files:
+    - vars/main.yml
+  tasks:
+  - name: Create temp_dir
+    file:
+        path: "{{ temp_dir }}"
+        state: directory
+        mode: '0755'
+
+  - debug: msg="{{ ansible_hostname }}"
+
+  - name: Unpack istio
+    unarchive:
+      src: https://github.com/istio/istio/releases/download/{{ istio_version }}/istio-{{ istio_version }}-linux-amd64.tar.gz
+      dest: "{{ temp_dir }}"
+      remote_src: yes
+
+  - name: Put cluster_ca_certificate
+    copy:
+      dest: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
+      content: "{{ k8s_cluster_ca_certificate }}"
+
+  - name: Create a k8s namespace
+    k8s:
+      name: istio-system
+      api_version: v1
+      kind: Namespace
+      state: present
+      api_key: "{{ k8s_api_key }}"
+      host: "{{ k8s_host_url }}"
+      ca_cert: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
+
+  - name: Generate istio install manifest
+    shell: |
+      export PATH={{ temp_dir }}/istio-{{ istio_version }}/bin:$PATH
+      istioctl manifest generate  \
+        --set values.gateways.istio-ingressgateway.sds.enabled=true \
+        --set values.gateways.istio-ingressgateway.type=NodePort 2>/dev/null > {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
+      sed -i '/Config not found: .\/kubeconfig/d' {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
+        # Setting those options suggested in docs to enable k8s native ingress support but there are issue
+        # https://github.com/istio/istio/issues/22697
+        #--set values.global.k8sIngress.enabled=true \
+        #--set values.global.k8sIngress.enableHttps=true \
+        #--set values.global.k8sIngress.gatewayName=ingressgateway \
+        # Not setting cni options because it is not ubiquitous right now (GKE and openshift nativelly support it)
+        #  --set values.cni.cniBinDir=/home/kubernetes/bin \
+        #  --set components.cni.enabled=true \
+        #  --set components.cni.namespace=kube-system
+        # Patching was required only for native GKE istio.
+        #kubectl patch svc istio-ingressgateway --type=json \
+        #  -p="$(cat files/istio-ingress-patch.json)" --dry-run=true \
+        #  -o yaml -n istio-system | kubectl apply -f -
+    args:
+      creates: "{{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml"
+
+
+  #- name:  Validate if we should apply manifest or not
+    #shell: |
+      #export PATH={{ temp_dir }}/bin:$PATH
+      #istioctl verify-install -f {{ temp_dir }}/install-manifest.yaml
+    #changed_when: False
+    #register: istioctl_verify
+    #ignore_errors: True
+#
+  #- debug: msg="{{ istioctl_verify.stderr | to_nice_json }}"
+#
+  - name: Apply manifest
+    shell: |
+      kubectl apply --server {{ k8s_host_url }} \
+        --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt \
+        -f {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
+    register: manifest_apply
+    retries: 3
+    delay: 11
+    until: manifest_apply.rc == 0
+    #ignore_errors: True
+
+  - debug: msg="{{ manifest_apply | to_nice_json }}"
+
+# Not working due to  "msg": "Failed to find exact match for networking.istio.io/v1alpha3.Gateway by [kind, name, singularName, shortNames]"
+# Seems that we need to create CRDs and then run other resources.
+  #- name: apply manifest
+    #k8s:
+          #state: present
+          #src: "{{ temp_dir }}/install-manifest.yaml"
+          #api_key: "{{ k9s_api_key }}"
+          #host: "{{ k9s_host_url }}"
+          #ca_cert: "{{ temp_dir }}/clstr_ca.crt"
+    #retries: 3
+    #delay: 11
+    #ignore_errors: True
+    #register: manifest_result
+#
+  #- debug: msg="{{ manifest_result | to_nice_json }}"

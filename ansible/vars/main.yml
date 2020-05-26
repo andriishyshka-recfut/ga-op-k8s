@@ -1,0 +1,22 @@
+
+sa_key_json: "{{ lookup('env','GOOGLE_CREDENTIALS') }}"
+kube_config: "{{ lookup('env','KUBECONFIG') }}"
+project: "{{ lookup('env','GOOGLE_PROJECT') }}"
+region: "{{ lookup('env','GOOGLE_REGION') }}"
+cluster_name: "{{ lookup('env','CLUSTER') }}"
+cluster_settings: "{{ lookup('env','CLUSTER_SETTINGS') | from_json }}"
+domain: "{{ cluster_settings[cluster_name].domain }}"
+compose_dest: "/etc/bastion-compose"
+istio_version: "{{ cluster_settings[cluster_name].istio_version }}"
+test_workload_name: "{{ cluster_settings[cluster_name].test_workload_name }}"
+k8s_host_url: "{{ lookup('env','HOST') }}"
+k8s_api_key: "{{ lookup('env','API_KEY') }}"
+k8s_cluster_ca_certificate: "{{ lookup('env','CLUSTER_CA_CERTIFICATE') }}"
+temp_dir: "{{ playbook_dir }}/../tmp-{{ cluster_name }}/"
+
+
+
+bastion_dns: "{{ lookup('env','BASTION_DNS') }}"
+compose_dest: "/etc/bastion-compose"
+letsencrypt_email: "stepan@biriukov.tech"
+letsencrypt_staging: "--staging"
