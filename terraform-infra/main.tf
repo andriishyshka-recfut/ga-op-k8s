@@ -1,7 +1,7 @@
 
 terraform {
   backend "gcs" {
-    bucket  = "terraform-state-2222"
+    bucket  = "terraform-state-222"
     prefix  = "terraform-infra/state"
   }
 }
@@ -19,9 +19,9 @@ module "gke-setup" {
   cluster = "infra"
 }
 
-module "gke-setup2" {
-  source = "../terraform-modules/gke-setup"
-
-  settings = module.common-vars
-  cluster = "dev"
-}
+# module "gke-setup2" {
+#   source = "../terraform-modules/gke-setup"
+#
+#   settings = module.common-vars
+#   cluster = "dev"
+# }
