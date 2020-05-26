@@ -11,6 +11,11 @@ pip install openshift --user
 eval(ssh-agent)
 ```
 
+
+# Connect to Wireguard VPN
+ Only then cluster provisioning may complete. In other way k8s API server won't be accessible
+
+
 ### RUN
 
 1. Define required variables
