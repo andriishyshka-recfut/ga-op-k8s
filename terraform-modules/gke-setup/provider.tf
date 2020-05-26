@@ -6,12 +6,6 @@ provider "google-beta" {
   version = "v3.19.0"
 }
 
-terraform {
-  backend "gcs" {
-    bucket  = "terraform-state-2222"
-    prefix  = "terraform-infra/state"
-  }
-}
 
 provider "helm" {
   kubernetes {

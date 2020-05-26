@@ -1,4 +1,13 @@
 
+terraform {
+  backend "gcs" {
+    bucket  = "terraform-state-2222"
+    prefix  = "terraform-infra/state"
+  }
+}
+
+
+
 module "common-vars" {
   source = "../terraform-modules/common-vars"
 }
