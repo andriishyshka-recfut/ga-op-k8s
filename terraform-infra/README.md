@@ -1,13 +1,8 @@
-### Thist folder contains config for provisionning GKE cluster with terraform ans it's dependencies
+ Thist folder contains config for provisionning GKE cluster with terraform ans it's dependencies
 
 
 
-
-
-CNCF security projects:
-- [falco](https://falco.org/docs/) can be used with [fluentd](https://sysdig.com/blog/kubernetes-security-logging-fluentd-falco/)
-
-#Before you begin
+### Before you begin
 ```
 pip install kubernetes --user
 pip install openshift --user
@@ -16,7 +11,7 @@ pip install openshift --user
 eval(ssh-agent)
 ```
 
-# RUN
+### RUN
 
 1. Define required variables
 ```

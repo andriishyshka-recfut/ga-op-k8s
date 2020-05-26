@@ -1,10 +1,17 @@
-### This will handle provisioning base service account/ VPC/ bucket for storing states / Bastion host, etc...
+# terraform-base
 
 
-Before first time run(or after `terraform destroy` ) you have to create bucket for storing tf state and service account (to run terraform with)
+This will handle provisioning base service account/ VPC/ bucket for storing states / Bastion host, etc...
+
+### Provisioning steps
+
+Before first time run you have to create bucket for storing tf state and service account (to run terraform with)
 
 
-1. Create Service account, Bucket and download key (project and bucket should be same as in provider.tf and bucket.tf)
+1. Check `terrafrom-modules/common-vars` module and configure variables related to terraform-base.
+
+
+2. Create Service account, Bucket and download key (project and bucket should be same as in provider.tf and bucket.tf)
 ```
 
 export BUCKET_NAME=terraform-state-222
@@ -32,7 +39,8 @@ gcloud projects add-iam-policy-binding ${GOOGLE_PROJECT} --member "serviceAccoun
 ```
 
 
-2. Import bucket and Service account resources to continue manage them with tf
+
+3. Import bucket and Service account resources to continue manage them with tf
 ```
 cd terraform-base
 
@@ -49,9 +57,12 @@ terraform apply
 
 ```
 
-5. Run ansible playbook :
+5. Terraform should fail first time. You have to configure DNS record that pointing to bastion. Run to get details:
 ```
-cd ansible
-ansible-playbook playbook.yml --user  sa_$(jq .client_id $GOOGLE_CREDENTIALS -j) --private-key ../ssh-key-ansible-sa
+terraform refresh
+```
 
+6. Once DNS is propagated run terraform apply  to complete install one more time:
+```
+terraform apply
 ```
