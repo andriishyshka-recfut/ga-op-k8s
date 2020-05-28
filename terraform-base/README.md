@@ -21,7 +21,7 @@ export GOOGLE_REGION=us-east4
 export GOOGLE_PROJECT=ardent-rarity-239115
 
 rm ~/terraform_key.json
-gcloud config set project ${PROJECT}
+gcloud config set project ${GOOGLE_PROJECT}
 gsutil mb -c standard -l EUROPE-WEST3 gs://${BUCKET_NAME}/
 
 
@@ -35,6 +35,7 @@ gcloud projects add-iam-policy-binding ${GOOGLE_PROJECT} --member "serviceAccoun
 gcloud projects add-iam-policy-binding ${GOOGLE_PROJECT} --member "serviceAccount:$(gcloud iam service-accounts list --format=json --filter="email ~ terraform" | jq '.[0].email' -j )"  --role "roles/serviceusage.serviceUsageAdmin"
 
 
+source ../.env
 
 ```
 
@@ -44,25 +45,25 @@ gcloud projects add-iam-policy-binding ${GOOGLE_PROJECT} --member "serviceAccoun
 ```
 cd terraform-base
 
-rm .terraform/ -rf && terraform init
+rm .terraform/ -rf && tf init
 
-terraform import  google_service_account.terraform projects/${PROJECT}/serviceAccounts/$(gcloud iam service-accounts list | awk '/terraform/{print $1}')
-terraform import google_storage_bucket.terraform-state ${BUCKET_NAME}
+tf import  google_service_account.terraform projects/${PROJECT}/serviceAccounts/$(gcloud iam service-accounts list | awk '/terraform/{print $1}')
+tf import google_storage_bucket.terraform-state ${BUCKET_NAME}
 
 ```
 4. Run Terraform:
 ```
-terraform plan
-terraform apply
+tf plan
+tf apply
 
 ```
 
 5. Terraform should fail first time. You have to configure DNS record that pointing to bastion. Run to get details:
 ```
-terraform refresh
+tf refresh
 ```
 
 6. Once DNS is propagated run terraform apply  to complete install one more time:
 ```
-terraform apply
+tf apply
 ```

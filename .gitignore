@@ -8,3 +8,10 @@ kubeconfig
 istio-*
 tmp/
 tmp-*/
+
+.kube/
+.cache/
+inventory.gcp.yaml
+.ssh/
+.ansible/
+.passwd
