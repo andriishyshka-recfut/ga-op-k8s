@@ -34,10 +34,8 @@ module "gke-setup" {
 
 6. Set env variables with path SA key json and run terraform
 ```
-export GOOGLE_CREDENTIALS=~/terraform_key.json
-export GOOGLE_REGION=us-east4
-export GOOGLE_PROJECT=silent-eye-276318
+source ../.env
 
-terraform init
-terraform apply
+tf init
+tf apply
 ```
