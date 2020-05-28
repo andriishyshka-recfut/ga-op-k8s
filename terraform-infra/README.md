@@ -2,15 +2,6 @@
 
 
 
-### Before you begin
-```
-pip install kubernetes --user
-pip install openshift --user
-
-# Run new ssh-agent
-eval(ssh-agent)
-```
-
 
 # Connect to Wireguard VPN
  Only then cluster provisioning may complete. In other way k8s API server won't be accessible
@@ -18,21 +9,16 @@ eval(ssh-agent)
 
 ### RUN
 
-1. Define required variables
+1. Define required variables and aliases
 ```
-export GOOGLE_CREDENTIALS=~/terraform_key.json
-export GOOGLE_REGION=us-east4
-export GOOGLE_PROJECT=silent-eye-276318
-
+source ../.env
 
 ```
 
 2. Run terraform
 ```
-terraform init
-terraform plan
-terraform apply
+tf init
+tf plan
+tf apply
 
-# Stop ssh-agent
-ssh-agent -k
 ```

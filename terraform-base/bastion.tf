@@ -81,6 +81,12 @@ value = <<DNS
 DNS
 
 }
+
+
+resource "local_file" "ansible_gcp_inventory" {
+    content     = templatefile("${path.root}/../ansible/inventory.gcp.yml.tmpl",{project = data.google_service_account.me.project })
+    filename = "${path.root}/../ansible/inventory.gcp.yaml"
+}
 resource "null_resource" "ansible_playbook" {
 
   triggers = {
@@ -88,7 +94,14 @@ resource "null_resource" "ansible_playbook" {
   }
 
   provisioner "local-exec" {
-    command = "cd ../ansible && ansible-playbook bastion-provision.yml --user sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3.7' "
+    command = <<COMMAND
+
+    cd ../ansible &&\
+    ansible-playbook bastion-provision.yml \
+      --user sa_${data.google_service_account.me.unique_id} \
+      -e 'ansible_python_interpreter=/usr/bin/python3.7' \
+      -i ./inventory.gcp.yaml
+COMMAND
     environment = {
     CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
     BASTION_DNS = module.common-vars.bastion_dns
@@ -96,6 +109,7 @@ resource "null_resource" "ansible_playbook" {
   }
   depends_on = [
     google_compute_instance.bastion,
-    google_os_login_ssh_public_key.cache
+    google_os_login_ssh_public_key.cache,
+    local_file.ansible_gcp_inventory
   ]
 }

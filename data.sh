@@ -1,8 +1,6 @@
 #!/bin/sh
 
 
-rm ./ssh-key-ansible-sa*
-
 ssh-add -D
 openssl genrsa 2048 2> /dev/null | ssh-add -
 

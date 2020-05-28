@@ -43,6 +43,14 @@ resource "helm_release" "cert-manager" {
   ]
 }
 
+
+resource "local_file" "ansible_gcp_inventory" {
+    content     = templatefile("${path.root}/../ansible/inventory.gcp.yml.tmpl",{project = data.google_service_account.me.project })
+    filename = "${path.root}/../ansible/inventory.gcp.yaml"
+}
+
+
+
 resource "null_resource" "ansible_istio_playbook" {
   triggers = {
     //always_run = "${timestamp()}"
@@ -50,7 +58,13 @@ resource "null_resource" "ansible_istio_playbook" {
     gke_cluster_change = google_container_cluster.cluster.id
   }
   provisioner "local-exec" {
-    command = "cd  ${path.root}/../ansible && ansible-playbook istio.yml --user   sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3'"
+    command = <<COMMAND
+    cd  ${path.root}/../ansible && \
+    ansible-playbook istio.yml \
+      --user  sa_${data.google_service_account.me.unique_id} \
+      -e 'ansible_python_interpreter=/usr/bin/python3' \
+      -i ./inventory.gcp.yaml
+COMMAND
     environment = {
     CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
     CLUSTER = var.cluster
@@ -61,7 +75,8 @@ resource "null_resource" "ansible_istio_playbook" {
     }
   }
   depends_on = [
-    google_container_node_pool.cluster_preemptible_nodes
+    google_container_node_pool.cluster_preemptible_nodes,
+    local_file.ansible_gcp_inventory
   ]
 }
 
@@ -72,7 +87,15 @@ resource "null_resource" "ansible_bastion_playbook" {
     gke_cluster_change = google_container_cluster.cluster.id
   }
   provisioner "local-exec" {
-    command = "cd  ${path.root}/../ansible && ansible-playbook bastion.yml --user  sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3' "
+    command = <<COMMAND
+    cd  ${path.root}/../ansible && \
+    ansible-playbook bastion.yml \
+      --user  sa_${data.google_service_account.me.unique_id} \
+      -e 'ansible_python_interpreter=/usr/bin/python3' \
+      -i ./inventory.gcp.yaml
+COMMAND
+
+
     environment = {
     CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
     CLUSTER = var.cluster
@@ -85,6 +108,7 @@ resource "null_resource" "ansible_bastion_playbook" {
   }
   depends_on = [
     google_container_node_pool.cluster_preemptible_nodes,
+    local_file.ansible_gcp_inventory,
     null_resource.ansible_istio_playbook
   ]
 }
@@ -94,7 +118,14 @@ resource "null_resource" "ansible_post_install_verification_playbook" {
     always_run = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "cd ${path.root}/../ansible && ansible-playbook test-workload.yml --user  sa_${data.google_service_account.me.unique_id} -e 'ansible_python_interpreter=/usr/bin/python3' "
+    command = <<COMMAND
+    cd  ${path.root}/../ansible && \
+    ansible-playbook test-workload.yml \
+      --user  sa_${data.google_service_account.me.unique_id} \
+      -e 'ansible_python_interpreter=/usr/bin/python3' \
+      -i ./inventory.gcp.yaml
+COMMAND
+
     environment = {
     CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
     CLUSTER = var.cluster
@@ -106,6 +137,7 @@ resource "null_resource" "ansible_post_install_verification_playbook" {
   }
   depends_on = [
     google_container_node_pool.cluster_preemptible_nodes,
+    local_file.ansible_gcp_inventory,
     null_resource.ansible_istio_playbook,
     helm_release.cert-manager,
     null_resource.ansible_bastion_playbook

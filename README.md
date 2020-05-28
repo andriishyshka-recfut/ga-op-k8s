@@ -64,6 +64,9 @@ GOOGLE_PROJECT - GCP project name
 
 [More info on terraform GCP provider configuration reference](https://www.terraform.io/docs/providers/google/guides/provider_reference.html)
 
+variables must be defined in `.env` file and alias `tf` should be used to run deployment
+
+
 ### Ansible SSH authorization
 Currently terraform creates one-time ssh-key and put it into `ssh-agent`. `ssh-agent` should be running and session environment variables should be set to terraform process.
 Terraform will wipe out all keys stored in `ssh-agent` and create only one to use. Then this key will be authorized to perform logins on behalf of terraform's service account( which key specified in GOOGLE_CREDENTIALS) to login to instances for 30 minutes. after terraform execution completion key still be accessible in running `ssh-agent` instance.
@@ -76,19 +79,13 @@ Terraform may store it's state locally or in remote object storage(S3,GCP Storag
 Currently it is require to provision sample bucket and create access to Service Account who will be run terraform. Exact `gcloud` commands mentioned in terraform-base README file.
 
 
-## Next tools should be installed
-Terraform configured to execute external tools and next should be available on it's PATH:
-```
-kubectl
-ansible-playbook
-```
-Ansible itself requires few python modules to manage k8s successfully:
-```
-pip install kubernetes --user
-pip install openshift --user
-
+## Install packages requirements
+All tools required for deployment served as docker image. To build Dockerfile and define alias `tf` next command should be executed:
 
 ```
+source .env
+```
+
 
 ## Network requirements
 To successfully reach k8s cluster API server you will have to connect to bastion with wireguard. Linux `wg` worked well for this. Configuration for VPN connection may be achieved from Bastion Subspace. Currently subspace automatically provisioned with bastion host in  `terraform-base`
