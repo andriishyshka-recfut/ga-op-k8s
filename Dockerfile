@@ -1,8 +1,5 @@
 FROM debian:10
 
-#ADD https://releases.hashicorp.com/terraform/0.12.25/terraform_0.12.25_linux_amd64.zip /usr/bin/
-
-#ADD https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl /usr/bin/
 
 RUN apt update && \
     apt install -y python3 python3-pip unzip ssh jq wget && \

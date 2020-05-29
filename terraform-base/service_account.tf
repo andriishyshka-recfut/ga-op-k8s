@@ -6,8 +6,10 @@ locals {
     "compute.googleapis.com",
     "container.googleapis.com",
     "dns.googleapis.com",
-    "oslogin.googleapis.com"
-
+    "oslogin.googleapis.com",
+    "cloudkms.googleapis.com",
+    "logging.googleapis.com",
+    "monitoring.googleapis.com",
     ]
   }
 resource "google_project_service" "enabled-apis" {

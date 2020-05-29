@@ -90,7 +90,9 @@ resource "local_file" "ansible_gcp_inventory" {
 resource "null_resource" "ansible_playbook" {
 
   triggers = {
-    always_run = "${timestamp()}"
+    //always_run = "${timestamp()}"
+    vm_change = google_compute_instance.bastion.id
+    playbook_contents = md5(file("${path.root}/../ansible/bastion-provision.yml"))
   }
 
   provisioner "local-exec" {
