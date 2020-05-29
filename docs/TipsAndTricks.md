@@ -18,25 +18,14 @@ gcloud compute instances start bastion --zone us-east4-b
 ```
 # tf apply        
 
+* * *
 
-Error: Error locking state: Error acquiring the state lock: writing "gs://terraform-state-222/terraform-docker-tools-test/state/default.tflock" failed: googleapi: Error 412: Precondition Failed, conditionNotMet
 Lock Info:
-  ID:        1590589709718259
-  Path:      gs://terraform-state-222/terraform-docker-tools-test/state/default.tflock
-  Operation: OperationTypeApply
-  Who:       runner@notebook
-  Version:   0.12.25
-  Created:   2020-05-27 14:28:29.623481576 +0000 UTC
-  Info:      
+  ID:        1590589709718259 
 
+* * *
 
-Terraform acquires a state lock to protect the state from being written
-by multiple users at the same time. Please resolve the issue above and try
-again. For most commands, you can disable locking with the "-lock=false"
-flag, but this is not recommended.
-
-
-notebook :  6:07PM : test : [1]  » tf force-unlock 1590589709718259
+# tf force-unlock 1590589709718259
 Do you really want to force-unlock?
   Terraform will remove the lock on the remote state.
   This will allow local Terraform commands to modify this state, even though it

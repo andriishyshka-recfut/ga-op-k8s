@@ -4,6 +4,16 @@ provider "google" {
 }
 
 
+data "google_project" "vault" {
+}
+
+variable "region" {
+  type        = string
+  default     = "us-east4"
+  description = "Region in which to create the cluster and run Atlantis."
+}
+
+
 # Create the vault service account
 resource "google_service_account" "vault-server" {
   account_id   = "vault-server"
@@ -55,10 +65,13 @@ resource "google_storage_bucket" "vault" {
 }
 
 
-
+# Generate a random suffix for the KMS keyring. Like projects, key rings names
+# must be globally unique within the project. A key ring also cannot be
+# destroyed, so deleting and re-creating a key ring will fail.
+#
 # This uses a random_id to prevent that from happening.
 resource "random_id" "kms_random" {
-  prefix      = var.kms_key_ring_prefix
+  prefix      = "vault"
   byte_length = "8"
 }
 
@@ -69,13 +82,12 @@ resource "google_kms_key_ring" "vault" {
   location = var.region
   project  = data.google_project.vault.project_id
 
-  depends_on = [google_project_service.service]
 }
 
 
 # Create the crypto key for encrypting init keys
 resource "google_kms_crypto_key" "vault-init" {
-  name            = var.kms_crypto_key
+  name            = "vault"
   key_ring        = google_kms_key_ring.vault.id
   rotation_period = "604800s"
 }
