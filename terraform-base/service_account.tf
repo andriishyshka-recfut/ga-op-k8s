@@ -36,6 +36,7 @@ variable "service_account_iam_roles" {
     "roles/dns.admin",
     "roles/compute.osAdminLogin",
     "roles/cloudkms.admin",
+    "roles/iam.serviceAccountKeyAdmin",
   ]
   description = <<-EOF
   List of the default IAM roles to attach to the service account on the

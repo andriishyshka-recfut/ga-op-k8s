@@ -1,0 +1,34 @@
+
+# Generate a random suffix for the KMS keyring. Like projects, key rings names
+# must be globally unique within the project. A key ring also cannot be
+# destroyed, so deleting and re-creating a key ring will fail.
+#
+# This uses a random_id to prevent that from happening.
+resource "random_id" "kms_random" {
+  prefix      = "vault"
+  byte_length = "8"
+}
+
+
+# Create the KMS key ring
+resource "google_kms_key_ring" "vault" {
+  name     = random_id.kms_random.hex
+  location = var.region
+  project  = data.google_project.vault.project_id
+
+}
+
+
+# Create the crypto key for encrypting init keys
+resource "google_kms_crypto_key" "vault-init" {
+  name            = "vault"
+  key_ring        = google_kms_key_ring.vault.id
+  rotation_period = "604800s"
+}
+
+# Grant service account access to the key
+resource "google_kms_crypto_key_iam_member" "vault-init" {
+  crypto_key_id = google_kms_crypto_key.vault-init.id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = "serviceAccount:${google_service_account.vault-server.email}"
+}
