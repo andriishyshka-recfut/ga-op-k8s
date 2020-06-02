@@ -79,3 +79,22 @@ resource "google_compute_firewall" "bastion-to-cluster" {
   }
 
 }
+resource "google_compute_firewall" "cluster-to-cluster" {
+  name          = "${var.cluster}-to-${var.cluster}"
+  network       = data.google_compute_network.vpc.self_link
+  direction     = "INGRESS"
+  source_tags = ["${var.cluster}"]
+  target_tags = ["${var.cluster}"]
+
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+  }
+  allow {
+    protocol = "udp"
+  }
+
+}

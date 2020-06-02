@@ -15,7 +15,8 @@ resource "helm_release" "vault" {
 
   depends_on = [
     kubernetes_secret.kms-creds,
-    kubernetes_namespace.vault
+    kubernetes_namespace.vault,
+    google_service_account.vault-server
 
   ]
 }

@@ -1,7 +1,7 @@
-data "google_container_engine_versions" "version" {
-  location = var.settings.cluster_settings[var.cluster].region
-}
-
+# data "google_container_engine_versions" "version" {
+#   location = var.settings.cluster_settings[var.cluster].region
+# }
+#
 resource "google_container_cluster" "cluster" {
 
   provider = google-beta
@@ -10,8 +10,11 @@ resource "google_container_cluster" "cluster" {
   location = var.settings.cluster_settings[var.cluster].region
   network = data.google_compute_network.vpc.self_link
   subnetwork = google_compute_subnetwork.net.name
-  default_max_pods_per_node = 32
-  min_master_version = data.google_container_engine_versions.version.latest_master_version
+  default_max_pods_per_node = var.settings.cluster_settings[var.cluster].pods_per_node
+  #min_master_version = data.google_container_engine_versions.version.latest_master_version
+  release_channel {
+    channel = "RAPID"
+  }
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
   # node pool and immediately delete it.
@@ -98,7 +101,7 @@ resource "google_container_node_pool" "cluster_preemptible_nodes" {
     max_node_count = 2
   }
   node_count = 1
-  version = data.google_container_engine_versions.version.latest_node_version
+  # version = data.google_container_engine_versions.version.latest_node_version
 
   node_config {
     preemptible  = true
@@ -118,7 +121,7 @@ resource "google_container_node_pool" "cluster_preemptible_nodes" {
   }
   management {
     auto_repair  = "true"
-    auto_upgrade = "false"
+    auto_upgrade = "true"
   }
 
   timeouts {
