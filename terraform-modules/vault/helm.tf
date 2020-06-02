@@ -7,10 +7,13 @@ resource "helm_release" "vault" {
 
   values = [
     templatefile("${path.module}/helm_config.tmpl" ,
-    { project = data.google_project.vault.project_id ,
-    key_ring = google_kms_key_ring.vault.name ,
-    crypto_key = google_kms_crypto_key.vault-init.name ,
-    bucket = google_storage_bucket.vault.name } )
+      {
+        project = data.google_project.vault.project_id ,
+        key_ring = google_kms_key_ring.vault.name ,
+        crypto_key = google_kms_crypto_key.vault-init.name ,
+        bucket = google_storage_bucket.vault.name
+      }
+    )
   ]
 
   depends_on = [
@@ -34,5 +37,10 @@ resource "kubernetes_secret" "kms-creds" {
 resource "kubernetes_namespace" "vault" {
   metadata {
     name = "vault"
+    labels = {
+      istio-injection = "enabled"
+    }
+
+
   }
 }

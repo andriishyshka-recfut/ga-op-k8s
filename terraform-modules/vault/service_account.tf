@@ -9,7 +9,6 @@ resource "google_service_account" "vault-server" {
 variable "vault_service_account_iam_roles" {
   type = list(string)
   default = [
-    "roles/cloudkms.cryptoKeyEncrypterDecrypter",
     "roles/storage.objectAdmin",
   ]
   description = "List of storage bucket roles."

@@ -13,7 +13,8 @@ resource "random_id" "kms_random" {
 # Create the KMS key ring
 resource "google_kms_key_ring" "vault" {
   name     = random_id.kms_random.hex
-  location = var.region
+  # location = var.region
+  location = "global"
   project  = data.google_project.vault.project_id
 
 }
