@@ -47,7 +47,7 @@
       register: result
       retries: 3
       delay: 10
-      until: result.content.find("Thank you for using nginx.") != -1
+      until: result.content.find("Self Destructing Notes") != -1
 
     - debug: msg="{{ result.content }}"
 

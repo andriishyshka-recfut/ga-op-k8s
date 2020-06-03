@@ -11,6 +11,7 @@ server:
     GOOGLE_PROJECT: ${project}
     GOOGLE_APPLICATION_CREDENTIALS: /vault/userconfig/kms-creds/credentials.json
 
+
   extraVolumes:
     - type: 'secret'
       name: 'kms-creds'

@@ -12,7 +12,7 @@ variable "cluster_settings" {
     // Cluster settings are grouped by cluster name
     "infra" = {
       // used to create namespace/service/and other resources withing provisioned cluster to verify deployment status and availibility
-      "test_workload_name" = "test"
+      "test_workload_name" = "d-note"
       // Region where to provision cluster
       "region" = "us-east4"
       // Base domain name. May be same for multiple clusters

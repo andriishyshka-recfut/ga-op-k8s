@@ -16,6 +16,12 @@ resource "helm_release" "vault" {
     )
   ]
 
+  set {
+    name  = "server.ha.enabled"
+    value = "true"
+  }
+
+
   depends_on = [
     kubernetes_secret.kms-creds,
     kubernetes_namespace.vault,

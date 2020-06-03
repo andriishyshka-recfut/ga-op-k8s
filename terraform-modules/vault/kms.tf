@@ -24,12 +24,22 @@ resource "google_kms_key_ring" "vault" {
 resource "google_kms_crypto_key" "vault-init" {
   name            = "vault"
   key_ring        = google_kms_key_ring.vault.id
-  rotation_period = "604800s"
+  rotation_period = "86401s"
+}
+
+variable "vault_service_account_key_iam_roles" {
+  type = list(string)
+  default = [
+    "roles/cloudkms.cryptoKeyEncrypterDecrypter",
+    "roles/cloudkms.admin",
+  ]
+  description = "List of storage bucket roles."
 }
 
 # Grant service account access to the key
 resource "google_kms_crypto_key_iam_member" "vault-init" {
+  count   = length(var.vault_service_account_key_iam_roles)
   crypto_key_id = google_kms_crypto_key.vault-init.id
-  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  role          = element(var.vault_service_account_key_iam_roles, count.index)
   member        = "serviceAccount:${google_service_account.vault-server.email}"
 }
