@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Init vault
+      hashivault_init:
+      register: vault_init
+
+    - debug: msg="{{ vault_init | to_nice_json }}"

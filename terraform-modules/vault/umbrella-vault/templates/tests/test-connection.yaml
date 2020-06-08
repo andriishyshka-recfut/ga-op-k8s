@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['https://{{ include "umbrella-vault.fqdn" . }}']
+      args: ['--no-check-certificate','https://{{ include "umbrella-vault.fqdn" . }}']
   restartPolicy: Never

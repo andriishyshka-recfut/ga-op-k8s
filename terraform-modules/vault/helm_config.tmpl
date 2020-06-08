@@ -1,5 +1,5 @@
 
-domain: "${domain}"
+subdomain: "${subdomain}"
 
 vault:
     global:
@@ -21,10 +21,10 @@ vault:
           name: 'kms-creds'
 
       ha:
-          enabled: true
-          replicas: 3
+        enabled: true
+        replicas: 3
 
-      config: |
+        config: |
           ui = true
           listener "tcp" {
             tls_disable = 1

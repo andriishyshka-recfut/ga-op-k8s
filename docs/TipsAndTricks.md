@@ -21,7 +21,7 @@ gcloud compute instances start bastion --zone us-east4-b
 * * *
 
 Lock Info:
-  ID:        1590589709718259 
+  ID:        1590589709718259
 
 * * *
 
@@ -37,5 +37,12 @@ Terraform state has been successfully unlocked!
 
 The state has been unlocked, and Terraform commands should now be able to
 obtain a new lock on the remote state.
+
+```
+
+* Reinstall vault. Because vault use stateful sets update and patches may fail it. We have all statefull data outside cluster and it is pretty safe to delete helm release and install vault from scratch
+```
+helm uninstall  vault -n vault
+tf apply
 
 ```

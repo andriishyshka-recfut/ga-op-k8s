@@ -43,5 +43,5 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{- define "umbrella-vault.fqdn" -}}
-{{- printf "%s.%s" "vault" .Values.domain | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s.%s" "vault" .Values.subdomain | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}

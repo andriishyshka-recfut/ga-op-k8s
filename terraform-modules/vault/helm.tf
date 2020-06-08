@@ -1,34 +1,3 @@
-# resource "helm_release" "vault" {
-#   name       = "vault"
-#   repository = "https://helm.releases.hashicorp.com"
-#   chart      = "vault"
-#   version    = "0.5.0"
-#   namespace = "vault"
-#
-#   values = [
-#     templatefile("${path.module}/helm_config.tmpl" ,
-#       {
-#         project = data.google_project.vault.project_id ,
-#         key_ring = google_kms_key_ring.vault.name ,
-#         crypto_key = google_kms_crypto_key.vault-init.name ,
-#         bucket = google_storage_bucket.vault.name,
-#         version = var.vault-version
-#       }
-#     ),
-#     templatefile("${path.module}/vault-gateway.tmpl",{
-#       vault-url = "vault.${var.settings.cluster_settings[var.cluster].domain}"
-#       })
-#   ]
-#
-#
-#   depends_on = [
-#     kubernetes_secret.kms-creds,
-#     kubernetes_namespace.vault,
-#     google_service_account.vault-server
-#
-#   ]
-# }
-
 
 resource "helm_release" "vault" {
   name       = "vault"
@@ -46,7 +15,7 @@ resource "helm_release" "vault" {
         crypto_key = google_kms_crypto_key.vault-init.name ,
         bucket = google_storage_bucket.vault.name,
         version = var.vault-version
-        domain = var.settings.cluster_settings[var.cluster].domain
+        subdomain = "${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
       }
     )
   ]
