@@ -3,7 +3,7 @@ FROM debian:10
 
 RUN apt update && \
     apt install -y python3 python3-pip unzip ssh jq wget && \
-    python3 -m pip install ansible==2.9.9 kubernetes openshift requests google-auth
+    python3 -m pip install ansible==2.9.9 kubernetes openshift requests google-auth ansible-modules-hashivault
 
 RUN wget  https://releases.hashicorp.com/terraform/0.12.25/terraform_0.12.25_linux_amd64.zip -O /usr/bin/terraform_0.12.25_linux_amd64.zip && \
     unzip /usr/bin/terraform_0.12.25_linux_amd64.zip -d /usr/bin && \

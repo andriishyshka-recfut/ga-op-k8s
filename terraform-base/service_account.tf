@@ -10,6 +10,9 @@ locals {
     "cloudkms.googleapis.com",
     "logging.googleapis.com",
     "monitoring.googleapis.com",
+    // required for consent screen creation clientauthconfig.brands.create
+    // https://cloud.google.com/iap/docs/programmatic-oauth-clients#before-you-begin
+    "iap.googleapis.com",
     ]
   }
 resource "google_project_service" "enabled-apis" {
@@ -37,6 +40,7 @@ variable "service_account_iam_roles" {
     "roles/compute.osAdminLogin",
     "roles/cloudkms.admin",
     "roles/iam.serviceAccountKeyAdmin",
+    "roles/editor",
   ]
   description = <<-EOF
   List of the default IAM roles to attach to the service account on the

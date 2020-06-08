@@ -13,3 +13,8 @@ variable "gke_cluster_endpoint" { }
 variable "gke_bearer_token" { }
 
 variable "cluster_ca_certificate" { }
+
+variable "settings" {}
+
+variable "cluster" { }
+variable "vault-version" {}

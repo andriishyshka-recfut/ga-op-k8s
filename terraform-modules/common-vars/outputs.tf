@@ -16,7 +16,7 @@ variable "cluster_settings" {
       // Region where to provision cluster
       "region" = "us-east4"
       // Base domain name. May be same for multiple clusters
-      "domain" = "digaweb.local"
+      "domain" = "digaweb.com"
       // Subdomain that refer to cluster. Private zone will be created with Cloud DNS. subdomain + domain should be unique
       "subdomain" = "infra"
       // Subnet range for cluster nodes.Should not overlap with pods or services.
