@@ -1,3 +1,11 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: ca-issuer2
+  namespace: istio-system
+spec:
+  ca:
+    secretName: basic-ca
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
@@ -10,7 +18,7 @@ spec:
   secretName: vault-cert
   commonName: {{ include "umbrella-vault.fqdn" . }}
   issuerRef:
-    name: ca-issuer
+    name: ca-issuer2
     kind: Issuer
 ---
 apiVersion: networking.istio.io/v1alpha3

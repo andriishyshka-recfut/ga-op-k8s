@@ -51,7 +51,7 @@
 
     - debug: msg="{{ result.content }}"
 
-    - name: Clean up
-      file:
-        path: "{{ temp_dir }}"
-        state: absent
+    # - name: Clean up
+    #   file:
+    #     path: "{{ temp_dir }}"
+    #     state: absent

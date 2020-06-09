@@ -1,8 +1,80 @@
 ---
 - hosts: localhost
+  connection: local
+  become: False
+  vars_files:
+    - vars/main.yml
   tasks:
-    - name: Init vault
-      hashivault_init:
-      register: vault_init
+  - name: Create temp_dir
+    file:
+        path: "{{ temp_dir }}"
+        state: directory
+        mode: '0755'
 
-    - debug: msg="{{ vault_init | to_nice_json }}"
+  - name: Set vault FQDN
+    set_fact:
+        vault_fqdn: "{{ lookup('env','VAULT_ADDR') | replace('https://','') }}"
+        vault_ca_path: "{{ temp_dir }}/vault_ca"
+
+
+  - name: Retrieve vault server certificate
+    shell: |
+        openssl s_client -showcerts -servername {{ vault_fqdn }} -connect {{ vault_fqdn }}:443 </dev/null | \
+        sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > {{ vault_ca_path }}
+    changed_when: True
+
+  - name: Try certifi
+    shell: |
+      import certifi
+      import requests
+      import sys
+      import os
+      try:
+        print('Checking connection to Vault...')
+        test = requests.get('https://{{ vault_fqdn }}')
+      except requests.exceptions.SSLError as err:
+        print('SSL Error. Adding custom certs to Certifi store...')
+        cafile = certifi.where()
+        customca = os.environ.get('CA_CERT')
+        print(customca)
+        with open(cafile, 'ab') as outfile:
+          outfile.write(bytes(customca,encoding='utf8'))
+        print(certifi.where())
+      try:
+        print('Checking connection to Vault...')
+        test = requests.get('https://{{ vault_fqdn }}')
+        print('That might have worked.')
+      except requests.exceptions.SSLError as err:
+        print('Stil getting same exception. something went with certifi')
+        print(err)
+        sys.exit(1)
+    args:
+      executable: "{{ ansible_python_interpreter }}"
+    environment:
+       REQUESTS_CA_BUNDLE: /usr/local/lib/python3.7/dist-packages/certifi/cacert.pem
+       #SSL_CERT_FILE: "{{ vault_ca_path }}"
+
+
+  # - name: test2
+  #   shell: |
+  #     cat /usr/local/lib/python3.7/dist-packages/certifi/cacert.pem
+  #   register: test
+  # - debug: msg="{{ test | to_nice_json }}"
+
+  - name: Get vault status
+    hashivault_status:
+    environment:
+      REQUESTS_CA_BUNDLE: /usr/local/lib/python3.7/dist-packages/certifi/cacert.pem
+    register: vault_status
+
+  - debug: msg="{{ vault_status | to_nice_json }}"
+
+  - name: Init and unseal
+    block:
+
+    - name: Run operator Init
+      shell: |
+        vault operator init
+      changed_when: True
+      register: keys 
+    when: vault_status.status.initialized == false and vault_status.status.sealed == true

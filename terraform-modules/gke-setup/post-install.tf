@@ -115,7 +115,10 @@ COMMAND
 
 resource "null_resource" "ansible_post_install_verification_playbook" {
   triggers = {
-    always_run = "${timestamp()}"
+    //always_run = "${timestamp()}"
+    bastion_change = "null_resource.ansible_bastion_playbook.id"
+    istio_change = null_resource.ansible_istio_playbook.id
+    gke_cluster_change = google_container_cluster.cluster.id
   }
   provisioner "local-exec" {
     command = <<COMMAND
