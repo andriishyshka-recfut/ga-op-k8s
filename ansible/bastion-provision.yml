@@ -176,11 +176,26 @@
           src: default-http.conf
           dest: "{{ compose_dest }}/data/nginx/"
 
+    - name: find all *-compose.yaml file
+      find:
+        path: "{{ compose_dest }}"
+        patterns: "*-compose.yaml"
+      register: registered_files
+
+    - name: Create array from found files in format required for COMPOSE_FILE
+      set_fact:
+        compose_files: "{% set output = [] %}\
+              {% for element in registered_files.files %}\
+                {{ output.append( element.path ) }}\
+             {% endfor %}\
+             {{ output }}"
+
     - name: Start all
-      shell: |
-        cd {{ compose_dest }}
-        docker-compose build
-        docker-compose up -d && sleep 30
+      docker_compose:
+        project_src: "{{ compose_dest }}"
+        files: "{{ compose_files }}"
+        build: yes
+      register: output
 
     - name: Retrieve certificates
       shell: |
@@ -206,12 +221,12 @@
         - default-stream.conf
         - subspace-http.conf
 
-    - name: Restart nginx container
-      shell: |
-        cd {{ compose_dest }}
-        docker-compose stop nginx &&\
-         docker-compose rm -f  nginx &&\
-          docker-compose up -d nginx
+    # - name: Restart nginx container
+    #   shell: |
+    #     cd {{ compose_dest }}
+    #     docker-compose stop nginx &&\
+    #      docker-compose rm -f  nginx &&\
+    #       docker-compose up -d nginx
 
     - name: Autoclean dependecnies
       apt:
@@ -221,3 +236,14 @@
     - name: Reboot
       reboot:
         reboot_timeout: 3600
+
+
+    - name: try https://{{ bastion_dns }}
+      uri:
+        url: "https://{{ bastion_dns }}/signin"
+        return_content: yes
+        validate_certs: no
+      register: result
+      retries: 3
+      delay: 10
+      until: result.content.find("Subspace") != -1

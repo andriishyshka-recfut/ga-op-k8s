@@ -1,10 +1,10 @@
 version: '3'
 services:
-  infra-upstream:
+  {{ cluster_name }}_upstreamd:
     build:
       context: .
       dockerfile: upstream-Dockerfile
-    container_name: infra-upstreamd
+    container_name: {{ cluster_name }}_upstreamd
     restart: unless-stopped
     volumes:
     - ./data/nginx:/nginx

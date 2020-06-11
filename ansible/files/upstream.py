@@ -32,17 +32,17 @@ def do_stuff(api_endpoint,upstream_file,node_port,cluster_name):
     render = t.render(cluster_name=cluster_name,InternalIP=InternalIP,nodePort=node_port).encode('ascii')
 
     try:
-        with open(upstream_file,"r+") as f:
+        with open(upstream_file,"rb+") as f:
             read = f.read()
             if render  != read :
-                logging.info("Upstream drift detected. updatring from: \n "+read+"\n to: \n " + render)
+                logging.info("Upstream drift detected. updatring from: \n "+str(read)+"\n to: \n " + str(render))
                 f.truncate(0)
                 f.write( render )
     except FileNotFoundError:
-        with open(upstream_file,"w+") as f:
+        with open(upstream_file,"wb+") as f:
             logging.info("No upstream file "+ upstream_file \
                          +" found. Creating new one with next content: \n "\
-                         + render)
+                         + str(render))
             f.write( render )
 
 def main():
