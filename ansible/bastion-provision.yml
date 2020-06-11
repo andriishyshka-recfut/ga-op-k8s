@@ -149,12 +149,16 @@
         state: directory
         mode: '0755'
 
-    - name: Copy docker-compose.yaml and other files
+    - name: Copy dockerfiles and other files
       copy:
         src: "{{ item }}"
         dest: "{{ compose_dest }}"
       with_items:
-        - "nginx.conf"
+        - nginx.conf
+        - nginx-Dockerfile
+        - upstream-Dockerfile
+        - upstream.py
+        - inotify.sh
 
     - name: Generate docker-compose.yaml
       template:
@@ -172,10 +176,14 @@
           src: default-http.conf
           dest: "{{ compose_dest }}/data/nginx/"
 
-    - name: Retrieve certificates
+    - name: Start all
       shell: |
         cd {{ compose_dest }}
+        docker-compose build
         docker-compose up -d && sleep 30
+
+    - name: Retrieve certificates
+      shell: |
         docker-compose exec certbot  certbot certonly --webroot --webroot-path /var/www/certbot --force-renewal -d {{ bastion_dns }} --email {{ letsencrypt_email }} --agree-tos --no-eff-email {{ letsencrypt_staging }}
       args:
         creates: "{{ compose_dest }}/data/certbot/conf/live/{{ bastion_dns }}/privkey.pem"
@@ -185,6 +193,8 @@
         name: nginx
       register: nginx_container_info
 
+    # - fail:
+    #     msg: "{{ nginx_container_info | to_nice_json }}"
     - debug: msg="Will try to reach subspace from  {{ nginx_container_info.container.NetworkSettings.Networks['bastion-compose_default'].Gateway| to_nice_json }}"
 
 

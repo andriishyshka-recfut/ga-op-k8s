@@ -1,0 +1,11 @@
+
+upstream test_backend {
+
+
+    server 10.100.1.15:1234 ;
+
+    server 10.100.1.12:1234 ;
+
+    server 10.100.1.17:1234 ;
+
+}

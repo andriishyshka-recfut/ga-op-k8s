@@ -76,5 +76,9 @@
       shell: |
         vault operator init
       changed_when: True
-      register: keys 
+      register: init_out
+      environment:
+        VAULT_CACERT: "{{ vault_ca_path }}"
+    - debug: msg="{{ vault_init | to_nice_json }}"
+    
     when: vault_status.status.initialized == false and vault_status.status.sealed == true
