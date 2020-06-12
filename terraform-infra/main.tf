@@ -42,19 +42,19 @@ provider "kubernetes" {
     cluster_ca_certificate = module.gke-setup.cluster_ca_certificate
 
 }
-  module "vault" {
-   source = "../terraform-modules/vault"
-    gke_cluster_endpoint = module.gke-setup.gke_cluster_endpoint
-    gke_bearer_token = module.gke-setup.gke_bearer_token
-    cluster_ca_certificate = module.gke-setup.cluster_ca_certificate
-    settings = module.common-vars
-    cluster = "infra"
-    vault-version = "1.4.2"
-    providers = {
-      google = google.google
-      kubernetes = kubernetes.kubernetes
-      helm = helm.helm
-
-    }
-
-   }
+  # module "vault" {
+  #  source = "../terraform-modules/vault"
+  #   gke_cluster_endpoint = module.gke-setup.gke_cluster_endpoint
+  #   gke_bearer_token = module.gke-setup.gke_bearer_token
+  #   cluster_ca_certificate = module.gke-setup.cluster_ca_certificate
+  #   settings = module.common-vars
+  #   cluster = "infra"
+  #   vault-version = "1.4.2"
+  #   providers = {
+  #     google = google.google
+  #     kubernetes = kubernetes.kubernetes
+  #     helm = helm.helm
+  #
+  #   }
+  #
+  #  }

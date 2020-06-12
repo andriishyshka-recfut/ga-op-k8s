@@ -47,7 +47,5 @@ resource "kubernetes_namespace" "vault" {
     labels = {
       istio-injection = "enabled"
     }
-
-
   }
 }

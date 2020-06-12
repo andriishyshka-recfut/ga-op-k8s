@@ -38,6 +38,13 @@ resource "helm_release" "cert-manager" {
     name = "installCRDs"
     value = "true"
   }
+
+  // Configure cert-manager to cleanup secrets on delete
+  // https://github.com/jetstack/cert-manager/pull/819
+  set {
+    name = "extraArgs[0]"
+    value = "--enable-certificate-owner-ref=true"
+  }
   depends_on = [
     google_container_node_pool.cluster_preemptible_nodes
   ]

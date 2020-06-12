@@ -13,15 +13,24 @@
 
   - name: Set vault FQDN
     set_fact:
-        vault_fqdn: "{{ lookup('env','VAULT_ADDR') | replace('https://','') }}"
+        vault_addr: "{{ lookup('env','VAULT_ADDR')  }}"
         vault_ca_path: "{{ temp_dir }}/vault_ca"
 
+  - name: try {{ vault_addr }}
+    uri:
+      url: "{{ vault_addr }}/ui/"
+      return_content: yes
+      validate_certs: no
+    register: result
+    retries: 3
+    delay: 10
+    until: result.content.find("Vault") != -1
 
-  - name: Retrieve vault server certificate
-    shell: |
-        openssl s_client -showcerts -servername {{ vault_fqdn }} -connect {{ vault_fqdn }}:443 </dev/null | \
-        sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > {{ vault_ca_path }}
-    changed_when: True
+  - name: Put vault_cert on temp_fs
+    copy:
+      content: "{{ lookup('env','CA_CERT') }}"
+      dest: "{{ vault_ca_path }}"
+
 
   - name: Find ca bundle path
     shell: |
@@ -31,6 +40,9 @@
       executable: "{{ ansible_python_interpreter }}"
     register: ca_bundle_path
 
+  - name: Set requests_ca_bundle fact
+    set_fact:
+      requests_ca_bundle: "{{ ca_bundle_path.stdout | trim }}"
 
   - name: Update ca bundle with certifi
     shell: |
@@ -40,7 +52,7 @@
       import os
       try:
         print('Checking connection to Vault...')
-        test = requests.get('https://{{ vault_fqdn }}')
+        test = requests.get('{{ vault_addr }}')
       except requests.exceptions.SSLError as err:
         print('SSL Error. Adding custom certs to Certifi store...')
         cafile = certifi.where()
@@ -51,7 +63,7 @@
         print(certifi.where())
       try:
         print('Checking connection to Vault...')
-        test = requests.get('https://{{ vault_fqdn }}')
+        test = requests.get('{{ vault_addr }}')
         print('That might have worked.')
       except requests.exceptions.SSLError as err:
         print('Stil getting same exception. something went with certifi')
@@ -60,7 +72,7 @@
     args:
       executable: "{{ ansible_python_interpreter }}"
     environment:
-       REQUESTS_CA_BUNDLE: "{{ ca_bundle_path.stdout | trim }}"
+       REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
        #SSL_CERT_FILE: "{{ vault_ca_path }}"
 
 
@@ -73,11 +85,11 @@
   - name: Get vault status
     hashivault_status:
     environment:
-      REQUESTS_CA_BUNDLE: /usr/local/lib/python3.7/dist-packages/certifi/cacert.pem
+      REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
     register: vault_status
     retries: 5
     delay: 10
-    until: vault_status.rc != 0
+    until: vault_status.rc == 0
 
 
   - debug: msg="{{ vault_status | to_nice_json }}"
@@ -92,7 +104,7 @@
       register: init_out
       environment:
         VAULT_CACERT: "{{ vault_ca_path }}"
-    - debug: msg="{{ init_out | to_nice_json }}"
+    # - debug: msg="{{ init_out | to_nice_json }}"
 
     - name: Set facts based on operator init
       set_fact:
