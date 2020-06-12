@@ -4,6 +4,11 @@
   become: False
   vars_files:
     - vars/main.yml
+  vars:
+    initial_setup: False
+    oidc_discovery_url: "{{ lookup('env','oidc_discovery_url') | trim }}"
+    oidc_client_id: "{{ lookup('env','oidc_client_id') | trim }}"
+    oidc_client_secret: "{{ lookup('env','oidc_client_secret') | trim }}"
   tasks:
   - name: Create temp_dir
     file:
@@ -113,12 +118,80 @@
                           {{  line.split(':')[1] | trim }}
                         {%- endif %}
                     {%- endfor %}"
-        recovery_keys: "{% set output = [] %}
-                      {% for line in init_out.stdout_lines -%}
-                      {% if line.find('Recovery Key') != -1 -%}
-                      {{ output.append( line.split(':')[1] | trim ) }}
-                      {%- endif %}
-                      {%- endfor %}
-                      {{ output }}"
+        recovery_keys: "{% set output = dict() %}
+                {% for line in init_out.stdout_lines -%}
+                  {% if line.find('Recovery Key') != -1 -%}
+                    {% set index =  output | length %}
+                    {% set _ = output.update( { 'recovery_key_' + index | string  : line.split(':')[1] | trim } )  %}
+                  {%- endif %}
+                {%- endfor %}
+                {{ output }}"
         initial_setup: True
     when: vault_status.status.initialized == false and vault_status.status.sealed == true
+
+  - name: Define token for provisioning
+    set_fact:
+      vault_token: "{%- if root_token is undefined -%}
+                    {{ lookup('env','VAULT_TOKEN')  | trim }}
+                    {%- else -%}
+                    {{ root_token | trim }}
+                    {%- endif -%}"
+
+  - name: Assert that vault token configured
+    assert:
+      that:
+      - vault_token | length > 0
+
+  - name: Configure vault
+    block:
+
+    - name: Enable kv backend
+      hashivault_secret_engine:
+            name: "kv"
+            backend: "kv"
+
+    - name:
+      hashivault_write:
+        secret: kv
+        data: "recovery_keys"
+      when: initial_setup
+
+
+    - name: Set validation criteria for oidc configuration
+      set_fact:
+        oidc_setup: "{% if oidc_discovery_url == 'SAMPLE' or oidc_client_id | length == 0 %}False{% else %}True{% endif %}"
+      when:
+
+    - name: enable oidc secret engine
+      hashivault_auth_method:
+        method_type: oidc
+      when: oidc_setup
+
+    - name:  configure oidc mount
+      hashivault_oidc_auth_method_config:
+        oidc_discovery_url: "{{ oidc_discovery_url }}"
+        oidc_client_id: "{{ oidc_client_id }}"
+        oidc_client_secret: "{{ oidc_client_secret }}"
+      when: oidc_setup
+
+    - name: create  role
+      hashivault_oidc_auth_role:
+        name: "111"
+        bound_audiences: ["{{ oidc_client_id }}"]
+        allowed_redirect_uris:
+          - "{{ vault_addr }}/ui/vault/auth/oidc/oidc/callback"
+          - "http://localhost:8250/oidc/callback"
+        token_policies: ["admin"]
+      when: oidc_setup
+
+    - name: Create policy
+      hashivault_policy:
+        name: "admin"
+        rules: "{{ lookup('file', 'vault-admin-policy.hcl' )}}"
+      when: oidc_setup
+
+
+    environment:
+       REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
+       VAULT_CACERT: "{{ vault_ca_path }}"
+       VAULT_TOKEN: "{{ vault_token }}"

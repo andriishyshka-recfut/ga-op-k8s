@@ -18,3 +18,6 @@ variable "settings" {}
 
 variable "cluster" { }
 variable "vault-version" {}
+variable "oidc_discovery_url" { default = "SAMPLE"}
+variable  "oidc_client_id" { default = "SAMPLE"}
+variable  "oidc_client_secret" { default = "SAMPLE"}

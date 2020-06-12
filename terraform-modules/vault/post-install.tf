@@ -12,6 +12,10 @@ resource "null_resource" "ansible_vault_playbook" {
   triggers = {
     //always_run = "${timestamp()}"
     // istio_version_change = var.settings.cluster_settings[var.cluster].istio_version
+    oidc_discovery_url = var.oidc_discovery_url
+    playbook_contents = md5(file("${path.root}/../ansible/vault-postinstall.yml"))
+    vault = helm_release.vault.id
+
   }
   provisioner "local-exec" {
     command = <<COMMAND
@@ -27,6 +31,9 @@ COMMAND
     ANSIBLE_STDOUT_CALLBACK = "debug"
     VAULT_ADDR = "https://vault.${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
     CA_CERT = tls_self_signed_cert.example.cert_pem
+    oidc_client_id = var.oidc_client_id
+    oidc_discovery_url = var.oidc_discovery_url
+    oidc_client_secret = var.oidc_client_secret
     }
   }
   depends_on = [
