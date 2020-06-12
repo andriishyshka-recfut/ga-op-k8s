@@ -23,23 +23,23 @@ def do_stuff(api_endpoint,upstream_file,node_port,cluster_name):
                 InternalIP.append(item["address"])
 
 
-    t = Template("""
-                upstream {{ cluster_name }}_backend {
-                {% for server in InternalIP %}
-                server {{ server }}:{{ nodePort }} ;
-                {% endfor %}
-                }  """)
-    render = t.render(cluster_name=cluster_name,InternalIP=InternalIP,nodePort=node_port).encode('ascii')
+    t = Template("""upstream {{ cluster_name }}_backend {
+{% for server in InternalIP -%}
+    server {{ server }}:{{ nodePort }} ;
+{% endfor %}
+}""")
+    render = t.render(cluster_name=cluster_name,InternalIP=InternalIP,nodePort=node_port)
+    read = ""
 
     try:
-        with open(upstream_file,"rb+") as f:
+        with open(upstream_file,"r+", encoding="ascii") as f:
             read = f.read()
-            if render  != read :
-                logging.info("Upstream drift detected. updatring from: \n "+str(read)+"\n to: \n " + str(render))
-                f.truncate(0)
+        if render  != read :
+            logging.info("Upstream drift detected. updatring from: \n "+str(read)+"\n to: \n " + str(render))
+            with open(upstream_file,"w+", encoding="ascii") as f:
                 f.write( render )
     except FileNotFoundError:
-        with open(upstream_file,"wb+") as f:
+        with open(upstream_file,"w+",encoding="ascii") as f:
             logging.info("No upstream file "+ upstream_file \
                          +" found. Creating new one with next content: \n "\
                          + str(render))

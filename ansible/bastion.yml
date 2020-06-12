@@ -91,6 +91,8 @@
         project_src: "{{ compose_dest }}"
         files: "{{ compose_files }}"
         build: yes
+        recreate: always
+        remove_orphans: yes
       register: output
 
     # - debug: msg=" {{ output | to_nice_json }}"

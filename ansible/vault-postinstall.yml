@@ -23,7 +23,16 @@
         sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > {{ vault_ca_path }}
     changed_when: True
 
-  - name: Try certifi
+  - name: Find ca bundle path
+    shell: |
+      import certifi
+      print(certifi.where())
+    args:
+      executable: "{{ ansible_python_interpreter }}"
+    register: ca_bundle_path
+
+
+  - name: Update ca bundle with certifi
     shell: |
       import certifi
       import requests
@@ -51,7 +60,7 @@
     args:
       executable: "{{ ansible_python_interpreter }}"
     environment:
-       REQUESTS_CA_BUNDLE: /usr/local/lib/python3.7/dist-packages/certifi/cacert.pem
+       REQUESTS_CA_BUNDLE: "{{ ca_bundle_path.stdout | trim }}"
        #SSL_CERT_FILE: "{{ vault_ca_path }}"
 
 
@@ -66,6 +75,10 @@
     environment:
       REQUESTS_CA_BUNDLE: /usr/local/lib/python3.7/dist-packages/certifi/cacert.pem
     register: vault_status
+    retries: 5
+    delay: 10
+    until: vault_status.rc != 0
+
 
   - debug: msg="{{ vault_status | to_nice_json }}"
 
@@ -79,6 +92,21 @@
       register: init_out
       environment:
         VAULT_CACERT: "{{ vault_ca_path }}"
-    - debug: msg="{{ vault_init | to_nice_json }}"
-    
+    - debug: msg="{{ init_out | to_nice_json }}"
+
+    - name: Set facts based on operator init
+      set_fact:
+        root_token: "{% for line in init_out.stdout_lines -%}
+                        {% if line.find('Initial Root Token:') != -1 -%}
+                          {{  line.split(':')[1] | trim }}
+                        {%- endif %}
+                    {%- endfor %}"
+        recovery_keys: "{% set output = [] %}
+                      {% for line in init_out.stdout_lines -%}
+                      {% if line.find('Recovery Key') != -1 -%}
+                      {{ output.append( line.split(':')[1] | trim ) }}
+                      {%- endif %}
+                      {%- endfor %}
+                      {{ output }}"
+        initial_setup: True
     when: vault_status.status.initialized == false and vault_status.status.sealed == true

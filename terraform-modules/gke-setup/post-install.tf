@@ -87,6 +87,8 @@ resource "null_resource" "ansible_bastion_playbook" {
     istio_change = null_resource.ansible_istio_playbook.id
     gke_cluster_change = google_container_cluster.cluster.id
     playbook_contents = md5(file("${path.root}/../ansible/bastion.yml"))
+    upstream_py_contents = md5(file("${path.root}/../ansible/files/upstream.py"))
+    upstream_dockerfile_contents = md5(file("${path.root}/../ansible/files/upstream-Dockerfile"))
   }
   provisioner "local-exec" {
     command = <<COMMAND
