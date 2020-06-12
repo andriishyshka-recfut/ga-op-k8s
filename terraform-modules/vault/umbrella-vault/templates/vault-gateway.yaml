@@ -3,6 +3,9 @@ kind: Issuer
 metadata:
   name: ca-issuer2
   namespace: istio-system
+  annotations:
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-failed
+    "helm.sh/hook": pre-install
 spec:
   ca:
     secretName: basic-ca
@@ -12,6 +15,9 @@ kind: Certificate
 metadata:
   name: vault-cert
   namespace: istio-system
+  annotations:
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-failed
+    "helm.sh/hook": pre-install
   labels:
     {{- include "umbrella-vault.labels" . | nindent 4 }}
 spec:
