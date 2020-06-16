@@ -120,7 +120,8 @@ COMMAND
   depends_on = [
     google_container_node_pool.cluster_preemptible_nodes,
     local_file.ansible_gcp_inventory,
-    null_resource.ansible_istio_playbook
+    null_resource.ansible_istio_playbook,
+    kubernetes_cluster_role_binding.bastion_anon_access
   ]
 }
 
@@ -155,7 +156,7 @@ COMMAND
     local_file.ansible_gcp_inventory,
     null_resource.ansible_istio_playbook,
     helm_release.cert-manager,
-    null_resource.ansible_bastion_playbook
+    null_resource.ansible_bastion_playbook,
 
   ]
 }

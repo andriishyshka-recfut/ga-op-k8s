@@ -126,6 +126,13 @@
                   {%- endif %}
                 {%- endfor %}
                 {{ output }}"
+        recovery_keys_list: "{% set output = [] %}
+                {% for line in init_out.stdout_lines -%}
+                  {% if line.find('Recovery Key') != -1 -%}
+                    {% set _ = output.append(  line.split(':')[1] | trim  )  %}
+                  {%- endif %}
+                {%- endfor %}
+                {{ output }}"
         initial_setup: True
     when: vault_status.status.initialized == false and vault_status.status.sealed == true
 
@@ -147,15 +154,22 @@
 
     - name: Enable kv backend
       hashivault_secret_engine:
-            name: "kv"
+            name: "secret"
             backend: "kv"
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
 
     - name:
       hashivault_write:
-        secret: kv
-        data: "recovery_keys"
+        secret: "recovery-keys"
+        data: "{{ recovery_keys | from_yaml }}"
       when: initial_setup
+      register: status
+      ignore_errors: True
 
+    - debug: msg="{{ status }}"
 
     - name: Set validation criteria for oidc configuration
       set_fact:
@@ -166,6 +180,10 @@
       hashivault_auth_method:
         method_type: oidc
       when: oidc_setup
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
 
     - name:  configure oidc mount
       hashivault_oidc_auth_method_config:
@@ -173,6 +191,10 @@
         oidc_client_id: "{{ oidc_client_id }}"
         oidc_client_secret: "{{ oidc_client_secret }}"
       when: oidc_setup
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
 
     - name: create  role
       hashivault_oidc_auth_role:
@@ -183,12 +205,20 @@
           - "http://localhost:8250/oidc/callback"
         token_policies: ["admin"]
       when: oidc_setup
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
 
     - name: Create policy
       hashivault_policy:
         name: "admin"
         rules: "{{ lookup('file', 'vault-admin-policy.hcl' )}}"
       when: oidc_setup
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
 
 
     environment:
