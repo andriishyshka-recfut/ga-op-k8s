@@ -26,6 +26,7 @@ vault:
 
         config: |
           ui = true
+          log_format = "json"
           listener "tcp" {
             tls_disable = 1
             address = "[::]:8200"

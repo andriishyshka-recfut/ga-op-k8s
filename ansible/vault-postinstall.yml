@@ -220,6 +220,12 @@
       delay: 10
       until: status.rc == 0
 
+    - name: Enable audit
+      hashivault_audit:
+        device_type: file
+        options:
+          path: "stdout"
+
 
     environment:
        REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"

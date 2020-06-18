@@ -23,7 +23,7 @@ resource "null_resource" "ansible_vault_playbook" {
     ansible-playbook vault-postinstall.yml \
       --user  sa_${data.google_service_account.me.unique_id} \
       -e 'ansible_python_interpreter=/usr/bin/python3' \
-      -i ./inventory.gcp.yaml -vvvv
+      -i ./inventory.gcp.yaml 
 COMMAND
     environment = {
     CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)

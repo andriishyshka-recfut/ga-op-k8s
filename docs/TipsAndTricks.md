@@ -46,3 +46,11 @@ helm uninstall  vault -n vault
 tf apply
 
 ```
+
+* Login to gke node
+```
+wg-quick up wg0
+
+gcloud compute ssh  gke-infra-infra-node-pool-e9116048-m59c --zone us-east4-c  --internal-ip
+
+```
