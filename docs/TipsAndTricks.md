@@ -54,3 +54,23 @@ wg-quick up wg0
 gcloud compute ssh  gke-infra-infra-node-pool-e9116048-m59c --zone us-east4-c  --internal-ip
 
 ```
+
+* Scale Down the cluster safely
+```
+
+kubectl taint nodes gke-infra-infra-node-pool-e9116048-984m key1=value1:NoExecute
+# k8s should remove all pods after this that not made by DaemonSets
+
+# Forces PODs removing
+kubectl drain gke-infra-infra-node-pool-e9116048-984m --ignore-daemonsets
+
+
+# GKE Cluster Autoscheduler will remove node in hour or few
+
+```
+
+* Load Kibana dashboards
+```
+kubectl exec -it metricbeat-xp5jn -n kube-system -- metricbeat setup --dashboards -E setup.kibana.host=https://kibana-kb-http.elastic:5601 -E setup.kibana.ssl.verification_mode=none
+
+```

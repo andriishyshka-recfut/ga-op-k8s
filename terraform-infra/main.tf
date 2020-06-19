@@ -47,7 +47,7 @@ variable "oidc_discovery_url" { default = "SAMPLE"}
 variable  "oidc_client_id" { default = "SAMPLE"}
 variable  "oidc_client_secret" { default = "SAMPLE"}
 
-  module "vault" {
+module "vault" {
    source = "../terraform-modules/vault"
     gke_cluster_endpoint = module.gke-setup.gke_cluster_endpoint
     gke_bearer_token = module.gke-setup.gke_bearer_token
@@ -64,5 +64,4 @@ variable  "oidc_client_secret" { default = "SAMPLE"}
       helm = helm.helm
 
     }
-
-   }
+}
