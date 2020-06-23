@@ -252,7 +252,7 @@ data:
         - apiserver
         # Can't find any sources for those 2 resources
         # And seems that I am not alone
-        # https://github.com/coreos/prometheus-operator/issues/2437
+        # https://github.com/coreos/prometheus-operator/issues/2437G
         # - scheduler
         # - controllermanager
       # https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/#accessing-the-api-from-a-pod
