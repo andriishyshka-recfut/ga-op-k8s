@@ -3,10 +3,20 @@ kind: Elasticsearch
 metadata:
   name: elasticsearch
 spec:
-  version: 7.7.1
+  version: 7.8.0
   nodeSets:
   - name: default
     count: 1
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: standard
     config:
       node.master: true
       node.data: true
@@ -18,7 +28,7 @@ kind: Kibana
 metadata:
   name: kibana
 spec:
-  version: 7.7.1
+  version: 7.8.0
   count: 1
   elasticsearchRef:
     name: elasticsearch

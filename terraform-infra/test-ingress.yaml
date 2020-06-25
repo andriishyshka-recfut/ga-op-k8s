@@ -1,0 +1,69 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: ca-issuer
+spec:
+  ca:
+    secretName: basic-ca
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: d-note
+  namespace: d-note
+  annotations:
+    kubernetes.io/ingress.class: istio
+    cert-manager.io/cluster-issuer: ca-issuer
+spec:
+  tls:
+  rules:
+  - host: d-note.infra.digaweb.com
+    http:
+      paths:
+      - backend:
+          serviceName: d-note
+          servicePort: 80
+        path: /
+  tls:
+  - hosts:
+    - d-note.infra.digaweb.com # This should match a DNS name in the Certificate
+    secretName: d-note-cert
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: gitlab-gateway
+  namespace: gitlab
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - gitlab.infra.digaweb.com
+    port:
+      name: https
+      number: 443
+      protocol: HTTPS
+    tls:
+      credentialName: gitlab-cert
+      mode: SIMPLE
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: gitlab
+  namespace: gitlab
+spec:
+  gateways:
+  - gitlab-gateway
+  hosts:
+  - gitlab.infra.digaweb.com
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: gitlab-webservice.gitlab.svc.cluster.local
+        port:
+          number: 8181
