@@ -57,7 +57,6 @@ resource "google_compute_firewall" "master-to-cluster" {
 
   allow {
     protocol = "tcp"
-    ports    = ["15017"]
   }
 
 }
