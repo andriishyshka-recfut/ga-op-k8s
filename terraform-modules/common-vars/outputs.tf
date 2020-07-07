@@ -30,7 +30,7 @@ variable "cluster_settings" {
       // Istio version to install during provisioning
       // this variable may be changed only before install. Istio has custom upgrade process
       // https://istio.io/docs/setup/upgrade/
-      "istio_version" = "1.6.0"
+      "istio_version" = "1.6.4"
       // Cert manager version to install during provisioning
       "cert_manager_version" = "v0.15.0"
       // https://www.terraform.io/docs/providers/google/r/container_cluster.html#default_max_pods_per_node
