@@ -21,3 +21,8 @@ variable "vault-version" {}
 variable "oidc_discovery_url" { default = "SAMPLE"}
 variable  "oidc_client_id" { default = "SAMPLE"}
 variable  "oidc_client_secret" { default = "SAMPLE"}
+
+variable "bucket_name" {}
+variable "autounseal_kms_crypto_key_id" {}
+variable "autounseal_kms_crypto_key_name" { }
+variable "autounseal_kms_key_ring_name" { }

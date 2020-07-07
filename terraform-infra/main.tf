@@ -43,25 +43,29 @@ provider "kubernetes" {
 
 }
 
-# variable "oidc_discovery_url" { default = "SAMPLE"}
-# variable  "oidc_client_id" { default = "SAMPLE"}
-# variable  "oidc_client_secret" { default = "SAMPLE"}
-#
-# module "vault" {
-#    source = "../terraform-modules/vault"
-#     gke_cluster_endpoint = module.gke-setup.gke_cluster_endpoint
-#     gke_bearer_token = module.gke-setup.gke_bearer_token
-#     cluster_ca_certificate = module.gke-setup.cluster_ca_certificate
-#     settings = module.common-vars
-#     cluster = "infra"
-#     vault-version = "1.4.2"
-#     oidc_discovery_url = var.oidc_discovery_url
-#     oidc_client_id = var.oidc_client_id
-#     oidc_client_secret = var.oidc_client_secret
-#     providers = {
-#       google = google.google
-#       kubernetes = kubernetes.kubernetes
-#       helm = helm.helm
-#
-#     }
-# }
+variable "oidc_discovery_url" { default = "SAMPLE"}
+variable  "oidc_client_id" { default = "SAMPLE"}
+variable  "oidc_client_secret" { default = "SAMPLE"}
+
+module "vault" {
+   source = "../terraform-modules/vault"
+    gke_cluster_endpoint = module.gke-setup.gke_cluster_endpoint
+    gke_bearer_token = module.gke-setup.gke_bearer_token
+    cluster_ca_certificate = module.gke-setup.cluster_ca_certificate
+    settings = module.common-vars
+    cluster = "infra"
+    vault-version = "1.4.2"
+    oidc_discovery_url = var.oidc_discovery_url
+    oidc_client_id = var.oidc_client_id
+    oidc_client_secret = var.oidc_client_secret
+    bucket_name = google_storage_bucket.vault.name
+    autounseal_kms_crypto_key_id = google_kms_crypto_key.vault-init.id
+    autounseal_kms_crypto_key_name = google_kms_crypto_key.vault-init.name
+    autounseal_kms_key_ring_name = google_kms_key_ring.vault.name
+    providers = {
+      google = google.google
+      kubernetes = kubernetes.kubernetes
+      helm = helm.helm
+
+    }
+}

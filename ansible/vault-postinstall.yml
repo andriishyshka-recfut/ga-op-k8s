@@ -143,11 +143,14 @@
                     {%- else -%}
                     {{ root_token | trim }}
                     {%- endif -%}"
+      oidc_setup: "{% if oidc_discovery_url == 'SAMPLE' or oidc_client_id  == 'SAMPLE' or oidc_client_secret == 'SAMPLE' or
+       oidc_discovery_url | length < 1 or oidc_client_id | length < 1 or oidc_client_secret | length < 1 %}False{% else %}True{% endif %}"
 
   - name: Assert that vault token configured
     assert:
       that:
       - vault_token | length > 0
+      - ( initial_setup and oidc_setup ) or ( not initial_setup and not oidc_setup ) or oidc_setup
 
   - name: Configure vault
     block:
@@ -170,11 +173,6 @@
       ignore_errors: True
 
     - debug: msg="{{ status }}"
-
-    - name: Set validation criteria for oidc configuration
-      set_fact:
-        oidc_setup: "{% if oidc_discovery_url == 'SAMPLE' or oidc_client_id | length == 0 %}False{% else %}True{% endif %}"
-      when:
 
     - name: enable oidc secret engine
       hashivault_auth_method:
