@@ -32,6 +32,7 @@ resource "kubernetes_cluster_role_binding" "vault" {
 resource "null_resource" "ansible_vault_k8s_auth" {
   triggers = {
     playbook_contents = md5(file("${path.module}/../../ansible/vault-k8s-auth.yml"))
+    cluster_endppoint = google_container_cluster.cluster.endpoint
   }
   provisioner "local-exec" {
     command = <<COMMAND
@@ -43,9 +44,9 @@ COMMAND
       CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
-      VAULT_ADDR              = "https://vault.${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
+      VAULT_ADDR              = var.vault_addr
       CA_CERT                 = var.vault_ca_certificate
-      kubernetes_host         = var.vault_addr
+      kubernetes_host         = "https://${google_container_cluster.cluster.endpoint}"
       kubernetes_ca_cert      = lookup(data.kubernetes_secret.vault.data, "ca.crt")
       token_reviewer_jwt      = lookup(data.kubernetes_secret.vault.data, "token")
     }
