@@ -36,6 +36,7 @@
 
   - name: Generate istio install manifest
     shell: |
+      set -e
       export PATH={{ temp_dir }}/istio-{{ istio_version }}/bin:$PATH
       istioctl manifest generate  \
         --set values.gateways.istio-ingressgateway.sds.enabled=true \
@@ -58,16 +59,17 @@
       creates: "{{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml"
 
 
-  #- name:  Validate if we should apply manifest or not
-    #shell: |
-      #export PATH={{ temp_dir }}/bin:$PATH
-      #istioctl verify-install -f {{ temp_dir }}/install-manifest.yaml
-    #changed_when: False
-    #register: istioctl_verify
-    #ignore_errors: True
-#
-  #- debug: msg="{{ istioctl_verify.stderr | to_nice_json }}"
-#
+  # - name:  Validate if we should apply manifest or not
+  #   shell: |
+  #     export PATH={{ temp_dir }}/bin:$PATH
+  #     #istioctl verify-install -f
+  #     cat {{ temp_dir }}/install-manifest.yaml
+  #   changed_when: False
+    # register: istioctl_verify
+    # ignore_errors: True
+
+  # - debug: msg="{{ istioctl_verify | to_nice_json }}"
+
   - name: Apply manifest
     shell: |
       kubectl apply --server {{ k8s_host_url }} \

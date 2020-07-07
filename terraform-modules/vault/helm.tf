@@ -1,21 +1,21 @@
 
 resource "helm_release" "vault" {
-  name       = "vault"
-  chart      = "${path.module}/umbrella-vault"
+  name  = "vault"
+  chart = "${path.module}/umbrella-vault"
 
-  version    = "0.1.0"
-  namespace = "vault"
+  version           = "0.1.0"
+  namespace         = "vault"
   dependency_update = "true"
 
   values = [
-    templatefile("${path.module}/helm_config.tmpl" ,
+    templatefile("${path.module}/helm_config.tmpl",
       {
-        project = data.google_project.vault.project_id ,
-        key_ring = var.autounseal_kms_key_ring_name ,
-        crypto_key = var.autounseal_kms_crypto_key_name ,
-        bucket = var.bucket_name ,
-        version = var.vault-version
-        subdomain = "${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
+        project    = data.google_project.vault.project_id,
+        key_ring   = var.autounseal_kms_key_ring_name,
+        crypto_key = var.autounseal_kms_crypto_key_name,
+        bucket     = var.bucket_name,
+        version    = var.vault-version
+        subdomain  = "${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
       }
     )
   ]
@@ -24,7 +24,8 @@ resource "helm_release" "vault" {
   depends_on = [
     kubernetes_secret.kms-creds,
     kubernetes_namespace.vault,
-    google_service_account.vault-server
+    google_service_account.vault-server,
+    var.gke_cluster_endpoint
 
   ]
 }
@@ -33,7 +34,7 @@ resource "helm_release" "vault" {
 
 resource "kubernetes_secret" "kms-creds" {
   metadata {
-    name = "kms-creds"
+    name      = "kms-creds"
     namespace = "vault"
   }
   data = {
@@ -48,4 +49,7 @@ resource "kubernetes_namespace" "vault" {
       istio-injection = "enabled"
     }
   }
+  depends_on = [
+    var.gke_cluster_endpoint
+  ]
 }

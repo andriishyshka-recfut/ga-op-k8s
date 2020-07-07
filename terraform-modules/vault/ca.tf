@@ -29,13 +29,13 @@ resource "tls_self_signed_cert" "example" {
 
 resource "kubernetes_secret" "example" {
   metadata {
-    name = "basic-ca"
+    name      = "basic-ca"
     namespace = "istio-system"
   }
 
   data = {
-    "tls.key"  = tls_private_key.example.private_key_pem
-    "tls.crt"  = tls_self_signed_cert.example.cert_pem
+    "tls.key" = tls_private_key.example.private_key_pem
+    "tls.crt" = tls_self_signed_cert.example.cert_pem
   }
 
   type = "kubernetes.io/tls"

@@ -11,4 +11,19 @@ data "google_compute_network" "vpc" {
 
 variable "settings" {}
 
-variable "cluster" { }
+variable "cluster" {}
+
+# terraform {
+#   experiments = [variable_validation]
+# }
+#
+variable "vault_addr" {}
+#   # validation {
+#   #   condition     = length(var.vault_addr) > 1
+#   #   error_message = "Hmm, vault_addr doesn't looks like url ."
+#   #
+#   # }
+# }
+#
+variable "vault_ca_certificate" {}
+variable "vault_unsealed" {}

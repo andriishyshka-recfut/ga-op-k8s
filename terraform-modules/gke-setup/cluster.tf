@@ -6,10 +6,10 @@ resource "google_container_cluster" "cluster" {
 
   provider = google-beta
 
-  name     = var.settings.cluster_settings[var.cluster].subdomain
-  location = var.settings.cluster_settings[var.cluster].region
-  network = data.google_compute_network.vpc.self_link
-  subnetwork = google_compute_subnetwork.net.name
+  name                      = var.settings.cluster_settings[var.cluster].subdomain
+  location                  = var.settings.cluster_settings[var.cluster].region
+  network                   = data.google_compute_network.vpc.self_link
+  subnetwork                = google_compute_subnetwork.net.name
   default_max_pods_per_node = var.settings.cluster_settings[var.cluster].pods_per_node
   #min_master_version = data.google_container_engine_versions.version.latest_master_version
   release_channel {
@@ -30,7 +30,7 @@ resource "google_container_cluster" "cluster" {
     }
   }
   node_config {
-    tags = ["${var.cluster}"]
+    tags            = ["${var.cluster}"]
     service_account = google_service_account.gke-sa.unique_id
     oauth_scopes = [
       "https://www.googleapis.com/auth/logging.write",
@@ -38,7 +38,7 @@ resource "google_container_cluster" "cluster" {
     ]
   }
 
-// Configure the cluster to have private nodes and private control plane access only
+  // Configure the cluster to have private nodes and private control plane access only
   private_cluster_config {
     enable_private_endpoint = "true"
     enable_private_nodes    = "true"
@@ -54,8 +54,8 @@ resource "google_container_cluster" "cluster" {
 
   // Allocate IPs in our subnetwork
   ip_allocation_policy {
-    cluster_secondary_range_name  = element(google_compute_subnetwork.net.secondary_ip_range,0).range_name
-    services_secondary_range_name = element(google_compute_subnetwork.net.secondary_ip_range,1).range_name
+    cluster_secondary_range_name  = element(google_compute_subnetwork.net.secondary_ip_range, 0).range_name
+    services_secondary_range_name = element(google_compute_subnetwork.net.secondary_ip_range, 1).range_name
   }
 
   network_policy {
@@ -67,7 +67,7 @@ resource "google_container_cluster" "cluster" {
     }
     http_load_balancing {
       disabled = true
-      }
+    }
     horizontal_pod_autoscaling {
       disabled = false
     }
@@ -93,10 +93,10 @@ resource "google_container_cluster" "cluster" {
 resource "google_container_node_pool" "cluster_preemptible_nodes" {
 
   provider = google-beta
-  name       = "${var.cluster}-node-pool"
-  location   = var.settings.cluster_settings[var.cluster].region
-  cluster    = google_container_cluster.cluster.name
-  autoscaling  {
+  name     = "${var.cluster}-node-pool"
+  location = var.settings.cluster_settings[var.cluster].region
+  cluster  = google_container_cluster.cluster.name
+  autoscaling {
     min_node_count = 1
     max_node_count = 2
   }
@@ -104,9 +104,9 @@ resource "google_container_node_pool" "cluster_preemptible_nodes" {
   # version = data.google_container_engine_versions.version.latest_node_version
 
   node_config {
-    preemptible  = true
-    machine_type = "e2-standard-2"
-    tags = ["${var.cluster}"]
+    preemptible     = true
+    machine_type    = "e2-standard-2"
+    tags            = ["${var.cluster}"]
     service_account = google_service_account.gke-sa.unique_id
 
     metadata = {

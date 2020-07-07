@@ -40,7 +40,7 @@ variable "vault_service_account_key_iam_roles" {
 
 # Grant service account access to the key
 resource "google_kms_crypto_key_iam_member" "vault-init" {
-  count   = length(var.vault_service_account_key_iam_roles)
+  count         = length(var.vault_service_account_key_iam_roles)
   crypto_key_id = var.autounseal_kms_crypto_key_id
   role          = element(var.vault_service_account_key_iam_roles, count.index)
   member        = "serviceAccount:${google_service_account.vault-server.email}"

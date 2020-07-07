@@ -1,0 +1,31 @@
+---
+- hosts: localhost
+  connection: local
+  become: False
+  vars_files:
+    - vars/main.yml
+  vars:
+    kubernetes_host: "{{ lookup('env','kubernetes_host') }}"
+    kubernetes_ca_cert: "{{ lookup('env','kubernetes_ca_cert') }}"
+    token_reviewer_jwt: "{{ lookup('env','token_reviewer_jwt') }}"
+  tasks:
+  - name: Import vault pre execution tasks
+    import_tasks: imports/vault_head.yml
+
+  - name: Configure vault
+    block:
+    - name: enable k8s secret engine
+      hashivault_auth_method:
+          method_type: kubernetes
+          mount_point: "k8s-{{ cluster_name }}"
+
+    - name: create config
+      hashivault_k8s_auth_config:
+          kubernetes_host: "{{ kubernetes_host }}"
+          kubernetes_ca_cert: "{{ kubernetes_ca_cert }}"
+          token_reviewer_jwt: "{{ token_reviewer_jwt }}"
+          mount_point: "k8s-{{ cluster_name }}"
+
+    environment:
+       REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
+       VAULT_CACERT: "{{ vault_ca_path }}"

@@ -10,82 +10,9 @@
     oidc_client_id: "{{ lookup('env','oidc_client_id') | trim }}"
     oidc_client_secret: "{{ lookup('env','oidc_client_secret') | trim }}"
   tasks:
-  - name: Create temp_dir
-    file:
-        path: "{{ temp_dir }}"
-        state: directory
-        mode: '0755'
 
-  - name: Set vault FQDN
-    set_fact:
-        vault_addr: "{{ lookup('env','VAULT_ADDR')  }}"
-        vault_ca_path: "{{ temp_dir }}/vault_ca"
-
-  - name: try {{ vault_addr }}
-    uri:
-      url: "{{ vault_addr }}/ui/"
-      return_content: yes
-      validate_certs: no
-    register: result
-    retries: 3
-    delay: 10
-    until: result.content.find("Vault") != -1
-
-  - name: Put vault_cert on temp_fs
-    copy:
-      content: "{{ lookup('env','CA_CERT') }}"
-      dest: "{{ vault_ca_path }}"
-
-
-  - name: Find ca bundle path
-    shell: |
-      import certifi
-      print(certifi.where())
-    args:
-      executable: "{{ ansible_python_interpreter }}"
-    register: ca_bundle_path
-
-  - name: Set requests_ca_bundle fact
-    set_fact:
-      requests_ca_bundle: "{{ ca_bundle_path.stdout | trim }}"
-
-  - name: Update ca bundle with certifi
-    shell: |
-      import certifi
-      import requests
-      import sys
-      import os
-      try:
-        print('Checking connection to Vault...')
-        test = requests.get('{{ vault_addr }}')
-      except requests.exceptions.SSLError as err:
-        print('SSL Error. Adding custom certs to Certifi store...')
-        cafile = certifi.where()
-        customca = os.environ.get('CA_CERT')
-        print(customca)
-        with open(cafile, 'ab') as outfile:
-          outfile.write(bytes(customca,encoding='utf8'))
-        print(certifi.where())
-      try:
-        print('Checking connection to Vault...')
-        test = requests.get('{{ vault_addr }}')
-        print('That might have worked.')
-      except requests.exceptions.SSLError as err:
-        print('Stil getting same exception. something went with certifi')
-        print(err)
-        sys.exit(1)
-    args:
-      executable: "{{ ansible_python_interpreter }}"
-    environment:
-       REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
-       #SSL_CERT_FILE: "{{ vault_ca_path }}"
-
-
-  # - name: test2
-  #   shell: |
-  #     cat /usr/local/lib/python3.7/dist-packages/certifi/cacert.pem
-  #   register: test
-  # - debug: msg="{{ test | to_nice_json }}"
+  - name: Import vault pre execution tasks
+    import_tasks: imports/vault_head.yml
 
   - name: Get vault status
     hashivault_status:
@@ -224,6 +151,17 @@
         options:
           path: "stdout"
 
+
+    # We have to copy root token to continue vault provisioning with terraform
+    # when running from docker /home mounted as tmpfs so creds never reached disk
+    # https://github.com/hashicorp/terraform/issues/610
+    # Terraform vault provider will automaticaly read ~/.vault-token if no other options provided
+    # https://www.terraform.io/docs/providers/vault/index.html#token
+    # And stil not working becouse of https://github.com/hashicorp/terraform/issues/2430
+    - name: Create "~/.vault-token
+      copy:
+        content: "{{ vault_token }}"
+        dest: "~/.vault-token"
 
     environment:
        REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
