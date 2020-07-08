@@ -26,6 +26,26 @@
           token_reviewer_jwt: "{{ token_reviewer_jwt }}"
           mount_point: "k8s-{{ cluster_name }}"
 
+    - name: Create/Update Role
+      hashivault_pki_role:
+        mount_point: "pki"
+        login_mount_point: "auth/k8s-{{ cluster_name }}"
+        name: "cert-manager-{{ cluster_name }}"
+        config:
+          allow_bare_domains: True
+          allow_subdomains: True
+          allow_any_name: True
+          allowed_domains:
+          - "{{ cluster_name }}.{{ domain }}"
+
+    - name: Create k8s auth role for
+      hashivault_k8s_auth_role:
+        name: "cert-manager-{{ cluster_name }}"
+        policies: ["pki"]
+        bound_service_account_names: ["infra-cert-manager"]
+        bound_service_account_namespaces: ["kube-system"]
+        mount_point: "k8s-{{ cluster_name }}"
+
     environment:
        REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
        VAULT_CACERT: "{{ vault_ca_path }}"

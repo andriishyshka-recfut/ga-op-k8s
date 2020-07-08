@@ -8,6 +8,19 @@ data "google_compute_network" "vpc" {
 }
 
 
+// Upload temp key to be able run ansible
+
+data "external" "data" {
+  program = ["sh", "../data.sh"]
+}
+
+data "google_client_openid_userinfo" "me" {
+}
+data "google_service_account" "me" {
+  account_id = element(split("@", data.google_client_openid_userinfo.me.email), 0)
+}
+data "google_client_config" "default" {
+}
 
 variable "settings" {}
 

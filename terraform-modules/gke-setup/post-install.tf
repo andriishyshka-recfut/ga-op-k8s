@@ -1,16 +1,3 @@
-// Upload temp key to be able run ansible
-
-data "external" "data" {
-  program = ["sh", "../data.sh"]
-}
-
-data "google_client_openid_userinfo" "me" {
-}
-data "google_service_account" "me" {
-  account_id = element(split("@", data.google_client_openid_userinfo.me.email), 0)
-}
-data "google_client_config" "default" {
-}
 
 
 resource "google_os_login_ssh_public_key" "cache" {
@@ -28,27 +15,7 @@ resource "google_os_login_ssh_public_key" "cache" {
 
 
 
-resource "helm_release" "cert-manager" {
-  name       = "${var.cluster}-cert-manager"
-  repository = "https://charts.jetstack.io"
-  chart      = "cert-manager"
-  version    = var.settings.cluster_settings[var.cluster].cert_manager_version
-  namespace  = "kube-system"
-  set {
-    name  = "installCRDs"
-    value = "true"
-  }
 
-  // Configure cert-manager to cleanup secrets on delete
-  // https://github.com/jetstack/cert-manager/pull/819
-  set {
-    name  = "extraArgs[0]"
-    value = "--enable-certificate-owner-ref=true"
-  }
-  depends_on = [
-    google_container_node_pool.cluster_preemptible_nodes
-  ]
-}
 
 
 resource "local_file" "ansible_gcp_inventory" {
@@ -69,7 +36,7 @@ resource "null_resource" "ansible_istio_playbook" {
     command = <<COMMAND
     cd  ${path.module}/../../ansible && \
     ansible-playbook istio.yml \
-      -e 'ansible_python_interpreter=/usr/bin/python3' 
+      -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
     environment = {
       CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
