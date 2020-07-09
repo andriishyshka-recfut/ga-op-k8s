@@ -26,3 +26,7 @@ variable "bucket_name" {}
 variable "autounseal_kms_crypto_key_id" {}
 variable "autounseal_kms_crypto_key_name" {}
 variable "autounseal_kms_key_ring_name" {}
+
+variable "expose_vault_with_istio" {
+  default = false
+}

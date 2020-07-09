@@ -1,0 +1,18 @@
+
+- name: Create temp_dir
+  file:
+        path: "{{ temp_dir }}"
+        state: directory
+        mode: '0755'
+
+- name: Put cluster_ca_certificate
+  copy:
+      dest: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
+      content: "{{ k8s_cluster_ca_certificate }}"
+
+- name: Port forward for initial setup
+  shell: |
+    curl http://127.0.0.1:8200 || nohup kubectl --server {{ k8s_host_url }} \
+        --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt \
+        port-forward service/vault 8200 -n vault  </dev/null >/dev/null 2>&1 &
+    sleep 10

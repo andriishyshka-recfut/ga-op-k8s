@@ -1,11 +1,8 @@
 
-subdomain: "${subdomain}"
-
-vault:
-    global:
+global:
       enabled: true
 
-    server:
+server:
       image:
         repository: 'vault'
         tag: '${version}'

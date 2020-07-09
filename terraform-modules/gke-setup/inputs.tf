@@ -30,7 +30,7 @@ variable "cluster" {}
 #   experiments = [variable_validation]
 # }
 #
-variable "vault_addr" {}
+# variable "vault_addr" {}
 #   # validation {
 #   #   condition     = length(var.vault_addr) > 1
 #   #   error_message = "Hmm, vault_addr doesn't looks like url ."
@@ -38,5 +38,5 @@ variable "vault_addr" {}
 #   # }
 # }
 #
-variable "vault_ca_certificate" {}
+# variable "vault_ca_certificate" {}
 variable "vault_unsealed" {}

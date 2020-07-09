@@ -2,7 +2,7 @@ FROM debian:10
 
 
 RUN apt update && \
-    apt install -y python3 python3-pip unzip ssh jq wget && \
+    apt install -y python3 python3-pip unzip ssh jq wget curl && \
     python3 -m pip install ansible==2.9.9 kubernetes openshift requests google-auth ansible-modules-hashivault &&\
     rm -rf /var/lib/apt/lists/*
 

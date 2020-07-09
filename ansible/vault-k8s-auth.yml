@@ -10,7 +10,11 @@
     token_reviewer_jwt: "{{ lookup('env','token_reviewer_jwt') }}"
   tasks:
   - name: Import vault pre execution tasks
-    import_tasks: imports/vault_head.yml
+    import_tasks: imports/vault-port-forward.yml
+
+  - name: Set vault token
+    set_fact:
+      vault_token: "{{ lookup('file','~/.vault-token',errors='ignore') }}"
 
   - name: Configure vault
     block:
@@ -47,5 +51,7 @@
         mount_point: "k8s-{{ cluster_name }}"
 
     environment:
-       REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
-       VAULT_CACERT: "{{ vault_ca_path }}"
+       # REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
+       VAULT_ADDR: "http://127.0.0.1:8200"
+       VAULT_TOKEN: "{{ vault_token if ( vault_token | length > 0 ) else  lookup('env','VAULT_TOKEN') }}"
+       # VAULT_CACERT: "{{ vault_ca_path }}"

@@ -28,15 +28,48 @@ COMMAND
       CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
-      VAULT_ADDR              = "https://vault.${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
-      CA_CERT                 = tls_self_signed_cert.example.cert_pem
-      oidc_client_id          = var.oidc_client_id
-      oidc_discovery_url      = var.oidc_discovery_url
-      oidc_client_secret      = var.oidc_client_secret
+      vault_addr              = "https://vault.${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
+      # CA_CERT                 = tls_self_signed_cert.example.cert_pem
+      oidc_client_id         = var.oidc_client_id
+      oidc_discovery_url     = var.oidc_discovery_url
+      oidc_client_secret     = var.oidc_client_secret
+      HOST                   = var.gke_cluster_endpoint
+      API_KEY                = var.gke_bearer_token
+      CLUSTER_CA_CERTIFICATE = var.cluster_ca_certificate
     }
   }
   depends_on = [
-    tls_self_signed_cert.example,
     helm_release.vault
+  ]
+}
+
+resource "null_resource" "ansible_expose_vault_with_istio" {
+
+  triggers = {
+    template = md5(file("${path.module}/vault-gateway.yaml.tmpl"))
+    vault    = helm_release.vault.id
+  }
+  provisioner "local-exec" {
+    command = <<COMMAND
+    $($expose_vault_with_istio) &&\
+    cd  ${path.module}/../../ansible && \
+    ansible-playbook k8s-apply.yml \
+      -e 'ansible_python_interpreter=/usr/bin/python3'
+COMMAND
+    environment = {
+      CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
+      CLUSTER                 = var.cluster
+      ANSIBLE_STDOUT_CALLBACK = "debug"
+      HOST                    = var.gke_cluster_endpoint
+      API_KEY                 = var.gke_bearer_token
+      CLUSTER_CA_CERTIFICATE  = var.cluster_ca_certificate
+      k8s_apply_value         = templatefile("${path.module}/vault-gateway.yaml.tmpl", { vault_fqdn = "vault.${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}" })
+      expose_vault_with_istio = var.expose_vault_with_istio == true ? "true" : "false"
+    }
+  }
+  depends_on = [
+    helm_release.vault,
+    null_resource.ansible_vault_playbook,
+    var.expose_vault_with_istio
   ]
 }

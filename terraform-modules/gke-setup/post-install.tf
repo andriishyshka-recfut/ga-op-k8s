@@ -49,7 +49,8 @@ COMMAND
   }
   depends_on = [
     google_container_node_pool.cluster_preemptible_nodes,
-    local_file.ansible_gcp_inventory
+    local_file.ansible_gcp_inventory,
+    null_resource.ansible_cert-manager_playbook
   ]
 }
 

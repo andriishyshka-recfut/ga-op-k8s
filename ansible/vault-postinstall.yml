@@ -9,15 +9,25 @@
     oidc_discovery_url: "{{ lookup('env','oidc_discovery_url') | trim }}"
     oidc_client_id: "{{ lookup('env','oidc_client_id') | trim }}"
     oidc_client_secret: "{{ lookup('env','oidc_client_secret') | trim }}"
+    vault_addr: "{{ lookup('env','vault_addr') }}"
+
   tasks:
 
   - name: Import vault pre execution tasks
-    import_tasks: imports/vault_head.yml
+    import_tasks: imports/vault-port-forward.yml
 
+  # - name: Test
+  #   shell: |
+  #       ps axf
+  #       curl 127.0.0.1:8200
+  #   register: register
+  # - debug: msg="{{ register | to_nice_json }}"
+  #
   - name: Get vault status
     hashivault_status:
     environment:
-      REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
+      VAULT_ADDR: "http://127.0.0.1:8200"
+    #   REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
     register: vault_status
     retries: 5
     delay: 10
@@ -35,7 +45,8 @@
       changed_when: True
       register: init_out
       environment:
-        VAULT_CACERT: "{{ vault_ca_path }}"
+        VAULT_ADDR: "http://127.0.0.1:8200"
+        #VAULT_CACERT: "{{ vault_ca_path }}"
     # - debug: msg="{{ init_out | to_nice_json }}"
 
     - name: Set facts based on operator init
@@ -91,7 +102,7 @@
       delay: 10
       until: status.rc == 0
 
-    - name:
+    - name: Write recovery keys
       hashivault_write:
         secret: "recovery-keys"
         data: "{{ recovery_keys | from_yaml }}"
@@ -189,6 +200,7 @@
       until: status.rc == 0
 
     environment:
-       REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
-       VAULT_CACERT: "{{ vault_ca_path }}"
+       # REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
+       # VAULT_CACERT: "{{ vault_ca_path }}"
+       VAULT_ADDR: "http://127.0.0.1:8200"
        VAULT_TOKEN: "{{ vault_token }}"
