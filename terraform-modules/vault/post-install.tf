@@ -44,7 +44,7 @@ COMMAND
 }
 
 resource "null_resource" "ansible_expose_vault_with_istio" {
-
+  count = var.settings.cluster_settings[var.cluster].vault.istio_expose == true ? 1 : 0
   triggers = {
     template = md5(file("${path.module}/vault-gateway.yaml.tmpl"))
     vault    = helm_release.vault.id
@@ -63,13 +63,12 @@ COMMAND
       HOST                    = var.gke_cluster_endpoint
       API_KEY                 = var.gke_bearer_token
       CLUSTER_CA_CERTIFICATE  = var.cluster_ca_certificate
-      k8s_apply_value         = templatefile("${path.module}/vault-gateway.yaml.tmpl", { vault_fqdn = "vault.${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}" })
-      expose_vault_with_istio = var.expose_vault_with_istio == true ? "true" : "false"
+      k8s_apply_value         = templatefile("${path.module}/vault-gateway.yaml.tmpl", { vault_fqdn = var.settings.cluster_settings[var.cluster].vault.fqdn })
     }
   }
   depends_on = [
     helm_release.vault,
     null_resource.ansible_vault_playbook,
-    var.expose_vault_with_istio
+    var.istio_deployment_completion_lock
   ]
 }

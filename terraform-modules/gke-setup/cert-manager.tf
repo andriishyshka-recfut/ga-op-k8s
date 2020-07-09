@@ -2,7 +2,7 @@ resource "helm_release" "cert-manager" {
   name       = "${var.cluster}-cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = var.settings.cluster_settings[var.cluster].cert_manager_version
+  version    = var.settings.cluster_settings[var.cluster].cert_manager.version
   namespace  = "kube-system"
   set {
     name  = "installCRDs"
@@ -40,9 +40,9 @@ data "kubernetes_service_account" "cert-manager" {
 }
 
 resource "null_resource" "ansible_cert-manager_playbook" {
+  count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
   triggers = {
-    //always_run = "${timestamp()}"
-    // istio_version_change = var.settings.cluster_settings[var.cluster].istio_version
+
     gke_cluster_change = google_container_cluster.cluster.id
     playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
   }
@@ -59,7 +59,9 @@ COMMAND
       HOST                    = "https://${google_container_cluster.cluster.endpoint}"
       API_KEY                 = data.google_client_config.default.access_token
       CLUSTER_CA_CERTIFICATE  = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
-      k8s_apply_value         = templatefile("${path.module}/certificates.yaml.tmpl", { default_secret_name = data.kubernetes_service_account.cert-manager.default_secret_name })
+      k8s_apply_value = templatefile("${path.module}/certificates.yaml.tmpl",
+        { default_secret_name = data.kubernetes_service_account.cert-manager.default_secret_name,
+      vault_addr = var.settings.cluster_settings[var.cluster].vault_integration.connection == "local" ? var.settings.cluster_settings[var.cluster].vault_integration.vault_addr : "http://vault.vault.svc" })
     }
   }
   depends_on = [

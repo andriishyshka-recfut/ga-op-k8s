@@ -1,4 +1,5 @@
 resource "kubernetes_service_account" "vault" {
+  count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
   metadata {
     name      = "vault"
     namespace = "kube-system"
@@ -6,13 +7,15 @@ resource "kubernetes_service_account" "vault" {
 }
 
 data "kubernetes_secret" "vault" {
+  count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
   metadata {
-    name      = "${kubernetes_service_account.vault.default_secret_name}"
+    name      = "${kubernetes_service_account.vault[count.index].default_secret_name}"
     namespace = "kube-system"
   }
 }
 
 resource "kubernetes_cluster_role_binding" "vault" {
+  count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
   metadata {
     name = "vault-auth"
   }
@@ -30,6 +33,7 @@ resource "kubernetes_cluster_role_binding" "vault" {
 
 
 resource "null_resource" "ansible_vault_k8s_auth" {
+  count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
   triggers = {
     playbook_contents = md5(file("${path.module}/../../ansible/vault-k8s-auth.yml"))
     cluster_endppoint = google_container_cluster.cluster.endpoint
@@ -45,12 +49,12 @@ COMMAND
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
       kubernetes_host         = "https://${google_container_cluster.cluster.endpoint}"
-      kubernetes_ca_cert      = lookup(data.kubernetes_secret.vault.data, "ca.crt")
-      token_reviewer_jwt      = lookup(data.kubernetes_secret.vault.data, "token")
+      kubernetes_ca_cert      = lookup(data.kubernetes_secret.vault[count.index].data, "ca.crt")
+      token_reviewer_jwt      = lookup(data.kubernetes_secret.vault[count.index].data, "token")
     }
   }
   depends_on = [
-    var.vault_unsealed
+    var.vault_deployment_completion_lock
   ]
 }
 # provider vault {

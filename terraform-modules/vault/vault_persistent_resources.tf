@@ -1,5 +1,4 @@
-data "google_project" "vault" {
-}
+
 
 #Create the storage bucket
 resource "google_storage_bucket" "vault" {

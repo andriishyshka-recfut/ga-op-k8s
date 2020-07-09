@@ -12,11 +12,10 @@ resource "helm_release" "vault" {
     templatefile("${path.module}/helm_config.tmpl",
       {
         project    = data.google_project.vault.project_id,
-        key_ring   = var.autounseal_kms_key_ring_name,
-        crypto_key = var.autounseal_kms_crypto_key_name,
-        bucket     = var.bucket_name,
-        version    = var.vault-version
-        subdomain  = "${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
+        key_ring   = google_kms_key_ring.vault.name,
+        crypto_key = google_kms_crypto_key.vault-init.name,
+        bucket     = google_storage_bucket.vault.name
+        version    = var.settings.cluster_settings[var.cluster].vault.version
       }
     )
   ]

@@ -10,7 +10,7 @@
     token_reviewer_jwt: "{{ lookup('env','token_reviewer_jwt') }}"
   tasks:
   - name: Import vault pre execution tasks
-    import_tasks: imports/vault-port-forward.yml
+    import_tasks: includes/vault-port-forward.yml
 
   - name: Set vault token
     set_fact:

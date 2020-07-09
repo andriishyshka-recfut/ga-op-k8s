@@ -8,25 +8,21 @@ variable "region" {
   description = "Region in which to create the cluster and run Atlantis."
 }
 
+// k8s connection settings
 variable "gke_cluster_endpoint" {}
-
 variable "gke_bearer_token" {}
-
 variable "cluster_ca_certificate" {}
 
+// Cluster variables and settings from common-vars module
 variable "settings" {}
-
 variable "cluster" {}
-variable "vault-version" {}
+
+
+// OIDC setup settings. Should be passed as env variables during execution
 variable "oidc_discovery_url" { default = "SAMPLE" }
 variable "oidc_client_id" { default = "SAMPLE" }
 variable "oidc_client_secret" { default = "SAMPLE" }
 
-variable "bucket_name" {}
-variable "autounseal_kms_crypto_key_id" {}
-variable "autounseal_kms_crypto_key_name" {}
-variable "autounseal_kms_key_ring_name" {}
 
-variable "expose_vault_with_istio" {
-  default = false
-}
+// Locks from  external modules
+variable "istio_deployment_completion_lock" {}
