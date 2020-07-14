@@ -21,14 +21,13 @@ resource "null_resource" "ansible_vault_playbook" {
     command = <<COMMAND
     cd  ${path.module}/../../ansible && \
     ansible-playbook vault-postinstall.yml \
-      --user  sa_${data.google_service_account.me.unique_id} \
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
     environment = {
       CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
-      vault_addr              = "https://vault.${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
+      # vault_addr              = "https://vault.${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
       # CA_CERT                 = tls_self_signed_cert.example.cert_pem
       oidc_client_id         = var.oidc_client_id
       oidc_discovery_url     = var.oidc_discovery_url

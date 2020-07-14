@@ -9,7 +9,7 @@
     oidc_discovery_url: "{{ lookup('env','oidc_discovery_url') | trim }}"
     oidc_client_id: "{{ lookup('env','oidc_client_id') | trim }}"
     oidc_client_secret: "{{ lookup('env','oidc_client_secret') | trim }}"
-    vault_addr: "{{ lookup('env','vault_addr') }}"
+    # vault_addr: "{{ lookup('env','vault_addr') }}"
 
   tasks:
 
@@ -187,7 +187,7 @@
         mount_point: "pki"
         common_name: Vault managed Root CA
         config:
-          ttl: "24h"
+          ttl: "{{ cluster_settings[cluster_name].vault.root_ttl | default('8640h') }}"
 
 
     - name: Create PKI policy

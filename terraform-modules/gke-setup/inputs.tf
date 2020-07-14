@@ -20,6 +20,19 @@ data "google_service_account" "me" {
 data "google_client_config" "default" {
 }
 
+data "external" "root_ca" {
+  # count   = lookup(var.settings.cluster_settings[var.cluster].vault_integration, "connection", "remote") == "local" ? 0 : 1
+  program = ["python3", "${path.module}/../data-vault-ca.py"]
+  query = {
+    vault_addr = var.settings.cluster_settings[var.cluster].vault_integration.vault_addr
+  }
+  depends_on = [
+    null_resource.ansible_vault_k8s_auth
+  ]
+}
+
+
+
 // Cluster settings from module common-vars
 variable "settings" {}
 variable "cluster" {}

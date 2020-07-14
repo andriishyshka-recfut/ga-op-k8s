@@ -49,7 +49,7 @@ resource "google_compute_firewall" "master-to-cluster" {
   network       = data.google_compute_network.vpc.self_link
   direction     = "INGRESS"
   source_ranges = [var.settings.cluster_settings[var.cluster].master_ipv4_cidr_block]
-  target_tags   = ["${var.cluster}"]
+  target_tags   = ["${var.cluster}", "infra"]
 
   allow {
     protocol = "icmp"
@@ -96,4 +96,22 @@ resource "google_compute_firewall" "cluster-to-cluster" {
     protocol = "udp"
   }
 
+}
+# Required for vault integration and other services
+resource "google_compute_firewall" "cluster-to-bastion" {
+  name          = "${var.cluster}-to-dmz"
+  network       = data.google_compute_network.vpc.self_link
+  direction     = "INGRESS"
+  source_tags   = ["${var.cluster}"]
+  source_ranges = [var.settings.cluster_settings[var.cluster].pods_subnet_range]
+  target_tags   = ["dmz"]
+
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["443"]
+  }
 }

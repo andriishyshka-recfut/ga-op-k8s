@@ -8,13 +8,37 @@
     kubernetes_host: "{{ lookup('env','kubernetes_host') }}"
     kubernetes_ca_cert: "{{ lookup('env','kubernetes_ca_cert') }}"
     token_reviewer_jwt: "{{ lookup('env','token_reviewer_jwt') }}"
+    token_file: '~/.vault-token'
   tasks:
-  - name: Import vault pre execution tasks
-    import_tasks: includes/vault-port-forward.yml
+  - name: Define vault connection type
+    set_fact:
+      vault_connection: "{{ cluster_settings[cluster_name].vault_integration.connection | default('remote') }}"
 
+  - name: Import vault pre execution tasks
+    include_tasks: includes/vault-port-forward.yml
+    when: vault_connection == 'local'
+
+  - name: Import vault pre execution tasks
+    include_tasks: includes/vault-cert-verify.yml
+    when: vault_connection != 'local'
+
+  # https://stackoverflow.com/questions/43212179/how-to-fallback-to-a-default-value-when-ansible-lookup-fails
   - name: Set vault token
     set_fact:
-      vault_token: "{{ lookup('file','~/.vault-token',errors='ignore') }}"
+      vault_token: "{{ lookup('file',token_file) }}"
+    when: token_file is exists
+  - name: Set vault token
+    set_fact:
+      vault_token: "{{ lookup('env','VAULT_TOKEN')  }}"
+    when: token_file is not exists
+  # - debug: msg="{{ root_token }}"
+  # - debug: msg="{{ vault_token }}"
+
+  - name: Assert that token configured correctly
+    assert:
+      that:
+        - vault_token | length > 1
+        - vault_token is regex("^s\.\w+$")
 
   - name: Configure vault
     block:
@@ -46,12 +70,12 @@
       hashivault_k8s_auth_role:
         name: "cert-manager-{{ cluster_name }}"
         policies: ["pki"]
-        bound_service_account_names: ["infra-cert-manager"]
+        bound_service_account_names: ["{{ cluster_name }}-cert-manager"]
         bound_service_account_namespaces: ["kube-system"]
         mount_point: "k8s-{{ cluster_name }}"
 
     environment:
        # REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
-       VAULT_ADDR: "http://127.0.0.1:8200"
-       VAULT_TOKEN: "{{ vault_token if ( vault_token | length > 0 ) else  lookup('env','VAULT_TOKEN') }}"
+       VAULT_ADDR: "{{ vault_addr }}"
+       VAULT_TOKEN: "{{ vault_token }}"
        # VAULT_CACERT: "{{ vault_ca_path }}"

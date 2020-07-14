@@ -5,12 +5,13 @@ metadata:
   namespace: default
 spec:
   vault:
-    path: pki/sign/cert-manager-infra
-    server: http://vault.vault.svc
+    path: pki/sign/cert-manager-${cluster}
+    server: ${vault_addr}
+    caBundle: ${ca}
     auth:
       kubernetes:
-        role: cert-manager-infra
-        mountPath: /v1/auth/k8s-infra
+        role: cert-manager-${cluster}
+        mountPath: /v1/auth/k8s-${cluster}
         secretRef:
           name: ${default_secret_name}
           key: token

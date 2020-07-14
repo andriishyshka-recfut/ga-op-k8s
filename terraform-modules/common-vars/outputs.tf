@@ -37,6 +37,8 @@ variable "cluster_settings" {
         "fqdn" = "vault.infra.digaweb.com"
         // Expose vault with istio Gateway and cert-manager cert
         "istio_expose" = true
+        // pki root cert expiration period. vault won't autorate certificate. Configured on certificate creation only
+        "root_ttl" = "8640h"
       }
       // Vault integration with cluster services section
       "vault_integration" = {
@@ -62,6 +64,28 @@ variable "cluster_settings" {
         // Whether to use certificates root CA from vault
         "use_vault_ca" = false
 
+      }
+    }
+    "test" = {
+      "test_workload_name"     = "d-note"
+      "region"                 = "us-east4"
+      "domain"                 = "digaweb.com"
+      "subdomain"              = "test"
+      "nodes_subnet_range"     = "10.101.1.0/24"
+      "pods_subnet_range"      = "10.101.8.0/21"
+      "services_subnet_range"  = "10.101.16.0/21"
+      "master_ipv4_cidr_block" = "172.26.1.0/28"
+      "pods_per_node"          = 33
+      "vault_integration" = {
+        "enabled"    = true
+        "vault_addr" = "https://vault.infra.digaweb.com"
+      }
+      "cert_manager" = {
+        "version" = "v0.15.0"
+      }
+      "istio" = {
+        "version"      = "1.6.4"
+        "use_vault_ca" = false
       }
     }
   }

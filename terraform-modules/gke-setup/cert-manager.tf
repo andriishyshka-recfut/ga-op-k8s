@@ -39,10 +39,11 @@ data "kubernetes_service_account" "cert-manager" {
   ]
 }
 
-resource "null_resource" "ansible_cert-manager_playbook" {
+
+resource "null_resource" "ansible_cert-manager_vault_integration_playbook" {
   count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
   triggers = {
-
+    vault_auth         = null_resource.ansible_vault_k8s_auth[0].id
     gke_cluster_change = google_container_cluster.cluster.id
     playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
   }
@@ -61,7 +62,8 @@ COMMAND
       CLUSTER_CA_CERTIFICATE  = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
       k8s_apply_value = templatefile("${path.module}/certificates.yaml.tmpl",
         { default_secret_name = data.kubernetes_service_account.cert-manager.default_secret_name,
-      vault_addr = var.settings.cluster_settings[var.cluster].vault_integration.connection == "local" ? var.settings.cluster_settings[var.cluster].vault_integration.vault_addr : "http://vault.vault.svc" })
+          vault_addr          = lookup(var.settings.cluster_settings[var.cluster].vault_integration, "connection", "remote") == "local" ? "http://vault.vault.svc" : var.settings.cluster_settings[var.cluster].vault_integration.vault_addr,
+      cluster = var.cluster, ca = base64encode(data.external.root_ca.result.ca) })
     }
   }
   depends_on = [
