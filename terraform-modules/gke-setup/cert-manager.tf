@@ -63,7 +63,7 @@ COMMAND
       k8s_apply_value = templatefile("${path.module}/certificates.yaml.tmpl",
         { default_secret_name = data.kubernetes_service_account.cert-manager.default_secret_name,
           vault_addr          = lookup(var.settings.cluster_settings[var.cluster].vault_integration, "connection", "remote") == "local" ? "http://vault.vault.svc" : var.settings.cluster_settings[var.cluster].vault_integration.vault_addr,
-      cluster = var.cluster, ca = base64encode(data.external.root_ca.result.ca) })
+      cluster = var.cluster, ca = base64encode(data.external.root_ca.result.ca), connection = lookup(var.settings.cluster_settings[var.cluster].vault_integration, "connection", "remote") })
     }
   }
   depends_on = [

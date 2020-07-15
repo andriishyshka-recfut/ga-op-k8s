@@ -8,7 +8,6 @@
     kubernetes_host: "{{ lookup('env','kubernetes_host') }}"
     kubernetes_ca_cert: "{{ lookup('env','kubernetes_ca_cert') }}"
     token_reviewer_jwt: "{{ lookup('env','token_reviewer_jwt') }}"
-    token_file: '~/.vault-token'
   tasks:
   - name: Define vault connection type
     set_fact:
@@ -22,17 +21,25 @@
     include_tasks: includes/vault-cert-verify.yml
     when: vault_connection != 'local'
 
-  # https://stackoverflow.com/questions/43212179/how-to-fallback-to-a-default-value-when-ansible-lookup-fails
-  - name: Set vault token
+  - name: check ~/.vault-token existance
+    stat:
+      path: "~/.vault-token"
+    register: token_file
+  - name: Set vault token from file
     set_fact:
-      vault_token: "{{ lookup('file',token_file) }}"
-    when: token_file is exists
-  - name: Set vault token
+      vault_token: "{{ lookup('file', token_file.stat.path ) }}"
+    when: token_file.stat.exists
+  - name: Set vault token from environment variable
     set_fact:
       vault_token: "{{ lookup('env','VAULT_TOKEN')  }}"
-    when: token_file is not exists
-  # - debug: msg="{{ root_token }}"
-  # - debug: msg="{{ vault_token }}"
+    when: not token_file.stat.exists
+
+  - name: Set vault addr to local
+    set_fact:
+      vault_addr: "http://127.0.0.1:8200"
+    when: vault_connection == 'local'
+
+  - debug: msg="{{ vault_addr }}"
 
   - name: Assert that token configured correctly
     assert:

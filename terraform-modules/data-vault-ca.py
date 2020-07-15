@@ -8,6 +8,7 @@ try:
 except ImportError:
     import simplejson as json
 import socket
+import OpenSSL
 from OpenSSL import SSL
 from OpenSSL import crypto
 from urllib.parse import urlparse
@@ -20,6 +21,7 @@ except ValueError as value_error:
     sys.exit(value_error)
 
 # Get certificate
+out_dict = {}
 if urlparse(input_dict["vault_addr"]).scheme == 'https' :
     context = SSL.Context(SSL.SSLv23_METHOD)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,7 +30,6 @@ if urlparse(input_dict["vault_addr"]).scheme == 'https' :
     connection.connect((vault_hostname ,443))
     connection.set_tlsext_host_name(str.encode(vault_hostname))
     connection.setblocking(1)
-    out_dict = {}
     try:
         connection.do_handshake()
     except OpenSSL.SSL.WantReadError:

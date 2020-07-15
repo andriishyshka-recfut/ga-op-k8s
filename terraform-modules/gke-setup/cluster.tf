@@ -50,6 +50,10 @@ resource "google_container_cluster" "cluster" {
       display_name = "bastion"
       cidr_block   = format("%s/32", data.google_compute_instance.bastion.network_interface.0.network_ip)
     }
+    cidr_blocks {
+      display_name = "infra"
+      cidr_block   = var.settings.cluster_settings["infra"].pods_subnet_range
+    }
   }
 
   // Allocate IPs in our subnetwork

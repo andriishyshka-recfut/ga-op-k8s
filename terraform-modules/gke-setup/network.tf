@@ -61,11 +61,13 @@ resource "google_compute_firewall" "master-to-cluster" {
 
 }
 
+
+
 resource "google_compute_firewall" "bastion-to-cluster" {
   name        = "bastion-to-${var.cluster}"
   network     = data.google_compute_network.vpc.self_link
   direction   = "INGRESS"
-  source_tags = ["dmz"]
+  source_tags = ["dmz", "infra"]
   target_tags = ["${var.cluster}"]
 
   allow {
