@@ -51,6 +51,9 @@ COMMAND
       kubernetes_host         = "https://${google_container_cluster.cluster.endpoint}"
       kubernetes_ca_cert      = lookup(data.kubernetes_secret.vault[count.index].data, "ca.crt")
       token_reviewer_jwt      = lookup(data.kubernetes_secret.vault[count.index].data, "token")
+      HOST                    = "https://${google_container_cluster.cluster.endpoint}"
+      API_KEY                 = data.google_client_config.default.access_token
+      CLUSTER_CA_CERTIFICATE  = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
     }
   }
   depends_on = [

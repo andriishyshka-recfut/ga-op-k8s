@@ -81,6 +81,19 @@
         bound_service_account_namespaces: ["kube-system"]
         mount_point: "k8s-{{ cluster_name }}"
 
+    - name: Set k8s creds
+      set_fact:
+          k8s_creds:
+            HOST: "{{ lookup('env','HOST') }}"
+            API_KEY: "{{ lookup('env','API_KEY') }}"
+            CLUSTER_CA_CERTIFICATE: "{{ lookup('env','CLUSTER_CA_CERTIFICATE') }}"
+
+    - name: Write cluster creds
+      hashivault_write:
+        secret: "kubernetes-{{ cluster_name }}"
+        data: "{{ k8s_creds | from_yaml }}"
+      register: status
+
     environment:
        # REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
        VAULT_ADDR: "{{ vault_addr }}"

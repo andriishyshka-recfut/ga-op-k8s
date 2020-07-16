@@ -108,7 +108,6 @@
         data: "{{ recovery_keys | from_yaml }}"
       when: initial_setup
       register: status
-      ignore_errors: True
 
     - debug: msg="{{ status }}"
 
