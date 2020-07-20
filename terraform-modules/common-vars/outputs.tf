@@ -60,7 +60,7 @@ variable "cluster_settings" {
         // Istio version to install during provisioning
         // this variable may be changed only before install. Istio has custom upgrade process
         // https://istio.io/docs/setup/upgrade/
-        "version" = "1.6.4"
+        "version" = "1.6.5"
         // Whether to use certificates root CA from vault
         "use_vault_ca" = false
 

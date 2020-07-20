@@ -1,3 +1,16 @@
+resource "kubernetes_namespace" "elastic-system" {
+  metadata {
+    name = "elastic-system"
+    labels = {
+      istio-injection = "enabled"
+    }
+  }
+  depends_on = [
+    google_container_node_pool.cluster_preemptible_nodes
+  ]
+}
+
+
 resource "null_resource" "ansible_eck_crd_playbook" {
   triggers = {
     # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
@@ -20,5 +33,6 @@ COMMAND
   }
   depends_on = [
     google_container_node_pool.cluster_preemptible_nodes,
+    kubernetes_namespace.elastic-system
   ]
 }
