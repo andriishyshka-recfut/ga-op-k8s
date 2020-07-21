@@ -18,7 +18,7 @@
     copy:
       dest: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
       content: "{{ k8s_cluster_ca_certificate }}"
-
+# https://unix.stackexchange.com/questions/336934/raise-128kib-limit-on-environment-variables-in-linux
   - name:  Apply from file
     k8s:
       state: present
