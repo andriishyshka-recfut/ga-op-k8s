@@ -29,6 +29,8 @@ variable "cluster_settings" {
       "master_ipv4_cidr_block" = "172.26.0.0/28"
       // https://www.terraform.io/docs/providers/google/r/container_cluster.html#default_max_pods_per_node
       "pods_per_node" = 33
+      // eck
+      "eck_version" = "1.2.0"
       // vault section
       "vault" = {
         // vault version
@@ -38,7 +40,7 @@ variable "cluster_settings" {
         // Expose vault with istio Gateway and cert-manager cert
         "istio_expose" = true
         // pki root cert expiration period. vault won't autorate certificate. Configured on certificate creation only
-        "root_ttl" = "8640h"
+        "root_ttl" = "86400h"
       }
       // Vault integration with cluster services section
       "vault_integration" = {

@@ -31,13 +31,13 @@ data "external" "root_ca" {
   ]
 }
 
-data "external" "eck_crd" {
-  # count   = lookup(var.settings.cluster_settings[var.cluster].vault_integration, "connection", "remote") == "local" ? 0 : 1
-  program = ["python3", "${path.module}/../data-get-eck-crd.py"]
-  query = {
-    eck_version = lookup(var.settings.cluster_settings[var.cluster], "eck_version", "1.1.2")
-  }
-}
+# data "external" "eck_crd" {
+#   # count   = lookup(var.settings.cluster_settings[var.cluster].vault_integration, "connection", "remote") == "local" ? 0 : 1
+#   program = ["python3", "${path.module}/../data-get-eck-crd.py"]
+#   query = {
+#     eck_version = lookup(var.settings.cluster_settings[var.cluster], "eck_version", "1.1.2")
+#   }
+# }
 
 
 // Cluster settings from module common-vars
