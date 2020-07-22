@@ -5,6 +5,7 @@ variable "service_account_iam_roles" {
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
     "roles/monitoring.viewer",
+    "roles/container.admin",
   ]
   description = <<-EOF
   List of the default IAM roles to attach to the service account on the
@@ -22,3 +23,16 @@ resource "google_project_iam_member" "service-account" {
   role   = element(var.service_account_iam_roles, count.index)
   member = format("serviceAccount:%s", google_service_account.gke-sa.email)
 }
+
+resource "google_service_account_key" "admin-key" {
+  service_account_id = google_service_account.gke-sa.name
+}
+# resource "google_project_iam_member" "cluster-admin" {
+#   member = format("serviceAccount:%s", google_service_account.gke-sa.email)
+#   role   = "roles/container.admin"
+#   condition {
+#     title       = " ${var.cluster}-kubernetes-admin"
+#     description = "Admin access to deploy resources. Key should be added to Vault server automatically"
+#     expression  = "resource.name == \"${google_container_cluster.cluster.id}\""
+#   }
+# }

@@ -54,6 +54,8 @@ COMMAND
       HOST                    = "https://${google_container_cluster.cluster.endpoint}"
       API_KEY                 = data.google_client_config.default.access_token
       CLUSTER_CA_CERTIFICATE  = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
+      SA_KEY                  = google_service_account_key.admin-key.private_key
+      SA_CERT                 = google_service_account_key.admin-key.public_key
     }
   }
   depends_on = [

@@ -84,9 +84,10 @@
     - name: Set k8s creds
       set_fact:
           k8s_creds:
-            HOST: "{{ lookup('env','HOST') }}"
-            API_KEY: "{{ lookup('env','API_KEY') }}"
-            CLUSTER_CA_CERTIFICATE: "{{ lookup('env','CLUSTER_CA_CERTIFICATE') }}"
+            HOST: "{{ k8s_host_url }}"
+            SA_KEY: "{{ lookup('env','SA_KEY') }}"
+            SA_CERT: "{{ lookup('env','SA_CERT') }}"
+            CLUSTER_CA_CERTIFICATE: "{{ k8s_cluster_ca_certificate }}"
 
     - name: Write cluster creds
       hashivault_write:

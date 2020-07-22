@@ -12,7 +12,11 @@
 
 - name: Port forward for initial setup
   shell: |
-    curl http://127.0.0.1:8200 || nohup kubectl --server {{ k8s_host_url }} \
+    curl http://127.0.0.1:8200 ||  nohup kubectl --server {{ k8s_host_url }} \
         --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt \
-        port-forward service/vault 8200 -n vault  </dev/null >/dev/null 2>&1 &
-    sleep 10
+        port-forward service/vault 8200 -n vault  </dev/null >/dev/null 2>&1  &
+    sleep 10 && curl http://127.0.0.1:8200
+  register: result
+  retries: 3
+  delay: 10
+  until: result is succeeded

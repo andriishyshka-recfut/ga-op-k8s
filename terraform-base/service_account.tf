@@ -13,8 +13,8 @@ locals {
     // required for consent screen creation clientauthconfig.brands.create
     // https://cloud.google.com/iap/docs/programmatic-oauth-clients#before-you-begin
     "iap.googleapis.com",
-    ]
-  }
+  ]
+}
 resource "google_project_service" "enabled-apis" {
   for_each = toset(local.admin_enabled_apis)
   service  = each.value
@@ -57,9 +57,9 @@ resource "google_service_account" "terraform" {
 }
 
 resource "google_project_iam_member" "service-account" {
-  count   = length(var.service_account_iam_roles)
-  role    = element(var.service_account_iam_roles, count.index)
-  member  = format("serviceAccount:%s", google_service_account.terraform.email)
+  count  = length(var.service_account_iam_roles)
+  role   = element(var.service_account_iam_roles, count.index)
+  member = format("serviceAccount:%s", google_service_account.terraform.email)
   depends_on = [
     google_project_service.enabled-apis
   ]
