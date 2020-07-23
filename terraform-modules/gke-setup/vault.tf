@@ -54,10 +54,8 @@ COMMAND
       HOST                    = "https://${google_container_cluster.cluster.endpoint}"
       API_KEY                 = data.google_client_config.default.access_token
       CLUSTER_CA_CERTIFICATE  = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
-      # SA_KEY                  = google_service_account_key.admin-key.private_key
-      # SA_CERT                 = google_service_account_key.admin-key.public_key
-      k8s_sa_token   = lookup(data.kubernetes_secret.admin.data, "token")
-      k8s_sa_ca_cert = lookup(data.kubernetes_secret.admin.data, "ca.crt")
+      k8s_sa_token            = lookup(data.kubernetes_secret.admin.data, "token")
+      k8s_sa_ca_cert          = lookup(data.kubernetes_secret.admin.data, "ca.crt")
     }
   }
   depends_on = [
