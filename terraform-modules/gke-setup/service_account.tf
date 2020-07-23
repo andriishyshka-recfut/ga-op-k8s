@@ -5,7 +5,7 @@ variable "service_account_iam_roles" {
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
     "roles/monitoring.viewer",
-    "roles/container.admin"
+    # "roles/container.admin"
   ]
   description = <<-EOF
   List of the default IAM roles to attach to the service account on the
@@ -24,9 +24,9 @@ resource "google_project_iam_member" "service-account" {
   member = format("serviceAccount:%s", google_service_account.gke-sa.email)
 }
 
-resource "google_service_account_key" "admin-key" {
-  service_account_id = google_service_account.gke-sa.name
-}
+# resource "google_service_account_key" "admin-key" {
+#   service_account_id = google_service_account.gke-sa.name
+# }
 #https://cloud.google.com/kubernetes-engine/docs/concepts/access-control
 # access to cluster should be managed with k8s RBAC not IAM
 # resource "google_project_iam_member" "cluster-admin" {
