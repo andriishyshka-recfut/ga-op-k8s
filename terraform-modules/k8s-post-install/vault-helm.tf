@@ -9,13 +9,13 @@ resource "helm_release" "vault" {
   dependency_update = "true"
 
   values = [
-    templatefile("${path.module}/helm_config.tmpl",
+    templatefile("${path.module}/vault_helm_config.tmpl",
       {
-        project    = data.google_project.vault.project_id,
-        key_ring   = google_kms_key_ring.vault.name,
-        crypto_key = google_kms_crypto_key.vault-init.name,
-        bucket     = google_storage_bucket.vault.name
-        version    = var.settings.cluster_settings[var.cluster].vault.version
+        project    = var.vault_resources.project,
+        key_ring   = var.vault_resources.key_ring,
+        crypto_key = var.vault_resources.crypto_key,
+        bucket     = var.vault_resources.bucket
+        version    = var.settings[var.cluster].vault.version
       }
     )
   ]
@@ -24,7 +24,6 @@ resource "helm_release" "vault" {
   depends_on = [
     kubernetes_secret.kms-creds,
     kubernetes_namespace.vault,
-    google_service_account.vault-server,
     var.gke_cluster_endpoint
 
   ]
@@ -38,8 +37,14 @@ resource "kubernetes_secret" "kms-creds" {
     namespace = "vault"
   }
   data = {
-    "credentials.json" = base64decode(google_service_account_key.vault-key.private_key)
+    "credentials.json" = var.vault_resources.vault_sa_priv_key
   }
+  depends_on = [
+    kubernetes_namespace.vault,
+    var.node_pool,
+    var.gke_cluster_endpoint
+
+  ]
 }
 
 resource "kubernetes_namespace" "vault" {
@@ -50,6 +55,7 @@ resource "kubernetes_namespace" "vault" {
     }
   }
   depends_on = [
-    var.gke_cluster_endpoint
+    var.gke_cluster_endpoint,
+    var.node_pool,
   ]
 }

@@ -1,15 +1,15 @@
 version: '3'
 services:
-  {{ cluster_name }}_upstreamd:
+  {{ subdomain }}_upstreamd:
     build:
       context: .
       dockerfile: upstream-Dockerfile
-    container_name: {{ cluster_name }}_upstreamd
+    container_name: {{ subdomain }}_upstreamd
     restart: unless-stopped
     volumes:
     - ./data/nginx:/nginx
     environment:
     - HOST={{ k8s_host_url }}
-    - UPSTREAM_FILE=/nginx/{{ cluster_name }}-stream.conf
+    - UPSTREAM_FILE=/nginx/{{ subdomain }}-stream.conf
     - CLUSTER_NAME={{ cluster_name }}
     - NODE_PORT={{ nodePort }}

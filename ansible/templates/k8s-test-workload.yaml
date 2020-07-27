@@ -76,7 +76,7 @@ metadata:
 spec:
   tls:
   rules:
-  - host: {{ test_workload_name }}.{{ cluster_name }}.{{ domain }}
+  - host: {{ test_workload_name }}.{{ subdomain }}.{{ domain }}
     http:
       paths:
       - backend:
@@ -85,7 +85,7 @@ spec:
         path: /
   tls:
   - hosts:
-    - {{ test_workload_name }}.{{ cluster_name }}.{{ domain }}  # This should match a DNS name in the Certificate
+    - {{ test_workload_name }}.{{ subdomain }}.{{ domain }}  # This should match a DNS name in the Certificate
     secretName: {{ test_workload_name }}-cert
 ---
 apiVersion: networking.istio.io/v1alpha3
@@ -95,7 +95,7 @@ metadata:
   namespace: {{ test_workload_name }}
 spec:
   hosts:
-  - "{{ test_workload_name }}.{{ cluster_name }}.{{ domain }}"
+  - "{{ test_workload_name }}.{{ subdomain }}.{{ domain }}"
   gateways:
   - {{ test_workload_name }}-gateway
   http:

@@ -1,5 +1,5 @@
 resource "kubernetes_service_account" "vault" {
-  count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
+  count = var.settings[var.cluster].vault_integration.enabled ? 1 : 0
   metadata {
     name      = "vault"
     namespace = "kube-system"
@@ -7,7 +7,7 @@ resource "kubernetes_service_account" "vault" {
 }
 
 data "kubernetes_secret" "vault" {
-  count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
+  count = var.settings[var.cluster].vault_integration.enabled ? 1 : 0
   metadata {
     name      = "${kubernetes_service_account.vault[count.index].default_secret_name}"
     namespace = "kube-system"
@@ -15,7 +15,7 @@ data "kubernetes_secret" "vault" {
 }
 
 resource "kubernetes_cluster_role_binding" "vault" {
-  count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
+  count = var.settings[var.cluster].vault_integration.enabled ? 1 : 0
   metadata {
     name = "vault-auth"
   }
@@ -33,10 +33,9 @@ resource "kubernetes_cluster_role_binding" "vault" {
 
 
 resource "null_resource" "ansible_vault_k8s_auth" {
-  count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
+  count = var.settings[var.cluster].vault_integration.enabled ? 1 : 0
   triggers = {
     playbook_contents = md5(file("${path.module}/../../ansible/vault-k8s-auth.yml"))
-    cluster_endppoint = google_container_cluster.cluster.endpoint
   }
   provisioner "local-exec" {
     command = <<COMMAND
@@ -45,21 +44,21 @@ resource "null_resource" "ansible_vault_k8s_auth" {
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
     environment = {
-      CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
+      CLUSTER_SETTINGS        = jsonencode(var.settings)
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
-      kubernetes_host         = "https://${google_container_cluster.cluster.endpoint}"
+      kubernetes_host         = var.gke_cluster_endpoint
       kubernetes_ca_cert      = lookup(data.kubernetes_secret.vault[count.index].data, "ca.crt")
       token_reviewer_jwt      = lookup(data.kubernetes_secret.vault[count.index].data, "token")
-      HOST                    = "https://${google_container_cluster.cluster.endpoint}"
-      API_KEY                 = data.google_client_config.default.access_token
-      CLUSTER_CA_CERTIFICATE  = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
+      HOST                    = var.gke_cluster_endpoint
+      API_KEY                 = var.gke_bearer_token
+      CLUSTER_CA_CERTIFICATE  = var.cluster_ca_certificate
       k8s_sa_token            = lookup(data.kubernetes_secret.admin.data, "token")
       k8s_sa_ca_cert          = lookup(data.kubernetes_secret.admin.data, "ca.crt")
     }
   }
   depends_on = [
-    var.vault_deployment_completion_lock
+    null_resource.ansible_vault_playbook
   ]
 }
 # provider vault {

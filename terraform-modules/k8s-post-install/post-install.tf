@@ -15,10 +15,10 @@ resource "local_file" "ansible_gcp_inventory" {
 
 
 resource "null_resource" "ansible_bastion_playbook" {
+  count = lookup(var.settings[var.cluster], "active", false) ? 1 : 0
   triggers = {
     //always_run = "${timestamp()}"
     istio_change                 = null_resource.ansible_istio_playbook.id
-    gke_cluster_change           = google_container_cluster.cluster.id
     playbook_contents            = md5(file("${path.module}/../../ansible/bastion.yml"))
     upstream_py_contents         = md5(file("${path.module}/../../ansible/files/upstream.py"))
     upstream_dockerfile_contents = md5(file("${path.module}/../../ansible/files/upstream-Dockerfile"))
@@ -34,17 +34,17 @@ COMMAND
 
 
     environment = {
-      CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
+      CLUSTER_SETTINGS        = jsonencode(var.settings)
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
-      HOST                    = "https://${google_container_cluster.cluster.endpoint}"
-      API_KEY                 = data.google_client_config.default.access_token
-      CLUSTER_CA_CERTIFICATE  = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
+      HOST                    = var.gke_cluster_endpoint
+      API_KEY                 = var.gke_bearer_token
+      CLUSTER_CA_CERTIFICATE  = var.cluster_ca_certificate
       BASTION_DNS             = var.settings.bastion_dns
     }
   }
   depends_on = [
-    google_container_node_pool.cluster_preemptible_nodes,
+    var.node_pool,
     local_file.ansible_gcp_inventory,
     null_resource.ansible_istio_playbook,
     kubernetes_cluster_role_binding.bastion_anon_access
@@ -54,10 +54,9 @@ COMMAND
 resource "null_resource" "ansible_post_install_verification_playbook" {
   triggers = {
     //always_run = "${timestamp()}"
-    bastion_change     = null_resource.ansible_bastion_playbook.id
-    istio_change       = null_resource.ansible_istio_playbook.id
-    gke_cluster_change = google_container_cluster.cluster.id
-    playbook_contents  = md5(file("${path.module}/../../ansible/test-workload.yml"))
+    # bastion_change    = lookup(null_resource.ansible_bastion_playbook[0], "id", "default")
+    istio_change      = null_resource.ansible_istio_playbook.id
+    playbook_contents = md5(file("${path.module}/../../ansible/test-workload.yml"))
   }
   provisioner "local-exec" {
     command = <<COMMAND
@@ -69,16 +68,16 @@ resource "null_resource" "ansible_post_install_verification_playbook" {
 COMMAND
 
     environment = {
-      CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
+      CLUSTER_SETTINGS        = jsonencode(var.settings)
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
-      HOST                    = "https://${google_container_cluster.cluster.endpoint}"
-      API_KEY                 = data.google_client_config.default.access_token
-      CLUSTER_CA_CERTIFICATE  = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
+      HOST                    = var.gke_cluster_endpoint
+      API_KEY                 = var.gke_bearer_token
+      CLUSTER_CA_CERTIFICATE  = var.cluster_ca_certificate
     }
   }
   depends_on = [
-    google_container_node_pool.cluster_preemptible_nodes,
+    var.node_pool,
     local_file.ansible_gcp_inventory,
     null_resource.ansible_istio_playbook,
     helm_release.cert-manager,

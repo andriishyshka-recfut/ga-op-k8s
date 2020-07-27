@@ -1,0 +1,47 @@
+settings:
+  vpc_name: "vpc"                       # name of new vpc to create with terraform-base
+  bastion_hostname: "bastion"           # hostname for bastion VM. VM labeled with this value and ansble with gcp inventory can access it.
+  bastion_dns: "b.digaweb.com"          # DNS name of bastion. Used to configure load Balancer and subspace. Certificate requested from Let's Encrypt during provisining with ansible
+  bastion_zone: "us-east4-b"            # Zone where to spin up bastion VM
+  bastion_subnet_range: "172.18.0.0/24" # Specific subnet range for DMZ resources (like bastion)
+
+
+
+  blue:  # Cluster settings are grouped by cluster name
+    "color": "blue"
+    "active": true # whether cluster exposed as {{subdomain}}.{{domain}} from jumphost
+    "min_node_count": 1 # define min node count for cluster's default nodepool
+    "max_node_count": 3 # Define max node count
+    "machine_type": "e2-standard-2"
+    "test_workload_name": "d-note" # used to create namespace/service/and other resources withing provisioned cluster to verify deployment status and availibility
+    "region": "us-east4" # Region where to provision cluster
+    "domain": "digaweb.com" # Base domain name. May be same for multiple clusters
+    "subdomain": "infra" # Subdomain that refer to cluster. Private zone will be created with Cloud DNS. subdomain + domain should be unique
+    "nodes_subnet_range": "10.100.1.0/24" # Subnet range for cluster nodes.Should not overlap with pods or services.
+    "pods_subnet_range": "10.100.8.0/21" # Subnet range for pods. Should be unique and overlap any other cluster/infrastructure resource.
+    "services_subnet_range": "10.100.16.0/21" # Services range should be unique and not overlap.
+    "master_ipv4_cidr_block": "172.26.0.0/28" # Range for GKE master. Should not overlap any other range for whole infrastructure
+    "pods_per_node": 33 # https://www.terraform.io/docs/providers/google/r/container_cluster.html#default_max_pods_per_node
+    "eck_version": "1.2.0" # https://github.com/elastic/cloud-on-k8s/releases
+    "vault":
+        "version": "1.4.2" # vault version
+        "fqdn": "vault.infra.digaweb.com" # Fairly Qualified domain name used by vault. Will be used to expose service outside of cluster
+        "istio_expose": true # Expose vault with istio Gateway and cert-manager cert
+        "root_ttl": "86400h" # pki root cert expiration period. vault won't autorate certificate. Configured on certificate creation only
+    # Vault integration with cluster services section
+    "vault_integration":
+        "enabled": true # create serrvice account for vault and configure vault k8s auth under auth/k8s-{{ cluster_name }} path
+        # Cert-manager vault connection. Used for cert-manager's default ClusterIssuer
+        # Supported values: local, other
+        "connection": "local"
+        "vault_addr": "https://vault.infra.digaweb.com" # VAULT_ADDR used by services within cluster. Usefull when vault installed in separate cluster
+    # cert-manager section
+    "cert_manager":
+        "version": "v0.16.0" # Cert manager version to install during provisioning
+    # Istio section
+    "istio":
+        # Istio version to install during provisioning
+        # this variable may be changed only before install. Istio has custom upgrade process
+        # https://istio.io/docs/setup/upgrade/
+        "version": "1.6.5"
+        "use_vault_ca": false # Whether to use certificates root CA from vault

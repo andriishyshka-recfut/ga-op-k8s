@@ -18,11 +18,6 @@ variable "settings" {}
 variable "cluster" {}
 
 
-// OIDC setup settings. Should be passed as env variables during execution
-variable "oidc_discovery_url" { default = "SAMPLE" }
-variable "oidc_client_id" { default = "SAMPLE" }
-variable "oidc_client_secret" { default = "SAMPLE" }
-
 
 // Locks from  external modules
 variable "istio_deployment_completion_lock" {}

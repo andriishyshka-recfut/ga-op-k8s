@@ -13,7 +13,7 @@ metadata:
   namespace: istio-system
 spec:
   secretName: {{ test_workload_name }}-cert
-  commonName: {{ test_workload_name }}.{{ cluster_name }}.{{ domain }}
+  commonName: {{ test_workload_name }}.{{ subdomain }}.{{ domain }}
   issuerRef:
     name: ca-issuer
     kind: Issuer

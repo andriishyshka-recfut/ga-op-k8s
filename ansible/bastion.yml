@@ -41,10 +41,10 @@
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'https'
 
-    - name: add {{ cluster_name }}-compose.yaml
+    - name: add {{ subdomain }}-compose.yaml
       template:
         src: upstream-compose.yaml.j2
-        dest: "{{ compose_dest }}/{{ cluster_name }}-compose.yaml"
+        dest: "{{ compose_dest }}/{{ subdomain }}-compose.yaml"
 
     - name: find all *-compose.yaml file
       find:
@@ -86,9 +86,9 @@
     #     COMPOSE_PATH_SEPARATOR: ':'
     #     COMPOSE_FILE: "{{ compose_files }}"
     #
-    - name: Start {{ cluster_name }}-upstreamd
+    - name: Start {{ subdomain }}-upstreamd
       docker_compose:
-        project_src: "{{ compose_dest }}"
+        project_src: "{{ subdomain }}"
         files: "{{ compose_files }}"
         build: yes
         recreate: always
@@ -106,16 +106,16 @@
     #   register: inspect_status
     #   until: inspect_status.stdout.find("running") != -1
 
-    - name: Check if {{ cluster_name }}-stream.conf created
+    - name: Check if {{ subdomain }}-stream.conf created
       stat:
-        path: "{{ compose_dest }}/data/nginx/{{ cluster_name }}-stream.conf"
+        path: "{{ compose_dest }}/data/nginx/{{ subdomain }}-stream.conf"
       register: stream_stat
 
-    - name: Assert that {{ cluster_name }}-stream.conf exists
+    - name: Assert that {{ subdomain }}-stream.conf exists
       assert:
         that:
           - stream_stat.stat.exists
-          - "{{ cluster_name }}_upstreamd.{{ cluster_name }}_upstreamd.state.running"
+          - "{{ subdomain }}_upstreamd.{{ subdomain }}_upstreamd.state.running"
           - nginx.nginx.state.running
 
     - name: Update streams configuration

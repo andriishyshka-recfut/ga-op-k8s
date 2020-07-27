@@ -2,7 +2,7 @@ resource "helm_release" "cert-manager" {
   name       = "${var.cluster}-cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = var.settings.cluster_settings[var.cluster].cert_manager.version
+  version    = var.settings[var.cluster].cert_manager.version
   namespace  = "kube-system"
   set {
     name  = "installCRDs"
@@ -24,7 +24,7 @@ resource "helm_release" "cert-manager" {
     value = "--enable-certificate-owner-ref=true"
   }
   depends_on = [
-    google_container_node_pool.cluster_preemptible_nodes
+    var.node_pool,
   ]
 }
 
@@ -41,11 +41,10 @@ data "kubernetes_service_account" "cert-manager" {
 
 
 resource "null_resource" "ansible_cert-manager_vault_integration_playbook" {
-  count = var.settings.cluster_settings[var.cluster].vault_integration.enabled ? 1 : 0
+  count = var.settings[var.cluster].vault_integration.enabled ? 1 : 0
   triggers = {
-    vault_auth         = null_resource.ansible_vault_k8s_auth[0].id
-    gke_cluster_change = google_container_cluster.cluster.id
-    playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
+    vault_auth        = null_resource.ansible_vault_k8s_auth[0].id
+    playbook_contents = md5(file("${path.module}/certificates.yaml.tmpl"))
   }
   provisioner "local-exec" {
     command = <<COMMAND
@@ -54,20 +53,20 @@ resource "null_resource" "ansible_cert-manager_vault_integration_playbook" {
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
     environment = {
-      CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
+      CLUSTER_SETTINGS        = jsonencode(var.settings)
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
-      HOST                    = "https://${google_container_cluster.cluster.endpoint}"
-      API_KEY                 = data.google_client_config.default.access_token
-      CLUSTER_CA_CERTIFICATE  = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
+      HOST                    = var.gke_cluster_endpoint
+      API_KEY                 = var.gke_bearer_token
+      CLUSTER_CA_CERTIFICATE  = var.cluster_ca_certificate
       k8s_apply_value = templatefile("${path.module}/certificates.yaml.tmpl",
         { default_secret_name = data.kubernetes_service_account.cert-manager.default_secret_name,
-          vault_addr          = lookup(var.settings.cluster_settings[var.cluster].vault_integration, "connection", "remote") == "local" ? "http://vault.vault.svc" : var.settings.cluster_settings[var.cluster].vault_integration.vault_addr,
-      cluster = var.cluster, ca = base64encode(data.external.root_ca.result.ca), connection = lookup(var.settings.cluster_settings[var.cluster].vault_integration, "connection", "remote") })
+          vault_addr          = lookup(var.settings[var.cluster].vault_integration, "connection", "remote") == "local" ? "http://vault.vault.svc" : var.settings[var.cluster].vault_integration.vault_addr,
+      cluster = var.cluster, ca = base64encode(data.external.root_ca.result.ca), connection = lookup(var.settings[var.cluster].vault_integration, "connection", "remote") })
     }
   }
   depends_on = [
-    google_container_node_pool.cluster_preemptible_nodes,
+    var.node_pool,
     helm_release.cert-manager,
     null_resource.ansible_vault_k8s_auth
   ]

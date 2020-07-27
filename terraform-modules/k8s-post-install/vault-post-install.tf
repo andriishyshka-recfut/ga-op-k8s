@@ -11,7 +11,7 @@ data "google_service_account" "me" {
 resource "null_resource" "ansible_vault_playbook" {
   triggers = {
     //always_run = "${timestamp()}"
-    // istio_version_change = var.settings.cluster_settings[var.cluster].istio_version
+    // istio_version_change = var.settings[var.cluster].istio_version
     oidc_discovery_url = var.oidc_discovery_url
     playbook_contents  = md5(file("${path.module}/../../ansible/vault-postinstall.yml"))
     vault              = helm_release.vault.id
@@ -24,10 +24,10 @@ resource "null_resource" "ansible_vault_playbook" {
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
     environment = {
-      CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
+      CLUSTER_SETTINGS        = jsonencode(var.settings)
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
-      # vault_addr              = "https://vault.${var.cluster}.${var.settings.cluster_settings[var.cluster].domain}"
+      # vault_addr              = "https://vault.${var.cluster}.${var.settings[var.cluster].domain}"
       # CA_CERT                 = tls_self_signed_cert.example.cert_pem
       oidc_client_id         = var.oidc_client_id
       oidc_discovery_url     = var.oidc_discovery_url
@@ -43,7 +43,7 @@ COMMAND
 }
 
 resource "null_resource" "ansible_expose_vault_with_istio" {
-  count = var.settings.cluster_settings[var.cluster].vault.istio_expose == true ? 1 : 0
+  count = var.settings[var.cluster].vault.istio_expose == true ? 1 : 0
   triggers = {
     template = md5(file("${path.module}/vault-gateway.yaml.tmpl"))
     vault    = helm_release.vault.id
@@ -56,18 +56,18 @@ resource "null_resource" "ansible_expose_vault_with_istio" {
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
     environment = {
-      CLUSTER_SETTINGS        = jsonencode(var.settings.cluster_settings)
+      CLUSTER_SETTINGS        = jsonencode(var.settings)
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
       HOST                    = var.gke_cluster_endpoint
       API_KEY                 = var.gke_bearer_token
       CLUSTER_CA_CERTIFICATE  = var.cluster_ca_certificate
-      k8s_apply_value         = templatefile("${path.module}/vault-gateway.yaml.tmpl", { vault_fqdn = var.settings.cluster_settings[var.cluster].vault.fqdn })
+      k8s_apply_value         = templatefile("${path.module}/vault-gateway.yaml.tmpl", { vault_fqdn = var.settings[var.cluster].vault.fqdn })
     }
   }
   depends_on = [
     helm_release.vault,
     null_resource.ansible_vault_playbook,
-    var.istio_deployment_completion_lock
+    null_resource.ansible_istio_playbook
   ]
 }

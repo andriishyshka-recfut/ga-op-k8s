@@ -2,8 +2,8 @@
 
 #Create the storage bucket
 resource "google_storage_bucket" "vault" {
-  name          = "${data.google_project.vault.project_id}-vault-storage"
-  project       = data.google_project.vault.project_id
+  name          = "${data.google_project.current.project_id}-vault-storage"
+  project       = data.google_project.current.project_id
   force_destroy = true
   storage_class = "MULTI_REGIONAL"
 
@@ -37,10 +37,10 @@ resource "random_id" "kms_random" {
 
 # Create the KMS key ring
 resource "google_kms_key_ring" "vault" {
-  name = "vault"
+  name = random_id.kms_random.hex
   # location = var.region
   location = "global"
-  project  = data.google_project.vault.project_id
+  project  = data.google_project.current.project_id
 
 }
 

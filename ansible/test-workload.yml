@@ -39,9 +39,9 @@
       #delay: 10
       #until: result.stdout.find("Thank you for using nginx.") != -1
 
-    - name: try https://{{ test_workload_name }}.{{ cluster_name }}.{{ domain }}
+    - name: try https://{{ test_workload_name }}.{{ subdomain }}.{{ domain }}
       uri:
-        url: "https://{{ test_workload_name }}.{{ cluster_name }}.{{ domain }}"
+        url: "https://{{ test_workload_name }}.{{ subdomain }}.{{ domain }}"
         return_content: yes
         validate_certs: no
       register: result

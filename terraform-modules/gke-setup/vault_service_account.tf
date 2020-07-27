@@ -15,9 +15,9 @@ variable "vault_service_account_iam_roles" {
 }
 
 # Add the service account to the project
-resource "google_project_iam_member" "service-account" {
+resource "google_project_iam_member" "vault-service-account" {
   count   = length(var.vault_service_account_iam_roles)
-  project = data.google_project.vault.project_id
+  project = data.google_project.current.project_id
   role    = element(var.vault_service_account_iam_roles, count.index)
   member  = "serviceAccount:${google_service_account.vault-server.email}"
 }
