@@ -1,7 +1,7 @@
 
 
 resource "google_compute_network" "vpc" {
-  name                            = module.common-vars.vpc_name
+  name                            = var.settings.vpc_name
   auto_create_subnetworks         = "false"
   routing_mode                    = "GLOBAL"
   delete_default_routes_on_create = "true"
@@ -13,7 +13,7 @@ resource "google_compute_network" "vpc" {
 
 resource "google_compute_subnetwork" "net" {
   name          = "dmz-subnetwork"
-  ip_cidr_range = module.common-vars.bastion_subnet_range
+  ip_cidr_range = var.settings.bastion_subnet_range
   region        = var.region
   network       = google_compute_network.vpc.self_link
 }

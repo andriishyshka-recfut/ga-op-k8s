@@ -5,9 +5,9 @@ resource "google_compute_address" "static" {
 
 
 resource "google_compute_instance" "bastion" {
-  name         = module.common-vars.bastion_hostname
+  name         = var.settings.bastion_hostname
   machine_type = "g1-small"
-  zone         = module.common-vars.bastion_zone
+  zone         = var.settings.bastion_zone
   tags         = ["dmz"]
   labels = {
     name = "bastion"
@@ -76,7 +76,7 @@ output "pub_certificate" {
 output "dns_record" {
   value = <<DNS
   Please make sure that this DNS record configured this way:
-    ${module.common-vars.bastion_dns}    A  ${google_compute_address.static.address}
+    ${var.settings.bastion_dns}    A  ${google_compute_address.static.address}
 
 DNS
 
@@ -105,8 +105,8 @@ resource "null_resource" "ansible_playbook" {
       -i ./inventory.gcp.yaml
 COMMAND
     environment = {
-      CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
-      BASTION_DNS      = module.common-vars.bastion_dns
+      CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
+      BASTION_DNS      = var.settings.bastion_dns
     }
   }
   depends_on = [
