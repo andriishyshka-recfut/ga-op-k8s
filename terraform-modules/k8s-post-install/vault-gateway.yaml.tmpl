@@ -8,6 +8,8 @@ metadata:
 spec:
   secretName: vault-cert
   commonName: ${vault_fqdn}
+  dnsNames:
+  - ${vault_fqdn}
   duration: 12h
   renewBefore: 6h
   issuerRef:

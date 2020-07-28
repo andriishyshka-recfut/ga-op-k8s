@@ -2,7 +2,7 @@
 
 #Create the storage bucket
 resource "google_storage_bucket" "vault" {
-  name          = "${data.google_project.current.project_id}-vault-storage"
+  name          = "${data.google_project.current.project_id}-vault-storage-${var.settings[var.cluster].color}"
   project       = data.google_project.current.project_id
   force_destroy = true
   storage_class = "MULTI_REGIONAL"

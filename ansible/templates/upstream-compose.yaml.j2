@@ -11,5 +11,5 @@ services:
     environment:
     - HOST={{ k8s_host_url }}
     - UPSTREAM_FILE=/nginx/{{ subdomain }}-stream.conf
-    - CLUSTER_NAME={{ cluster_name }}
+    - SUBDOMAIN={{ subdomain }}
     - NODE_PORT={{ nodePort }}

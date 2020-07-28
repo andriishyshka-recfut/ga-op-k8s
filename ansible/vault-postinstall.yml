@@ -178,6 +178,8 @@
         name: "pki"
         backend: "pki"
         description: "Root pki engine"
+        config:
+          max_lease_ttl: "86700h"
       register: response
     - assert:
         that: response.rc == 0
@@ -186,7 +188,7 @@
         mount_point: "pki"
         common_name: Vault managed Root CA
         config:
-          ttl: "{{ cluster_settings[cluster_name].vault.root_ttl | default('8640h') }}"
+          ttl: "86400h"
 
 
     - name: Create PKI policy

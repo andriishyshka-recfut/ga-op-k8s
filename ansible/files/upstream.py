@@ -50,7 +50,7 @@ def main():
         do_stuff(api_endpoint=os.environ.get('HOST'),
                  upstream_file=os.environ.get('UPSTREAM_FILE'),
                  node_port=os.environ.get('NODE_PORT'),
-                 cluster_name=os.environ.get('CLUSTER_NAME'))
+                 cluster_name=os.environ.get('SUBDOMAIN'))
         time.sleep(60)
 
 

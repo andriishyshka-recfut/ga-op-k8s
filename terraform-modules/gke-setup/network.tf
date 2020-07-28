@@ -20,6 +20,7 @@ resource "google_compute_subnetwork" "net" {
 
 
 resource "google_dns_managed_zone" "k8s-zone" {
+  count       = lookup(var.settings[var.cluster], "color", "blanc") == "blue" ? 1 : 0
   name        = "${var.settings[var.cluster].subdomain}-private-zone"
   dns_name    = "${var.settings[var.cluster].subdomain}.${var.settings[var.cluster].domain}."
   description = "DNS zone for ${var.settings[var.cluster].subdomain} k8s cluster"
@@ -33,11 +34,12 @@ resource "google_dns_managed_zone" "k8s-zone" {
 }
 
 resource "google_dns_record_set" "wildcard" {
-  name = "*.${google_dns_managed_zone.k8s-zone.dns_name}"
-  type = "A"
-  ttl  = 300
+  count = lookup(var.settings[var.cluster], "color", "blanc") == "blue" ? 1 : 0
+  name  = "*.${google_dns_managed_zone.k8s-zone[count.index].dns_name}"
+  type  = "A"
+  ttl   = 300
 
-  managed_zone = google_dns_managed_zone.k8s-zone.name
+  managed_zone = google_dns_managed_zone.k8s-zone[count.index].name
 
   rrdatas = [data.google_compute_instance.bastion.network_interface.0.network_ip]
 }
