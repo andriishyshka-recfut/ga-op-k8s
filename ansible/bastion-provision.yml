@@ -149,12 +149,16 @@
         state: directory
         mode: '0755'
 
-    - name: Copy docker-compose.yaml and other files
+    - name: Copy dockerfiles and other files
       copy:
         src: "{{ item }}"
         dest: "{{ compose_dest }}"
       with_items:
-        - "nginx.conf"
+        - nginx.conf
+        - nginx-Dockerfile
+        - upstream-Dockerfile
+        - upstream.py
+        - inotify.sh
 
     - name: Generate docker-compose.yaml
       template:
@@ -172,10 +176,29 @@
           src: default-http.conf
           dest: "{{ compose_dest }}/data/nginx/"
 
+    - name: find all *-compose.yaml file
+      find:
+        path: "{{ compose_dest }}"
+        patterns: "*-compose.yaml"
+      register: registered_files
+
+    - name: Create array from found files in format required for COMPOSE_FILE
+      set_fact:
+        compose_files: "{% set output = [] %}\
+              {% for element in registered_files.files %}\
+                {{ output.append( element.path ) }}\
+             {% endfor %}\
+             {{ output }}"
+
+    - name: Start all
+      docker_compose:
+        project_src: "{{ compose_dest }}"
+        files: "{{ compose_files }}"
+        build: yes
+      register: output
+
     - name: Retrieve certificates
       shell: |
-        cd {{ compose_dest }}
-        docker-compose up -d && sleep 30
         docker-compose exec certbot  certbot certonly --webroot --webroot-path /var/www/certbot --force-renewal -d {{ bastion_dns }} --email {{ letsencrypt_email }} --agree-tos --no-eff-email {{ letsencrypt_staging }}
       args:
         creates: "{{ compose_dest }}/data/certbot/conf/live/{{ bastion_dns }}/privkey.pem"
@@ -185,6 +208,8 @@
         name: nginx
       register: nginx_container_info
 
+    # - fail:
+    #     msg: "{{ nginx_container_info | to_nice_json }}"
     - debug: msg="Will try to reach subspace from  {{ nginx_container_info.container.NetworkSettings.Networks['bastion-compose_default'].Gateway| to_nice_json }}"
 
 
@@ -196,12 +221,12 @@
         - default-stream.conf
         - subspace-http.conf
 
-    - name: Restart nginx container
-      shell: |
-        cd {{ compose_dest }}
-        docker-compose stop nginx &&\
-         docker-compose rm -f  nginx &&\
-          docker-compose up -d nginx
+    # - name: Restart nginx container
+    #   shell: |
+    #     cd {{ compose_dest }}
+    #     docker-compose stop nginx &&\
+    #      docker-compose rm -f  nginx &&\
+    #       docker-compose up -d nginx
 
     - name: Autoclean dependecnies
       apt:
@@ -211,3 +236,14 @@
     - name: Reboot
       reboot:
         reboot_timeout: 3600
+
+
+    - name: try https://{{ bastion_dns }}
+      uri:
+        url: "https://{{ bastion_dns }}/signin"
+        return_content: yes
+        validate_certs: no
+      register: result
+      retries: 3
+      delay: 10
+      until: result.content.find("Subspace") != -1

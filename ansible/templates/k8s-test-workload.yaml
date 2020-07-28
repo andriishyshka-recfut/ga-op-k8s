@@ -17,7 +17,7 @@ spec:
   ports:
   - name: http
     port: 80
-    targetPort: 80
+    targetPort: 8080
   selector:
     app: {{ test_workload_name }}
 ---
@@ -39,30 +39,54 @@ spec:
         version: v1
     spec:
       containers:
-      - image: nginx
+      - image: drmurx/docker-d-note
         imagePullPolicy: IfNotPresent
         name: {{ test_workload_name }}
         ports:
-        - containerPort: 80
+        - containerPort: 8080
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: Gateway
+# metadata:
+#   name: {{ test_workload_name }}-gateway
+#   namespace: {{ test_workload_name }}
+# spec:
+#   selector:
+#     istio: ingressgateway # use istio default controller
+#   servers:
+#     - port:
+#         number: 443
+#         name: https
+#         protocol: HTTPS
+#       tls:
+#         mode: SIMPLE
+#         credentialName: {{ test_workload_name }}-cert
+#       hosts:
+#         - {{ test_workload_name }}.{{ cluster_name }}.{{ domain }}
 ---
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
+# https://istio.io/latest/docs/ops/integrations/certmanager/
+# https://cert-manager.io/docs/usage/ingress/
+apiVersion: extensions/v1beta1
+kind: Ingress
 metadata:
-  name: {{ test_workload_name }}-gateway
+  name: {{ test_workload_name }}-ingress
   namespace: {{ test_workload_name }}
+  annotations:
+    kubernetes.io/ingress.class: istio
 spec:
-  selector:
-    istio: ingressgateway # use istio default controller
-  servers:
-    - port:
-        number: 443
-        name: https
-        protocol: HTTPS
-      tls:
-        mode: SIMPLE
-        credentialName: {{ test_workload_name }}-cert
-      hosts:
-        - {{ test_workload_name }}.{{ cluster_name }}.{{ domain }}
+  tls:
+  rules:
+  - host: {{ test_workload_name }}.{{ subdomain }}.{{ domain }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ test_workload_name }}
+          servicePort: 80
+        path: /
+  tls:
+  - hosts:
+    - {{ test_workload_name }}.{{ subdomain }}.{{ domain }}  # This should match a DNS name in the Certificate
+    secretName: {{ test_workload_name }}-cert
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -71,7 +95,7 @@ metadata:
   namespace: {{ test_workload_name }}
 spec:
   hosts:
-  - "{{ test_workload_name }}.{{ cluster_name }}.{{ domain }}"
+  - "{{ test_workload_name }}.{{ subdomain }}.{{ domain }}"
   gateways:
   - {{ test_workload_name }}-gateway
   http:

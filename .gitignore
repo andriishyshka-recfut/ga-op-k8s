@@ -15,3 +15,5 @@ inventory.gcp.yaml
 .ssh/
 .ansible/
 .passwd
+
+__pycache__

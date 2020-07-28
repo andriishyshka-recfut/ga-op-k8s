@@ -1,9 +1,9 @@
 
 
 resource "google_compute_network" "vpc" {
-  name = module.common-vars.vpc_name
-  auto_create_subnetworks = "false"
-  routing_mode = "GLOBAL"
+  name                            = var.settings.vpc_name
+  auto_create_subnetworks         = "false"
+  routing_mode                    = "GLOBAL"
   delete_default_routes_on_create = "true"
   depends_on = [
     google_project_iam_member.service-account
@@ -13,7 +13,7 @@ resource "google_compute_network" "vpc" {
 
 resource "google_compute_subnetwork" "net" {
   name          = "dmz-subnetwork"
-  ip_cidr_range = module.common-vars.bastion_subnet_range
+  ip_cidr_range = var.settings.bastion_subnet_range
   region        = var.region
   network       = google_compute_network.vpc.self_link
 }
@@ -43,15 +43,15 @@ resource "google_compute_router_nat" "nat" {
 }
 
 resource "google_compute_firewall" "bastion-ssh-https" {
-  name          = "bastion-ssh-https"
-  network       = google_compute_network.vpc.name
-  direction     = "INGRESS"
+  name      = "bastion-ssh-https"
+  network   = google_compute_network.vpc.name
+  direction = "INGRESS"
   //source_ranges = ["78.26.204.32/32"]
-  source_ranges = ["78.26.204.32/32","69.164.208.72/32","35.185.38.145/32", "${google_compute_address.static.address}/32" ]
+  source_ranges = ["78.26.204.32/32", "69.164.208.72/32", "35.185.38.145/32", "${google_compute_address.static.address}/32"]
 
   allow {
     protocol = "tcp"
-    ports    = ["22","443"]
+    ports    = ["22", "443"]
   }
 
   target_tags = ["dmz"]
@@ -72,9 +72,9 @@ resource "google_compute_firewall" "bastion-http" {
 }
 
 resource "google_compute_firewall" "bastion-vpn" {
-  name          = "bastion-vpn"
-  network       = google_compute_network.vpc.name
-  direction     = "INGRESS"
+  name      = "bastion-vpn"
+  network   = google_compute_network.vpc.name
+  direction = "INGRESS"
   //source_ranges = ["78.26.204.32/32"]
   source_ranges = ["0.0.0.0/0"]
 
@@ -88,11 +88,11 @@ resource "google_compute_firewall" "bastion-vpn" {
 
 
 resource "google_compute_route" "dmz-default" {
-  name         = "dmz-default"
-  dest_range   = "0.0.0.0/0"
-  network      = google_compute_network.vpc.name
+  name             = "dmz-default"
+  dest_range       = "0.0.0.0/0"
+  network          = google_compute_network.vpc.name
   next_hop_gateway = "default-internet-gateway"
-  priority     = 1000
+  priority         = 1000
   // We should have this route for all becouse I can't find how to tag GKE cluster to use this route during provisioning
   //tags = ["dmz"]
 }

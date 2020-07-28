@@ -1,0 +1,37 @@
+---
+- hosts: localhost
+  connection: local
+  become: False
+  vars_files:
+    - vars/main.yml
+  vars:
+    k8s_apply_value: "{{ lookup('env','k8s_apply_value') }}"
+    from_file: "{{ lookup('env','from_file') }}"
+  tasks:
+  - name: Create temp_dir
+    file:
+        path: "{{ temp_dir }}"
+        state: directory
+        mode: '0755'
+
+  - name: Put cluster_ca_certificate
+    copy:
+      dest: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
+      content: "{{ k8s_cluster_ca_certificate }}"
+# https://unix.stackexchange.com/questions/336934/raise-128kib-limit-on-environment-variables-in-linux
+  - name:  Apply from file
+    k8s:
+      state: present
+      definition: "{{ lookup ('file',k8s_apply_value) }}"
+      api_key: "{{ k8s_api_key }}"
+      host: "{{ k8s_host_url }}"
+      ca_cert: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
+    when: from_file == 'yes'
+  - name:  Apply from env
+    k8s:
+      state: present
+      definition: "{{ k8s_apply_value }}"
+      api_key: "{{ k8s_api_key }}"
+      host: "{{ k8s_host_url }}"
+      ca_cert: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
+    when: from_file != 'yes'

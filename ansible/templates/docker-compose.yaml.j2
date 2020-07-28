@@ -2,7 +2,10 @@ version: '3'
 
 services:
   nginx:
-    image: nginx
+    #image: nginx
+    build:
+       context: .
+       dockerfile: nginx-Dockerfile
     container_name: nginx
     restart: unless-stopped
     volumes:
@@ -13,7 +16,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    command: "/bin/bash /inotify.sh"
   certbot:
     image: certbot/certbot
     restart: unless-stopped

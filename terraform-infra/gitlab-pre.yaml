@@ -1,0 +1,106 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: ca-issuer
+spec:
+  ca:
+    secretName: basic-ca
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: gitlab-cert
+  namespace: istio-system
+spec:
+  secretName: gitlab-cert
+  commonName: "gitlab.infra.digaweb.com"
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: registry-cert
+  namespace: istio-system
+spec:
+  secretName: registry-cert
+  commonName: "registry.infra.digaweb.com"
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: minio-cert
+  namespace: istio-system
+spec:
+  secretName: minio-cert
+  commonName: "minio.infra.digaweb.com"
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitlab
+# ---
+# apiVersion: networking.istio.io/v1beta1
+# kind: VirtualService
+# metadata:
+#   name: gitlab
+#   namespace: gitlab
+# spec:
+#   # gateways:
+#   # - "gitlab.infra.digaweb.com"
+#   hosts:
+#   - gitlab.infra.digaweb.com
+#   http:
+#   # - match:
+#   #   - uri:
+#   #       prefix: /
+#   #   - uri:
+#   #       prefix: /users/sign_in
+#   - route:
+#     - destination:
+#         host: gitlab-webservice.gitlab.svc.cluster.local
+#         # port:
+#         #   number: 8080
+# ---
+# apiVersion: networking.istio.io/v1beta1
+# kind: VirtualService
+# metadata:
+#   name: gitlab-minio
+#   namespace: gitlab
+# spec:
+#   gateways:
+#   - "minio.infra.digaweb.com"
+#   hosts:
+#   - minio.infra.digaweb.com
+#   http:
+#   - match:
+#     - uri:
+#         prefix: /
+#     route:
+#     - destination:
+#         host: gitlab-minio.gitlab.svc.cluster.local
+# ---
+# apiVersion: networking.istio.io/v1beta1
+# kind: VirtualService
+# metadata:
+#   name: gitlab-registry
+#   namespace: gitlab
+# spec:
+#   gateways:
+#   - "registry.infra.digaweb.com"
+#   hosts:
+#   - registry.infra.digaweb.com
+#   http:
+#   - match:
+#     - uri:
+#         prefix: /
+#     route:
+#     - destination:
+#         host: gitlab-registry.gitlab.svc.cluster.local

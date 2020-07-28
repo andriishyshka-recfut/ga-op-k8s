@@ -1,0 +1,104 @@
+---
+- hosts: localhost
+  connection: local
+  become: False
+  vars_files:
+    - vars/main.yml
+  vars:
+    kubernetes_host: "{{ lookup('env','kubernetes_host') }}"
+    kubernetes_ca_cert: "{{ lookup('env','kubernetes_ca_cert') }}"
+    token_reviewer_jwt: "{{ lookup('env','token_reviewer_jwt') }}"
+  tasks:
+  - name: Define vault connection type
+    set_fact:
+      vault_connection: "{{ cluster_settings[cluster_name].vault_integration.connection | default('remote') }}"
+
+  - name: Import vault pre execution tasks
+    include_tasks: includes/vault-port-forward.yml
+    when: vault_connection == 'local'
+
+  - name: Import vault pre execution tasks
+    include_tasks: includes/vault-cert-verify.yml
+    when: vault_connection != 'local'
+
+  - name: check ~/.vault-token existance
+    stat:
+      path: "~/.vault-token"
+    register: token_file
+  - name: Set vault token from file
+    set_fact:
+      vault_token: "{{ lookup('file', token_file.stat.path ) }}"
+    when: token_file.stat.exists
+  - name: Set vault token from environment variable
+    set_fact:
+      vault_token: "{{ lookup('env','VAULT_TOKEN')  }}"
+    when: not token_file.stat.exists
+
+  - name: Set vault addr to local
+    set_fact:
+      vault_addr: "http://127.0.0.1:8200"
+    when: vault_connection == 'local'
+
+  - debug: msg="{{ vault_addr }}"
+
+  - name: Assert that token configured correctly
+    assert:
+      that:
+        - vault_token | length > 1
+        - vault_token is regex("^s\.\w+$")
+
+  - name: Configure vault
+    block:
+    - name: enable k8s secret engine
+      hashivault_auth_method:
+          method_type: kubernetes
+          mount_point: "k8s-{{ cluster_name }}"
+
+    - name: create config
+      hashivault_k8s_auth_config:
+          kubernetes_host: "{{ kubernetes_host }}"
+          kubernetes_ca_cert: "{{ kubernetes_ca_cert }}"
+          token_reviewer_jwt: "{{ token_reviewer_jwt }}"
+          mount_point: "k8s-{{ cluster_name }}"
+
+    - name: Create/Update Role
+      hashivault_pki_role:
+        mount_point: "pki"
+        login_mount_point: "auth/k8s-{{ cluster_name }}"
+        name: "cert-manager-{{ cluster_name }}"
+        config:
+          allow_bare_domains: True
+          allow_subdomains: True
+          allow_any_name: True
+          allowed_domains:
+          - "{{ cluster_name }}.{{ domain }}"
+
+    - name: Create k8s auth role for cert-manager
+      hashivault_k8s_auth_role:
+        name: "cert-manager-{{ cluster_name }}"
+        policies: ["pki"]
+        bound_service_account_names: ["{{ cluster_name }}-cert-manager"]
+        bound_service_account_namespaces: ["kube-system"]
+        mount_point: "k8s-{{ cluster_name }}"
+
+    - name: Set k8s creds
+      set_fact:
+          k8s_creds:
+            HOST: "{{ k8s_host_url }}"
+            # SA_KEY: "{{ lookup('env','SA_KEY') }}"
+            # SA_CERT: "{{ lookup('env','SA_CERT') }}"
+            CLUSTER_CA_CERTIFICATE: "{{ k8s_cluster_ca_certificate }}"
+            k8s_sa_token: "{{ lookup('env','k8s_sa_token') }}"
+            k8s_sa_ca_cert: "{{ lookup('env','k8s_sa_ca_cert') }}"
+
+    - name: Write cluster creds
+      hashivault_write:
+        secret: "kubernetes-{{ cluster_name }}"
+        data: "{{ k8s_creds | from_yaml }}"
+      register: status
+
+    environment:
+       # REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
+       VAULT_ADDR: "{{ vault_addr }}"
+       VAULT_TOKEN: "{{ vault_token }}"
+       # VAULT_CACERT: "{{ vault_ca_path }}"

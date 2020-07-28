@@ -1,0 +1,207 @@
+---
+- hosts: localhost
+  connection: local
+  become: False
+  vars_files:
+    - vars/main.yml
+  vars:
+    initial_setup: False
+    oidc_discovery_url: "{{ lookup('env','oidc_discovery_url') | trim }}"
+    oidc_client_id: "{{ lookup('env','oidc_client_id') | trim }}"
+    oidc_client_secret: "{{ lookup('env','oidc_client_secret') | trim }}"
+    # vault_addr: "{{ lookup('env','vault_addr') }}"
+
+  tasks:
+
+  - name: Import vault pre execution tasks
+    import_tasks: includes/vault-port-forward.yml
+
+  # - name: Test
+  #   shell: |
+  #       ps axf
+  #       curl 127.0.0.1:8200
+  #   register: register
+  # - debug: msg="{{ register | to_nice_json }}"
+  #
+  - name: Get vault status
+    hashivault_status:
+    environment:
+      VAULT_ADDR: "http://127.0.0.1:8200"
+    #   REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
+    register: vault_status
+    retries: 5
+    delay: 10
+    until: vault_status.rc == 0
+
+
+  - debug: msg="{{ vault_status | to_nice_json }}"
+
+  - name: Init and unseal
+    block:
+
+    - name: Run operator Init
+      shell: |
+        vault operator init
+      changed_when: True
+      register: init_out
+      environment:
+        VAULT_ADDR: "http://127.0.0.1:8200"
+        #VAULT_CACERT: "{{ vault_ca_path }}"
+    # - debug: msg="{{ init_out | to_nice_json }}"
+
+    - name: Set facts based on operator init
+      set_fact:
+        root_token: "{% for line in init_out.stdout_lines -%}
+                        {% if line.find('Initial Root Token:') != -1 -%}
+                          {{  line.split(':')[1] | trim }}
+                        {%- endif %}
+                    {%- endfor %}"
+        recovery_keys: "{% set output = dict() %}
+                {% for line in init_out.stdout_lines -%}
+                  {% if line.find('Recovery Key') != -1 -%}
+                    {% set index =  output | length %}
+                    {% set _ = output.update( { 'recovery_key_' + index | string  : line.split(':')[1] | trim } )  %}
+                  {%- endif %}
+                {%- endfor %}
+                {{ output }}"
+        recovery_keys_list: "{% set output = [] %}
+                {% for line in init_out.stdout_lines -%}
+                  {% if line.find('Recovery Key') != -1 -%}
+                    {% set _ = output.append(  line.split(':')[1] | trim  )  %}
+                  {%- endif %}
+                {%- endfor %}
+                {{ output }}"
+        initial_setup: True
+    when: vault_status.status.initialized == false and vault_status.status.sealed == true
+
+  - name: Define token for provisioning
+    set_fact:
+      vault_token: "{%- if root_token is undefined -%}
+                    {{ lookup('env','VAULT_TOKEN')  | trim }}
+                    {%- else -%}
+                    {{ root_token | trim }}
+                    {%- endif -%}"
+      oidc_setup: "{% if oidc_discovery_url == 'SAMPLE' or oidc_client_id  == 'SAMPLE' or oidc_client_secret == 'SAMPLE' or
+       oidc_discovery_url | length < 1 or oidc_client_id | length < 1 or oidc_client_secret | length < 1 %}False{% else %}True{% endif %}"
+
+  - name: Assert that vault token configured
+    assert:
+      that:
+      - vault_token | length > 0
+      - ( initial_setup and oidc_setup ) or ( not initial_setup and not oidc_setup ) or oidc_setup
+
+  - name: Configure vault
+    block:
+
+    - name: Enable kv backend
+      hashivault_secret_engine:
+            name: "secret"
+            backend: "kv"
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
+
+    - name: Write recovery keys
+      hashivault_write:
+        secret: "recovery-keys"
+        data: "{{ recovery_keys | from_yaml }}"
+      when: initial_setup
+      register: status
+
+    - debug: msg="{{ status }}"
+
+    - name: enable oidc secret engine
+      hashivault_auth_method:
+        method_type: oidc
+      when: oidc_setup
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
+
+    - name:  configure oidc mount
+      hashivault_oidc_auth_method_config:
+        oidc_discovery_url: "{{ oidc_discovery_url }}"
+        oidc_client_id: "{{ oidc_client_id }}"
+        oidc_client_secret: "{{ oidc_client_secret }}"
+      when: oidc_setup
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
+
+    - name: create  role
+      hashivault_oidc_auth_role:
+        name: "111"
+        bound_audiences: ["{{ oidc_client_id }}"]
+        allowed_redirect_uris:
+          - "{{ vault_addr }}/ui/vault/auth/oidc/oidc/callback"
+          - "http://localhost:8250/oidc/callback"
+        token_policies: ["admin"]
+      when: oidc_setup
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
+
+    - name: Create root policy
+      hashivault_policy:
+        name: "admin"
+        rules: "{{ lookup('file', 'vault-admin-policy.hcl' )}}"
+      when: oidc_setup
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
+
+    - name: Enable audit
+      hashivault_audit:
+        device_type: file
+        options:
+          path: "stdout"
+
+
+    # We have to copy root token to continue vault provisioning with terraform
+    # when running from docker /home mounted as tmpfs so creds never reached disk
+    # https://github.com/hashicorp/terraform/issues/610
+    # Terraform vault provider will automaticaly read ~/.vault-token if no other options provided
+    # https://www.terraform.io/docs/providers/vault/index.html#token
+    # And stil not working becouse of https://github.com/hashicorp/terraform/issues/2430
+    - name: Create "~/.vault-token
+      copy:
+        content: "{{ vault_token }}"
+        dest: "~/.vault-token"
+
+    - name: Enable PKI secrets engine
+      hashivault_secret_engine:
+        name: "pki"
+        backend: "pki"
+        description: "Root pki engine"
+        config:
+          max_lease_ttl: "86700h"
+      register: response
+    - assert:
+        that: response.rc == 0
+    - name: Generate Root Cert
+      hashivault_pki_ca:
+        mount_point: "pki"
+        common_name: Vault managed Root CA
+        config:
+          ttl: "86400h"
+
+
+    - name: Create PKI policy
+      hashivault_policy:
+        name: "pki"
+        rules: "{{ lookup('file', 'vault-pki-policy.hcl' )}}"
+      register: status
+      retries: 3
+      delay: 10
+      until: status.rc == 0
+
+    environment:
+       # REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
+       # VAULT_CACERT: "{{ vault_ca_path }}"
+       VAULT_ADDR: "http://127.0.0.1:8200"
+       VAULT_TOKEN: "{{ vault_token }}"

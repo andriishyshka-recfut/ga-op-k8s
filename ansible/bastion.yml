@@ -1,4 +1,3 @@
-
 - hosts: gcp_name_bastion
   connection: ssh
   become: true
@@ -6,6 +5,21 @@
     - vars/main.yml
   tasks:
     - debug: msg="{{ ansible_hostname }}"
+
+    - name: Create temp_dir
+      file:
+          path: "{{ temp_dir }}"
+          state: directory
+          mode: '0755'
+      delegate_to: localhost
+      become: False
+
+    - name: Put cluster_ca_certificate
+      copy:
+        dest: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
+        content: "{{ k8s_cluster_ca_certificate }}"
+      delegate_to: localhost
+      become: False
 
     - name: Get mapping of istio gw NodePort
       shell: |
@@ -27,51 +41,102 @@
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'https'
 
-    - name: Get node ips
-      shell: |
-        kubectl --server {{ k8s_host_url }} \
-          --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt \
-          get nodes -o jsonpath="{.items[*].status.addresses[?(@.type == 'InternalIP')].address}"
-      register: node_ips
-      delegate_to: localhost
-      become: False
-      changed_when: False
-
-    - debug: msg="InternalIp is {{ item }}"
-      with_items: '{{ node_ips.stdout.split(" ") }}'
-
-    - name: Add upstream for new cluster on bastion
+    - name: add {{ subdomain }}-compose.yaml
       template:
-        src: "upstream.conf.j2"
-        dest: "{{ compose_dest }}/data/nginx/{{ cluster_name }}-stream.conf"
+        src: upstream-compose.yaml.j2
+        dest: "{{ compose_dest }}/{{ subdomain }}-compose.yaml"
 
-    - name: Update https configuration
+    - name: find all *-compose.yaml file
+      find:
+        path: "{{ compose_dest }}"
+        patterns: "*-compose.yaml"
+      register: registered_files
+
+    - name: Create array from found files in format required for COMPOSE_FILE
+      set_fact:
+        compose_files: "{% set output = [] %}\
+              {% for element in registered_files.files %}\
+                {{ output.append( element.path ) }}\
+             {% endfor %}\
+             {{ output }}"
+
+    - name: Create .env file with multiple compose configs
+      template:
+        src: env.j2
+        dest: "{{ compose_dest }}/.env"
+
+    - name: Copy dockerfiles and other files
+      copy:
+        src: "{{ item }}"
+        dest: "{{ compose_dest }}/{{ item }}"
+      with_items:
+        - nginx.conf
+        - nginx-Dockerfile
+        - upstream-Dockerfile
+        - upstream.py
+        - inotify.sh
+
+    # - name: Start {{ cluster_name }}-upstreamd
+    #   shell:
+    #     set -e
+    #     docker-compose build &&
+    #     docker-compose up -d
+    #   changed_when: True
+    #   environment:
+    #     COMPOSE_PATH_SEPARATOR: ':'
+    #     COMPOSE_FILE: "{{ compose_files }}"
+    #
+    - name: Start {{ subdomain }}-upstreamd
+      docker_compose:
+        project_src: "{{ subdomain }}"
+        files: "{{ compose_files }}"
+        build: yes
+        recreate: always
+        remove_orphans: yes
+      register: output
+
+    # - debug: msg=" {{ output | to_nice_json }}"
+    # - name: Validate that {{ cluster_name }}-upstreamd container running
+    #   shell: |
+    #     sleep {{ 20 | random }}
+    #     docker inspect --format="{{ '{{' }}.State.Status{{ '}}' }}" {{ cluster_name }}-upstreamd
+    #   changed_when: False
+    #   retries: 5
+    #   delay: 5
+    #   register: inspect_status
+    #   until: inspect_status.stdout.find("running") != -1
+
+    - name: Check if {{ subdomain }}-stream.conf created
+      stat:
+        path: "{{ compose_dest }}/data/nginx/{{ subdomain }}-stream.conf"
+      register: stream_stat
+
+    - name: Assert that {{ subdomain }}-stream.conf exists
+      assert:
+        that:
+          - stream_stat.stat.exists
+          - "{{ subdomain }}_upstreamd.{{ subdomain }}_upstreamd.state.running"
+          - nginx.nginx.state.running
+
+    - name: Update streams configuration
       template:
         src: "{{ item }}"
         dest: "{{ compose_dest }}/data/nginx/"
       with_items:
         - default-stream.conf
 
-    # - name: Configure upstream for cluster in default-stream.conf
-    #   lineinfile:
-    #     insertbefore: "default                  default_backend;"
-    #     #insertafter: "map $ssl_preread_server_name $name {"
-    #     regexp: "{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend"
-    #     line: "~.{{ cluster_name }}.{{ domain }} {{ cluster_name }}_backend ;"
-    #     path: "{{ compose_dest }}/data/nginx/default-stream.conf"
+    # - name: Wait a random time to avoid race condition (race condition may occure when you create multiple clusters within one project)
+    #   pause:
+    #     seconds: "{{ 10 | random }}"
 
-    - name: Wait a random time to avoid race condition
-      pause:
-        seconds: "{{ 10 | random }}"
-
-    - name: Reload nginx container
-      shell: |
-        docker restart nginx
-      changed_when: True
-      register: reload
-      retries: 2
-      delay: "{{ 10 | random }}"
-      until: reload.rc == 0
+    # - name: Reload nginx container
+    #   shell: |
+    #     docker restart nginx
+    #   changed_when: True
+    #   register: reload
+    #   retries: 2
+    #   delay: "{{ 10 | random }}"
+    #   until: reload.rc == 0
 
     - name: Validate that nginx container running
       shell: |

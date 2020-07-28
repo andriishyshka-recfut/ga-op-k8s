@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: vault-issuer
+  namespace: default
+spec:
+  vault:
+    path: pki/sign/cert-manager-${cluster}
+    server: ${vault_addr}
+%{ if connection != "local" }    caBundle: ${ca}%{ endif ~}
+
+    auth:
+      kubernetes:
+        role: cert-manager-${cluster}
+        mountPath: /v1/auth/k8s-${cluster}
+        secretRef:
+          name: ${default_secret_name}
+          key: token

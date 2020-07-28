@@ -5,10 +5,10 @@ resource "google_compute_address" "static" {
 
 
 resource "google_compute_instance" "bastion" {
-  name = module.common-vars.bastion_hostname
+  name         = var.settings.bastion_hostname
   machine_type = "g1-small"
-  zone = module.common-vars.bastion_zone
-  tags = ["dmz"]
+  zone         = var.settings.bastion_zone
+  tags         = ["dmz"]
   labels = {
     name = "bastion"
   }
@@ -19,7 +19,7 @@ resource "google_compute_instance" "bastion" {
     }
   }
   scheduling {
-    preemptible = true
+    preemptible       = true
     automatic_restart = false
   }
   // Define a network interface in the correct subnet.
@@ -40,11 +40,11 @@ resource "google_compute_instance" "bastion" {
       "echo",
     ]
     connection {
-    type     = "ssh"
-    user     = "sa_${data.google_service_account.me.unique_id}"
-    //private_key = file("./ssh-key-ansible-sa")
-    host     = google_compute_address.static.address
-  }
+      type = "ssh"
+      user = "sa_${data.google_service_account.me.unique_id}"
+      //private_key = file("./ssh-key-ansible-sa")
+      host = google_compute_address.static.address
+    }
   }
 
 }
@@ -59,11 +59,11 @@ data "external" "data" {
 data "google_client_openid_userinfo" "me" {
 }
 data "google_service_account" "me" {
-  account_id = element(split("@",data.google_client_openid_userinfo.me.email),0)
+  account_id = element(split("@", data.google_client_openid_userinfo.me.email), 0)
 }
 resource "google_os_login_ssh_public_key" "cache" {
-  user =  data.google_client_openid_userinfo.me.email
-  key = data.external.data.result["pub_certificate"]
+  user                 = data.google_client_openid_userinfo.me.email
+  key                  = data.external.data.result["pub_certificate"]
   expiration_time_usec = data.external.data.result["expiration_date"]
 }
 /*
@@ -74,9 +74,9 @@ output "pub_certificate" {
   value = data.external.data.result["pub_certificate"]
 }*/
 output "dns_record" {
-value = <<DNS
+  value = <<DNS
   Please make sure that this DNS record configured this way:
-    ${module.common-vars.bastion_dns}    A  ${google_compute_address.static.address}
+    ${var.settings.bastion_dns}    A  ${google_compute_address.static.address}
 
 DNS
 
@@ -84,13 +84,15 @@ DNS
 
 
 resource "local_file" "ansible_gcp_inventory" {
-    content     = templatefile("${path.root}/../ansible/inventory.gcp.yml.tmpl",{project = data.google_service_account.me.project })
-    filename = "${path.root}/../ansible/inventory.gcp.yaml"
+  content  = templatefile("${path.root}/../ansible/inventory.gcp.yml.tmpl", { project = data.google_service_account.me.project })
+  filename = "${path.root}/../ansible/inventory.gcp.yaml"
 }
 resource "null_resource" "ansible_playbook" {
 
   triggers = {
-    always_run = "${timestamp()}"
+    //always_run = "${timestamp()}"
+    vm_change         = google_compute_instance.bastion.id
+    playbook_contents = md5(file("${path.root}/../ansible/bastion-provision.yml"))
   }
 
   provisioner "local-exec" {
@@ -103,8 +105,8 @@ resource "null_resource" "ansible_playbook" {
       -i ./inventory.gcp.yaml
 COMMAND
     environment = {
-    CLUSTER_SETTINGS = jsonencode(module.common-vars.cluster_settings)
-    BASTION_DNS = module.common-vars.bastion_dns
+      CLUSTER_SETTINGS = jsonencode(var.settings.cluster_settings)
+      BASTION_DNS      = var.settings.bastion_dns
     }
   }
   depends_on = [

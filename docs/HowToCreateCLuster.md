@@ -6,36 +6,26 @@
 
 1. First make sure all stuff from terraform-base/ is done.
 2. Connect to Wireguard VPN
-3. Update cluster_settings variable with new cluster configuration in `terraform-modules/common-vars/outputs`
-4. Create new directory where all cluster related configs will be placed
-5. Create main.tf with next content:
+3. Update .env file with appropriate project settings and `source .env`
+4. Update `config.tfvars.json`  if required
+5. Configure OAuth2.0 for vault SSO.
+  a. Make sure that consent screen is [configured](https://support.google.com/cloud/answer/6158849?hl=en#userconsent)
+  b. Create [OpenID Client](https://support.google.com/cloud/answer/6158849)
+  c. Configure Callback URLs as authorized domains of your client. Next required for vault(localhost required for vault cli login):
+      ```
+      https://{{ settings.blue.vault.url}}/ui/vault/auth/oidc/oidc/callback
+      http://localhost:8250/oidc/callback
+      ```
+6. Check `main.tf` and configure proper `backend`. Bucket from base setup expected here.
+7. Set env variables  run terraform. For initial provisioning blue cluster should be used first, becouse only blue will create  DNS zone and records.
 ```
-terraform {
-  backend "gcs" {
-    bucket  = "[[ Bucket name with tf-states ]]"
-    prefix  = "terraform-[[ cluster name]]/state" // path should be unique to all other clusters
-  }
-}
+export oidc_discovery_url="https://accounts.google.com"
+export oidc_client_id="Client ID From Previous Step"
+export oidc_client_secret="Client Secret From Previous Step"
 
-
-
-module "common-vars" {
-  source = "../terraform-modules/common-vars" // should be a valid path to common-vars module directory
-}
-
-module "gke-setup" {
-  source = "../terraform-modules/gke-setup"
-
-  settings = module.common-vars
-  cluster = "[[ cluster name]]" // Name of cluster which configuration were created in step 2.
-}
-
-```
-
-6. Set env variables with path SA key json and run terraform
-```
-source ../.env
-
+cd tf-blue/
 tf init
 tf apply
 ```
+
+8. Commit and push if anything was changed.
