@@ -9,8 +9,7 @@ data "google_compute_instance" "bastion" {
   zone = var.settings.bastion_zone
 }
 
-data "google_project" "current" {
-}
+data "google_project" "current" {}
 data "google_client_openid_userinfo" "me" {
 }
 data "google_service_account" "me" {

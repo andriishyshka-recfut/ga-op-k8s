@@ -73,7 +73,7 @@
           allowed_domains:
           - "{{ cluster_name }}.{{ domain }}"
 
-    - name: Create k8s auth role for
+    - name: Create k8s auth role for cert-manager
       hashivault_k8s_auth_role:
         name: "cert-manager-{{ cluster_name }}"
         policies: ["pki"]

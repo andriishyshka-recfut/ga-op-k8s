@@ -27,6 +27,15 @@ module "gke-setup-green" {
   }
 }
 
+module "vault-persistent-green" {
+  source   = "../terraform-modules/vault-persistent-resources"
+  settings = var.settings
+  cluster  = "green"
+
+  providers = {
+    google = google
+  }
+}
 
 module "post-install-green" {
   source                 = "../terraform-modules/k8s-post-install"
@@ -38,7 +47,7 @@ module "post-install-green" {
   oidc_discovery_url     = var.oidc_discovery_url
   oidc_client_id         = var.oidc_client_id
   oidc_client_secret     = var.oidc_client_secret
-  vault_resources        = module.gke-setup-green.vault_resources
+  vault_resources        = module.vault-persistent-green.vault_resources
   node_pool              = module.gke-setup-green.node_pool
 
   providers = {

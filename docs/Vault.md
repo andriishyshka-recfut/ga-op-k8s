@@ -2,9 +2,9 @@
 
  * HA Support (not all storage support HA)
  * Redundant storage ([GCS](https://www.vaultproject.io/docs/configuration/storage/google-cloud-storage) is)
- * Auto unsealing with Google KMS ???
+ * Auto unsealing with Google KMS
  * OIDC auth
- * Will need to choose [operator](https://operatorhub.io/operator/vault) deploy or [helm](https://www.vaultproject.io/docs/platform/k8s/helm/run)
+ * Will need to choose ~~[operator](https://operatorhub.io/operator/vault) deploy or~~ [helm](https://www.vaultproject.io/docs/platform/k8s/helm/run)
 
 [Terraform example from Seth Vargo](https://github.com/sethvargo/vault-on-gke/blob/master/terraform/gcp.tf)
 

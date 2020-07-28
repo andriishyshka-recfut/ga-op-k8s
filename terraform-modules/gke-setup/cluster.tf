@@ -30,6 +30,7 @@ resource "google_container_cluster" "cluster" {
     }
   }
   node_config {
+    preemptible     = true
     tags            = ["${var.cluster}"]
     service_account = google_service_account.gke-sa.unique_id
     oauth_scopes = [
@@ -85,9 +86,9 @@ resource "google_container_cluster" "cluster" {
     }
   }
 
-  lifecycle {
-    ignore_changes = all
-  }
+  # lifecycle {
+  #   ignore_changes = all
+  # }
   depends_on = [
     google_compute_subnetwork.net
   ]

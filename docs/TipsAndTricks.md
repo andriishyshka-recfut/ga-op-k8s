@@ -74,3 +74,12 @@ kubectl drain gke-infra-infra-node-pool-e9116048-984m --ignore-daemonsets
 kubectl exec -it metricbeat-xp5jn -n kube-system -- metricbeat setup --dashboards -E setup.kibana.host=https://kibana-kb-http.elastic:5601 -E setup.kibana.ssl.verification_mode=none
 
 ```
+
+
+# Get vault token without Jumphost balancer configured
+```
+kubectl port-forward service/vault 8200 -n vault &
+export VAULT_ADDR='http://127.0.0.1:8200'
+vault login -method=oidc role=111
+
+```

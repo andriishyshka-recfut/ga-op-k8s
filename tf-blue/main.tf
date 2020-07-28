@@ -24,6 +24,16 @@ module "gke-setup-blue" {
 }
 
 
+module "vault-persistent-blue" {
+  source   = "../terraform-modules/vault-persistent-resources"
+  settings = var.settings
+  cluster  = "blue"
+
+  providers = {
+    google = google
+  }
+}
+
 module "post-install-blue" {
   source                 = "../terraform-modules/k8s-post-install"
   gke_cluster_endpoint   = module.gke-setup-blue.gke_cluster_endpoint
@@ -34,7 +44,7 @@ module "post-install-blue" {
   oidc_discovery_url     = var.oidc_discovery_url
   oidc_client_id         = var.oidc_client_id
   oidc_client_secret     = var.oidc_client_secret
-  vault_resources        = module.gke-setup-blue.vault_resources
+  vault_resources        = module.vault-persistent-blue.vault_resources
   node_pool              = module.gke-setup-blue.node_pool
 
   providers = {
