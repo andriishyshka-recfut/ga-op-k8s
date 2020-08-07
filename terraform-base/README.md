@@ -43,6 +43,8 @@ source ../.env
 
 3. Import bucket and Service account resources to continue manage them with tf
 ```
+zsh
+
 cd terraform-base
 
 rm .terraform/ -rf && tf init

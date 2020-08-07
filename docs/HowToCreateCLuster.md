@@ -17,8 +17,10 @@
       http://localhost:8250/oidc/callback
       ```
 6. Check `main.tf` and configure proper `backend`. Bucket from base setup expected here.
-7. Set env variables  run terraform. For initial provisioning blue cluster should be used first, becouse only blue will create  DNS zone and records.
+7. Set env variables  run terraform. For initial provisioning blue cluster should be used first, becouse only blue will create  DNS zone and records(alias works only at zsh).
 ```
+zsh
+
 export oidc_discovery_url="https://accounts.google.com"
 export oidc_client_id="Client ID From Previous Step"
 export oidc_client_secret="Client Secret From Previous Step"
