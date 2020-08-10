@@ -22,6 +22,15 @@ module "vault-persistent-blue" {
   }
 }
 
+module "dns" {
+  source   = "../terraform-modules/dns"
+  settings = var.settings
+  cluster  = "blue"
+
+  providers = {
+    google = google
+  }
+}
 # module "gke-setup-blue" {
 #   source   = "../terraform-modules/gke-setup"
 #   settings = var.settings
