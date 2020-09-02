@@ -27,16 +27,6 @@ module "gke-setup-green" {
   }
 }
 
-module "vault-persistent-green" {
-  source   = "../terraform-modules/vault-persistent-resources"
-  settings = var.settings
-  cluster  = "green"
-
-  providers = {
-    google = google
-  }
-}
-
 module "post-install-green" {
   source                 = "../terraform-modules/k8s-post-install"
   gke_cluster_endpoint   = module.gke-setup-green.gke_cluster_endpoint
@@ -55,5 +45,15 @@ module "post-install-green" {
     kubernetes = kubernetes.kubernetes-green
     helm       = helm.helm-green
 
+  }
+}
+
+module "vault-persistent-green" {
+  source   = "../terraform-modules/vault-persistent-resources"
+  settings = var.settings
+  cluster  = "green"
+
+  providers = {
+    google = google
   }
 }

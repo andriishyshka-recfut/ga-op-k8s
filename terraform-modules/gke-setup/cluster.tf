@@ -86,9 +86,9 @@ resource "google_container_cluster" "cluster" {
     }
   }
 
-  # lifecycle {
-  #   ignore_changes = all
-  # }
+  lifecycle {
+    ignore_changes = all
+  }
   depends_on = [
     google_compute_subnetwork.net
   ]
@@ -96,6 +96,9 @@ resource "google_container_cluster" "cluster" {
 
 
 resource "google_container_node_pool" "cluster_preemptible_nodes" {
+  lifecycle {
+    ignore_changes = all
+  }
 
   provider = google-beta
   name     = "${var.cluster}-node-pool"
