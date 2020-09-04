@@ -43,6 +43,6 @@ COMMAND
   }
   depends_on = [
     # google_container_node_pool.cluster_preemptible_nodes,
-    # kubernetes_namespace.-system
+    kubernetes_namespace.redis-system
   ]
 }
