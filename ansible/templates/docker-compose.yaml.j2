@@ -16,6 +16,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "30000-30020:30000-30020"
     command: "/bin/bash /inotify.sh"
   certbot:
     image: certbot/certbot
