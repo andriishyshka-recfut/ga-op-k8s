@@ -203,10 +203,10 @@
       args:
         creates: "{{ compose_dest }}/data/certbot/conf/live/{{ bastion_dns }}/privkey.pem"
 
-    - name: Retrive subspace ip
-      docker_container_info:
-        name: nginx
-      register: nginx_container_info
+    # - name: Retrive subspace ip
+    #   docker_container_info:
+    #     name: nginx
+    #   register: nginx_container_info
 
     - name: Get docker network info
       docker_network_info:

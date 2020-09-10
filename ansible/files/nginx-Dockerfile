@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:latest
 COPY ./inotify.sh /inotify.sh
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
