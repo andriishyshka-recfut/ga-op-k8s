@@ -1,0 +1,12 @@
+
+version_info: "0"
+resources:
+- '@type': type.googleapis.com/envoy.api.v2.Cluster
+  name: c3
+  connect_timeout: 0.5s
+  type: strict_dns
+  lb_policy: round_robin
+  hosts:
+    - socket_address:
+        address: 8.8.8.8
+        port_value: 443
