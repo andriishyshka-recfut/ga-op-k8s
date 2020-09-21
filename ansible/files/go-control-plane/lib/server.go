@@ -8,7 +8,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	//clusterservice "github.com/envoyproxy/go-control-plane/envoy/service/cluster/v3"
+	clusterservice "github.com/envoyproxy/go-control-plane/envoy/service/cluster/v3"
 	discoverygrpc "github.com/envoyproxy/go-control-plane/envoy/service/discovery/v3"
 	//endpointservice "github.com/envoyproxy/go-control-plane/envoy/service/endpoint/v3"
 	listenerservice "github.com/envoyproxy/go-control-plane/envoy/service/listener/v3"
@@ -26,7 +26,7 @@ func registerServer(grpcServer *grpc.Server, server serverv3.Server) {
 	// register services
 	discoverygrpc.RegisterAggregatedDiscoveryServiceServer(grpcServer, server)
 	//endpointservice.RegisterEndpointDiscoveryServiceServer(grpcServer, server)
-	//clusterservice.RegisterClusterDiscoveryServiceServer(grpcServer, server)
+	clusterservice.RegisterClusterDiscoveryServiceServer(grpcServer, server)
 	//routeservice.RegisterRouteDiscoveryServiceServer(grpcServer, server)
 	listenerservice.RegisterListenerDiscoveryServiceServer(grpcServer, server)
 	//secretservice.RegisterSecretDiscoveryServiceServer(grpcServer, server)

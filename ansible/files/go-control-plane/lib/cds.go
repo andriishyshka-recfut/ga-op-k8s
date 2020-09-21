@@ -20,12 +20,38 @@ func MakeCluster(clusterName string) *cluster.Cluster {
 	return &cluster.Cluster{
 		Name:                 clusterName,
 		ConnectTimeout:       ptypes.DurationProto(5 * time.Second),
-		ClusterDiscoveryType: &cluster.Cluster_Type{Type: cluster.Cluster_LOGICAL_DNS},
+		ClusterDiscoveryType: &cluster.Cluster_Type{Type: cluster.Cluster_STRICT_DNS},
 		LbPolicy:             cluster.Cluster_ROUND_ROBIN,
+		// LoadAssignment:       makeEndpoint(clusterName),
 		LoadAssignment:       makeEndpoint(clusterName,upstreamPort,upstreamHosts),
 		DnsLookupFamily:      cluster.Cluster_V4_ONLY,
 	}
 }
+
+// func makeEndpoint(clusterName string) *endpoint.ClusterLoadAssignment {
+// 	return &endpoint.ClusterLoadAssignment{
+// 		ClusterName: clusterName,
+// 		Endpoints: []*endpoint.LocalityLbEndpoints{{
+// 			LbEndpoints: []*endpoint.LbEndpoint{{
+// 				HostIdentifier: &endpoint.LbEndpoint_Endpoint{
+// 					Endpoint: &endpoint.Endpoint{
+// 						Address: &core.Address{
+// 							Address: &core.Address_SocketAddress{
+// 								SocketAddress: &core.SocketAddress{
+// 									Protocol: core.SocketAddress_TCP,
+// 									Address:  "172.17.0.3",
+// 									PortSpecifier: &core.SocketAddress_PortValue{
+// 										PortValue: 80,
+// 									},
+// 								},
+// 							},
+// 						},
+// 					},
+// 				},
+// 			}},
+// 		}},
+// 	}
+// }
 
 func makeEndpoint(clusterName string,upstreamPort uint32,upstreamHosts []string ) *endpoint.ClusterLoadAssignment {
   var endpointsSlice []*endpoint.LbEndpoint

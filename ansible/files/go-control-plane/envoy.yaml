@@ -105,7 +105,7 @@ dynamic_resources:
       grpc_services:
       - envoy_grpc:
           cluster_name: xds_cluster
-      set_node_on_first_message_only: true
+      # set_node_on_first_message_only: true
 node:
   cluster: test-cluster
   id: test-id

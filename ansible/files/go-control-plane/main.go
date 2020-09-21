@@ -23,7 +23,7 @@ func generateSnapshot(version string ) cachev3.Snapshot {
 	return cachev3.NewSnapshot(
 		version ,
 		[]types.Resource{}, // endpoints
-		[]types.Resource{ lib.MakeCluster("test")}, // Cluster
+		[]types.Resource{ lib.MakeCluster("test-cluster")}, // Cluster
 		[]types.Resource{}, // Routes
 		[]types.Resource{ lib.MakeListener("test", 30010 )},
 		[]types.Resource{}, // runtimes
