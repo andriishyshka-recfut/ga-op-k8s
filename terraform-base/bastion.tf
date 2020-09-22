@@ -91,10 +91,10 @@ resource "null_resource" "ansible_playbook" {
 
   triggers = {
     //always_run = "${timestamp()}"
-    vm_change               = google_compute_instance.bastion.id
-    playbook_contents       = md5(file("${path.root}/../ansible/bastion-provision.yml"))
-    upstream_py_contents    = md5(file("${path.root}/../ansible/files/upstream.py"))
-    stream_template_content = md5(file("${path.root}/../ansible/templates/default-stream.conf"))
+    vm_change         = google_compute_instance.bastion.id
+    playbook_contents = md5(file("${path.root}/../ansible/bastion-provision.yml"))
+    # upstream_py_contents    = md5(file("${path.root}/../ansible/files/upstream.py"))
+    # stream_template_content = md5(file("${path.root}/../ansible/templates/default-stream.conf"))
   }
 
   provisioner "local-exec" {

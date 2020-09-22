@@ -9,12 +9,12 @@ static_resources:
         typed_config: {}
     filter_chains:
     - filter_chain_match:
-        server_names: ["envoyproxy.io", "*.envoyproxy.io"]
+        server_names: ["b.digaweb.com"]
       filters:
       - name: envoy.filters.network.tcp_proxy
         config:
           stat_prefix: ingress_tcp
-          cluster: c2
+          cluster: subspace-https
     - filters:
       - name: envoy.filters.network.tcp_proxy
         config:
@@ -33,10 +33,10 @@ static_resources:
           route_config:
             virtual_hosts:
             - name: backend
-              domains: ["*"]
+              domains: ["b.digaweb.com"]
               routes:
               - match: { prefix: "/.well-known/acme-challenge/" }
-                route: { cluster: certbot }
+                route: { cluster: subspace-http }
               - match: { prefix: "/" }
                 redirect:
                   https_redirect: true
@@ -65,22 +65,22 @@ static_resources:
     - socket_address:
         address: 8.8.8.8
         port_value: 443
-  - name: c2
+  - name: subspace-http
     connect_timeout: 0.5s
     type: strict_dns
     lb_policy: round_robin
     hosts:
     - socket_address:
-        address: envoyproxy.io
-        port_value: 443
-  - name: certbot
-    connect_timeout: 0.5s
-    type: strict_dns
-    lb_policy: round_robin
-    hosts:
-    - socket_address:
-        address: ifconfig.co
+        address: subspace
         port_value: 80
+  - name: subspace-https
+    connect_timeout: 0.5s
+    type: strict_dns
+    lb_policy: round_robin
+    hosts:
+    - socket_address:
+        address: subspace
+        port_value: 443
 admin:
   access_log_path: "/dev/stdout"
   address:
@@ -96,7 +96,6 @@ dynamic_resources:
       grpc_services:
       - envoy_grpc:
           cluster_name: xds_cluster
-
   lds_config:
     resource_api_version: V3
     api_config_source:

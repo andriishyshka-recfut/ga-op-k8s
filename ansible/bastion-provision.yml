@@ -59,60 +59,60 @@
       until: not result.failed
 
 
-    - name: Create temp directory
-      file:
-        path: /tmp/subspace
-        state: directory
-        mode: '0755'
-
-    - name: Unpack subspace sources
-      unarchive:
-        src: https://github.com/subspacecloud/subspace/archive/master.zip
-        dest: /tmp/subspace
-        remote_src: yes
-      retries: 3
-      delay: 3
-      register: result
-      until: not result.failed
-
-    - name: Copy Dockerfile
-      copy:
-        src: Dockerfile.build
-        dest: /tmp/subspace/subspace-master/Dockerfile.build
-
-    - name: Update NAMESERVER in entrypoint script
-      lineinfile:
-        path: /tmp/subspace/subspace-master/entrypoint.sh
-        regex: 'export NAMESERVER="1.1.1.1"'
-        line: 'export NAMESERVER="169.254.169.254"'
-
-    - name: Build image with  latest binary of subspace
-      docker_image:
-        name: subspacebuild:latest
-        build:
-          path: /tmp/subspace/subspace-master
-          dockerfile: /tmp/subspace/subspace-master/Dockerfile.build
-        source: build
-
-    - name: Remove previous binary
-      file:
-        path: /tmp/subspace/subspace-master/subspace-linux-amd64
-        state: absent
-
-    - name: Copy binary to host
-      docker_container:
-        name: subspacebuild
-        image: subspacebuild:latest
-        command: cp /usr/bin/subspace /tmp/subspace-linux-amd64
-        volumes:
-          - /tmp/subspace/subspace-master/:/tmp
-
-    - name: Build new subspace image
-      docker_image:
-        name: subspace:latest
-        build:
-          path: /tmp/subspace/subspace-master
-        source: build
+    # - name: Create temp directory
+    #   file:
+    #     path: /tmp/subspace
+    #     state: directory
+    #     mode: '0755'
+    #
+    # - name: Unpack subspace sources
+    #   unarchive:
+    #     src: https://github.com/subspacecloud/subspace/archive/master.zip
+    #     dest: /tmp/subspace
+    #     remote_src: yes
+    #   retries: 3
+    #   delay: 3
+    #   register: result
+    #   until: not result.failed
+    #
+    # - name: Copy Dockerfile
+    #   copy:
+    #     src: Dockerfile.build
+    #     dest: /tmp/subspace/subspace-master/Dockerfile.build
+    #
+    # - name: Update NAMESERVER in entrypoint script
+    #   lineinfile:
+    #     path: /tmp/subspace/subspace-master/entrypoint.sh
+    #     regex: 'export NAMESERVER="1.1.1.1"'
+    #     line: 'export NAMESERVER="169.254.169.254"'
+    #
+    # - name: Build image with  latest binary of subspace
+    #   docker_image:
+    #     name: subspacebuild:latest
+    #     build:
+    #       path: /tmp/subspace/subspace-master
+    #       dockerfile: /tmp/subspace/subspace-master/Dockerfile.build
+    #     source: build
+    #
+    # - name: Remove previous binary
+    #   file:
+    #     path: /tmp/subspace/subspace-master/subspace-linux-amd64
+    #     state: absent
+    #
+    # - name: Copy binary to host
+    #   docker_container:
+    #     name: subspacebuild
+    #     image: subspacebuild:latest
+    #     command: cp /usr/bin/subspace /tmp/subspace-linux-amd64
+    #     volumes:
+    #       - /tmp/subspace/subspace-master/:/tmp
+    #
+    # - name: Build new subspace image
+    #   docker_image:
+    #     name: subspace:latest
+    #     build:
+    #       path: /tmp/subspace/subspace-master
+    #     source: build
 
     - name: Update sysctl
       sysctl:
@@ -143,38 +143,27 @@
         - iptable_nat
         - ip6table_nat
 
-    - name: Create docker-compose workdir
-      file:
-        path: "/etc/bastion-compose"
-        state: directory
-        mode: '0755'
 
     - name: Copy dockerfiles and other files
       copy:
-        src: "{{ item }}"
-        dest: "{{ compose_dest }}"
-      with_items:
-        - nginx.conf
-        - nginx-Dockerfile
-        - upstream-Dockerfile
-        - upstream.py
-        - inotify.sh
+        src: "bastion-compose"
+        dest: "/etc"
 
-    - name: Generate docker-compose.yaml
-      template:
-        src: docker-compose.yaml.j2
-        dest: "{{ compose_dest }}/docker-compose.yaml"
+    # - name: Generate docker-compose.yaml
+    #   template:
+    #     src: docker-compose.yaml.j2
+    #     dest: "{{ compose_dest }}/docker-compose.yaml"
 
-    - name: Create nginx conf.d
-      file:
-        path: "{{ compose_dest }}/data/nginx"
-        state: directory
-        mode: '0755'
+    # - name: Create nginx conf.d
+    #   file:
+    #     path: "{{ compose_dest }}/data/nginx"
+    #     state: directory
+    #     mode: '0755'
 
-    - name: Copy http config to get certificate from Let's Encrypt
-      copy:
-          src: default-http.conf
-          dest: "{{ compose_dest }}/data/nginx/"
+    # - name: Copy http config to get certificate from Let's Encrypt
+    #   copy:
+    #       src: default-http.conf
+    #       dest: "{{ compose_dest }}/data/nginx/"
 
     - name: find all *-compose.yaml file
       find:
@@ -189,6 +178,9 @@
                 {{ output.append( element.path ) }}\
              {% endfor %}\
              {{ output }}"
+
+    - fail:
+        msg: "Test"
 
     - name: Start all
       docker_compose:
@@ -208,25 +200,25 @@
     #     name: nginx
     #   register: nginx_container_info
 
-    - name: Get docker network info
-      docker_network_info:
-        name: bastion-compose_default
-      register: network_info
+    # - name: Get docker network info
+    #   docker_network_info:
+    #     name: bastion-compose_default
+    #   register: network_info
+    #
+    # - debug: msg="Will try to reach subspace from  {{ network_info.network.IPAM.Config[0].Gateway | to_nice_json }}"
+    #   when: network_info.exists
+    #
+    # - fail:
+    #     msg: "Can't get info about bastion-compose_default network"
+    #   when: not network_info.exists
 
-    - debug: msg="Will try to reach subspace from  {{ network_info.network.IPAM.Config[0].Gateway | to_nice_json }}"
-      when: network_info.exists
-
-    - fail:
-        msg: "Can't get info about bastion-compose_default network"
-      when: not network_info.exists
-
-    - name: Update https configuration
-      template:
-        src: "{{ item }}"
-        dest: "{{ compose_dest }}/data/nginx/"
-      with_items:
-        - default-stream.conf
-        - subspace-http.conf
+    # - name: Update https configuration
+    #   template:
+    #     src: "{{ item }}"
+    #     dest: "{{ compose_dest }}/data/nginx/"
+    #   with_items:
+    #     - default-stream.conf
+    #     - subspace-http.conf
 
     # - name: Restart nginx container
     #   shell: |

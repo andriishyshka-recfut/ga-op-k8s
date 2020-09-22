@@ -65,16 +65,16 @@
         src: env.j2
         dest: "{{ compose_dest }}/.env"
 
-    - name: Copy dockerfiles and other files
-      copy:
-        src: "{{ item }}"
-        dest: "{{ compose_dest }}/{{ item }}"
-      with_items:
-        - nginx.conf
-        - nginx-Dockerfile
-        - upstream-Dockerfile
-        - upstream.py
-        - inotify.sh
+    # - name: Copy dockerfiles and other files
+    #   copy:
+    #     src: "{{ item }}"
+    #     dest: "{{ compose_dest }}/{{ item }}"
+    #   with_items:
+    #     - nginx.conf
+    #     - nginx-Dockerfile
+    #     - upstream-Dockerfile
+    #     - upstream.py
+    #     - inotify.sh
 
     # - name: Start {{ cluster_name }}-upstreamd
     #   shell:
@@ -106,24 +106,24 @@
     #   register: inspect_status
     #   until: inspect_status.stdout.find("running") != -1
 
-    - name: Check if {{ subdomain }}-stream.conf created
-      stat:
-        path: "{{ compose_dest }}/data/nginx/{{ subdomain }}-stream.conf"
-      register: stream_stat
-
-    - name: Assert that {{ subdomain }}-stream.conf exists
-      assert:
-        that:
-          - stream_stat.stat.exists
-          - "{{ subdomain }}_upstreamd.{{ subdomain }}_upstreamd.state.running"
-          - nginx.nginx.state.running
-
-    - name: Update streams configuration
-      template:
-        src: "{{ item }}"
-        dest: "{{ compose_dest }}/data/nginx/"
-      with_items:
-        - default-stream.conf
+    # - name: Check if {{ subdomain }}-stream.conf created
+    #   stat:
+    #     path: "{{ compose_dest }}/data/nginx/{{ subdomain }}-stream.conf"
+    #   register: stream_stat
+    #
+    # - name: Assert that {{ subdomain }}-stream.conf exists
+    #   assert:
+    #     that:
+    #       - stream_stat.stat.exists
+    #       - "{{ subdomain }}_upstreamd.{{ subdomain }}_upstreamd.state.running"
+    #       - nginx.nginx.state.running
+    #
+    # - name: Update streams configuration
+    #   template:
+    #     src: "{{ item }}"
+    #     dest: "{{ compose_dest }}/data/nginx/"
+    #   with_items:
+    #     - default-stream.conf
 
     # - name: Wait a random time to avoid race condition (race condition may occure when you create multiple clusters within one project)
     #   pause:
