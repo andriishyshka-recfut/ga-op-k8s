@@ -6,15 +6,27 @@ import (
   "github.com/envoyproxy/go-control-plane/pkg/wellknown"
   tcp "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/network/tcp_proxy/v3"
   "github.com/golang/protobuf/ptypes"
+  "github.com/envoyproxy/go-control-plane/pkg/cache/types"
 )
 
+// CreateMultipleLDS Start listeners in port range and points them to clusterts by pattern "cl"+ port
+func CreateMultipleLDS (startPort,endPort int) []types.Resource {
+  var output []types.Resource
+    for  i := startPort; i <= endPort; i++  {
+      output = append(output, MakeListener(
+                      "listener"+string(i),
+                      uint32(i),
+                      "cl"+string(i),
+        ))
+    }
+    return output
+}
+
+
+
 // MakeListener will create listener with specified name and assign it to specified port
-func MakeListener ( listenerName string, listenerPort uint32) *listener.Listener {
-  clusterName := &tcp.TcpProxy_Cluster{ Cluster: "c1"}
- //  pbCluster, err := ptypes.MarshalAny(clusterName)
-  // if err != nil {
-	// 	panic(err)
-	// }
+func MakeListener ( listenerName string, listenerPort uint32,cluster string ) *listener.Listener {
+  clusterName := &tcp.TcpProxy_Cluster{ Cluster: cluster }
 
   filterConfig := &tcp.TcpProxy{
     ClusterSpecifier: clusterName ,

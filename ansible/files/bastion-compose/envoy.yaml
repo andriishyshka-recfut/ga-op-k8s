@@ -49,14 +49,14 @@ static_resources:
     http2_protocol_options: {}
     load_assignment:
       cluster_name: xds_cluster
+      type: strict_dns
       endpoints:
       - lb_endpoints:
         - endpoint:
             address:
               socket_address:
-                address: 172.17.0.1
+                address: control-plane
                 port_value: 1234
-
   - name: c1
     connect_timeout: 0.5s
     type: strict_dns

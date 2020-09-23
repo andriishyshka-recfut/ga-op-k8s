@@ -3,9 +3,6 @@ version: '3'
 services:
   envoy:
     image: envoyproxy/envoy:v1.14-latest
-    build:
-       context: .
-       dockerfile: envoy-Dockerfile
     container_name: envoy
     restart: unless-stopped
     volumes:
@@ -14,7 +11,11 @@ services:
       - "80:80"
       - "443:443"
       - "30000-30020:30000-30020"
-     command: "/usr/local/bin/envoy -c /etc/envoy/envoy.yaml --component-log-level config:error,grpc:warn"
+    command: "/usr/local/bin/envoy -c /etc/envoy/envoy.yaml --component-log-level config:error,grpc:warn"
+  control-plane:
+    build:
+      context: ./go-control-plane
+    restart: unless-stopped
   subspace:
     # image: subspacecommunity/subspace:latest
     build:

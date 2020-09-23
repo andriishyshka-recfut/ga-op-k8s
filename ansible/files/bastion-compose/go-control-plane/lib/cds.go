@@ -9,13 +9,27 @@ import (
 	cluster "github.com/envoyproxy/go-control-plane/envoy/config/cluster/v3"
   endpoint "github.com/envoyproxy/go-control-plane/envoy/config/endpoint/v3"
   core "github.com/envoyproxy/go-control-plane/envoy/config/core/v3"
+  "github.com/envoyproxy/go-control-plane/pkg/cache/types"
 
 )
 
+// CreateMultipleCDS creates clusters with endpoints that pointed to nodeSlice nodes and each cluster points to one port from range startPort - endPort
+func CreateMultipleCDS (nodeSlice []string, startPort,endPort int) []types.Resource {
+  var output []types.Resource
+    for i := startPort; i <= endPort; i++  {
+    output = append(output, MakeCluster(
+                              "cl"+string(i),
+                              nodeSlice,
+                              uint32(i)))
+  }
+  return output
+}
+
+
 // MakeCluster will create cluster resource with endpoints
-func MakeCluster(clusterName string) *cluster.Cluster {
-  upstreamHosts := []string{"172.17.0.3","172.17.0.4"}
-  var upstreamPort uint32  = 80
+func MakeCluster(clusterName string,upstreamHosts []string, upstreamPort uint32 ) *cluster.Cluster {
+  //upstreamHosts := []string{"172.17.0.3","172.17.0.4"}
+  //var upstreamPort uint32  = 80
 
 	return &cluster.Cluster{
 		Name:                 clusterName,
@@ -28,30 +42,6 @@ func MakeCluster(clusterName string) *cluster.Cluster {
 	}
 }
 
-// func makeEndpoint(clusterName string) *endpoint.ClusterLoadAssignment {
-// 	return &endpoint.ClusterLoadAssignment{
-// 		ClusterName: clusterName,
-// 		Endpoints: []*endpoint.LocalityLbEndpoints{{
-// 			LbEndpoints: []*endpoint.LbEndpoint{{
-// 				HostIdentifier: &endpoint.LbEndpoint_Endpoint{
-// 					Endpoint: &endpoint.Endpoint{
-// 						Address: &core.Address{
-// 							Address: &core.Address_SocketAddress{
-// 								SocketAddress: &core.SocketAddress{
-// 									Protocol: core.SocketAddress_TCP,
-// 									Address:  "172.17.0.3",
-// 									PortSpecifier: &core.SocketAddress_PortValue{
-// 										PortValue: 80,
-// 									},
-// 								},
-// 							},
-// 						},
-// 					},
-// 				},
-// 			}},
-// 		}},
-// 	}
-// }
 
 func makeEndpoint(clusterName string,upstreamPort uint32,upstreamHosts []string ) *endpoint.ClusterLoadAssignment {
   var endpointsSlice []*endpoint.LbEndpoint
