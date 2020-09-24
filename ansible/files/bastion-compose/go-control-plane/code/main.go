@@ -80,7 +80,7 @@ func main() {
       var listenerSlice []types.Resource = lib.CreateMultipleLDS(3000,30020)
       // Add infra cluster
       clustersSlice = append(clustersSlice, lib.MakeCluster(
-                                            "infra",
+                                            "infra-ingress",
                                             nodeSlice,
                                             uint32(nodePort)))
 

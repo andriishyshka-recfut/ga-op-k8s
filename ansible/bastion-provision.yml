@@ -114,6 +114,8 @@
         project_src: "{{ compose_dest }}"
         files: "{{ compose_files }}"
         build: yes
+        recreate: always
+        remove_orphans: yes
       register: output
 
 
@@ -134,5 +136,5 @@
         validate_certs: yes
       register: result
       retries: 5
-      delay: 10
+      delay: 20
       until: result.content.find("Subspace") != -1

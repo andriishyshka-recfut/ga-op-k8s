@@ -15,7 +15,6 @@ static_resources:
         config:
           stat_prefix: ingress_tcp
           cluster: subspace-https
-    filter_chains:
     - filter_chain_match:
         server_names: ["*.infra.digaweb.com","*.regemini.com"]
       filters:
