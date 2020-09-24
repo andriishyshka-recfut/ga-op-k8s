@@ -15,11 +15,19 @@ static_resources:
         config:
           stat_prefix: ingress_tcp
           cluster: subspace-https
+    filter_chains:
+    - filter_chain_match:
+        server_names: ["*.infra.digaweb.com","*.regemini.com"]
+      filters:
+      - name: envoy.filters.network.tcp_proxy
+        config:
+          stat_prefix: ingress_tcp
+          cluster: infra-ingress
     - filters:
       - name: envoy.filters.network.tcp_proxy
         config:
           stat_prefix: ingress_tcp
-          cluster: c1
+          cluster: default
   - address:
       socket_address:
         address: 0.0.0.0
@@ -47,9 +55,9 @@ static_resources:
   - name: xds_cluster
     connect_timeout: 0.5s
     http2_protocol_options: {}
+    type: strict_dns
     load_assignment:
       cluster_name: xds_cluster
-      type: strict_dns
       endpoints:
       - lb_endpoints:
         - endpoint:
@@ -57,7 +65,7 @@ static_resources:
               socket_address:
                 address: control-plane
                 port_value: 1234
-  - name: c1
+  - name: default
     connect_timeout: 0.5s
     type: strict_dns
     lb_policy: round_robin
@@ -104,7 +112,6 @@ dynamic_resources:
       grpc_services:
       - envoy_grpc:
           cluster_name: xds_cluster
-      # set_node_on_first_message_only: true
 node:
   cluster: test-cluster
   id: test-id
