@@ -59,7 +59,7 @@ func main() {
         log.Println(err)
         os.Exit(2)
     }
-
+  log.Printf("nodePort is %d", nodePort )
 
   // Create cache
   cache := cachev3.NewSnapshotCache(false, cachev3.IDHash{}, l)
@@ -77,7 +77,7 @@ func main() {
     // some nodes changed
       log.Printf("Nodes changed. Updating snapshot. Was: %+v\n New: %+v",prevNodeSlice,  nodeSlice)
       var clustersSlice []types.Resource = lib.CreateMultipleCDS(nodeSlice, 30000, 30020 )
-      var listenerSlice []types.Resource = lib.CreateMultipleLDS(3000,30020)
+      var listenerSlice []types.Resource = lib.CreateMultipleLDS(30000,30020)
       // Add infra cluster
       clustersSlice = append(clustersSlice, lib.MakeCluster(
                                             "infra-ingress",

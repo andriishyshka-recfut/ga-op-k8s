@@ -10,6 +10,7 @@ import (
   endpoint "github.com/envoyproxy/go-control-plane/envoy/config/endpoint/v3"
   core "github.com/envoyproxy/go-control-plane/envoy/config/core/v3"
   "github.com/envoyproxy/go-control-plane/pkg/cache/types"
+    "strconv"
 
 )
 
@@ -17,8 +18,9 @@ import (
 func CreateMultipleCDS (nodeSlice []string, startPort,endPort int) []types.Resource {
   var output []types.Resource
     for i := startPort; i <= endPort; i++  {
-    output = append(output, MakeCluster(
-                              "cl"+string(i),
+      port := strconv.Itoa(i)
+      output = append(output, MakeCluster(
+                              "cl"+string(port),
                               nodeSlice,
                               uint32(i)))
   }

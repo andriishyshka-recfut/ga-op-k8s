@@ -7,16 +7,18 @@ import (
   tcp "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/network/tcp_proxy/v3"
   "github.com/golang/protobuf/ptypes"
   "github.com/envoyproxy/go-control-plane/pkg/cache/types"
+    "strconv"
 )
 
 // CreateMultipleLDS Start listeners in port range and points them to clusterts by pattern "cl"+ port
 func CreateMultipleLDS (startPort,endPort int) []types.Resource {
   var output []types.Resource
     for  i := startPort; i <= endPort; i++  {
+      port := strconv.Itoa(i)
       output = append(output, MakeListener(
-                      "listener"+string(i),
+                      "listener"+string(port),
                       uint32(i),
-                      "cl"+string(i),
+                      "cl"+string(port),
         ))
     }
     return output

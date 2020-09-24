@@ -35,6 +35,12 @@
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'https'
 
+    - name: Copy control plane files files
+      copy:
+        src: "bastion-compose/go-control-plane"
+        dest: "/etc/bastion-compose"
+        mode: "preserve"
+
     - name: set nodePort
       set_fact:
         nodePort:  "{{ item.nodePort }}"
@@ -86,15 +92,25 @@
     #     COMPOSE_PATH_SEPARATOR: ':'
     #     COMPOSE_FILE: "{{ compose_files }}"
     #
-    - name: Start {{ subdomain }}-upstreamd
+    # - name: Start {{ subdomain }} control plane
+    #   docker_compose:
+    #     project_src: "{{ subdomain }}"
+    #     files: "{{ compose_files }}"
+    #     build: yes
+    #     recreate: always
+    #     remove_orphans: yes
+    #   register: output
+
+    - name: Start all
       docker_compose:
-        project_src: "{{ subdomain }}"
+        project_src: "{{ compose_dest }}"
         files: "{{ compose_files }}"
         build: yes
-        recreate: always
+        recreate: smart
         remove_orphans: yes
+        debug: yes
+        timeout: 60
       register: output
-
     # - debug: msg=" {{ output | to_nice_json }}"
     # - name: Validate that {{ cluster_name }}-upstreamd container running
     #   shell: |
@@ -138,10 +154,10 @@
     #   delay: "{{ 10 | random }}"
     #   until: reload.rc == 0
 
-    - name: Validate that nginx container running
+    - name: Validate that envoy container running
       shell: |
         sleep 10
-        docker inspect --format="{{ '{{' }}.State.Status{{ '}}' }}" nginx
+        docker inspect --format="{{ '{{' }}.State.Status{{ '}}' }}" envoy
       changed_when: False
       retries: 5
       delay: 5
