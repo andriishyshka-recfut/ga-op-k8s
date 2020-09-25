@@ -27,7 +27,18 @@ def do_stuff(api_endpoint,upstream_file,node_port,cluster_name):
 {% for server in InternalIP -%}
     server {{ server }}:{{ nodePort }} ;
 {% endfor %}
-}""")
+}
+map $remote_addr $backend {
+{% for server in InternalIP -%}
+    ~{{ loop.index }}$ {{ server }} ;
+{% endfor %}
+    default {{ InternalIP[0] }} ;
+}
+server {
+listen  30000-30020;
+proxy_pass $backend:$server_port ;
+}
+""")
     render = t.render(cluster_name=cluster_name,InternalIP=InternalIP,nodePort=node_port)
     read = ""
 

@@ -56,6 +56,20 @@ resource "google_compute_firewall" "bastion-ssh-https" {
 
   target_tags = ["dmz"]
 }
+resource "google_compute_firewall" "bastion-tor-proxy" {
+  name      = "bastion-tor-proxy"
+  network   = google_compute_network.vpc.name
+  direction = "INGRESS"
+  //source_ranges = ["78.26.204.32/32"]
+  source_ranges = ["78.26.204.32/32", "69.164.208.72/32", "78.46.86.231/32", "${google_compute_address.static.address}/32", ]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["30000-30020"]
+  }
+
+  target_tags = ["dmz"]
+}
 // Let's Encrypt require direct access from all ips
 resource "google_compute_firewall" "bastion-http" {
   name          = "bastion-http"

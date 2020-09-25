@@ -18,10 +18,8 @@ resource "null_resource" "ansible_bastion_playbook" {
   count = lookup(var.settings[var.cluster], "active", false) ? 1 : 0
   triggers = {
     //always_run = "${timestamp()}"
-    istio_change                 = null_resource.ansible_istio_playbook.id
-    playbook_contents            = md5(file("${path.module}/../../ansible/bastion.yml"))
-    upstream_py_contents         = md5(file("${path.module}/../../ansible/files/upstream.py"))
-    upstream_dockerfile_contents = md5(file("${path.module}/../../ansible/files/upstream-Dockerfile"))
+    istio_change      = null_resource.ansible_istio_playbook.id
+    playbook_contents = md5(file("${path.module}/../../ansible/bastion.yml"))
   }
   provisioner "local-exec" {
     command = <<COMMAND

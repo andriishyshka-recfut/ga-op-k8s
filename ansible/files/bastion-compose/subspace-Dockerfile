@@ -1,0 +1,2 @@
+FROM subspacecommunity/subspace:latest
+COPY subspace-entrypoint.sh /usr/local/bin/entrypoint.sh

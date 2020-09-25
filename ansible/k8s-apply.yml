@@ -7,6 +7,7 @@
   vars:
     k8s_apply_value: "{{ lookup('env','k8s_apply_value') }}"
     from_file: "{{ lookup('env','from_file') }}"
+    namespace: "{{ lookup('env','namespace') }}"
   tasks:
   - name: Create temp_dir
     file:
@@ -26,7 +27,16 @@
       api_key: "{{ k8s_api_key }}"
       host: "{{ k8s_host_url }}"
       ca_cert: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
-    when: from_file == 'yes'
+    when: from_file == 'yes' and namespace | length < 1
+  - name:  Apply from file
+    k8s:
+      state: present
+      definition: "{{ lookup ('file',k8s_apply_value) }}"
+      api_key: "{{ k8s_api_key }}"
+      host: "{{ k8s_host_url }}"
+      ca_cert: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
+      namespace: "{{ namespace }}"
+    when: from_file == 'yes'  and namespace | length > 1
   - name:  Apply from env
     k8s:
       state: present

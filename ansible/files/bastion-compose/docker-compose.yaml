@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  envoy:
+    image: envoyproxy/envoy:v1.14-latest
+    container_name: envoy
+    restart: unless-stopped
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml:ro
+    ports:
+      - "80:80"
+      - "443:443"
+      - "30000-30020:30000-30020"
+    command: "/usr/local/bin/envoy -c /etc/envoy/envoy.yaml --component-log-level config:error,grpc:warn"
+  subspace:
+    # image: subspacecommunity/subspace:latest
+    build:
+       context: .
+       dockerfile: subspace-Dockerfile
+    container_name: subspace
+    restart: always
+    ports:
+      - "51820:51820/udp"
+    cap_add:
+    - NET_ADMIN
+    environment:
+    - SUBSPACE_HTTP_HOST=b.digaweb.com
+    # - SUBSPACE_HTTP_INSECURE=true
+    # - SUBSPACE_LETSENCRYPT=false
+    # - SUBSPACE_HTTP_ADDR=:8080
+    - SUBSPACE_NAMESERVER=169.254.169.254
+    volumes:
+    - "./data/subspace:/data"

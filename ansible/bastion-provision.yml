@@ -58,62 +58,6 @@
       register: result
       until: not result.failed
 
-
-    - name: Create temp directory
-      file:
-        path: /tmp/subspace
-        state: directory
-        mode: '0755'
-
-    - name: Unpack subspace sources
-      unarchive:
-        src: https://github.com/subspacecloud/subspace/archive/master.zip
-        dest: /tmp/subspace
-        remote_src: yes
-      retries: 3
-      delay: 3
-      register: result
-      until: not result.failed
-
-    - name: Copy Dockerfile
-      copy:
-        src: Dockerfile.build
-        dest: /tmp/subspace/subspace-master/Dockerfile.build
-
-    - name: Update NAMESERVER in entrypoint script
-      lineinfile:
-        path: /tmp/subspace/subspace-master/entrypoint.sh
-        regex: 'export NAMESERVER="1.1.1.1"'
-        line: 'export NAMESERVER="169.254.169.254"'
-
-    - name: Build image with  latest binary of subspace
-      docker_image:
-        name: subspacebuild:latest
-        build:
-          path: /tmp/subspace/subspace-master
-          dockerfile: /tmp/subspace/subspace-master/Dockerfile.build
-        source: build
-
-    - name: Remove previous binary
-      file:
-        path: /tmp/subspace/subspace-master/subspace-linux-amd64
-        state: absent
-
-    - name: Copy binary to host
-      docker_container:
-        name: subspacebuild
-        image: subspacebuild:latest
-        command: cp /usr/bin/subspace /tmp/subspace-linux-amd64
-        volumes:
-          - /tmp/subspace/subspace-master/:/tmp
-
-    - name: Build new subspace image
-      docker_image:
-        name: subspace:latest
-        build:
-          path: /tmp/subspace/subspace-master
-        source: build
-
     - name: Update sysctl
       sysctl:
         name: "{{ item }}"
@@ -143,38 +87,13 @@
         - iptable_nat
         - ip6table_nat
 
-    - name: Create docker-compose workdir
-      file:
-        path: "/etc/bastion-compose"
-        state: directory
-        mode: '0755'
 
     - name: Copy dockerfiles and other files
       copy:
-        src: "{{ item }}"
-        dest: "{{ compose_dest }}"
-      with_items:
-        - nginx.conf
-        - nginx-Dockerfile
-        - upstream-Dockerfile
-        - upstream.py
-        - inotify.sh
+        src: "bastion-compose"
+        dest: "/etc"
+        mode: "preserve"
 
-    - name: Generate docker-compose.yaml
-      template:
-        src: docker-compose.yaml.j2
-        dest: "{{ compose_dest }}/docker-compose.yaml"
-
-    - name: Create nginx conf.d
-      file:
-        path: "{{ compose_dest }}/data/nginx"
-        state: directory
-        mode: '0755'
-
-    - name: Copy http config to get certificate from Let's Encrypt
-      copy:
-          src: default-http.conf
-          dest: "{{ compose_dest }}/data/nginx/"
 
     - name: find all *-compose.yaml file
       find:
@@ -195,38 +114,10 @@
         project_src: "{{ compose_dest }}"
         files: "{{ compose_files }}"
         build: yes
+        recreate: always
+        remove_orphans: yes
       register: output
 
-    - name: Retrieve certificates
-      shell: |
-        docker-compose exec certbot  certbot certonly --webroot --webroot-path /var/www/certbot --force-renewal -d {{ bastion_dns }} --email {{ letsencrypt_email }} --agree-tos --no-eff-email {{ letsencrypt_staging }}
-      args:
-        creates: "{{ compose_dest }}/data/certbot/conf/live/{{ bastion_dns }}/privkey.pem"
-
-    - name: Retrive subspace ip
-      docker_container_info:
-        name: nginx
-      register: nginx_container_info
-
-    # - fail:
-    #     msg: "{{ nginx_container_info | to_nice_json }}"
-    - debug: msg="Will try to reach subspace from  {{ nginx_container_info.container.NetworkSettings.Networks['bastion-compose_default'].Gateway| to_nice_json }}"
-
-
-    - name: Update https configuration
-      template:
-        src: "{{ item }}"
-        dest: "{{ compose_dest }}/data/nginx/"
-      with_items:
-        - default-stream.conf
-        - subspace-http.conf
-
-    # - name: Restart nginx container
-    #   shell: |
-    #     cd {{ compose_dest }}
-    #     docker-compose stop nginx &&\
-    #      docker-compose rm -f  nginx &&\
-    #       docker-compose up -d nginx
 
     - name: Autoclean dependecnies
       apt:
@@ -242,8 +133,8 @@
       uri:
         url: "https://{{ bastion_dns }}/signin"
         return_content: yes
-        validate_certs: no
+        validate_certs: yes
       register: result
-      retries: 3
-      delay: 10
+      retries: 5
+      delay: 20
       until: result.content.find("Subspace") != -1

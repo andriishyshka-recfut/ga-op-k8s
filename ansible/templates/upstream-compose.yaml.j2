@@ -1,15 +1,10 @@
 version: '3'
 services:
-  {{ subdomain }}_upstreamd:
+  control-plane:
     build:
-      context: .
-      dockerfile: upstream-Dockerfile
-    container_name: {{ subdomain }}_upstreamd
+      context: ./go-control-plane
     restart: unless-stopped
-    volumes:
-    - ./data/nginx:/nginx
     environment:
-    - HOST={{ k8s_host_url }}
-    - UPSTREAM_FILE=/nginx/{{ subdomain }}-stream.conf
+    - MASTER_ENDPOINT_URL={{ k8s_host_url }}
     - SUBDOMAIN={{ subdomain }}
     - NODE_PORT={{ nodePort }}

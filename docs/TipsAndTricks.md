@@ -73,6 +73,12 @@ kubectl drain gke-infra-infra-node-pool-e9116048-984m --ignore-daemonsets
 ```
 kubectl exec -it metricbeat-xp5jn -n kube-system -- metricbeat setup --dashboards -E setup.kibana.host=https://kibana-kb-http.elastic:5601 -E setup.kibana.ssl.verification_mode=none
 
+kubectl exec -it log-beat-filebeat-2jft7 -n monitoring -- filebeat setup --dashboards \
+	-E setup.kibana.host=https://kibana.infra.digaweb.com:443 \
+	-E setup.kibana.ssl.verification_mode=none \
+	-E output.elasticsearch.username=elastic \
+	-E output.elasticsearch.password=PasswordHere
+
 ```
 
 

@@ -36,8 +36,18 @@
 
   - debug: msg="{{ vault_status | to_nice_json }}"
 
+  - name: Set oidc_setup
+    set_fact:
+      oidc_setup: "{% if oidc_discovery_url == 'SAMPLE' or oidc_client_id  == 'SAMPLE' or oidc_client_secret == 'SAMPLE' or
+       oidc_discovery_url | length < 1 or oidc_client_id | length < 1 or oidc_client_secret | length < 1 %}False{% else %}True{% endif %}"
+
   - name: Init and unseal
     block:
+
+    - name: Assert that OIDC configured properly
+      assert:
+        that:
+        - ( initial_setup and oidc_setup ) or ( not initial_setup and not oidc_setup ) or oidc_setup
 
     - name: Run operator Init
       shell: |
@@ -81,8 +91,6 @@
                     {%- else -%}
                     {{ root_token | trim }}
                     {%- endif -%}"
-      oidc_setup: "{% if oidc_discovery_url == 'SAMPLE' or oidc_client_id  == 'SAMPLE' or oidc_client_secret == 'SAMPLE' or
-       oidc_discovery_url | length < 1 or oidc_client_id | length < 1 or oidc_client_secret | length < 1 %}False{% else %}True{% endif %}"
 
   - name: Assert that vault token configured
     assert:
