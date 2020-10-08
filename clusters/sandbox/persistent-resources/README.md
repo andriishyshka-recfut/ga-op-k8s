@@ -1,4 +1,4 @@
- Thist folder contains config for provisionning GKE cluster with terraform ans it's dependencies
+ Thist folder contains config for provisionning statefull resources for infra cluster (mostly storage buckets and Cloud KMS keys)
 
 
 

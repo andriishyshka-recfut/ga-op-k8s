@@ -1,7 +1,7 @@
 
 # Create the vault service account
 resource "google_service_account" "vault-server" {
-  account_id   = "vault-server-${var.settings[var.cluster].color}"
+  account_id   = local.vault_service_account_id
   display_name = "Vault Server"
   //project      = data.google_project.vault.project_id
 }

@@ -12,15 +12,6 @@ variable "oidc_discovery_url" { default = "SAMPLE" }
 variable "oidc_client_id" { default = "SAMPLE" }
 variable "oidc_client_secret" { default = "SAMPLE" }
 
-module "vault-persistent-blue" {
-  source   = "../terraform-modules/vault-persistent-resources"
-  settings = var.settings
-  cluster  = "blue"
-
-  providers = {
-    google = google
-  }
-}
 
 module "dns" {
   source   = "../terraform-modules/dns"
