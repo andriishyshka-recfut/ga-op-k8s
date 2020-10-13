@@ -14,24 +14,25 @@ variable "oidc_client_secret" { default = "SAMPLE" }
 
 
 module "dns" {
-  source   = "../terraform-modules/dns"
+  source   = "../../../terraform-modules/dns"
   settings = var.settings
-  cluster  = "blue"
+  cluster  = "sandbox"
 
   providers = {
     google = google
   }
 }
-# module "gke-setup-blue" {
-#   source   = "../terraform-modules/gke-setup"
-#   settings = var.settings
-#   cluster  = "blue"
-#
-#   providers = {
-#     google      = google
-#     google-beta = google-beta
-#   }
-# }
+module "gke-setup-blue" {
+  source   = "../../../terraform-modules/gke-setup"
+  settings = var.settings
+  cluster  = "sandbox"
+  color    = "blue"
+
+  providers = {
+    google      = google
+    google-beta = google-beta
+  }
+}
 #
 #
 # module "post-install-blue" {
