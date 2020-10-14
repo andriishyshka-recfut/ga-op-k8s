@@ -36,8 +36,8 @@ resource "helm_release" "cert-manager" {
 #   ]
 # }
 
-resource "null_resource" "ansible_cert-manager_vault_integration_playbook" {
-
+resource "null_resource" "ansible_cert-manager_letsencrypt_integration_playbook" {
+  count = local.create_letsencrypt_issuers
   provisioner "local-exec" {
     command = <<COMMAND
     cd  ${path.module}/../../ansible && \

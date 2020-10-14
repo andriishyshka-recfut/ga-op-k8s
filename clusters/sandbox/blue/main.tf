@@ -37,6 +37,15 @@ module "k8s-misc-operators" {
   color                           = "blue"
   depends_on                      = [module.k8s-istio]
 }
+
+module "post-install-verification" {
+  source                          = "../../../terraform-modules/k8s-post-install-verification"
+  gke_cluster_connection_settings = module.gke-setup-blue.gke_cluster_connection_settings
+  settings                        = var.settings
+  cluster                         = "sandbox"
+  color                           = "blue"
+  depends_on                      = [module.k8s-istio, module.k8s-misc-operators]
+}
 # oidc_discovery_url              = var.oidc_discovery_url
 # oidc_client_id                  = var.oidc_client_id
 # oidc_client_secret              = var.oidc_client_secret

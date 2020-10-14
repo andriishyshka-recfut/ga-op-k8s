@@ -34,21 +34,18 @@ locals {
   bastion_expose_toggle = (var.settings.clusters[var.cluster][var.color].istio.expose_istio_ingres_on_bastion &&
   lookup(var.settings.clusters[var.cluster][var.color], "active", false)) ? 1 : 0
 
-  test_workload_toggle = (var.settings.clusters[var.cluster][var.color].istio.expose_istio_ingres_on_bastion &&
-    lookup(var.settings.clusters[var.cluster][var.color], "active", false) &&
-  var.settings.clusters[var.cluster][var.color].istio.deploy_test_workload) ? 1 : 0
 
-  gke_cluster_endpoint   = var.gke_cluster_connection_settings.gke_cluster_endpoint
-  gke_bearer_token       = var.gke_cluster_connection_settings.gke_bearer_token
-  cluster_ca_certificate = var.gke_cluster_connection_settings.cluster_ca_certificate
+  # gke_cluster_endpoint   = var.gke_cluster_connection_settings.gke_cluster_endpoint
+  # gke_bearer_token       = var.gke_cluster_connection_settings.gke_bearer_token
+  # cluster_ca_certificate = var.gke_cluster_connection_settings.cluster_ca_certificate
   ansible_envs = {
     CLUSTER_SETTINGS        = jsonencode(var.settings)
     CLUSTER                 = var.cluster
     COLOR                   = var.color
     ANSIBLE_STDOUT_CALLBACK = "debug"
-    HOST                    = local.gke_cluster_endpoint
-    API_KEY                 = local.gke_bearer_token
-    CLUSTER_CA_CERTIFICATE  = local.cluster_ca_certificate
+    HOST                    = var.gke_cluster_connection_settings.gke_cluster_endpoint
+    API_KEY                 = var.gke_cluster_connection_settings.gke_bearer_token
+    CLUSTER_CA_CERTIFICATE  = var.gke_cluster_connection_settings.cluster_ca_certificate
     BASTION_DNS             = var.settings.bastion_dns
   }
 }
