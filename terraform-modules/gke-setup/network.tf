@@ -27,7 +27,7 @@ resource "google_compute_firewall" "master-to-cluster" {
   network       = data.google_compute_network.vpc.self_link
   direction     = "INGRESS"
   source_ranges = [var.settings.clusters[var.cluster][var.color].master_ipv4_cidr_block]
-  target_tags   = ["${var.cluster}", "infra"]
+  target_tags   = [var.cluster, "infra"]
 
   allow {
     protocol = "icmp"
@@ -62,8 +62,8 @@ resource "google_compute_firewall" "cluster-to-cluster" {
   name        = "${var.cluster}-to-${var.cluster}"
   network     = data.google_compute_network.vpc.self_link
   direction   = "INGRESS"
-  source_tags = ["${var.cluster}"]
-  target_tags = ["${var.cluster}"]
+  source_tags = [var.cluster]
+  target_tags = [var.cluster]
 
   allow {
     protocol = "icmp"
@@ -82,7 +82,7 @@ resource "google_compute_firewall" "cluster-to-bastion" {
   name          = "${var.cluster}-to-dmz"
   network       = data.google_compute_network.vpc.self_link
   direction     = "INGRESS"
-  source_tags   = ["${var.cluster}"]
+  source_tags   = [var.cluster]
   source_ranges = [var.settings.clusters[var.cluster][var.color].pods_subnet_range]
   target_tags   = ["dmz"]
 

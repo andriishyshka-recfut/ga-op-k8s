@@ -7,21 +7,28 @@ provider "google-beta" {
 }
 
 
+
+locals {
+  gke_cluster_endpoint   = module.gke-setup-blue.gke_cluster_connection_settings.gke_cluster_endpoint
+  gke_bearer_token       = module.gke-setup-blue.gke_cluster_connection_settings.gke_bearer_token
+  cluster_ca_certificate = module.gke-setup-blue.gke_cluster_connection_settings.cluster_ca_certificate
+}
+
 provider "helm" {
-  alias = "helm-blue"
+  # alias = "helm-blue"
   kubernetes {
     load_config_file       = false
-    host                   = module.gke-setup-blue.gke_cluster_endpoint
-    token                  = module.gke-setup-blue.gke_bearer_token
-    cluster_ca_certificate = module.gke-setup-blue.cluster_ca_certificate
+    host                   = local.gke_cluster_endpoint
+    token                  = local.gke_bearer_token
+    cluster_ca_certificate = local.cluster_ca_certificate
   }
 }
 
 provider "kubernetes" {
-  alias                  = "kubernetes-blue"
+  # alias                  = "kubernetes-blue"
   load_config_file       = false
-  host                   = module.gke-setup-blue.gke_cluster_endpoint
-  token                  = module.gke-setup-blue.gke_bearer_token
-  cluster_ca_certificate = module.gke-setup-blue.cluster_ca_certificate
+  host                   = local.gke_cluster_endpoint
+  token                  = local.gke_bearer_token
+  cluster_ca_certificate = local.cluster_ca_certificate
 
 }

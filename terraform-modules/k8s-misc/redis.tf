@@ -1,18 +1,15 @@
-resource "kubernetes_namespace" "elastic-system" {
+#
+resource "kubernetes_namespace" "redis-system" {
   metadata {
-    name = "elastic-system"
-    labels = {
-      istio-injection = "enabled"
-    }
+    name = "redis-system"
+    # labels = {
+    #   istio-injection = "enabled"
+    # }
   }
-  depends_on = [
-    var.node_pool,
-  ]
 }
 
 
-
-resource "null_resource" "ansible_eck_crd_playbook" {
+resource "null_resource" "ansible_redis_crd_playbook" {
   triggers = {
     # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
   }
@@ -23,7 +20,8 @@ resource "null_resource" "ansible_eck_crd_playbook" {
   # }
   provisioner "local-exec" {
     command = <<COMMAND
-    wget -O ~/eck_crd https://download.elastic.co/downloads/eck/${lookup(var.settings[var.cluster], "eck_version", "1.1.2")}/all-in-one.yaml &&\
+    wget -O ~/redis_crd https://raw.githubusercontent.com/spotahome/redis-operator/master/example/operator/all-redis-operator-resources.yaml &&\
+    sed -i "s/namespace: default/namespace: $namespace/" ~/redis_crd &&\
     cd  ${path.module}/../../ansible && \
     ansible-playbook k8s-apply.yml \
     -e 'ansible_python_interpreter=/usr/bin/python3'
@@ -32,15 +30,16 @@ COMMAND
       CLUSTER_SETTINGS        = jsonencode(var.settings)
       CLUSTER                 = var.cluster
       ANSIBLE_STDOUT_CALLBACK = "debug"
-      HOST                    = var.gke_cluster_endpoint
-      API_KEY                 = var.gke_bearer_token
-      CLUSTER_CA_CERTIFICATE  = var.cluster_ca_certificate
-      k8s_apply_value         = "~/eck_crd"
+      HOST                    = local.gke_cluster_endpoint
+      API_KEY                 = local.gke_bearer_token
+      CLUSTER_CA_CERTIFICATE  = local.cluster_ca_certificate
+      k8s_apply_value         = "~/redis_crd"
       from_file               = "yes"
+      namespace               = "redis-system"
     }
   }
   depends_on = [
     # google_container_node_pool.cluster_preemptible_nodes,
-    kubernetes_namespace.elastic-system
+    kubernetes_namespace.redis-system
   ]
 }

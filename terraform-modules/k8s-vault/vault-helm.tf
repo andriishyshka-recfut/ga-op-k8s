@@ -11,15 +11,14 @@ resource "helm_release" "vault" {
   values = [
     templatefile("${path.module}/vault_helm_config.tmpl",
       {
-        project    = var.vault_resources.project,
-        key_ring   = var.vault_resources.key_ring,
-        crypto_key = var.vault_resources.crypto_key,
-        bucket     = var.vault_resources.bucket
-        version    = var.settings[var.cluster].vault.version
+        project    = local.project,
+        key_ring   = local.vault_key_name,
+        crypto_key = local.vault_key_name,
+        bucket     = local.vault_bucket_name
+        version    = var.settings.clusters[var.cluster][var.color].vault.version
       }
     )
   ]
-
 
   depends_on = [
     kubernetes_secret.kms-creds,
@@ -29,7 +28,13 @@ resource "helm_release" "vault" {
   ]
 }
 
+data "google_service_account" "vault-sa" {
+  account_id = local.vault_service_account_id
+}
 
+resource "google_service_account_key" "vault-key" {
+  service_account_id = data.google_service_account.vault-sa.name
+}
 
 resource "kubernetes_secret" "kms-creds" {
   metadata {
@@ -37,7 +42,7 @@ resource "kubernetes_secret" "kms-creds" {
     namespace = "vault"
   }
   data = {
-    "credentials.json" = var.vault_resources.vault_sa_priv_key
+    "credentials.json" = base64decode(google_service_account_key.vault-key.private_key)
   }
   depends_on = [
     kubernetes_namespace.vault,

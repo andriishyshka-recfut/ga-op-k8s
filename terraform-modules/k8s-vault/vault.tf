@@ -1,5 +1,5 @@
 resource "kubernetes_service_account" "vault" {
-  count = var.settings[var.cluster].vault_integration.enabled ? 1 : 0
+  count = var.settings.clusters[var.cluster].vault_integration.enabled ? 1 : 0
   metadata {
     name      = "vault"
     namespace = "kube-system"
@@ -7,15 +7,15 @@ resource "kubernetes_service_account" "vault" {
 }
 
 data "kubernetes_secret" "vault" {
-  count = var.settings[var.cluster].vault_integration.enabled ? 1 : 0
+  count = var.settings.clusters[var.cluster].vault_integration.enabled ? 1 : 0
   metadata {
-    name      = "${kubernetes_service_account.vault[count.index].default_secret_name}"
+    name      = kubernetes_service_account.vault[count.index].default_secret_name
     namespace = "kube-system"
   }
 }
 
 resource "kubernetes_cluster_role_binding" "vault" {
-  count = var.settings[var.cluster].vault_integration.enabled ? 1 : 0
+  count = var.settings.clusters[var.cluster].vault_integration.enabled ? 1 : 0
   metadata {
     name = "vault-auth"
   }
@@ -33,7 +33,7 @@ resource "kubernetes_cluster_role_binding" "vault" {
 
 
 resource "null_resource" "ansible_vault_k8s_auth" {
-  count = var.settings[var.cluster].vault_integration.enabled ? 1 : 0
+  count = var.settings.clusters[var.cluster].vault_integration.enabled ? 1 : 0
   triggers = {
     playbook_contents = md5(file("${path.module}/../../ansible/vault-k8s-auth.yml"))
   }

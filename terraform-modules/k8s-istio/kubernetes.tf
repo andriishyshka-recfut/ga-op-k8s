@@ -1,4 +1,5 @@
 resource "kubernetes_cluster_role" "node_list" {
+  count = local.bastion_expose_toggle
   metadata {
     name = "node-list"
   }
@@ -11,6 +12,7 @@ resource "kubernetes_cluster_role" "node_list" {
 }
 
 resource "kubernetes_cluster_role_binding" "bastion_anon_access" {
+  count = local.bastion_expose_toggle
   metadata {
     name = "bastion-access"
   }

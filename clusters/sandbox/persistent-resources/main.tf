@@ -20,3 +20,13 @@ module "infra-persistent" {
     google = google
   }
 }
+
+module "dns" {
+  source   = "../../../terraform-modules/dns"
+  settings = var.settings
+  cluster  = "sandbox"
+
+  providers = {
+    google = google
+  }
+}

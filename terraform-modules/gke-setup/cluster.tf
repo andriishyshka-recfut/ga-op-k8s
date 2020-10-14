@@ -2,7 +2,7 @@ resource "google_container_cluster" "cluster" {
 
   provider = google-beta
 
-  name                      = var.cluster
+  name                      = "${var.cluster}-${var.color}"
   location                  = var.settings.clusters[var.cluster].region
   network                   = data.google_compute_network.vpc.self_link
   subnetwork                = google_compute_subnetwork.net.name
