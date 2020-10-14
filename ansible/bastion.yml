@@ -35,17 +35,29 @@
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'https'
 
-    - name: Copy control plane files files
+    - name: Copy control plane files
       copy:
         src: "bastion-compose/go-control-plane"
         dest: "/etc/bastion-compose"
         mode: "preserve"
+
+    - name: Copy envoy.yaml
+      copy:
+        src: "bastion-compose/envoy.yaml"
+        dest: "/etc/bastion-compose"
+
 
     - name: set nodePort
       set_fact:
         nodePort:  "{{ item.nodePort }}"
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'https'
+
+    - name: set nodePort HTTP
+      set_fact:
+        nodePortHttp:  "{{ item.nodePort }}"
+      with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
+      when: item.name == 'http2'
 
     - name: add {{ subdomain }}-compose.yaml
       template:

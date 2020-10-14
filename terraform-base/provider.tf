@@ -1,5 +1,5 @@
 provider "google" {
-  version = "v3.19.0"
+  # version = "v3.19.0"
 }
 
 terraform {
