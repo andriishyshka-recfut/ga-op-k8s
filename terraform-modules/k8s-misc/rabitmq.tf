@@ -30,22 +30,12 @@ resource "null_resource" "ansible_rabbit_crd_playbook" {
     # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
   }
   provisioner "local-exec" {
-    command = <<COMMAND
+    command     = <<COMMAND
     cd  ${path.module}/../../ansible && \
     ansible-playbook k8s-apply.yml \
     -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
-    environment = {
-      CLUSTER_SETTINGS        = jsonencode(var.settings)
-      CLUSTER                 = var.cluster
-      ANSIBLE_STDOUT_CALLBACK = "debug"
-      HOST                    = local.gke_cluster_endpoint
-      API_KEY                 = local.gke_bearer_token
-      CLUSTER_CA_CERTIFICATE  = local.cluster_ca_certificate
-      k8s_apply_value         = "../terraform-modules/k8s-misc/rabbitmq_operator.yaml"
-      from_file               = "yes"
-      namespace               = "rabbitmq-system"
-    }
+    environment = merge(local.ansible_envs, { k8s_apply_value = "../terraform-modules/k8s-misc/rabbitmq_operator.yaml", from_file = "yes", namespace = "rabbitmq-system" })
   }
   depends_on = [
     # google_container_node_pool.cluster_preemptible_nodes,

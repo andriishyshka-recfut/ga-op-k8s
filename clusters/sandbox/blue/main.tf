@@ -37,6 +37,17 @@ module "k8s-misc-operators" {
   color                           = "blue"
   depends_on                      = [module.k8s-istio]
 }
+module "k8s-vault" {
+  source                          = "../../../terraform-modules/k8s-vault"
+  gke_cluster_connection_settings = module.gke-setup-blue.gke_cluster_connection_settings
+  settings                        = var.settings
+  cluster                         = "sandbox"
+  color                           = "blue"
+  oidc_discovery_url              = var.oidc_discovery_url
+  oidc_client_id                  = var.oidc_client_id
+  oidc_client_secret              = var.oidc_client_secret
+  depends_on                      = [module.k8s-istio, module.k8s-misc-operators]
+}
 
 module "post-install-verification" {
   source                          = "../../../terraform-modules/k8s-post-install-verification"
@@ -44,14 +55,5 @@ module "post-install-verification" {
   settings                        = var.settings
   cluster                         = "sandbox"
   color                           = "blue"
-  depends_on                      = [module.k8s-istio, module.k8s-misc-operators]
+  depends_on                      = [module.k8s-istio, module.k8s-misc-operators, module.k8s-vault]
 }
-# oidc_discovery_url              = var.oidc_discovery_url
-# oidc_client_id                  = var.oidc_client_id
-# oidc_client_secret              = var.oidc_client_secret
-# node_pool                       = module.gke-setup-blue.node_pool
-# providers = {
-#   google     = google
-#   kubernetes = kubernetes.kubernetes-blue
-#   helm       = helm.helm-blue
-# }

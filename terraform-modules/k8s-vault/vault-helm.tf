@@ -23,7 +23,6 @@ resource "helm_release" "vault" {
   depends_on = [
     kubernetes_secret.kms-creds,
     kubernetes_namespace.vault,
-    var.gke_cluster_endpoint
 
   ]
 }
@@ -46,8 +45,6 @@ resource "kubernetes_secret" "kms-creds" {
   }
   depends_on = [
     kubernetes_namespace.vault,
-    var.node_pool,
-    var.gke_cluster_endpoint
 
   ]
 }
@@ -59,8 +56,4 @@ resource "kubernetes_namespace" "vault" {
       istio-injection = "enabled"
     }
   }
-  depends_on = [
-    var.gke_cluster_endpoint,
-    var.node_pool,
-  ]
 }

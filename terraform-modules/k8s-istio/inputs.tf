@@ -31,8 +31,10 @@ variable "color" {}
 
 
 locals {
-  bastion_expose_toggle = (var.settings.clusters[var.cluster][var.color].istio.expose_istio_ingres_on_bastion &&
-  lookup(var.settings.clusters[var.cluster][var.color], "active", false)) ? 1 : 0
+  bastion_expose_toggle = (
+    var.settings.clusters[var.cluster][var.color].istio.expose_istio_ingres_on_bastion &&
+    lookup(var.settings.clusters[var.cluster][var.color], "active", false)
+  ) ? 1 : 0
 
 
   # gke_cluster_endpoint   = var.gke_cluster_connection_settings.gke_cluster_endpoint

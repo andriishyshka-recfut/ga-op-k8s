@@ -25,16 +25,6 @@ resource "helm_release" "cert-manager" {
   }
 }
 
-#
-# data "kubernetes_service_account" "cert-manager" {
-#   metadata {
-#     name      = "${var.cluster}-cert-manager"
-#     namespace = "kube-system"
-#   }
-#   depends_on = [
-#     helm_release.cert-manager
-#   ]
-# }
 
 resource "null_resource" "ansible_cert-manager_letsencrypt_integration_playbook" {
   count = local.create_letsencrypt_issuers
@@ -44,15 +34,10 @@ resource "null_resource" "ansible_cert-manager_letsencrypt_integration_playbook"
     ansible-playbook k8s-apply.yml \
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
-    environment = {
-      CLUSTER_SETTINGS        = jsonencode(var.settings)
-      CLUSTER                 = var.cluster
-      ANSIBLE_STDOUT_CALLBACK = "debug"
-      HOST                    = local.gke_cluster_endpoint
-      API_KEY                 = local.gke_bearer_token
-      CLUSTER_CA_CERTIFICATE  = local.cluster_ca_certificate
-      k8s_apply_value         = templatefile("${path.module}/cert-manager-issuer.tmpl", {})
-    }
+    environment = merge(local.ansible_envs, {
+      k8s_apply_value = templatefile("${path.module}/cert-manager-issuer.tmpl", {})
+    })
+
   }
   depends_on = [
     helm_release.cert-manager,

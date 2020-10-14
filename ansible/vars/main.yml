@@ -15,7 +15,7 @@ k8s_host_url: "{{ lookup('env','HOST') }}"
 k8s_api_key: "{{ lookup('env','API_KEY') }}"
 k8s_cluster_ca_certificate: "{{ lookup('env','CLUSTER_CA_CERTIFICATE') }}"
 temp_dir: "{{ lookup('env','HOME') }}/tmp-{{ cluster_name }}"
-vault_addr: "{{ cluster_settings.clusters[cluster_name].vault_integration.vault_addr }}"
+vault_addr: "{{ lookup('env','vault_addr') }}"
 
 
 
