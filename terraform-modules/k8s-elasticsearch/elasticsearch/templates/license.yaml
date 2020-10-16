@@ -1,0 +1,12 @@
+# https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-licensing.html
+{{- if eq  .Values.enableTrial "yes" }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: eck-trial-license
+  namespace: elastic-system
+  labels:
+    license.k8s.elastic.co/type: enterprise_trial
+  annotations:
+    elastic.co/eula: accepted
+{{- end }}

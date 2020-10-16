@@ -9,9 +9,9 @@ provider "google-beta" {
 
 
 locals {
-  gke_cluster_endpoint   = module.gke-setup-blue.gke_cluster_connection_settings.gke_cluster_endpoint
-  gke_bearer_token       = module.gke-setup-blue.gke_cluster_connection_settings.gke_bearer_token
-  cluster_ca_certificate = module.gke-setup-blue.gke_cluster_connection_settings.cluster_ca_certificate
+  gke_cluster_endpoint   = module.gke-setup-blue.gke_cluster_connection_settings.HOST
+  gke_bearer_token       = module.gke-setup-blue.gke_cluster_connection_settings.API_KEY
+  cluster_ca_certificate = module.gke-setup-blue.gke_cluster_connection_settings.CLUSTER_CA_CERTIFICATE
 }
 
 provider "helm" {

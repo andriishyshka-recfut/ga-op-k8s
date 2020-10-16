@@ -1,0 +1,41 @@
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: {{ .Values.name }}-cert
+  namespace: istio-system
+  annotations:
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-failed
+    "helm.sh/hook": pre-install
+spec:
+  secretName: {{ .Values.name  }}-cert
+  commonName: {{ .Values.istio_gateway_fqdn }}
+  duration: {{ .Values.cert_ttl }}
+  renewBefore: 12h
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+---
+# https://istio.io/latest/docs/ops/integrations/certmanager/
+# https://cert-manager.io/docs/usage/ingress/
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}-kb-ingress
+  namespace: {{ .Values.namespace  }}
+  annotations:
+    kubernetes.io/ingress.class: istio
+spec:
+  tls:
+  rules:
+  - host:  {{ .Values.istio_gateway_fqdn }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Values.name }}-kb-http
+          servicePort: 5601
+        path: /*
+  tls:
+  - hosts:
+    - {{ .Values.istio_gateway_fqdn }}  # This should match a DNS name in the Certificate
+    secretName: {{ .Values.name }}-cert

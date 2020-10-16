@@ -20,16 +20,13 @@ variable "color" {}
 
 locals {
 
-  ansible_envs = {
+  ansible_envs = merge(var.gke_cluster_connection_settings, {
     CLUSTER_SETTINGS        = jsonencode(var.settings)
     CLUSTER                 = var.cluster
     COLOR                   = var.color
     ANSIBLE_STDOUT_CALLBACK = "debug"
-    HOST                    = var.gke_cluster_connection_settings.gke_cluster_endpoint
-    API_KEY                 = var.gke_cluster_connection_settings.gke_bearer_token
-    CLUSTER_CA_CERTIFICATE  = var.gke_cluster_connection_settings.cluster_ca_certificate
     BASTION_DNS             = var.settings.bastion_dns
-  }
+  })
 
 }
 

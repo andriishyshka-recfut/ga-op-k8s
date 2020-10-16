@@ -1,0 +1,48 @@
+{{- if eq .Values.istio.enabled "yes" -}}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: {{ .Values.esName }}-cert
+  namespace: istio-system
+  annotations:
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-failed
+    "helm.sh/hook": pre-install
+spec:
+  secretName: {{ .Values.esName  }}-cert
+  commonName: {{ .Values.istio.gateway_fqdn }}
+  dnsNames:
+  - {{ .Values.istio.gateway_fqdn }}
+  duration: {{ .Values.istio.cert_ttl }}
+  renewBefore: 12h
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+---
+# https://istio.io/latest/docs/ops/integrations/certmanager/
+# https://cert-manager.io/docs/usage/ingress/
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.esName }}-ingress
+  namespace: {{ .Values.namespace  }}
+  annotations:
+    kubernetes.io/ingress.class: istio
+spec:
+  tls:
+  rules:
+  - host:  {{ .Values.istio.gateway_fqdn }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Values.esName }}-es-http
+          servicePort: 9200
+        path: /*
+        # Path type should be availible from 1.18
+        # https://istio.io/latest/docs/tasks/traffic-management/ingress/kubernetes-ingress/#specifying-path-type
+        #pathType: Prefix
+  tls:
+  - hosts:
+    - {{ .Values.istio.gateway_fqdn }}  # This should match a DNS name in the Certificate
+    secretName: {{ .Values.esName }}-cert
+{{- end }}

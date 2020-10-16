@@ -12,9 +12,12 @@
 
 locals {
   gke_cluster_connection_settings = {
-    gke_cluster_endpoint   = "https://${google_container_cluster.cluster.endpoint}"
-    gke_bearer_token       = data.google_client_config.default.access_token
-    cluster_ca_certificate = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
+    # gke_cluster_endpoint   = "https://${google_container_cluster.cluster.endpoint}"
+    # gke_bearer_token       = data.google_client_config.default.access_token
+    # cluster_ca_certificate = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
+    HOST                   = "https://${google_container_cluster.cluster.endpoint}"
+    API_KEY                = data.google_client_config.default.access_token
+    CLUSTER_CA_CERTIFICATE = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate, )
   }
 }
 
