@@ -20,7 +20,7 @@ resource "null_resource" "ansible_eck_crd_playbook" {
   # }
   provisioner "local-exec" {
     command = <<COMMAND
-    wget -O ~/eck_crd https://download.elastic.co/downloads/eck/${lookup(var.settings.clusters[var.cluster], "eck_version", "1.1.2")}/all-in-one.yaml &&\
+    wget -O ~/eck_crd https://download.elastic.co/downloads/eck/${local.eck_version}/all-in-one.yaml &&\
     cd  ${path.module}/../../ansible && \
     ansible-playbook k8s-apply.yml \
     -e 'ansible_python_interpreter=/usr/bin/python3'

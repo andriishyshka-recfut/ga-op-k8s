@@ -18,4 +18,6 @@ locals {
     ANSIBLE_STDOUT_CALLBACK = "debug"
     BASTION_DNS             = var.settings.bastion_dns
   })
+
+  eck_version = var.settings.clusters[var.cluster][var.color].eck_version
 }

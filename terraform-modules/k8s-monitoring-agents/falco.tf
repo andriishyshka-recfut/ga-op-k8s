@@ -4,7 +4,7 @@ resource "helm_release" "falco" {
   repository = "https://falcosecurity.github.io/charts"
   wait       = true
   atomic     = true
-  namespace  = local.es_values.namespace
+  namespace  = local.beats_values.namespace
   set {
     name  = "podSecurityPolicy.create"
     value = "true"

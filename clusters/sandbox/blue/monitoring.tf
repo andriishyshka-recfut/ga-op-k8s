@@ -19,5 +19,10 @@ module "monitoring-elastic" {
   gke_cluster_connection_settings = module.gke-setup-blue.gke_cluster_connection_settings
   backup_sa_private_key           = google_service_account_key.es-key.private_key
   store_es_password_in_vault      = false
-  depends_on                      = [module.gke-setup-blue, module.k8s-istio]
+  depends_on                      = [module.gke-setup-blue, module.k8s-istio, module.k8s-misc-operators]
+}
+
+module "monitoring-agents" {
+  source     = "../../../terraform-modules/k8s-monitoring-agents"
+  depends_on = [module.gke-setup-blue, module.k8s-istio, module.k8s-misc-operators, module.monitoring-elastic]
 }
