@@ -10,6 +10,8 @@ metadata:
 spec:
   secretName: {{ .Values.name  }}-cert
   commonName: {{ .Values.istio_gateway_fqdn }}
+  dnsNames:
+  - {{ .Values.istio_gateway_fqdn }}
   duration: {{ .Values.cert_ttl }}
   renewBefore: 12h
   issuerRef:
