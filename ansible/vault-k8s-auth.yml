@@ -11,7 +11,7 @@
   tasks:
   - name: Define vault connection type
     set_fact:
-      vault_connection: "{{ cluster_settings[cluster_name].vault_integration.connection | default('remote') }}"
+      vault_connection: "{{ cluster_settings.clusters[cluster_name].vault_integration.connection | default('remote') }}"
 
   - name: Import vault pre execution tasks
     include_tasks: includes/vault-port-forward.yml
@@ -25,10 +25,12 @@
     stat:
       path: "~/.vault-token"
     register: token_file
+
   - name: Set vault token from file
     set_fact:
       vault_token: "{{ lookup('file', token_file.stat.path ) }}"
     when: token_file.stat.exists
+
   - name: Set vault token from environment variable
     set_fact:
       vault_token: "{{ lookup('env','VAULT_TOKEN')  }}"

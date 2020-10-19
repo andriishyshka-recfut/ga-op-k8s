@@ -38,7 +38,16 @@ static_resources:
           codec_type: auto
           stat_prefix: ingress_http
           route_config:
+            validate_clusters: false
             virtual_hosts:
+            - name: sandbox
+              domains: ["*.infra.digaweb.com"]
+              routes:
+              - match: { prefix: "/.well-known/acme-challenge/" }
+                route: { cluster: infra-ingress-http }
+              - match: { prefix: "/" }
+                redirect:
+                  https_redirect: true
             - name: backend
               domains: ["b.digaweb.com"]
               routes:

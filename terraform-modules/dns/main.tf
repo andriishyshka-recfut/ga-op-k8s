@@ -13,10 +13,10 @@ variable "settings" {}
 variable "cluster" {}
 
 resource "google_dns_managed_zone" "k8s-zone" {
-  count       = lookup(var.settings[var.cluster], "color", "blanc") == "blue" ? 1 : 0
-  name        = "${var.settings[var.cluster].subdomain}-private-zone"
-  dns_name    = "${var.settings[var.cluster].subdomain}.${var.settings[var.cluster].domain}."
-  description = "DNS zone for ${var.settings[var.cluster].subdomain} k8s cluster"
+  count       = lookup(var.settings.clusters[var.cluster].blue, "color", "blanc") == "blue" ? 1 : 0
+  name        = "${var.settings.clusters[var.cluster].subdomain}-private-zone"
+  dns_name    = "${var.settings.clusters[var.cluster].subdomain}.${var.settings.clusters[var.cluster].domain}."
+  description = "DNS zone for ${var.settings.clusters[var.cluster].subdomain} k8s cluster"
   visibility  = "private"
 
   private_visibility_config {
@@ -27,7 +27,7 @@ resource "google_dns_managed_zone" "k8s-zone" {
 }
 
 resource "google_dns_record_set" "wildcard" {
-  count = lookup(var.settings[var.cluster], "color", "blanc") == "blue" ? 1 : 0
+  count = lookup(var.settings.clusters[var.cluster].blue, "color", "blanc") == "blue" ? 1 : 0
   name  = "*.${google_dns_managed_zone.k8s-zone[count.index].dns_name}"
   type  = "A"
   ttl   = 300

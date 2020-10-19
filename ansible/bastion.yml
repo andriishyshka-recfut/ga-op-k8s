@@ -35,17 +35,29 @@
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'https'
 
-    - name: Copy control plane files files
+    - name: Copy control plane files
       copy:
         src: "bastion-compose/go-control-plane"
         dest: "/etc/bastion-compose"
         mode: "preserve"
+
+    - name: Copy envoy.yaml
+      copy:
+        src: "bastion-compose/envoy.yaml"
+        dest: "/etc/bastion-compose"
+
 
     - name: set nodePort
       set_fact:
         nodePort:  "{{ item.nodePort }}"
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'https'
+
+    - name: set nodePort HTTP
+      set_fact:
+        nodePortHttp:  "{{ item.nodePort }}"
+      with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
+      when: item.name == 'http2'
 
     - name: add {{ subdomain }}-compose.yaml
       template:
@@ -110,6 +122,21 @@
         remove_orphans: yes
         debug: yes
         timeout: 60
+      register: output
+
+    - pause:
+        seconds: 5
+
+    - name: Recreate envoy
+      docker_compose:
+        project_src: "{{ compose_dest }}"
+        files: "{{ compose_files }}"
+        recreate: always
+        remove_orphans: yes
+        debug: yes
+        timeout: 60
+        services:
+          - envoy
       register: output
     # - debug: msg=" {{ output | to_nice_json }}"
     # - name: Validate that {{ cluster_name }}-upstreamd container running
