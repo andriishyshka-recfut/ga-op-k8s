@@ -123,6 +123,21 @@
         debug: yes
         timeout: 60
       register: output
+
+    - pause:
+        seconds: 5
+
+    - name: Recreate envoy
+      docker_compose:
+        project_src: "{{ compose_dest }}"
+        files: "{{ compose_files }}"
+        recreate: always
+        remove_orphans: yes
+        debug: yes
+        timeout: 60
+        services:
+          - envoy
+      register: output
     # - debug: msg=" {{ output | to_nice_json }}"
     # - name: Validate that {{ cluster_name }}-upstreamd container running
     #   shell: |

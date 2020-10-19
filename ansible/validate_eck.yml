@@ -22,6 +22,8 @@
         dest: "{{ temp_dir }}/clstr_ca.crt"
         content: "{{ kubernetes_ca_cert }}"
 
+  - pause:
+      seconds: 10
 
   - name: "{{ kind }} info"
     k8s_info:
