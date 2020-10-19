@@ -28,7 +28,7 @@ func generateSnapshot( clustersSlice,listenerSlice []types.Resource ) cachev3.Sn
 		[]types.Resource{}, // Routes
 		listenerSlice,
 		[]types.Resource{}, // runtimes
-		//[]types.Resource{}, // secrets
+		[]types.Resource{}, // secrets
 	)
 }
 
@@ -60,6 +60,13 @@ func main() {
         os.Exit(2)
     }
   log.Printf("nodePort is %d", nodePort )
+  nodePortHttp, err := strconv.Atoi(os.Getenv("NODE_PORT_HTTP"))
+  if err != nil {
+        // handle error
+        log.Println(err)
+        os.Exit(2)
+    }
+  log.Printf("nodePortHttp is %d", nodePortHttp )
 
   // Create cache
   cache := cachev3.NewSnapshotCache(false, cachev3.IDHash{}, l)
@@ -83,6 +90,12 @@ func main() {
                                             "infra-ingress",
                                             nodeSlice,
                                             uint32(nodePort)))
+
+      // Add infra http cluster
+      clustersSlice = append(clustersSlice, lib.MakeCluster(
+                                            "infra-ingress-http",
+                                            nodeSlice,
+                                            uint32(nodePortHttp)))
 
       // Create new configuration Snapshot which should  be populated to envoy
       snapshot := generateSnapshot(clustersSlice,listenerSlice)

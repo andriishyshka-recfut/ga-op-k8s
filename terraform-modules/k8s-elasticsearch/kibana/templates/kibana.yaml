@@ -1,0 +1,29 @@
+---
+apiVersion: kibana.k8s.elastic.co/v1beta1
+kind: Kibana
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  version: {{ .Values.kibanaVersion }}
+  count: 1
+  containers:
+      - name: kibana
+        resources:
+          requests:
+            memory: 0.5Gi
+            cpu: 0.5
+          limits:
+            memory: 1Gi
+            cpu: 1
+
+  elasticsearchRef:
+    name: "{{ .Values.esName }}"
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  podTemplate:
+    metadata:
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
