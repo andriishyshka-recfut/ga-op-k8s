@@ -26,6 +26,10 @@ spec:
           runAsUser: 0
         containers:
         - name: filebeat
+          resources:
+            requests:
+              cpu: 10m
+              memory: 50Mi
           volumeMounts:
           - name: varlogcontainers
             mountPath: /var/log/containers
