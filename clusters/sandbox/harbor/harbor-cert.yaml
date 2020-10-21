@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-core-cert
+  namespace: istio-system
+spec:
+  secretName: harbor-core-cert
+  commonName: harbor.infra.digaweb.com
+  dnsNames:
+  - harbor.infra.digaweb.com
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
