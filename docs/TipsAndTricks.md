@@ -55,6 +55,17 @@ gcloud compute ssh  gke-infra-infra-node-pool-e9116048-m59c --zone us-east4-c  -
 
 ```
 
+* # Kubernetes performance investigation
+```
+kubectl get pods -A -o=custom-columns='NAME:metadata.name, NAMERSPACE:metadata.namespace ,MEM:spec.containers[*].resources.requests.memory, CPU:spec.containers[*].resources.requests.cpu, Node:spec.nodeName ' | grep < nodeName > or < namespace >
+
+kubectl get nodes --show-labels
+kubectl top nodes
+
+gcloud compute ssh gke-sandbox-blue-sandbox-node-pool-6addea9d-pzbl       --zone us-east4-a  --internal-ip
+watch "sudo docker stats --all --no-stream --format \"table {{.Name}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\" | grep -v MEM |sort -k 3 -n "
+
+```
 * Scale Down the cluster safely
 ```
 
