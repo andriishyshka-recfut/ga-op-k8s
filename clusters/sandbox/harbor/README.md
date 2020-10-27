@@ -22,7 +22,7 @@ tf apply
 
 
 
-4. Vault gitlab jwt auth
+4. Vault [gitlab jwt auth](https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/)
 ```
 vault auth enable jwt
 cat gitlab_jwt_auth_role.json| vault write auth/jwt/role/gitlab-dev -
