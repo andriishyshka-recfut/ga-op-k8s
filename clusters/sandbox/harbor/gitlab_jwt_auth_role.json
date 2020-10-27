@@ -1,0 +1,9 @@
+{
+  "role_type": "jwt",
+  "policies": ["harbor"],
+  "token_explicit_max_ttl": 60,
+  "user_claim": "user_email",
+  "bound_claims": {
+    "project_path": "dev/*"
+  }
+}
