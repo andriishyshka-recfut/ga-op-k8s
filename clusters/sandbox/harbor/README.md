@@ -1,11 +1,11 @@
 
-1. Create bucket:
+1. Init:
 ```
 tf init
-tf apply
+
 ```
 
-2.
+2. Create harbor
 
 ```
 
@@ -13,18 +13,13 @@ kubectl apply -f namespace.yaml
 kubectl apply -f harbor-cert.yaml
 kubectl apply -f ingress.yaml
 
-helm install harbor harbor/harbor --set expose.type=ClusterIP \
-  --set expose.clusterIP.name=harbor \
-  --set harborAdminPassword=admin \
-  --set expose.tls.enabled=false \
-  --set logLevel=warning \
-  --set externalURL=https://harbor.infra.digaweb.com\
-  --version=v1.5.0 \
-  -n harbor
-
+tf apply
 
 
 ```
+
+3. Next configure OIDC Access - https://goharbor.io/docs/1.10/administration/configure-authentication/oidc-auth/
+
 
 <!-- helm install harbor harbor/harbor --set expose.type=ingress \
   --set expose.ingress.hosts.core=harbor.infra.digaweb.com \
@@ -34,5 +29,14 @@ helm install harbor harbor/harbor --set expose.type=ClusterIP \
   --set harborAdminPassword=admin \
   --set logLevel=debug \
   --set externalURL=https://harbor.infra.digaweb.com \
+  --version=v1.5.0 \
+  -n harbor -->
+
+<!-- helm install harbor harbor/harbor --set expose.type=ClusterIP \
+  --set expose.clusterIP.name=harbor \
+  --set harborAdminPassword=admin \
+  --set expose.tls.enabled=false \
+  --set logLevel=warning \
+  --set externalURL=https://harbor.infra.digaweb.com\
   --version=v1.5.0 \
   -n harbor -->

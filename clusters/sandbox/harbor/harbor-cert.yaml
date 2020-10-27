@@ -10,5 +10,5 @@ spec:
   dnsNames:
   - harbor.infra.digaweb.com
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-prod
     kind: ClusterIssuer

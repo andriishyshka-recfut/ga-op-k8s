@@ -1,6 +1,26 @@
 provider "google" {
   # version = "v3.19.0"
 }
+provider "vault" {
+  address = "https://vault.infra.digaweb.com"
+}
+
+data "vault_generic_secret" "k8s_auth" {
+  path = "secret/kubernetes-sandbox"
+}
+
+
+provider "helm" {
+  # alias = "helm"
+  kubernetes {
+    load_config_file       = false
+    host                   = data.vault_generic_secret.k8s_auth.data.HOST
+    cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
+    token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
+  }
+}
+
+
 
 data "google_project" "current" {}
 
@@ -26,24 +46,3 @@ resource "google_storage_bucket" "elastic-snapshots" {
     }
   }
 }
-
-# data "google_service_account" "vault-sa" {
-#   account_id = "vault-sandbox"
-# }
-#
-# resource "google_service_account_key" "harbor-key" {
-#   service_account_id = data.google_service_account.vault-sa.name
-# }
-
-
-# resource "kubernetes_secret" "gcs-credentials" {
-#   metadata {
-#     name      = "gcs-credentials"
-#     namespace = "harbor"
-#   }
-#
-#   data = {
-#     "gcs.client.credentials_file" = base64decode(google_service_account_key.harbor-key.private_key)
-#   }
-#
-# }
