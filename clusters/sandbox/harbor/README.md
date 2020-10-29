@@ -20,6 +20,9 @@ tf apply
 
 3. Next configure OIDC Access - https://goharbor.io/docs/1.10/administration/configure-authentication/oidc-auth/
 
+Also OIDC scopes shooul be openid,offline_access,profile,email - https://github.com/goharbor/harbor/issues/9600
+
+
 
 
 4. Vault [gitlab jwt auth](https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/)
