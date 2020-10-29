@@ -33,20 +33,44 @@ Directory tree :
 │   └── vars
 ├── docs
 ├── terraform-base
-├── terraform-infra
+├── clusters
+│   └── sandbox
+│       ├── blue
+│       ├── green
+│       └── persistent-resources
 └── terraform-modules
-    ├── common-vars
-    └── gke-setup
+    ├── cluster-persistent-resources
+    ├── dns
+    ├── gke-setup
+    ├── k8s-elasticsearch
+    ├── k8s-istio
+    ├── k8s-misc
+    ├── k8s-monitoring-agents
+    ├── k8s-post-install-verification
+    └── k8s-vault
+
 
 ```
 
 ansible - contains ansible playbooks and all needed for it's execution. playbooks executed from terraform configs and modules.
 docs - contain howtos and other documentation that cover this projects
 terraform-base - base terraform configs for provisioning VPC, Bastion host, storage , service account, etc...
-terraform-infra - sample configs to provision GKE cluster. More info in docs
+clusters - directory contain configs for all k8s clusters
+  sandbox - sandbox clusters related terraform configs
+    blue - terraform configs to spinup GKE blue environment
+    green - terraform configs to spinup GKE green environment
+    persistent-resources - terraform configs for shared resources (buckets,keys,etc.)
 terraform-modules - umbrella directory for all modules
-  common-vars - module that contain all configuration parameters used in terraform or passed to ansible/shell/etc. Argument structure described in module readme.
-  gke-setup - terraform module to create GKE cluster with terraform in secure way(at least from network perspective). More info on best practices applied in module readme.
+  cluster-persistent-resources - provision buckets for vault and elasticsearch
+  dns - module to configure internal dns zone
+  gke-setup - terraform module to create GKE cluster  in secure way(at least from network perspective).
+  k8s-elasticsearch - terraform module for elasticsearch provisioning within k8s cluster
+  k8s-istio - module for istio provisioning within k8s
+  k8s-misc - miscelenious k8s operators
+  k8s-monitoring-agents - module to spin up and configure monitoring agents within k8s cluster
+  k8s-vault - module to spin up and configure Vault
+  k8s-post-install-verification - module to run post install verification playbook
+
 
 ### Authorization reference
 
@@ -80,7 +104,7 @@ Currently it is require to provision sample bucket and create access to Service 
 
 
 ## Install packages requirements
-All tools required for deployment served as docker image. To build Dockerfile and define alias `tf` next command should be executed:
+All tools required for deployment served as docker image. Alias works only in `zsh`. To build Dockerfile and define alias `tf` next command should be executed:
 
 ```
 source .env
