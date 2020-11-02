@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  labels:
+    app: argocd
+  name: argocd-ingress
+  namespace: argocd
+spec:
+  rules:
+  - host: argocd.infra.digaweb.com
+    http:
+      paths:
+      - backend:
+          serviceName: argo-argocd-server
+          servicePort: 80
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - argocd.infra.digaweb.com
+    secretName: argocd-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd-cert
+  namespace: istio-system
+spec:
+  secretName: argocd-cert
+  commonName: argocd.infra.digaweb.com
+  dnsNames:
+  - argocd.infra.digaweb.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
