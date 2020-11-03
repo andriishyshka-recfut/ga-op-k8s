@@ -12,3 +12,11 @@ helm install argo argo/argo-cd -n argocd --set 'server.extraArgs[0]=--insecure'
 ```
 kubectl apply -f ingress.yaml
 ```
+
+
+Cleanup
+```
+
+helm uninstall argo -n argocd
+
+```
