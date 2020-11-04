@@ -21,4 +21,17 @@ resource "helm_release" "falco" {
     name  = "auditLog.enabled"
     value = "true"
   }
+  set {
+    name  = "resources.requests.cpu"
+    value = "10m"
+  }
+  set {
+    name  = "resources.requests.memory"
+    value = "300Mi"
+  }
+  # https://github.com/falcosecurity/falco/issues/669
+  set {
+    name  = "falco.syscallEventDrops.actions[0]"
+    value = "ignore"
+  }
 }

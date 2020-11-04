@@ -35,7 +35,7 @@ elastic_settings:
         ES_JAVA_OPTS: -Xms1g -Xmx1g
         nodesCount: 3
         memoryRequests: "1Gi"
-        cpuRequests: "0.5"
+        cpuRequests: "0.2"
         memoryLimit: 1.5Gi
         cpuLimit: 1
 

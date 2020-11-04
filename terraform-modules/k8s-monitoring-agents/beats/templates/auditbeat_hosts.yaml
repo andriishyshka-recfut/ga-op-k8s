@@ -86,6 +86,10 @@ spec:
         #  command: ['sh', '-c', 'export SYSTEMD_IGNORE_CHROOT=1 && systemctl stop systemd-journald-audit.socket && systemctl mask systemd-journald-audit.socket && systemctl restart systemd-journald']
         containers:
         - name: auditbeat
+          resources:
+            requests:
+              cpu: 10m
+              memory: 50Mi
           securityContext:
             capabilities:
               add:

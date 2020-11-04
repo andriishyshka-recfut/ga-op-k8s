@@ -78,6 +78,10 @@ spec:
           - /etc/beat.yml
           - -system.hostfs=/hostfs
           name: metricbeat
+          resources:
+            requests:
+              cpu: 10m
+              memory: 50Mi
           volumeMounts:
           - mountPath: /hostfs/sys/fs/cgroup
             name: cgroup
