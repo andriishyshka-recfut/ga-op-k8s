@@ -50,15 +50,15 @@ resource "helm_release" "harbor" {
     value = "https://harbor.infra.digaweb.com"
   }
   set {
-    name  = "imageChartStorage.type"
+    name  = "persistence.imageChartStorage.type"
     value = "gcs"
   }
   set {
-    name  = "imageChartStorage.gcs.bucket"
+    name  = "persistence.imageChartStorage.gcs.bucket"
     value = "harbor-backet-${data.google_project.current.project_id}"
   }
   set {
-    name  = "imageChartStorage.gcs.encodedkey"
+    name  = "persistence.imageChartStorage.gcs.encodedkey"
     value = google_service_account_key.harbor-key.private_key
   }
   # set {
