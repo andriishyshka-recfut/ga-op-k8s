@@ -17,6 +17,15 @@ server:
     #   - type: helm
     #     url: https://argoproj.github.io/argo-helm
     #     name: argo
+    repositories: |
+      - passwordSecret:
+          key: password
+          name: gitlab-token
+        type: git
+        url: https://gitlab.regemini.com/op/sandbox.git
+        usernameSecret:
+          key: username
+          name: gitlab-token
     oidc.config: |
        name: Google
        issuer: https://accounts.google.com
@@ -43,7 +52,7 @@ server:
     policy.csv: |
         g, stepan.biriukov@geminiadvisory.io, role:admin
         g, dc@geminiadvisory.io, role:admin
-        p, anton@geminiadvisory.io, applications, *, made/*, allow
+        p, anton@geminiadvisory.io, applications, *, maid/*, allow
     # policy.default is the name of the default role which Argo CD will falls back to, when
     # authorizing API requests (optional). If omitted or empty, users may be still be able to login,
     # but will see no apps, projects, etc...
