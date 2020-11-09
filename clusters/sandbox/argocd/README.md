@@ -1,6 +1,6 @@
 1.
 ```
-kubectl create namespace argocd
+# kubectl create namespace argocd
 #kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 #helm repo add argo https://argoproj.github.io/argo-helm
@@ -16,9 +16,12 @@ kubectl apply -f ingress.yaml
 ```
 
 
+
 Cleanup
 ```
 
-helm uninstall argo -n argocd
+#helm uninstall argo -n argocd
+tf destroy
+
 
 ```

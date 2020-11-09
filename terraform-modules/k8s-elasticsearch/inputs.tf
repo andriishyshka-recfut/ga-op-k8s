@@ -9,6 +9,7 @@ variable "store_es_password_in_vault" {}
 
 locals {
   store_es_password_in_vault = var.store_es_password_in_vault ? 1 : 0
+  create_ns                  = lookup(var.elastic_settings, "create_ns", 1)
   es_values                  = var.elastic_settings.elastic
   kibana_values              = var.elastic_settings.kibana
   ansible_envs = merge(var.gke_cluster_connection_settings, {

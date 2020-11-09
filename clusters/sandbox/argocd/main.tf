@@ -1,3 +1,8 @@
+locals {
+  argo-ns = "argocd"
+}
+
+
 provider "vault" {
   address = "https://vault.infra.digaweb.com"
 }
@@ -31,18 +36,26 @@ data "vault_generic_secret" "gitlab_token" {
 resource "kubernetes_secret" "gitlab-token" {
   metadata {
     name      = "gitlab-token"
-    namespace = "argocd"
+    namespace = local.argo-ns
   }
 
   data = {
     "username" = data.vault_generic_secret.gitlab_token.data.username
     "password" = data.vault_generic_secret.gitlab_token.data.token_read_repo
   }
+  depends_on = [kubernetes_namespace.argocd]
 
 }
 
 
-
+resource "kubernetes_namespace" "argocd" {
+  metadata {
+    name = local.argo-ns
+    # labels = {
+    #   istio-injection = "enabled"
+    # }
+  }
+}
 data "vault_generic_secret" "oidc_secrets" {
   path = "secret/oidc_google_test"
 }
@@ -53,7 +66,7 @@ resource "helm_release" "argocd" {
   chart      = "argo-cd"
   repository = "https://argoproj.github.io/argo-helm"
   #version           = "0.1.0"
-  namespace         = "argocd"
+  namespace         = local.argo-ns
   dependency_update = "true"
 
   values = [
@@ -65,6 +78,6 @@ resource "helm_release" "argocd" {
     )
   ]
   depends_on = [
-    kubernetes_secret.gitlab-token
+    kubernetes_secret.gitlab-token,
   ]
 }

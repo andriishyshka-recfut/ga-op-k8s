@@ -1,7 +1,7 @@
 
 
 resource "helm_release" "elasticsearch" {
-  name   = "elastic"
+  name   = local.es_values.esName
   chart  = "${path.module}/elasticsearch"
   wait   = true
   atomic = true
@@ -16,7 +16,7 @@ resource "helm_release" "elasticsearch" {
 
 
 resource "helm_release" "kibana" {
-  name   = "kibana"
+  name   = local.kibana_values.name
   chart  = "${path.module}/kibana"
   wait   = true
   atomic = true
@@ -76,6 +76,7 @@ COMMAND
 
 
 resource "kubernetes_namespace" "namespace" {
+  count = local.create_ns
   metadata {
 
     labels = {
