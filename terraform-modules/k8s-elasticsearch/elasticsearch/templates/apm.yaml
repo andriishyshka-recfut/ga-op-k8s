@@ -1,0 +1,20 @@
+---
+apiVersion: apm.k8s.elastic.co/v1
+kind: ApmServer
+metadata:
+  name: apm-{{ .Values.esName }}
+  namespace: {{ .Values.namespace  }}
+spec:
+  version: {{ .Values.appVersion }}
+  count: 1
+  elasticsearchRef:
+    name: {{ .Values.esName }}
+  http:
+    service:
+      metadata:
+        creationTimestamp: null
+      spec: {}
+    tls:
+      certificate: {}
+      selfSignedCertificate:
+        disabled: true
