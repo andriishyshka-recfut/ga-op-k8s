@@ -25,10 +25,11 @@ resource "kubernetes_secret" "harbor" {
 {
   "auths": {
     "harbor.infra.digaweb.com": {
-      "auth": "${base64encode("${data.vault_generic_secret.harbor_token.data.user}:${data.vault_generic_secret.harbor_token.data.user}")}"
+      "username": "${data.vault_generic_secret.harbor_token.data.maid_account_name}",
+      "password": "${data.vault_generic_secret.harbor_token.data.maid_account_token}"
+     }
     }
   }
-}
 DOCKER
   }
 
