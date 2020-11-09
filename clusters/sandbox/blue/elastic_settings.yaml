@@ -8,6 +8,8 @@ elastic_settings:
     appVersion: "7.9.2"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
+    apm:
+      enabled: "yes"
     labels:
       monitoring: elastic
     istio:
