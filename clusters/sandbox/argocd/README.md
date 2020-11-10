@@ -13,6 +13,8 @@ tf apply
 2.
 ```
 kubectl apply -f ingress.yaml
+kubectl apply -f kafka-operator.yaml
+kubectl apply -f minio-ingress.yaml
 ```
 
 
