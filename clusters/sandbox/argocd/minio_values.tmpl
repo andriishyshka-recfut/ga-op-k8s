@@ -9,6 +9,7 @@ resources:
   requests:
     memory: 0.5Gi
 
+
 environment:
   MINIO_IDENTITY_OPENID_CONFIG_URL: "${OIDC_DISCOVERY_URL}/.well-known/openid-configuration"
   MINIO_IDENTITY_OPENID_CLIENT_ID: "${CLIENT_ID}"
