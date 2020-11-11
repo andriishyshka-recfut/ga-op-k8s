@@ -77,3 +77,17 @@ module "maid-elastic" {
   store_es_password_in_vault      = false
   depends_on                      = [kubernetes_namespace.maid]
 }
+
+resource "kubernetes_secret" "minio-credentials2" {
+  metadata {
+    name      = "minio-credentials"
+    namespace = "maid"
+  }
+
+  data = {
+    "accesskey" = data.vault_generic_secret.minio-credentials.data.accessKey
+    "secretkey" = data.vault_generic_secret.minio-credentials.data.secretKey
+  }
+  depends_on = [kubernetes_namespace.minio]
+
+}
