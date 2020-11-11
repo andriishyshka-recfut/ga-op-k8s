@@ -76,3 +76,12 @@ filebeat:
                 # include_lines: ['^{.*$']
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
+            # Maid section
+            - condition.equals:
+                kubernetes.namespace: maid
+              config:
+              - type: container
+                json.add_error_key: true
+                # include_lines: ['^{.*$']
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
