@@ -11,6 +11,7 @@ spec:
   # Allow manifests to deploy from any Git repos
   sourceRepos:
   - 'https://gitlab.regemini.com/op/sandbox.git'
+  - 'https://github.com/elastic/helm-charts.git'
   # Only permit applications to deploy to the guestbook namespace in the same cluster
   destinations:
   - namespace: maid
@@ -34,6 +35,74 @@ spec:
     path: maid-ns
     repoURL: https://gitlab.regemini.com/op/sandbox.git
     targetRevision: kubernetes
+  syncPolicy:
+    automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+    syncOptions:     # Sync options which modifies sync behavior
+    - Validate=false # disables resource validation (equivalent to 'kubectl apply --validate=true')
+    - CreateNamespace=false # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
+    # The retry feature is available since v1.7
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maid-logstash-sandbox
+  namespace: argocd
+spec:
+  destination:
+    namespace: maid
+    server: https://kubernetes.default.svc
+  project: maid-sandbox
+  source:
+    repoURL: https://github.com/elastic/helm-charts.git
+    path: logstash
+    targetRevision: "7.9"
+    helm:
+      releaseName: logstash
+      values: |
+        persistence:
+          enabled: true
+        replicas: 1
+        # logstashPipeline:
+        #   uptime.conf: |
+        #     input { exec { command => "uptime" interval => 30 } }
+        #     output { elasticsearch {
+        #       hosts => ["http://maid-es-http:9200"]
+        #       cacert => "/usr/share/logstash/config/certs/elastic-certificate.crt"
+        #       user => '${ELASTICSEARCH_USERNAME}'
+        #       password => '${ELASTICSEARCH_PASSWORD}'
+        #       index => "logstash"
+        #       }
+        #     }
+        logstashConfig:
+          logstash.yml: |
+            http.host: 0.0.0.0
+            xpack.monitoring.enabled: true
+            xpack.management.enabled: true
+            xpack.management.logstash.poll_interval: 5s
+            xpack.management.pipeline.id: ["maid"]
+            xpack.monitoring.elasticsearch.username: '${ELASTICSEARCH_USERNAME}'
+            xpack.monitoring.elasticsearch.password: '${ELASTICSEARCH_PASSWORD}'
+            xpack.monitoring.elasticsearch.hosts: ["http://maid-es-http:9200"]
+            xpack.management.elasticsearch.username: '${ELASTICSEARCH_USERNAME}'
+            xpack.management.elasticsearch.password: '${ELASTICSEARCH_PASSWORD}'
+            xpack.management.elasticsearch.hosts: ["http://maid-es-http:9200"]
+        extraEnvs:
+          - name: 'ELASTICSEARCH_USERNAME'
+            value: 'elastic'
+          - name: 'ELASTICSEARCH_PASSWORD'
+            valueFrom:
+              secretKeyRef:
+                name: maid-es-elastic-user
+                key: elastic
+
   syncPolicy:
     automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
       prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
