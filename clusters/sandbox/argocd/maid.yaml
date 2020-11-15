@@ -87,7 +87,7 @@ spec:
             xpack.monitoring.enabled: true
             xpack.management.enabled: true
             xpack.management.logstash.poll_interval: 5s
-            xpack.management.pipeline.id: ["maid"]
+            xpack.management.pipeline.id: ["maid","upsert"]
             xpack.monitoring.elasticsearch.username: '${ELASTICSEARCH_USERNAME}'
             xpack.monitoring.elasticsearch.password: '${ELASTICSEARCH_PASSWORD}'
             xpack.monitoring.elasticsearch.hosts: ["http://maid-es-http:9200"]

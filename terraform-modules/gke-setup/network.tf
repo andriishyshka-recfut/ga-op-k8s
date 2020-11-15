@@ -54,7 +54,7 @@ resource "google_compute_firewall" "bastion-to-cluster" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22-1000", "30000-32767"]
+    ports    = ["22-1000","6379", "30000-32767"]
   }
 
 }
