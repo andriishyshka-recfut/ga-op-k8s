@@ -15,8 +15,8 @@ resource "kubernetes_secret" "harbor" {
 {
   "auths": {
     "harbor.infra.digaweb.com": {
-      "username": "${data.vault_generic_secret.harbor_token.data.maid_account_name}",
-      "password": "${data.vault_generic_secret.harbor_token.data.maid_account_token}"
+      "username": "${data.vault_generic_secret.harbor_token.data.user}",
+      "password": "${data.vault_generic_secret.harbor_token.data.password}"
      }
     }
   }
