@@ -68,3 +68,20 @@ resource "kubernetes_limit_range" "limit2" {
     }
   }
 }
+
+resource "kubernetes_role_binding" "developers" {
+  metadata {
+    name      = "developers"
+    namespace = local.ns
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "Role"
+    name      = "admin"
+  }
+  subject {
+    kind      = "User"
+    name      = "andrei.lavrenyuk@geminiadvisory.io"
+    api_group = "rbac.authorization.k8s.io"
+  }
+}
