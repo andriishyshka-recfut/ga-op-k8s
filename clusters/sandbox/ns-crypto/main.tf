@@ -68,22 +68,3 @@ resource "kubernetes_limit_range" "limit2" {
     }
   }
 }
-
-
-data "vault_generic_secret" "gitlab_token" {
-  path = "secret/gitlab"
-}
-
-resource "kubernetes_secret" "gitlab-token" {
-  metadata {
-    name      = "gitlab-token"
-    namespace = local.ns
-  }
-
-  data = {
-    "username" = data.vault_generic_secret.gitlab_token.data.username
-    "password" = data.vault_generic_secret.gitlab_token.data.token_read_repo
-  }
-  depends_on = [kubernetes_namespace.ns]
-
-}
