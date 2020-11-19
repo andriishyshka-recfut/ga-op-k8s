@@ -2,6 +2,8 @@
 1.
 ```
 kubectl create secret generic oidc --namespace monitoring  --from-literal=xpack.security.authc.realms.oidc.oidc1.rp.client_secret=value
+
+kubectl apply -f cert.yaml
 ```
 
 2.
@@ -55,7 +57,20 @@ xpack.security.authc.providers:
 
 4. Role mapping
 ```
-curl -X PUT "https://user:password@monitoring-es-http:9200/_security/role_mapping/oidc-example?pretty" -H 'Content-Type: application/json' -k -d'
+
+export ES_PASSWORD=$(kubectl get secret monitoring-es-elastic-user -o  go-template='{{.data.elastic | base64decode}}')
+
+
+curl -XPOST "https://elastic:${ES_PASSWORD}@monitoring-es-http:9200/_license/start_trial?acknowledge=true" -k
+
+curl -X PUT "https://elastic:${ES_PASSWORD}@monitoring-es-http:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -k -d'
+{
+  "transient": {
+    "logger.org.elasticsearch.xpack.security.authc.oidc": "trace"
+  }
+}
+'
+curl -X PUT "https://elastic:${ES_PASSWORD}@monitoring-es-http:9200/_security/role_mapping/oidc-example?pretty" -H 'Content-Type: application/json' -k -d'
 {
   "roles": [ "superuser" ],
   "enabled": true,
@@ -64,5 +79,7 @@ curl -X PUT "https://user:password@monitoring-es-http:9200/_security/role_mappin
   }
 }
 '
+
+
 
 ```

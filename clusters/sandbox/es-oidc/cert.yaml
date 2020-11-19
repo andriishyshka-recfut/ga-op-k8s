@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: es-cert
+  namespace: monitoring
+spec:
+  secretName: es-cert
+  commonName: monitoring-es-http
+  dnsNames:
+  - monitoring-es-http
+  - monitoring-es-http.monitoring.svc
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
