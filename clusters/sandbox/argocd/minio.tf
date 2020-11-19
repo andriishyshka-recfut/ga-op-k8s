@@ -10,30 +10,6 @@ resource "kubernetes_namespace" "minio" {
     # }
   }
 }
-# resource "kubernetes_limit_range" "minio" {
-#   metadata {
-#     name      = "minio"
-#     namespace = local.minio-ns
-#
-#   }
-#   spec {
-#     limit {
-#       type = "Pod"
-#       default = {
-#         cpu    = "500m"
-#         memory = "1024Mi"
-#       }
-#     }
-#
-#     limit {
-#       type = "Container"
-#       default_request = {
-#         cpu    = "10m"
-#         memory = "24Mi"
-#       }
-#     }
-#   }
-# }
 
 data "vault_generic_secret" "minio-credentials" {
   path = "secret/minio-credentials"

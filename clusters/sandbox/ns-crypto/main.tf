@@ -76,12 +76,13 @@ resource "kubernetes_role_binding" "developers" {
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
-    kind      = "Role"
+    kind      = "ClusterRole"
     name      = "admin"
   }
   subject {
     kind      = "User"
     name      = "andrei.lavrenyuk@geminiadvisory.io"
     api_group = "rbac.authorization.k8s.io"
+
   }
 }
