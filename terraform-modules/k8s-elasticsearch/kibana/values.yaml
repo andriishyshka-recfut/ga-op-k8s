@@ -1,0 +1,10 @@
+    enabled: false
+    istio_gateway_fqdn: "test.example.com"
+    cert_ttl: "143h"
+    name: test
+    esName: "test"
+    namespace: "test"
+    kibanaVersion: "7.10.0"
+    oidc_provider:
+      enable: "no"
+      realm: "google"

@@ -41,7 +41,12 @@
                     ES_JAVA_OPTS: -Xms4g -Xmx4g
 
                 istio:
-                  enabled: True
+                  enabled: "no"
                   gateway_fqdn: "es.infra.digaweb.com"
                   mTLS_enabled: true
                   cert_ttl: "144h"
+
+                nativeTLS:
+                  enabled: "no"
+                oidc_gcloud:
+                  enabled: "no"

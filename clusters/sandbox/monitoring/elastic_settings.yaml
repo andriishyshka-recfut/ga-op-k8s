@@ -5,7 +5,7 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "monitoring"
     namespace: "monitoring"
-    appVersion: "7.9.2"
+    appVersion: "7.10.0"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
     apm:
@@ -19,8 +19,18 @@ elastic_settings:
       # only "yes" will make effect
       mTLS_enabled: "no"
       cert_ttl: "144h"
+    nativeTLS:
+      enabled: "yes" # required for xpack.security.authc.token and oidc
+    oidc_gcloud:
+      enabled: "yes"
+      vault_path: "/secret/oidc_google_test" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
+      oidc_realm_name: "google"
+      secret_name: "oidc"
+      configmap_name: "oidc"
     elasticNodeSets:
       - name: master
+        annotations:
+          sidecar.istio.io/inject: "false" # istio-proxy conflicts with nativeTLS
         config: |
           node.master: true
           node.data: true
@@ -48,4 +58,7 @@ elastic_settings:
     name: kibana
     esName: "monitoring"
     namespace: "monitoring"
-    kibanaVersion: "7.9.2"
+    kibanaVersion: "7.10.0"
+    oidc_provider:
+      enable: "yes"
+      realm: "google"

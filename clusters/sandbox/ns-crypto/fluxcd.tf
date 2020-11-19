@@ -27,36 +27,36 @@ resource "helm_release" "fluxcd" {
   dependency_update = "true"
 
   set {
-     name = "git.url"
-     value = "https://$(username):$(password)@gitlab.regemini.com/op/sandbox.git"
-    }
-  set {
-    name="env.secretName"
-    value="gitlab-token"
+    name  = "git.url"
+    value = "https://$(username):$(password)@gitlab.regemini.com/op/sandbox.git"
   }
   set {
-    name="git.branch"
-    value="kubernetes"
+    name  = "env.secretName"
+    value = "gitlab-token"
   }
   set {
-    name="git.path"
-    value="crypto-ns/"
-    }
+    name  = "git.branch"
+    value = "kubernetes"
+  }
   set {
-    name="allowedNamespaces[0]"
-    value=local.ns
-    }
+    name  = "git.path"
+    value = "crypto-ns/"
+  }
   set {
-    name="registry.automationInterval"
-    value="1m"
-    }
+    name  = "allowedNamespaces[0]"
+    value = local.ns
+  }
   set {
-    name="git.pollInterval"
-    value="1m"
-    }
+    name  = "registry.automationInterval"
+    value = "1m"
+  }
   set {
-    name="git.ciSkip"
-    value=true
+    name  = "git.pollInterval"
+    value = "1m"
+  }
+  set {
+    name  = "git.ciSkip"
+    value = true
   }
 
   depends_on = [

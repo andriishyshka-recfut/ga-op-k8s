@@ -24,7 +24,7 @@ provider "kubernetes" {
   token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
 }
 
-locals{
+locals {
   ns = "crypto"
 }
 
@@ -32,15 +32,15 @@ locals{
 resource "kubernetes_namespace" "ns" {
   metadata {
     name = local.ns
-     labels = {
-       istio-injection = "enabled"
-     }
+    labels = {
+      istio-injection = "enabled"
+    }
   }
 }
 
 resource "kubernetes_limit_range" "limit" {
   metadata {
-    name = "default-limit-range"
+    name      = "default-limit-range"
     namespace = local.ns
   }
   spec {
@@ -55,7 +55,7 @@ resource "kubernetes_limit_range" "limit" {
 }
 resource "kubernetes_limit_range" "limit2" {
   metadata {
-    name = "default-limit-range2"
+    name      = "default-limit-range2"
     namespace = local.ns
   }
   spec {

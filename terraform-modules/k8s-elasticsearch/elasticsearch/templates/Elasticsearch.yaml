@@ -2,17 +2,25 @@ apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
   name: {{ .Values.esName }}
-  labels: {{- include "elasticsearch.labels" . | nindent 4 }}
+  labels: {{- include "elastic.labels" . | nindent 4 }}
   namespace: {{ .Values.namespace  }}
 spec:
   version: {{ .Values.appVersion }}
    # Inject secure settings into Elasticsearch nodes from a k8s secret reference
   secureSettings:
   - secretName: gcs-credentials
+{{- if eq .Values.oidc_gcloud.enabled "yes" -}}
+  - secretName: {{ .Values.oidc_gcloud.secret_name }}
+{{- end }}
   http:
     tls:
+{{- if eq .Values.nativeTLS.enabled "yes" -}}
+      certificate:
+        secretName: {{ .Values.esName }}-es-cert
+{{- else }}
       selfSignedCertificate:
         disabled: true
+{{- end }}
     service:
       spec:
         ports:
@@ -38,6 +46,7 @@ spec:
     podTemplate:
       metadata:
         annotations:
+{{ indent 10 .annotations }}
           traffic.sidecar.istio.io/excludeOutboundPorts: "9300"
           traffic.sidecar.istio.io/excludeInboundPorts: "9300"
       spec:
@@ -48,8 +57,19 @@ spec:
           - -c
           - |
             bin/elasticsearch-plugin install --batch repository-gcs
+{{- if eq $.Values.oidc_gcloud.enabled "yes" -}}
+        volumes:
+        - name: oidc
+          configMap:
+            name: {{ $.Values.oidc_gcloud.configmap_name }}
+{{- end }}
         containers:
         - name: elasticsearch
+{{- if eq $.Values.oidc_gcloud.enabled "yes" -}}
+          volumeMounts:
+            - name: oidc
+              mountPath: /usr/share/elasticsearch/config/oidc
+{{- end }}
           resources:
             limits:
               memory: {{ .memoryLimit }}

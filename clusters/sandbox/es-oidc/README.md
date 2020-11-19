@@ -1,29 +1,29 @@
 
 1.
 ```
-kubectl create secret generic oidc --namespace monitoring  --from-literal=xpack.security.authc.realms.oidc.oidc1.rp.client_secret=value
+kubectl create secret generic oidc --namespace monitoring  --from-literal=xpack.security.authc.realms.oidc.oidc1.rp.client_secret=value +
 
-kubectl apply -f cert.yaml
+kubectl apply -f cert.yaml +
 ```
 
 2.
 ```
 secureSettings:
-- secretName: oidc
+- secretName: oidc +
 
 
     tls:
       certificate: {}
       selfSignedCertificate:
-        disabled: false
+        disabled: false +
 
-xpack.security.authc.token.enabled: true
+xpack.security.authc.token.enabled: true +
 
 
     podTemplate:
       metadata:
         annotations:
-          sidecar.istio.io/inject: "false
+          sidecar.istio.io/inject: "false +
 
 
         oidc:
@@ -40,7 +40,7 @@ xpack.security.authc.token.enabled: true
               - email
               - openid
               - profile
-            rp.client_id: 921970745198-3541scevmu5oogrlucmu0poh7kn9a7ms.apps.googleusercontent.com
+            rp.client_id: 921970745198-3541scevmu5oogrlucmu0poh7kn9a7ms.apps.googleusercontent.com +
 ```
 
 3. kibana
