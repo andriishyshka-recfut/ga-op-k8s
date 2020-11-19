@@ -6,7 +6,8 @@ resource "helm_release" "elasticsearch" {
   wait   = true
   atomic = true
   values = [
-    yamlencode(local.es_values)
+    yamlencode(local.es_values),
+    yamlencode(local.oidc_config)
   ]
   depends_on = [
     kubernetes_namespace.namespace,

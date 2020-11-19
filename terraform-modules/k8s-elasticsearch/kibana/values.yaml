@@ -6,5 +6,5 @@
     namespace: "test"
     kibanaVersion: "7.10.0"
     oidc_provider:
-      enable: "no"
+      enabled: "no"
       realm: "google"

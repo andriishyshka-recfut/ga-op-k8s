@@ -12,6 +12,8 @@ elastic_settings:
       enabled: "yes"
     labels:
       monitoring: elastic
+    annotations:
+      sidecar.istio.io/inject: "false" # istio-proxy conflicts with nativeTLS
     istio:
       enabled: "no"
       gateway_fqdn: "es.infra.digaweb.com"
@@ -29,8 +31,6 @@ elastic_settings:
       configmap_name: "oidc"
     elasticNodeSets:
       - name: master
-        annotations:
-          sidecar.istio.io/inject: "false" # istio-proxy conflicts with nativeTLS
         config: |
           node.master: true
           node.data: true
@@ -60,5 +60,5 @@ elastic_settings:
     namespace: "monitoring"
     kibanaVersion: "7.10.0"
     oidc_provider:
-      enable: "yes"
+      enabled: "yes"
       realm: "google"

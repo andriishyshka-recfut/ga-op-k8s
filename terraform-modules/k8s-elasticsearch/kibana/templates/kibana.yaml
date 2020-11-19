@@ -27,7 +27,7 @@ spec:
     metadata:
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
-{{- if eq .Values.oidc_provider.enabled "yes" -}}
+{{- if eq .Values.oidc_provider.enabled "yes" }}
     config:
     xpack.security.authc.providers:
       oidc.Google:
@@ -35,4 +35,4 @@ spec:
         realm: {{ .Values.oidc_provider.realm }}
       basic.basic1:
         order: 1
-{{- if}}
+{{- end }}

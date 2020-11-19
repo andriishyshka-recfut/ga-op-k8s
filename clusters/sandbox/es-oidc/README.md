@@ -50,7 +50,7 @@ xpack.security.authc.token.enabled: true +
 xpack.security.authc.providers:
   oidc.oidc1:
     order: 0
-    realm: "oidc1"
+    realm: "oidc1" +
 
 
 ```
