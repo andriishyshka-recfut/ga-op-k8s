@@ -88,6 +88,22 @@ resource "kubernetes_namespace" "namespace" {
   }
 }
 
+resource "kubernetes_limit_range" "limit" {
+  count = local.create_ns
+  metadata {
+    name      = "default-limit-range"
+    namespace = local.es_values.namespace
+  }
+  spec {
+    limit {
+      type = "Container"
+      default_request = {
+        cpu    = "10m"
+        memory = "20Mi"
+      }
+    }
+  }
+}
 resource "kubernetes_secret" "gcs-credentials" {
   metadata {
     name      = "gcs-credentials"

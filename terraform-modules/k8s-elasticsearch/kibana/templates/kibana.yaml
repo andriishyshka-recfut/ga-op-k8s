@@ -28,7 +28,7 @@ spec:
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
 {{- if eq .Values.oidc_provider.enabled "yes" }}
-    config:
+  config:
     xpack.security.authc.providers:
       oidc.Google:
         order: 0
