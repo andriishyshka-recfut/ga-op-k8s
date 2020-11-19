@@ -17,6 +17,13 @@ secureSettings:
 
 xpack.security.authc.token.enabled: true
 
+
+    podTemplate:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "false
+
+
         oidc:
           oidc1:
             order: 2
