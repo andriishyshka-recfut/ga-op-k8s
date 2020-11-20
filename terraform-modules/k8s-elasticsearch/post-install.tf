@@ -15,6 +15,7 @@ EOF
 }
 
 resource "kubernetes_job" "post-install" {
+  count = local.oidc_setup
   metadata {
     name      = "${local.es_values.esName}-post-install"
     namespace = local.es_values.namespace
