@@ -6,13 +6,23 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "maid"
     namespace: "maid"
-    appVersion: "7.9.3"
+    appVersion: "7.10.0"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "no"
     apm:
       enabled: "no"
     labels:
       app: elastic
+    annotations:
+      sidecar.istio.io/inject: "false" # istio-proxy conflicts with nativeTLS
+    nativeTLS:
+      enabled: "yes" # required for xpack.security.authc.token and oidc
+    oidc_gcloud:
+      enabled: "yes"
+      vault_path: "/secret/oidc_google_test" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
+      oidc_realm_name: "google"
+      secret_name: "oidc"
+      configmap_name: "oidc"
     istio:
       enabled: "no"
       gateway_fqdn: "es.infra.digaweb.com"
@@ -44,9 +54,12 @@ elastic_settings:
 
   kibana:
     enabled: true
-    istio_gateway_fqdn: "kibana.infra.digaweb.com"
+    istio_gateway_fqdn: "maid-kibana.infra.digaweb.com"
     cert_ttl: "143h"
     name: maid-kibana
     esName: "maid"
     namespace: "maid"
-    kibanaVersion: "7.9.3"
+    kibanaVersion: "7.10.0"
+    oidc_provider:
+      enabled: "yes"
+      realm: "google"
