@@ -17,8 +17,8 @@ resource "kubernetes_secret" "gitlab-token" {
 }
 
 
-resource "helm_release" "fluxcd" {
-  name = "fluxcd"
+resource "helm_release" "fluxcd-magescanner" {
+  name = "fluxcd-magescanner"
 
   chart      = "flux"
   repository = "https://charts.fluxcd.io"
