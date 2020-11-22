@@ -38,6 +38,23 @@ resource "kubernetes_namespace" "ns" {
   }
 }
 
+resource "kubernetes_persistent_volume_claim" "geoip-pvc" {
+  metadata {
+    name      = "geoip-pvc"
+    namespace = local.ns
+  }
+  spec {
+    access_modes       = ["ReadWriteOnce"]
+    storage_class_name = "standard"
+    resources {
+      requests = {
+        storage = "5Gi"
+      }
+    }
+    # volume_name = "${kubernetes_persistent_volume_claim.geoip-pvc.metadata.0.name}"
+  }
+}
+
 resource "kubernetes_limit_range" "limit" {
   metadata {
     name      = "default-limit-range"
