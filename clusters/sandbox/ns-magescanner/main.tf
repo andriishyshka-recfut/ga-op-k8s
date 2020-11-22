@@ -51,7 +51,6 @@ resource "kubernetes_persistent_volume_claim" "geoip-pvc" {
         storage = "5Gi"
       }
     }
-    # volume_name = "${kubernetes_persistent_volume_claim.geoip-pvc.metadata.0.name}"
   }
 }
 
