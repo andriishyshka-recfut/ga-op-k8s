@@ -81,3 +81,19 @@ resource "helm_release" "argocd" {
     kubernetes_secret.gitlab-token,
   ]
 }
+
+resource "kubernetes_limit_range" "limit" {
+  metadata {
+    name      = "default-limit-range"
+    namespace = local.argo-ns
+  }
+  spec {
+    limit {
+      type = "Container"
+      default_request = {
+        cpu    = "20m"
+        memory = "50Mi"
+      }
+    }
+  }
+}
