@@ -42,6 +42,8 @@
         --set values.gateways.istio-ingressgateway.sds.enabled=true \
         --set meshConfig.accessLogFile="/dev/stdout" \
         --set meshConfig.accessLogEncoding="JSON" \
+        --set values.global.proxy_init.resources.requests.cpu=5mi \
+        --set values.global.proxy_init.resources.requests.memory=5M \
         --set values.gateways.istio-ingressgateway.type=NodePort 2>/dev/null > {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
       sed -i '/Config not found: .\/kubeconfig/d' {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
         # Setting those options suggested in docs to enable k8s native ingress support but there are issue
