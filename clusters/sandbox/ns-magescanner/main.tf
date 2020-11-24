@@ -28,7 +28,6 @@ locals {
   ns = "magescanner"
 }
 
-
 resource "kubernetes_namespace" "ns" {
   metadata {
     name = local.ns
@@ -38,9 +37,9 @@ resource "kubernetes_namespace" "ns" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "geoip-pvc" {
+resource "kubernetes_persistent_volume_claim" "geoip-magescanner" {
   metadata {
-    name      = "geoip-pvc"
+    name      = "geoip-magescanner"
     namespace = local.ns
   }
   spec {
@@ -48,7 +47,7 @@ resource "kubernetes_persistent_volume_claim" "geoip-pvc" {
     storage_class_name = "standard"
     resources {
       requests = {
-        storage = "5Gi"
+        storage = "2Gi"
       }
     }
   }
@@ -63,23 +62,12 @@ resource "kubernetes_limit_range" "limit" {
     limit {
       type = "Container"
       default_request = {
-        cpu    = "20m"
+        cpu    = "10m"
         memory = "50Mi"
       }
-    }
-  }
-}
-resource "kubernetes_limit_range" "limit2" {
-  metadata {
-    name      = "default-limit-range2"
-    namespace = local.ns
-  }
-  spec {
-    limit {
-      type = "Container"
       default = {
-        cpu    = "500m"
-        memory = "512Mi"
+        cpu    = "200m"
+        memory = "300Mi"
       }
     }
   }
