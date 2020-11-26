@@ -1,1 +1,21 @@
-{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:*"],"Resource":["arn:aws:s3:::minio-*/*"]}]}
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1606407213515",
+      "Action": "s3:*",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::minio-*/*"
+    },
+    {
+      "Sid": "Stmt1606407239051",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:DeleteBucket"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::*"
+    }
+  ]
+}
+￼
