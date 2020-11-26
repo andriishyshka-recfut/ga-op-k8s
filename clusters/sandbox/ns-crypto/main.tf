@@ -53,21 +53,21 @@ resource "kubernetes_limit_range" "limit" {
     }
   }
 }
-# resource "kubernetes_limit_range" "limit2" {
-#   metadata {
-#     name      = "default-limit-range2"
-#     namespace = local.ns
-#   }
-#   spec {
-#     limit {
-#       type = "Container"
-#       default = {
-#         cpu    = "500m"
-#         memory = "512Mi"
-#       }
-#     }
-#   }
-# }
+resource "kubernetes_limit_range" "limit2" {
+  metadata {
+    name      = "default-limit-range2"
+    namespace = local.ns
+  }
+  spec {
+    limit {
+      type = "Container"
+      default = {
+        cpu    = "500m"
+        memory = "512Mi"
+      }
+    }
+  }
+}
 
 resource "kubernetes_role_binding" "developers" {
   metadata {
