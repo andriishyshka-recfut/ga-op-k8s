@@ -5,12 +5,26 @@ resource "kubernetes_config_map" "policy" {
     namespace = local.minio-ns
   }
   data = {
-    policy_json = file("minio-policy.json")
+    "policy.json"             = file("minio-policy.json")
+    "policy_maid.json"        = file("minio-policy-maid.json")
+    "policy_magescanner.json" = file("minio-policy-magescanner.json")
   }
 }
 
-resource "kubernetes_job" "add-policy" {
+locals {
+  addPolicyCommand = <<EOF
+  mc admin policy add minio geminiadvisory.io /tmp/policy.json
+  mc admin policy add minio maid /tmp/policy_maid.json
+  mc admin policy add minio magescanner /tmp/policy_magescanner.json
+  mc admin user add minio ${data.vault_generic_secret.minio-credentials.data.maidAccessKey} ${data.vault_generic_secret.minio-credentials.data.maidSecretKey}
+  mc admin policy set minio maid user=${data.vault_generic_secret.minio-credentials.data.maidAccessKey}
+  mc admin user add minio ${data.vault_generic_secret.minio-credentials.data.magescannerAccessKey} ${data.vault_generic_secret.minio-credentials.data.magescannerSecretKey}
+  mc admin policy set minio magescanner user=${data.vault_generic_secret.minio-credentials.data.magescannerAccessKey}
+EOF
+}
 
+
+resource "kubernetes_job" "add-policy" {
   metadata {
     name      = "add-policy"
     namespace = local.minio-ns
@@ -22,7 +36,7 @@ resource "kubernetes_job" "add-policy" {
         container {
           name    = "mc"
           image   = "minio/mc"
-          command = ["mc", "admin", "policy", "add", "minio", "geminiadvisory.io", "/tmp/policy_json"]
+          command = ["sh", "-c", local.addPolicyCommand]
           env {
             name = "accesskey"
             value_from {
