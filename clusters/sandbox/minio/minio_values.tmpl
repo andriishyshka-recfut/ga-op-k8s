@@ -22,11 +22,15 @@ environment:
   MINIO_IDENTITY_OPENID_CLAIM_NAME: "hd"
   MINIO_DOMAIN: "minio.infra.digaweb.com"
   GOOGLE_APPLICATION_CREDENTIALS: "/etc/credentials/gcs_key.json"
+  MINIO_ETCD_ENDPOINTS: "http://etcd:2379"
 
 #buckets:
 #  - name: maid
 #    policy: none
 #    purge: false
+etcd:
+  endpoints: ["http://etcd:2379"]
+  pathPrefix: "/"
 
 image:
   repository: minio/minio

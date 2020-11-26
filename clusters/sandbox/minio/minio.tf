@@ -67,6 +67,7 @@ resource "helm_release" "minio" {
   ]
   depends_on = [
     kubernetes_namespace.minio,
-    kubernetes_secret.minio-credentials
+    kubernetes_secret.minio-credentials,
+    helm_release.etcd
   ]
 }
