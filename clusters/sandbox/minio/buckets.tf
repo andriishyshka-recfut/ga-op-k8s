@@ -15,7 +15,8 @@ resource "google_storage_bucket" "minio_buckets" {
   name          = "minio-${element(local.buckets, count.index)}-${data.google_project.current.project_id}"
   project       = data.google_project.current.project_id
   force_destroy = true
-  storage_class = "MULTI_REGIONAL"
+  storage_class = "STANDARD"
+  # storage_class = "MULTI_REGIONAL"
 
   bucket_policy_only = true
 

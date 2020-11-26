@@ -1,6 +1,6 @@
 
 locals {
-  minio-ns = "minio2"
+  minio-ns = "minio"
 }
 resource "kubernetes_namespace" "minio" {
   metadata {
