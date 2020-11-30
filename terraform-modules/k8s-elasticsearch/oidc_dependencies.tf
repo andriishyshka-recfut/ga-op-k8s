@@ -11,7 +11,7 @@ resource "kubernetes_secret" "oidc" {
   }
 
   data = {
-    "xpack.security.authc.realms.oidc.${local.es_values.oidc_gcloud.oidc_realm_name}.rp.client_secret" = data.vault_generic_secret.oidc.0.data.oidc_client_secret
+    "xpack.security.authc.realms.oidc.${local.oidc_realm_name}.rp.client_secret" = data.vault_generic_secret.oidc.0.data.oidc_client_secret
   }
 
 }
@@ -29,7 +29,7 @@ resource "kubernetes_secret" "oidc" {
 locals {
   config      = <<EOF
 xpack.security.authc.token.enabled: true
-xpack.security.authc.realms.oidc.${local.es_values.oidc_gcloud.oidc_realm_name}:
+xpack.security.authc.realms.oidc.${local.oidc_realm_name}:
         order: 2
         rp.response_type: code
         rp.redirect_uri: https://${local.kibana_values.istio_gateway_fqdn}/api/security/oidc/callback

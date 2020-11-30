@@ -6,7 +6,7 @@ locals {
   "roles": [ "superuser" ],
   "enabled": true,
   "rules": {
-    "field": { "realm.name": "${local.es_values.oidc_gcloud.oidc_realm_name}" }
+    "field": { "realm.name": "${local.oidc_realm_name}" }
   }
 }
 '
