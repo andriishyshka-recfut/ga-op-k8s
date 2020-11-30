@@ -37,21 +37,13 @@ resource "kubernetes_namespace" "ns" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "geoip-magescanner" {
-  metadata {
-    name      = "geoip-magescanner"
-    namespace = local.ns
-  }
-  spec {
-    access_modes       = ["ReadWriteOnce"]
-    storage_class_name = "standard"
-    resources {
-      requests = {
-        storage = "2Gi"
-      }
-    }
+terraform {
+  backend "gcs" {
+    bucket = "terraform-state-222"
+    prefix = "tf-blue-green/magescanner"
   }
 }
+
 
 resource "kubernetes_limit_range" "limit" {
   metadata {
@@ -65,10 +57,10 @@ resource "kubernetes_limit_range" "limit" {
         cpu    = "10m"
         memory = "50Mi"
       }
-      default = {
-        cpu    = "200m"
-        memory = "300Mi"
-      }
+      # default = {
+      #   cpu    = "200m"
+      #   memory = "300Mi"
+      # }
     }
   }
 }
