@@ -1,4 +1,5 @@
 elastic_settings:
+  create_ns: 0 # o - no ns, 1 - create, other values not acceptable
   elastic:
     # Default values for elasticsearch.
     # This is a YAML-formatted file.
@@ -7,9 +8,9 @@ elastic_settings:
     namespace: "magescanner"
     appVersion: "7.10.0"
     # enableTrial should be a quoted string. only yes value make changes
-    enableTrial: "yes"
+    enableTrial: "no"
     apm:
-      enabled: "yes"
+      enabled: "no"
     labels:
       magescanner: elastic
     annotations:
@@ -55,7 +56,7 @@ elastic_settings:
     enabled: true
     istio_gateway_fqdn: "magescanner-kibana.infra.digaweb.com"
     cert_ttl: "143h"
-    name: kibana
+    name: magescanner-kibana
     esName: "magescanner"
     namespace: "magescanner"
     kibanaVersion: "7.10.0"

@@ -6,7 +6,7 @@ data "kubernetes_secret" "gcs-credentials" {
 }
 
 locals {
-  es = yamldecode(file("crypto_elastic_settings.yaml"))
+  es = yamldecode(file("elastic_settings.yaml"))
   gke_cluster_connection_settings = {
     HOST                   = data.vault_generic_secret.k8s_auth.data.HOST
     API_KEY                = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
