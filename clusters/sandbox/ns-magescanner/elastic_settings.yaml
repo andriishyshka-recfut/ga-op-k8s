@@ -1,0 +1,64 @@
+elastic_settings:
+  elastic:
+    # Default values for elasticsearch.
+    # This is a YAML-formatted file.
+    # Declare variables to be passed into your templates.
+    esName: "magescanner"
+    namespace: "magescanner"
+    appVersion: "7.10.0"
+    # enableTrial should be a quoted string. only yes value make changes
+    enableTrial: "yes"
+    apm:
+      enabled: "yes"
+    labels:
+      magescanner: elastic
+    annotations:
+      sidecar.istio.io/inject: "false" # istio-proxy conflicts with nativeTLS
+    istio:
+      enabled: "no"
+      gateway_fqdn: "es.infra.digaweb.com"
+      # mTLS prevent filebeat send logs to es service
+      # only "yes" will make effect
+      mTLS_enabled: "no"
+      cert_ttl: "144h"
+    nativeTLS:
+      enabled: "yes" # required for xpack.security.authc.token and oidc
+    oidc_gcloud:
+      enabled: "yes"
+      vault_path: "/secret/oidc_google_test" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
+      oidc_realm_name: "google"
+      secret_name: "oidc"
+      configmap_name: "oidc"
+    elasticNodeSets:
+      - name: master
+        config: |
+          node.master: true
+          node.data: true
+          node.ingest: true
+          node.ml: true
+          node.store.allow_mmap: false
+          index.store.type: niofs
+          xpack.monitoring.collection.enabled: false
+          xpack.security.authc.realms:
+            native:
+              native1:
+                order: 1
+        storageSize: "50Gi"
+        ES_JAVA_OPTS: -Xms1g -Xmx1g
+        nodesCount: 3
+        memoryRequests: "1Gi"
+        cpuRequests: "0.2"
+        memoryLimit: 1.5Gi
+        cpuLimit: 1
+
+  kibana:
+    enabled: true
+    istio_gateway_fqdn: "magescanner-kibana.infra.digaweb.com"
+    cert_ttl: "143h"
+    name: kibana
+    esName: "magescanner"
+    namespace: "magescanner"
+    kibanaVersion: "7.10.0"
+    oidc_provider:
+      enabled: "yes"
+      realm: "google"
