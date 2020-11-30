@@ -1,5 +1,5 @@
 {
   
-  "jwks_url":"https://gitlab.regemini.com/oauth/discovery/keys",
+  "jwks_url":"https://gitlab.regemini.com/-/jwks",
   "bound_issuer":"gitlab.regemini.com"
 }
