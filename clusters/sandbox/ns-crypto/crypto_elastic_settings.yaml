@@ -20,8 +20,6 @@ elastic_settings:
       # only "yes" will make effect
       mTLS_enabled: "no"
       cert_ttl: "144h"
-    oidc_gcloud:
-      enabled: no
     elasticNodeSets:
       - name: master
         config: |
@@ -52,5 +50,3 @@ elastic_settings:
     esName: "crypto"
     namespace: "crypto"
     kibanaVersion: "7.9.3"
-    oidc_provider:
-      enabled: "no"
