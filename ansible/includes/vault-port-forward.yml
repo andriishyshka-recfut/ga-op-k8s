@@ -9,6 +9,7 @@
   copy:
       dest: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
       content: "{{ k8s_cluster_ca_certificate }}"
+      mode: 0700
 
 - name: Port forward for initial setup
   shell: |
@@ -17,6 +18,7 @@
         port-forward service/vault 8200 -n vault  </dev/null >/dev/null 2>&1  &
     sleep 10 && curl http://127.0.0.1:8200
   register: result
+  changed_when: false
   retries: 3
   delay: 10
   until: result is succeeded

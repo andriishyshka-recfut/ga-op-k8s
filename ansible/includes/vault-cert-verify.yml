@@ -47,11 +47,13 @@
     args:
       executable: "{{ ansible_python_interpreter }}"
     register: vault_cert
+    changed_when: False
 
   - name: Put vault_cert on temp_fs
     copy:
       content: "{{ vault_cert.stdout | trim  }}"
       dest: "{{ vault_ca_path }}"
+      mode: '0700'
 
   - debug: msg="{{ vault_cert.stdout | trim  }}"
 
@@ -101,6 +103,7 @@
        REQUESTS_CA_BUNDLE: "{{ requests_ca_bundle }}"
        CA_CERT: "{{ vault_cert.stdout | trim  }}"
     register: status
+    changed_when: True
     retries: 3
     delay: 10
     until: status.rc == 0
