@@ -2,7 +2,7 @@
 
 
 resource "google_compute_subnetwork" "net" {
-  name          = "${var.cluster}-subnetwork"
+  name          = "${var.cluster}-${var.color}-subnetwork"
   ip_cidr_range = var.settings.clusters[var.cluster][var.color].nodes_subnet_range
   region        = var.settings.clusters[var.cluster].region
   network       = data.google_compute_network.vpc.self_link
@@ -23,7 +23,7 @@ resource "google_compute_subnetwork" "net" {
 
 #https://istio.io/docs/setup/platform-setup/gke/
 resource "google_compute_firewall" "master-to-cluster" {
-  name          = "master-to-${var.cluster}"
+  name          = "master-to-${var.cluster}-${var.color}"
   network       = data.google_compute_network.vpc.self_link
   direction     = "INGRESS"
   source_ranges = [var.settings.clusters[var.cluster][var.color].master_ipv4_cidr_block]
@@ -42,7 +42,7 @@ resource "google_compute_firewall" "master-to-cluster" {
 
 
 resource "google_compute_firewall" "bastion-to-cluster" {
-  name        = "bastion-to-${var.cluster}"
+  name        = "bastion-to-${var.cluster}-${var.color}"
   network     = data.google_compute_network.vpc.self_link
   direction   = "INGRESS"
   source_tags = ["dmz"]
@@ -59,7 +59,7 @@ resource "google_compute_firewall" "bastion-to-cluster" {
 
 }
 resource "google_compute_firewall" "cluster-to-cluster" {
-  name        = "${var.cluster}-to-${var.cluster}"
+  name        = "${var.cluster}-to-${var.cluster}-${var.color}"
   network     = data.google_compute_network.vpc.self_link
   direction   = "INGRESS"
   source_tags = [var.cluster]
@@ -79,7 +79,7 @@ resource "google_compute_firewall" "cluster-to-cluster" {
 }
 # Required for vault integration and other services
 resource "google_compute_firewall" "cluster-to-bastion" {
-  name          = "${var.cluster}-to-dmz"
+  name          = "${var.cluster}-${var.color}-to-dmz"
   network       = data.google_compute_network.vpc.self_link
   direction     = "INGRESS"
   source_tags   = [var.cluster]

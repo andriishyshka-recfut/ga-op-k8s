@@ -1,13 +1,4 @@
 
-data "external" "root_ca" {
-  program = ["python3", "${path.module}/../data-vault-ca.py"]
-  query = {
-    vault_addr = local.vault_addr
-  }
-  depends_on = [
-    null_resource.ansible_vault_k8s_auth
-  ]
-}
 
 // Service account and project info
 data "google_client_openid_userinfo" "me" {
@@ -40,7 +31,7 @@ locals {
   project                  = split("/", data.google_project.project.id)[1]
 
   vault_fqdn = var.settings.clusters[var.cluster][var.color].vault.fqdn
-  vault_addr = lookup(var.settings.clusters[var.cluster][var.color].vault, "connection", "remote") == "local" ? "http://vault.vault.svc" : "https://${local.vault_fqdn}"
+  vault_addr =  "http://vault.vault.svc"
 
   cluster    = var.cluster
   connection = lookup(var.settings.clusters[var.cluster][var.color].vault, "connection", "remote")

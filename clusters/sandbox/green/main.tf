@@ -48,12 +48,3 @@ module "k8s-vault" {
   oidc_client_secret              = var.oidc_client_secret
   depends_on                      = [module.k8s-istio, module.k8s-misc-operators]
 }
-
-module "post-install-verification" {
-  source                          = "../../../terraform-modules/k8s-post-install-verification"
-  gke_cluster_connection_settings = module.gke-setup-green.gke_cluster_connection_settings
-  settings                        = var.settings
-  cluster                         = "sandbox"
-  color                           = "green"
-  depends_on                      = [module.k8s-istio, module.k8s-misc-operators, module.k8s-vault]
-}

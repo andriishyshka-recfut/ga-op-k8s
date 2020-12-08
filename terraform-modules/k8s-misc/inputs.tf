@@ -10,7 +10,7 @@ variable "color" {}
 locals {
   gke_cluster_endpoint       = var.gke_cluster_connection_settings.HOST
   gke_bearer_token           = var.gke_cluster_connection_settings.API_KEY
-  create_letsencrypt_issuers = var.settings.clusters[var.cluster][var.color].cert_manager.create_letsencrypt_issuers ? 1 : 0
+  create_letsencrypt_issuers = lookup(var.settings.clusters[var.cluster][var.color].cert_manager,"create_letsencrypt_issuers",false) ? 1 : 0
   ansible_envs = merge(var.gke_cluster_connection_settings, {
     CLUSTER_SETTINGS        = jsonencode(var.settings)
     CLUSTER                 = var.cluster

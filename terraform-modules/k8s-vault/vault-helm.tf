@@ -7,7 +7,6 @@ resource "helm_release" "vault" {
   #version           = "0.1.0"
   namespace         = "vault"
   dependency_update = "true"
-
   values = [
     templatefile("${path.module}/vault_helm_config.tmpl",
       {

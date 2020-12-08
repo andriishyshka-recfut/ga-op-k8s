@@ -7,7 +7,6 @@ spec:
   vault:
     path: pki/sign/cert-manager-${cluster}
     server: ${vault_addr}
-%{ if connection != "local" }    caBundle: ${ca}%{ endif ~}
 
     auth:
       kubernetes:

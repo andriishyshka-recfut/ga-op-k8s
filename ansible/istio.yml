@@ -34,18 +34,8 @@
       host: "{{ k8s_host_url }}"
       ca_cert: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
 
-  - name: Generate istio install manifest
-    shell: |
-      set -e
-      export PATH={{ temp_dir }}/istio-{{ istio_version }}/bin:$PATH
-      istioctl manifest generate  \
-        --set values.gateways.istio-ingressgateway.sds.enabled=true \
-        --set meshConfig.accessLogFile="/dev/stdout" \
-        --set meshConfig.accessLogEncoding="JSON" \
-        --set values.global.proxy_init.resources.requests.cpu=5m \
-        --set values.global.proxy_init.resources.requests.memory=10M \
-        --set values.gateways.istio-ingressgateway.type=NodePort 2>/dev/null > {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
-      sed -i '/Config not found: .\/kubeconfig/d' {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
+      #export PATH={{ temp_dir }}/istio-{{ istio_version }}/bin:$PATH
+      # sed -i '/Config not found: .\/kubeconfig/d' {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
         # Setting those options suggested in docs to enable k8s native ingress support but there are issue
         # https://github.com/istio/istio/issues/22697
         #--set values.global.k8sIngress.enabled=true \
@@ -59,6 +49,18 @@
         #kubectl patch svc istio-ingressgateway --type=json \
         #  -p="$(cat files/istio-ingress-patch.json)" --dry-run=true \
         #  -o yaml -n istio-system | kubectl apply -f -
+      #  --set values.gateways.istio-ingressgateway.sds.enabled=true \
+  - name: Generate istio install manifest
+    shell: |
+      set -e
+      {{ temp_dir }}/istio-{{ istio_version }}/bin/istioctl manifest generate  \
+        --set meshConfig.ingressControllerMode="DEFAULT" \
+        --set meshConfig.accessLogFile="/dev/stdout" \
+        --set meshConfig.accessLogEncoding="JSON" \
+        --set values.global.proxy_init.resources.requests.cpu=5m \
+        --set values.global.proxy_init.resources.requests.memory=10M \
+        --set values.gateways.istio-ingressgateway.type=NodePort  1> {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
+      cat {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
     args:
       creates: "{{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml"
 

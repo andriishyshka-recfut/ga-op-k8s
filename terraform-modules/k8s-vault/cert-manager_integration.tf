@@ -25,7 +25,6 @@ COMMAND
         { default_secret_name = data.kubernetes_service_account.cert-manager[0].default_secret_name
           vault_addr          = local.vault_addr
           cluster             = local.cluster
-          ca                  = base64encode(data.external.root_ca.result.ca)
           connection          = local.connection
       })
     })

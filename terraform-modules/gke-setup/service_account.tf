@@ -14,7 +14,7 @@ variable "service_account_iam_roles" {
 }
 
 resource "google_service_account" "gke-sa" {
-  account_id   = "k8s-${var.cluster}-sa"
+  account_id   = "k8s-${var.cluster}-${var.color}-sa"
   display_name = "${var.cluster} GKE Security Service Account "
 }
 
