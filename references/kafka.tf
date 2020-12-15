@@ -1,5 +1,5 @@
 
-resource "kubernetes_namespace" "kafka-system" {
+resource "kubernetes_namespace" "kafka_system" {
   metadata {
     name = "kafka-system"
     # labels = {
@@ -19,13 +19,13 @@ resource "null_resource" "ansible_kafka_crd_playbook" {
     ansible-playbook k8s-apply.yml \
     -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
-    environment = merge(local.ansible_envs, {
+    environment = merge(local.ansibleEnvs, {
       k8s_apply_value = "~/kafka_crd",
       from_file       = "yes"
     })
 
   }
   depends_on = [
-    kubernetes_namespace.kafka-system
+    kubernetes_namespace.kafka_system
   ]
 }

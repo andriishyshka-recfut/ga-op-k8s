@@ -1,15 +1,15 @@
 data "kubernetes_secret" "es_password" {
-  count = local.store_es_password_in_vault
+  count = local.storeEsPasswordInVault
   # provider = kubernetes.kubernetes
   metadata {
-    name      = "${local.es_values.esName}-es-elastic-user"
-    namespace = local.es_values.namespace
+    name      = "${local.esValues.esName}-es-elastic-user"
+    namespace = local.esValues.namespace
   }
   depends_on = [helm_release.elasticsearch]
 }
 resource "vault_generic_secret" "example" {
-  count = local.store_es_password_in_vault
-  path  = "secret/elasticsearch-admin/${local.es_values.esName}"
+  count = local.storeEsPasswordInVault
+  path  = "secret/elasticsearch-admin/${local.esValues.esName}"
 
   data_json = <<EOT
 {

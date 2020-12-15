@@ -1,12 +1,12 @@
 locals {
   postInstallSteps = <<EOF
-  curl -XPOST "https://elastic:$ES_PASSWORD@${local.es_values.esName}-es-http:9200/_license/start_trial?acknowledge=true" -k &&\
-  curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_values.esName}-es-http:9200/_security/role_mapping/oidc-example?pretty" -H 'Content-Type: application/json' -k -d'
+  curl -XPOST "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_license/start_trial?acknowledge=true" -k &&\
+  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-example?pretty" -H 'Content-Type: application/json' -k -d'
 {
   "roles": [ "superuser" ],
   "enabled": true,
   "rules": {
-    "field": { "realm.name": "${local.oidc_realm_name}" }
+    "field": { "realm.name": "${local.oidcRealmName}" }
   }
 }
 '
@@ -15,10 +15,10 @@ EOF
 }
 
 resource "kubernetes_job" "post_install" {
-  count = local.oidc_setup
+  count = local.oidcSetup
   metadata {
-    name      = "${local.es_values.esName}-post-install"
-    namespace = local.es_values.namespace
+    name      = "${local.esValues.esName}-post-install"
+    namespace = local.esValues.namespace
   }
   spec {
     template {
@@ -37,7 +37,7 @@ resource "kubernetes_job" "post_install" {
             name = "ES_PASSWORD"
             value_from {
               secret_key_ref {
-                name = "${local.es_values.esName}-es-elastic-user"
+                name = "${local.esValues.esName}-es-elastic-user"
                 key  = "elastic"
               }
             }

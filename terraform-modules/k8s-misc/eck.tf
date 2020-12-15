@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "elastic-system" {
+resource "kubernetes_namespace" "elastic_operator_ns" {
   metadata {
     name = "elastic-system"
     labels = {
@@ -20,18 +20,18 @@ resource "null_resource" "ansible_eck_crd_playbook" {
   # }
   provisioner "local-exec" {
     command = <<COMMAND
-    wget -O ~/eck_crd https://download.elastic.co/downloads/eck/${local.eck_version}/all-in-one.yaml &&\
+    wget -O ~/eck_crd https://download.elastic.co/downloads/eck/${local.eckVersion}/all-in-one.yaml &&\
     cd  ${path.module}/../../ansible && \
     ansible-playbook k8s-apply.yml \
     -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
-    environment = merge(local.ansible_envs, {
+    environment = merge(local.ansibleEnvs, {
       k8s_apply_value = "~/eck_crd",
       from_file       = "yes"
     })
   }
   depends_on = [
     # google_container_node_pool.cluster_preemptible_nodes,
-    kubernetes_namespace.elastic-system
+    kubernetes_namespace.elastic_operator_ns
   ]
 }

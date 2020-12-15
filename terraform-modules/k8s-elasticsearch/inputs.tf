@@ -1,21 +1,21 @@
 
-variable "elastic_settings" {}
+variable "ElasticSettings" {}
 
-variable "backup_sa_private_key" {}
+variable "BackupSaPrivateKey" {}
 
-variable "gke_cluster_connection_settings" {}
+variable "GkeClusterConnectionSettings" {}
 
-variable "store_es_password_in_vault" {}
+variable "StoreEsPasswordInVault" {}
 
 locals {
-  store_es_password_in_vault = var.store_es_password_in_vault ? 1 : 0
-  create_ns                  = lookup(var.elastic_settings, "create_ns", 1)
-  oidc_setup                 = lookup(var.elastic_settings.elastic.oidc_gcloud, "enabled", "no") == "yes" ? 1 : 0
-  oidc_realm_name            = lookup(var.elastic_settings.elastic.oidc_gcloud, "oidc_realm_name", "")
-  es_values                  = var.elastic_settings.elastic
-  kibana_values              = var.elastic_settings.kibana
-  ansible_envs = merge(var.gke_cluster_connection_settings, {
+  storeEsPasswordInVault = var.StoreEsPasswordInVault ? 1 : 0
+  createNs               = lookup(var.ElasticSettings, "create_ns", 1)
+  oidcSetup              = lookup(var.ElasticSettings.elastic.oidc_gcloud, "enabled", "no") == "yes" ? 1 : 0
+  oidcRealmName          = lookup(var.ElasticSettings.elastic.oidc_gcloud, "oidc_realm_name", "")
+  esValues               = var.ElasticSettings.elastic
+  kibanaValues           = var.ElasticSettings.kibana
+  ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
     ANSIBLE_STDOUT_CALLBACK = "debug"
-    namespace               = local.es_values.namespace
+    namespace               = local.esValues.namespace
   })
 }

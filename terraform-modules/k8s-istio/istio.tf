@@ -11,6 +11,6 @@ resource "null_resource" "ansible_istio_playbook" {
     ansible-playbook istio.yml \
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
-    environment = local.ansible_envs
+    environment = local.ansibleEnvs
   }
 }

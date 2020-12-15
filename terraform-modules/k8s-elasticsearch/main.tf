@@ -1,28 +1,28 @@
 
 
 resource "helm_release" "elasticsearch" {
-  name   = local.es_values.esName
+  name   = local.esValues.esName
   chart  = "${path.module}/elasticsearch"
   wait   = true
   atomic = true
   values = [
-    yamlencode(local.es_values),
-    yamlencode(local.oidc_config)
+    yamlencode(local.esValues),
+    yamlencode(local.oidcConfig)
   ]
   depends_on = [
     kubernetes_namespace.namespace,
-    kubernetes_secret.gcs-credentials
+    kubernetes_secret.gcs_credentials
   ]
 }
 
 
 resource "helm_release" "kibana" {
-  name   = local.kibana_values.name
+  name   = local.kibanaValues.name
   chart  = "${path.module}/kibana"
   wait   = true
   atomic = true
   values = [
-    yamlencode(local.kibana_values)
+    yamlencode(local.kibanaValues)
   ]
   depends_on = [
     null_resource.ansible_validate_resources
@@ -41,8 +41,8 @@ resource "null_resource" "ansible_validate_resources" {
     ansible-playbook validate_eck.yml \
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
-    environment = merge(local.ansible_envs, {
-      name       = local.es_values.esName
+    environment = merge(local.ansibleEnvs, {
+      name       = local.esValues.esName
       kind       = "Elasticsearch"
       apiVersion = "elasticsearch.k8s.elastic.co/v1"
     })
@@ -64,8 +64,8 @@ resource "null_resource" "ansible_validate_kibana" {
     ansible-playbook validate_eck.yml \
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
-    environment = merge(local.ansible_envs, {
-      name       = local.kibana_values.name
+    environment = merge(local.ansibleEnvs, {
+      name       = local.kibanaValues.name
       kind       = "Kibana"
       apiVersion = "kibana.k8s.elastic.co/v1beta1"
     })
@@ -77,22 +77,22 @@ COMMAND
 
 
 resource "kubernetes_namespace" "namespace" {
-  count = local.create_ns
+  count = local.createNs
   metadata {
 
     labels = {
       istio-injection = "enabled"
     }
 
-    name = local.es_values.namespace
+    name = local.esValues.namespace
   }
 }
 
 resource "kubernetes_limit_range" "limit" {
-  count = local.create_ns
+  count = local.createNs
   metadata {
     name      = "default-limit-range"
-    namespace = local.es_values.namespace
+    namespace = local.esValues.namespace
   }
   spec {
     limit {
@@ -104,14 +104,14 @@ resource "kubernetes_limit_range" "limit" {
     }
   }
 }
-resource "kubernetes_secret" "gcs-credentials" {
+resource "kubernetes_secret" "gcs_credentials" {
   metadata {
     name      = "gcs-credentials"
-    namespace = local.es_values.namespace
+    namespace = local.esValues.namespace
   }
 
   data = {
-    "gcs.client.default.credentials_file" = base64decode(var.backup_sa_private_key)
+    "gcs.client.default.credentials_file" = base64decode(var.BackupSaPrivateKey)
   }
 
   depends_on = [kubernetes_namespace.namespace]
