@@ -26,6 +26,8 @@ resource "kubernetes_secret" "oidc" {
 #   }
 #
 #   data = {
+#   }
+#
 locals {
   config      = <<EOF
 xpack.security.authc.token.enabled: true
@@ -47,6 +49,4 @@ xpack.security.authc.realms.oidc.${local.oidc_realm_name}:
 EOF
   oidc_config = local.oidc_setup == 1 ? { "oidc_config" = local.config } : { "oidc_config" = "" }
 
-  #   }
-  #
 }

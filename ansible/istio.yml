@@ -17,12 +17,14 @@
     unarchive:
       src: https://github.com/istio/istio/releases/download/{{ istio_version }}/istio-{{ istio_version }}-linux-amd64.tar.gz
       dest: "{{ temp_dir }}"
+      mode: "0644"
       remote_src: yes
 
   - name: Put cluster_ca_certificate
     copy:
       dest: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
       content: "{{ k8s_cluster_ca_certificate }}"
+      mode: "0644"
 
   - name: Create a k8s namespace
     k8s:
@@ -85,6 +87,7 @@
     retries: 3
     delay: 11
     until: manifest_apply.rc == 0
+    changed_when: True
     #ignore_errors: True
 
   - debug: msg="{{ manifest_apply | to_nice_json }}"

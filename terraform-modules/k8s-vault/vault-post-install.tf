@@ -3,7 +3,7 @@ resource "null_resource" "ansible_vault_playbook" {
   count = local.do_initial_provisioning
   triggers = {
     //always_run = "${timestamp()}"
-    // istio_version_change = var.settings.clusters[var.cluster].istio_version
+    // istio_version_change = var.Settings.clusters[var.Cluster].istio_version
     oidc_discovery_url = var.oidc_discovery_url
     playbook_contents  = md5(file("${path.module}/../../ansible/vault-postinstall.yml"))
     vault              = helm_release.vault.id

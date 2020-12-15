@@ -61,7 +61,7 @@ COMMAND
 # }
 # resource "vault_auth_backend" "kubernetes" {
 #   type = "kubernetes"
-#   path = "k8s-${var.cluster}"
+#   path = "k8s-${var.Cluster}"
 #   depends_on = [
 #     google_container_cluster.cluster
 #   ]

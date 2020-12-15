@@ -2,7 +2,7 @@
 
 #Create the storage bucket
 resource "google_storage_bucket" "vault" {
-  name          = local.vault_bucket_name
+  name          = local.vaultBucketName
   project       = data.google_project.current.project_id
   force_destroy = true
   storage_class = "MULTI_REGIONAL"
@@ -29,7 +29,7 @@ resource "google_storage_bucket" "vault" {
 
 # Create the KMS key ring
 resource "google_kms_key_ring" "vault" {
-  name = local.vault_key_name
+  name = local.vaultKeyName
   # location = var.region
   location = "global"
   project  = data.google_project.current.project_id
@@ -38,8 +38,8 @@ resource "google_kms_key_ring" "vault" {
 
 
 # Create the crypto key for encrypting init keys
-resource "google_kms_crypto_key" "vault-init" {
-  name            = local.vault_key_name
+resource "google_kms_crypto_key" "vault_unseal_key" {
+  name            = local.vaultKeyName
   key_ring        = google_kms_key_ring.vault.id
   rotation_period = "86400s"
 }

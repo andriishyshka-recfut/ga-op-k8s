@@ -1,5 +1,5 @@
 locals {
-  post-install-steps = <<EOF
+  postInstallSteps = <<EOF
   curl -XPOST "https://elastic:$ES_PASSWORD@${local.es_values.esName}-es-http:9200/_license/start_trial?acknowledge=true" -k &&\
   curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_values.esName}-es-http:9200/_security/role_mapping/oidc-example?pretty" -H 'Content-Type: application/json' -k -d'
 {
@@ -14,7 +14,7 @@ locals {
 EOF
 }
 
-resource "kubernetes_job" "post-install" {
+resource "kubernetes_job" "post_install" {
   count = local.oidc_setup
   metadata {
     name      = "${local.es_values.esName}-post-install"
@@ -32,7 +32,7 @@ resource "kubernetes_job" "post-install" {
         container {
           name    = "post-install"
           image   = "curlimages/curl"
-          command = ["sh", "-c", local.post-install-steps]
+          command = ["sh", "-c", local.postInstallSteps]
           env {
             name = "ES_PASSWORD"
             value_from {

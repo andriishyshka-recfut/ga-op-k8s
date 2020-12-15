@@ -13,8 +13,8 @@ resource "helm_release" "vault" {
         project    = local.project,
         key_ring   = local.vault_key_name,
         crypto_key = local.vault_key_name,
-        bucket     = local.vault_bucket_name
-        version    = var.settings.clusters[var.cluster][var.color].vault.version
+        bucket     = local.vaultBucketName
+        version    = var.Settings.clusters[var.Cluster][var.Color].vault.version
       }
     )
   ]

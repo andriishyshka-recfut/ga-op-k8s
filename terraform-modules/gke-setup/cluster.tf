@@ -2,11 +2,11 @@ resource "google_container_cluster" "cluster" {
 
   provider = google-beta
 
-  name                      = "${var.cluster}-${var.color}"
-  location                  = var.settings.clusters[var.cluster].region
+  name                      = "${var.Cluster}-${var.Color}"
+  location                  = var.Settings.clusters[var.Cluster].region
   network                   = data.google_compute_network.vpc.self_link
   subnetwork                = google_compute_subnetwork.net.name
-  default_max_pods_per_node = var.settings.clusters[var.cluster][var.color].pods_per_node
+  default_max_pods_per_node = var.Settings.clusters[var.Cluster][var.Color].pods_per_node
   #min_master_version = data.google_container_engine_versions.version.latest_master_version
   release_channel {
     channel = "RAPID"
@@ -27,8 +27,8 @@ resource "google_container_cluster" "cluster" {
   }
   node_config {
     preemptible     = true
-    tags            = [var.cluster]
-    service_account = google_service_account.gke-sa.unique_id
+    tags            = [var.Cluster]
+    service_account = google_service_account.gke_sa.unique_id
     oauth_scopes = [
       "https://www.googleapis.com/auth/logging.write",
       "https://www.googleapis.com/auth/monitoring",
@@ -39,7 +39,7 @@ resource "google_container_cluster" "cluster" {
   private_cluster_config {
     enable_private_endpoint = "true"
     enable_private_nodes    = "true"
-    master_ipv4_cidr_block  = var.settings.clusters[var.cluster][var.color].master_ipv4_cidr_block
+    master_ipv4_cidr_block  = var.Settings.clusters[var.Cluster][var.Color].master_ipv4_cidr_block
   }
 
   master_authorized_networks_config {
@@ -49,7 +49,7 @@ resource "google_container_cluster" "cluster" {
     }
     # cidr_blocks {
     #   display_name = "infra"
-    #   cidr_block   = var.settings["infra"].pods_subnet_range
+    #   cidr_block   = var.Settings["infra"].pods_subnet_range
     # }
   }
 
@@ -97,21 +97,21 @@ resource "google_container_node_pool" "cluster_preemptible_nodes" {
   }
 
   provider = google-beta
-  name     = "${var.cluster}-node-pool"
-  location = var.settings.clusters[var.cluster].region
+  name     = "${var.Cluster}-node-pool"
+  location = var.Settings.clusters[var.Cluster].region
   cluster  = google_container_cluster.cluster.name
   autoscaling {
-    min_node_count = var.settings.clusters[var.cluster][var.color].min_node_count
-    max_node_count = var.settings.clusters[var.cluster][var.color].max_node_count
+    min_node_count = var.Settings.clusters[var.Cluster][var.Color].min_node_count
+    max_node_count = var.Settings.clusters[var.Cluster][var.Color].max_node_count
   }
-  node_count = var.settings.clusters[var.cluster][var.color].min_node_count
+  node_count = var.Settings.clusters[var.Cluster][var.Color].min_node_count
   # version = data.google_container_engine_versions.version.latest_node_version
 
   node_config {
     preemptible     = true
-    machine_type    = var.settings.clusters[var.cluster][var.color].machine_type
-    tags            = [var.cluster]
-    service_account = google_service_account.gke-sa.unique_id
+    machine_type    = var.Settings.clusters[var.Cluster][var.Color].machine_type
+    tags            = [var.Cluster]
+    service_account = google_service_account.gke_sa.unique_id
 
     metadata = {
       disable-legacy-endpoints = "true"

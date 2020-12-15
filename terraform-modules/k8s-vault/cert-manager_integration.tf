@@ -3,12 +3,12 @@
 data "kubernetes_service_account" "cert-manager" {
   count = local.create_cert-manager_issuer
   metadata {
-    name      = "${var.cluster}-cert-manager"
+    name      = "${var.Cluster}-cert-manager"
     namespace = "kube-system"
   }
 }
 
-resource "null_resource" "ansible_cert-manager_vault_integration_playbook" {
+resource "null_resource" "ansible_cert_manager_vault_integration_playbook" {
   count = local.create_cert-manager_issuer
   triggers = {
     vault_auth        = null_resource.ansible_vault_k8s_auth[0].id

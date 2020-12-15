@@ -1,8 +1,8 @@
 
 
 data "google_compute_instance" "bastion" {
-  name = var.settings.bastion_hostname
-  zone = var.settings.bastion_zone
+  name = var.Settings.bastion_hostname
+  zone = var.Settings.bastion_zone
 }
 
 // Upload temp key to be able run ansible
@@ -23,17 +23,17 @@ data "google_project" "project" {
 variable "gke_cluster_connection_settings" {}
 
 // Cluster variables and settings from common-vars module
-variable "settings" {}
-variable "cluster" {}
-variable "color" {}
+variable "Settings" {}
+variable "Cluster" {}
+variable "Color" {}
 
 # variable "vault_resources" {}
 
 
 locals {
   bastion_expose_toggle = (
-    lookup(var.settings.clusters[var.cluster][var.color].istio,"expose_istio_ingres_on_bastion", false ) &&
-    lookup(var.settings.clusters[var.cluster][var.color], "active", false)
+    lookup(var.Settings.clusters[var.Cluster][var.Color].istio,"expose_istio_ingres_on_bastion", false ) &&
+    lookup(var.Settings.clusters[var.Cluster][var.Color], "active", false)
   ) ? 1 : 0
 
 
@@ -41,10 +41,10 @@ locals {
   # gke_bearer_token       = var.gke_cluster_connection_settings.gke_bearer_token
   # cluster_ca_certificate = var.gke_cluster_connection_settings.cluster_ca_certificate
   ansible_envs = merge(var.gke_cluster_connection_settings, {
-    CLUSTER_SETTINGS        = jsonencode(var.settings)
-    CLUSTER                 = var.cluster
-    COLOR                   = var.color
+    CLUSTER_SETTINGS        = jsonencode(var.Settings)
+    CLUSTER                 = var.Cluster
+    COLOR                   = var.Color
     ANSIBLE_STDOUT_CALLBACK = "debug"
-    BASTION_DNS             = var.settings.bastion_dns
+    BASTION_DNS             = var.Settings.bastion_dns
   })
 }

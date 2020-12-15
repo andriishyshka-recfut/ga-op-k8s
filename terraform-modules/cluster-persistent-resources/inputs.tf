@@ -1,13 +1,13 @@
 
 data "google_project" "current" {}
 
-variable "settings" {}
+variable "Settings" {}
 
-variable "cluster" {}
+variable "Cluster" {}
 
 locals {
-  vault_bucket_name        = var.settings.clusters[var.cluster].persistent_resources.vault_bucket_name
-  vault_key_name           = var.settings.clusters[var.cluster].persistent_resources.vault_key_name
-  es_backup_bucket         = var.settings.clusters[var.cluster].persistent_resources.es_backup_bucket
-  vault_service_account_id = var.settings.clusters[var.cluster].persistent_resources.vault_service_account_id
+  vaultBucketName       = var.Settings.clusters[var.Cluster].persistent_resources.vault_bucket_name
+  vaultKeyName          = var.Settings.clusters[var.Cluster].persistent_resources.vault_key_name
+  esBackupBucket        = var.Settings.clusters[var.Cluster].persistent_resources.es_backup_bucket
+  vaultServiceAccountId = var.Settings.clusters[var.Cluster].persistent_resources.vault_service_account_id
 }

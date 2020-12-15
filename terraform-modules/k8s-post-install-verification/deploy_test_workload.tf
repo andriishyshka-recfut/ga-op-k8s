@@ -11,9 +11,9 @@ data "google_service_account" "me" {
 variable "gke_cluster_connection_settings" {}
 
 // Cluster variables and settings from common-vars module
-variable "settings" {}
-variable "cluster" {}
-variable "color" {}
+variable "Settings" {}
+variable "Cluster" {}
+variable "Color" {}
 
 # variable "vault_resources" {}
 
@@ -21,11 +21,11 @@ variable "color" {}
 locals {
 
   ansible_envs = merge(var.gke_cluster_connection_settings, {
-    CLUSTER_SETTINGS        = jsonencode(var.settings)
-    CLUSTER                 = var.cluster
-    COLOR                   = var.color
+    CLUSTER_SETTINGS        = jsonencode(var.Settings)
+    CLUSTER                 = var.Cluster
+    COLOR                   = var.Color
     ANSIBLE_STDOUT_CALLBACK = "debug"
-    BASTION_DNS             = var.settings.bastion_dns
+    BASTION_DNS             = var.Settings.bastion_dns
   })
 
 }
