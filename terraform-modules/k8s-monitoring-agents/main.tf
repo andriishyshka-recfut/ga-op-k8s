@@ -1,6 +1,6 @@
 locals {
 
-  beats_values = yamldecode(file("${path.module}/beats_values.yaml"))
+  beatsValues = yamldecode(file("${path.module}/beats_values.yaml"))
 
 }
 
@@ -13,7 +13,7 @@ resource "helm_release" "beat" {
   wait   = true
   atomic = true
   values = [
-    yamlencode(local.beats_values)
+    yamlencode(local.beatsValues)
   ]
 
 }

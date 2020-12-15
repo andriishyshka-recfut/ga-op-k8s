@@ -1,4 +1,4 @@
-resource "kubernetes_service_account" "k8s-admin" {
+resource "kubernetes_service_account" "k8s_cluster_admin" {
 
   metadata {
     name      = "k8s-admin"
@@ -6,7 +6,7 @@ resource "kubernetes_service_account" "k8s-admin" {
   }
 }
 
-resource "kubernetes_cluster_role_binding" "admin" {
+resource "kubernetes_cluster_role_binding" "cluster_admin_role_binding" {
   metadata {
     name = "k8s-admin"
   }
@@ -22,9 +22,9 @@ resource "kubernetes_cluster_role_binding" "admin" {
   }
 }
 
-data "kubernetes_secret" "admin" {
+data "kubernetes_secret" "cluster_admin_creds" {
   metadata {
-    name      = kubernetes_service_account.k8s-admin.default_secret_name
+    name      = kubernetes_service_account.k8s_cluster_admin.default_secret_name
     namespace = "kube-system"
   }
 }

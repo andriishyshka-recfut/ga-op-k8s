@@ -10,9 +10,9 @@ resource "helm_release" "vault" {
   values = [
     templatefile("${path.module}/vault_helm_config.tmpl",
       {
-        project    = local.project,
-        key_ring   = local.vault_key_name,
-        crypto_key = local.vault_key_name,
+        project    = local.currentProject,
+        key_ring   = local.vaultKeyName,
+        crypto_key = local.vaultKeyName,
         bucket     = local.vaultBucketName
         version    = var.Settings.clusters[var.Cluster][var.Color].vault.version
       }
@@ -20,27 +20,27 @@ resource "helm_release" "vault" {
   ]
 
   depends_on = [
-    kubernetes_secret.kms-creds,
+    kubernetes_secret.kms_creds,
     kubernetes_namespace.vault,
 
   ]
 }
 
-data "google_service_account" "vault-sa" {
-  account_id = local.vault_service_account_id
+data "google_service_account" "vault_sa" {
+  account_id = local.vaultServiceAccountId
 }
 
-resource "google_service_account_key" "vault-key" {
-  service_account_id = data.google_service_account.vault-sa.name
+resource "google_service_account_key" "vault_key" {
+  service_account_id = data.google_service_account.vault_sa.name
 }
 
-resource "kubernetes_secret" "kms-creds" {
+resource "kubernetes_secret" "kms_creds" {
   metadata {
     name      = "kms-creds"
     namespace = "vault"
   }
   data = {
-    "credentials.json" = base64decode(google_service_account_key.vault-key.private_key)
+    "credentials.json" = base64decode(google_service_account_key.vault_key.private_key)
   }
   depends_on = [
     kubernetes_namespace.vault,
