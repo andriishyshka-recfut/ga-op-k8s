@@ -1,5 +1,5 @@
 variable "service_account_iam_roles" {
-  type = list
+  type = list(any)
 
   default = [
     "roles/storage.admin",

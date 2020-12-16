@@ -62,7 +62,6 @@
         --set values.global.proxy_init.resources.requests.cpu=5m \
         --set values.global.proxy_init.resources.requests.memory=10M \
         --set values.gateways.istio-ingressgateway.type=NodePort  1> {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
-      cat {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
     args:
       creates: "{{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml"
 

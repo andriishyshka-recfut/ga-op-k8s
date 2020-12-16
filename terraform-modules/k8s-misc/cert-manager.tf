@@ -8,15 +8,6 @@ resource "helm_release" "cert_manager" {
     name  = "installCRDs"
     value = "true"
   }
-  # set {
-  #   name  = "ingressShim.defaultIssuerName"
-  #   value = "vault-issuer"
-  # }
-  # set {
-  #   name  = "ingressShim.defaultIssuerKind"
-  #   value = "ClusterIssuer"
-  # }
-
   // Configure cert-manager to cleanup secrets on delete
   // https://github.com/jetstack/cert-manager/pull/819
   set {

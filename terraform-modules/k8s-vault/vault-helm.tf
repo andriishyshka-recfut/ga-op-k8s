@@ -15,6 +15,7 @@ resource "helm_release" "vault" {
         crypto_key = local.vaultKeyName,
         bucket     = local.vaultBucketName
         version    = var.Settings.clusters[var.Cluster][var.Color].vault.version
+        replicas   = local.replicasCount
       }
     )
   ]
