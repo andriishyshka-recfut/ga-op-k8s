@@ -20,7 +20,8 @@ server:
       ha:
         enabled: true
         replicas: ${replicas}
-
+        disruptionBudget:
+          maxUnavailable: 0
         config: |
           ui = true
           log_format = "json"

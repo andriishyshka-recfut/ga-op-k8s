@@ -1,12 +1,12 @@
 #
-resource "kubernetes_namespace" "redis_operator_ns" {
-  metadata {
-    name = "redis-operator-ns"
-    # labels = {
-    #   istio-injection = "enabled"
-    # }
-  }
-}
+# resource "kubernetes_namespace" "redis_operator_ns" {
+#   metadata {
+#     name = "redis-operator-ns"
+#     # labels = {
+#     #   istio-injection = "enabled"
+#     # }
+#   }
+# }
 
 
 resource "null_resource" "ansible_redis_crd_playbook" {
@@ -25,7 +25,7 @@ COMMAND
     })
 
   }
-  depends_on = [
-    kubernetes_namespace.redis_operator_ns
-  ]
+  # depends_on = [
+  #   kubernetes_namespace.redis_operator_ns
+  # ]
 }

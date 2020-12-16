@@ -29,13 +29,23 @@ module "k8s-istio" {
   depends_on                   = [module.gke-setup-green]
 }
 
+
+module "k8s-namespaces" {
+  source     = "../../../terraform-modules/k8s-namespaces"
+  Settings   = var.Settings
+  Cluster    = "sandbox"
+  Color      = "green"
+  depends_on = [module.k8s-istio]
+}
+
+
 module "k8s-misc-operators" {
   source                       = "../../../terraform-modules/k8s-misc"
   GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
   Settings                     = var.Settings
   Cluster                      = "sandbox"
   Color                        = "green"
-  depends_on                   = [module.k8s-istio]
+  depends_on                   = [module.k8s-istio, module.k8s-namespaces]
 }
 module "k8s-vault" {
   source                       = "../../../terraform-modules/k8s-vault"
