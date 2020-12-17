@@ -4,7 +4,7 @@ resource "helm_release" "etcd" {
   chart      = "etcd"
   repository = "https://charts.bitnami.com/bitnami"
   #version           = "0.1.0"
-  namespace         = local.minio-ns
+  namespace         = local.minioNs
   dependency_update = "true"
 
   set {
@@ -15,8 +15,4 @@ resource "helm_release" "etcd" {
     name  = "auth.rbac.enabled"
     value = "false"
   }
-
-  depends_on = [
-    kubernetes_namespace.minio,
-  ]
 }

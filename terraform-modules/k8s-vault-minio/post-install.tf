@@ -1,37 +1,45 @@
 
-resource "kubernetes_config_map" "policy" {
-  metadata {
-    name      = "policy"
-    namespace = local.minio-ns
-  }
-  data = {
-    "policy.json"             = file("minio-policy.json")
-    "policy_maid.json"        = file("minio-policy-maid.json")
-    "policy_magescanner.json" = file("minio-policy-magescanner.json")
-  }
+data "vault_generic_secret" "users_credentials_from_vault" {
+  path = local.vaultUsersCredentialsPath
 }
 
 locals {
+  policiesConfigMapData = tomap({ for user in keys(data.vault_generic_secret.users_credentials_from_vault.data) :
+  "${user}_policy.json" => jsonencode(jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).policy) })
+
   addPolicyCommand = <<EOF
-  mc admin policy add minio geminiadvisory.io /tmp/policy.json
-  mc admin policy add minio maid /tmp/policy_maid.json
-  mc admin policy add minio magescanner /tmp/policy_magescanner.json
-  mc admin user add minio ${data.vault_generic_secret.minio-credentials.data.maidAccessKey} ${data.vault_generic_secret.minio-credentials.data.maidSecretKey}
-  mc admin policy set minio maid user=${data.vault_generic_secret.minio-credentials.data.maidAccessKey}
-  mc admin user add minio ${data.vault_generic_secret.minio-credentials.data.magescannerAccessKey} ${data.vault_generic_secret.minio-credentials.data.magescannerSecretKey}
-  mc admin policy set minio magescanner user=${data.vault_generic_secret.minio-credentials.data.magescannerAccessKey}
+  %{for user in keys(data.vault_generic_secret.users_credentials_from_vault.data)~}
+  mc admin policy add minio ${user} /tmp/${user}_policy.json
+  mc admin user add minio ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).accessKey} ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).secretKey}
+  mc admin policy set minio  ${user} user=${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).accessKey}
+  %{endfor~}
+
 EOF
+
+}
+
+resource "kubernetes_config_map" "policy" {
+  metadata {
+    name      = "policy"
+    namespace = local.minioNs
+  }
+  data = local.policiesConfigMapData
 }
 
 
-resource "kubernetes_job" "add-policy" {
+
+resource "kubernetes_job" "configure_users_access" {
   metadata {
-    name      = "add-policy"
-    namespace = local.minio-ns
+    name      = "minio-users-access"
+    namespace = local.minioNs
   }
   spec {
     template {
-      metadata {}
+      metadata {
+        annotations = {
+          "sidecar.istio.io/inject" = "false"
+        }
+      }
       spec {
         container {
           name    = "mc"

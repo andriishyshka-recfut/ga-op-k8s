@@ -4,7 +4,7 @@ provider "vault" {
 }
 
 data "vault_generic_secret" "k8s_auth" {
-  path = "secret/kubernetes-sandbox"
+  path = "secret/kubernetes-sandbox-green"
 }
 
 provider "helm" {
@@ -28,3 +28,6 @@ provider "kubernetes" {
 provider "google" {
   # version = "v3.19.0"
 }
+
+
+variable "Settings" {}

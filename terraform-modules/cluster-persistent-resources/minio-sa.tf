@@ -1,6 +1,6 @@
 
 resource "google_service_account" "minio_service_account" {
-  account_id   = "minio-sa"
+  account_id   = local.minioServiceAccountId
   display_name = "Minio Service Account"
   lifecycle {
     prevent_destroy = true
