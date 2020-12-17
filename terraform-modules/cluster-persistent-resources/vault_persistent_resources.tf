@@ -34,6 +34,9 @@ resource "google_kms_key_ring" "vault" {
   location = "global"
   project  = data.google_project.current.project_id
 
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 
@@ -42,4 +45,7 @@ resource "google_kms_crypto_key" "vault_unseal_key" {
   name            = local.vaultKeyName
   key_ring        = google_kms_key_ring.vault.id
   rotation_period = "86400s"
+  lifecycle {
+    prevent_destroy = true
+  }
 }

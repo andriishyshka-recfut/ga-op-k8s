@@ -7,7 +7,6 @@ locals {
 }
 
 
-data "google_project" "current" {}
 
 #Create the storage bucket
 resource "google_storage_bucket" "minio_buckets" {
@@ -16,7 +15,7 @@ resource "google_storage_bucket" "minio_buckets" {
   project       = data.google_project.current.project_id
   force_destroy = true
   storage_class = "STANDARD"
-  # storage_class = "MULTI_REGIONAL"
+
 
   bucket_policy_only = true
 
