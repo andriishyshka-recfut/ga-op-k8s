@@ -1,0 +1,16 @@
+expose:
+  type: ClusterIP
+  clusterIP:
+    name: harbor
+  tls:
+    enabled: false
+
+externalURL: "https://harbor.infra.digaweb.com"
+
+persistence:
+  imageChartStorage:
+    type: gcs
+
+nginx:
+  podAnnotations:
+    sidecar.istio.io/inject: "false"

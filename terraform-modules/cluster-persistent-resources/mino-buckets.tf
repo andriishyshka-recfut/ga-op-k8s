@@ -56,3 +56,25 @@ resource "google_storage_bucket" "minio_autoexpire_bucket" {
     }
   }
 }
+resource "google_storage_bucket" "minio_autoexpire_backups_bucket" {
+  name          = "minio-xbackup-${data.google_project.current.project_id}"
+  project       = data.google_project.current.project_id
+  force_destroy = true
+  storage_class = "STANDARD"
+  # storage_class = "MULTI_REGIONAL"
+
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    action {
+      type = "Delete"
+    }
+
+    condition {
+      age = 7
+    }
+  }
+}

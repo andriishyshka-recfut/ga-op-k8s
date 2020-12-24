@@ -2,9 +2,6 @@ variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
 
-provider "vault" {
-  address = "https://vault.infra.digaweb.com"
-}
 
 locals {
   minioNs                   = "minio"

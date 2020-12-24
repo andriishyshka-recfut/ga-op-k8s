@@ -23,7 +23,7 @@ resource "google_project_service" "enabled-apis" {
 }
 
 variable "service_account_iam_roles" {
-  type = list
+  type = list(any)
 
   default = [
     "roles/compute.admin",
