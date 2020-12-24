@@ -52,6 +52,7 @@ resource "google_compute_firewall" "bastion-ssh-https" {
     "35.185.38.145/32",               // - Captcha resolver service
     "35.245.245.168",                 // test account default VPC nat - access from gitlab jobs
     "35.196.5.12",                    // gitlab runner
+    "35.185.38.145",                  // gitlab runner
   "${google_compute_address.static.address}/32"]
 
   allow {
