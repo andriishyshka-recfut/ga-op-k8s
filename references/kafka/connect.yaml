@@ -1,0 +1,108 @@
+# vim properties
+# kubectl create secret generic minio-credentials2 --from-file=./properties
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-connetc-log4j
+data:
+  log4j.properties: |
+    log4j.rootLogger=WARN, stdout
+    log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+    log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+    log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
+    # log4j.logger.org.apache.camel.component.minio=TRACE
+    # log4j.logger.org.apache.kafka.connect.runtime=TRACE
+    # Change to DEBUG or TRACE to enable request logging
+    log4j.logger.kafka.request.logger=WARN
+    log4j.logger.kafka.network.RequestChannel$=WARN
+
+
+---
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaConnect
+metadata:
+  name: camel-cluster
+  namespace: magescanner
+  annotations:
+    strimzi.io/use-connector-resources: "true"
+spec:
+  image: harbor.infra.digaweb.com/op/camel-kafka-connect:v0.0.1
+  replicas: 1
+  bootstrapServers: kafka-cluster-kafka-bootstrap:9092
+  logging:
+    type: external
+    name: kafka-connetc-log4j
+  config:
+    config.storage.replication.factor: 1
+    offset.storage.replication.factor: 1
+    status.storage.replication.factor: 1
+    config.providers: file
+    config.providers.file.class:  org.apache.kafka.common.config.provider.FileConfigProvider
+    key.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    key.converter.schemas.enable: false
+    value.converter.schemas.enable: false
+  externalConfiguration:
+    volumes:
+      - name: connector-config
+        secret:
+          secretName: minio-credentials2
+  template:
+    pod:
+      imagePullSecrets:
+        - name: harbor
+---
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaTopic
+metadata:
+  name: blue-green
+  labels:
+    strimzi.io/cluster: camel-cluster
+spec:
+  partitions: 1
+  replicas: 1
+
+---
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaTopic
+metadata:
+  name: blue-green-two
+  labels:
+    strimzi.io/cluster: camel-cluster
+spec:
+  partitions: 1
+  replicas: 1
+---
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: minio-connector7
+  labels:
+    strimzi.io/cluster: camel-cluster
+spec:
+  # class: org.apache.camel.kafkaconnector.CamelSourceConnector
+  class: org.apache.camel.kafkaconnector.minio.CamelMinioSinkConnector
+  tasksMax: 1
+  config:
+    # camel.sink.path.bucketName: minio-xbackup-ardent-rarity-239115
+    # camel.sink.endpoint.endpoint: "http://minio.minio:9000/"
+    # camel.sink.endpoint.accessKey: "${file:/opt/kafka/external-configuration/connector-config/properties:acceskey}"
+    # camel.sink.endpoint.secretKey: "${file:/opt/kafka/external-configuration/connector-config/properties:secretkey}"
+    topics.regex: "blue-green.*"
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.storage.StringConverter
+    # camel.sink.endpoint.region: minio
+    camel.sink.url: minio://minio-xbackup-ardent-rarity-239115?keyName=kafka/${id}-${exchangeId}&endpoint=http://minio.minio:9000&accessKey=${file:/opt/kafka/external-configuration/connector-config/properties:acceskey}&secretKey=${file:/opt/kafka/external-configuration/connector-config/properties:secretkey}&region=minio
+    # camel.component.minio.keyName: "kafka/${exchangeId}"
+
+
+
+    # key.converter: org.apache.kafka.connect.storage.StringConverter
+    # value.converter: org.apache.kafka.connect.storage.StringConverter
+    # camel.source.kafka.topic: telegram-topic
+    # camel.source.url: telegram:bots
+    # camel.component.telegram.authorizationToken: ${file:/opt/kafka/external-configuration/connector-config/telegram.properties:token}
+    # transforms: telegram
+    # transforms.telegram.type: org.apache.camel.kafkaconnector.transforms.CamelTypeConverterTransform$Value
+    # transforms.telegram.target.type: java.lang.String

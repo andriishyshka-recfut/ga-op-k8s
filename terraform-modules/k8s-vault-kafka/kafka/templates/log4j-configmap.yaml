@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-connetc-log4j
+data:
+  log4j.properties: |
+    log4j.rootLogger=WARN, stdout
+    log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+    log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+    log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
+    # log4j.logger.org.apache.camel.component.minio=TRACE
+    # log4j.logger.org.apache.kafka.connect.runtime=TRACE
+    # Change to DEBUG or TRACE to enable request logging
+    log4j.logger.kafka.request.logger=WARN
+    log4j.logger.kafka.network.RequestChannel$=WARN

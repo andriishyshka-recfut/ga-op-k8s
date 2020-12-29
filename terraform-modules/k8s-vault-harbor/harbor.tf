@@ -3,7 +3,7 @@ data "google_service_account" "vault_sa" {
   account_id = "vault-sandbox"
 }
 
-resource "google_service_account_key" "harbor-key" {
+resource "google_service_account_key" "harbor_key" {
   service_account_id = data.google_service_account.vault-sa.name
 }
 
@@ -44,6 +44,6 @@ resource "helm_release" "harbor" {
   }
   set {
     name  = "persistence.imageChartStorage.gcs.encodedkey"
-    value = google_service_account_key.harbor-key.private_key
+    value = google_service_account_key.harbor_key.private_key
   }
 }
