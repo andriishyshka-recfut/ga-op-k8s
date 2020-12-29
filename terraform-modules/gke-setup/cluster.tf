@@ -62,6 +62,9 @@ resource "google_container_cluster" "cluster" {
   network_policy {
     enabled = true
   }
+
+  logging_service    = "none"
+  monitoring_service = "none"
   addons_config {
     network_policy_config {
       disabled = false
