@@ -9,7 +9,7 @@ data:
    consumer.topic=__consumer_offsets
    consumer.maxPollRecords=5000
    consumer.consumersCount=1
-   consumer.group=kafkaBackup8
+   consumer.group=kafkaBackup7
 
 ---
 apiVersion: camel.apache.org/v1
@@ -33,7 +33,7 @@ spec:
              + "&autoOffsetReset=earliest")
           .routeId("kafkaBackup")
           .choice()
-             .when().simple('${headers[kafka.KEY]} contains "{{consumer.group}}"').to("controlbus:route?async=true&routeId=kafkaBackup&action=stop")
+             .when().simple('${headers[kafka.KEY]} contains "{{consumer.group}}"').to("controlbus:route?async=true&routeId=&action=stop")
              .otherwise()
                 .log('${headers[kafka.KEY]} ::: ${body} ')
           .end();
