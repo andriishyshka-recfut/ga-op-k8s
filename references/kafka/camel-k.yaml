@@ -1,0 +1,39 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka.props
+data:
+  application.properties: |
+   kafka.brokers=kafka-cluster-kafka-bootstrap:9092
+   consumer.topic=__consumer_offsets
+   consumer.maxPollRecords=5000
+   consumer.consumersCount=1
+   consumer.group=kafkaBackup8
+
+---
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: kafka-backup
+spec:
+  configuration:
+  - type: configmap
+    value: kafka.props
+  sources:
+  - name: kafka-backup.groovy
+    content: |
+
+        from("kafka:{{consumer.topic}}?brokers={{kafka.brokers}}"
+             + "&maxPollRecords={{consumer.maxPollRecords}}"
+             + "&consumersCount={{consumer.consumersCount}}"
+             + "&groupId={{consumer.group}}"
+             + "&autoCommitEnable=false"
+             + "&allowManualCommit=true"
+             + "&autoOffsetReset=earliest")
+          .routeId("kafkaBackup")
+          .choice()
+             .when().simple('${headers[kafka.KEY]} contains "{{consumer.group}}"').to("controlbus:route?async=true&routeId=kafkaBackup&action=stop")
+             .otherwise()
+                .log('${headers[kafka.KEY]} ::: ${body} ')
+          .end();

@@ -89,11 +89,16 @@ spec:
     # camel.sink.endpoint.endpoint: "http://minio.minio:9000/"
     # camel.sink.endpoint.accessKey: "${file:/opt/kafka/external-configuration/connector-config/properties:acceskey}"
     # camel.sink.endpoint.secretKey: "${file:/opt/kafka/external-configuration/connector-config/properties:secretkey}"
-    topics.regex: "blue-green.*"
-    key.converter: org.apache.kafka.connect.storage.StringConverter
-    value.converter: org.apache.kafka.connect.storage.StringConverter
     # camel.sink.endpoint.region: minio
-    camel.sink.url: minio://minio-xbackup-ardent-rarity-239115?keyName=kafka/${id}-${exchangeId}&endpoint=http://minio.minio:9000&accessKey=${file:/opt/kafka/external-configuration/connector-config/properties:acceskey}&secretKey=${file:/opt/kafka/external-configuration/connector-config/properties:secretkey}&region=minio
+    # topics.regex: "blue-green.*"
+    topics: "__consumer_offsets"
+    # key.converter: org.apache.kafka.connect.storage.StringConverter
+    # value.converter: org.apache.kafka.connect.storage.StringConverter
+    key.converter: org.apache.kafka.connect.converters.ByteArrayConverter
+    value.converter: org.apache.kafka.connect.converters.ByteArrayConverter
+    header.converter: org.apache.kafka.connect.converters.ByteArrayConverter
+    camel.component.minio.bridge-error-handler: true
+    camel.sink.url: minio://minio-xbackup-ardent-rarity-239115?keyName=__consumer_offsets/${id}&endpoint=http://minio.minio:9000&accessKey=${file:/opt/kafka/external-configuration/connector-config/properties:acceskey}&secretKey=${file:/opt/kafka/external-configuration/connector-config/properties:secretkey}&region=minio
     # camel.component.minio.keyName: "kafka/${exchangeId}"
 
 
