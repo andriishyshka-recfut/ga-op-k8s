@@ -28,6 +28,8 @@ resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {
     accesskey = ${data.vault_generic_secret.root_credentials_from_vault.data.accessKey}
     secretkey = ${data.vault_generic_secret.root_credentials_from_vault.data.secretKey}
 EOF
+    "accesskey"  = data.vault_generic_secret.root_credentials_from_vault.data.accessKey
+    "secretkey"  = data.vault_generic_secret.root_credentials_from_vault.data.secretKey
   }
 
 }

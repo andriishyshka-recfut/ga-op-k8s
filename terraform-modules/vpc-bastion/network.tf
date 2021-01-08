@@ -1,27 +1,27 @@
 
 
 resource "google_compute_network" "vpc" {
-  name                            = var.settings.vpc_name
+  name                            = var.Settings.vpc_name
   auto_create_subnetworks         = "false"
   routing_mode                    = "GLOBAL"
   delete_default_routes_on_create = "true"
   depends_on = [
-    google_project_iam_member.service-account
+    google_project_iam_member.service_account
   ]
 }
 
 
 resource "google_compute_subnetwork" "net" {
   name          = "dmz-subnetwork"
-  ip_cidr_range = var.settings.bastion_subnet_range
-  region        = var.region
+  ip_cidr_range = var.Settings.bastion_subnet_range
+  region        = var.Region
   network       = google_compute_network.vpc.self_link
 }
 
 
 resource "google_compute_router" "router" {
   name    = "router"
-  region  = var.region
+  region  = var.Region
   network = google_compute_network.vpc.self_link
 
   bgp {
@@ -42,11 +42,10 @@ resource "google_compute_router_nat" "nat" {
   }
 }
 
-resource "google_compute_firewall" "bastion-ssh-https" {
+resource "google_compute_firewall" "bastion_ssh_https" {
   name      = "bastion-ssh-https"
   network   = google_compute_network.vpc.name
   direction = "INGRESS"
-  //source_ranges = ["78.26.204.32/32"]
   source_ranges = ["78.26.204.32/32", // - stepan's home office static ip
     "69.164.208.72/32",               // - Outline VPN
     "35.185.38.145/32",               // - Captcha resolver service
@@ -62,11 +61,10 @@ resource "google_compute_firewall" "bastion-ssh-https" {
 
   target_tags = ["dmz"]
 }
-resource "google_compute_firewall" "bastion-tor-proxy" {
-  name      = "bastion-tor-proxy"
-  network   = google_compute_network.vpc.name
-  direction = "INGRESS"
-  //source_ranges = ["78.26.204.32/32"]
+resource "google_compute_firewall" "bastion_tor_proxy" {
+  name          = "bastion-tor-proxy"
+  network       = google_compute_network.vpc.name
+  direction     = "INGRESS"
   source_ranges = ["78.26.204.32/32", "69.164.208.72/32", "78.46.86.231/32", "${google_compute_address.static.address}/32", ]
 
   allow {
@@ -77,7 +75,7 @@ resource "google_compute_firewall" "bastion-tor-proxy" {
   target_tags = ["dmz"]
 }
 // Let's Encrypt require direct access from all ips
-resource "google_compute_firewall" "bastion-http" {
+resource "google_compute_firewall" "bastion_http" {
   name          = "bastion-http"
   network       = google_compute_network.vpc.name
   direction     = "INGRESS"
@@ -91,7 +89,7 @@ resource "google_compute_firewall" "bastion-http" {
   target_tags = ["dmz"]
 }
 
-resource "google_compute_firewall" "bastion-vpn" {
+resource "google_compute_firewall" "bastion_vpn" {
   name      = "bastion-vpn"
   network   = google_compute_network.vpc.name
   direction = "INGRESS"
@@ -107,7 +105,7 @@ resource "google_compute_firewall" "bastion-vpn" {
 }
 
 
-resource "google_compute_route" "dmz-default" {
+resource "google_compute_route" "dmz_default" {
   name             = "dmz-default"
   dest_range       = "0.0.0.0/0"
   network          = google_compute_network.vpc.name
