@@ -1,6 +1,9 @@
 
 resource "google_compute_address" "static" {
   name = "ipv4-address"
+  depends_on = [
+    google_project_iam_member.service_account
+  ]
 }
 
 
@@ -90,7 +93,7 @@ resource "null_resource" "ansible_playbook" {
   provisioner "local-exec" {
     command = <<COMMAND
 
-    cd ../ansible &&\
+    cd ${path.module}/../../ansible &&\
     ansible-playbook bastion-provision.yml \
       --user sa_${data.google_service_account.me.unique_id} \
       -e 'ansible_python_interpreter=/usr/bin/python3.7' \

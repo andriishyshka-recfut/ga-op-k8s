@@ -88,12 +88,17 @@
         - ip6table_nat
 
 
-    - name: Copy dockerfiles and other files
+    - name: Copy envoy files
       copy:
         src: "bastion-compose"
         dest: "/etc"
         mode: "preserve"
 
+
+    - name: Copy docker-compose
+      template:
+          src: "docker-compose.yaml"
+          dest: "{{ compose_dest }}/docker-compose.yaml"
 
     - name: find all *-compose.yaml file
       find:

@@ -24,7 +24,7 @@ services:
     cap_add:
     - NET_ADMIN
     environment:
-    - SUBSPACE_HTTP_HOST=b.digaweb.com
+    - SUBSPACE_HTTP_HOST={{ bastion_dns }}
     # - SUBSPACE_HTTP_INSECURE=true
     # - SUBSPACE_LETSENCRYPT=false
     # - SUBSPACE_HTTP_ADDR=:8080
