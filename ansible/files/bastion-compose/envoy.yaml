@@ -9,14 +9,14 @@ static_resources:
         typed_config: {}
     filter_chains:
     - filter_chain_match:
-        server_names: ["b.digaweb.com"]
+        server_names: ["p.digaweb.com"]
       filters:
       - name: envoy.filters.network.tcp_proxy
         config:
           stat_prefix: ingress_tcp
           cluster: subspace-https
     - filter_chain_match:
-        server_names: ["*.infra.digaweb.com","*.regemini.com"]
+        server_names: ["*.p.digaweb.com","*.regemini.com"]
       filters:
       - name: envoy.filters.network.tcp_proxy
         config:
@@ -41,7 +41,7 @@ static_resources:
             validate_clusters: false
             virtual_hosts:
             - name: sandbox
-              domains: ["*.infra.digaweb.com"]
+              domains: ["*.p.digaweb.com"]
               routes:
               - match: { prefix: "/.well-known/acme-challenge/" }
                 route: { cluster: infra-ingress-http }
@@ -49,7 +49,7 @@ static_resources:
                 redirect:
                   https_redirect: true
             - name: backend
-              domains: ["b.digaweb.com"]
+              domains: ["p.digaweb.com"]
               routes:
               - match: { prefix: "/.well-known/acme-challenge/" }
                 route: { cluster: subspace-http }

@@ -14,7 +14,7 @@ provider "google" {
 module "infra-persistent" {
   source   = "../../../terraform-modules/cluster-persistent-resources"
   Settings = var.Settings
-  Cluster  = "sandbox"
+  Cluster  = "production"
 
   providers = {
     google = google
@@ -24,7 +24,7 @@ module "infra-persistent" {
 module "dns" {
   source   = "../../../terraform-modules/dns"
   Settings = var.Settings
-  Cluster  = "sandbox"
+  Cluster  = "production"
 
   providers = {
     google = google

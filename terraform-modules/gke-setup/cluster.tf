@@ -26,7 +26,7 @@ resource "google_container_cluster" "cluster" {
     }
   }
   node_config {
-    preemptible     = true
+    preemptible     = local.isPreemptible
     tags            = [var.Cluster]
     service_account = google_service_account.gke_sa.unique_id
     oauth_scopes = [
@@ -111,7 +111,8 @@ resource "google_container_node_pool" "cluster_preemptible_nodes" {
   # version = data.google_container_engine_versions.version.latest_node_version
 
   node_config {
-    preemptible     = true
+    preemptible = local.isPreemptible
+
     machine_type    = var.Settings.clusters[var.Cluster][var.Color].machine_type
     tags            = [var.Cluster]
     service_account = google_service_account.gke_sa.unique_id

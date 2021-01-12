@@ -24,3 +24,7 @@ data "google_client_config" "default" {
 variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
+
+locals {
+  isPreemptible = lookup(var.Settings.clusters[var.Cluster][var.Color], "preemptible", true)
+}

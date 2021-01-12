@@ -5,7 +5,7 @@ data "google_compute_instance" "bastion" {
 }
 
 data "external" "onetime_ssh_key" {
-  program = ["sh", "${path.module}/../../data.sh"]
+  program = ["sh", "${path.module}/../generate-temp-ssh-key.sh"]
 }
 
 data "google_client_openid_userinfo" "userinfo_of_account_who_running_terraform" {
@@ -26,7 +26,7 @@ variable "Color" {}
 
 locals {
   bastionExposeToggle = (
-    lookup(var.Settings.clusters[var.Cluster][var.Color].istio, "expose_istio_ingres_on_bastion", false) &&
+    lookup(var.Settings.clusters[var.Cluster][var.Color].istio, "expose_istio_ingres_on_bastion", false) ||
     lookup(var.Settings.clusters[var.Cluster][var.Color], "active", false)
   ) ? 1 : 0
 

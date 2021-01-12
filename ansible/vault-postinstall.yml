@@ -6,12 +6,16 @@
     - vars/main.yml
   vars:
     initial_setup: False
-    oidc_discovery_url: "{{ lookup('env','oidc_discovery_url') | trim }}"
-    oidc_client_id: "{{ lookup('env','oidc_client_id') | trim }}"
-    oidc_client_secret: "{{ lookup('env','oidc_client_secret') | trim }}"
+    oidc_discovery_url: "{{ lookup('env','TF_VAR_OidcDiscoveryUrl') | trim }}"
+    oidc_client_id: "{{ lookup('env','TF_VAR_OidcClientId') | trim }}"
+    oidc_client_secret: "{{ lookup('env','TF_VAR_OidcClientSecret') | trim }}"
     # vault_addr: "{{ lookup('env','vault_addr') }}"
 
   tasks:
+
+  # 
+  # - fail:
+  #     msg: "{{ oidc_discovery_url }}  - {{ oidc_client_id }} - {{ oidc_client_secret }}"
 
   - name: Import vault pre execution tasks
     import_tasks: includes/vault-port-forward.yml
@@ -22,7 +26,7 @@
   #       curl 127.0.0.1:8200
   #   register: register
   # - debug: msg="{{ register | to_nice_json }}"
-  #
+
   - name: Get vault status
     hashivault_status:
     environment:
@@ -96,7 +100,6 @@
     assert:
       that:
       - vault_token | length > 0
-      - ( initial_setup and oidc_setup ) or ( not initial_setup and not oidc_setup ) or oidc_setup
 
   - name: Configure vault
     block:
