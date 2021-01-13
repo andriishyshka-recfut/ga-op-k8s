@@ -26,7 +26,7 @@ resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {
 }
 
 data "vault_generic_secret" "oidc_secrets" {
-  path = "secret/oidc_google_test"
+  path = local.vaultOidcConfigPath
 }
 
 resource "helm_release" "minio" {
@@ -42,6 +42,8 @@ resource "helm_release" "minio" {
       {
         CLIENT_ID          = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
         OIDC_DISCOVERY_URL = data.vault_generic_secret.oidc_secrets.data.oidc_discovery_url
+        MINIO_FQDN         = local.minioFqdn
+        PROJECT_ID         = local.currentProject
       }
     )
   ]

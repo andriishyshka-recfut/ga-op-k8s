@@ -20,7 +20,7 @@ environment:
   MINIO_IDENTITY_OPENID_CLIENT_ID: "${CLIENT_ID}"
   MINIO_IDENTITY_OPENID_SCOPES: "openid,profile,email"
   MINIO_IDENTITY_OPENID_CLAIM_NAME: "hd"
-  MINIO_DOMAIN: "minio.infra.digaweb.com"
+  MINIO_DOMAIN: "${MINIO_FQDN}"
   GOOGLE_APPLICATION_CREDENTIALS: "/etc/credentials/gcs_key.json"
   MINIO_ETCD_ENDPOINTS: "http://etcd:2379"
 
@@ -35,7 +35,7 @@ image:
 
 gcsgateway:
         enabled: true
-        projectId: ardent-rarity-239115
+        projectId: ${PROJECT_ID}
         replicas: 2
 
 serviceAccount:
