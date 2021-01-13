@@ -47,6 +47,11 @@ resource "helm_release" "minio" {
       }
     )
   ]
+  set {
+    name  = "podAnnotations.sidecar\\.istio\\.io/inject"
+    value = " False"
+  }
+
   depends_on = [
     kubernetes_secret.minio_credentials_kubernetes_secret,
     helm_release.etcd

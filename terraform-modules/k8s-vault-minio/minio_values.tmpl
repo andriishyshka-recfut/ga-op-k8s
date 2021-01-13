@@ -12,7 +12,7 @@ resources:
     cpu: 10m
   limits:
    memory: 1G
-   cpu: 200m
+   cpu: 500m
 
 
 environment:
@@ -36,7 +36,7 @@ image:
 gcsgateway:
         enabled: true
         projectId: ${PROJECT_ID}
-        replicas: 2
+        replicas: 3
 
 serviceAccount:
   create: false
