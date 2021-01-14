@@ -14,6 +14,7 @@
       delegate_to: localhost
       become: False
 
+
     - name: Put cluster_ca_certificate
       copy:
         dest: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"

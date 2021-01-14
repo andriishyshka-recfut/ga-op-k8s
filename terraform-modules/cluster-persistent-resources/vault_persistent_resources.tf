@@ -44,7 +44,7 @@ resource "google_kms_key_ring" "vault" {
 resource "google_kms_crypto_key" "vault_unseal_key" {
   name            = local.vaultKeyName
   key_ring        = google_kms_key_ring.vault.id
-  rotation_period = "86400s"
+  rotation_period = "8640000s"
   lifecycle {
     prevent_destroy = true
   }
