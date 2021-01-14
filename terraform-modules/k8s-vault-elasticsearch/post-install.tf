@@ -20,7 +20,7 @@ locals {
   ' &&\
   curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-example?pretty" -H 'Content-Type: application/json' -k -d '
 {
-  "roles": [  "superuser"],
+  "roles": [  "kibana_user","oidc_ro" ],
   "enabled": true,
   "rules": {
     "field": { "realm.name": "${local.oidcRealmName}" }

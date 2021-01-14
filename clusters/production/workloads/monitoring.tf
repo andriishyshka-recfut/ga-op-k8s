@@ -19,7 +19,7 @@ module "monitoring-elastic" {
   StoreEsPasswordInVault = false
 }
 
-# module "monitoring-agents" {
-#   source     = "../../../terraform-modules/k8s-monitoring-agents"
-#   depends_on = [module.monitoring-elastic]
-# }
+module "monitoring-agents" {
+  source     = "../../../terraform-modules/k8s-vault-monitoring-agents"
+  depends_on = [module.monitoring-elastic]
+}

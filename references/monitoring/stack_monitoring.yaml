@@ -22,7 +22,7 @@ spec:
             templates:
               - condition:
                   contains:
-                    kubernetes.labels.scrape: es
+                    equals.kubernetes.labels.stack-monitoring_elastic_co/type: es
                 config:
                   - module: elasticsearch
                     metricsets:
@@ -46,13 +46,13 @@ spec:
                     xpack.enabled: true
               - condition:
                   contains:
-                    kubernetes.labels.scrape: kb
+                    equals.kubernetes.labels.stack-monitoring_elastic_co/type: kb
                 config:
                   - module: kibana
                     metricsets:
                       - stats
                     period: 10s
-                    hosts: "https://${data.host}:${data.port}"
+                    hosts: "http://${data.host}:${data.port}"
                     username: ${MONITORED_ES_USERNAME}
                     password: ${MONITORED_ES_PASSWORD}
                     # WARNING: disables TLS as the default certificate is not valid for the pod FQDN
