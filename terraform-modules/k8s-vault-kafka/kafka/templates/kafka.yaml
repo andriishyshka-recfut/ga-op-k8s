@@ -6,16 +6,11 @@ metadata:
 spec:
   kafka:
     version: 2.5.0
-    replicas: 1
-    pods:
-        metadata:
-          annotations:
-            sidecar.istio.io/proxyCPU: 5m
-            sidecar.istio.io/proxyMemory: 50M
+    replicas: 3
     resources:
       limits:
         cpu: 1
-        memory: 1G
+        memory: 2G
       requests:
         cpu: 0.1
         memory: 300M
@@ -32,19 +27,19 @@ spec:
       volumes:
       - id: 0
         type: persistent-claim
-        size: 10Gi
+        size: 50Gi
         deleteClaim: false
   zookeeper:
-    replicas: 1
-    pods:
+    replicas: 3
+    template:
+      pod:
         metadata:
           annotations:
-            sidecar.istio.io/proxyCPU: 5m
-            sidecar.istio.io/proxyMemory: 50M
+            sidecar.istio.io/inject: False
     resources:
       limits:
         cpu: 1
-        memory: 1G
+        memory: 2G
       requests:
         cpu: 0.1
         memory: 100M

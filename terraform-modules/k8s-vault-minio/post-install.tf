@@ -83,7 +83,7 @@ resource "kubernetes_job" "configure_users_access" {
         restart_policy = "Never"
       }
     }
-    backoff_limit = 4
+    backoff_limit = 1
   }
   wait_for_completion = true
   depends_on = [
