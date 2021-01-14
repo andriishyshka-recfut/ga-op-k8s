@@ -25,6 +25,7 @@ COMMAND
         { default_secret_name = data.kubernetes_service_account.cert_manager[0].default_secret_name
           vault_addr          = local.vaultLocalUrl
           cluster             = local.cluster
+          color               = var.Color
           connection          = local.connection
       })
     })

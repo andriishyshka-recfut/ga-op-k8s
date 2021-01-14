@@ -18,6 +18,3 @@ resource "vault_generic_secret" "example" {
 }
 EOT
 }
-# output "creds" {
-#   value = "elastic:${data.kubernetes_secret.es_password.data.elastic}"
-# }

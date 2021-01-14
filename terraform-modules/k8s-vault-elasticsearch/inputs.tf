@@ -1,15 +1,15 @@
 
 variable "ElasticSettings" {}
 
-variable "BackupSaPrivateKey" {}
-
 variable "GkeClusterConnectionSettings" {}
 
 variable "StoreEsPasswordInVault" {}
 
+data "google_project" "current_project" {
+}
+
 locals {
   storeEsPasswordInVault = var.StoreEsPasswordInVault ? 1 : 0
-  createNs               = lookup(var.ElasticSettings, "create_ns", 1)
   oidcSetup              = lookup(var.ElasticSettings.elastic.oidc_gcloud, "enabled", "no") == "yes" ? 1 : 0
   oidcRealmName          = lookup(var.ElasticSettings.elastic.oidc_gcloud, "oidc_realm_name", "")
   esValues               = var.ElasticSettings.elastic
@@ -18,4 +18,5 @@ locals {
     ANSIBLE_STDOUT_CALLBACK = "debug"
     namespace               = local.esValues.namespace
   })
+  currentProject = split("/", data.google_project.current_project.id)[1]
 }

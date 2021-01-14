@@ -16,25 +16,13 @@ resource "kubernetes_secret" "oidc" {
 
 }
 
-# try to mount oidc config as configmap
-# https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-bundles-plugins.html
-# resource "kubernetes_config_map" "oidc" {
-#   count = local.oidcSetup
-#   metadata {
-#     name      = local.esValues.oidc_gcloud.configmap_name
-#     namespace = local.esValues.namespace
-#   }
-#
-#   data = {
-#   }
-#
 locals {
   config     = <<EOF
 xpack.security.authc.token.enabled: true
 xpack.security.authc.realms.oidc.${local.oidcRealmName}:
         order: 2
         rp.response_type: code
-        rp.redirect_uri: https://${local.kibanaValues.istio_gateway_fqdn}/api/security/oidc/callback
+        rp.redirect_uri: https://${local.kibanaValues.oidc_provider.istio_gateway_fqdn}/api/security/oidc/callback
         op.issuer: https://accounts.google.com
         op.authorization_endpoint: https://accounts.google.com/o/oauth2/v2/auth
         op.token_endpoint: https://oauth2.googleapis.com/token

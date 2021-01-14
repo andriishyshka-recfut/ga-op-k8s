@@ -1,9 +1,26 @@
 locals {
   postInstallSteps = <<EOF
   curl -XPOST "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_license/start_trial?acknowledge=true" -k &&\
-  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-example?pretty" -H 'Content-Type: application/json' -k -d'
+  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
 {
-  "roles": [ "superuser" ],
+     "type": "s3",
+      "settings": {
+         "bucket": "minio-xbackup-${local.currentProject}",
+         "endpoint": "minio.minio:9000",
+         "protocol": "http",
+         "path_style_access": true
+      }
+  }
+  ' &&\
+  curl -X POST "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role/oidc_ro" -H 'Content-Type: application/json' -k -d  '
+{
+  "cluster":["monitor"],
+   "indices":[{"names":"*","privileges":["read","view_index_metadata"]}]
+}
+  ' &&\
+  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-example?pretty" -H 'Content-Type: application/json' -k -d '
+{
+  "roles": [  "superuser"],
   "enabled": true,
   "rules": {
     "field": { "realm.name": "${local.oidcRealmName}" }

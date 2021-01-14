@@ -10,8 +10,7 @@ resource "helm_release" "elasticsearch" {
     yamlencode(local.oidcConfig)
   ]
   depends_on = [
-    kubernetes_namespace.namespace,
-    kubernetes_secret.gcs_credentials
+    kubernetes_secret.minio_credentials
   ]
 }
 
@@ -73,47 +72,4 @@ COMMAND
   depends_on = [
     helm_release.kibana
   ]
-}
-
-
-resource "kubernetes_namespace" "namespace" {
-  count = local.createNs
-  metadata {
-
-    labels = {
-      istio-injection = "enabled"
-    }
-
-    name = local.esValues.namespace
-  }
-}
-
-resource "kubernetes_limit_range" "limit" {
-  count = local.createNs
-  metadata {
-    name      = "default-limit-range"
-    namespace = local.esValues.namespace
-  }
-  spec {
-    limit {
-      type = "Container"
-      default_request = {
-        cpu    = "10m"
-        memory = "20Mi"
-      }
-    }
-  }
-}
-resource "kubernetes_secret" "gcs_credentials" {
-  metadata {
-    name      = "gcs-credentials"
-    namespace = local.esValues.namespace
-  }
-
-  data = {
-    "gcs.client.default.credentials_file" = base64decode(var.BackupSaPrivateKey)
-  }
-
-  depends_on = [kubernetes_namespace.namespace]
-  # type = "Opaque"
 }

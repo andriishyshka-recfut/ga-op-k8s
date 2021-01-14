@@ -8,7 +8,7 @@ spec:
   version: {{ .Values.appVersion }}
    # Inject secure settings into Elasticsearch nodes from a k8s secret reference
   secureSettings:
-  - secretName: gcs-credentials
+  - secretName: minio-credentials
   {{- if eq .Values.oidc_gcloud.enabled "yes" }}
   - secretName: {{ .Values.oidc_gcloud.secret_name }}
   {{- end }}
@@ -58,7 +58,7 @@ spec:
           - sh
           - -c
           - |
-            bin/elasticsearch-plugin install --batch repository-gcs
+            bin/elasticsearch-plugin install --batch repository-s3
         containers:
         - name: elasticsearch
           resources:
