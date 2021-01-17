@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maid-cp
+  namespace: maid
+spec:
+  selector:
+    matchLabels:
+      app: maid-cp
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: maid-cp
+    spec:
+      containers:
+      - name: maid-cp
+        #image: harbor.infra.digaweb.com/maid/cp-client@sha256:0de7583d76abd4375b6749b95c1e6bb658cf7788a82efe0c452b7285ffd6cd4f
+        image:  harbor.infra.digaweb.com/maid/cp:v1.1.0
+        ports:
+        - containerPort: 8080
+        env:
+          - name: MAID_CLEAN_URL
+            value: "http://maid-clean:8080"
+      imagePullSecrets:
+      - name: harbor
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: maid-cp
+  namespace: maid
+spec:
+  selector:
+    app: maid-cp
+  ports:
+    - name: port1
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
