@@ -7,21 +7,26 @@ provider "google-beta" {
   # version = "v3.19.0"
 }
 
+
+locals {
+  gkeClusterEndpoint   = module.gke-setup-green.GkeClusterConnectionSettings.HOST
+  gkeBearerToken       = module.gke-setup-green.GkeClusterConnectionSettings.API_KEY
+  clusterCaCertificate = module.gke-setup-green.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
+}
+
 provider "helm" {
-  alias = "helm-green"
   kubernetes {
     load_config_file       = false
-    host                   = module.gke-setup-green.gke_cluster_endpoint
-    token                  = module.gke-setup-green.gke_bearer_token
-    cluster_ca_certificate = module.gke-setup-green.cluster_ca_certificate
+    host                   = local.gkeClusterEndpoint
+    token                  = local.gkeBearerToken
+    cluster_ca_certificate = local.clusterCaCertificate
   }
 }
 
 provider "kubernetes" {
-  alias                  = "kubernetes-green"
   load_config_file       = false
-  host                   = module.gke-setup-green.gke_cluster_endpoint
-  token                  = module.gke-setup-green.gke_bearer_token
-  cluster_ca_certificate = module.gke-setup-green.cluster_ca_certificate
+  host                   = local.gkeClusterEndpoint
+  token                  = local.gkeBearerToken
+  cluster_ca_certificate = local.clusterCaCertificate
 
 }

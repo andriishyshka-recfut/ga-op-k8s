@@ -1,0 +1,52 @@
+                replicaCount: 1
+                dataReplicaCount: 1
+                esName: "es"
+                namespace: "monitoring"
+                appVersion: "7.8.0"
+                labels:
+                  testlabel: testvalue
+
+                elasticNodeSets:
+                  - name: master
+                    config: |
+                      node.master: true
+                      node.data: false
+                      node.ingest: false
+                      node.ml: false
+                      node.store.allow_mmap: false
+                      index.store.type: niofs
+                      network.bind_host: 127.0.0.1
+                      xpack.monitoring.collection.enabled: true
+                      xpack.security.authc.realms:
+                        native:
+                          native1:
+                            order: 1
+                    storageSize: 5Gi
+                    ES_JAVA_OPTS: -Xms4g -Xmx4g
+                    nodesCount: 1
+                  - name: data-node
+                    config: |
+                      node.data: true
+                      node.master: false
+                      node.store.allow_mmap: false
+                      index.store.type: niofs
+                      network.bind_host: 127.0.0.1
+                      xpack.monitoring.collection.enabled: true
+                      xpack.security.authc.realms:
+                        native:
+                          native1:
+                            order: 1
+                    nodesCount: 1
+                    storageSize: 25Gi
+                    ES_JAVA_OPTS: -Xms4g -Xmx4g
+
+                istio:
+                  enabled: "no"
+                  gateway_fqdn: "es.infra.digaweb.com"
+                  mTLS_enabled: true
+                  cert_ttl: "144h"
+
+                nativeTLS:
+                  enabled: "no"
+                oidc_gcloud:
+                  enabled: "no"

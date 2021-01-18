@@ -1,0 +1,105 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: monitoring
+  namespace: monitoring
+spec:
+  http:
+    service:
+      metadata:
+        creationTimestamp: null
+      spec:
+        ports:
+        - name: http
+          port: 9200
+          protocol: TCP
+          targetPort: 9200
+    tls:
+      certificate:
+        secretName: es-cert
+      selfSignedCertificate:
+        disabled: true
+  nodeSets:
+  - config:
+      index.store.type: niofs
+      node.data: true
+      node.ingest: true
+      node.master: true
+      node.ml: true
+      node.store.allow_mmap: false
+      xpack.monitoring.collection.enabled: true
+      xpack.security.authc.token.enabled: true
+      logger.org.elasticsearch.xpack.security.authc.oidc: "trace"
+      xpack.security.authc.realms:
+        native:
+          native1:
+            order: 1
+        oidc:
+          oidc1:
+            order: 2
+            rp.response_type: code
+            rp.redirect_uri: https://kibana.infra.digaweb.com/api/security/oidc/callback
+            op.issuer: https://accounts.google.com
+            op.authorization_endpoint: https://accounts.google.com/o/oauth2/v2/auth
+            op.token_endpoint: https://oauth2.googleapis.com/token
+            op.jwkset_path: https://www.googleapis.com/oauth2/v3/certs
+            claims.principal: "email"
+            rp.requested_scopes:
+              - email
+              - openid
+              - profile
+            rp.client_id: 921970745198-3541scevmu5oogrlucmu0poh7kn9a7ms.apps.googleusercontent.com
+
+    count: 1
+    name: master
+    podTemplate:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "false"
+          traffic.sidecar.istio.io/excludeInboundPorts: "9300"
+          traffic.sidecar.istio.io/excludeOutboundPorts: "9300"
+        creationTimestamp: null
+      spec:
+        containers:
+        - env:
+          - name: ES_JAVA_OPTS
+            value: -Xms1g -Xmx1g
+          name: elasticsearch
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1536Mi
+            requests:
+              cpu: 200m
+              memory: 1Gi
+        initContainers:
+        - command:
+          - sh
+          - -c
+          - |
+            bin/elasticsearch-plugin install --batch repository-gcs
+          name: install-plugins
+          resources: {}
+    volumeClaimTemplates:
+    - metadata:
+        creationTimestamp: null
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+        storageClassName: standard
+      status: {}
+  secureSettings:
+  - secretName: gcs-credentials
+  - secretName: oidc
+  transport:
+    service:
+      metadata:
+        creationTimestamp: null
+      spec: {}
+  updateStrategy:
+    changeBudget: {}
+  version: 7.9.2

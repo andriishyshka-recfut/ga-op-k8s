@@ -1,0 +1,105 @@
+
+beatsVersion: "7.10.1"
+namespace: "monitoring"
+esName: "monitoring"
+metricbeat:
+  name: "mon"
+auditbeat:
+  name: "audit"
+dashboards:
+  # Only "yes" take effect
+  enabled: "yes"
+  kibana: "kibana"
+filebeat:
+  name: "log"
+  config: |
+    # https://www.elastic.co/guide/en/beats/filebeat/current/configuration-autodiscover.html
+    # https://www.elastic.co/guide/en/beats/filebeat/current/configuration-autodiscover-hints.html
+    # https://logz.io/blog/what-is-autodiscover-filebeat/
+    filebeat.autodiscover:
+      providers:
+        - type: kubernetes
+          host: ${HOSTNAME}
+          # https://www.elastic.co/guide/en/beats/filebeat/current/configuration-autodiscover-hints.html
+          # hints.enabled: true
+          # hints.default_config:
+          #   type: container
+          #   paths:
+          #     - /var/log/containers/*${data.kubernetes.container.id}.log
+          templates:
+            # https://www.elastic.co/guide/en/beats/filebeat/current/defining-processors.html#conditions
+            - condition.contains:
+                kubernetes.container.image: vault
+              config:
+              - type: container
+                # https://www.elastic.co/guide/en/beats/filebeat/master/filebeat-input-log.html#filebeat-input-log-config-json
+                json.add_error_key: true
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
+            - condition.equals:
+                kubernetes.namespace: vault
+              config:
+              - type: container
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
+                # https://discuss.elastic.co/t/exclude-lines-regex-for-excluding-all-non-json-logs-is-not-working/167704/8
+                exclude_lines: ['^{']  # drop json lines
+            - condition.equals:
+                kubernetes.namespace: kube-system
+              config:
+              - type: container
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
+                # https://discuss.elastic.co/t/exclude-lines-regex-for-excluding-all-non-json-logs-is-not-working/167704/8
+                exclude_lines: ['^{']  # drop json lines
+            # Istio access logs
+            - condition.contains:
+                kubernetes.container.image: istio
+              config:
+              - type: container
+                json.add_error_key: true
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
+            - condition.contains:
+                kubernetes.container.image: falco
+              config:
+              - type: container
+                json.add_error_key: true
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
+            # Sandbox section
+            - condition.equals:
+                kubernetes.namespace: sandbox
+              config:
+              - type: container
+                json.add_error_key: true
+                # include_lines: ['^{.*$']
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
+            # Maid section
+            - condition.equals:
+                kubernetes.namespace: maid
+              config:
+              - type: container
+                json.add_error_key: true
+                # include_lines: ['^{.*$']
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
+            # Crypto section
+            - condition.equals:
+                kubernetes.namespace: crypto
+              config:
+              - type: container
+                json.add_error_key: true
+                # include_lines: ['^{.*$']
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
+            # Magescanner section
+            - condition.equals:
+                kubernetes.namespace: magescanner
+              config:
+              - type: container
+                json.add_error_key: true
+                # include_lines: ['^{.*$']
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log

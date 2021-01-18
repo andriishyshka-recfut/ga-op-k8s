@@ -1,16 +1,16 @@
 
 
 resource "google_os_login_ssh_public_key" "cache" {
-  count                = local.bastion_expose_toggle
-  user                 = data.google_client_openid_userinfo.me.email
-  key                  = data.external.data.result["pub_certificate"]
-  expiration_time_usec = data.external.data.result["expiration_date"]
+  count                = local.bastionExposeToggle
+  user                 = data.google_client_openid_userinfo.userinfo_of_account_who_running_terraform.email
+  key                  = data.external.onetime_ssh_key.result["pub_certificate"]
+  expiration_time_usec = data.external.onetime_ssh_key.result["expiration_date"]
 }
 
 
 resource "local_file" "ansible_gcp_inventory" {
-  count    = local.bastion_expose_toggle
-  content  = templatefile("${path.module}/../../ansible/inventory.gcp.yml.tmpl", { project = data.google_project.project.number })
+  count    = local.bastionExposeToggle
+  content  = templatefile("${path.module}/../../ansible/inventory.gcp.yml.tmpl", { project = data.google_project.current_project.number })
   filename = "${path.module}/../../ansible/inventory.gcp.yaml"
 }
 
@@ -18,7 +18,7 @@ resource "local_file" "ansible_gcp_inventory" {
 
 
 resource "null_resource" "ansible_bastion_playbook" {
-  count = local.bastion_expose_toggle
+  count = local.bastionExposeToggle
   triggers = {
     //always_run = "${timestamp()}"
     istio_change      = null_resource.ansible_istio_playbook.id
@@ -28,13 +28,13 @@ resource "null_resource" "ansible_bastion_playbook" {
     command = <<COMMAND
     cd  ${path.module}/../../ansible && \
     ansible-playbook bastion.yml \
-      --user  sa_${data.google_service_account.me.unique_id} \
+      --user  sa_${data.google_service_account.account_who_running_terraform.unique_id} \
       -e 'ansible_python_interpreter=/usr/bin/python3' \
       -i ./inventory.gcp.yaml
 COMMAND
 
 
-    environment = local.ansible_envs
+    environment = local.ansibleEnvs
 
   }
   depends_on = [

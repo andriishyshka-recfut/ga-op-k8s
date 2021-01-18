@@ -1,5 +1,4 @@
 resource "kubernetes_service_account" "vault" {
-  count = local.create_k8s_admin
   metadata {
     name      = "vault"
     namespace = "kube-system"
@@ -7,15 +6,13 @@ resource "kubernetes_service_account" "vault" {
 }
 
 data "kubernetes_secret" "vault" {
-  count = local.create_k8s_admin
   metadata {
-    name      = kubernetes_service_account.vault[count.index].default_secret_name
+    name      = kubernetes_service_account.vault.default_secret_name
     namespace = "kube-system"
   }
 }
 
 resource "kubernetes_cluster_role_binding" "vault" {
-  count = local.create_k8s_admin
   metadata {
     name = "vault-auth"
   }
@@ -34,7 +31,6 @@ resource "kubernetes_cluster_role_binding" "vault" {
 
 resource "null_resource" "ansible_vault_k8s_auth" {
 
-  count = local.create_k8s_admin
   triggers = {
     playbook_contents = md5(file("${path.module}/../../ansible/vault-k8s-auth.yml"))
   }
@@ -44,16 +40,16 @@ resource "null_resource" "ansible_vault_k8s_auth" {
     ansible-playbook vault-k8s-auth.yml \
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
-    environment = merge(local.ansible_envs, {
-      kubernetes_host    = local.gke_cluster_endpoint
-      kubernetes_ca_cert = lookup(data.kubernetes_secret.vault[count.index].data, "ca.crt")
-      token_reviewer_jwt = lookup(data.kubernetes_secret.vault[count.index].data, "token")
-      k8s_sa_token       = lookup(data.kubernetes_secret.admin.data, "token")
-      k8s_sa_ca_cert     = lookup(data.kubernetes_secret.admin.data, "ca.crt")
+    environment = merge(local.ansibleEnvs, {
+      kubernetes_host    = local.gkeClusterEndpoint
+      kubernetes_ca_cert = lookup(data.kubernetes_secret.vault.data, "ca.crt")
+      token_reviewer_jwt = lookup(data.kubernetes_secret.vault.data, "token")
+      k8s_sa_token       = lookup(data.kubernetes_secret.cluster_admin_creds.data, "token")
+      k8s_sa_ca_cert     = lookup(data.kubernetes_secret.cluster_admin_creds.data, "ca.crt")
     })
   }
   depends_on = [
-    null_resource.ansible_vault_playbook
+    null_resource.ansible_initial_provisioning_vault_playbook
   ]
 }
 # provider vault {
@@ -61,7 +57,7 @@ COMMAND
 # }
 # resource "vault_auth_backend" "kubernetes" {
 #   type = "kubernetes"
-#   path = "k8s-${var.cluster}"
+#   path = "k8s-${var.Cluster}"
 #   depends_on = [
 #     google_container_cluster.cluster
 #   ]

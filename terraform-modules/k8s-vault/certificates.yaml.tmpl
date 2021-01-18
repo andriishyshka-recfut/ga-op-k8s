@@ -5,14 +5,12 @@ metadata:
   namespace: default
 spec:
   vault:
-    path: pki/sign/cert-manager-${cluster}
+    path: pki/sign/cert-manager-${cluster}-${color}
     server: ${vault_addr}
-%{ if connection != "local" }    caBundle: ${ca}%{ endif ~}
-
     auth:
       kubernetes:
-        role: cert-manager-${cluster}
-        mountPath: /v1/auth/k8s-${cluster}
+        role: cert-manager-${cluster}-${color}
+        mountPath: /v1/auth/k8s-${cluster}-${color}
         secretRef:
           name: ${default_secret_name}
           key: token

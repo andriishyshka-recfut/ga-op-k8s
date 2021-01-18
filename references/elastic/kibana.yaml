@@ -1,0 +1,35 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+
+  name: kibana
+  namespace: monitoring
+spec:
+  count: 1
+  elasticsearchRef:
+    name: monitoring
+  config:
+    xpack.security.authc.providers:
+      oidc.Google:
+        order: 0
+        realm: "oidc1"
+      basic.basic1:
+        order: 1
+
+  http:
+    service:
+      metadata:
+        creationTimestamp: null
+      spec: {}
+    tls:
+      certificate: {}
+      selfSignedCertificate:
+        disabled: true
+  podTemplate:
+    metadata:
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      creationTimestamp: null
+    spec:
+      containers: null
+  version: 7.9.2

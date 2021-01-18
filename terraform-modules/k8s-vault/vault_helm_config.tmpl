@@ -19,8 +19,9 @@ server:
 
       ha:
         enabled: true
-        replicas: 3
-
+        replicas: ${replicas}
+        disruptionBudget:
+          maxUnavailable: 0
         config: |
           ui = true
           log_format = "json"
@@ -39,3 +40,4 @@ server:
             bucket = "${bucket}"
             ha_enabled    = "true"
           }
+          service_registration "kubernetes" {}

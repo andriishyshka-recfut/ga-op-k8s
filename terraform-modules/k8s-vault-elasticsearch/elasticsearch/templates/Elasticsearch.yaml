@@ -1,0 +1,77 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: {{ .Values.esName }}
+  labels: {{- include "elasticsearch.labels" . | nindent 4 }}
+  namespace: {{ .Values.namespace  }}
+spec:
+  version: {{ .Values.appVersion }}
+   # Inject secure settings into Elasticsearch nodes from a k8s secret reference
+  secureSettings:
+  - secretName: minio-credentials
+  {{- if eq .Values.oidc_gcloud.enabled "yes" }}
+  - secretName: {{ .Values.oidc_gcloud.secret_name }}
+  {{- end }}
+  http:
+    tls:
+{{- if eq .Values.nativeTLS.enabled "yes" }}
+      certificate:
+        secretName: {{ .Values.esName }}-es-cert
+ {{- else }}
+      selfSignedCertificate:
+         disabled: true
+{{- end }}
+    service:
+      spec:
+        ports:
+          - name: http
+            port: 9200
+            targetPort: 9200
+  nodeSets:
+## https://github.com/elastic/cloud-on-k8s/issues/2064#issuecomment-584033436
+# Istio should should be disabled for port 9300
+{{- range .Values.elasticNodeSets }}
+  - name: {{ .name }}
+    count: {{ .nodesCount }}
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .storageSize }}
+        storageClassName: standard
+    podTemplate:
+      metadata:
+        annotations:
+{{- range $k, $v := $.Values.annotations}}
+{{  indent 10 $k }}: "{{ $v}}"
+{{- end}}
+          traffic.sidecar.istio.io/excludeOutboundPorts: "9300"
+          traffic.sidecar.istio.io/excludeInboundPorts: "9300"
+      spec:
+        initContainers:
+        - name: install-plugins
+          command:
+          - sh
+          - -c
+          - |
+            bin/elasticsearch-plugin install --batch repository-s3
+        containers:
+        - name: elasticsearch
+          resources:
+            limits:
+              memory: {{ .memoryLimit }}
+              cpu: {{ .cpuLimit }}
+            requests:
+              memory: {{ .memoryRequests }}
+              cpu: {{ .cpuRequests }}
+          env:
+          - name: ES_JAVA_OPTS
+            value: {{ .ES_JAVA_OPTS }}
+    config:
+{{ indent 6 .config }}
+{{ indent 6 $.Values.oidc_config }}
+{{- end }}

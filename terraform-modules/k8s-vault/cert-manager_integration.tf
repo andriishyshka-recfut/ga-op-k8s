@@ -1,17 +1,17 @@
 
 
-data "kubernetes_service_account" "cert-manager" {
-  count = local.create_cert-manager_issuer
+data "kubernetes_service_account" "cert_manager" {
+  count = local.certManagerIssuerToggle
   metadata {
-    name      = "${var.cluster}-cert-manager"
+    name      = "${var.Cluster}-cert-manager"
     namespace = "kube-system"
   }
 }
 
-resource "null_resource" "ansible_cert-manager_vault_integration_playbook" {
-  count = local.create_cert-manager_issuer
+resource "null_resource" "ansible_cert_manager_vault_integration_playbook" {
+  count = local.certManagerIssuerToggle
   triggers = {
-    vault_auth        = null_resource.ansible_vault_k8s_auth[0].id
+    vault_auth        = null_resource.ansible_vault_k8s_auth.id
     playbook_contents = md5(file("${path.module}/certificates.yaml.tmpl"))
   }
   provisioner "local-exec" {
@@ -20,12 +20,12 @@ resource "null_resource" "ansible_cert-manager_vault_integration_playbook" {
     ansible-playbook k8s-apply.yml \
       -e 'ansible_python_interpreter=/usr/bin/python3'
 COMMAND
-    environment = merge(local.ansible_envs, {
+    environment = merge(local.ansibleEnvs, {
       k8s_apply_value = templatefile("${path.module}/certificates.yaml.tmpl",
-        { default_secret_name = data.kubernetes_service_account.cert-manager[0].default_secret_name
-          vault_addr          = local.vault_addr
+        { default_secret_name = data.kubernetes_service_account.cert_manager[0].default_secret_name
+          vault_addr          = local.vaultLocalUrl
           cluster             = local.cluster
-          ca                  = base64encode(data.external.root_ca.result.ca)
+          color               = var.Color
           connection          = local.connection
       })
     })

@@ -1,0 +1,29 @@
+
+---
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: minio-connector
+  labels:
+    strimzi.io/cluster: camel-cluster
+spec:
+  # class: org.apache.camel.kafkaconnector.CamelSourceConnector
+  class: org.apache.camel.kafkaconnector.minio.CamelMinioSourceConnector
+  tasksMax: 1
+  config:
+    camel.source.path.bucketName: minio-xbackup-ardent-rarity-239115
+    camel.source.endpoint.endpoint: "http://minio.minio:9000/"
+    camel.source.endpoint.accessKey: "${file:/opt/kafka/external-configuration/connector-config/properties:accesskey}"
+    camel.source.endpoint.secretKey: "${file:/opt/kafka/external-configuration/connector-config/properties:secretkey}"
+    topics: "blue-green"
+    # key.converter: org.apache.kafka.connect.storage.StringConverter
+    # value.converter: org.apache.kafka.connect.storage.StringConverter
+    key.converter: org.apache.kafka.connect.converters.ByteArrayConverter
+    value.converter: org.apache.kafka.connect.converters.ByteArrayConverter
+    header.converter: org.apache.kafka.connect.converters.ByteArrayConverter
+    camel.source.endpoint.region: minio
+    # camel.source.endpoint.objectName: kafka/blue-green
+    camel.source.endpoint.prefix: kafka/
+    camel.source.endpoint.includeFolders: "true"
+    camel.source.endpoint.recursive: true
+    # camel.component.minio.includeVersions: true

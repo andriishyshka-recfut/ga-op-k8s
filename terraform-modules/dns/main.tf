@@ -1,22 +1,22 @@
 
 data "google_compute_network" "vpc" {
-  name = var.settings.vpc_name
+  name = var.Settings.vpc_name
 }
 
 
 data "google_compute_instance" "bastion" {
-  name = var.settings.bastion_hostname
-  zone = var.settings.bastion_zone
+  name = var.Settings.bastion_hostname
+  zone = var.Settings.bastion_zone
 }
 
-variable "settings" {}
-variable "cluster" {}
+variable "Settings" {}
+variable "Cluster" {}
 
-resource "google_dns_managed_zone" "k8s-zone" {
-  count       = lookup(var.settings.clusters[var.cluster].blue, "color", "blanc") == "blue" ? 1 : 0
-  name        = "${var.settings.clusters[var.cluster].subdomain}-private-zone"
-  dns_name    = "${var.settings.clusters[var.cluster].subdomain}.${var.settings.clusters[var.cluster].domain}."
-  description = "DNS zone for ${var.settings.clusters[var.cluster].subdomain} k8s cluster"
+resource "google_dns_managed_zone" "k8s_zone" {
+  count       = lookup(var.Settings.clusters[var.Cluster].blue, "color", "blanc") == "blue" ? 1 : 0
+  name        = "${var.Settings.clusters[var.Cluster].subdomain}-private-zone"
+  dns_name    = "${var.Settings.clusters[var.Cluster].subdomain}.${var.Settings.clusters[var.Cluster].domain}."
+  description = "DNS zone for ${var.Settings.clusters[var.Cluster].subdomain} k8s cluster"
   visibility  = "private"
 
   private_visibility_config {
@@ -27,12 +27,12 @@ resource "google_dns_managed_zone" "k8s-zone" {
 }
 
 resource "google_dns_record_set" "wildcard" {
-  count = lookup(var.settings.clusters[var.cluster].blue, "color", "blanc") == "blue" ? 1 : 0
-  name  = "*.${google_dns_managed_zone.k8s-zone[count.index].dns_name}"
+  count = lookup(var.Settings.clusters[var.Cluster].blue, "color", "blanc") == "blue" ? 1 : 0
+  name  = "*.${google_dns_managed_zone.k8s_zone[count.index].dns_name}"
   type  = "A"
   ttl   = 300
 
-  managed_zone = google_dns_managed_zone.k8s-zone[count.index].name
+  managed_zone = google_dns_managed_zone.k8s_zone[count.index].name
 
   rrdatas = [data.google_compute_instance.bastion.network_interface.0.network_ip]
 }

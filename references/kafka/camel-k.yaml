@@ -1,0 +1,49 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka.props
+data:
+  application.properties: |
+   kafka.brokers=kafka-cluster-kafka-bootstrap:9092
+   consumer.topic=__consumer_offsets
+   consumer.maxPollRecords=5000
+   consumer.consumersCount=1
+   consumer.group=kafkaBackup13
+   producer.minio.acceskey={{secret:minio-credentials/accesskey}}
+   producer.minio.secretkey={{secret:minio-credentials/secretkey}}
+
+---
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: kafka-backup
+spec:
+  # dependencies:
+  # https://repo.maven.apache.org/maven2/org/apache/camel/camel-minio/3.5.0/camel-minio-3.5.0.jar
+  # - mvn:org.apache.camel:camel-minio:3.5.0:camel-minio-3.5.0.jar
+          # .convertBodyTo(byte[].class)
+  configuration:
+  - type: configmap
+    value: kafka.props
+  - type: secret
+    value: minio-credentials
+  sources:
+  - name: kafka-backup.groovy
+    content: |
+        from("kafka:{{consumer.topic}}?brokers={{kafka.brokers}}"
+             + "&maxPollRecords={{consumer.maxPollRecords}}"
+             + "&consumersCount={{consumer.consumersCount}}"
+             + "&groupId={{consumer.group}}"
+             + "&autoCommitEnable=false"
+             + "&allowManualCommit=true"
+             + "&autoOffsetReset=earliest")
+          .routeId("kafkaBackup")
+          .filter().simple('${body} != null')
+          .marshal().json()
+          .toD("aws2-s3://minio-xbackup-ardent-rarity-239115?"
+              + "keyName=kafka/{{consumer.topic}}2/"+ '${exchangeId}'
+              + "&overrideEndpoint=true&uriEndpointOverride=http://minio.minio:9000"
+              + "&accessKey={{producer.minio.acceskey}}"
+              + "&secretKey={{producer.minio.secretkey}}"
+              + "&region=minio");

@@ -1,59 +1,60 @@
+
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-green/state"
+    prefix = "tf-blue-green/green-state"
   }
 }
 
 // should be set with tfvars
-variable "settings" {}
-variable "oidc_discovery_url" { default = "SAMPLE" }
-variable "oidc_client_id" { default = "SAMPLE" }
-variable "oidc_client_secret" { default = "SAMPLE" }
-
-output "is-active" {
-  value = lookup(var.settings["green"], "active", false) ? 1 : 0
-}
+variable "Settings" {}
+variable "OidcDiscoveryUrl" { default = "SAMPLE" }
+variable "OidcClientId" { default = "SAMPLE" }
+variable "OidcClientSecret" { default = "SAMPLE" }
 
 
 module "gke-setup-green" {
-  source   = "../terraform-modules/gke-setup"
-  settings = var.settings
-  cluster  = "green"
-
-  providers = {
-    google      = google
-    google-beta = google-beta
-  }
+  source   = "../../../terraform-modules/gke-setup"
+  Settings = var.Settings
+  Cluster  = "sandbox"
+  Color    = "green"
 }
 
-module "post-install-green" {
-  source                 = "../terraform-modules/k8s-post-install"
-  gke_cluster_endpoint   = module.gke-setup-green.gke_cluster_endpoint
-  gke_bearer_token       = module.gke-setup-green.gke_bearer_token
-  cluster_ca_certificate = module.gke-setup-green.cluster_ca_certificate
-  settings               = var.settings
-  cluster                = "green"
-  oidc_discovery_url     = var.oidc_discovery_url
-  oidc_client_id         = var.oidc_client_id
-  oidc_client_secret     = var.oidc_client_secret
-  vault_resources        = module.vault-persistent-green.vault_resources
-  node_pool              = module.gke-setup-green.node_pool
-
-  providers = {
-    google     = google
-    kubernetes = kubernetes.kubernetes-green
-    helm       = helm.helm-green
-
-  }
+module "k8s-istio" {
+  source                       = "../../../terraform-modules/k8s-istio"
+  GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  Settings                     = var.Settings
+  Cluster                      = "sandbox"
+  Color                        = "green"
+  depends_on                   = [module.gke-setup-green]
 }
 
-module "vault-persistent-green" {
-  source   = "../terraform-modules/vault-persistent-resources"
-  settings = var.settings
-  cluster  = "green"
 
-  providers = {
-    google = google
-  }
+module "k8s-namespaces" {
+  source     = "../../../terraform-modules/k8s-namespaces"
+  Settings   = var.Settings
+  Cluster    = "sandbox"
+  Color      = "green"
+  depends_on = [module.k8s-istio]
+}
+
+
+module "k8s-misc-operators" {
+  source                       = "../../../terraform-modules/k8s-misc"
+  GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  Settings                     = var.Settings
+  Cluster                      = "sandbox"
+  Color                        = "green"
+  depends_on                   = [module.k8s-istio, module.k8s-namespaces]
+}
+module "k8s-vault" {
+  source                       = "../../../terraform-modules/k8s-vault"
+  GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  Settings                     = var.Settings
+  Cluster                      = "sandbox"
+  Color                        = "green"
+  OidcDiscoveryUrl             = var.OidcDiscoveryUrl
+  OidcClientId                 = var.OidcClientId
+  OidcClientSecret             = var.OidcClientSecret
+  depends_on                   = [module.k8s-istio, module.k8s-misc-operators]
 }

@@ -1,23 +1,21 @@
 
-// k8s connection settings
-variable "gke_cluster_connection_settings" {}
+variable "GkeClusterConnectionSettings" {}
 
-// Cluster variables and settings from common-vars module
-variable "settings" {}
-variable "cluster" {}
-variable "color" {}
+variable "Settings" {}
+variable "Cluster" {}
+variable "Color" {}
 
 locals {
-  gke_cluster_endpoint       = var.gke_cluster_connection_settings.HOST
-  gke_bearer_token           = var.gke_cluster_connection_settings.API_KEY
-  create_letsencrypt_issuers = var.settings.clusters[var.cluster][var.color].cert_manager.create_letsencrypt_issuers ? 1 : 0
-  ansible_envs = merge(var.gke_cluster_connection_settings, {
-    CLUSTER_SETTINGS        = jsonencode(var.settings)
-    CLUSTER                 = var.cluster
-    COLOR                   = var.color
+  gkeClusterEndpoint      = var.GkeClusterConnectionSettings.HOST
+  gkeBearerToken          = var.GkeClusterConnectionSettings.API_KEY
+  letsEncryptIssuersCount = lookup(var.Settings.clusters[var.Cluster][var.Color].cert_manager, "create_letsencrypt_issuers", false) ? 1 : 0
+  ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
+    CLUSTER_SETTINGS        = jsonencode(var.Settings)
+    CLUSTER                 = var.Cluster
+    COLOR                   = var.Color
     ANSIBLE_STDOUT_CALLBACK = "debug"
-    BASTION_DNS             = var.settings.bastion_dns
+    BASTION_DNS             = var.Settings.bastion_dns
   })
 
-  eck_version = var.settings.clusters[var.cluster][var.color].eck_version
+  eckVersion = var.Settings.clusters[var.Cluster][var.Color].eck_version
 }

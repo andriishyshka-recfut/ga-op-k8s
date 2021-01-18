@@ -54,34 +54,34 @@
     - name: enable k8s secret engine
       hashivault_auth_method:
           method_type: kubernetes
-          mount_point: "k8s-{{ cluster_name }}"
+          mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
 
     - name: create config
       hashivault_k8s_auth_config:
           kubernetes_host: "{{ kubernetes_host }}"
           kubernetes_ca_cert: "{{ kubernetes_ca_cert }}"
           token_reviewer_jwt: "{{ token_reviewer_jwt }}"
-          mount_point: "k8s-{{ cluster_name }}"
+          mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
 
     - name: Create/Update Role
       hashivault_pki_role:
         mount_point: "pki"
-        login_mount_point: "auth/k8s-{{ cluster_name }}"
-        name: "cert-manager-{{ cluster_name }}"
+        login_mount_point: "auth/k8s-{{ cluster_name }}-{{ cluster_color }}"
+        name: "cert-manager-{{ cluster_name }}-{{ cluster_color }}"
         config:
           allow_bare_domains: True
           allow_subdomains: True
           allow_any_name: True
           allowed_domains:
-          - "{{ cluster_name }}.{{ domain }}"
+          - "{{ domain }}"
 
     - name: Create k8s auth role for cert-manager
       hashivault_k8s_auth_role:
-        name: "cert-manager-{{ cluster_name }}"
+        name: "cert-manager-{{ cluster_name }}-{{ cluster_color }}"
         policies: ["pki"]
         bound_service_account_names: ["{{ cluster_name }}-cert-manager"]
         bound_service_account_namespaces: ["kube-system"]
-        mount_point: "k8s-{{ cluster_name }}"
+        mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
 
     - name: Set k8s creds
       set_fact:
@@ -95,7 +95,7 @@
 
     - name: Write cluster creds
       hashivault_write:
-        secret: "kubernetes-{{ cluster_name }}"
+        secret: "kubernetes-{{ cluster_name }}-{{ cluster_color }}"
         data: "{{ k8s_creds | from_yaml }}"
       register: status
 

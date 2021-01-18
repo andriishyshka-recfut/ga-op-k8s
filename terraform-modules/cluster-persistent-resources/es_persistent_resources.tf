@@ -1,7 +1,7 @@
 
 #Create the storage bucket
-resource "google_storage_bucket" "elastic-snapshots" {
-  name          = local.es_backup_bucket
+resource "google_storage_bucket" "elastic_snapshots" {
+  name          = local.esBackupBucket
   project       = data.google_project.current.project_id
   force_destroy = true
   storage_class = "MULTI_REGIONAL"
@@ -21,20 +21,21 @@ resource "google_storage_bucket" "elastic-snapshots" {
       num_newer_versions = 1
     }
   }
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
-# resource "random_id" "es_name" {
-#   prefix      = "elastic-"
-#   byte_length = "7"
-# }
 
-resource "google_service_account" "es-server" {
+resource "google_service_account" "es_server" {
   account_id   = "elastic-backup"
   display_name = "ES Server"
-  //project      = data.google_project.vault.project_id
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
-variable "es_service_account_iam_roles" {
+variable "EsServiceAccountIamRoles" {
   type = list(string)
   default = [
     "roles/storage.objectAdmin",
@@ -42,15 +43,17 @@ variable "es_service_account_iam_roles" {
   ]
   description = "List of storage bucket roles."
 }
-# Add the service account to the project
-resource "google_project_iam_member" "es-service-account" {
-  count   = length(var.es_service_account_iam_roles)
+resource "google_project_iam_member" "es_service_account" {
+  count   = length(var.EsServiceAccountIamRoles)
   project = data.google_project.current.project_id
-  role    = element(var.es_service_account_iam_roles, count.index)
-  member  = "serviceAccount:${google_service_account.es-server.email}"
+  role    = element(var.EsServiceAccountIamRoles, count.index)
+  member  = "serviceAccount:${google_service_account.es_server.email}"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 
-resource "google_service_account_key" "es-key" {
-  service_account_id = google_service_account.es-server.name
+resource "google_service_account_key" "es_key" {
+  service_account_id = google_service_account.es_server.name
 }

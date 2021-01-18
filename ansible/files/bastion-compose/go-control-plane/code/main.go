@@ -52,6 +52,8 @@ func main() {
   var nodeID string = "test-id"
 
   var masterEndpointURL string  = os.Getenv("MASTER_ENDPOINT_URL")
+  var clusterHttp string = os.Getenv("CLUSTER_HTTP")
+  var clusterHttps string = os.Getenv("CLUSTER_HTTPS")
   //var nodePort uint32
   nodePort, err := strconv.Atoi(os.Getenv("NODE_PORT"))
   if err != nil {
@@ -87,13 +89,13 @@ func main() {
       var listenerSlice []types.Resource = lib.CreateMultipleLDS(30000,30020)
       // Add infra cluster
       clustersSlice = append(clustersSlice, lib.MakeCluster(
-                                            "infra-ingress",
+                                            clusterHttps,
                                             nodeSlice,
                                             uint32(nodePort)))
 
       // Add infra http cluster
       clustersSlice = append(clustersSlice, lib.MakeCluster(
-                                            "infra-ingress-http",
+                                            clusterHttp,
                                             nodeSlice,
                                             uint32(nodePortHttp)))
 

@@ -1,12 +1,12 @@
 
 data "google_compute_network" "vpc" {
-  name = var.settings.vpc_name
+  name = var.Settings.vpc_name
 }
 
 
 data "google_compute_instance" "bastion" {
-  name = var.settings.bastion_hostname
-  zone = var.settings.bastion_zone
+  name = var.Settings.bastion_hostname
+  zone = var.Settings.bastion_zone
 }
 
 data "google_project" "current" {}
@@ -21,6 +21,10 @@ data "google_client_config" "default" {
 
 
 // Cluster settings from module common-vars
-variable "settings" {}
-variable "cluster" {}
-variable "color" {}
+variable "Settings" {}
+variable "Cluster" {}
+variable "Color" {}
+
+locals {
+  isPreemptible = lookup(var.Settings.clusters[var.Cluster][var.Color], "preemptible", true)
+}

@@ -1,0 +1,38 @@
+---
+apiVersion: kibana.k8s.elastic.co/v1beta1
+kind: Kibana
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  version: {{ .Values.kibanaVersion }}
+  count: 1
+  containers:
+      - name: kibana
+        resources:
+          requests:
+            memory: 0.5Gi
+            cpu: 0.5
+          limits:
+            memory: 1Gi
+            cpu: 1
+
+  elasticsearchRef:
+    name: "{{ .Values.esName }}"
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  podTemplate:
+    metadata:
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+{{- if eq .Values.oidc_provider.enabled "yes" }}
+  config:
+    xpack.security.authc.providers:
+      oidc.Google:
+        order: 0
+        realm: {{ .Values.oidc_provider.realm }}
+      basic.basic1:
+        order: 1
+{{- end }}

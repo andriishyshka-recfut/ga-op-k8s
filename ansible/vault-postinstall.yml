@@ -6,12 +6,16 @@
     - vars/main.yml
   vars:
     initial_setup: False
-    oidc_discovery_url: "{{ lookup('env','oidc_discovery_url') | trim }}"
-    oidc_client_id: "{{ lookup('env','oidc_client_id') | trim }}"
-    oidc_client_secret: "{{ lookup('env','oidc_client_secret') | trim }}"
+    oidc_discovery_url: "{{ lookup('env','TF_VAR_OidcDiscoveryUrl') | trim }}"
+    oidc_client_id: "{{ lookup('env','TF_VAR_OidcClientId') | trim }}"
+    oidc_client_secret: "{{ lookup('env','TF_VAR_OidcClientSecret') | trim }}"
     # vault_addr: "{{ lookup('env','vault_addr') }}"
 
   tasks:
+
+  # 
+  # - fail:
+  #     msg: "{{ oidc_discovery_url }}  - {{ oidc_client_id }} - {{ oidc_client_secret }}"
 
   - name: Import vault pre execution tasks
     import_tasks: includes/vault-port-forward.yml
@@ -22,7 +26,7 @@
   #       curl 127.0.0.1:8200
   #   register: register
   # - debug: msg="{{ register | to_nice_json }}"
-  #
+
   - name: Get vault status
     hashivault_status:
     environment:
@@ -96,7 +100,6 @@
     assert:
       that:
       - vault_token | length > 0
-      - ( initial_setup and oidc_setup ) or ( not initial_setup and not oidc_setup ) or oidc_setup
 
   - name: Configure vault
     block:
@@ -156,7 +159,7 @@
     - name: Create root policy
       hashivault_policy:
         name: "admin"
-        rules: "{{ lookup('file', 'vault-admin-policy.hcl' )}}"
+        rules: "{{ lookup('file', 'vault-admin-policy.hcl' ) }}"
       when: oidc_setup
       register: status
       retries: 3
@@ -176,10 +179,11 @@
     # Terraform vault provider will automaticaly read ~/.vault-token if no other options provided
     # https://www.terraform.io/docs/providers/vault/index.html#token
     # And stil not working becouse of https://github.com/hashicorp/terraform/issues/2430
-    - name: Create "~/.vault-token
+    - name: Create "~/.vault-token"
       copy:
         content: "{{ vault_token }}"
         dest: "~/.vault-token"
+        mode: 0700
 
     - name: Enable PKI secrets engine
       hashivault_secret_engine:
@@ -189,8 +193,11 @@
         config:
           max_lease_ttl: "86700h"
       register: response
-    - assert:
+
+    - name: Validate assertion
+      assert:
         that: response.rc == 0
+
     - name: Generate Root Cert
       hashivault_pki_ca:
         mount_point: "pki"
@@ -202,7 +209,7 @@
     - name: Create PKI policy
       hashivault_policy:
         name: "pki"
-        rules: "{{ lookup('file', 'vault-pki-policy.hcl' )}}"
+        rules: "{{ lookup('file', 'vault-pki-policy.hcl' ) }}"
       register: status
       retries: 3
       delay: 10
