@@ -152,7 +152,8 @@ spec:
           - name: GOOGLE_SHEET_RANGE_SKIP_RULE
             value: "WhiteListDomains!A1:A999999"
           - name: GOOGLE_SHEET_ID
-            value: "1hVTctTl3urHkW5YPgs-BJittVyoci4kj8CYfOZnTGFQ"
+            # value: "1hVTctTl3urHkW5YPgs-BJittVyoci4kj8CYfOZnTGFQ"
+            value: "1ixzDMJI_H7REfsVKZN6qlquimCoJGheOuK6WFr5Qz8o"
           - name: GOOGLE_CREDENTIALS_FILE_PATH
             value: /opt/magescanner/magescanner-google-service-key.json
       imagePullSecrets:
