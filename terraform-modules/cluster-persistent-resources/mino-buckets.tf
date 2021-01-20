@@ -2,7 +2,8 @@
 locals {
   buckets = [
     "maid",
-    "magescanner"
+    "magescanner-hash",
+    "magescanner-har"
   ]
 }
 
