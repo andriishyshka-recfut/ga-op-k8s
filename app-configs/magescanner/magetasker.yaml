@@ -17,24 +17,30 @@ spec:
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
         vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/auth-path: auth/k8s-sandbox
-        vault.hashicorp.com/agent-inject-secret-config: "secret/magescanner/magescanner"
+        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
+        vault.hashicorp.com/agent-inject-secret-mongo: "secret/mongo/production"
         vault.hashicorp.com/role: "magescanner"
-        vault.hashicorp.com/agent-inject-template-config: |
-          {{ with secret "secret/magescanner/magescanner" -}}
+        vault.hashicorp.com/agent-inject-template-es: |
+          {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
             export ELASTICSEARCH_PASSWORD="{{ .Data.password }}"
-            export ELASTICSEARCH_HOSTS=https://magescanner:$ELASTICSEARCH_PASSWORD@es23.regemini.com
-            mkdir -p /opt/magetasker/pki
-            echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magetasker/pki/ca.crt
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magetasker/pki/magetasker.key
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magetasker/pki/magetasker.crt
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
+            mkdir -p /opt/magescanner/pki
+            echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/upsertmage.key
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/upsertmage.crt
+          {{- end }}
+        vault.hashicorp.com/agent-inject-template-mongo: |
+          {{ with secret "secret/mongo/production" -}}
+            export MONGODB_USER="{{ .Data.MONGODB_BACKUP_USER }}"
+            export MONGODB_PASS="{{ .Data.MONGODB_BACKUP_PASSWORD }}"
           {{- end }}
     spec:
       containers:
       - name: magetasker
         image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.0.15
         command: ["sh"]
-        args: ["-c", "source /vault/secrets/config && /opt/app/magetasker"]
+        args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && /opt/app/magetasker"]
         # ports:
         # - containerPort: 8080
         env:
@@ -58,42 +64,30 @@ spec:
             value: 24h
           - name: DAILY_LIMIT
             value: "50000"
-          - name: MONGODB_USER
-            valueFrom:
-              secretKeyRef:
-                name: mongo
-                key: MONGODB_BACKUP_USER
-          - name: MONGODB_PASS
-            valueFrom:
-              secretKeyRef:
-                name: mongo
-                key: MONGODB_BACKUP_PASSWORD
           - name: MONGO_URI
             value: "mongodb://$(MONGODB_USER):$(MONGODB_PASS)@my-cluster-name-rs0:27017"
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap:9092
           - name: ELASTICSEARCH_CA_CRT_PATH
-            value: "/opt/magetasker/pki/ca.crt"
+            value: "/opt/magescanner/pki/ca.crt"
           - name: ELASTICSEARCH_CLIENT_KEY_PATH
-            value: "/opt/magetasker/pki/magetasker.key"
+            value: "/opt/magescanner/pki/upsertmage.key"
           - name: ELASTICSEARCH_CLIENT_CRT_PATH
-            value: "/opt/magetasker/pki/magetasker.crt"
-          - name : ELASTIC_APM_ACTIVE
-            value: "false"
-          # - name: ELASTIC_APM_SERVER_URLS
-          #   value: http://apm-monitoring-apm-http.monitoring:8200
-          # - name: ELASTIC_APM_SECRET_TOKEN
-          #   valueFrom:
-          #       secretKeyRef:
-          #         name: apm-token
-          #         key:  secret-token
-        resources:
-          requests:
-            memory: "30Mi"
-            cpu: "5m"
-          limits:
-            memory: "200Mi"
-            cpu: "50m"
+            value: "/opt/magescanner/pki/upsertmage.crt"
+          - name: ELASTIC_APM_SERVER_URL
+            value: http://apm-monitoring-apm-http.monitoring:8200
+          - name: ELASTIC_APM_SECRET_TOKEN
+            valueFrom:
+                secretKeyRef:
+                  name: apm-token
+                  key:  secret-token
+        # resources:
+        #   requests:
+        #     memory: "30Mi"
+        #     cpu: "5m"
+        #   limits:
+        #     memory: "200Mi"
+        #     cpu: "50m"
       imagePullSecrets:
       - name: harbor
 
@@ -114,11 +108,23 @@ spec:
       labels:
         app: magetasker-urlscan
       annotations:
-        sidecar.istio.io/proxyCPU: 5m
-        sidecar.istio.io/proxyMemory: 30M
+        sidecar.istio.io/inject: "false"
+        # sidecar.istio.io/proxyCPU: 5m
+        # sidecar.istio.io/proxyMemory: 30M
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/agent-inject-secret-mongo: "secret/mongo/production"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-mongo: |
+          {{ with secret "secret/mongo/production" -}}
+            export MONGODB_USER="{{ .Data.MONGODB_BACKUP_USER }}"
+            export MONGODB_PASS="{{ .Data.MONGODB_BACKUP_PASSWORD }}"
+          {{- end }}
     spec:
       containers:
       - name: magetasker-urlscan
+        command: ["sh"]
+        args: ["-c", "source /vault/secrets/mongo && /opt/app/magescanner"]
         image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.0.15
         env:
           - name: LOG_LEVEL
@@ -141,49 +147,23 @@ spec:
             value: 24h
           - name: DAILY_LIMIT
             value: "10000"
-          - name: MONGODB_USER
-            valueFrom:
-              secretKeyRef:
-                name: mongo
-                key: MONGODB_BACKUP_USER
-          - name: MONGODB_PASS
-            valueFrom:
-              secretKeyRef:
-                name: mongo
-                key: MONGODB_BACKUP_PASSWORD
           - name: MONGO_URI
             value: "mongodb://$(MONGODB_USER):$(MONGODB_PASS)@my-cluster-name-rs0:27017"
-
-          # - name: MONGODB_USER
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: mongo
-          #       key: MONGODB_BACKUP_USER
-          # - name: MONGODB_PASS
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: mongo
-          #       key: MONGODB_BACKUP_PASSWORD
-          # - name: MONGO_URI
-          #   value: "mongodb://$(MONGODB_USER):$(MONGODB_PASS)@my-cluster-name-rs0:27017"
-
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap:9092
-          - name : ELASTIC_APM_ACTIVE
-            value: "false"
-          # - name: ELASTIC_APM_SERVER_URLS
-          #   value: http://apm-monitoring-apm-http.monitoring:8200
-          # - name: ELASTIC_APM_SECRET_TOKEN
-          #   valueFrom:
-          #       secretKeyRef:
-          #         name: apm-token
-          #         key:  secret-token
-        resources:
-          requests:
-            memory: "30Mi"
-            cpu: "5m"
-          limits:
-            memory: "200Mi"
-            cpu: "50m"
+          - name: ELASTIC_APM_SERVER_URL
+            value: http://apm-monitoring-apm-http.monitoring:8200
+          - name: ELASTIC_APM_SECRET_TOKEN
+            valueFrom:
+                secretKeyRef:
+                  name: apm-token
+                  key:  secret-token
+        # resources:
+        #   requests:
+        #     memory: "30Mi"
+        #     cpu: "5m"
+        #   limits:
+        #     memory: "200Mi"
+        #     cpu: "50m"
       imagePullSecrets:
       - name: harbor

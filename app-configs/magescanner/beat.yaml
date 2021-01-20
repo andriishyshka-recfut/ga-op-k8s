@@ -13,12 +13,28 @@ spec:
       labels:
         app: beat-minion
       annotations:
-        sidecar.istio.io/proxyCPU: 5m
-        sidecar.istio.io/proxyMemory: 30M
+        sidecar.istio.io/inject: "false"
+        # sidecar.istio.io/proxyCPU: 5m
+        # sidecar.istio.io/proxyMemory: 30M
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-es: |
+          {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
+            export ELASTICSEARCH_PASSWORD="{{ .Data.password }}"
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
+            mkdir -p /opt/magescanner/pki
+            echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/upsertmage.key
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/upsertmage.crt
+          {{- end }}
     spec:
       containers:
       - name: beat-minion
         image: harbor.infra.digaweb.com/dev/beat:k8s-0.0.16
+        command: ["sh"]
+        args: ["-c", "source /vault/secrets/es && /opt/app/beat"]
         ports:
         - containerPort: 8080
         env:
@@ -40,26 +56,25 @@ spec:
             value: "{{.shopId}}"
           - name: ELASTIC_BULK_SIZE
             value: "2000"
-          # - name: ELASTIC_APM_SERVER_URL
-          #   value: http://apm-monitoring-apm-http.monitoring:8200
-          # - name: ELASTIC_APM_SECRET_TOKEN
-          #   valueFrom:
-          #       secretKeyRef:
-          #         name: apm-token
-          #         key:  secret-token
-          - name: ELASTICSEARCH_PASSWORD
+          - name: ELASTICSEARCH_CA_CRT_PATH
+            value: "/opt/magescanner/pki/ca.crt"
+          - name: ELASTICSEARCH_CLIENT_KEY_PATH
+            value: "/opt/magescanner/pki/upsertmage.key"
+          - name: ELASTICSEARCH_CLIENT_CRT_PATH
+            value: "/opt/magescanner/pki/upsertmage.crt"
+          - name: ELASTIC_APM_SERVER_URL
+            value: http://apm-monitoring-apm-http.monitoring:8200
+          - name: ELASTIC_APM_SECRET_TOKEN
             valueFrom:
                 secretKeyRef:
-                  name: magescanner-es-elastic-user
-                  key: elastic
-          - name: ELASTICSEARCH_HOSTS
-            value: https://elastic:$(ELASTICSEARCH_PASSWORD)@magescanner-es-http:9200
+                  name: apm-token
+                  key:  secret-token
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap:9092
           - name: WORKERS_PER_TOPIC
             value: "8"
           - name: REDIS_URI
-            value: redis://rfr-redisfailover-0/0
+            value: redis://rfs-redisfailover/0
           - name: REDIS_TTL
             value: "24h"
           - name: REDIS_MASTER
@@ -71,18 +86,6 @@ spec:
           limits:
             memory: "200Mi"
             cpu: "50m"
-        volumeMounts:
-        - name: es-ca
-          mountPath: "/etc/ssl/certs/es-ca.crt"
-          subPath: es-ca.crt
-          readOnly: true
-      volumes:
-       - name: es-ca
-         secret:
-           secretName: magescanner-es-cert
-           items:
-           - key: ca.crt
-             path: es-ca.crt
       imagePullSecrets:
       - name: harbor
 
@@ -103,13 +106,29 @@ spec:
       labels:
         app: beat-dome
       annotations:
-        sidecar.istio.io/proxyCPU: 5m
-        sidecar.istio.io/proxyMemory: 30M
+        sidecar.istio.io/inject: "false"
+        # sidecar.istio.io/proxyCPU: 5m
+        # sidecar.istio.io/proxyMemory: 30M
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-es: |
+          {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
+            export ELASTICSEARCH_PASSWORD="{{ .Data.password }}"
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
+            mkdir -p /opt/magescanner/pki
+            echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/upsertmage.key
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/upsertmage.crt
+          {{- end }}
     spec:
       containers:
       - name: beat-dome
         # image: harbor.infra.digaweb.com/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_TAG
         image: harbor.infra.digaweb.com/dev/beat:k8s-0.0.16
+        command: ["sh"]
+        args: ["-c", "source /vault/secrets/es && /opt/app/beat"]
         ports:
         - containerPort: 8080
         env:
@@ -129,49 +148,36 @@ spec:
             value: "dome-{{.sourceId}}"
           - name: ELASTIC_BULK_SIZE
             value: "2000"
-          # - name: ELASTIC_APM_SERVER_URL
-          #   value: http://apm-monitoring-apm-http.monitoring:8200
-          # - name: ELASTIC_APM_SECRET_TOKEN
-          #   valueFrom:
-          #       secretKeyRef:
-          #         name: apm-token
-          #         key:  secret-token
-          - name: ELASTICSEARCH_PASSWORD
+          - name: ELASTICSEARCH_CA_CRT_PATH
+            value: "/opt/magescanner/pki/ca.crt"
+          - name: ELASTICSEARCH_CLIENT_KEY_PATH
+            value: "/opt/magescanner/pki/upsertmage.key"
+          - name: ELASTICSEARCH_CLIENT_CRT_PATH
+            value: "/opt/magescanner/pki/upsertmage.crt"
+          - name: ELASTIC_APM_SERVER_URL
+            value: http://apm-monitoring-apm-http.monitoring:8200
+          - name: ELASTIC_APM_SECRET_TOKEN
             valueFrom:
                 secretKeyRef:
-                  name: magescanner-es-elastic-user
-                  key: elastic
-          - name: ELASTICSEARCH_HOSTS
-            value: https://elastic:$(ELASTICSEARCH_PASSWORD)@magescanner-es-http:9200
+                  name: apm-token
+                  key:  secret-token
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap:9092
           - name: WORKERS_PER_TOPIC
             value: "8"
           - name: REDIS_URI
-            value: redis://rfr-redisfailover-0/2
+            value: redis://rfs-redisfailover/2
           - name: REDIS_TTL
             value: "24h"
           - name: REDIS_MASTER
             value: mymaster
-        resources:
-          requests:
-            memory: "30Mi"
-            cpu: "5m"
-          limits:
-            memory: "200Mi"
-            cpu: "50m"
-        volumeMounts:
-        - name: es-ca
-          mountPath: "/etc/ssl/certs/es-ca.crt"
-          subPath: es-ca.crt
-          readOnly: true
-      volumes:
-       - name: es-ca
-         secret:
-           secretName: magescanner-es-cert
-           items:
-           - key: ca.crt
-             path: es-ca.crt
+        # resources:
+        #   requests:
+        #     memory: "30Mi"
+        #     cpu: "5m"
+        #   limits:
+        #     memory: "200Mi"
+        #     cpu: "50m"
       imagePullSecrets:
       - name: harbor
 
@@ -195,26 +201,25 @@ spec:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
-
         vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/auth-path: auth/k8s-sandbox
-        vault.hashicorp.com/agent-inject-secret-config: "secret/magescanner/elastic-prod"
+        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
         vault.hashicorp.com/role: "magescanner"
-        vault.hashicorp.com/agent-inject-template-config: |
-          {{ with secret "secret/magescanner/elastic-prod" -}}
+        vault.hashicorp.com/agent-inject-template-es: |
+          {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
             export ELASTICSEARCH_PASSWORD="{{ .Data.password }}"
-            export ELASTICSEARCH_HOSTS=https://magescanner:$ELASTICSEARCH_PASSWORD@es23.regemini.com
-            mkdir -p /opt/upsertmage/pki
-            echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/upsertmage/pki/ca.crt
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/upsertmage/pki/upsertmage.key
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/upsertmage/pki/upsertmage.crt
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
+            mkdir -p /opt/magescanner/pki
+            echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/upsertmage.key
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/upsertmage.crt
           {{- end }}
     spec:
       containers:
       - name: beat-mage
         image: harbor.infra.digaweb.com/dev/beat:k8s-0.0.19
         command: ["sh"]
-        args: ["-c", "source /vault/secrets/config && /opt/app/beat"]
+        args: ["-c", "source /vault/secrets/es && /opt/app/beat"]
         ports:
         - containerPort: 8080
         env:
@@ -263,56 +268,35 @@ spec:
           - name: ELASTIC_BULK_SIZE
             value: "2000"
           - name: ELASTICSEARCH_CA_CRT_PATH
-            value: "/opt/upsertmage/pki/ca.crt"
+            value: "/opt/magescanner/pki/ca.crt"
           - name: ELASTICSEARCH_CLIENT_KEY_PATH
-            value: "/opt/upsertmage/pki/upsertmage.key"
+            value: "/opt/magescanner/pki/upsertmage.key"
           - name: ELASTICSEARCH_CLIENT_CRT_PATH
-            value: "/opt/upsertmage/pki/upsertmage.crt"
-          - name : ELASTIC_APM_ACTIVE
-            value: "false"
-          # - name: ELASTIC_APM_SERVER_URL
-          #   value: http://apm-monitoring-apm-http.monitoring:8200
-          # - name: ELASTIC_APM_SECRET_TOKEN
-          #   valueFrom:
-          #       secretKeyRef:
-          #         name: apm-token
-          #         key:  secret-token
-          # - name: ELASTICSEARCH_PASSWORD
-          #   valueFrom:
-          #       secretKeyRef:
-          #         name: magescanner-es-elastic-user
-          #         key: elastic
-          # - name: ELASTICSEARCH_HOSTS
-          #   value: https://elastic:$(ELASTICSEARCH_PASSWORD)@magescanner-es-http:9200
+            value: "/opt/magescanner/pki/upsertmage.crt"
+          - name: ELASTIC_APM_SERVER_URL
+            value: http://apm-monitoring-apm-http.monitoring:8200
+          - name: ELASTIC_APM_SECRET_TOKEN
+            valueFrom:
+                secretKeyRef:
+                  name: apm-token
+                  key:  secret-token
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap:9092
           - name: WORKERS_PER_TOPIC
             value: "8"
           - name: REDIS_URI
-            value: redis://rfr-redisfailover-0/3
+            value: redis://rfs-redisfailover/3
           - name: REDIS_TTL
             value: "24h"
           - name: REDIS_MASTER
             value: mymaster
-        resources:
-          requests:
-            memory: "30Mi"
-            cpu: "5m"
-          limits:
-            memory: "200Mi"
-            cpu: "50m"
-      #   volumeMounts:
-      #   - name: es-ca
-      #     mountPath: "/etc/ssl/certs/es-ca.crt"
-      #     subPath: es-ca.crt
-      #     readOnly: true
-      # volumes:
-      #  - name: es-ca
-      #    secret:
-      #      secretName: magescanner-es-cert
-      #      items:
-      #      - key: ca.crt
-      #        path: es-ca.crt
+        # resources:
+        #   requests:
+        #     memory: "30Mi"
+        #     cpu: "5m"
+        #   limits:
+        #     memory: "200Mi"
+        #     cpu: "50m"
       imagePullSecrets:
       - name: harbor
 

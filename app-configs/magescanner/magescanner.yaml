@@ -13,41 +13,46 @@ spec:
       labels:
         app: magescanner
       annotations:
-        # sidecar.istio.io/inject: "false"
-        sidecar.istio.io/proxyCPU: 5m
-        sidecar.istio.io/proxyMemory: 30M
+        sidecar.istio.io/inject: "false"
+        # sidecar.istio.io/proxyCPU: 5m
+        # sidecar.istio.io/proxyMemory: 30M
         vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/auth-path: auth/k8s-sandbox
-        vault.hashicorp.com/agent-inject-secret-config: "secret/magescanner/magescanner"
-        vault.hashicorp.com/agent-inject-secret-mongo: "secret/mongo/magescanner"
+        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
+        vault.hashicorp.com/agent-inject-secret-mongo: "secret/mongo/production"
+        vault.hashicorp.com/agent-inject-secret-google_sa: "secret/magescanner/google_service_account"
         vault.hashicorp.com/role: "magescanner"
-        vault.hashicorp.com/agent-inject-template-config: |
-          {{ with secret "secret/magescanner/magescanner" -}}
+        vault.hashicorp.com/agent-inject-template-es: |
+          {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
             export ELASTICSEARCH_PASSWORD="{{ .Data.password }}"
-            export ELASTICSEARCH_HOSTS=https://magescanner:$ELASTICSEARCH_PASSWORD@es23.regemini.com
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
             mkdir -p /opt/magescanner/pki
             echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
             echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/upsertmage.key
             echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/upsertmage.crt
+          {{- end }}
+        vault.hashicorp.com/agent-inject-template-google_sa: |
+          {{ with secret "secret/magescanner/google_service_account" -}}
             echo "{{ .Data.GOOGLE_CREDENTIALS_FILE_PATH}}" | base64 -d > /opt/magescanner/magescanner-google-service-key.json
           {{- end }}
         vault.hashicorp.com/agent-inject-template-mongo: |
-          {{ with secret "secret/mongo/magescanner" -}}
-            export MONGODB_BACKUP_USER="{{ .Data.MONGODB_BACKUP_USER }}"
+          {{ with secret "secret/mongo/production" -}}
+            export MONGODB_USER="{{ .Data.MONGODB_BACKUP_USER }}"
+            export MONGODB_PASS="{{ .Data.MONGODB_BACKUP_PASSWORD }}"
           {{- end }}
     spec:
       containers:
       - name: magescanner
         image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.23
         command: ["sh"]
-        args: ["-c", "source /vault/secrets/config && source /vault/secrets/mongo && /opt/app/magescanner"]
-        resources:
-          requests:
-            memory: "30Mi"
-            cpu: "5m"
-          limits:
-            memory: "200Mi"
-            cpu: "50m"
+        args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && source /vault/secrets/google_sa && /opt/app/magescanner"]
+        # resources:
+        #   requests:
+        #     memory: "30Mi"
+        #     cpu: "5m"
+        #   limits:
+        #     memory: "200Mi"
+        #     cpu: "50m"
         ports:
         - containerPort: 8080
         env:
@@ -69,9 +74,9 @@ spec:
             # value: 8.8.8.8:53
             value: kube-dns.kube-system
           - name: MINIO_URL
-            value: minio.infra.digaweb.com:9000
+            value: minio.p.digaweb.com:9000
           - name: MINIO_BUCKET_NAME
-            value: minio-magescanner-ardent-rarity-239115
+            value: minio-maid-orbital-wording-233917
           - name: MINIO_ACCESS_KEY
             valueFrom:
               secretKeyRef:
@@ -90,22 +95,10 @@ spec:
             value: artifact
           - name: MONGODB_ATTACKER_COLLECTION
             value: mage_attacker
-          - name: MONGODB_USER
-            valueFrom:
-              secretKeyRef:
-                name: mongo
-                key: MONGODB_BACKUP_USER
-          - name: MONGODB_PASS
-            valueFrom:
-              secretKeyRef:
-                name: mongo
-                key: MONGODB_BACKUP_PASSWORD
           - name: MONGODB_URI
             value: "mongodb://$(MONGODB_USER):$(MONGODB_PASS)@my-cluster-name-rs0:27017"
           - name: MINIO_URL
             value: minio.infra.digaweb.com:9005
-          - name : ELASTIC_APM_ACTIVE
-            value: "false"
           - name : ELASTICSEARCH_HEALTH_CHECK
             value: "false"
           - name: ELASTICSEARCH_CA_CRT_PATH
@@ -114,20 +107,13 @@ spec:
             value: "/opt/magescanner/pki/upsertmage.key"
           - name: ELASTICSEARCH_CLIENT_CRT_PATH
             value: "/opt/magescanner/pki/upsertmage.crt"
-          # - name: ELASTIC_APM_SERVER_URLS
-          #   value: http://apm-monitoring-apm-http.monitoring:8200
-          # - name: ELASTIC_APM_SECRET_TOKEN
-          #   valueFrom:
-          #       secretKeyRef:
-          #         name: apm-token
-          #         key:  secret-token
-          # - name: ELASTICSEARCH_PASSWORD
-          #   valueFrom:
-          #       secretKeyRef:
-          #         name: magescanner-es-elastic-user
-          #         key: elastic
-          # - name: ELASTICSEARCH_HOSTS
-          #   value: https://elastic:$(ELASTICSEARCH_PASSWORD)@magescanner-es-http:9200
+          - name: ELASTIC_APM_SERVER_URL
+            value: http://apm-monitoring-apm-http.monitoring:8200
+          - name: ELASTIC_APM_SECRET_TOKEN
+            valueFrom:
+                secretKeyRef:
+                  name: apm-token
+                  key:  secret-token
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap:9092
           - name: SCAN_TASK_QUEUE_NAME
