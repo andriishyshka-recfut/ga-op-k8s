@@ -7,15 +7,23 @@ spec:
   selector:
     matchLabels:
       app: splash-vpn
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
         app: splash-vpn
       annotations:
-        sidecar.istio.io/inject: "false"    
-        # sidecar.istio.io/proxyCPU: 10m
-        # sidecar.istio.io/proxyMemory: 50M
+        sidecar.istio.io/inject: "false"
+        # sidecar.istio.io/proxyCPU: 5m
+        # sidecar.istio.io/proxyMemory: 30M
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/agent-inject-secret-vpn: "secret/magescanner/splash-vpn"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-secret-vpn: |
+          {{ with secret "secret/magescanner/splash-vpn"" -}}
+            echo "{{ .Data.ovpn_client_conf}}" | base64 -d > /etc/openvpn/ovpn.conf
+          {{- end }}
     spec:
       initContainers:
       - name: vpn-route-init
@@ -31,7 +39,7 @@ spec:
       - name: splash-vpn
         image: harbor.infra.digaweb.com/artifact/splash-vpn:test-0.0.6
         command: ["/bin/sh","-c"]
-        args: ["cd /etc/openvpn && /usr/sbin/openvpn --config *.conf --script-security 2 --up /usr/local/bin/sockd.sh --route-up /tmp/route/route-override.sh"]
+        args: ["source /vault/secrets/vpn %% cd /etc/openvpn && /usr/sbin/openvpn --config *.conf --script-security 2 --up /usr/local/bin/sockd.sh --route-up /tmp/route/route-override.sh"]
         stdin: true
         tty: true
         securityContext:
@@ -40,17 +48,13 @@ spec:
             add:
               - NET_ADMIN
         volumeMounts:
-          - name: vpn
-            mountPath: /etc/openvpn/ovpn.conf
-            subPath: ovpn.conf
-            readOnly: true
-          - name: dev-net
-            mountPath: /dev/net/tun
+          # - name: dev-net
+          #   mountPath: /dev/net/tun
           - name: route
             mountPath: /tmp/route
         ports:
         - containerPort: 1080
-        env:
+        # env:
         # resources:
         #   requests:
         #     memory: "30Mi"
@@ -59,21 +63,15 @@ spec:
         #     memory: "500Mi"
         #     cpu: "300m"
       volumes:
-      - name: vpn
-        secret:
-          secretName: vpn-secret-config
-          items:
-              - key: ovpn.conf
-                path: ovpn.conf
       - name: route-script
         configMap:
           name: route-script
           items:
             - key: route-override.sh
               path: route-override.sh
-      - name: dev-net
-        hostPath:
-          path: /dev/net/tun
+      # - name: dev-net
+      #   hostPath:
+      #     path: /dev/net/tun
       - name: route
         emptyDir: {}
       imagePullSecrets:

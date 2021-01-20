@@ -2,7 +2,7 @@ apiVersion: databases.spotahome.com/v1
 kind: RedisFailover
 metadata:
   name: redisfailover
-  namespace: maid
+  namespace: magescanner
 spec:
   sentinel:
     replicas: 3
@@ -28,7 +28,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-commander
-  namespace: maid
+  namespace: magescanner
 spec:
   replicas: 1
   selector:
@@ -73,7 +73,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: redis-commander-service
-  namespace: maid
+  namespace: magescanner
 spec:
   selector:
     app: redis-commander

@@ -15,6 +15,9 @@ path "secret/magescanner/google_service_account/*" {
 path "secret/magescanner/geoip_secret_config/*" {
   capabilities = ["read","list"]
 }
+path "secret/magescanner/splash-vpn/*" {
+  capabilities = ["read","list"]
+}
 path "secret/oidc_google_prod" {
   capabilities = ["read","list"]
 }
