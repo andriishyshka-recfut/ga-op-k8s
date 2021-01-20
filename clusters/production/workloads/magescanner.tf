@@ -1,8 +1,4 @@
 ########## Vault
-data "vault_auth_backend" "kubernetes" {
-  path = "k8s-production-blue"
-}
-
 resource "vault_policy" "magescanner" {
   name = "magescanner"
 
@@ -37,11 +33,8 @@ resource "vault_kubernetes_auth_backend_role" "magescanner_role" {
 
 
 ######### Minio
-data "vault_generic_secret" "minio_creds" {
-  path = "secret/minio/users"
-}
 
-resource "kubernetes_secret" "minio_credentials" {
+resource "kubernetes_secret" "minio_credentials_magescanner" {
   metadata {
     name      = "minio-credentials"
     namespace = "magescanner"
@@ -54,11 +47,6 @@ resource "kubernetes_secret" "minio_credentials" {
 }
 
 ########## Harbor
-
-data "vault_generic_secret" "harbor_token" {
-  path = "secret/goharbor/docker_login"
-}
-
 
 resource "kubernetes_secret" "harbor_magescanner" {
   metadata {
@@ -84,14 +72,6 @@ DOCKER
 }
 
 ############## APM
-data "kubernetes_secret" "apm_token" {
-  metadata {
-    name      = "apm-monitoring-apm-token"
-    namespace = "monitoring"
-  }
-  depends_on = [module.monitoring-elastic]
-}
-
 resource "kubernetes_secret" "apm_token_magescanner" {
   metadata {
     name      = "apm-token"
