@@ -3,7 +3,8 @@ locals {
   buckets = [
     "maid",
     "magescanner-hash",
-    "magescanner-har"
+    "magescanner-har",
+    "magescenner-splash"
   ]
 }
 
