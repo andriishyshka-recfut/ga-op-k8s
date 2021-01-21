@@ -6,23 +6,45 @@ metadata:
 spec:
   sentinel:
     replicas: 3
+    podAnnotations:
+        sidecar.istio.io/proxyCPU: 10m
+        sidecar.istio.io/proxyMemory: 70M
     resources:
       requests:
-        cpu: 100m
+        cpu: 10m
       limits:
-        memory: 100Mi
+        memory: 70Mi
   redis:
     replicas: 3
     podAnnotations:
-      traffic.sidecar.istio.io/excludeOutboundPorts: "6379"
-      traffic.sidecar.istio.io/excludeInboundPorts: "6379"
+        sidecar.istio.io/proxyCPU: 50m
+        sidecar.istio.io/proxyMemory: 300M
     resources:
       requests:
-        cpu: 100m
-        memory: 100Mi
+        cpu: 10m
+        memory: 70Mi
       limits:
         cpu: 400m
         memory: 500Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rfr-redisfailover-0
+  namespace: magescanner
+spec:
+  clusterIP: None
+  selector:
+    statefulset.kubernetes.io/pod-name: rfr-redisfailover-0
+  ports:
+    - name: port1
+      protocol: TCP
+      port: 26379
+      targetPort: 26379
+    - name: port2
+      protocol: TCP
+      port: 6379
+      targetPort: 6379
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -39,6 +61,9 @@ spec:
       labels:
         app: redis-commander
         tier: backend
+      annotations:
+        sidecar.istio.io/proxyCPU: 5m
+        sidecar.istio.io/proxyMemory: 10M
     spec:
       containers:
       - name: redis-commander
@@ -57,10 +82,13 @@ spec:
             port: 8081
           initialDelaySeconds: 10
           timeoutSeconds: 5
-        #resources:
-        #  limits:
-        #    cpu: "500m"
-        #    memory: "512M"
+        resources:
+         requests:
+           cpu: 5m
+           memory: 50Mi
+         limits:
+           cpu: 500m
+           memory: 512Mi
         securityContext:
           runAsNonRoot: true
           readOnlyRootFilesystem: false

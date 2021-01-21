@@ -16,22 +16,21 @@ spec:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
-        vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/auth-path: auth/k8s-production-blue
-        vault.hashicorp.com/agent-inject-secret-geoip: "secret/magescanner/geoip_secret_config"
-        vault.hashicorp.com/role: "magescanner"
-        vault.hashicorp.com/agent-inject-template-geoip: |
-          {{ with secret "secret/magescanner/geoip_secret_confi" -}}
-            export GEOIPUPDATE_ACCOUNT_ID="{{ .Data.GEOIPUPDATE_ACCOUNT_ID }}"
-            export GEOIPUPDATE_LICENSE_KEY="{{ .Data.GEOIPUPDATE_LICENSE_KEY }}"
-          {{- end }}
+        # vault.hashicorp.com/agent-inject: "true"
+        # vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        # vault.hashicorp.com/agent-inject-secret-geoip: "secret/magescanner/geoip_secret_config"
+        # vault.hashicorp.com/role: "magescanner"
+        # vault.hashicorp.com/agent-inject-template-geoip: |
+        #   {{ with secret "secret/magescanner/geoip_secret_config" -}}
+        #     export GEOIPUPDATE_ACCOUNT_ID="{{ .Data.GEOIPUPDATE_ACCOUNT_ID }}"
+        #     export GEOIPUPDATE_LICENSE_KEY="{{ .Data.GEOIPUPDATE_LICENSE_KEY }}"
+        #   {{- end }}
     spec:
-      # initContainers:
-      containers:
+      initContainers:
       - name: geoip-create-db
         image: maxmindinc/geoipupdate:latest
-        command: ['sh', '-c', "sleep","10000"]
-        # command: ['sh', '-c', "ls /vault/secrets/ && source /vault/secrets/geoip && timeout 60 /usr/bin/entry.sh; echo waiting for myservice; exit"]
+        # command: ['sh', '-c', "source /vault/secrets/geoip && timeout 60 /usr/bin/entry.sh; echo waiting for myservice; exit"]
+        command: ['sh', '-c', "timeout 60 /usr/bin/entry.sh; echo waiting for myservice; exit"]
         ports:
         - containerPort: 8080
         env:
@@ -39,121 +38,141 @@ spec:
             value: INFO
           - name: SERVER_PORT
             value: "8080"
+          - name: GEOIPUPDATE_ACCOUNT_ID
+            valueFrom:
+              secretKeyRef:
+                name: geoip-secret-config
+                key: GEOIPUPDATE_ACCOUNT_ID
+          - name: GEOIPUPDATE_LICENSE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: geoip-secret-config
+                key: GEOIPUPDATE_LICENSE_KEY
           - name: GEOIPUPDATE_EDITION_IDS
             value: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
           - name: GEOIPUPDATE_FREQUENCY
             value: "24"
           - name: GEOIPUPDATE_PRESERVE_FILE_TIMES
             value: "1"
-        # resources:
-        #   requests:
-        #     memory: "30Mi"
-        #     cpu: "3m"
-        #   limits:
-        #     memory: "200Mi"
-        #     cpu: "50m"
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "3m"
+          limits:
+            memory: "200Mi"
+            cpu: "50m"
+      containers:
+      - name: geoip
+        image: harbor.infra.digaweb.com/artifact/geoip:k8s-test-0.0.5
+        ports:
+        - containerPort: 8080
+        env:
+          - name: LOG_LEVEL
+            value: INFO
+          - name: SERVER_PORT
+            value: "8080"
+          - name: DATABASE_PATH
+            value: "/usr/share/GeoIP"
+          - name: DATABASE_NAME_REGEXP
+            value: "^GeoLite2-(\\w+).mmdb$"
+          - name: DATABASE_UPDATE_STATE_DELAY_MIN
+            value: "15"
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "5m"
+          limits:
+            memory: "200Mi"
+            cpu: "50m"
+        volumeMounts:
+        - name: geoip-magescanner
+          mountPath: "/usr/share/GeoIP"
 
-      # - name: geoip
-      #   image: harbor.infra.digaweb.com/artifact/geoip:k8s-test-0.0.5
-      #   ports:
-      #   - containerPort: 8080
-      #   env:
-      #     - name: LOG_LEVEL
-      #       value: INFO
-      #     - name: SERVER_PORT
-      #       value: "8080"
-      #     - name: DATABASE_PATH
-      #       value: "/usr/share/GeoIP"
-      #     - name: DATABASE_NAME_REGEXP
-      #       value: "^GeoLite2-(\\w+).mmdb$"
-      #     - name: DATABASE_UPDATE_STATE_DELAY_MIN
-      #       value: "15"
-      #   # resources:
-      #   #   requests:
-      #   #     memory: "30Mi"
-      #   #     cpu: "5m"
-      #   #   limits:
-      #   #     memory: "200Mi"
-      #   #     cpu: "50m"
-      #   volumeMounts:
-      #   - name: geoip-magescanner
-      #     mountPath: "/usr/share/GeoIP"
-#
-#       - name: geoip-update
-#         image: maxmindinc/geoipupdate:latest
-#         ports:
-#         - containerPort: 8080
-#         env:
-#           - name: LOG_LEVEL
-#             value: INFO
-#           - name: SERVER_PORT
-#             value: "8080"
-#           - name: GEOIPUPDATE_EDITION_IDS
-#             value: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
-#           - name: GEOIPUPDATE_FREQUENCY
-#             value: "24"
-#           - name: GEOIPUPDATE_PRESERVE_FILE_TIMES
-#             value: "1"
-#         resources:
-#           requests:
-#             memory: "30Mi"
-#             cpu: "3m"
-#           limits:
-#             memory: "200Mi"
-#             cpu: "50m"
-#         volumeMounts:
-#         - name: geoip-magescanner
-#           mountPath: "/usr/share/GeoIP"
+      - name: geoip-update
+        image: maxmindinc/geoipupdate:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: LOG_LEVEL
+            value: INFO
+          - name: SERVER_PORT
+            value: "8080"
+          - name: GEOIPUPDATE_ACCOUNT_ID
+            valueFrom:
+              secretKeyRef:
+                name: geoip-secret-config
+                key: GEOIPUPDATE_ACCOUNT_ID
+          - name: GEOIPUPDATE_LICENSE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: geoip-secret-config
+                key: GEOIPUPDATE_LICENSE_KEY
+          - name: GEOIPUPDATE_EDITION_IDS
+            value: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
+          - name: GEOIPUPDATE_FREQUENCY
+            value: "24"
+          - name: GEOIPUPDATE_PRESERVE_FILE_TIMES
+            value: "1"
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "3m"
+          limits:
+            memory: "200Mi"
+            cpu: "50m"
+        volumeMounts:
+        - name: geoip-magescanner
+          mountPath: "/usr/share/GeoIP"
       volumes:
         - name: geoip-magescanner
           emptyDir: {}
       imagePullSecrets:
       - name: harbor
-#
-# ---
-#
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: geoip-create-db
-#   namespace: magescanner
-# spec:
-#   selector:
-#     app: geoip-create-db
-#   ports:
-#     - name: tcp
-#       protocol: TCP
-#       port: 8080
-#       targetPort: 8080
-#
-# ---
-#
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: geoip-update
-#   namespace: magescanner
-# spec:
-#   selector:
-#     app: geoip-update
-#   ports:
-#     - name: tcp
-#       protocol: TCP
-#       port: 8080
-#       targetPort: 8080
-#
-# ---
-#
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: geoip
-#   namespace: magescanner
-# spec:
-#   selector:
-#     app: geoip
-#   ports:
-#     - name: tcp
-#       protocol: TCP
-#       port: 8080
-#       targetPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: geoip-create-db
+  namespace: magescanner
+spec:
+  selector:
+    app: geoip-create-db
+  ports:
+    - name: tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: geoip-update
+  namespace: magescanner
+spec:
+  selector:
+    app: geoip-update
+  ports:
+    - name: tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: geoip
+  namespace: magescanner
+spec:
+  selector:
+    app: geoip
+  ports:
+    - name: tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080

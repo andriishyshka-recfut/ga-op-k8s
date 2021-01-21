@@ -28,7 +28,6 @@ spec:
             echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
             echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/client.key
             echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/client.crt
-
             export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
           {{- end }}
         vault.hashicorp.com/agent-inject-template-google_sa: |
@@ -37,13 +36,12 @@ spec:
           {{- end }}
         vault.hashicorp.com/agent-inject-template-mongo: |
           {{ with secret "secret/mongo/production" -}}
-            export MONGODB_USER="{{ .Data.MONGODB_USER_ADMIN_USER }}"
-            export MONGODB_PASS="{{ .Data.MONGODB_USER_ADMIN_PASSWORD }}"
+            export MONGODB_URI=mongodb://{{ .Data.MONGODB_BACKUP_USER }}:{{ .Data.MONGODB_BACKUP_PASSWORD }}@my-cluster-name-rs0.mongo:27017
           {{- end }}
     spec:
       containers:
       - name: magescanner
-        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.23
+        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.25
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && source /vault/secrets/google_sa && /opt/app/magescanner"]
         # resources:
@@ -57,7 +55,7 @@ spec:
         - containerPort: 8080
         env:
           - name: THREAD_COUNT
-            value: "20"
+            value: "10"
           - name: COMMIT_CAPACITY
             value: "2000"
           - name: SPLASH_URL
@@ -71,10 +69,10 @@ spec:
           - name: GEOIP_URL
             value: http://geoip:8080
           - name: DNS_HOST
+            value: kube-dns.kube-system:53
             # value: 8.8.8.8:53
-            value: kube-dns.kube-system
           - name: MINIO_URL
-            value: minio.p.digaweb.com:9000
+            value: minio.minio:9000
           - name: MINIO_HAR_BUCKET_NAME
             value: minio-magescanner-har-orbital-wording-233917
           - name: MINIO_HASH_BUCKET_NAME
@@ -91,27 +89,10 @@ spec:
                 key: secretkey
           - name: MINIO_PUT
             value: "true"
-          # - name: MINIO_TOKEN
-          #   value:
           - name: MONGODB_ATTACKER_DB
             value: artifact
           - name: MONGODB_ATTACKER_COLLECTION
-            value: mage_attacker
-          - name: MONGO_USER
-            valueFrom:
-                  secretKeyRef:
-                    name: mongo
-                    key: MONGODB_BACKUP_USER
-          - name: MONGO_PASS
-            valueFrom:
-                  secretKeyRef:
-                    name: mongo
-                    key:  MONGODB_BACKUP_PASSWORD
-          - name: MONGODB_URI
-            value: "mongodb://$(MONGODB_USER):$(MONGODB_PASS)@my-cluster-name-rs0.mongo:27017"
-            # value: 'mongodb://$(MONGO_USER):$(MONGO_PASS)@my-cluster-name-rs0-0.mongo:27017,my-cluster-name-rs0-1.mongo:27017,my-cluster-name-rs0-2.mongo:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0'
-          - name: MINIO_URL
-            value: minio.infra.digaweb.com:9005
+            value: mage_attacker0-=
           - name : ELASTICSEARCH_HEALTH_CHECK
             value: "false"
           - name: ELASTICSEARCH_CA_CRT_PATH
@@ -132,7 +113,7 @@ spec:
           # - name: SCAN_TASK_QUEUE_NAME
           #   value: mage.task.target
           - name: SCAN_TASK_QUEUE_NAME
-            value: mage.task.target.test          
+            value: mage.task.target.test
           - name: STATUS_TASK_QUEUE_NAME
             value: mage.task.scanned
           - name: SCAN_RESULT_QUEUE_NAME
