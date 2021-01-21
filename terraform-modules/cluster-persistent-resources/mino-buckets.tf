@@ -4,7 +4,7 @@ locals {
     "maid",
     "magescanner-hash",
     "magescanner-har",
-    "magescenner-splash"
+    "magescanner-splash"
   ]
 }
 
