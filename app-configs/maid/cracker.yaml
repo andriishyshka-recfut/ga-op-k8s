@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
       - name: maid-cracker
-        image:  harbor.infra.digaweb.com/maid/cracker:v1.1.1
+        image:  harbor.infra.digaweb.com/maid/cracker:v1.1.2
         command: ["sh"]
         args:
             [ '-c', 'source /vault/secrets/config && /opt/app/cracker']
