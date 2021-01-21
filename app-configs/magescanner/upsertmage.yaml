@@ -22,12 +22,11 @@ spec:
         vault.hashicorp.com/role: "magescanner"
         vault.hashicorp.com/agent-inject-template-es: |
           {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
-            export ELASTICSEARCH_PASSWORD="{{ .Data.password }}"
             export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
             mkdir -p /opt/magescanner/pki
             echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/upsertmage.key
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/upsertmage.crt
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/client.key
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/client.crt
           {{- end }}
     spec:
       containers:
@@ -63,9 +62,9 @@ spec:
           - name: ELASTICSEARCH_CA_CRT_PATH
             value: "/opt/magescanner/pki/ca.crt"
           - name: ELASTICSEARCH_CLIENT_KEY_PATH
-            value: "/opt/magescanner/pki/upsertmage.key"
+            value: "/opt/magescanner/pki/client.key"
           - name: ELASTICSEARCH_CLIENT_CRT_PATH
-            value: "/opt/magescanner/pki/upsertmage.crt"
+            value: "/opt/magescanner/pki/client.crt"
           - name: ELASTIC_APM_SERVER_URL
             value: http://apm-monitoring-apm-http.monitoring:8200
           - name: ELASTIC_APM_SECRET_TOKEN
@@ -74,7 +73,7 @@ spec:
                   name: apm-token
                   key:  secret-token
           - name: KAFKA_BROKERS
-            value: kafka-cluster-kafka-bootstrap:9092
+            value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name: REDIS_URI
             value: redis://rfs-redisfailover/3
           - name: REDIS_TTL

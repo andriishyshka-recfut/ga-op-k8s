@@ -22,17 +22,17 @@ spec:
         vault.hashicorp.com/role: "magescanner"
         vault.hashicorp.com/agent-inject-template-es: |
           {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
-            export ELASTICSEARCH_PASSWORD="{{ .Data.password }}"
-            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
             mkdir -p /opt/magescanner/pki
             echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/upsertmage.key
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/upsertmage.crt
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/client.key
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/client.crt
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
+            export ELASTICSEARCH_HEALTH_CHECK=FALSE
           {{- end }}
     spec:
       containers:
       - name: beat-minion
-        image: harbor.infra.digaweb.com/dev/beat:k8s-0.0.16
+        image: harbor.infra.digaweb.com/dev/beat:k8s-0.0.20
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && /opt/app/beat"]
         ports:
@@ -59,9 +59,9 @@ spec:
           - name: ELASTICSEARCH_CA_CRT_PATH
             value: "/opt/magescanner/pki/ca.crt"
           - name: ELASTICSEARCH_CLIENT_KEY_PATH
-            value: "/opt/magescanner/pki/upsertmage.key"
+            value: "/opt/magescanner/pki/client.key"
           - name: ELASTICSEARCH_CLIENT_CRT_PATH
-            value: "/opt/magescanner/pki/upsertmage.crt"
+            value: "/opt/magescanner/pki/client.crt"
           - name: ELASTIC_APM_SERVER_URL
             value: http://apm-monitoring-apm-http.monitoring:8200
           - name: ELASTIC_APM_SECRET_TOKEN
@@ -70,7 +70,7 @@ spec:
                   name: apm-token
                   key:  secret-token
           - name: KAFKA_BROKERS
-            value: kafka-cluster-kafka-bootstrap:9092
+            value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name: WORKERS_PER_TOPIC
             value: "8"
           - name: REDIS_URI
@@ -79,13 +79,13 @@ spec:
             value: "24h"
           - name: REDIS_MASTER
             value: mymaster
-        resources:
-          requests:
-            memory: "30Mi"
-            cpu: "5m"
-          limits:
-            memory: "200Mi"
-            cpu: "50m"
+        # resources:
+        #   requests:
+        #     memory: "30Mi"
+        #     cpu: "5m"
+        #   limits:
+        #     memory: "200Mi"
+        #     cpu: "50m"
       imagePullSecrets:
       - name: harbor
 
@@ -115,18 +115,18 @@ spec:
         vault.hashicorp.com/role: "magescanner"
         vault.hashicorp.com/agent-inject-template-es: |
           {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
-            export ELASTICSEARCH_PASSWORD="{{ .Data.password }}"
-            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
             mkdir -p /opt/magescanner/pki
             echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/upsertmage.key
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/upsertmage.crt
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/client.key
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/client.crt
+
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
+            export ELASTICSEARCH_HEALTH_CHECK=FALSE
           {{- end }}
     spec:
       containers:
       - name: beat-dome
-        # image: harbor.infra.digaweb.com/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_TAG
-        image: harbor.infra.digaweb.com/dev/beat:k8s-0.0.16
+        image: harbor.infra.digaweb.com/dev/beat:k8s-0.0.20
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && /opt/app/beat"]
         ports:
@@ -151,9 +151,9 @@ spec:
           - name: ELASTICSEARCH_CA_CRT_PATH
             value: "/opt/magescanner/pki/ca.crt"
           - name: ELASTICSEARCH_CLIENT_KEY_PATH
-            value: "/opt/magescanner/pki/upsertmage.key"
+            value: "/opt/magescanner/pki/client.key"
           - name: ELASTICSEARCH_CLIENT_CRT_PATH
-            value: "/opt/magescanner/pki/upsertmage.crt"
+            value: "/opt/magescanner/pki/client.crt"
           - name: ELASTIC_APM_SERVER_URL
             value: http://apm-monitoring-apm-http.monitoring:8200
           - name: ELASTIC_APM_SECRET_TOKEN
@@ -162,7 +162,7 @@ spec:
                   name: apm-token
                   key:  secret-token
           - name: KAFKA_BROKERS
-            value: kafka-cluster-kafka-bootstrap:9092
+            value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name: WORKERS_PER_TOPIC
             value: "8"
           - name: REDIS_URI
@@ -207,17 +207,16 @@ spec:
         vault.hashicorp.com/role: "magescanner"
         vault.hashicorp.com/agent-inject-template-es: |
           {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
-            export ELASTICSEARCH_PASSWORD="{{ .Data.password }}"
             export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
             mkdir -p /opt/magescanner/pki
             echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/upsertmage.key
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/upsertmage.crt
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/client.key
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/client.crt
           {{- end }}
     spec:
       containers:
       - name: beat-mage
-        image: harbor.infra.digaweb.com/dev/beat:k8s-0.0.19
+        image: harbor.infra.digaweb.com/dev/beat:k8s-0.0.20
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && /opt/app/beat"]
         ports:
@@ -270,9 +269,9 @@ spec:
           - name: ELASTICSEARCH_CA_CRT_PATH
             value: "/opt/magescanner/pki/ca.crt"
           - name: ELASTICSEARCH_CLIENT_KEY_PATH
-            value: "/opt/magescanner/pki/upsertmage.key"
+            value: "/opt/magescanner/pki/client.key"
           - name: ELASTICSEARCH_CLIENT_CRT_PATH
-            value: "/opt/magescanner/pki/upsertmage.crt"
+            value: "/opt/magescanner/pki/client.crt"
           - name: ELASTIC_APM_SERVER_URL
             value: http://apm-monitoring-apm-http.monitoring:8200
           - name: ELASTIC_APM_SECRET_TOKEN
@@ -281,7 +280,7 @@ spec:
                   name: apm-token
                   key:  secret-token
           - name: KAFKA_BROKERS
-            value: kafka-cluster-kafka-bootstrap:9092
+            value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name: WORKERS_PER_TOPIC
             value: "8"
           - name: REDIS_URI

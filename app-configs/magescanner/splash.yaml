@@ -7,12 +7,13 @@ spec:
   selector:
     matchLabels:
       app: splash
-  replicas: 3
+  replicas: 5
   template:
     metadata:
       labels:
         app: splash
       annotations:
+        sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 10m
         # sidecar.istio.io/proxyMemory: 50M
     spec:
@@ -24,19 +25,19 @@ spec:
         imagePullPolicy: Always
         name: goofys
         resources:
-          # limits:
-          #   cpu: 100m
-          #   memory: 200Mi
-          # requests:
-          #   cpu: 10m
-          #   memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
         env:
-          - name: MINIO_ACCESS_KEY
+          - name: AWS_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:
                 name: minio-credentials
                 key: accesskey
-          - name: MINIO_SECRET_KEY
+          - name: AWS_SECRET_ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 name: minio-credentials
@@ -50,7 +51,7 @@ spec:
           - "777"
           - --file-mode
           - "777"
-          - minio-maid-orbital-wording-233917
+          -  minio-magescanner-splash-orbital-wording-233917
           - /mnt/s3
         volumeMounts:
           - name: filters
@@ -84,13 +85,13 @@ spec:
           mountPath: /etc/splash/filters/
         - name: proxy-profiles
           mountPath: /etc/splash/proxy-profiles/
-        # resources:
-        #   requests:
-        #     memory: "30Mi"
-        #     cpu: "5m"
-        #   limits:
-        #     memory: "500Mi"
-        #     cpu: "300m"
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "5m"
+          limits:
+            memory: "500Mi"
+            cpu: "300m"
         ports:
         - containerPort: 1080
       volumes:

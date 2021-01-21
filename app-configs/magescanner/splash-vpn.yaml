@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: splash-vpn
-  replicas: 1
+  replicas: 5
   template:
     metadata:
       labels:
@@ -21,7 +21,7 @@ spec:
         vault.hashicorp.com/agent-inject-secret-vpn: "secret/magescanner/splash-vpn"
         vault.hashicorp.com/role: "magescanner"
         vault.hashicorp.com/agent-inject-template-secret-vpn: |
-          {{ with secret "secret/magescanner/splash-vpn"" -}}
+          {{ with secret "secret/magescanner/splash-vpn" -}}
             echo "{{ .Data.ovpn_client_conf}}" | base64 -d > /etc/openvpn/ovpn.conf
           {{- end }}
     spec:
@@ -39,7 +39,7 @@ spec:
       - name: splash-vpn
         image: harbor.infra.digaweb.com/artifact/splash-vpn:test-0.0.6
         command: ["/bin/sh","-c"]
-        args: ["source /vault/secrets/vpn %% cd /etc/openvpn && /usr/sbin/openvpn --config *.conf --script-security 2 --up /usr/local/bin/sockd.sh --route-up /tmp/route/route-override.sh"]
+        args: ["cd /etc/openvpn && /usr/sbin/openvpn --config *.conf --script-security 2 --up /usr/local/bin/sockd.sh --route-up /tmp/route/route-override.sh"]
         stdin: true
         tty: true
         securityContext:
@@ -54,14 +54,14 @@ spec:
             mountPath: /tmp/route
         ports:
         - containerPort: 1080
-        # env:
-        # resources:
-        #   requests:
-        #     memory: "30Mi"
-        #     cpu: "5m"
-        #   limits:
-        #     memory: "500Mi"
-        #     cpu: "300m"
+        env:
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "5m"
+          limits:
+            memory: "500Mi"
+            cpu: "300m"
       volumes:
       - name: route-script
         configMap:

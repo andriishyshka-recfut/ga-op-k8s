@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mage-target-import-attacker
+  namespace: magescanner
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      containers:
+      - name: mage-target-import-attacker
+        image: mongo
+        command: ["bash",  "-c"]
+        args:
+         - apt-get update && apt-get install wget -y ;
+           wget https://dl.min.io/client/mc/release/linux-amd64/mc ;
+           chmod +x mc ;
+           ./mc cp magescanner/minio-magescanner-ardent-rarity-239115/mage_attacker_20210118_to_import mage_attacker_20210118_to_import &&
+           mongoimport -d artifact -c mage_attacker ${MONGODB_URL} mage_attacker_20210118_to_import
+        env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+                secretKeyRef:
+                  name: minio-credentials-infra
+                  key:  accesskey
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+                secretKeyRef:
+                  name: minio-credentials-infra
+                  key: secretkey
+        - name: MC_HOST_magescanner
+          value: "https://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.infra.digaweb.com"
+        - name: MONGO_USER
+          valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key: MONGODB_BACKUP_USER
+        - name: MONGO_PASS
+          valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key:  MONGODB_BACKUP_PASSWORD
+        - name: MONGODB_URL
+          value: 'mongodb://$(MONGO_USER):$(MONGO_PASS)@my-cluster-name-rs0-0.mongo:27017,my-cluster-name-rs0-1.mongo:27017,my-cluster-name-rs0-2.mongo:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0'
+      restartPolicy: Never
+  backoffLimit: 4
