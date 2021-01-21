@@ -8,7 +8,7 @@ spec:
     matchLabels:
       app: magetasker
   replicas: 1
-  template:s
+  template:
     metadata:
       labels:
         app: magetasker
