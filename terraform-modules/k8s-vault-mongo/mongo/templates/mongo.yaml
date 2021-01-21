@@ -145,19 +145,13 @@ spec:
 #        cpu: "300m"
 #        memory: "0.5G"
     storages:
-#      s3-us-west:
-#        type: s3
-#        s3:
-#          bucket: S3-BACKUP-BUCKET-NAME-HERE
-#          credentialsSecret: my-cluster-name-backup-s3
-#          region: us-west-2
-#      minio:
-#        type: s3
-#        s3:
-#          bucket: MINIO-BACKUP-BUCKET-NAME-HERE
-#          region: us-east-1
-#          credentialsSecret: my-cluster-name-backup-minio
-#          endpointUrl: http://minio.psmdb.svc.cluster.local:9000/minio/
+     minio:
+       type: s3
+       s3:
+         bucket: minio-xbackup-ardent-rarity-239115
+         region: minio
+         credentialsSecret: mongo-backup
+         endpointUrl: http://minio.minio:9000/
     tasks:
 #      - name: daily-s3-us-west
 #        enabled: true
