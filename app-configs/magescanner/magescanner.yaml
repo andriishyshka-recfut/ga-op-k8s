@@ -1,0 +1,146 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: magescanner
+  namespace: magescanner
+spec:
+  selector:
+    matchLabels:
+      app: magescanner
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: magescanner
+      annotations:
+        sidecar.istio.io/inject: "false"
+        # sidecar.istio.io/proxyCPU: 5m
+        # sidecar.istio.io/proxyMemory: 30M
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
+        vault.hashicorp.com/agent-inject-secret-mongo: "secret/mongo/production"
+        vault.hashicorp.com/agent-inject-secret-google_sa: "secret/magescanner/google_service_account"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-es: |
+          {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
+            mkdir -p /opt/magescanner/pki
+            echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/client.key
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/client.crt
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
+          {{- end }}
+        vault.hashicorp.com/agent-inject-template-google_sa: |
+          {{ with secret "secret/magescanner/google_service_account" -}}
+            echo "{{ .Data.GOOGLE_CREDENTIALS_FILE_PATH}}" | base64 -d > /opt/magescanner/magescanner-google-service-key.json
+          {{- end }}
+        vault.hashicorp.com/agent-inject-template-mongo: |
+          {{ with secret "secret/mongo/production" -}}
+            export MONGODB_URI=mongodb://{{ .Data.MONGODB_BACKUP_USER }}:{{ .Data.MONGODB_BACKUP_PASSWORD }}@my-cluster-name-rs0.mongo:27017
+          {{- end }}
+    spec:
+      containers:
+      - name: magescanner
+        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.25
+        command: ["sh"]
+        args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && source /vault/secrets/google_sa && /opt/app/magescanner"]
+        # resources:
+        #   requests:
+        #     memory: "30Mi"
+        #     cpu: "5m"
+        #   limits:
+        #     memory: "200Mi"
+        #     cpu: "50m"
+        ports:
+        - containerPort: 8080
+        env:
+          - name: THREAD_COUNT
+            value: "10"
+          - name: COMMIT_CAPACITY
+            value: "2000"
+          - name: SPLASH_URL
+            value: http://splash:8050
+          - name: SPLASH_WAIT_SEC
+            value: "15"
+          - name: SPLASH_TIMEOUT_SEC
+            value: "300"
+          - name: SPLASH_IGNORE_CONTENT_TYPE
+            value: "text/css*,audio/*,video/*,image/*,font/*,application/font-*,application/x-font-*"
+          - name: GEOIP_URL
+            value: http://geoip:8080
+          - name: DNS_HOST
+            value: kube-dns.kube-system:53
+            # value: 8.8.8.8:53
+          - name: MINIO_URL
+            value: minio.minio:9000
+          - name: MINIO_HAR_BUCKET_NAME
+            value: minio-magescanner-har-orbital-wording-233917
+          - name: MINIO_HASH_BUCKET_NAME
+            value: minio-magescanner-hash-orbital-wording-233917
+          - name: MINIO_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: minio-credentials
+                key: accesskey
+          - name: MINIO_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: minio-credentials
+                key: secretkey
+          - name: MINIO_PUT
+            value: "true"
+          - name: MONGODB_ATTACKER_DB
+            value: artifact
+          - name: MONGODB_ATTACKER_COLLECTION
+            value: mage_attacker0-=
+          - name : ELASTICSEARCH_HEALTH_CHECK
+            value: "false"
+          - name: ELASTICSEARCH_CA_CRT_PATH
+            value: "/opt/magescanner/pki/ca.crt"
+          - name: ELASTICSEARCH_CLIENT_KEY_PATH
+            value: "/opt/magescanner/pki/client.key"
+          - name: ELASTICSEARCH_CLIENT_CRT_PATH
+            value: "/opt/magescanner/pki/client.crt"
+          - name: ELASTIC_APM_SERVER_URL
+            value: http://apm-monitoring-apm-http.monitoring:8200
+          - name: ELASTIC_APM_SECRET_TOKEN
+            valueFrom:
+                secretKeyRef:
+                  name: apm-token
+                  key:  secret-token
+          - name: KAFKA_BROKERS
+            value: kafka-cluster-kafka-bootstrap.kafka:9092
+          # - name: SCAN_TASK_QUEUE_NAME
+          #   value: mage.task.target
+          - name: SCAN_TASK_QUEUE_NAME
+            value: mage.task.target.test
+          - name: STATUS_TASK_QUEUE_NAME
+            value: mage.task.scanned
+          - name: SCAN_RESULT_QUEUE_NAME
+            value: mage.scan
+          - name: ANALYST_RESULT_QUEUE_NAME
+            value: mage.analysis
+          - name: CERTIFICATE_TIMEOUT_SEC
+            value: "10"
+          - name: IP_RESOLVER_TIMEOUT_SEC
+            value: "10"
+          - name: MAGESCANNER_INDEX
+            value: "magescanner*"
+          - name: API_PORT
+            value: "8080"
+          - name: API_TEST
+            value: "false"
+          - name: ATTACKER_UPDATE_PERIOD
+            value: 4h
+          - name: GOOGLE_SHEET_RANGE_ATTACKER_URL
+            value: "ProductionListAttackerDomain!A1:B999999"
+          - name: GOOGLE_SHEET_RANGE_ATTACKER_SCRIPT
+            value: "ProductionListInjs!A1:C999999"
+          - name: GOOGLE_SHEET_RANGE_SKIP_RULE
+            value: "WhiteListDomains!A1:A999999"
+          - name: GOOGLE_SHEET_ID
+            value: "1hVTctTl3urHkW5YPgs-BJittVyoci4kj8CYfOZnTGFQ"
+          - name: GOOGLE_CREDENTIALS_FILE_PATH
+            value: /opt/magescanner/magescanner-google-service-key.json
+      imagePullSecrets:
+      - name: harbor

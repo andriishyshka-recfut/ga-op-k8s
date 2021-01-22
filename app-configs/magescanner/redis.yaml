@@ -1,0 +1,112 @@
+apiVersion: databases.spotahome.com/v1
+kind: RedisFailover
+metadata:
+  name: redisfailover
+  namespace: magescanner
+spec:
+  sentinel:
+    replicas: 3
+    podAnnotations:
+        sidecar.istio.io/proxyCPU: 10m
+        sidecar.istio.io/proxyMemory: 70M
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 70Mi
+  redis:
+    replicas: 3
+    podAnnotations:
+        sidecar.istio.io/proxyCPU: 50m
+        sidecar.istio.io/proxyMemory: 300M
+    resources:
+      requests:
+        cpu: 10m
+        memory: 70Mi
+      limits:
+        cpu: 400m
+        memory: 500Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rfr-redisfailover-0
+  namespace: magescanner
+spec:
+  clusterIP: None
+  selector:
+    statefulset.kubernetes.io/pod-name: rfr-redisfailover-0
+  ports:
+    - name: port1
+      protocol: TCP
+      port: 26379
+      targetPort: 26379
+    - name: port2
+      protocol: TCP
+      port: 6379
+      targetPort: 6379
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-commander
+  namespace: magescanner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-commander
+  template:
+    metadata:
+      labels:
+        app: redis-commander
+        tier: backend
+      annotations:
+        sidecar.istio.io/proxyCPU: 5m
+        sidecar.istio.io/proxyMemory: 10M
+    spec:
+      containers:
+      - name: redis-commander
+        image: rediscommander/redis-commander
+        env:
+        - name: SENTINELS
+          value: rfs-redisfailover:26379
+        - name: K8S_SIGTERM
+          value: "1"
+        ports:
+        - name: redis-commander
+          containerPort: 8081
+        livenessProbe:
+          httpGet:
+            path: /favicon.png
+            port: 8081
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        resources:
+         requests:
+           cpu: 5m
+           memory: 50Mi
+         limits:
+           cpu: 500m
+           memory: 512Mi
+        securityContext:
+          runAsNonRoot: true
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-commander-service
+  namespace: magescanner
+spec:
+  selector:
+    app: redis-commander
+  ports:
+    - name: port1
+      protocol: TCP
+      port: 8081
+      targetPort: 8081
