@@ -65,7 +65,7 @@ spec:
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name : ELASTICSEARCH_HEALTH_CHECK
-            value: "false"            
+            value: "false"
           - name: ELASTICSEARCH_CA_CRT_PATH
             value: "/opt/magescanner/pki/ca.crt"
           - name: ELASTICSEARCH_CLIENT_KEY_PATH

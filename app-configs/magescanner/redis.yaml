@@ -6,23 +6,17 @@ metadata:
 spec:
   sentinel:
     replicas: 3
-    podAnnotations:
-        sidecar.istio.io/proxyCPU: 10m
-        sidecar.istio.io/proxyMemory: 70M
     resources:
       requests:
-        cpu: 10m
+        cpu: 100m
       limits:
-        memory: 70Mi
+        memory: 100Mi
   redis:
     replicas: 3
-    podAnnotations:
-        sidecar.istio.io/proxyCPU: 50m
-        sidecar.istio.io/proxyMemory: 300M
     resources:
       requests:
-        cpu: 10m
-        memory: 70Mi
+        cpu: 100m
+        memory: 100Mi
       limits:
         cpu: 400m
         memory: 500Mi
@@ -38,10 +32,6 @@ spec:
     statefulset.kubernetes.io/pod-name: rfr-redisfailover-0
   ports:
     - name: port1
-      protocol: TCP
-      port: 26379
-      targetPort: 26379
-    - name: port2
       protocol: TCP
       port: 6379
       targetPort: 6379
@@ -61,9 +51,6 @@ spec:
       labels:
         app: redis-commander
         tier: backend
-      annotations:
-        sidecar.istio.io/proxyCPU: 5m
-        sidecar.istio.io/proxyMemory: 10M
     spec:
       containers:
       - name: redis-commander
@@ -82,13 +69,10 @@ spec:
             port: 8081
           initialDelaySeconds: 10
           timeoutSeconds: 5
-        resources:
-         requests:
-           cpu: 5m
-           memory: 50Mi
-         limits:
-           cpu: 500m
-           memory: 512Mi
+        #resources:
+        #  limits:
+        #    cpu: "500m"
+        #    memory: "512M"
         securityContext:
           runAsNonRoot: true
           readOnlyRootFilesystem: false
