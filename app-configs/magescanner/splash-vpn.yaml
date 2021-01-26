@@ -48,8 +48,6 @@ spec:
             add:
               - NET_ADMIN
         volumeMounts:
-          # - name: dev-net
-          #   mountPath: /dev/net/tun
           - name: route
             mountPath: /tmp/route
         ports:
@@ -60,8 +58,8 @@ spec:
             memory: "30Mi"
             cpu: "5m"
           limits:
-            memory: "500Mi"
-            cpu: "300m"
+            memory: "100Mi"
+            cpu: "100m"
       volumes:
       - name: route-script
         configMap:
@@ -69,9 +67,6 @@ spec:
           items:
             - key: route-override.sh
               path: route-override.sh
-      # - name: dev-net
-      #   hostPath:
-      #     path: /dev/net/tun
       - name: route
         emptyDir: {}
       imagePullSecrets:

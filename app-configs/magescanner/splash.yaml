@@ -25,12 +25,12 @@ spec:
         imagePullPolicy: Always
         name: goofys
         resources:
-          limits:
-            cpu: 100m
-            memory: 200Mi
           requests:
             cpu: 10m
             memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 200Mi
         env:
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
@@ -71,7 +71,7 @@ spec:
         - "--slots"
         - "5"
         - "--maxrss"
-        - "1300"
+        - "800"
         - "--verbosity"
         - "0"
         - "--js-cross-domain-access"
@@ -90,8 +90,8 @@ spec:
             memory: "30Mi"
             cpu: "5m"
           limits:
-            memory: "500Mi"
-            cpu: "300m"
+            memory: "1000Mi"
+            cpu: "800m"
         ports:
         - containerPort: 1080
       volumes:
