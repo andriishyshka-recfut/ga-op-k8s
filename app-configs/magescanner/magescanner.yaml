@@ -44,13 +44,13 @@ spec:
         image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.25
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && source /vault/secrets/google_sa && /opt/app/magescanner"]
-        # resources:
-        #   requests:
-        #     memory: "30Mi"
-        #     cpu: "5m"
-        #   limits:
-        #     memory: "200Mi"
-        #     cpu: "50m"
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "5m"
+          limits:
+            memory: "400Mi"
+            cpu: "100m"
         ports:
         - containerPort: 8080
         env:

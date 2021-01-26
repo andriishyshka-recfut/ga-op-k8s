@@ -9,7 +9,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 ---
 
@@ -24,7 +24,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 
 ---
@@ -40,7 +40,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 
 ---
@@ -56,7 +56,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 
 ---
@@ -72,7 +72,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 
 ---
@@ -88,7 +88,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 
 ---
@@ -104,7 +104,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 
 ---
@@ -120,7 +120,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 ---
 
@@ -135,7 +135,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 ---
 
@@ -150,7 +150,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 ---
 
@@ -165,7 +165,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 ---
 
@@ -180,7 +180,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 ---
 
@@ -195,7 +195,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 ---
 
@@ -210,7 +210,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 
 ---
@@ -226,7 +226,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 ---
 
@@ -241,7 +241,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 ---
 
@@ -256,7 +256,7 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
 
 ---
 
@@ -271,4 +271,4 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 1440000
+    retention.ms: 259200000
