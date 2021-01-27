@@ -12,6 +12,8 @@ server:
         GOOGLE_PROJECT: ${project}
         GOOGLE_APPLICATION_CREDENTIALS: /vault/userconfig/kms-creds/credentials.json
 
+      livenessProbe:
+        enabled: true
 
       extraVolumes:
         - type: 'secret'
