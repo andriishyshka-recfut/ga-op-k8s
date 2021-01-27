@@ -22,17 +22,29 @@ spec:
                     export PGHOST=harbor-harbor-database
                     export PGPORT=5432
                     export PGUSER=postgres
-            export AWS_ACCESS_KEY_ID=$(echo {{ .Data.backup }}| jq .accessKey)
-            export AWS_SECRET_ACCESS_KEY=(echo {{ .Data.backup }}| jq .secretKey)
+            echo '{{ .Data.backup }}' > /tmp/minio-creds
+            export AWS_ACCESS_KEY_ID=$( /tmp/jq .accessKey /tmp/minio-creds )
+            export AWS_SECRET_ACCESS_KEY=$( /tmp/jq .secretKey /tmp/minio-creds )
           {{- end }}
     spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+              claimName: database-data-harbor-harbor-database-0
       containers:
-      - name: pg-wal-g-backup
-        image: bitnami/wal-g
-        command: ["bash",  "-c"]
+      - name: pgwalgbackup
+        image: debian
+        volumeMounts:
+        - mountPath: "/data"
+          name: data
+        command: ["sh",  "-c"]
         args:
-         - apt install -y jq
-           source /vault/secrets/config
+         -  apt update && apt install -y tar wget ;
+           wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /tmp/jq ;
+           wget https://github.com/wal-g/wal-g/releases/download/v0.2.19/wal-g.linux-amd64.tar.gz -O /tmp/wal-g.linux-amd64.tar.gz ;
+           chmod +x /tmp/jq ;
+           source /vault/secrets/config ;
+           cd tmp && tar -xvf wal-g.linux-amd64.tar.gz ;
            sleep 3d
         env:
         - name: PGPASSWORD
