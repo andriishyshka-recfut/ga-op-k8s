@@ -10,12 +10,13 @@ resource "helm_release" "vault" {
   values = [
     templatefile("${path.module}/vault_helm_config.tmpl",
       {
-        project    = local.currentProject,
-        key_ring   = local.vaultKeyName,
-        crypto_key = local.vaultKeyName,
-        bucket     = local.vaultBucketName
-        version    = var.Settings.clusters[var.Cluster][var.Color].vault.version
-        replicas   = local.replicasCount
+        project           = local.currentProject,
+        key_ring          = local.vaultKeyName,
+        crypto_key        = local.vaultKeyName,
+        bucket            = local.vaultBucketName
+        version           = var.Settings.clusters[var.Cluster][var.Color].vault.version
+        replicas          = local.replicasCount
+        externalVaultAddr = "https://${local.vaultFqdn}"
       }
     )
   ]

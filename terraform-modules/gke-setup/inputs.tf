@@ -27,4 +27,6 @@ variable "Color" {}
 
 locals {
   isPreemptible = lookup(var.Settings.clusters[var.Cluster][var.Color], "preemptible", true)
+  bluePods      = var.Settings.clusters[var.Cluster]["blue"].pods_subnet_range
+  greenPods     = var.Settings.clusters[var.Cluster]["green"].pods_subnet_range
 }
