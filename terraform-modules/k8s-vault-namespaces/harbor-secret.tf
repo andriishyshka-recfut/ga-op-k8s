@@ -3,10 +3,11 @@ data "vault_generic_secret" "harbor_token" {
 }
 
 
-resource "kubernetes_secret" "harbor_maid" {
+resource "kubernetes_secret" "harbor_image_pull_secrets" {
+  for_each = local.injectHarborCreds
   metadata {
     name      = "harbor"
-    namespace = "maid"
+    namespace = each.key
   }
 
   data = {

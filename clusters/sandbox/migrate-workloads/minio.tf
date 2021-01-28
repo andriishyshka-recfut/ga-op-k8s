@@ -5,4 +5,7 @@ module "minio" {
   Settings = var.Settings
   Cluster  = "sandbox"
   Color    = "green"
+  depends_on = [
+    module.namespaces
+  ]
 }
