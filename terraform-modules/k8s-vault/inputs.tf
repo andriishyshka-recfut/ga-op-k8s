@@ -24,8 +24,7 @@ locals {
   vaultFqdn     = var.Settings.clusters[var.Cluster][var.Color].vault.fqdn
   vaultLocalUrl = "http://vault.vault.svc"
 
-  cluster    = var.Cluster
-  connection = lookup(var.Settings.clusters[var.Cluster][var.Color].vault, "connection", "remote")
+  cluster = var.Cluster
 
 
   gkeClusterEndpoint = var.GkeClusterConnectionSettings.HOST

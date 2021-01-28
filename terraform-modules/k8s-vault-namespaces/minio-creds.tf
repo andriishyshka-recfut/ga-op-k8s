@@ -14,5 +14,8 @@ resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {
     "accesskey" = jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[each.value[0]]).accessKey
     "secretkey" = jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[each.value[0]]).secretKey
   }
+  depends_on = [
+    kubernetes_namespace.ns
+  ]
 
 }

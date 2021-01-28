@@ -24,5 +24,8 @@ DOCKER
   }
 
   type = "kubernetes.io/dockerconfigjson"
+  depends_on = [
+    kubernetes_namespace.ns
+  ]
 
 }

@@ -1,3 +1,4 @@
+{{- if eq .Values.istio.enabled "yes"}}
 {{- if eq .Values.istio.mTLS_enabled  "yes" }}
 apiVersion: "security.istio.io/v1beta1"
 kind: "PeerAuthentication"
@@ -7,4 +8,5 @@ metadata:
 spec:
   mtls:
     mode: STRICT
+{{- end }}
 {{- end }}

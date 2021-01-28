@@ -23,10 +23,9 @@ COMMAND
     environment = merge(local.ansibleEnvs, {
       k8s_apply_value = templatefile("${path.module}/certificates.yaml.tmpl",
         { default_secret_name = data.kubernetes_service_account.cert_manager[0].default_secret_name
-          vault_addr          = local.vaultLocalUrl
+          vault_addr          = "https://${local.vaultFqdn}"
           cluster             = local.cluster
           color               = var.Color
-          connection          = local.connection
       })
     })
   }
