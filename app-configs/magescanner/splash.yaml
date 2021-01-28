@@ -92,8 +92,15 @@ spec:
           limits:
             memory: "2000Mi"
             cpu: "800m"
-        ports:
-        - containerPort: 1080
+        livenessProbe:
+          httpGet:
+            path: /_ping
+            port: 8050
+            httpHeaders:
+              - name: Host
+                value: KubernetesLivenessProbe
+          initialDelaySeconds: 40
+          periodSeconds: 180
       volumes:
       - name: filters
         emptyDir: {}
