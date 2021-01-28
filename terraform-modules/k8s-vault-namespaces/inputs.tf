@@ -1,6 +1,7 @@
 
 variable "Settings" {}
 variable "Cluster" {}
+variable "Color" {}
 
 
 locals {
@@ -21,8 +22,8 @@ locals {
     if can(namespace.kubefwdGroups)
   }
 
-  injectHarborCreds = toset(flatten([
-    for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "injectHarborCreds", false)
+  injectHarborImagePullSecrets = toset(flatten([
+    for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "injectHarborImagePullSecrets", false)
   ]))
 
   assignVaultPolicy = {
@@ -30,4 +31,10 @@ locals {
     namespace.name => namespace.assignVaultPolicy...
     if can(namespace.assignVaultPolicy)
   }
+  minioCreds = {
+    for namespace in var.Settings.clusters[var.Cluster].namespaces :
+    namespace.name => namespace.minioCreds...
+    if can(namespace.minioCreds)
+  }
+  vaultUsersCredentialsPath = "${var.Settings.clusters[var.Cluster][var.Color].minio.vault_users_config_path}/users"
 }

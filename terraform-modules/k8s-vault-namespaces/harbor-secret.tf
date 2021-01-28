@@ -4,7 +4,7 @@ data "vault_generic_secret" "harbor_token" {
 
 
 resource "kubernetes_secret" "harbor_image_pull_secrets" {
-  for_each = local.injectHarborCreds
+  for_each = local.injectHarborImagePullSecrets
   metadata {
     name      = "harbor"
     namespace = each.key
