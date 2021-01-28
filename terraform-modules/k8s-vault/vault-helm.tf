@@ -1,4 +1,26 @@
 
+resource "helm_release" "vault_agent_injector" {
+  name = "vault-agent-injector"
+  #chart = "${path.module}/umbrella-vault"
+  chart      = "vault"
+  repository = "https://helm.releases.hashicorp.com"
+  #version           = "0.1.0"
+  namespace         = "vault"
+  dependency_update = "true"
+  values = [
+    file("${path.module}/values-agent-injector.yaml")
+  ]
+  set {
+    name  = "injector.externalVaultAddr"
+    value = "https://${local.vaultFqdn}"
+  }
+  depends_on = [
+    kubernetes_secret.kms_creds,
+    kubernetes_namespace.vault,
+
+  ]
+}
+
 resource "helm_release" "vault" {
   name = "vault"
   #chart = "${path.module}/umbrella-vault"
@@ -8,19 +30,29 @@ resource "helm_release" "vault" {
   namespace         = "vault"
   dependency_update = "true"
   values = [
-    templatefile("${path.module}/vault_helm_config.tmpl",
-      {
-        project           = local.currentProject,
-        key_ring          = local.vaultKeyName,
-        crypto_key        = local.vaultKeyName,
-        bucket            = local.vaultBucketName
-        version           = var.Settings.clusters[var.Cluster][var.Color].vault.version
-        replicas          = local.replicasCount
-        externalVaultAddr = "https://${local.vaultFqdn}"
-      }
-    )
+    file("${path.module}/values-vault.yaml")
   ]
-
+  set {
+    name  = "server.image.tag"
+    value = local.vaultVersion
+  }
+  set {
+    name  = "server.extraEnvironmentVars.GOOGLE_PROJECT"
+    value = local.currentProject
+  }
+  set {
+    name  = "server.ha.replicas"
+    value = local.replicasCount
+  }
+  set {
+    name = "server.ha.config"
+    value = templatefile("${path.module}/vault_config.tmpl", {
+      key_ring   = local.vaultKeyName,
+      crypto_key = local.vaultKeyName,
+      bucket     = local.vaultBucketName
+      project    = local.currentProject
+    })
+  }
   depends_on = [
     kubernetes_secret.kms_creds,
     kubernetes_namespace.vault,
