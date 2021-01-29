@@ -71,7 +71,7 @@ spec:
         - "--slots"
         - "5"
         - "--maxrss"
-        - "800"
+        - "1900"
         - "--verbosity"
         - "0"
         - "--js-cross-domain-access"
@@ -87,13 +87,20 @@ spec:
           mountPath: /etc/splash/proxy-profiles/
         resources:
           requests:
-            memory: "30Mi"
-            cpu: "5m"
+            memory: "300Mi"
+            cpu: "20m"
           limits:
-            memory: "1000Mi"
+            memory: "2000Mi"
             cpu: "800m"
-        ports:
-        - containerPort: 1080
+        livenessProbe:
+          httpGet:
+            path: /_ping
+            port: 8050
+            httpHeaders:
+              - name: Host
+                value: KubernetesLivenessProbe
+          initialDelaySeconds: 40
+          periodSeconds: 180
       volumes:
       - name: filters
         emptyDir: {}
