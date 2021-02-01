@@ -4,7 +4,8 @@ locals {
     "maid",
     "magescanner-hash",
     "magescanner-har",
-    "magescanner-splash"
+    "magescanner-splash",
+    "dome-attachements"
   ]
 }
 
@@ -19,7 +20,8 @@ resource "google_storage_bucket" "minio_buckets" {
   storage_class = "STANDARD"
 
 
-  bucket_policy_only = true
+  # bucket_policy_only          = true
+  uniform_bucket_level_access = true
 
   versioning {
     enabled = true
@@ -44,6 +46,7 @@ resource "google_storage_bucket" "minio_autoexpire_bucket" {
   # storage_class = "MULTI_REGIONAL"
 
 
+  uniform_bucket_level_access = true
   versioning {
     enabled = true
   }
@@ -66,6 +69,7 @@ resource "google_storage_bucket" "minio_autoexpire_backups_bucket" {
   # storage_class = "MULTI_REGIONAL"
 
 
+  uniform_bucket_level_access = true
   versioning {
     enabled = true
   }

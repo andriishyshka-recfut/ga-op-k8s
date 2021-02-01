@@ -51,7 +51,7 @@ spec:
           - name: MONGO_FIELDS_PREFIX
             value: mage
           - name: DB_SEARCH_INTERVAL
-            value: 1m
+            value: 5m
           - name: TOPIC_SCANNED
             value: mage.task.scanned
           - name: TOPIC_TASK
@@ -61,7 +61,7 @@ spec:
           - name: WORKER_SCAN_INTERVAL
             value: 24h
           - name: DAILY_LIMIT
-            value: "50000"
+            value: "20000"
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name : ELASTICSEARCH_HEALTH_CHECK
