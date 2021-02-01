@@ -261,7 +261,7 @@ spec:
           - name: MAGEANALYST_TASK_SIZE
             value: "50"
           - name: MAGEANALYST_SEARCH_INDEX
-            value: analysis
+            value: mageanalyst
           - name: MAGEANALYST_WORKERS_NUM
             value: "1"
           - name: ELASTIC_BULK_SIZE
