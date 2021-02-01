@@ -5,6 +5,6 @@ module "data-elastic" {
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = "sandbox"
   Settings                     = var.Settings
-  StoreEsPasswordInVault       = false
+  StoreEsPasswordInVault       = true
   depends_on                   = [module.namespaces]
 }
