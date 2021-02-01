@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: magetasker
-        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.0.19
+        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.0.20
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && /opt/app/magetasker"]
         # ports:
@@ -80,80 +80,6 @@ spec:
             value: "@daily"
           - name: INFECTED_CHECK
             value: "24h"
-          - name: ELASTIC_APM_SECRET_TOKEN
-            valueFrom:
-                secretKeyRef:
-                  name: apm-token
-                  key:  secret-token
-        # resources:
-        #   requests:
-        #     memory: "30Mi"
-        #     cpu: "5m"
-        #   limits:
-        #     memory: "200Mi"
-        #     cpu: "50m"
-      imagePullSecrets:
-      - name: harbor
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: magetasker-urlscan
-  namespace: magescanner
-spec:
-  selector:
-    matchLabels:
-      app: magetasker-urlscan
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: magetasker-urlscan
-      annotations:
-        sidecar.istio.io/inject: "false"
-        # sidecar.istio.io/proxyCPU: 5m
-        # sidecar.istio.io/proxyMemory: 30M
-        vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/auth-path: auth/k8s-production-blue
-        vault.hashicorp.com/agent-inject-secret-mongo: "secret/mongo/production"
-        vault.hashicorp.com/role: "magescanner"
-        vault.hashicorp.com/agent-inject-template-mongo: |
-          {{ with secret "secret/mongo/production" -}}
-            export MONGO_URI=mongodb://{{ .Data.MONGODB_BACKUP_USER }}:{{ .Data.MONGODB_BACKUP_PASSWORD }}@my-cluster-name-rs0.mongo:27017
-          {{- end }}
-    spec:
-      containers:
-      - name: magetasker-urlscan
-        command: ["sh"]
-        args: ["-c", "source /vault/secrets/mongo && /opt/app/magetasker"]
-        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.0.19
-        env:
-          - name: LOG_LEVEL
-            value: "INFO"
-          - name: MONGO_DB
-            value: artifact
-          - name: MONGO_COLLECTION
-            value: mage_target
-          - name: MONGO_FIELDS_PREFIX
-            value: urlscan
-          - name: DB_SEARCH_INTERVAL
-            value: 1m
-          - name: TOPIC_SCANNED
-            value: urlscan.task.scanned
-          - name: TOPIC_TASK
-            value: urlscan.task.target
-          - name: TOPIC_TASK_FIELDS
-            value: "url,alexaGlobal,cms,cmsVersion,companyName,companyVertical,companyPhone,companyEmail,companyCity,companyState,companyZip,companyCountry"
-          - name: WORKER_SCAN_INTERVAL
-            value: 24h
-          - name: DAILY_LIMIT
-            value: "10000"
-          - name: KAFKA_BROKERS
-            value: kafka-cluster-kafka-bootstrap.kafka:9092
-          - name: ELASTIC_APM_SERVER_URL
-            value: http://apm-monitoring-apm-http.monitoring:8200
           - name: ELASTIC_APM_SECRET_TOKEN
             valueFrom:
                 secretKeyRef:
