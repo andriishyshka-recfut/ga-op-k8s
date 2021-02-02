@@ -1,6 +1,6 @@
 .terraform*
 terraform.tfstate*
-!.terraform.lock.hcl
+!/clusters/**/.terraform.lock.hcl
 
 
 ssh-key*
