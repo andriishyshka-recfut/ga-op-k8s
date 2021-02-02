@@ -14,6 +14,7 @@ resource "kubernetes_secret" "gitlab_token" {
     "password" = data.vault_generic_secret.gitlab_token.data.fluxcd
   }
 
+  depends_on = [module.namespaces]
 }
 
 
