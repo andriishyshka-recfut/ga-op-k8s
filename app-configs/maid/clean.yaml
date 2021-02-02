@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
       - name: maid-clean
-        image:  harbor.infra.digaweb.com/maid/clean:v1.1.0
+        image:  harbor.infra.digaweb.com/maid/clean:v1.2.0
         imagePullPolicy: Always
         command: ["sh"]
         args:

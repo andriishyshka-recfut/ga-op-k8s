@@ -9,8 +9,14 @@ initContainers:
       - mountPath: /target
         name: plugins
 
+image:
+  repository: velero/velero
+  tag: v1.5.3
+  pullPolicy: IfNotPresent
+
 configuration:
   provider: aws
+  defaultVolumesToRestic: true
   backupStorageLocation:
     bucket: minio-xbackup-${ProjectId}
     prefix: velero-backup-${Cluster}
@@ -18,8 +24,5 @@ configuration:
       region: minio
       s3ForcePathStyle: true
       s3Url: http://minio.minio.svc:9000
-  volumeSnapshotLocation:
-    config:
-      region: minio
 
 deployRestic: true
