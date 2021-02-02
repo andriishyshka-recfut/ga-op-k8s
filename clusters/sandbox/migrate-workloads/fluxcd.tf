@@ -65,6 +65,8 @@ resource "helm_release" "fluxcd" {
 
   depends_on = [
     kubernetes_secret.gitlab_token,
+    module.namespaces,
+    module.data-elastic
 
   ]
 }

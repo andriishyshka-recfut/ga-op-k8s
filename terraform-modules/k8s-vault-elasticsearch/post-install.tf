@@ -60,7 +60,7 @@ resource "kubernetes_job" "post_install" {
             }
           }
           resources {
-            requests {
+            requests = {
               cpu    = "10m"
               memory = "10M"
             }

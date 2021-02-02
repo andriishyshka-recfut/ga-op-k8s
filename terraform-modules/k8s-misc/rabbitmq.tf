@@ -22,7 +22,7 @@ rm -rf cluster-operator/
 */
 resource "null_resource" "ansible_rabbit_crd_install_playbook" {
   triggers = {
-    # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
+    operator = md5(file("${path.module}/rabbitmq_operator.yaml"))
   }
   provisioner "local-exec" {
     command = <<COMMAND
