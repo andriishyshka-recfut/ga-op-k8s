@@ -4,9 +4,9 @@ resource "google_service_account" "vault_server" {
   account_id   = local.vaultServiceAccountId
   display_name = "Vault Server"
   //project      = data.google_project.vault.project_id
-  lifecycle {
-    prevent_destroy = true
-  }
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 }
 
 variable "VaultServiceAccountIamRoles" {
@@ -23,9 +23,9 @@ resource "google_project_iam_member" "vault_service_account" {
   project = data.google_project.current.project_id
   role    = element(var.VaultServiceAccountIamRoles, count.index)
   member  = "serviceAccount:${google_service_account.vault_server.email}"
-  lifecycle {
-    prevent_destroy = true
-  }
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 }
 
 
@@ -50,7 +50,7 @@ resource "google_kms_crypto_key_iam_member" "vault_init" {
   crypto_key_id = google_kms_crypto_key.vault_unseal_key.id
   role          = element(var.VaultServiceAccountKeyIamRoles, count.index)
   member        = "serviceAccount:${google_service_account.vault_server.email}"
-  lifecycle {
-    prevent_destroy = true
-  }
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 }
