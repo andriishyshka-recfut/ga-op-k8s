@@ -16,4 +16,9 @@ locals {
     namespace.name => namespace.admins...
     if can(namespace.admins)
   }
+  namespaceKubefwd = {
+    for namespace in var.Settings.clusters[var.Cluster].namespaces :
+    namespace.name => namespace.kubefwdGroups...
+    if can(namespace.kubefwdGroups)
+  }
 }

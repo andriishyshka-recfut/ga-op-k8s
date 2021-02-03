@@ -51,6 +51,13 @@
 
   - name: Configure vault
     block:
+    - name: disable k8s secret engine
+      hashivault_auth_method:
+          method_type: kubernetes
+          mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
+          state: "disabled"
+      ignore_errors: yes
+
     - name: enable k8s secret engine
       hashivault_auth_method:
           method_type: kubernetes

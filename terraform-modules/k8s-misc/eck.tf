@@ -1,11 +1,11 @@
-# resource "kubernetes_namespace" "elastic_operator_ns" {
-#   metadata {
-#     name = "elastic-system"
-#     labels = {
-#       istio-injection = "enabled"
-#     }
-#   }
-# }
+resource "kubernetes_namespace" "elastic_operator_ns" {
+  metadata {
+    name = "elastic-system"
+    labels = {
+      istio-injection = "enabled"
+    }
+  }
+}
 
 
 
@@ -26,8 +26,8 @@ COMMAND
       from_file       = "yes"
     })
   }
-  # depends_on = [
-  #   # google_container_node_pool.cluster_preemptible_nodes,
-  #    kubernetes_namespace.elastic_operator_ns
-  # ]
+  depends_on = [
+    # google_container_node_pool.cluster_preemptible_nodes,
+    kubernetes_namespace.elastic_operator_ns
+  ]
 }

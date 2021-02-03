@@ -1,11 +1,4 @@
 
-terraform {
-  backend "gcs" {
-    bucket = "terraform-state-222"
-    prefix = "tf-blue-green/green-state"
-  }
-}
-
 // should be set with tfvars
 variable "Settings" {}
 variable "OidcDiscoveryUrl" { default = "SAMPLE" }
@@ -30,22 +23,13 @@ module "k8s-istio" {
 }
 
 
-module "k8s-namespaces" {
-  source     = "../../../terraform-modules/k8s-namespaces"
-  Settings   = var.Settings
-  Cluster    = "sandbox"
-  Color      = "green"
-  depends_on = [module.k8s-istio]
-}
-
-
 module "k8s-misc-operators" {
   source                       = "../../../terraform-modules/k8s-misc"
   GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
   Settings                     = var.Settings
   Cluster                      = "sandbox"
   Color                        = "green"
-  depends_on                   = [module.k8s-istio, module.k8s-namespaces]
+  depends_on                   = [module.k8s-istio]
 }
 module "k8s-vault" {
   source                       = "../../../terraform-modules/k8s-vault"

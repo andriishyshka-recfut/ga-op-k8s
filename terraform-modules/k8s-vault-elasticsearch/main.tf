@@ -10,7 +10,6 @@ resource "helm_release" "elasticsearch" {
     yamlencode(local.oidcConfig)
   ]
   depends_on = [
-    kubernetes_secret.minio_credentials
   ]
 }
 

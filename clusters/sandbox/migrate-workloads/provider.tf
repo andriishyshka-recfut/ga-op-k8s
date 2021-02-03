@@ -10,7 +10,7 @@ data "vault_generic_secret" "k8s_auth" {
 provider "helm" {
   # alias = "helm"
   kubernetes {
-    load_config_file       = false
+    # load_config_file       = false
     host                   = data.vault_generic_secret.k8s_auth.data.HOST
     cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
     token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
@@ -19,7 +19,7 @@ provider "helm" {
 
 provider "kubernetes" {
   # alias                  = "kubernetes"
-  load_config_file       = false
+  # load_config_file       = false
   host                   = data.vault_generic_secret.k8s_auth.data.HOST
   cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
   token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
@@ -31,3 +31,24 @@ provider "google" {
 
 
 variable "Settings" {}
+
+
+
+
+
+locals {
+  monitoringEs = yamldecode(file("monitoring_elastic_settings.yaml"))
+  dataEs       = yamldecode(file("data_elastic_settings.yaml"))
+  gkeClusterConnectionSettings = {
+    HOST                   = data.vault_generic_secret.k8s_auth.data.HOST
+    API_KEY                = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
+    CLUSTER_CA_CERTIFICATE = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
+  }
+}
+
+terraform {
+  backend "gcs" {
+    bucket = "terraform-state-222"
+    prefix = "tf-workloads/state"
+  }
+}

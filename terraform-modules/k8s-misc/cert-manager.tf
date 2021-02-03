@@ -17,18 +17,37 @@ resource "helm_release" "cert_manager" {
 }
 
 
-resource "null_resource" "ansible_cert_manager_letsencrypt_integration_playbook" {
-  count = local.letsEncryptIssuersCount
-  provisioner "local-exec" {
-    command = <<COMMAND
-    cd  ${path.module}/../../ansible && \
-    ansible-playbook k8s-apply.yml \
-      -e 'ansible_python_interpreter=/usr/bin/python3'
-COMMAND
-    environment = merge(local.ansibleEnvs, {
-      k8s_apply_value = templatefile("${path.module}/cert-manager-issuer.tmpl", {})
-    })
+# resource "null_resource" "ansible_cert_manager_letsencrypt_integration_playbook" {
+#   count = local.letsEncryptIssuersCount
+#   provisioner "local-exec" {
+#     command = <<COMMAND
+#     cd  ${path.module}/../../ansible && \
+#     ansible-playbook k8s-apply.yml \
+#       -e 'ansible_python_interpreter=/usr/bin/python3'
+# COMMAND
+#     environment = merge(local.ansibleEnvs, {
+#       k8s_apply_value = templatefile("${path.module}/cert-manager-issuer.tmpl", {})
+#     })
+#
+#   }
+#   depends_on = [
+#     helm_release.cert_manager,
+#   ]
+# }
 
+
+
+resource "null_resource" "kubectl_letsencrypt_issuers" {
+  triggers = {
+    # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<COMMAND
+    kubectl apply --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
+     -f ${path.module}/cert-manager-issuers.yaml
+COMMAND
   }
   depends_on = [
     helm_release.cert_manager,

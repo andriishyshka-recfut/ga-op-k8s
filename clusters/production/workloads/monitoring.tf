@@ -15,8 +15,9 @@ module "monitoring-elastic" {
   source                       = "../../../terraform-modules/k8s-vault-elasticsearch"
   ElasticSettings              = local.es.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
-
-  StoreEsPasswordInVault = false
+  Cluster                      = "production"
+  Settings                     = var.Settings
+  StoreEsPasswordInVault       = false
 }
 
 module "monitoring-agents" {
