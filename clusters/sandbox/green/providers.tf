@@ -30,3 +30,9 @@ provider "kubernetes" {
   cluster_ca_certificate = local.clusterCaCertificate
 
 }
+terraform {
+  backend "gcs" {
+    bucket = "terraform-state-222"
+    prefix = "tf-blue-green/green-state"
+  }
+}

@@ -1,0 +1,27 @@
+
+global:
+      enabled: true
+
+injector:
+  enabled: false
+
+server:
+      image:
+        repository: 'vault'
+
+      extraEnvironmentVars:
+        GOOGLE_REGION: global
+        GOOGLE_APPLICATION_CREDENTIALS: /vault/userconfig/kms-creds/credentials.json
+
+      livenessProbe:
+        enabled: true
+
+      extraVolumes:
+        - type: 'secret'
+          name: 'kms-creds'
+
+      ha:
+        enabled: true
+        replicas: ${replicas}
+        disruptionBudget:
+          maxUnavailable: 0

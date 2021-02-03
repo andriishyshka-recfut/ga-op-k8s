@@ -24,8 +24,7 @@ locals {
   vaultFqdn     = var.Settings.clusters[var.Cluster][var.Color].vault.fqdn
   vaultLocalUrl = "http://vault.vault.svc"
 
-  cluster    = var.Cluster
-  connection = lookup(var.Settings.clusters[var.Cluster][var.Color].vault, "connection", "remote")
+  cluster = var.Cluster
 
 
   gkeClusterEndpoint = var.GkeClusterConnectionSettings.HOST
@@ -41,6 +40,7 @@ locals {
   // toggles
   initialProvisioningToggle = var.Settings.clusters[var.Cluster][var.Color].vault.do_initial_provisioning ? 1 : 0
   certManagerIssuerToggle   = var.Settings.clusters[var.Cluster][var.Color].vault.create_cert-manager_issuer ? 1 : 0
-  istioExposeToggle         = var.Settings.clusters[var.Cluster][var.Color].vault.istio_expose ? 1 : 0
-  replicasCount             = lookup(var.Settings.clusters[var.Cluster][var.Color], "active", false) == true ? 3 : 0
+  # istioExposeToggle         = var.Settings.clusters[var.Cluster][var.Color].vault.istio_expose ? 1 : 0
+  replicasCount = lookup(var.Settings.clusters[var.Cluster][var.Color], "active", false) == true ? 3 : 0
+  vaultVersion  = var.Settings.clusters[var.Cluster][var.Color].vault.version
 }
