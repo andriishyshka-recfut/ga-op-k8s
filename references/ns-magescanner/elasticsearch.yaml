@@ -1,0 +1,81 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: magescanner
+  namespace: magescanner
+spec:
+  auth: {}
+  http:
+    service:
+      metadata:
+        creationTimestamp: null
+      spec:
+        ports:
+        - name: http
+          port: 9200
+          protocol: TCP
+          targetPort: 9200
+    tls:
+      certificate:
+        secretName: magescanner-es-cert
+  nodeSets:
+  - config:
+      index.store.type: niofs
+      node.data: true
+      node.ingest: true
+      node.master: true
+      node.ml: true
+      node.store.allow_mmap: false
+      xpack.monitoring.collection.enabled: false
+      xpack.security.authc.token.enabled: true
+    count: 3
+    name: master
+    podTemplate:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "false"
+          traffic.sidecar.istio.io/excludeInboundPorts: "9300"
+          traffic.sidecar.istio.io/excludeOutboundPorts: "9300"
+      spec:
+        containers:
+        - env:
+          - name: ES_JAVA_OPTS
+            value: -Xms1g -Xmx1g
+          name: elasticsearch
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1536Mi
+            requests:
+              cpu: 100m
+              memory: 1Gi
+        initContainers:
+        - command:
+          - sh
+          - -c
+          - |
+            bin/elasticsearch-plugin install --batch repository-gcs
+          name: install-plugins
+          resources: {}
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+        storageClassName: standard
+      status: {}
+  secureSettings:
+  - secretName: gcs-credentials
+  # - secretName: oidc
+  transport:
+    service:
+      metadata:
+        creationTimestamp: null
+      spec: {}
+  updateStrategy:
+    changeBudget: {}
+  version: 6.8.13
