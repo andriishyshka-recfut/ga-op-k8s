@@ -6,7 +6,8 @@ resource "google_storage_bucket" "elastic_snapshots" {
   force_destroy = true
   storage_class = "MULTI_REGIONAL"
 
-  bucket_policy_only = true
+  # bucket_policy_only = true
+  uniform_bucket_level_access = true
 
   versioning {
     enabled = true
