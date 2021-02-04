@@ -16,54 +16,56 @@ spec:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
-        # vault.hashicorp.com/agent-inject: "true"
-        # vault.hashicorp.com/auth-path: auth/k8s-production-blue
-        # vault.hashicorp.com/agent-inject-secret-geoip: "secret/magescanner/geoip_secret_config"
-        # vault.hashicorp.com/role: "magescanner"
-        # vault.hashicorp.com/agent-inject-template-geoip: |
-        #   {{ with secret "secret/magescanner/geoip_secret_config" -}}
-        #     export GEOIPUPDATE_ACCOUNT_ID="{{ .Data.GEOIPUPDATE_ACCOUNT_ID }}"
-        #     export GEOIPUPDATE_LICENSE_KEY="{{ .Data.GEOIPUPDATE_LICENSE_KEY }}"
-        #   {{- end }}
     spec:
-      initContainers:
-      - name: geoip-create-db
-        image: maxmindinc/geoipupdate:latest
-        # command: ['sh', '-c', "source /vault/secrets/geoip && timeout 60 /usr/bin/entry.sh; echo waiting for myservice; exit"]
-        command: ['sh', '-c', "timeout 60 /usr/bin/entry.sh; echo waiting for myservice; exit"]
-        ports:
-        - containerPort: 8080
-        env:
-          - name: LOG_LEVEL
-            value: INFO
-          - name: SERVER_PORT
-            value: "8080"
-          - name: GEOIPUPDATE_ACCOUNT_ID
-            valueFrom:
-              secretKeyRef:
-                name: geoip-secret-config
-                key: GEOIPUPDATE_ACCOUNT_ID
-          - name: GEOIPUPDATE_LICENSE_KEY
-            valueFrom:
-              secretKeyRef:
-                name: geoip-secret-config
-                key: GEOIPUPDATE_LICENSE_KEY
-          - name: GEOIPUPDATE_EDITION_IDS
-            value: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
-          - name: GEOIPUPDATE_FREQUENCY
-            value: "24"
-          - name: GEOIPUPDATE_PRESERVE_FILE_TIMES
-            value: "1"
+      containers:
+      - name: geoip-goofys
+        image: harbor.infra.digaweb.com/magescanner/splash-goofys:latest
+        securityContext:
+          privileged: true
+        imagePullPolicy: Always
+        name: goofys
         resources:
           requests:
-            memory: "30Mi"
-            cpu: "3m"
+            cpu: 10m
+            memory: 50Mi
           limits:
-            memory: "200Mi"
-            cpu: "50m"
-      containers:
+            cpu: 100m
+            memory: 200Mi
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: minio-credentials
+                key: accesskey
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: minio-credentials
+                key: secretkey
+        command: ["goofys"]
+        args:
+          - -f
+          - --endpoint
+          -  https://minio.p.digaweb.com/
+          - --dir-mode
+          - "777"
+          - --file-mode
+          - "777"
+          -  minio-magescanner-splash-orbital-wording-233917
+          - /mnt/s3
+        volumeMounts:
+          - name: geoip
+            mountPath: /mnt/geoip/
+          - name: s3
+            mountPath: /mnt/s3
+            mountPropagation: Bidirectional
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 2 && cp -r /mnt/s3/geoip/* /mnt/geoip/ && chmod 755 /mnt/geoip/*" ]
+
       - name: geoip
-        image: harbor.infra.digaweb.com/artifact/geoip:k8s-test-0.0.5
+        image: harbor.infra.digaweb.com/artifact/geoip:k8s-test-0.0.17
         ports:
         - containerPort: 8080
         env:
@@ -76,7 +78,7 @@ spec:
           - name: DATABASE_NAME_REGEXP
             value: "^GeoLite2-(\\w+).mmdb$"
           - name: DATABASE_UPDATE_STATE_DELAY_MIN
-            value: "15"
+            value: "60"
         resources:
           requests:
             memory: "30Mi"
@@ -85,8 +87,8 @@ spec:
             memory: "200Mi"
             cpu: "50m"
         volumeMounts:
-        - name: geoip-magescanner
-          mountPath: "/usr/share/GeoIP"
+        - name: geoip
+          mountPath: "/usr/share/GeoIP/"
 
       - name: geoip-update
         image: maxmindinc/geoipupdate:latest
@@ -121,29 +123,16 @@ spec:
             memory: "200Mi"
             cpu: "50m"
         volumeMounts:
-        - name: geoip-magescanner
+        - name: geoip
           mountPath: "/usr/share/GeoIP"
       volumes:
-        - name: geoip-magescanner
+        - name: geoip
+          emptyDir: {}
+        - name: s3
           emptyDir: {}
       imagePullSecrets:
       - name: harbor
 
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: geoip-create-db
-  namespace: magescanner
-spec:
-  selector:
-    app: geoip-create-db
-  ports:
-    - name: tcp
-      protocol: TCP
-      port: 8080
-      targetPort: 8080
 
 ---
 

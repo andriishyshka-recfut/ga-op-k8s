@@ -49,13 +49,13 @@ spec:
             memory: "30Mi"
             cpu: "5m"
           limits:
-            memory: "600Mi"
-            cpu: "300m"
+            memory: "2500Mi"
+            cpu: "1200m"
         ports:
         - containerPort: 8080
         env:
           - name: THREAD_COUNT
-            value: "10"
+            value: "20"
           - name: COMMIT_CAPACITY
             value: "2000"
           - name: SPLASH_URL
