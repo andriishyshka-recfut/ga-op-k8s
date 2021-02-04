@@ -12,7 +12,7 @@ namespaceOverride: "monitoring"
 
 ## Provide a k8s version to auto dashboard import script example: kubeTargetVersionOverride: 1.16.6
 ##
-kubeTargetVersionOverride: "1.18.12"
+kubeTargetVersionOverride: ""
 
 ## Provide a name to substitute for the full names of resources
 ##
@@ -1261,7 +1261,8 @@ prometheusOperator:
       ## Provide a priority class name to the webhook patching job
       ##
       priorityClassName: ""
-      podAnnotations: {}
+      podAnnotations:
+       sidecar.istio.io/inject: "false"
       nodeSelector: {}
       affinity: {}
       tolerations: []
