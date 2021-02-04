@@ -5,7 +5,8 @@ locals {
     "magescanner-hash",
     "magescanner-har",
     "magescanner-splash",
-    "dome-attachements"
+    "dome-attachements",
+    "magescanner-geoip"
   ]
 }
 
