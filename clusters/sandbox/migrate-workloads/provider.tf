@@ -15,6 +15,7 @@ provider "helm" {
     cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
     token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
   }
+  version = "= 1.3.2"
 }
 
 provider "kubernetes" {
