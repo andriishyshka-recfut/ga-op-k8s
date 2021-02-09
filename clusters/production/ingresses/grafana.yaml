@@ -28,7 +28,7 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: grafanaetheus-grafana
+          serviceName: prometheus-grafana
           servicePort: 80
         path: /*
         pathType: ImplementationSpecific
