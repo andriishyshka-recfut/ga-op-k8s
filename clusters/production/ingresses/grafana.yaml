@@ -24,7 +24,7 @@ metadata:
   namespace: monitoring
 spec:
   rules:
-  - host: maid.p.digaweb.com
+  - host: grafana.p.digaweb.com
     http:
       paths:
       - backend:
