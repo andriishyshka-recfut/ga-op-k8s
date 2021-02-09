@@ -1,0 +1,38 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-cert
+  namespace: istio-system
+spec:
+  commonName: grafana.p.digaweb.com
+  dnsNames:
+  - grafana.p.digaweb.com
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: grafana-cert
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: grafana-ingress
+  namespace: monitoring
+spec:
+  rules:
+  - host: grafana.p.digaweb.com
+    http:
+      paths:
+      - backend:
+          serviceName: prometheus-grafana
+          servicePort: 80
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - grafana.p.digaweb.com
+    secretName: grafana-cert

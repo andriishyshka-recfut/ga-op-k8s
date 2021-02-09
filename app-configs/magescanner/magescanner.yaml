@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
       - name: magescanner
-        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.26
+        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.28
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && source /vault/secrets/google_sa && /opt/app/magescanner"]
         resources:
@@ -112,12 +112,12 @@ spec:
             value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name: SCAN_TASK_QUEUE_NAME
             value: mage.task.target
-          # - name: SCAN_TASK_QUEUE_NAME
-          #   value: mage.task.target.test
           - name: STATUS_TASK_QUEUE_NAME
             value: mage.task.scanned
           - name: SCAN_RESULT_QUEUE_NAME
             value: mage.scan
+          - name: SCAN_TASK_PRIORITY_QUEUE_NAME
+            value: mage.task.target.priority
           - name: ANALYST_RESULT_QUEUE_NAME
             value: mage.analysis
           - name: CERTIFICATE_TIMEOUT_SEC
@@ -131,7 +131,7 @@ spec:
           - name: API_TEST
             value: "false"
           - name: ATTACKER_UPDATE_PERIOD
-            value: 4h
+            value: 6h
           - name: GOOGLE_SHEET_RANGE_ATTACKER_URL
             value: "ProductionListAttackerDomain!A1:B999999"
           - name: GOOGLE_SHEET_RANGE_ATTACKER_SCRIPT
