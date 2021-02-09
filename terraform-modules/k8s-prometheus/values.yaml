@@ -37,8 +37,8 @@ defaultRules:
     prometheusOperator: true
     time: true
 
-  runbookUrl: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md
-
+  runbookUrl: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#
+  
   appNamespacesTarget: ".*"
 
   labels: {}
