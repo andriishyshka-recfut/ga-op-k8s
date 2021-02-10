@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: splash-vpn
-  replicas: 20
+  replicas: 30
   template:
     metadata:
       labels:
