@@ -87,10 +87,10 @@ spec:
           mountPath: /etc/splash/proxy-profiles/
         resources:
           requests:
-            memory: "400Mi"
-            cpu: "20m"
+            memory: "1000Mi"
+            cpu: "500m"
           limits:
-            memory: "1900Mi"
+            memory: "1850Mi"
             cpu: "800m"
         livenessProbe:
           httpGet:
