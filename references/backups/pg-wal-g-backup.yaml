@@ -22,6 +22,7 @@ spec:
             export PGHOST=harbor-harbor-database
             export PGPORT=5432
             export PGUSER=postgres
+            export PGDATA=/data
             #echo '{{ .Data.backup }}' > /tmp/minio-creds
             #export AWS_ACCESS_KEY_ID=$( /tmp/jq .accessKey /tmp/minio-creds )
             #export AWS_SECRET_ACCESS_KEY=$( /tmp/jq .secretKey /tmp/minio-creds )

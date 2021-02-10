@@ -17,7 +17,7 @@ resource "helm_release" "harbor" {
   wait       = true
   atomic     = true
   namespace  = "harbor"
-  version    = "v1.5.3"
+  version    = "v1.4.3"
   timeout    = 900
 
   values = [
