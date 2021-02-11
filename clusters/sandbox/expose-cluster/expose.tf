@@ -16,8 +16,10 @@ data "vault_generic_secret" "k8s_auth" {
 }
 
 locals {
-  activeCluster          = lookup(var.Settings.clusters.sandbox.blue, "active", false) == true ? "blue" : "green"
-  activeClusterVaultPath = "secret/kubernetes-sandbox-${local.activeCluster}"
+  # activeCluster = lookup(var.Settings.clusters.sandbox.blue, "active", false) == true ? "blue" : "green"
+  activeCluster = "blue"
+  # activeClusterVaultPath = "secret/kubernetes-sandbox-${local.activeCluster}"
+  activeClusterVaultPath = "secret/kubernetes-sandbox"
   gkeClusterConnectionSettings = {
     HOST                   = data.vault_generic_secret.k8s_auth.data.HOST
     API_KEY                = data.vault_generic_secret.k8s_auth.data.k8s_sa_token

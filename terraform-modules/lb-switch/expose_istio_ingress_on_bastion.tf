@@ -19,6 +19,7 @@ resource "null_resource" "ansible_bastion_playbook" {
   triggers = {
     //always_run = "${timestamp()}"
     playbook_contents = md5(file("${path.module}/../../ansible/bastion.yml"))
+    Color             = var.Color
   }
   provisioner "local-exec" {
     command = <<COMMAND

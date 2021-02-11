@@ -37,7 +37,7 @@
 #   }
 #   set {
 #     name  = "git.branch"
-#     value = "core-kustomize"
+#     value = "master"
 #   }
 #   set {
 #     name  = "git.path"
