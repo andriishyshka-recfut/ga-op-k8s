@@ -55,10 +55,6 @@ resource "google_container_cluster" "cluster" {
       display_name = "green-pods"
       cidr_block   = local.greenPods
     }
-    # cidr_blocks {
-    #   display_name = "infra"
-    #   cidr_block   = var.Settings["infra"].pods_subnet_range
-    # }
   }
 
   // Allocate IPs in our subnetwork
@@ -134,6 +130,50 @@ resource "google_container_node_pool" "cluster_preemptible_nodes" {
       "https://www.googleapis.com/auth/logging.write",
       "https://www.googleapis.com/auth/monitoring",
     ]
+  }
+  management {
+    auto_repair  = "true"
+    auto_upgrade = "true"
+  }
+
+  timeouts {
+    create = "60m"
+    update = "20m"
+  }
+}
+
+resource "google_container_node_pool" "cluster_nodes_data" {
+  lifecycle {
+    ignore_changes = all
+  }
+
+  provider = google-beta
+  name     = "${var.Cluster}-node-pool-data"
+  location = var.Settings.clusters[var.Cluster].region
+  cluster  = google_container_cluster.cluster.name
+
+  node_count = var.Settings.clusters[var.Cluster][var.Color].min_node_count
+
+  node_config {
+    preemptible     = local.isPreemptible
+    machine_type    = var.Settings.clusters[var.Cluster][var.Color].machine_type
+    tags            = [var.Cluster]
+    service_account = google_service_account.gke_sa.unique_id
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
+    labels = {
+      "workloadsType" = "data"
+    }
+    taint {
+      key    = "workloadsType"
+      value  = "data"
+      effect = "NO_SCHEDULE"
+    }
   }
   management {
     auto_repair  = "true"

@@ -52,6 +52,12 @@ spec:
           traffic.sidecar.istio.io/excludeOutboundPorts: "9300"
           traffic.sidecar.istio.io/excludeInboundPorts: "9300"
       spec:
+        nodeSelector:
+          workloadsType: data
+        tolerations:
+          - key: "workloadsType"
+            operator: "Exists"
+            effect: "NoSchedule"
         initContainers:
         - name: install-plugins
           command:
