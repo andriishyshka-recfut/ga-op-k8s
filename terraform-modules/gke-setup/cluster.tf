@@ -152,7 +152,7 @@ resource "google_container_node_pool" "cluster_nodes_data" {
   location = var.Settings.clusters[var.Cluster].region
   cluster  = google_container_cluster.cluster.name
 
-  node_count = var.Settings.clusters[var.Cluster][var.Color].min_node_count
+  node_count = var.Settings.clusters[var.Cluster][var.Color].data_nodes_count
 
   node_config {
     preemptible     = local.isPreemptible
