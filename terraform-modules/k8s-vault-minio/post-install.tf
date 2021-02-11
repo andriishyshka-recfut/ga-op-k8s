@@ -86,6 +86,10 @@ resource "kubernetes_job" "configure_users_access" {
     backoff_limit = 1
   }
   wait_for_completion = true
+  timeouts {
+    create = "5m"
+    update = "5m"
+  }
   depends_on = [
     helm_release.minio,
     kubernetes_config_map.policy

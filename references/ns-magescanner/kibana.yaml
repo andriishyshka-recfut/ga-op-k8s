@@ -1,0 +1,26 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: magescanner-kibana
+  namespace: magescanner
+spec:
+  count: 1
+  elasticsearchRef:
+    name: magescanner
+  http:
+    service:
+      metadata:
+        creationTimestamp: null
+      spec: {}
+    tls:
+      certificate: {}
+      selfSignedCertificate:
+        disabled: true
+  podTemplate:
+    metadata:
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      creationTimestamp: null
+    spec:
+      containers: null
+  version: 6.8.13
