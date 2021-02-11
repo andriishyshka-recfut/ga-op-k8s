@@ -5,9 +5,9 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "sandbox"
     namespace: "elastic"
-    appVersion: "7.11.0"
+    appVersion: "6.8.13"
     # enableTrial should be a quoted string. only yes value make changes
-    enableTrial: "yes"
+    enableTrial: "no"
     apm:
       enabled: "no"
     labels:
@@ -19,7 +19,7 @@ elastic_settings:
     nativeTLS:
       enabled: "yes" # required for xpack.security.authc.token and oidc
     oidc_gcloud:
-      enabled: "yes"
+      enabled: "no"
       vault_path: "/secret/oidc_google_test" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
       oidc_realm_name: "google"
       secret_name: "oidc"
@@ -27,20 +27,17 @@ elastic_settings:
     elasticNodeSets:
       - name: master
         config: |
-          node.master: true
+          index.store.type: niofs
           node.data: true
           node.ingest: true
+          node.master: true
           node.ml: true
           node.store.allow_mmap: false
-          index.store.type: niofs
           xpack.monitoring.collection.enabled: false
-          xpack.security.authc.realms:
-            native:
-              native1:
-                order: 1
+          xpack.security.authc.token.enabled: true
         storageSize: "100Gi"
-        ES_JAVA_OPTS: -Xms4g -Xmx4g
-        nodesCount: 1
+        ES_JAVA_OPTS: -Xms3g -Xmx3g
+        nodesCount: 3
         memoryRequests: "4Gi"
         cpuRequests: "0.5"
         memoryLimit: 4.5Gi
@@ -52,8 +49,8 @@ elastic_settings:
     name: data
     esName: "sandbox"
     namespace: "elastic"
-    kibanaVersion: "7.10.1"
+    kibanaVersion: "6.8.13"
     oidc_provider:
-      enabled: "yes"
+      enabled: "yno"
       realm: "google"
       istio_gateway_fqdn: "data.p.digaweb.com"

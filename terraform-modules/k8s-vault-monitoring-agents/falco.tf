@@ -42,4 +42,8 @@ resource "helm_release" "falco" {
     name  = "tolerations[0].key"
     value = "workloadsType"
   }
+  set {
+    name  = "tolerations[0].operator"
+    value = "Exists"
+  }
 }

@@ -47,7 +47,7 @@ provider "kubernetes" {
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-workloads/state"
+    prefix = "tf-workloads/state2"
   }
   required_providers {
     kubernetes = {

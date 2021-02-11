@@ -29,6 +29,20 @@ spec:
         type: persistent-claim
         size: 50Gi
         deleteClaim: false
+    tolerations:
+      - key: "workloadsType"
+        operator: "Exists"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: workloadsType
+              operator: In
+              values:
+              - data
+
   zookeeper:
     replicas: 3
     template:
@@ -36,6 +50,19 @@ spec:
         metadata:
           annotations:
             sidecar.istio.io/inject: False
+    tolerations:
+      - key: "workloadsType"
+        operator: "Exists"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: workloadsType
+              operator: In
+              values:
+              - data
     resources:
       limits:
         cpu: 1
