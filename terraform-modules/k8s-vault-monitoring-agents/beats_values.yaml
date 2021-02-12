@@ -1,5 +1,5 @@
 
-beatsVersion: "7.11.0"
+beatsVersion: "7.10.1"
 namespace: "monitoring"
 esName: "monitoring"
 metricbeat:

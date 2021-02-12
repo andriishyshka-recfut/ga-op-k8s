@@ -17,7 +17,7 @@ spec:
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
         vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/auth-path: auth/k8s-production-green
         vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
         vault.hashicorp.com/role: "magescanner"
         vault.hashicorp.com/agent-inject-template-es: |
@@ -110,7 +110,7 @@ spec:
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
         vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/auth-path: auth/k8s-production-green
         vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
         vault.hashicorp.com/role: "magescanner"
         vault.hashicorp.com/agent-inject-template-es: |
@@ -202,7 +202,7 @@ spec:
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
         vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/auth-path: auth/k8s-production-green
         vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
         vault.hashicorp.com/role: "magescanner"
         vault.hashicorp.com/agent-inject-template-es: |
