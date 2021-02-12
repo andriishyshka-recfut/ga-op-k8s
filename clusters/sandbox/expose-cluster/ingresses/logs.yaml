@@ -1,0 +1,36 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kibana-cert
+  namespace: istio-system
+spec:
+  secretName: kibana-cert
+  commonName: logs.infra.digaweb.com
+  dnsNames:
+  - logs.infra.digaweb.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: logs
+  namespace: monitoring
+spec:
+  rules:
+  - host: logs.infra.digaweb.com
+    http:
+      paths:
+      - backend:
+          serviceName: kibana-kb-http
+          servicePort: 5601
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - logs.infra.digaweb.com
+    secretName: kibana-cert
