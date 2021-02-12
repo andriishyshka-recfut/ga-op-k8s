@@ -31,7 +31,6 @@ resource "kubernetes_secret" "minio_credentials" {
 }
 
 resource "kubernetes_job" "minio_snapshot_storage" {
-  count = local.oidcSetup
   metadata {
     name      = "${local.esValues.esName}-minio-snapshot-storage"
     namespace = local.esValues.namespace
