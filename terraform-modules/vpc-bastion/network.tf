@@ -46,14 +46,15 @@ resource "google_compute_firewall" "bastion_ssh_https" {
   name      = "bastion-ssh-https"
   network   = google_compute_network.vpc.name
   direction = "INGRESS"
-  source_ranges = ["78.26.204.32/32", // - stepan's home office static ip
-    "69.164.208.72/32",               // - Outline VPN
-    "35.185.38.145/32",               // - Captcha resolver service
-    "35.245.245.168",                 // test account default VPC nat - access from gitlab jobs
-    "35.188.246.238",                 // prod nat
-    "35.242.253.39",                  // sandbox-old
-    "35.196.5.12",                    //app11.digaweb.com
-    "35.185.38.145",                  //app12.digaweb.com
+  source_ranges = [
+    "69.164.208.72/32",  // - Outline VPN
+    "35.185.38.145/32",  // - Captcha resolver service
+    "35.245.245.168/32", // test account default VPC nat - access from gitlab jobs
+    "35.188.246.238/32", // prod nat
+    "35.242.253.39/32",  // sandbox-old
+    "35.196.5.12/32",    //app11.digaweb.com
+    "35.185.38.145/32",  //app12.digaweb.com
+    "34.86.46.252/32",   // wireguard test account
   "${google_compute_address.static.address}/32"]
 
   allow {

@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
       - name: magescanner
-        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.28
+        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.34
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && source /vault/secrets/google_sa && /opt/app/magescanner"]
         resources:
