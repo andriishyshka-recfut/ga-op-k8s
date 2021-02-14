@@ -1,0 +1,36 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: magescanner-frontend-cert
+  namespace: istio-system
+spec:
+  commonName: magescanner.p.digaweb.com
+  dnsNames:
+  - magescanner.p.digaweb.com
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: magescanner-frontend-cert
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: magescanner-frontend-ingress
+  namespace: magescanner
+spec:
+  rules:
+  - host: magescanner.p.digaweb.com
+    http:
+      paths:
+      - backend:
+          serviceName: magescanner
+          servicePort: 8080
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - magescanner.p.digaweb.com
+    secretName: magescanner-frontend-cert
