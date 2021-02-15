@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: splash
-  replicas: 30
+  replicas: 25
   template:
     metadata:
       labels:
@@ -87,8 +87,8 @@ spec:
           mountPath: /etc/splash/proxy-profiles/
         resources:
           requests:
-            memory: "1000Mi"
-            cpu: "500m"
+            memory: "800Mi"
+            cpu: "400m"
           limits:
             memory: "1850Mi"
             cpu: "800m"

@@ -17,7 +17,7 @@ spec:
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
         vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/auth-path: auth/k8s-production-blue
+        vault.hashicorp.com/auth-path: auth/k8s-production-green
         vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
         vault.hashicorp.com/agent-inject-secret-mongo: "secret/mongo/production"
         vault.hashicorp.com/agent-inject-secret-google_sa: "secret/magescanner/google_service_account"
@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
       - name: magescanner
-        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.31
+        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.0.35
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && source /vault/secrets/google_sa && /opt/app/magescanner"]
         ports:
@@ -57,7 +57,7 @@ spec:
         - containerPort: 8080
         env:
           - name: THREAD_COUNT
-            value: "30"
+            value: "25"
           - name: COMMIT_CAPACITY
             value: "2000"
           - name: SPLASH_URL

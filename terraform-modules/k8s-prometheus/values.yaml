@@ -38,7 +38,7 @@ defaultRules:
     time: true
 
   runbookUrl: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#
-  
+
   appNamespacesTarget: ".*"
 
   labels: {}
@@ -306,6 +306,39 @@ grafana:
     metricRelabelings: []
 
     relabelings: []
+
+
+## Grafana's primary configuration
+## NOTE: values in map will be converted to ini format
+## ref: http://docs.grafana.org/installation/configuration/
+##
+  grafana.ini:
+    paths:
+      data: /var/lib/grafana/data
+      logs: /var/log/grafana
+      plugins: /var/lib/grafana/plugins
+      provisioning: /etc/grafana/provisioning
+    analytics:
+      check_for_updates: true
+    log:
+      mode: console
+    grafana_net:
+      url: https://grafana.net
+    server:
+      root_url:
+        https://grafana.p.digaweb.com
+    auth.generic_oauth:
+      name: oidc
+      enabled: true
+      client_id: grafana
+      client_secret: *****
+      scopes: openid profile email
+      auth_url: https://grafana.p.digaweb.com/oauth2/authorize
+      token_url: https://grafana.p.digaweb.com/oauth2/token
+#     api_url: https://${domain}/userinfo. //Not sure what this
+      allow_sign_up: true
+
+
 
 kubeApiServer:
   enabled: true
