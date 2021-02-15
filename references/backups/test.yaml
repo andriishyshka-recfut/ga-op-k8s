@@ -3,14 +3,20 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: test-job
-  namespace: kafka
+  namespace: harbor
 spec:
   template:
-
     spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data-harbor-harbor-redis-0
       containers:
       - name: test
         image: debian
+        volumeMounts:
+        - mountPath: "/data"
+          name: data
         resources:
           requests:
             cpu: 10m
