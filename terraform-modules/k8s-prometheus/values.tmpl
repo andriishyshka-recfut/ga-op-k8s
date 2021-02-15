@@ -67,7 +67,8 @@ alertmanager:
     create: true
     name: ""
     annotations: {}
-
+  podAnnotations:
+   sidecar.istio.io/inject: "false"
   podDisruptionBudget:
     enabled: false
     minAvailable: 1
@@ -258,12 +259,14 @@ grafana:
   defaultDashboardsEnabled: true
 
   adminPassword: prom-operator
-
+  podAnnotations:
+   sidecar.istio.io/inject: "false"
   ingress:
 
     enabled: false
 
-    annotations: {}
+    annotations:
+     sidecar.istio.io/inject: "false"
 
     labels: {}
 
@@ -278,13 +281,15 @@ grafana:
       enabled: true
       label: grafana_dashboard
 
-      annotations: {}
+      annotations:
+       sidecar.istio.io/inject: "false"
       multicluster: false
     datasources:
       enabled: true
       defaultDatasourceEnabled: true
 
-      annotations: {}
+      annotations:
+       sidecar.istio.io/inject: "false"
 
       createPrometheusReplicasDatasources: false
       label: grafana_datasource
@@ -313,31 +318,18 @@ grafana:
 ## ref: http://docs.grafana.org/installation/configuration/
 ##
   grafana.ini:
-    paths:
-      data: /var/lib/grafana/data
-      logs: /var/log/grafana
-      plugins: /var/lib/grafana/plugins
-      provisioning: /etc/grafana/provisioning
-    analytics:
-      check_for_updates: true
-    log:
-      mode: console
-    grafana_net:
-      url: https://grafana.net
     server:
       root_url:
         https://grafana.p.digaweb.com
-    auth.generic_oauth:
-      name: oidc
-      enabled: true
-      client_id: grafana
-      client_secret: *****
-      scopes: openid profile email
-      auth_url: https://grafana.p.digaweb.com/oauth2/authorize
-      token_url: https://grafana.p.digaweb.com/oauth2/token
-#     api_url: https://${domain}/userinfo. //Not sure what this
-      allow_sign_up: true
-
+    auth.google
+      enabled = true
+      client_id: ${CLIENT_ID}
+      client_secret: ${CLIENT_SECRET}
+      scopes = https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
+      auth_url = https://accounts.google.com/o/oauth2/auth
+      token_url = https://accounts.google.com/o/oauth2/token
+      allowed_domains = digaweb.com
+      allow_sign_up = true
 
 
 kubeApiServer:
@@ -563,7 +555,8 @@ nodeExporter:
 prometheus-node-exporter:
   namespaceOverride: "monitoring"
   podLabels:
-
+  podAnnotations:
+   sidecar.istio.io/inject: "false"
     jobLabel: node-exporter
   extraArgs:
     - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
@@ -593,8 +586,6 @@ prometheusOperator:
       resources: {}
 
       priorityClassName: ""
-      podAnnotations:
-       sidecar.istio.io/inject: "false"
       nodeSelector: {}
       affinity: {}
       tolerations: []
@@ -615,7 +606,8 @@ prometheusOperator:
     name: ""
 
   service:
-    annotations: {}
+    annotations:
+     sidecar.istio.io/inject: "false"
     labels: {}
     clusterIP: ""
 
@@ -634,8 +626,8 @@ prometheusOperator:
 
   podLabels: {}
 
-  podAnnotations: {}
-
+  podAnnotations:
+   sidecar.istio.io/inject: "false"
   kubeletService:
     enabled: true
     namespace: kube-system

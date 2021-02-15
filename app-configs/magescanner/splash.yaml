@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: splash
-  replicas: 25
+  replicas: 30
   template:
     metadata:
       labels:
