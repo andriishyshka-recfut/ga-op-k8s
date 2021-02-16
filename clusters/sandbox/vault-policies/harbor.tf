@@ -5,5 +5,8 @@ resource "vault_policy" "harbor" {
 path "secret/minio/users" {
   capabilities = ["read","list"]
 }
+path "secret/minio-credentials" {
+  capabilities = ["read","list"]
+}
 EOT
 }

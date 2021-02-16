@@ -1,17 +1,6 @@
 locals {
   postInstallSteps = <<EOF
   curl -XPOST "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_license/start_trial?acknowledge=true" -k &&\
-  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
-{
-     "type": "s3",
-      "settings": {
-         "bucket": "minio-xbackup-${local.currentProject}",
-         "endpoint": "minio.minio:9000",
-         "protocol": "http",
-         "path_style_access": true
-      }
-  }
-  ' &&\
   curl -X POST "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role/oidc_ro" -H 'Content-Type: application/json' -k -d  '
 {
   "cluster":["monitor"],
@@ -26,8 +15,37 @@ locals {
     "field": { "realm.name": "${local.oidcRealmName}" }
   }
 }
-'
-
+' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-dc" -H 'Content-Type: application/json' -k -d '
+{
+  "roles": [ "superuser" ],
+  "enabled": true,
+  "rules": { "all": [
+        { "field": { "realm.name": "google" } },
+        { "field": { "username": "dc@geminiadvisory.io" } }
+  ] }
+}
+￼' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-sb" -H 'Content-Type: application/json' -k -d '
+{
+  "roles": [ "superuser" ],
+  "enabled": true,
+  "rules": { "all": [
+        { "field": { "realm.name": "google" } },
+        { "field": { "username": "stepan.biriukov@geminiadvisory.io" } }
+  ] }
+}
+￼' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-anton" -H 'Content-Type: application/json' -k -d '
+{
+  "roles": [ "superuser" ],
+  "enabled": true,
+  "rules": { "all": [
+        { "field": { "realm.name": "google" } },
+        { "field": { "username": "anton.moliavko@geminiadvisory.io" } }
+  ] }
+}
+￼'
 EOF
 }
 
@@ -75,4 +93,8 @@ resource "kubernetes_job" "post_install" {
   depends_on = [
     null_resource.ansible_validate_resources
   ]
+  timeouts {
+    create = "5m"
+    update = "5m"
+  }
 }

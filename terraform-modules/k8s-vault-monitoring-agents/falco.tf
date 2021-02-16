@@ -34,4 +34,16 @@ resource "helm_release" "falco" {
     name  = "falco.syscallEventDrops.actions[0]"
     value = "ignore"
   }
+  set {
+    name  = "tolerations[0].effect"
+    value = "NoSchedule"
+  }
+  set {
+    name  = "tolerations[0].key"
+    value = "workloadsType"
+  }
+  set {
+    name  = "tolerations[0].operator"
+    value = "Exists"
+  }
 }

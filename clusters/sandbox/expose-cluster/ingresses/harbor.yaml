@@ -1,0 +1,64 @@
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-core-cert
+  namespace: istio-system
+spec:
+  secretName: harbor-core-cert
+  commonName: harbor.infra.digaweb.com
+  dnsNames:
+  - harbor.infra.digaweb.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  labels:
+    app: harbor
+  name: harbor-harbor-ingress
+  namespace: harbor
+spec:
+  rules:
+  - host: harbor.infra.digaweb.com
+    http:
+      paths:
+      - backend:
+          serviceName: harbor-harbor-core
+          servicePort: 80
+        path: /api/*
+        pathType: ImplementationSpecific
+      - backend:
+          serviceName: harbor-harbor-core
+          servicePort: 80
+        path: /service/*
+        pathType: ImplementationSpecific
+      - backend:
+          serviceName: harbor-harbor-core
+          servicePort: 80
+        path: /v2/*
+        pathType: ImplementationSpecific
+      - backend:
+          serviceName: harbor-harbor-core
+          servicePort: 80
+        path: /chartrepo/*
+        pathType: ImplementationSpecific
+      - backend:
+          serviceName: harbor-harbor-core
+          servicePort: 80
+        path: /c/*
+        pathType: ImplementationSpecific
+      - backend:
+          serviceName: harbor-harbor-portal
+          servicePort: 80
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - harbor.infra.digaweb.com
+    secretName: harbor-core-cert

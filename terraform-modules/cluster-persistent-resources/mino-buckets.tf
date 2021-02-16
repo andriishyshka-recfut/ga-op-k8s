@@ -58,7 +58,7 @@ resource "google_storage_bucket" "minio_autoexpire_bucket" {
     }
 
     condition {
-      age = 7
+      age = 30
     }
   }
 }
@@ -81,7 +81,7 @@ resource "google_storage_bucket" "minio_autoexpire_backups_bucket" {
     }
 
     condition {
-      age = 7
+      num_newer_versions = 1
     }
   }
 }

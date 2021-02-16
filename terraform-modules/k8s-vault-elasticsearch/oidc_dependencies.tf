@@ -17,6 +17,7 @@ resource "kubernetes_secret" "oidc" {
 }
 
 locals {
+  clientId   = local.oidcSetup == 1 ? data.vault_generic_secret.oidc.0.data.oidc_client_id : ""
   config     = <<EOF
 xpack.security.authc.token.enabled: true
 xpack.security.authc.realms.oidc.${local.oidcRealmName}:
@@ -32,7 +33,7 @@ xpack.security.authc.realms.oidc.${local.oidcRealmName}:
           - email
           - openid
           - profile
-        rp.client_id: ${data.vault_generic_secret.oidc.0.data.oidc_client_id}
+        rp.client_id: ${local.clientId}
 
 EOF
   oidcConfig = local.oidcSetup == 1 ? { "oidc_config" = local.config } : { "oidc_config" = "" }

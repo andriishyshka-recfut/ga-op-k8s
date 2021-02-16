@@ -5,7 +5,7 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "monitoring"
     namespace: "monitoring"
-    appVersion: "7.10.1"
+    appVersion: "7.11.0"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
     apm:
@@ -56,4 +56,4 @@ elastic_settings:
     oidc_provider:
       enabled: "yes"
       realm: "google"
-      istio_gateway_fqdn: "mon.p.digaweb.com"
+      istio_gateway_fqdn: "logs.infra.digaweb.com"

@@ -18,6 +18,7 @@ module "monitoring-elastic" {
   Cluster                      = "production"
   Settings                     = var.Settings
   StoreEsPasswordInVault       = false
+  depends_on                   = [module.namespaces]
 }
 
 module "monitoring-agents" {

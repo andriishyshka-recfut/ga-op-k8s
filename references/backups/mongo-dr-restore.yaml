@@ -1,0 +1,19 @@
+apiVersion: velero.io/v1
+kind: Restore
+metadata:
+  name: mongo-restore
+  namespace: velero
+spec:
+  backupName: mongo2
+  excludedResources:
+  - nodes
+  - events
+  - events.events.k8s.io
+  - backups.velero.io
+  - restores.velero.io
+  - resticrepositories.velero.io
+  hooks: {}
+  includedNamespaces:
+  - '*'
+  namespaceMapping:
+    magescanner: mongo

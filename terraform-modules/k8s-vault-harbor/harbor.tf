@@ -4,8 +4,9 @@ data "google_service_account" "vault_sa" {
 }
 
 resource "google_service_account_key" "harbor_key" {
-  service_account_id = data.google_service_account.vault-sa.name
+  service_account_id = data.google_service_account.vault_sa.name
 }
+
 
 
 
@@ -18,32 +19,21 @@ resource "helm_release" "harbor" {
   namespace  = "harbor"
   version    = "v1.4.3"
   timeout    = 900
-  set {
-    name  = "expose.type"
-    value = "ClusterIP"
-  }
-  set {
-    name  = "expose.clusterIP.name"
-    value = "harbor"
-  }
-  set {
-    name  = "expose.tls.enabled"
-    value = "false"
-  }
-  set {
-    name  = "externalURL"
-    value = "https://harbor.infra.digaweb.com"
-  }
+
+  values = [
+    file("${path.module}/harbor-values.yaml")
+  ]
   set {
     name  = "persistence.imageChartStorage.type"
     value = "gcs"
   }
   set {
     name  = "persistence.imageChartStorage.gcs.bucket"
-    value = "harbor-backet-${data.google_project.current.project_id}"
+    value = "harbor-backet-${local.currentProject}"
   }
   set {
     name  = "persistence.imageChartStorage.gcs.encodedkey"
     value = google_service_account_key.harbor_key.private_key
   }
+
 }

@@ -12,6 +12,7 @@ resource "kubernetes_namespace" "elastic_operator_ns" {
 resource "null_resource" "ansible_eck_crd_playbook" {
   triggers = {
     # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
+    version = local.eckVersion
   }
 
   provisioner "local-exec" {
