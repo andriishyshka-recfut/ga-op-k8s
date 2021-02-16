@@ -319,8 +319,7 @@ grafana:
 ##
   grafana.ini:
     server:
-      root_url:
-        https://grafana.p.digaweb.com
+      root_url: ${ROOT_URL}
     auth.google
       enabled = true
       client_id: ${CLIENT_ID}
