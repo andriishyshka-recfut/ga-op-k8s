@@ -15,6 +15,7 @@ resource "helm_release" "prometheus" {
       {
         CLIENT_ID     = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
         CLIENT_SECRET = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret
+        ROOT_URL      = data.vault_generic_secret.grafana.data.ROOT_URL
       }
     )
   ]
