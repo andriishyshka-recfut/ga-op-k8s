@@ -1,0 +1,47 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: harbor-backup
+  namespace: harbor
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      containers:
+      - name: dump
+        image: postgres:9.6
+        resources:
+          limits:
+            memory: 1G
+        command: ["bash",  "-c"]
+        args:
+         - set -x ;apt-get update -q && apt-get install wget -yq ;
+           wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
+           chmod +x mc ;
+           pg_dump --host=harbor-harbor-database --port=5432 --username=postgres --dbname=registry   |  ./mc pipe backup/minio-xbackup-ardent-rarity-239115/harbor-backup/registry.sql ;
+           pg_dump --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notarysigner  |  ./mc pipe backup/minio-xbackup-ardent-rarity-239115/harbor-backup/notarysigner.sql ;
+           pg_dump --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notaryserver  |  ./mc pipe backup/minio-xbackup-ardent-rarity-239115/harbor-backup/notaryserver.sql ;
+           pg_dump --host=harbor-harbor-database --port=5432 --username=postgres --dbname=postgres  |  ./mc pipe backup/minio-xbackup-ardent-rarity-239115/harbor-backup/postgres.sql ;
+        env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key:  accesskey
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: secretkey
+        - name: MC_HOST_backup
+          value: "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
+        - name: PGPASSWORD
+          valueFrom:
+                secretKeyRef:
+                  name: harbor-harbor-database
+                  key:  POSTGRES_PASSWORD
+      restartPolicy: Never
+  backoffLimit: 3

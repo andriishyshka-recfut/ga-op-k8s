@@ -1,0 +1,16 @@
+apiVersion: velero.io/v1
+kind: Backup
+metadata:
+  labels:
+    velero.io/storage-location: default
+  name: mongo
+  namespace: velero
+spec:
+  hooks: {}
+  includedNamespaces:
+  - magescanner
+  includedResources:
+  - perconaservermongodbbackups.psmdb.percona.com
+  storageLocation: default
+  ttl: 720h0m0s
+  defaultVolumesToRestic: true

@@ -3,8 +3,15 @@ provider "vault" {
   address = "https://vault.p.digaweb.com"
 }
 
+locals {
+
+  activeCluster          = lookup(var.Settings.clusters.production.blue, "active", false) == true ? "blue" : "green"
+  inactiveCluster        = local.activeCluster == "blue" ? "green" : "blue"
+  activeClusterVaultPath = "secret/kubernetes-production-${local.activeCluster}"
+}
+
 data "vault_generic_secret" "k8s_auth" {
-  path = "secret/kubernetes-production-blue"
+  path = local.activeClusterVaultPath
 }
 
 provider "helm" {
@@ -33,6 +40,6 @@ variable "Settings" {}
 terraform {
   backend "gcs" {
     bucket = "terraform-state-production111"
-    prefix = "terraform-production-workloads/state"
+    prefix = "terraform-production-workloads/state-2"
   }
 }

@@ -46,6 +46,10 @@ resource "helm_release" "mongo_cluster" {
   namespace = local.mongoNs
   wait      = true
   atomic    = true
+  set {
+    name  = "currentProject"
+    value = local.currentProject
+  }
   depends_on = [
     helm_release.psmdb_operator,
     kubernetes_secret.mongo,

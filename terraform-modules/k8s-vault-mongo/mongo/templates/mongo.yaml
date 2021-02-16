@@ -30,6 +30,12 @@ spec:
     annotations:
         sidecar.istio.io/proxyCPU: 5m
         sidecar.istio.io/proxyMemory: 30M
+    nodeSelector:
+      workloadsType: data
+    tolerations:
+    - key: "workloadsType"
+      operator: "Exists"
+      effect: "NoSchedule"
     affinity:
       antiAffinityTopologyKey: "kubernetes.io/hostname"
 #      advanced:
@@ -42,18 +48,12 @@ spec:
 #                values:
 #                - e2e-az1
 #                - e2e-az2
-#    tolerations:
-#    - key: "node.alpha.kubernetes.io/unreachable"
-#      operator: "Exists"
-#      effect: "NoExecute"
 #      tolerationSeconds: 6000
 #    priorityClassName: high-priority
 #    annotations:
 #      iam.amazonaws.com/role: role-arn
 #    labels:
 #      rack: rack-22
-#    nodeSelector:
-#      disktype: ssd
 #    livenessProbe:
 #      failureThreshold: 4
 #      initialDelaySeconds: 60
@@ -148,7 +148,7 @@ spec:
      minio:
        type: s3
        s3:
-         bucket: minio-xbackup-ardent-rarity-239115
+         bucket: minio-{{.Values.currentProject}}
          region: minio
          credentialsSecret: mongo-backup
          endpointUrl: http://minio.minio:9000/
