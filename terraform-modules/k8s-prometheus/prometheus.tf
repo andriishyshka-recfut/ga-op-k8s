@@ -2,6 +2,10 @@ data "vault_generic_secret" "oidc_secrets" {
   path = "secret/oidc_google_prod"
 }
 
+data "vault_generic_secret" "grafana" {
+  path = "secret/grafana"
+}
+
 resource "helm_release" "prometheus" {
   name              = "prometheus"
   repository        = "https://prometheus-community.github.io/helm-charts"
