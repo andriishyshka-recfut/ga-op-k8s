@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: splash
-  replicas: 20
+  replicas: 30
   template:
     metadata:
       labels:
@@ -71,7 +71,7 @@ spec:
         - "--slots"
         - "5"
         - "--maxrss"
-        - "1350"
+        - "1800"
         - "--verbosity"
         - "0"
         - "--js-cross-domain-access"
@@ -87,10 +87,10 @@ spec:
           mountPath: /etc/splash/proxy-profiles/
         resources:
           requests:
-            memory: "300Mi"
-            cpu: "20m"
+            memory: "800Mi"
+            cpu: "400m"
           limits:
-            memory: "1400Mi"
+            memory: "1850Mi"
             cpu: "800m"
         livenessProbe:
           httpGet:

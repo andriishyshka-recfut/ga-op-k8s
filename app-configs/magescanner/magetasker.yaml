@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: magetasker
-        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.0.21
+        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.0.22
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && /opt/app/magetasker"]
         # ports:
@@ -61,7 +61,7 @@ spec:
           - name: WORKER_SCAN_INTERVAL
             value: 24h
           - name: DAILY_LIMIT
-            value: "50000"
+            value: "3000"
           - name: TOPIC_TASK_PRIORITY
             value: mage.task.target.priority
           - name: KAFKA_BROKERS
@@ -80,8 +80,6 @@ spec:
             value: "mageanalyst*"
           - name: INFECTED_CRON
             value: "@daily"
-          - name: INFECTED_CHECK
-            value: "24h"
           - name: ELASTIC_APM_SECRET_TOKEN
             valueFrom:
                 secretKeyRef:
