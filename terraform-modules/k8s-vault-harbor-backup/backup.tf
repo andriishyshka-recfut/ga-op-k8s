@@ -36,7 +36,7 @@ resource "kubernetes_job" "harbor_backup" {
               values   = ["redis"]
             }
           }
-          topology_key = "topology.kubernetes.io/zone"
+          topology_key = "kubernetes.io/hostname"
         }
       }
     }
