@@ -95,6 +95,10 @@ resource "kubernetes_job" "harbor_restore" {
             name  = "MC_HOST_backup"
             value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
           }
+         env {
+           name = "DATE"
+           value = formatdate("DD-MMM-YYYY-hh", timestamp())
+         }
           env {
             name = "PGPASSWORD"
             value_from {
@@ -123,14 +127,15 @@ resource "kubernetes_job" "harbor_restore" {
 }
 
 resource "null_resource" "kubectl_restart_registry" {
+  count = local.restoreSwitcher
   triggers = {
     # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
-    job_id = kubernetes_job.harbor_restore.id
+    job_id = kubernetes_job.harbor_restore[0].id
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<COMMAND
-    kubectl apply --server ${local.gkeClusterEndpoint}  \
+    kubectl --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
      --namespace ${local.harborNs} rollout restart deploy/harbor-harbor-registry
 COMMAND

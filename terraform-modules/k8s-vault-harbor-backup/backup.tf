@@ -81,8 +81,11 @@ resource "kubernetes_job" "harbor_backup" {
                 key  = "POSTGRES_PASSWORD"
               }
             }
-
           }
+         env {
+           name = "DATE"
+           value = formatdate("DD-MMM-YYYY-hh", timestamp())
+         }
           volume_mount {
             name = "redis"
             mount_path = "/redis"
