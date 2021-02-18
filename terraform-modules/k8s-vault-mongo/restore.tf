@@ -27,6 +27,12 @@ resource "kubernetes_job" "mongo_restore" {
           name    = "restore"
           image   = "mongo"
           command = ["bash", "-c", local.backupCommand]
+          resources {
+            limits = {
+              cpu = 2
+              memory = "2Gi"
+            }
+          }
           env {
             name = "MINIO_ACCESS_KEY"
             value_from {
@@ -80,8 +86,8 @@ resource "kubernetes_job" "mongo_restore" {
   }
   wait_for_completion = true
   timeouts {
-    create = "20m"
-    update = "30m"
+    create = "120m"
+    update = "120m"
   }
   depends_on = [
     helm_release.mongo_cluster

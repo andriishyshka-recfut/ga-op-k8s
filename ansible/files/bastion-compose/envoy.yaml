@@ -49,6 +49,7 @@ static_resources:
     - filters:
       - name: envoy.http_connection_manager
         config:
+          server_name: bastion
           codec_type: auto
           stat_prefix: ingress_http
           route_config:

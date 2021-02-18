@@ -1,4 +1,19 @@
 
+resource "null_resource" "kubectl_scale_down_redis" {
+  count = local.restoreSwitcher
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<COMMAND
+    kubectl --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
+     --namespace ${local.harborNs} scale statefulset/harbor-harbor-redis  --replicas=0
+COMMAND
+  }
+  depends_on = [
+    helm_release.harbor
+  ]
+}
+
 locals {
   restoreCommand = <<EOF
 set -e;
@@ -26,7 +41,9 @@ psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_S
 ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/registry.sql | psql --host=harbor-harbor-database --port=5432 --username=postgres --dbname=registry -v ON_ERROR_STOP=ON;
 ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/notarysigner.sql | psql --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notarysigner -v ON_ERROR_STOP=ON;
 ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/notaryserver.sql | psql --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notaryserver -v ON_ERROR_STOP=ON;
-redis-cli -h harbor-harbor-redis   SHUTDOWN  && ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/dump.rdb > /redis/dump.rdb ;
+echo "Postgres restore completed";
+./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/dump.rdb > /redis/dump.rdb ;
+echo "Redis restore completed";
 EOF
 }
 
@@ -44,20 +61,20 @@ resource "kubernetes_job" "harbor_restore" {
         }
       }
       spec {
-        affinity {
-      pod_affinity {
-        required_during_scheduling_ignored_during_execution {
-          label_selector {
-            match_expressions {
-              key      = "component"
-              operator = "In"
-              values   = ["redis"]
-            }
-          }
-          topology_key = "topology.kubernetes.io/zone"
-        }
-      }
-    }
+    #     affinity {
+    #   pod_affinity {
+    #     required_during_scheduling_ignored_during_execution {
+    #       label_selector {
+    #         match_expressions {
+    #           key      = "component"
+    #           operator = "In"
+    #           values   = ["redis"]
+    #         }
+    #       }
+    #       topology_key = "topology.kubernetes.io/zone"
+    #     }
+    #   }
+    # }
 
         volume {
           name = "redis"
@@ -118,11 +135,12 @@ resource "kubernetes_job" "harbor_restore" {
   }
   wait_for_completion = true
   timeouts {
-    create = "10m"
+    create = "11m"
     update = "10m"
   }
   depends_on = [
-    helm_release.harbor
+    helm_release.harbor,
+    null_resource.kubectl_scale_down_redis
   ]
 }
 
@@ -137,7 +155,10 @@ resource "null_resource" "kubectl_restart_registry" {
     command     = <<COMMAND
     kubectl --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
-     --namespace ${local.harborNs} rollout restart deploy/harbor-harbor-registry
+     --namespace ${local.harborNs} scale statefulset/harbor-harbor-redis --replicas=1 &&\
+    kubectl --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
+     --namespace ${local.harborNs} delete po  -l component=registry
 COMMAND
   }
   depends_on = [
