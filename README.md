@@ -3,7 +3,7 @@
 ### Architecture
 
 
-![](docs/Network\ Domains.svg)
+![](docs/Network_Domains.svg)
 
 
 
