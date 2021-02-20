@@ -1,18 +1,18 @@
 
-resource "null_resource" "kubectl_scale_down_redis" {
-  count = local.restoreSwitcher
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = <<COMMAND
-    kubectl --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
-     --namespace ${local.harborNs} scale statefulset/harbor-harbor-redis  --replicas=0
-COMMAND
-  }
-  depends_on = [
-    helm_release.harbor
-  ]
-}
+# resource "null_resource" "kubectl_scale_down_redis" {
+#   count = local.restoreSwitcher
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = <<COMMAND
+#     kubectl --server ${local.gkeClusterEndpoint}  \
+#      --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
+#      --namespace ${local.harborNs} scale statefulset/harbor-harbor-redis  --replicas=0
+# COMMAND
+#   }
+#   depends_on = [
+#     helm_release.harbor
+#   ]
+# }
 
 locals {
   restoreCommand = <<EOF
@@ -42,8 +42,8 @@ psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_S
 ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/notarysigner.sql | psql --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notarysigner -v ON_ERROR_STOP=ON;
 ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/notaryserver.sql | psql --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notaryserver -v ON_ERROR_STOP=ON;
 echo "Postgres restore completed";
-./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/dump.rdb > /redis/dump.rdb ;
-echo "Redis restore completed";
+# ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/dump.rdb > /redis/dump.rdb ;
+# echo "Redis restore completed";
 EOF
 }
 
@@ -140,28 +140,28 @@ resource "kubernetes_job" "harbor_restore" {
   }
   depends_on = [
     helm_release.harbor,
-    null_resource.kubectl_scale_down_redis
+    # null_resource.kubectl_scale_down_redis
   ]
 }
 
-resource "null_resource" "kubectl_restart_registry" {
-  count = local.restoreSwitcher
-  triggers = {
-    # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
-    job_id = kubernetes_job.harbor_restore[0].id
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = <<COMMAND
-    kubectl --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
-     --namespace ${local.harborNs} scale statefulset/harbor-harbor-redis --replicas=1 &&\
-    kubectl --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
-     --namespace ${local.harborNs} delete po  -l component=registry
-COMMAND
-  }
-  depends_on = [
-    kubernetes_job.harbor_restore,
-  ]
-}
+# resource "null_resource" "kubectl_restart_registry" {
+#   count = local.restoreSwitcher
+#   triggers = {
+#     # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
+#     job_id = kubernetes_job.harbor_restore[0].id
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = <<COMMAND
+#     kubectl --server ${local.gkeClusterEndpoint}  \
+#      --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
+#      --namespace ${local.harborNs} scale statefulset/harbor-harbor-redis --replicas=1 &&\
+#     kubectl --server ${local.gkeClusterEndpoint}  \
+#      --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
+#      --namespace ${local.harborNs} delete po  -l component=registry
+# COMMAND
+#   }
+#   depends_on = [
+#     kubernetes_job.harbor_restore,
+#   ]
+# }

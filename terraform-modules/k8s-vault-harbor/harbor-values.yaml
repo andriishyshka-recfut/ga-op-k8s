@@ -6,6 +6,7 @@ expose:
     enabled: false
 
 externalURL: "https://harbor.infra.digaweb.com"
+logLevel: debug
 
 persistence:
   imageChartStorage:
