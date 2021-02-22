@@ -9,5 +9,8 @@ path "secret/magescanner/*" {
 path "secret/mongo/magescanner" {
   capabilities = ["read","list"]
 }
+path "secret/elasticsearch-admin/*" {
+  capabilities = ["read","list"]
+}
 EOT
 }
