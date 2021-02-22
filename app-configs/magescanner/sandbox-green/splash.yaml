@@ -1,0 +1,23 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splash
+spec:
+  replicas: 7
+  template:
+    spec:
+      containers:
+      - name: splash-goofys
+        image: harbor.infra.digaweb.com/magescanner/splash-goofys:latest
+        command: ["goofys"]
+        args:
+          - -f
+          - --endpoint
+          -  https://minio.infra.digaweb.com/
+          - --dir-mode
+          - "777"
+          - --file-mode
+          - "777"
+          -  minio-magescanner-splash-ardent-rarity-239115
+          - /mnt/s3
