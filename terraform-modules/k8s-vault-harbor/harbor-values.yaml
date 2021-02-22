@@ -10,7 +10,16 @@ logLevel: debug
 
 persistence:
   imageChartStorage:
-    type: gcs
+    type: s3
+    disableredirect: true
+    s3:
+      region: minio
+      bucket: harbor-backet-ardent-rarity-239115
+      regionendpoint: http://minio.minio:9000
+      encrypt: false
+      secure: false
+      v4auth: true
+      rootdirectory: /
 
 nginx:
   replicas: 0
@@ -37,8 +46,12 @@ redis:
 
 core:
   replicas: 1
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
 chartmuseum:
   replicas: 1
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
   tolerations:
   - key: "workloadsType"
     operator: "Exists"
@@ -61,6 +74,8 @@ jobservice:
   nodeSelector:
     workloadsType: data
 registry:
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
   tolerations:
   - key: "workloadsType"
     operator: "Exists"
@@ -68,6 +83,8 @@ registry:
   nodeSelector:
     workloadsType: data
 trivy:
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
   tolerations:
   - key: "workloadsType"
     operator: "Exists"

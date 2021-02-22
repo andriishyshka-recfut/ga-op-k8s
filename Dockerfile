@@ -6,7 +6,7 @@ RUN apt update && \
     python3 -m pip install ansible==2.10.5 kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl &&\
     rm -rf /var/lib/apt/lists/*
 
-RUN wget  -q https://releases.hashicorp.com/terraform/0.14.6/terraform_0.14.6_linux_amd64.zip -O /usr/bin/terraform.zip && \
+RUN wget  -q https://releases.hashicorp.com/terraform/0.14.7/terraform_0.14.7_linux_amd64.zip -O /usr/bin/terraform.zip && \
     unzip /usr/bin/terraform.zip -d /usr/bin && \
     wget -q https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl -O /usr/bin/kubectl && \
     chmod +x /usr/bin/terraform /usr/bin/kubectl &&\
