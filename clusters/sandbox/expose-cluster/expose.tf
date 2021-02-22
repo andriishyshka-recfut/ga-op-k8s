@@ -16,8 +16,8 @@ data "google_client_config" "default" {
 }
 
 locals {
-  # activeCluster = lookup(var.Settings.clusters.sandbox.blue, "active", false) == true ? "blue" : "green"
-  activeCluster = "blue"
+  activeCluster = lookup(var.Settings.clusters.sandbox.blue, "active", false) == true ? "blue" : "green"
+  # activeCluster = "blue"
   gkeClusterConnectionSettings = {
     HOST                   = "https://${data.google_container_cluster.active_cluster.endpoint}"
     API_KEY                = data.google_client_config.default.access_token

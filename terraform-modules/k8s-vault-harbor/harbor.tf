@@ -1,14 +1,17 @@
+#
+# data "google_service_account" "vault_sa" {
+#   account_id = "vault-sandbox"
+# }
+#
+# resource "google_service_account_key" "harbor_key" {
+#   service_account_id = data.google_service_account.vault_sa.name
+# }
+#
 
-data "google_service_account" "vault_sa" {
-  account_id = "vault-sandbox"
+
+data "vault_generic_secret" "minio_auth" {
+  path = "secret/minio/users"
 }
-
-resource "google_service_account_key" "harbor_key" {
-  service_account_id = data.google_service_account.vault_sa.name
-}
-
-
-
 
 resource "helm_release" "harbor" {
   name       = "harbor"
@@ -23,17 +26,14 @@ resource "helm_release" "harbor" {
   values = [
     file("${path.module}/harbor-values.yaml")
   ]
+
   set {
-    name  = "persistence.imageChartStorage.type"
-    value = "gcs"
-  }
-  set {
-    name  = "persistence.imageChartStorage.gcs.bucket"
-    value = "harbor-backet-${local.currentProject}"
-  }
-  set {
-    name  = "persistence.imageChartStorage.gcs.encodedkey"
-    value = google_service_account_key.harbor_key.private_key
+    name  = "persistence.imageChartStorage.s3.accesskey"
+    value = jsondecode(data.vault_generic_secret.minio_auth.data.harbor).accessKey
   }
 
+  set {
+    name  = "persistence.imageChartStorage.s3.secretkey"
+    value = jsondecode(data.vault_generic_secret.minio_auth.data.harbor).secretKey
+  }
 }
