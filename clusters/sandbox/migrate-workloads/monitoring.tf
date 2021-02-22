@@ -9,7 +9,7 @@ module "monitoring-elastic" {
   Cluster                      = "sandbox"
   Settings                     = var.Settings
   StoreEsPasswordInVault       = false
-  depends_on                   = [module.namespaces]
+  depends_on                   = [module.namespaces,module.minio]
 }
 
 module "monitoring-agents" {

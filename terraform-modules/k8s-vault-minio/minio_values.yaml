@@ -16,11 +16,8 @@ resources:
 
 
 environment:
-  MINIO_IDENTITY_OPENID_CONFIG_URL: "${OIDC_DISCOVERY_URL}/.well-known/openid-configuration"
-  MINIO_IDENTITY_OPENID_CLIENT_ID: "${CLIENT_ID}"
   MINIO_IDENTITY_OPENID_SCOPES: "openid,profile,email"
   MINIO_IDENTITY_OPENID_CLAIM_NAME: "hd"
-  MINIO_DOMAIN: "${MINIO_FQDN}"
   GOOGLE_APPLICATION_CREDENTIALS: "/etc/credentials/gcs_key.json"
   MINIO_ETCD_ENDPOINTS: "http://etcd:2379"
 
@@ -30,12 +27,11 @@ etcd:
 
 image:
   repository: minio/minio
-  tag: latest
+  tag: RELEASE.2020-10-28T08-16-50Z-20-g38f12c984
   pullPolicy: IfNotPresent
 
 gcsgateway:
         enabled: true
-        projectId: ${PROJECT_ID}
         replicas: 3
 
 serviceAccount:

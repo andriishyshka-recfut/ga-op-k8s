@@ -36,6 +36,5 @@ COMMAND
   }
   depends_on = [
     local_file.ansible_gcp_inventory,
-    kubernetes_cluster_role_binding.bastion_anon_access
   ]
 }

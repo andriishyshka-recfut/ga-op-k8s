@@ -13,4 +13,6 @@ locals {
   vaultOidcConfigPath       = var.Settings.clusters[var.Cluster][var.Color].minio.vault_oidc_config_path
   minioFqdn                 = var.Settings.clusters[var.Cluster][var.Color].minio.fqdn
   currentProject            = split("/", data.google_project.current_project.id)[1]
+  imageTag = var.Settings.clusters[var.Cluster][var.Color].minio.image_tag  
+  mcImageTag = var.Settings.clusters[var.Cluster][var.Color].minio.mc_image_tag
 }

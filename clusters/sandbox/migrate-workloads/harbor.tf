@@ -3,5 +3,6 @@
 module "harbor" {
   source              = "../../../terraform-modules/k8s-vault-harbor"
   DoRestoreFromBackup = true
-  depends_on          = [module.namespaces]
+  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+  depends_on          = [module.namespaces, module.minio]
 }

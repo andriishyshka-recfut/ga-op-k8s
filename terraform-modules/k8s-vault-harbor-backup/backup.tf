@@ -2,12 +2,14 @@
 locals {
   backupCommand = <<EOF
   set -e ;
-  apt-get update -q && apt-get install wget -yq ;
+  apt-get update -q && apt-get install wget  redis-tools -yq ;
   wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
   chmod +x mc ;
   pg_dump --host=harbor-harbor-database --port=5432 --username=postgres --dbname=registry   |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/registry.sql ;
   pg_dump --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notarysigner  |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/notarysigner.sql ;
   pg_dump --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notaryserver  |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/notaryserver.sql ;
+  redis-cli -h harbor-harbor-redis  SAVE ;
+  cat /redis/dump.rdb |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/dump.rdb
 EOF
 }
 
@@ -24,6 +26,27 @@ resource "kubernetes_job" "harbor_backup" {
         }
       }
       spec {
+        affinity {
+      pod_affinity {
+        required_during_scheduling_ignored_during_execution {
+          label_selector {
+            match_expressions {
+              key      = "component"
+              operator = "In"
+              values   = ["redis"]
+            }
+          }
+          topology_key = "kubernetes.io/hostname"
+        }
+      }
+    }
+
+        volume {
+          name = "redis"
+          persistent_volume_claim {
+            claim_name = "data-harbor-harbor-redis-0"
+          }
+        }
         container {
           name    = "dump"
           image   = "postgres:9.6"
@@ -58,7 +81,14 @@ resource "kubernetes_job" "harbor_backup" {
                 key  = "POSTGRES_PASSWORD"
               }
             }
-
+          }
+         env {
+           name = "DATE"
+           value = formatdate("DD-MMM-YYYY-hh", timestamp())
+         }
+          volume_mount {
+            name = "redis"
+            mount_path = "/redis"
           }
         }
         restart_policy = "Never"

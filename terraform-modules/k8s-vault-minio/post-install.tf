@@ -43,7 +43,7 @@ resource "kubernetes_job" "configure_users_access" {
       spec {
         container {
           name    = "mc"
-          image   = "minio/mc"
+          image   = "minio/mc:${local.mcImageTag}"
           command = ["sh", "-c", local.addPolicyCommand]
           env {
             name = "accesskey"

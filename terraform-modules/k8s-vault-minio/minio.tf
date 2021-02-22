@@ -38,18 +38,31 @@ resource "helm_release" "minio" {
   dependency_update = "true"
 
   values = [
-    templatefile("${path.module}/minio_values.tmpl",
-      {
-        CLIENT_ID          = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
-        OIDC_DISCOVERY_URL = data.vault_generic_secret.oidc_secrets.data.oidc_discovery_url
-        MINIO_FQDN         = local.minioFqdn
-        PROJECT_ID         = local.currentProject
-      }
-    )
+    file("${path.module}/minio_values.yaml")
   ]
   set {
     name  = "podAnnotations.sidecar\\.istio\\.io/inject"
     value = " False"
+  }
+  set {
+    name  = "environment.MINIO_IDENTITY_OPENID_CLIENT_ID"
+    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
+  }
+  set {
+    name = "environment.MINIO_IDENTITY_OPENID_CONFIG_URL"
+    value = "${data.vault_generic_secret.oidc_secrets.data.oidc_discovery_url}/.well-known/openid-configuration"
+  }
+  set {
+    name = "environment.MINIO_DOMAIN"
+    value = local.minioFqdn
+  }
+  set {
+    name = "gcsgateway.projectId"
+    value = local.currentProject
+  }
+  set {
+    name = "image.tag"
+    value = local.imageTag
   }
 
   depends_on = [

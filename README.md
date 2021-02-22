@@ -3,7 +3,7 @@
 ### Architecture
 
 
-![](gke_arch.svg)
+![](docs/Network_Domains.svg)
 
 
 
