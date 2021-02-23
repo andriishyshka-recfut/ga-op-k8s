@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: info-page
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+            - readOnly: true
+              mountPath: /usr/share/nginx/html
+              name: html-files
+      volumes:
+        - name: html-files
+          configMap:
+            name: info-page
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: info-page
+  namespace: default
+  labels:
+    app: info-page
+data:
+  index.html: |
+    Test
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: info-page
+  namespace: default
+  labels:
+    app: info
+spec:
+  selector:
+    app: nginx
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
