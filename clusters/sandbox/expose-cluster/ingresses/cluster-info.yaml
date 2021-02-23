@@ -19,15 +19,15 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: istio
   name: cluster-info
-  namespace: default
+  namespace: cluster-info
 spec:
   rules:
   - host: cluster-info.infra.digaweb.com
     http:
       paths:
       - backend:
-          serviceName: info-page
-          servicePort: 80
+          serviceName: oauth2-proxy
+          servicePort: 4180
         path: /*
         pathType: ImplementationSpecific
   tls:
