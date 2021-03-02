@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: upsertmage
-        image: harbor.infra.digaweb.com/artifact/upsertmage:k8s-0.0.24
+        image: harbor.infra.digaweb.com/artifact/upsertmage:k8s-0.1.0
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && /opt/app/upsertmage"]
         ports:
@@ -80,6 +80,18 @@ spec:
             value: "24h"
           - name: REDIS_MASTER
             value: mymaster
+          - name: UNION_MAGECART_WORKERS_NUM
+            value: "2"
+          - name: UNION_MAGECART_DESTINATION_INDEX
+            value: "union_magecart-{{.YYYY}}"
+          - name: UNION_MAGECART_INPUT_TOPIC
+            value: "union.magecart.upsert"
+          - name: UNION_MAGEANALYST_WORKERS_NUM
+            value: "1"
+          - name: UNION_MAGEANALYST_DESTINATION_INDEX
+            value: "union_magecart-{{.YYYY}}"
+          - name: UNION_MAGEANALYST_INPUT_TOPIC
+            value: "union.mage.analysis.upsert"
         # resources:
         #   requests:
         #     memory: "30Mi"

@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: magetasker
-        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.0.22
+        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.1.2
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && /opt/app/magetasker"]
         # ports:
@@ -61,7 +61,7 @@ spec:
           - name: WORKER_SCAN_INTERVAL
             value: 24h
           - name: DAILY_LIMIT
-            value: "3000"
+            value: "50000"
           - name: TOPIC_TASK_PRIORITY
             value: mage.task.target.priority
           - name: KAFKA_BROKERS
@@ -77,7 +77,7 @@ spec:
           - name: ELASTIC_APM_SERVER_URL
             value: http://apm-monitoring-apm-http.monitoring:8200
           - name: INFECTED_INDEX
-            value: "mageanalyst*"
+            value: "union_magecart*"
           - name: INFECTED_CRON
             value: "@daily"
           - name: ELASTIC_APM_SECRET_TOKEN
@@ -85,12 +85,12 @@ spec:
                 secretKeyRef:
                   name: apm-token
                   key:  secret-token
-        # resources:
-        #   requests:
-        #     memory: "30Mi"
-        #     cpu: "5m"
-        #   limits:
-        #     memory: "200Mi"
-        #     cpu: "50m"
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "5m"
+          limits:
+            memory: "200Mi"
+            cpu: "50m"
       imagePullSecrets:
       - name: harbor
