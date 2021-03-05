@@ -51,15 +51,15 @@ spec:
             memory: "30Mi"
             cpu: "5m"
           limits:
-            memory: "2500Mi"
-            cpu: "1200m"
+            memory: "3000Mi"
+            cpu: "1800m"
         ports:
         - containerPort: 8080
         env:
           - name: THREAD_COUNT
-            value: "25"
+            value: "50"
           - name: COMMIT_CAPACITY
-            value: "2000"
+            value: "5000"
           - name: SPLASH_URL
             value: http://splash:8050
           - name: SPLASH_WAIT_SEC
@@ -147,6 +147,7 @@ spec:
             value: /opt/magescanner/magescanner-google-service-key.json
       imagePullSecrets:
       - name: harbor
+
 
 ---
 
