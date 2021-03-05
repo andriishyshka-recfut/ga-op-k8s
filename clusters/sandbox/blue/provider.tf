@@ -9,26 +9,29 @@ provider "google-beta" {
 
 
 locals {
-  gke_cluster_endpoint   = module.gke-setup-blue.gke_cluster_connection_settings.HOST
-  gke_bearer_token       = module.gke-setup-blue.gke_cluster_connection_settings.API_KEY
-  cluster_ca_certificate = module.gke-setup-blue.gke_cluster_connection_settings.CLUSTER_CA_CERTIFICATE
+  gkeClusterEndpoint   = module.gke-setup-blue.GkeClusterConnectionSettings.HOST
+  gkeBearerToken       = module.gke-setup-blue.GkeClusterConnectionSettings.API_KEY
+  clusterCaCertificate = module.gke-setup-blue.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
 }
 
 provider "helm" {
-  # alias = "helm-blue"
   kubernetes {
-    load_config_file       = false
-    host                   = local.gke_cluster_endpoint
-    token                  = local.gke_bearer_token
-    cluster_ca_certificate = local.cluster_ca_certificate
+    host                   = local.gkeClusterEndpoint
+    token                  = local.gkeBearerToken
+    cluster_ca_certificate = local.clusterCaCertificate
   }
 }
 
 provider "kubernetes" {
-  # alias                  = "kubernetes-blue"
-  load_config_file       = false
-  host                   = local.gke_cluster_endpoint
-  token                  = local.gke_bearer_token
-  cluster_ca_certificate = local.cluster_ca_certificate
+  host                   = local.gkeClusterEndpoint
+  token                  = local.gkeBearerToken
+  cluster_ca_certificate = local.clusterCaCertificate
 
+}
+
+terraform {
+  backend "gcs" {
+    bucket = "terraform-state-223"
+    prefix = "tf-blue-green/state"
+  }
 }
