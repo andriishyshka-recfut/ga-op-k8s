@@ -56,19 +56,21 @@ spec:
             value: "{{.shopId}}"
           - name: ELASTIC_BULK_SIZE
             value: "2000"
-          - name: ELASTICSEARCH_CA_CRT_PATH
-            value: "/opt/magescanner/pki/ca.crt"
-          - name: ELASTICSEARCH_CLIENT_KEY_PATH
-            value: "/opt/magescanner/pki/client.key"
-          - name: ELASTICSEARCH_CLIENT_CRT_PATH
-            value: "/opt/magescanner/pki/client.crt"
-          - name: ELASTIC_APM_SERVER_URL
-            value: http://apm-monitoring-apm-http.monitoring:8200
-          - name: ELASTIC_APM_SECRET_TOKEN
-            valueFrom:
-                secretKeyRef:
-                  name: apm-token
-                  key:  secret-token
+          - name : ELASTICSEARCH_HEALTH_CHECK
+            value: "false"
+          # - name: ELASTICSEARCH_CA_CRT_PATH
+          #   value: "/opt/magescanner/pki/ca.crt"
+          # - name: ELASTICSEARCH_CLIENT_KEY_PATH
+          #   value: "/opt/magescanner/pki/client.key"
+          # - name: ELASTICSEARCH_CLIENT_CRT_PATH
+          #   value: "/opt/magescanner/pki/client.crt"
+          # - name: ELASTIC_APM_SERVER_URL
+          #   value: http://apm-monitoring-apm-http.monitoring:8200
+          # - name: ELASTIC_APM_SECRET_TOKEN
+          #   valueFrom:
+          #       secretKeyRef:
+          #         name: apm-token
+          #         key:  secret-token
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name: WORKERS_PER_TOPIC
@@ -79,13 +81,13 @@ spec:
             value: "24h"
           - name: REDIS_MASTER
             value: mymaster
-        # resources:
-        #   requests:
-        #     memory: "30Mi"
-        #     cpu: "5m"
-        #   limits:
-        #     memory: "200Mi"
-        #     cpu: "50m"
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "5m"
+          limits:
+            memory: "200Mi"
+            cpu: "100m"
       imagePullSecrets:
       - name: harbor
 

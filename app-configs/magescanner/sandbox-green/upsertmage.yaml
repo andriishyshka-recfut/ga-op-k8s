@@ -1,14 +1,11 @@
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: upsertmage
 spec:
-  replicas: 1
   template:
     metadata:
       annotations:
-        sidecar.istio.io/inject: "false"
         vault.hashicorp.com/auth-path: auth/k8s-sandbox-green
         vault.hashicorp.com/agent-inject-secret-es: "secret/elasticsearch-admin/sandbox"
         vault.hashicorp.com/role: "magescanner"
@@ -20,3 +17,6 @@ spec:
       containers:
       - name: upsertmage
         image: harbor.infra.digaweb.com/artifact/upsertmage:k8s-0.0.24
+        env:
+          - name : ELASTIC_APM_ACTIVE
+            value: "false"

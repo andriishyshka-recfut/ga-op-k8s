@@ -16,6 +16,15 @@ spec:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/auth-path: auth/k8s-sandbox-green
+        vault.hashicorp.com/agent-inject-secret-geoip: "secret/magescanner/geoip"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-geoip: |
+          {{ with secret "secret/magescanner/geoip" -}}
+            export GEOIPUPDATE_ACCOUNT_ID={{ .Data.GEOIPUPDATE_ACCOUNT_ID }}
+            export GEOIPUPDATE_LICENSE_KEY={{ .Data.GEOIPUPDATE_LICENSE_KEY }}
+          {{- end }}
     spec:
       containers:
       - name: geoip-goofys
@@ -30,7 +39,7 @@ spec:
             memory: 50Mi
           limits:
             cpu: 100m
-            memory: 200Mi
+            memory: 100Mi
         env:
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
@@ -46,12 +55,12 @@ spec:
         args:
           - -f
           - --endpoint
-          -  https://minio.p.digaweb.com/
+          -  https://minio.infra.digaweb.com/
           - --dir-mode
           - "777"
           - --file-mode
           - "777"
-          -  minio-magescanner-splash-orbital-wording-233917
+          -  minio-magescanner-geoip-ardent-rarity-239115
           - /mnt/s3
         volumeMounts:
           - name: geoip
@@ -62,7 +71,7 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "sleep 2 && cp -r /mnt/s3/geoip/* /mnt/geoip/ && chmod 755 /mnt/geoip/*" ]
+              command: ["/bin/sh", "-c", "sleep 2 && cp -r /mnt/s3/* /mnt/geoip/ && chmod 755 /mnt/geoip/*" ]
 
       - name: geoip
         image: harbor.infra.digaweb.com/artifact/geoip:k8s-test-0.0.17
@@ -92,6 +101,8 @@ spec:
 
       - name: geoip-update
         image: maxmindinc/geoipupdate:latest
+        command: ["sh"]
+        args: ["-c", "source /vault/secrets/geoip && /usr/bin/entry.sh"]
         ports:
         - containerPort: 8080
         env:
@@ -99,16 +110,6 @@ spec:
             value: INFO
           - name: SERVER_PORT
             value: "8080"
-          - name: GEOIPUPDATE_ACCOUNT_ID
-            valueFrom:
-              secretKeyRef:
-                name: geoip-secret-config
-                key: GEOIPUPDATE_ACCOUNT_ID
-          - name: GEOIPUPDATE_LICENSE_KEY
-            valueFrom:
-              secretKeyRef:
-                name: geoip-secret-config
-                key: GEOIPUPDATE_LICENSE_KEY
           - name: GEOIPUPDATE_EDITION_IDS
             value: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
           - name: GEOIPUPDATE_FREQUENCY

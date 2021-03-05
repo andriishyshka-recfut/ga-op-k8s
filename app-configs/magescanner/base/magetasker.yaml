@@ -68,29 +68,29 @@ spec:
             value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name : ELASTICSEARCH_HEALTH_CHECK
             value: "false"
-          - name: ELASTICSEARCH_CA_CRT_PATH
-            value: "/opt/magescanner/pki/ca.crt"
-          - name: ELASTICSEARCH_CLIENT_KEY_PATH
-            value: "/opt/magescanner/pki/client.key"
-          - name: ELASTICSEARCH_CLIENT_CRT_PATH
-            value: "/opt/magescanner/pki/client.crt"
-          - name: ELASTIC_APM_SERVER_URL
-            value: http://apm-monitoring-apm-http.monitoring:8200
+          # - name: ELASTICSEARCH_CA_CRT_PATH
+          #   value: "/opt/magescanner/pki/ca.crt"
+          # - name: ELASTICSEARCH_CLIENT_KEY_PATH
+          #   value: "/opt/magescanner/pki/client.key"
+          # - name: ELASTICSEARCH_CLIENT_CRT_PATH
+          #   value: "/opt/magescanner/pki/client.crt"
+          # - name: ELASTIC_APM_SERVER_URL
+          #   value: http://apm-monitoring-apm-http.monitoring:8200
           - name: INFECTED_INDEX
             value: "mageanalyst*"
           - name: INFECTED_CRON
             value: "@daily"
-          - name: ELASTIC_APM_SECRET_TOKEN
-            valueFrom:
-                secretKeyRef:
-                  name: apm-token
-                  key:  secret-token
-        # resources:
-        #   requests:
-        #     memory: "30Mi"
-        #     cpu: "5m"
-        #   limits:
-        #     memory: "200Mi"
-        #     cpu: "50m"
+          # - name: ELASTIC_APM_SECRET_TOKEN
+          #   valueFrom:
+          #       secretKeyRef:
+          #         name: apm-token
+          #         key:  secret-token
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "5m"
+          limits:
+            memory: "200Mi"
+            cpu: "50m"
       imagePullSecrets:
       - name: harbor

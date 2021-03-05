@@ -1,4 +1,3 @@
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,7 +8,6 @@ spec:
     spec:
       containers:
       - name: splash-goofys
-        image: harbor.infra.digaweb.com/magescanner/splash-goofys:latest
         command: ["goofys"]
         args:
           - -f

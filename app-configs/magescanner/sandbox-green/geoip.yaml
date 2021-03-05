@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geoip
+spec:
+  template:
+    spec:
+      containers:
+      - name: geoip-goofys
+        command: ["goofys"]
+        args:
+          - -f
+          - --endpoint
+          -  https://minio.infra.digaweb.com/
+          - --dir-mode
+          - "777"
+          - --file-mode
+          - "777"
+          -  minio-magescanner-geoip-ardent-rarity-239115
+          - /mnt/s3
