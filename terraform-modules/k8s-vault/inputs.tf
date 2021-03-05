@@ -1,7 +1,5 @@
 
 
-data "google_project" "current_project" {
-}
 variable "GkeClusterConnectionSettings" {}
 
 // Cluster variables and settings from common-vars module
@@ -14,12 +12,12 @@ variable "OidcClientId" { default = "SAMPLE" }
 variable "OidcClientSecret" { default = "SAMPLE" }
 
 
+data "google_client_config" "current" {}
 
 locals {
   vaultBucketName       = var.Settings.clusters[var.Cluster].persistent_resources.vault_bucket_name
   vaultKeyName          = var.Settings.clusters[var.Cluster].persistent_resources.vault_key_name
   vaultServiceAccountId = var.Settings.clusters[var.Cluster].persistent_resources.vault_service_account_id
-  currentProject        = split("/", data.google_project.current_project.id)[1]
 
   vaultFqdn     = var.Settings.clusters[var.Cluster][var.Color].vault.fqdn
   vaultLocalUrl = "http://vault.vault.svc"
@@ -43,4 +41,5 @@ locals {
   # istioExposeToggle         = var.Settings.clusters[var.Cluster][var.Color].vault.istio_expose ? 1 : 0
   replicasCount =  0
   vaultVersion  = var.Settings.clusters[var.Cluster][var.Color].vault.version
+  currentProject  = data.google_client_config.current.project
 }

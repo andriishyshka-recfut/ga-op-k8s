@@ -9,13 +9,12 @@ variable "DoRestoreFromBackup" {
 }
 variable "GkeClusterConnectionSettings" {}
 
-data "google_project" "current_project" {
-}
+data "google_client_config" "current" {}
 
 locals {
   harborNs        = "harbor"
-  currentProject  = split("/", data.google_project.current_project.id)[1]
   restoreSwitcher = var.DoRestoreFromBackup ? 1 : 0
   gkeClusterEndpoint      = var.GkeClusterConnectionSettings.HOST
   gkeBearerToken          = var.GkeClusterConnectionSettings.API_KEY
+  currentProject  = data.google_client_config.current.project
 }

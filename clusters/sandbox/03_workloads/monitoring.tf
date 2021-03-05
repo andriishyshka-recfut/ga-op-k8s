@@ -1,5 +1,7 @@
 
-
+locals{
+  monitoringEs           = yamldecode(file("monitoring_elastic_settings.yaml"))
+}
 
 
 module "monitoring-elastic" {
