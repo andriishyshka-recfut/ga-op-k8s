@@ -19,6 +19,8 @@ spec:
   mirrors:
   - sourceCluster: "my-source-cluster"
     targetCluster: "my-target-cluster"
+    topicsPattern: ".*"
+    groupsPattern: ".*"
     sourceConnector:
       config:
         replication.factor: 1
@@ -34,5 +36,4 @@ spec:
         checkpoints.topic.replication.factor: 1
         replication.policy.separator: ""
         replication.policy.class: "io.strimzi.kafka.connect.mirror.IdentityReplicationPolicy"
-    topicsPattern: ".*"
-    groupsPattern: ".*"
+        sync.group.offsets.enabled: "true"
