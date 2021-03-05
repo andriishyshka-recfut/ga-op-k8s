@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: geoip
+        app: geoip     
       annotations:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m

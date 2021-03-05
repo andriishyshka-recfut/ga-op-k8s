@@ -12,6 +12,10 @@ spec:
     metadata:
       labels:
         app: magetasker
+        use-kafka: true
+        use-elastic: true
+        use-mongo: true
+        use-redis: true           
       annotations:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m

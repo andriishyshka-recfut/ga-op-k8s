@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         app: beat-minion
+        use-kafka: true
+        use-elastic: true
+        use-redis: true        
       annotations:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
