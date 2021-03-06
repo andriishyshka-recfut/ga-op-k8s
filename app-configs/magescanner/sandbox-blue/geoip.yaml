@@ -4,6 +4,9 @@ metadata:
   name: geoip
 spec:
   template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/auth-path: auth/k8s-sandbox-blue
     spec:
       containers:
       - name: geoip-goofys
