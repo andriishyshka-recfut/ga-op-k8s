@@ -10,4 +10,3 @@ patchesStrategicMerge:
 - splash-vpn.yaml
 - upsertmage.yaml
 - splash.yaml
-- geoip.yaml

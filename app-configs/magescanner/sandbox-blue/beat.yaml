@@ -37,5 +37,5 @@ spec:
           {{- end }}
     spec:
       containers:
-      - name: beat-minion
+      - name: beat-mage-union
         image: harbor.infra.digaweb.com/dev/beat:k8s-0.1.0
