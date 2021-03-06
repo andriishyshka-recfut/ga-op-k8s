@@ -15,16 +15,22 @@ resource "helm_release" "prometheus" {
   namespace         = local.prometheusNs
   dependency_update = true
   values = [
-    templatefile("${path.module}/values.tmpl",
-      {
-        CLIENT_ID     = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
-        CLIENT_SECRET = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret
-        ROOT_URL      = data.vault_generic_secret.grafana.data.ROOT_URL
-      }
-    )
+    file("${path.module}/values.yaml")
   ]
   set {
-    name  = "podAnnotations.sidecar\\.istio\\.io/inject"
-    value = " False"
+    name  = "grafana.adminPassword"
+    value = data.vault_generic_secret.grafana.data.adminPassword
+  }
+  # set {
+  #   name  = "grafana.grafana\\.ini.server.root_url"
+  #   value = data.vault_generic_secret.grafana.data.root_url
+  # }
+  set {
+    name  = "grafana.grafana\\.ini.auth\\.google.client_id"
+    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
+  }
+  set {
+    name  = "grafana.grafana\\.ini.auth\\.google.client_secret"
+    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret
   }
 }

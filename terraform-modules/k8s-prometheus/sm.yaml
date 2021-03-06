@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    meta.helm.sh/release-name: prometheus-kafka-exporter
+    meta.helm.sh/release-namespace: monitoring
+  labels:
+    app.kubernetes.io/instance: prometheus-kafka-exporter
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: prometheus-kafka-exporter
+    helm.sh/chart: prometheus-kafka-exporter-1.0.0
+    release: prometheus
+  name: prometheus-kafka-exporter
+  namespace: monitoring
+spec:
+  endpoints:
+  - interval: 30s
+    port: exporter-port
+  jobLabel: jobLabel
+  namespaceSelector:
+    matchNames:
+    - monitoring
+  selector:
+    matchLabels:
+      app: prometheus-kafka-exporter
+      release: prometheus-kafka-exporter
