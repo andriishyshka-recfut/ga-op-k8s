@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: magetasker
-        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.0.22
+        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.1.2
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && /opt/app/magetasker"]
         env:
