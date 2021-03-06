@@ -8,7 +8,7 @@ module "monitoring-elastic" {
   source                       = "../../../terraform-modules/k8s-vault-elasticsearch"
   ElasticSettings              = local.monitoringEs.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
-  Cluster                      = "sandbox"
+  Cluster                      = var.Cluster
   Settings                     = var.Settings
   StoreEsPasswordInVault       = false
   depends_on                   = [module.namespaces,module.minio]
