@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: maid-upsert
+        use-kafka: true
+        use-elastic: true
       annotations:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m

@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: maid-cracker
+        use-elastic: true       
       annotations:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m

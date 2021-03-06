@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: geoip     
+        app: geoip
       annotations:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
@@ -55,12 +55,12 @@ spec:
         args:
           - -f
           - --endpoint
-          -  https://minio.infra.digaweb.com/
+          -  https://minio.p.digaweb.com/
           - --dir-mode
           - "777"
           - --file-mode
           - "777"
-          -  minio-magescanner-geoip-ardent-rarity-239115
+          -  minio-magescanner-geoip-orbital-wording-233917
           - /mnt/s3
         volumeMounts:
           - name: geoip

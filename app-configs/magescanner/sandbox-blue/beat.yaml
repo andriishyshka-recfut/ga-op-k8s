@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beat-minion
+spec:
+  template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/auth-path: auth/k8s-sandbox-blue
+        vault.hashicorp.com/agent-inject-secret-es: "secret/elasticsearch-admin/sandbox"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-es: |
+          {{ with secret "secret/elasticsearch-admin/sandbox" -}}
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.username }}:{{ .Data.password }}@sandbox-es-http.elastic:9200
+          {{- end }}
+    spec:
+      containers:
+      - name: beat-minion
+        image: harbor.infra.digaweb.com/dev/beat:k8s-0.0.20

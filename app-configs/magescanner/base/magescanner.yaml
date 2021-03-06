@@ -15,7 +15,7 @@ spec:
         use-kafka: true
         use-elastic: true
         use-mongo: true
-        use-redis: true           
+        use-redis: true
       annotations:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
@@ -26,14 +26,6 @@ spec:
         vault.hashicorp.com/agent-inject-secret-mongo: "secret/mongo/production"
         vault.hashicorp.com/agent-inject-secret-google_sa: "secret/magescanner/google_service_account"
         vault.hashicorp.com/role: "magescanner"
-        vault.hashicorp.com/agent-inject-template-es: |
-          {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
-            mkdir -p /opt/magescanner/pki
-            # echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
-            # echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/client.key
-            # echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/client.crt
-            # export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
-          {{- end }}
         vault.hashicorp.com/agent-inject-template-google_sa: |
           {{ with secret "secret/magescanner/google_service_account" -}}
             echo "{{ .Data.GOOGLE_CREDENTIALS_FILE_PATH}}" | base64 -d > /opt/magescanner/magescanner-google-service-key.json
@@ -100,19 +92,6 @@ spec:
             value: mage_attacker
           - name : ELASTICSEARCH_HEALTH_CHECK
             value: "false"
-          # - name: ELASTICSEARCH_CA_CRT_PATH
-          #   value: "/opt/magescanner/pki/ca.crt"
-          # - name: ELASTICSEARCH_CLIENT_KEY_PATH
-          #   value: "/opt/magescanner/pki/client.key"
-          # - name: ELASTICSEARCH_CLIENT_CRT_PATH
-          #   value: "/opt/magescanner/pki/client.crt"
-          # - name: ELASTIC_APM_SERVER_URL
-          #   value: http://apm-monitoring-apm-http.monitoring:8200
-          # - name: ELASTIC_APM_SECRET_TOKEN
-          #   valueFrom:
-          #       secretKeyRef:
-          #         name: apm-token
-          #         key:  secret-token
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name: SCAN_TASK_QUEUE_NAME

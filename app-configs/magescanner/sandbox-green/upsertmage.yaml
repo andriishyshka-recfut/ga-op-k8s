@@ -12,6 +12,7 @@ spec:
         vault.hashicorp.com/agent-inject-template-es: |
           {{ with secret "secret/elasticsearch-admin/sandbox" -}}
             export ELASTICSEARCH_HOSTS=https://{{ .Data.username }}:{{ .Data.password }}@sandbox-es-http.elastic:9200
+            mkdir -p /opt/magescanner/pki
           {{- end }}
     spec:
       containers:

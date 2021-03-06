@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upsertmage
+spec:
+  template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/auth-path: auth/k8s-sandbox-blue
+        vault.hashicorp.com/agent-inject-secret-es: "secret/elasticsearch-admin/sandbox"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-es: |
+          {{ with secret "secret/elasticsearch-admin/sandbox" -}}
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.username }}:{{ .Data.password }}@sandbox-es-http.elastic:9200
+            mkdir -p /opt/magescanner/pki
+          {{- end }}
+    spec:
+      containers:
+      - name: upsertmage
+        image: harbor.infra.digaweb.com/artifact/upsertmage:k8s-0.0.24
+        env:
+          - name : ELASTIC_APM_ACTIVE
+            value: "false"
