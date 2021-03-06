@@ -14,8 +14,6 @@ spec:
         app: maid-clean
       annotations:
         sidecar.istio.io/inject: "false"
-        # sidecar.istio.io/proxyCPU: 5m
-        # sidecar.istio.io/proxyMemory: 30M
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/auth-path: auth/k8s-production-green
         vault.hashicorp.com/agent-inject-secret-config: "secret/es-creds-compose-prod/maid/clean"
