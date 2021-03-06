@@ -1,0 +1,17 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: info-page
+data:
+  index.html: |
+    <h1 id="-center-current-cluster-is-span-style-color-green-green-span-center-"><center>Current cluster is <span style="color:blue">Blue</span></center></h1>
+    <p><center>Please use next command to retrieve access:
+    </center></p>
+    <pre><code><span class="hljs-string">gcloud </span><span class="hljs-string">config </span><span class="hljs-string">set </span><span class="hljs-string">project ardent-rarity-239115
+    </span><span class="hljs-string">gcloud </span><span class="hljs-string">container </span><span class="hljs-string">clusters </span><span class="hljs-built_in">get-credentials</span> <span class="hljs-string">sandbox-blue </span><span class="hljs-built_in">--region</span> <span class="hljs-string">us-east4</span>
+    </code></pre><p><center>
+    And verify
+    </center></p>
+    <pre><code>kubectl <span class="hljs-built_in">version</span>
+    </code></pre><h3 id="p-s-">P.S.</h3>
+    <p><center>Don&#39;t forget to start <a href="https://gitlab.regemini.com/op/k8s/-/wikis/How-to-use-subspace/wireguard">wireguard</a> !!! </p>

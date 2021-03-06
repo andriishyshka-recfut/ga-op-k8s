@@ -44,12 +44,12 @@ elastic_settings:
               native1:
                 order: 1
         storageSize: "500Gi"
-        ES_JAVA_OPTS: -Xms2g -Xmx2g
+        ES_JAVA_OPTS: -Xms6g -Xmx6g
         nodesCount: 3
-        memoryRequests: "2Gi"
-        cpuRequests: "0.2"
-        memoryLimit: 2.5Gi
-        cpuLimit: 1
+        memoryRequests: "7Gi"
+        cpuRequests: "1"
+        memoryLimit: "7Gi"
+        cpuLimit: "1"
 
   kibana:
     enabled: true

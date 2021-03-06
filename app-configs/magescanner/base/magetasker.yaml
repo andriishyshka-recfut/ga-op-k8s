@@ -55,7 +55,7 @@ spec:
           - name: WORKER_SCAN_INTERVAL
             value: 24h
           - name: DAILY_LIMIT
-            value: "3000"
+            value: "2000"
           - name: TOPIC_TASK_PRIORITY
             value: mage.task.target.priority
           - name: KAFKA_BROKERS
@@ -63,9 +63,14 @@ spec:
           - name : ELASTICSEARCH_HEALTH_CHECK
             value: "false"
           - name: INFECTED_INDEX
-            value: "mageanalyst*"
+            value: "union_magecart*"
           - name: INFECTED_CRON
             value: "@daily"
+          - name: ELASTIC_APM_SECRET_TOKEN
+            valueFrom:
+                secretKeyRef:
+                  name: apm-token
+                  key:  secret-token
         resources:
           requests:
             memory: "30Mi"

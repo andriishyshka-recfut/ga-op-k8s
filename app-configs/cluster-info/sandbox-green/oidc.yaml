@@ -1,0 +1,11 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth2-proxy
+spec:
+  template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/auth-path: auth/k8s-sandbox-green
+        vault.hashicorp.com/role: "cluster-info"
