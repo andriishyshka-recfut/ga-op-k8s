@@ -23,7 +23,7 @@ spec:
         securityContext:
           privileged: true
         imagePullPolicy: Always
-        name: goofys
+        # name: goofys
         resources:
           requests:
             cpu: 10m
