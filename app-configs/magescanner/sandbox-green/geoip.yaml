@@ -4,10 +4,13 @@ metadata:
   name: geoip
 spec:
   template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/auth-path: auth/k8s-sandbox-green
     spec:
       containers:
       - name: geoip-goofys
-        image: harbor.infra.digaweb.com/magescanner/splash-goofys:latest  
+        image: harbor.infra.digaweb.com/magescanner/splash-goofys:latest
         command: ["goofys"]
         args:
           - -f

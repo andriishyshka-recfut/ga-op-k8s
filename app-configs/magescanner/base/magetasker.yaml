@@ -55,7 +55,7 @@ spec:
           - name: WORKER_SCAN_INTERVAL
             value: 24h
           - name: DAILY_LIMIT
-            value: "3000"
+            value: "50000"
           - name: TOPIC_TASK_PRIORITY
             value: mage.task.target.priority
           - name: KAFKA_BROKERS

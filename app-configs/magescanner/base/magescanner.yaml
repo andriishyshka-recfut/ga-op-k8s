@@ -53,9 +53,9 @@ spec:
         - containerPort: 8080
         env:
           - name: THREAD_COUNT
-            value: "25"
+            value: "50"
           - name: COMMIT_CAPACITY
-            value: "2000"
+            value: "5000"
           - name: SPLASH_URL
             value: http://splash:8050
           - name: SPLASH_WAIT_SEC
