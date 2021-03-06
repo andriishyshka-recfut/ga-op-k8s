@@ -1,10 +1,9 @@
 
 
+data "google_client_config" "current" {}
 
-data "google_project" "current_project" {
-}
 
 locals {
   harborNs       = "harbor"
-  currentProject = split("/", data.google_project.current_project.id)[1]
+  currentProject  = data.google_client_config.current.project
 }

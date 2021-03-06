@@ -1,18 +1,4 @@
 
-# resource "null_resource" "kubectl_scale_down_redis" {
-#   count = local.restoreSwitcher
-#   provisioner "local-exec" {
-#     interpreter = ["/bin/bash", "-c"]
-#     command     = <<COMMAND
-#     kubectl --server ${local.gkeClusterEndpoint}  \
-#      --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
-#      --namespace ${local.harborNs} scale statefulset/harbor-harbor-redis  --replicas=0
-# COMMAND
-#   }
-#   depends_on = [
-#     helm_release.harbor
-#   ]
-# }
 
 locals {
   restoreCommand = <<EOF
@@ -112,10 +98,10 @@ resource "kubernetes_job" "harbor_restore" {
             name  = "MC_HOST_backup"
             value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
           }
-         env {
-           name = "DATE"
-           value = formatdate("DD-MMM-YYYY-hh", timestamp())
-         }
+         # env {
+         #   name = "DATE"
+         #   value = formatdate("DD-MMM-YYYY-hh", timestamp())
+         # }
           env {
             name = "PGPASSWORD"
             value_from {
@@ -143,25 +129,3 @@ resource "kubernetes_job" "harbor_restore" {
     # null_resource.kubectl_scale_down_redis
   ]
 }
-
-# resource "null_resource" "kubectl_restart_registry" {
-#   count = local.restoreSwitcher
-#   triggers = {
-#     # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
-#     job_id = kubernetes_job.harbor_restore[0].id
-#   }
-#   provisioner "local-exec" {
-#     interpreter = ["/bin/bash", "-c"]
-#     command     = <<COMMAND
-#     kubectl --server ${local.gkeClusterEndpoint}  \
-#      --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
-#      --namespace ${local.harborNs} scale statefulset/harbor-harbor-redis --replicas=1 &&\
-#     kubectl --server ${local.gkeClusterEndpoint}  \
-#      --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
-#      --namespace ${local.harborNs} delete po  -l component=registry
-# COMMAND
-#   }
-#   depends_on = [
-#     kubernetes_job.harbor_restore,
-#   ]
-# }
