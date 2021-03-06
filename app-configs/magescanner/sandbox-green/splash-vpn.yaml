@@ -1,0 +1,44 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splash-vpn
+spec:
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: splash-vpn
+      annotations:
+        sidecar.istio.io/inject: "false"
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/auth-path: auth/k8s-sandbox-green
+        vault.hashicorp.com/agent-inject-secret-vpn: "secret/magescanner/splash-vpn"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-secret-vpn: |
+          {{ with secret "secret/magescanner/splash-vpn" -}}
+            echo "{{ .Data.ovpn_client_conf}}" | base64 -d > /etc/openvpn/ovpn.conf
+          {{- end }}
+    spec:
+      volumes:
+      - name: route-script
+        configMap:
+          name: route-script
+          items:
+            - key: route-override.sh
+              path: route-override.sh
+
+---
+
+kind: ConfigMap
+metadata:
+  name: route-script
+apiVersion: v1
+data:
+  route-override.sh: |-
+     #!/bin/sh
+     GATEWAY=$(route -n | awk 'NR==4' | awk '{ print $2 }')
+     ip route add 10.101.0.0/16 via $GATEWAY dev eth0
+     ip route add 10.10.0.0/16 via $GATEWAY dev eth0
+     ip route add 172.26.0.0/24 via $GATEWAY dev eth0
+     echo "Route Updated via $GATEWAY"

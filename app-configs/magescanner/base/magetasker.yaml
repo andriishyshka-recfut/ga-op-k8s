@@ -12,6 +12,10 @@ spec:
     metadata:
       labels:
         app: magetasker
+        use-kafka: 'true'
+        use-elastic: 'true'
+        use-mongo: 'true'
+        use-redis: 'true'
       annotations:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
@@ -21,14 +25,6 @@ spec:
         vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
         vault.hashicorp.com/agent-inject-secret-mongo: "secret/mongo/production"
         vault.hashicorp.com/role: "magescanner"
-        vault.hashicorp.com/agent-inject-template-es: |
-          {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
-            mkdir -p /opt/magescanner/pki
-            echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/client.key
-            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/client.crt
-            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
-          {{- end }}
         vault.hashicorp.com/agent-inject-template-mongo: |
           {{ with secret "secret/mongo/production" -}}
             export MONGO_URI=mongodb://{{ .Data.MONGODB_BACKUP_USER }}:{{ .Data.MONGODB_BACKUP_PASSWORD }}@my-cluster-name-rs0.mongo:27017
@@ -39,8 +35,6 @@ spec:
         image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.1.2
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && /opt/app/magetasker"]
-        # ports:
-        # - containerPort: 8080
         env:
           - name: LOG_LEVEL
             value: "INFO"
@@ -61,21 +55,13 @@ spec:
           - name: WORKER_SCAN_INTERVAL
             value: 24h
           - name: DAILY_LIMIT
-            value: "2000"
+            value: "50000"
           - name: TOPIC_TASK_PRIORITY
             value: mage.task.target.priority
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name : ELASTICSEARCH_HEALTH_CHECK
             value: "false"
-          - name: ELASTICSEARCH_CA_CRT_PATH
-            value: "/opt/magescanner/pki/ca.crt"
-          - name: ELASTICSEARCH_CLIENT_KEY_PATH
-            value: "/opt/magescanner/pki/client.key"
-          - name: ELASTICSEARCH_CLIENT_CRT_PATH
-            value: "/opt/magescanner/pki/client.crt"
-          - name: ELASTIC_APM_SERVER_URL
-            value: http://apm-monitoring-apm-http.monitoring:8200
           - name: INFECTED_INDEX
             value: "union_magecart*"
           - name: INFECTED_CRON
