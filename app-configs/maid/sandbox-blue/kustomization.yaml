@@ -4,8 +4,4 @@ bases:
 - ../base/
 namespace: maid
 patchesStrategicMerge:
-- clean.yaml
-- cp.yaml
-- cracker.yaml
-- oauth2-proxy.yaml
-- upsert.yaml
+- patch.yaml
