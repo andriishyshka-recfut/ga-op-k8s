@@ -1,28 +1,37 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: beat-minion
+  name: beat-mage
   namespace: magescanner
 spec:
   selector:
     matchLabels:
-      app: beat-minion
+      app: beat-mage
   replicas: 1
   template:
     metadata:
       labels:
-        app: beat-minion
-        use-kafka: 'true'
-        use-elastic: 'true'
-        use-redis: 'true'
+        app: beat-mage
       annotations:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
         vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/auth-path: auth/k8s-production-green
+        vault.hashicorp.com/agent-inject-secret-es: "secret/es-creds-compose-prod/magescanner"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-es: |
+          {{ with secret "secret/es-creds-compose-prod/magescanner" -}}
+            export ELASTICSEARCH_HOSTS=https://{{ .Data.USERNAME }}:{{ .Data.PASSWORD }}@es23.regemini.com
+            mkdir -p /opt/magescanner/pki
+            echo "{{ .Data.ELASTICSEARCH_CA_CRT}}" > /opt/magescanner/pki/ca.crt
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_KEY}}" > /opt/magescanner/pki/client.key
+            echo "{{ .Data.ELASTICSEARCH_CLIENT_CRT}}" > /opt/magescanner/pki/client.crt
+          {{- end }}
     spec:
       containers:
-      - name: beat-minion
+      - name: beat-mage
         image: harbor.infra.digaweb.com/dev/beat:k8s-0.1.0
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && /opt/app/beat"]
@@ -73,6 +82,19 @@ spec:
             value: "false"
           - name: ELASTIC_BULK_SIZE
             value: "2000"
+          - name: ELASTICSEARCH_CA_CRT_PATH
+            value: "/opt/magescanner/pki/ca.crt"
+          - name: ELASTICSEARCH_CLIENT_KEY_PATH
+            value: "/opt/magescanner/pki/client.key"
+          - name: ELASTICSEARCH_CLIENT_CRT_PATH
+            value: "/opt/magescanner/pki/client.crt"
+          - name: ELASTIC_APM_SERVER_URL
+            value: http://apm-monitoring-apm-http.monitoring:8200
+          - name: ELASTIC_APM_SECRET_TOKEN
+            valueFrom:
+                secretKeyRef:
+                  name: apm-token
+                  key:  secret-token
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name: WORKERS_PER_TOPIC
@@ -84,15 +106,16 @@ spec:
             value: "24h"
           - name: REDIS_MASTER
             value: mymaster
-        resources:
-          requests:
-            memory: "30Mi"
-            cpu: "5m"
-          limits:
-            memory: "200Mi"
-            cpu: "100m"
+        # resources:
+        #   requests:
+        #     memory: "30Mi"
+        #     cpu: "5m"
+        #   limits:
+        #     memory: "200Mi"
+        #     cpu: "50m"
       imagePullSecrets:
       - name: harbor
+
 
 ---
 

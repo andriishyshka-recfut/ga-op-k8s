@@ -20,5 +20,5 @@ spec:
           - "777"
           - --file-mode
           - "777"
-          -  minio-magescanner-geoip-orbital-wording-233917
+          -  minio-magescanner-splash-orbital-wording-233917
           - /mnt/s3

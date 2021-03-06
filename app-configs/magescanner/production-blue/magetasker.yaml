@@ -21,7 +21,6 @@ spec:
     spec:
       containers:
       - name: magetasker
-        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.1.1
         env:
           - name: ELASTICSEARCH_CA_CRT_PATH
             value: "/opt/magescanner/pki/ca.crt"

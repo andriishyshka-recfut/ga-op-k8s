@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: upsertmage
-        image: harbor.infra.digaweb.com/artifact/upsertmage:k8s-0.1.1
+        image: harbor.infra.digaweb.com/artifact/upsertmage:k8s-0.1.0
         env:
           - name: ELASTICSEARCH_CA_CRT_PATH
             value: "/opt/magescanner/pki/ca.crt"
