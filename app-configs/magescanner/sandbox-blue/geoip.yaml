@@ -7,6 +7,7 @@ spec:
     spec:
       containers:
       - name: geoip-goofys
+        image: harbor.infra.digaweb.com/magescanner/splash-goofys:latest        
         command: ["goofys"]
         args:
           - -f
