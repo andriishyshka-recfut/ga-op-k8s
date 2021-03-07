@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: beat-minion
+  name: beat-mage
 spec:
   template:
     metadata:
