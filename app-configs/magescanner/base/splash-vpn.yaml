@@ -16,6 +16,8 @@ spec:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
         # sidecar.istio.io/proxyMemory: 30M
+        vault.hashicorp.com/agent-requests-cpu: 5m
+        vault.hashicorp.com/agent-requests-mem: 50M
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/auth-path: auth/k8s-production-green
         vault.hashicorp.com/agent-inject-secret-vpn: "secret/magescanner/splash-vpn"
@@ -42,6 +44,12 @@ spec:
         args: ["cd /etc/openvpn && /usr/sbin/openvpn --config *.conf --script-security 2 --up /usr/local/bin/sockd.sh --route-up /tmp/route/route-override.sh"]
         stdin: true
         tty: true
+        livenessProbe:
+         tcpSocket:
+           port: 1080
+         initialDelaySeconds: 15
+         periodSeconds: 5
+
         securityContext:
           privileged: true
           capabilities:

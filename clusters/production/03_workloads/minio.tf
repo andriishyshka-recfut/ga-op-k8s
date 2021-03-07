@@ -5,4 +5,5 @@ module "minio" {
   Settings = var.Settings
   Cluster  = "production"
   Color    = local.activeCluster
+  depends_on = [module.namespaces]
 }

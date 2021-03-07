@@ -16,6 +16,7 @@ resource "kubernetes_job" "mongo_restore" {
     namespace = local.mongoNs
   }
   spec {
+    ttl_seconds_after_finished = 270000
     template {
       metadata {
         annotations = {
