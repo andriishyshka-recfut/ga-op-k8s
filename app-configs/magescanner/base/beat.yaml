@@ -13,6 +13,9 @@ spec:
     metadata:
       labels:
         app: beat-mage
+        use-kafka: 'true'
+        use-elastic: 'true'
+        use-redis: 'true'
       annotations:
         sidecar.istio.io/inject: "false"
         # sidecar.istio.io/proxyCPU: 5m
@@ -82,19 +85,6 @@ spec:
             value: "false"
           - name: ELASTIC_BULK_SIZE
             value: "2000"
-          - name: ELASTICSEARCH_CA_CRT_PATH
-            value: "/opt/magescanner/pki/ca.crt"
-          - name: ELASTICSEARCH_CLIENT_KEY_PATH
-            value: "/opt/magescanner/pki/client.key"
-          - name: ELASTICSEARCH_CLIENT_CRT_PATH
-            value: "/opt/magescanner/pki/client.crt"
-          - name: ELASTIC_APM_SERVER_URL
-            value: http://apm-monitoring-apm-http.monitoring:8200
-          - name: ELASTIC_APM_SECRET_TOKEN
-            valueFrom:
-                secretKeyRef:
-                  name: apm-token
-                  key:  secret-token
           - name: KAFKA_BROKERS
             value: kafka-cluster-kafka-bootstrap.kafka:9092
           - name: WORKERS_PER_TOPIC
@@ -106,16 +96,15 @@ spec:
             value: "24h"
           - name: REDIS_MASTER
             value: mymaster
-        # resources:
-        #   requests:
-        #     memory: "30Mi"
-        #     cpu: "5m"
-        #   limits:
-        #     memory: "200Mi"
-        #     cpu: "50m"
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "5m"
+          limits:
+            memory: "200Mi"
+            cpu: "50m"
       imagePullSecrets:
       - name: harbor
-
 
 ---
 
@@ -193,6 +182,6 @@ spec:
             cpu: "5m"
           limits:
             memory: "200Mi"
-            cpu: "100m"
+            cpu: "50m"
       imagePullSecrets:
       - name: harbor

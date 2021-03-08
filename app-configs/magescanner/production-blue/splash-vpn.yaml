@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: splash-vpn
 spec:
-  replicas: 20
+  replicas: 50
   template:
     metadata:
       labels:
