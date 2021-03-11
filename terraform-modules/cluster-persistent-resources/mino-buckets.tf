@@ -6,7 +6,8 @@ locals {
     "magescanner-har",
     "magescanner-splash",
     "dome-attachements",
-    "magescanner-geoip"
+    "magescanner-geoip",
+    "mage-migrate"
   ]
 }
 
