@@ -22,8 +22,12 @@ spec:
     spec:
       containers:
       - name: magescanner
-        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.1.1
+        image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.1.2
         env:
+          - name: THREAD_COUNT
+            value: "100"
+          - name: COMMIT_CAPACITY
+            value: "10000"
           - name: MINIO_HAR_BUCKET_NAME
             value: minio-magescanner-har-orbital-wording-233917
           - name: MINIO_HASH_BUCKET_NAME

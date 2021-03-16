@@ -3,4 +3,4 @@ kind: Deployment
 metadata:
   name: splash
 spec:
-  replicas: 50
+  replicas: 100

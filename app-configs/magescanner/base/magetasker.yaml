@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: magetasker
-        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-0.1.2
+        image: harbor.infra.digaweb.com/artifact/magetasker:k8s-1.0.0
         command: ["sh"]
         args: ["-c", "source /vault/secrets/es && source /vault/secrets/mongo && /opt/app/magetasker"]
         env:
@@ -63,7 +63,7 @@ spec:
           - name : ELASTICSEARCH_HEALTH_CHECK
             value: "false"
           - name: INFECTED_INDEX
-            value: "union_magecart*"
+            value: "magecart*"
           - name: INFECTED_CRON
             value: "@daily"
           - name: ELASTIC_APM_SECRET_TOKEN
