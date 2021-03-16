@@ -88,7 +88,7 @@ spec:
         resources:
           requests:
             memory: "800Mi"
-            cpu: "400m"
+            cpu: "270m"
           limits:
             memory: "1850Mi"
             cpu: "800m"
@@ -97,8 +97,9 @@ spec:
             path: /_ping
             port: 8050
           initialDelaySeconds: 40
-          periodSeconds: 30
-          timeoutSeconds: 6
+          periodSeconds: 60
+          timeoutSeconds: 30
+          failureThreshold: 6
       volumes:
       - name: filters
         emptyDir: {}
