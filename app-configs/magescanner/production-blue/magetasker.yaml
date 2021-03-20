@@ -24,7 +24,7 @@ spec:
         image: harbor.infra.digaweb.com/artifact/magetasker:k8s-1.0.0
         env:
           - name: DAILY_LIMIT
-            value: "100000"
+            value: "150000"
           - name: ELASTICSEARCH_CA_CRT_PATH
             value: "/opt/magescanner/pki/ca.crt"
           - name: ELASTICSEARCH_CLIENT_KEY_PATH

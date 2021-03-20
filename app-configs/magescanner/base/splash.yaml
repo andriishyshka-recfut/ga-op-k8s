@@ -71,7 +71,7 @@ spec:
         - "--slots"
         - "5"
         - "--maxrss"
-        - "1800"
+        - "900"
         - "--verbosity"
         - "0"
         - "--js-cross-domain-access"
@@ -87,11 +87,11 @@ spec:
           mountPath: /etc/splash/proxy-profiles/
         resources:
           requests:
-            memory: "800Mi"
-            cpu: "270m"
+            memory: "950Mi"
+            cpu: "250m"
           limits:
-            memory: "1850Mi"
-            cpu: "800m"
+            memory: "1150Mi"
+            cpu: "500m"
         livenessProbe:
           httpGet:
             path: /_ping
