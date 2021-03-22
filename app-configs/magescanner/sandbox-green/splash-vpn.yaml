@@ -27,18 +27,3 @@ spec:
           items:
             - key: route-override.sh
               path: route-override.sh
-
----
-
-kind: ConfigMap
-metadata:
-  name: route-script
-apiVersion: v1
-data:
-  route-override.sh: |-
-     #!/bin/sh
-     GATEWAY=$(route -n | awk 'NR==4' | awk '{ print $2 }')
-     ip route add 10.101.0.0/16 via $GATEWAY dev eth0
-     ip route add 10.10.0.0/16 via $GATEWAY dev eth0
-     ip route add 172.26.0.0/24 via $GATEWAY dev eth0
-     echo "Route Updated via $GATEWAY"
