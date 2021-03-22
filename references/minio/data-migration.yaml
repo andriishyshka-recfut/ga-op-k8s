@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mega-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3500Gi
+  storageClassName: standard-rwo
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mega-data-migrate
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+              claimName: mega-data
+      containers:
+      - name: mega-get
+        image: debian
+        volumeMounts:
+        - mountPath: "/data"
+          name: data
+        env:
+          - name: MEGA_LOGIN
+            valueFrom:
+              secretKeyRef:
+                name: mega-creds
+                key: username
+          - name: MEGA_PASS
+            valueFrom:
+              secretKeyRef:
+                name: mega-creds
+                key: password
+        command: ["bash",  "-c"]
+        args:
+         - apt update && apt install -y  tar wget procps htop sysstat ;
+           wget --quiet https://mega.nz/linux/MEGAsync/Debian_10.0/amd64/megacmd-Debian_10.0_amd64.deb ;
+           apt install -y ./megacmd-Debian_10.0_amd64.deb ;
+           mega-login $MEGA_LOGIN $MEGA_PASS;
+           mega-get  \!\!\!\!\ Sort\ bases\ \!\!\!\! /data/\!\!\!\!\ Sort\ bases\ \!\!\!\! &&  echo "Sort Bases - Done" ;
+           mega-get  binbase\ 12.2020 /data/binbase\ 12.2020 && echo "binbase  - Done " ; \
+           sleep 10d
+      - name: minio-mirror
+        image: debian
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: minio-credentials
+                key: accesskey
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: minio-credentials
+                key: secretkey
+        volumeMounts:
+        - mountPath: "/data"
+          name: data
+        command: ["bash",  "-c"]
+        args:
+         - apt update && apt install -y  tar wget procps htop sysstat ;
+           wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
+           chmod +x mc ;
+           export MC_HOST_minio=http://$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY@minio:9000/ ;
+           /mc mirror --overwrite --watch --exclude *.getxfer*mega /data/ minio/minio-meganz-migrate-orbital-wording-233917/ ;
+           sleep 10d
+      restartPolicy: OnFailure
+  backoffLimit: 4
+           # wget --quiet  https://github.com/kahing/goofys/releases/download/v0.24.0/goofys ;
+           # chmod +x goofys;
+           # /goofys  --endpoint  http://minio:9000/ --dir-mode  "777"  --file-mode  "777"  minio-meganz-migrate-orbital-wording-233917 /mnt ;
+           # export MC_HOST_minio=http://$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY@minio:9000/ ;
+           # /mc mirror --overwrite /mnt/ minio/minio-meganz-migrate-orbital-wording-233917/ ;
+           # export DAV_URL=$(mega-webdav / | awk "{print \$5}");
+           # mount -t davfs -o noexec $DAV_URL /mnt/ ;
+           # export FTP_URL=$(mega-ftp / | awk "{print \$6}") ;
+           # curlftpfs $FTP_URL /mnt/ ;
+           # mega-get -m / /data/ &&  echo "Data copied" ;
+           # mega-get -m Databases\ mail-pass /data/Cloud\ Drive && \
+           # mega-get -m Databases\ name-mail-pass\ \(without\ specifying\ information\ passport,\ address,\ bank\ accounts,\ cards\ and\ others\) /data/Cloud\ Drive && \
+           # mega-get -m Identity\ databases /data/Cloud\ Drive && \
+           # mega-get -m Random\ base /data/Cloud\ Drive && \
+           # mega-get -m WhatIsMyBrowser\ UserAgents\ DB /data/Cloud\ Drive && \
+           # mega-get -m ASKOLDEX\ YouTube\ Channel\'s\ Video /data/Cloud\ Drive  &&  echo "Last directory copied" ;
