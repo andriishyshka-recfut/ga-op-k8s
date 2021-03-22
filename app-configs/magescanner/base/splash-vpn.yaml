@@ -91,10 +91,8 @@ data:
   route-override.sh: |-
      #!/bin/sh
      GATEWAY=$(route -n | awk 'NR==4' | awk '{ print $2 }')
-     ip route add 10.201.1.0/24 via $GATEWAY dev eth0
-     ip route add 10.201.32.0/20 via $GATEWAY dev eth0
-     ip route add 10.201.16.0/20 via $GATEWAY dev eth0
-     ip route add 172.28.0.16/28 via $GATEWAY dev eth0
+     ip route add 10.0.0.0/8 via $GATEWAY dev eth0
+     ip route add 172.16.0.0/12 via $GATEWAY dev eth0
      echo "Route Updated via $GATEWAY"
 
 ---
