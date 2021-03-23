@@ -5,8 +5,9 @@ metadata:
   name: grafana-cert
   namespace: istio-system
 spec:
-  commonName: grafana.p.digaweb.com
+  commonName: grafana.p.regemini.io
   dnsNames:
+  - grafana.p.regemini.io
   - grafana.p.digaweb.com
   issuerRef:
     kind: ClusterIssuer
@@ -14,7 +15,6 @@ spec:
   secretName: grafana-cert
 
 ---
-
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -35,4 +35,28 @@ spec:
   tls:
   - hosts:
     - grafana.p.digaweb.com
+    secretName: grafana-cert
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: grafana-ingress2
+  namespace: monitoring
+spec:
+  rules:
+  - host: grafana.p.regemini.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: prometheus-grafana
+            port:
+              number: 80
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - grafana.p.regemini.io
     secretName: grafana-cert

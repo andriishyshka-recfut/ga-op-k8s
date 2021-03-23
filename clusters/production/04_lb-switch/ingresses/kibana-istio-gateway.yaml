@@ -1,13 +1,14 @@
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: monitoring-cert
   namespace: istio-system
 spec:
   secretName: monitoring-cert
-  commonName: mon.p.digaweb.com
+  commonName: mon.p.regemini.io
   dnsNames:
+  - mon.p.regemini.io
   - mon.p.digaweb.com
   duration: 1460h
   renewBefore: 12h
@@ -37,4 +38,29 @@ spec:
   tls:
   - hosts:
     - mon.p.digaweb.com
+    secretName: monitoring-cert
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monitoring-ingress
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: istio
+spec:
+  tls:
+  rules:
+  - host:  mon.p.regemini.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: kibana-kb-http
+            port:
+              number: 5601
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - mon.p.regemini.io
     secretName: monitoring-cert
