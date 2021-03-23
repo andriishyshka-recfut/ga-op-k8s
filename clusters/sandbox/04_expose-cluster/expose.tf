@@ -5,6 +5,9 @@ provider "google" {
 }
 
 variable "Settings" {}
+variable "VaultAddress" { }
+variable "Cluster" { }
+
 
 
 data "google_container_cluster" "active_cluster" {
