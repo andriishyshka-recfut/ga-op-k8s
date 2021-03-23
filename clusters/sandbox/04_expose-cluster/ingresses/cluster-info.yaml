@@ -9,6 +9,7 @@ spec:
   commonName: cluster-info.infra.digaweb.com
   dnsNames:
   - cluster-info.infra.digaweb.com
+  - cluster-info.t.regemini.io
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
@@ -33,4 +34,28 @@ spec:
   tls:
   - hosts:
     - cluster-info.infra.digaweb.com
+    secretName: cluster-info-cert
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: cluster-info2
+  namespace: cluster-info
+spec:
+  rules:
+  - host: cluster-info.t.regemini.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: oauth2-proxy
+            port:
+              number: 4180
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - cluster-info.t.regemini.io
     secretName: cluster-info-cert

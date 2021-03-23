@@ -1,36 +1,34 @@
 
-provider "vault" {
-  address = "https://vault.p.digaweb.com"
+provider "google" {
+}
+
+variable "Settings" {}
+variable "Cluster" {}
+variable "VaultAddress" {}
+
+data "google_container_cluster" "active_cluster" {
+  name     = "${var.Cluster}-${local.activeCluster}"
+  location = "us-east4"
+}
+
+data "google_client_config" "default" {
 }
 
 locals {
-
   activeCluster          = lookup(var.Settings.clusters.production.blue, "active", false) == true ? "blue" : "green"
-  activeClusterVaultPath = "secret/kubernetes-production-${local.activeCluster}"
-
   gkeClusterConnectionSettings = {
-    HOST                   = data.vault_generic_secret.k8s_auth.data.HOST
-    API_KEY                = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
-    CLUSTER_CA_CERTIFICATE = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
+    HOST                   = "https://${data.google_container_cluster.active_cluster.endpoint}"
+    API_KEY                = data.google_client_config.default.access_token
+    CLUSTER_CA_CERTIFICATE = base64decode(data.google_container_cluster.active_cluster.master_auth.0.cluster_ca_certificate, )
   }
 }
 
-data "vault_generic_secret" "k8s_auth" {
-  path = local.activeClusterVaultPath
-}
-
 provider "kubernetes" {
-  host                   = data.vault_generic_secret.k8s_auth.data.HOST
-  cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
-  token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
+  host                   = local.gkeClusterConnectionSettings.HOST
+  cluster_ca_certificate = local.gkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
+  token                  = local.gkeClusterConnectionSettings.API_KEY
 }
 
-provider "google" {
-  # version = "v3.19.0"
-}
-
-
-variable "Settings" {}
 
 terraform {
   backend "gcs" {

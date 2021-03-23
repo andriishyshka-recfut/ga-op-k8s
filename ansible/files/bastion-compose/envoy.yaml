@@ -9,28 +9,28 @@ static_resources:
         typed_config: {}
     filter_chains:
     - filter_chain_match:
-        server_names: ["p.digaweb.com"]
+        server_names: ["p.digaweb.com","42.regemini.io"]
       filters:
       - name: envoy.filters.network.tcp_proxy
         config:
           stat_prefix: ingress_tcp
           cluster: subspace-https
     - filter_chain_match:
-        server_names: ["b.digaweb.com"]
+        server_names: ["b.digaweb.com","24.regemini.io."]
       filters:
       - name: envoy.filters.network.tcp_proxy
         config:
           stat_prefix: ingress_tcp
           cluster: subspace-https
     - filter_chain_match:
-        server_names: ["*.p.digaweb.com"]
+        server_names: ["*.p.digaweb.com","*.p.regemini.io"]
       filters:
       - name: envoy.filters.network.tcp_proxy
         config:
           stat_prefix: ingress_tcp
           cluster: production-https
     - filter_chain_match:
-        server_names: ["*.infra.digaweb.com"]
+        server_names: ["*.infra.digaweb.com","*.t.regemini.io"]
       filters:
       - name: envoy.filters.network.tcp_proxy
         config:
@@ -56,7 +56,7 @@ static_resources:
             validate_clusters: false
             virtual_hosts:
             - name: production
-              domains: ["*.p.digaweb.com"]
+              domains: ["*.p.digaweb.com","*.p.regemini.io"]
               routes:
               - match: { prefix: "/.well-known/acme-challenge/" }
                 route: { cluster: production-http }
@@ -64,23 +64,15 @@ static_resources:
                 redirect:
                   https_redirect: true
             - name: sandbox
-              domains: ["*.infra.digaweb.com"]
+              domains: ["*.infra.digaweb.com","*.t.regemini.io"]
               routes:
               - match: { prefix: "/.well-known/acme-challenge/" }
                 route: { cluster: sandbox-http }
               - match: { prefix: "/" }
                 redirect:
                   https_redirect: true
-            - name: backend
-              domains: ["p.digaweb.com"]
-              routes:
-              - match: { prefix: "/.well-known/acme-challenge/" }
-                route: { cluster: subspace-http }
-              - match: { prefix: "/" }
-                redirect:
-                  https_redirect: true
-            - name: backend2
-              domains: ["b.digaweb.com"]
+            - name: subspace
+              domains: ["p.digaweb.com","42.regemini.io","b.digaweb.com","24.regemini.io."]
               routes:
               - match: { prefix: "/.well-known/acme-challenge/" }
                 route: { cluster: subspace-http }

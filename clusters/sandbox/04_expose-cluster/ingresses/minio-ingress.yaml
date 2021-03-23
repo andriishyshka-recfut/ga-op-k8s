@@ -35,3 +35,41 @@ spec:
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  labels:
+    app: minio
+  name: minio-ingress2
+  namespace: minio
+spec:
+  rules:
+  - host: minio.t.regemini.io
+    http:
+      paths:
+      - backend:
+          serviceName: minio
+          servicePort: 9000
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - minio.t.regemini.io
+    secretName: minio-cert2
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-cert2
+  namespace: istio-system
+spec:
+  secretName: minio-cert2
+  commonName: minio.t.regemini.io
+  dnsNames:
+  - minio.t.regemini.io
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

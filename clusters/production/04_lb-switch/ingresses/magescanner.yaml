@@ -5,8 +5,9 @@ metadata:
   name: magescanner-frontend-cert
   namespace: istio-system
 spec:
-  commonName: magescanner.p.digaweb.com
+  commonName: magescanner.p.regemini.io
   dnsNames:
+  - magescanner.p.regemini.io
   - magescanner.p.digaweb.com
   issuerRef:
     kind: ClusterIssuer
@@ -33,4 +34,28 @@ spec:
   tls:
   - hosts:
     - magescanner.p.digaweb.com
+    secretName: magescanner-frontend-cert
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: magescanner-api-ingress
+  namespace: magescanner
+spec:
+  rules:
+  - host: magescanner.p.regemini.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: magescanner
+            port:
+              number: 8080
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - magescanner.p.regemini.io
     secretName: magescanner-frontend-cert

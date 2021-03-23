@@ -9,6 +9,7 @@ spec:
   commonName: logs.infra.digaweb.com
   dnsNames:
   - logs.infra.digaweb.com
+  - logs.t.regemini.io
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
@@ -33,4 +34,28 @@ spec:
   tls:
   - hosts:
     - logs.infra.digaweb.com
+    secretName: kibana-cert
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: logs2
+  namespace: monitoring
+spec:
+  rules:
+  - host: logs.t.regemini.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: kibana-kb-http
+            port:
+              number: 5601
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - logs.t.regemini.io
     secretName: kibana-cert
