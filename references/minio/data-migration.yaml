@@ -41,14 +41,17 @@ spec:
               secretKeyRef:
                 name: mega-creds
                 key: password
+          - name: LANG
+            value: "C.UTF-8"
         command: ["bash",  "-c"]
         args:
          - apt update && apt install -y  tar wget procps htop sysstat ;
            wget --quiet https://mega.nz/linux/MEGAsync/Debian_10.0/amd64/megacmd-Debian_10.0_amd64.deb ;
            apt install -y ./megacmd-Debian_10.0_amd64.deb ;
            mega-login $MEGA_LOGIN $MEGA_PASS;
-           mega-get  \!\!\!\!\ Sort\ bases\ \!\!\!\! /data/\!\!\!\!\ Sort\ bases\ \!\!\!\! &&  echo "Sort Bases - Done" ;
-           mega-get  binbase\ 12.2020 /data/binbase\ 12.2020 && echo "binbase  - Done " ; \
+           mega-get -m Random\ base /data/Random\ base && echo "Random\ base ready" ;\
+           mega-get -m WhatIsMyBrowser\ UserAgents\ DB /data/WhatIsMyBrowser\ UserAgents\ DB && echo "WhatIsMyBrowser\ UserAgents\ DB ready" ;\
+           mega-get -m ASKOLDEX\ YouTube\ Channel\'s\ Video /data/ASKOLDEX\ YouTube\ Channel\'s\ Video  &&  echo "Last directory copied" ;
            sleep 10d
       - name: minio-mirror
         image: debian
@@ -76,6 +79,7 @@ spec:
            sleep 10d
       restartPolicy: OnFailure
   backoffLimit: 4
+           # mega-get -m \!\!\!\!\ Sort\ bases\ \!\!\!\! /data/\!\!\!\!\ Sort\ bases\ \!\!\!\! &&  echo "Sort Bases - Done" ;
            # wget --quiet  https://github.com/kahing/goofys/releases/download/v0.24.0/goofys ;
            # chmod +x goofys;
            # /goofys  --endpoint  http://minio:9000/ --dir-mode  "777"  --file-mode  "777"  minio-meganz-migrate-orbital-wording-233917 /mnt ;
