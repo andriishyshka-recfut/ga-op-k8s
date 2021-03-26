@@ -27,6 +27,8 @@ spec:
       containers:
       - name: mega-get
         image: debian
+        securityContext:
+          privileged: true
         volumeMounts:
         - mountPath: "/data"
           name: data
@@ -43,19 +45,6 @@ spec:
                 key: password
           - name: LANG
             value: "C.UTF-8"
-        command: ["bash",  "-c"]
-        args:
-         - apt update && apt install -y  tar wget procps htop sysstat ;
-           wget --quiet https://mega.nz/linux/MEGAsync/Debian_10.0/amd64/megacmd-Debian_10.0_amd64.deb ;
-           apt install -y ./megacmd-Debian_10.0_amd64.deb ;
-           mega-login $MEGA_LOGIN $MEGA_PASS;
-           mega-get -m Random\ base /data/Random\ base && echo "Random\ base ready" ;\
-           mega-get -m WhatIsMyBrowser\ UserAgents\ DB /data/WhatIsMyBrowser\ UserAgents\ DB && echo "WhatIsMyBrowser\ UserAgents\ DB ready" ;\
-           mega-get -m ASKOLDEX\ YouTube\ Channel\'s\ Video /data/ASKOLDEX\ YouTube\ Channel\'s\ Video  &&  echo "Last directory copied" ;
-           sleep 10d
-      - name: minio-mirror
-        image: debian
-        env:
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:
@@ -66,14 +55,14 @@ spec:
               secretKeyRef:
                 name: minio-credentials
                 key: secretkey
-        volumeMounts:
-        - mountPath: "/data"
-          name: data
         command: ["bash",  "-c"]
         args:
-         - apt update && apt install -y  tar wget procps htop sysstat ;
+         - apt update && apt install -y  tar wget procps htop sysstat vim less ;
+           wget --quiet https://mega.nz/linux/MEGAsync/Debian_10.0/amd64/megacmd-Debian_10.0_amd64.deb ;
+           apt install -y ./megacmd-Debian_10.0_amd64.deb ;
+           mega-login $MEGA_LOGIN $MEGA_PASS;
            wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
-           chmod +x mc ;
+           chmod +x /mc ;
            export MC_HOST_minio=http://$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY@minio:9000/ ;
            /mc mirror --overwrite --watch --exclude *.getxfer*mega /data/ minio/minio-meganz-migrate-orbital-wording-233917/ ;
            sleep 10d
