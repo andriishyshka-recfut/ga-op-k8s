@@ -17,7 +17,7 @@ resources:
 
 environment:
   MINIO_IDENTITY_OPENID_SCOPES: "openid,profile,email"
-  MINIO_IDENTITY_OPENID_CLAIM_NAME: "hd"
+  MINIO_IDENTITY_OPENID_CLAIM_NAME: "email"
   GOOGLE_APPLICATION_CREDENTIALS: "/etc/credentials/gcs_key.json"
   MINIO_ETCD_ENDPOINTS: "http://etcd:2379"
 

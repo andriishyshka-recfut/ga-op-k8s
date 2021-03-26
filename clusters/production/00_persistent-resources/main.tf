@@ -7,6 +7,8 @@ terraform {
 }
 
 variable "Settings" {}
+variable "Cluster" {}
+variable "VaultAddress" {}
 provider "google" {
   # version = "v3.19.0"
 }

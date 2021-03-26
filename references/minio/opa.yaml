@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opa-policy
+data:
+  policy: |
+   package httpapi.authz
+   import input as http_api
+   default allow = true
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa
+  labels:
+    app: opa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opa
+  template:
+    metadata:
+      labels:
+        app: opa
+      name: opa
+    spec:
+      containers:
+      - name: opa
+        image: openpolicyagent/opa:edge
+        ports:
+        - name: http
+          containerPort: 8181
+        args:
+        - "run"
+        - "--ignore=.*"  # exclude hidden dirs created by Kubernetes
+        - "--server"
+        - "/policies"
+        volumeMounts:
+        - readOnly: true
+          mountPath: /policies
+          name: opa-policy
+      volumes:
+      - name: opa-policy
+        configMap:
+          name: opa-policy
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: opa
+  labels:
+    app: opa
+spec:
+  selector:
+    app: opa
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8181
+      targetPort: 8181
