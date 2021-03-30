@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: splash
 spec:
-  replicas: 100
+  replicas: 42
   template:
     spec:
       containers:

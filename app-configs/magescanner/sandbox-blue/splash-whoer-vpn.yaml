@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: splash-vpn
+  name: splash-whoer-vpn
 spec:
   replicas: 5
   template:
@@ -19,11 +19,3 @@ spec:
           {{ with secret "secret/magescanner/splash-vpn" -}}
             echo "{{ .Data.ovpn_client_conf}}" | base64 -d > /etc/openvpn/ovpn.conf
           {{- end }}
-    spec:
-      volumes:
-      - name: route-script
-        configMap:
-          name: route-script
-          items:
-            - key: route-override.sh
-              path: route-override.sh

@@ -25,7 +25,7 @@ spec:
         image: harbor.infra.digaweb.com/artifact/magescanner:k8s-0.1.2
         env:
           - name: THREAD_COUNT
-            value: "100"
+            value: "95"
           - name: COMMIT_CAPACITY
             value: "10000"
           - name: MINIO_HAR_BUCKET_NAME

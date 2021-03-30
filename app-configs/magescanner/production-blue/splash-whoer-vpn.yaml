@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: splash-vpn
+  name: splash-whoer-vpn
 spec:
-  replicas: 20
+  replicas: 42
   template:
     metadata:
       labels:
@@ -13,11 +13,3 @@ spec:
         sidecar.istio.io/inject: "false"
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/auth-path: auth/k8s-production-blue
-    spec:
-      volumes:
-      - name: route-script
-        configMap:
-          name: route-script
-          items:
-            - key: route-override.sh
-              path: route-override.sh
