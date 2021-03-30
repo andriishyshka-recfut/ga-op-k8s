@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: splash-vpn
+  name: splash-whoer-vpn
   namespace: magescanner
 spec:
   selector:
     matchLabels:
       app: splash-vpn
-  replicas: 20
+  replicas: 10
   template:
     metadata:
       labels:
@@ -20,12 +20,13 @@ spec:
         vault.hashicorp.com/agent-requests-mem: 50M
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/auth-path: auth/k8s-production-green
-        vault.hashicorp.com/agent-inject-secret-vpn: "secret/magescanner/splash-vpn"
+        vault.hashicorp.com/agent-inject-secret-splash_vpn: "secret/magescanner/splash_vpn"
         vault.hashicorp.com/role: "magescanner"
-        vault.hashicorp.com/agent-inject-template-secret-vpn: |
-          {{ with secret "secret/magescanner/splash-vpn" -}}
+        vault.hashicorp.com/agent-inject-template-splash_vpn: |
+          {{ with secret "secret/magescanner/splash_vpn" -}}
             echo "{{ .Data.ovpn_client_conf}}" | base64 -d > /etc/openvpn/ovpn.conf
           {{- end }}
+
     spec:
       initContainers:
       - name: vpn-route-init
@@ -38,10 +39,10 @@ spec:
             mountPath: /vpn/route-override.sh
             subPath: route-override.sh
       containers:
-      - name: splash-vpn
-        image: harbor.infra.digaweb.com/artifact/splash-vpn:test-0.0.6
-        command: ["/bin/sh","-c"]
-        args: ["cd /etc/openvpn && /usr/sbin/openvpn --config *.conf --script-security 2 --up /usr/local/bin/sockd.sh --route-up /tmp/route/route-override.sh"]
+      - name: splash-whoer-vpn
+        image: harbor.infra.digaweb.com/artifact/splash-vpn:0.0.8
+        command: ["/bin/sh"]
+        args: ["-c", "source /vault/secrets/splash_vpn && cd /etc/openvpn && /usr/sbin/openvpn --config *.conf --script-security 2 --up /usr/local/bin/sockd.sh --route-up /tmp/route/route-override.sh"]
         stdin: true
         tty: true
         livenessProbe:

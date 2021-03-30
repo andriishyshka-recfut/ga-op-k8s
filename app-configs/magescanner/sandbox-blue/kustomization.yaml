@@ -8,6 +8,7 @@ patchesStrategicMerge:
 - magescanner.yaml
 - magetasker.yaml
 - splash-vpn.yaml
+- splash-air-vpn.yaml
 - upsertmage.yaml
 - splash.yaml
 - geoip.yaml

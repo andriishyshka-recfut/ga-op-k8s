@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splash-air-vpn
+  namespace: magescanner
+spec:
+  selector:
+    matchLabels:
+      app: splash-vpn
+  replicas: 10
+  template:
+    metadata:
+      labels:
+        app: splash-vpn
+      annotations:
+        sidecar.istio.io/inject: "false"
+        # sidecar.istio.io/proxyCPU: 5m
+        # sidecar.istio.io/proxyMemory: 30M
+        vault.hashicorp.com/agent-requests-cpu: 5m
+        vault.hashicorp.com/agent-requests-mem: 50M
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/auth-path: auth/k8s-sandbox-blue
+        vault.hashicorp.com/agent-inject-secret-splash_vpn: "secret/magescanner/splash_vpn"
+        vault.hashicorp.com/role: "magescanner"
+        vault.hashicorp.com/agent-inject-template-splash_vpn: |
+          {{ with secret "secret/magescanner/splash_vpn" -}}
+            echo "{{ .Data.air_vpn_client_conf}}" | base64 -d > /etc/openvpn/ovpn.conf
+          {{- end }}
+
+    spec:
+      initContainers:
+      - name: vpn-route-init
+        image: busybox
+        command: ['/bin/sh', '-c', 'cp /vpn/route-override.sh /tmp/route/route-override.sh; chown root:root /tmp/route/route-override.sh; chmod o+x /tmp/route/route-override.sh;']
+        volumeMounts:
+          - name: route
+            mountPath: /tmp/route
+          - name: route-script
+            mountPath: /vpn/route-override.sh
+            subPath: route-override.sh
+      containers:
+      - name: splash-vpn
+        image: harbor.infra.digaweb.com/artifact/splash-vpn:0.0.8
+        command: ["/bin/sh"]
+        args: ["-c", "source /vault/secrets/splash_vpn && cd /etc/openvpn && /usr/sbin/openvpn --config *.conf --script-security 2 --up /usr/local/bin/sockd.sh --route-up /tmp/route/route-override.sh"]
+        stdin: true
+        tty: true
+        livenessProbe:
+         tcpSocket:
+           port: 1080
+         initialDelaySeconds: 15
+         periodSeconds: 5
+
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+              - NET_ADMIN
+        volumeMounts:
+          - name: route
+            mountPath: /tmp/route
+        ports:
+        - containerPort: 1080
+        env:
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "5m"
+          limits:
+            memory: "100Mi"
+            cpu: "100m"
+      volumes:
+      - name: route-script
+        configMap:
+          name: route-air-script
+          items:
+            - key: route-override.sh
+              path: route-override.sh
+      - name: route
+        emptyDir: {}
+      imagePullSecrets:
+      - name: harbor
+
+---
+
+kind: ConfigMap
+metadata:
+  name: route-air-script
+  namespace: magescanner
+apiVersion: v1
+data:
+  route-override.sh: |-
+     #!/bin/sh
+     GATEWAY=$(route -n | awk 'NR==4' | awk '{ print $2 }')
+     ip route add 10.0.0.0/8 via $GATEWAY dev eth0
+     ip route add 172.16.0.0/12 via $GATEWAY dev eth0
+     echo "Route Updated via $GATEWAY"
