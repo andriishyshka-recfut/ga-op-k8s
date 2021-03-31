@@ -1,0 +1,12 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: k8s-configs
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: https://gitlab.regemini.com/op/k8s-configs.git
+  ref:
+    branch: CHANGEME
+  secretRef:
+    name: gitlab-token
