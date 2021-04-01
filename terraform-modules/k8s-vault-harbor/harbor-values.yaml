@@ -20,6 +20,9 @@ persistence:
       secure: false
       v4auth: true
       rootdirectory: /
+      multipartcopychunksize: "5368709120"
+      multipartcopymaxconcurrency: 100
+      multipartcopythresholdsize: "5368709120"
 
 nginx:
   replicas: 0
