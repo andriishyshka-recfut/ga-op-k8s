@@ -22,7 +22,12 @@ locals{
          "CHANGEME",
          var.Cluster
   )
-  kustomization = file("${path.module}/kustomization.yaml")
+  kustomization = replace(
+                  file("${path.module}/kustomization.yaml"),
+                  "CHANGEME",
+                  "${var.Cluster}-${var.Color}"
+                  )
+
 }
 resource "kubectl_manifest" "repo" {
   yaml_body  = local.repo
