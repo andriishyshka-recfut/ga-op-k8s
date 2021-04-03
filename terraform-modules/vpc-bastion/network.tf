@@ -86,7 +86,6 @@ resource "google_compute_firewall" "bastion_ssh_https" {
   source_ranges = [
     "69.164.208.72/32",  // - Outline VPN
     "35.185.38.145/32",  // - Captcha resolver service
-    "35.245.245.168/32", // test account default VPC nat - access from gitlab jobs
     "35.188.246.238/32", // prod nat
     "35.242.253.39/32",  // sandbox-old
     "35.196.5.12/32",    //app11.digaweb.com
@@ -94,6 +93,7 @@ resource "google_compute_firewall" "bastion_ssh_https" {
     "34.86.87.120/32",   // bastion test account
     "34.86.176.12/32",   // bastion test account
     "78.26.204.32/32", // stepan
+    "34.86.175.17/32", //test account nat ip
     "${google_compute_address.envoy.address}/32",
     "${google_compute_address.wireguard.address}/32"]
 
