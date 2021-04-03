@@ -58,8 +58,8 @@ resource "google_compute_instance" "bastion" {
   sysctl net.ipv4.conf.ens5.rp_filter=2
   sysctl net.ipv4.conf.all.rp_filter=2
   ip rule add fwmark 0x7 table 7
-  ip route add default via 172.20.0.1 dev ens5 table 7
-  ip route add 172.20.0.0/24  dev ens5 table 7
+  ip route add default via ${trim(var.Settings.wireguard_subnet_range,"0/24")}1 dev ens5 table 7
+  ip route add ${var.Settings.wireguard_subnet_range}  dev ens5 table 7
 
 EOT
   provisioner "remote-exec" {
