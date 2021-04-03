@@ -1,8 +1,10 @@
 
+
+
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-backup/state"
+    prefix = "tf-workloads/state-8"
   }
   required_providers {
     kubernetes = {
@@ -10,4 +12,7 @@ terraform {
     }
   }
 
+}
+output "ActiveCluster" {
+  value = local.activeCluster
 }
