@@ -16,7 +16,7 @@ elastic_settings:
       sidecar.istio.io/inject: "false" # istio-proxy conflicts with nativeTLS
     istio:
       enabled: "no"
-      gateway_fqdn: "es.p.digaweb.com"
+      gateway_fqdn: "es.p.regemini.io"
       # mTLS prevent filebeat send logs to es service
       # only "yes" will make effect
       mTLS_enabled: "no"
@@ -61,4 +61,4 @@ elastic_settings:
     oidc_provider:
       enabled: "yes"
       realm: "google"
-      istio_gateway_fqdn: "mon.p.digaweb.com"
+      istio_gateway_fqdn: "mon.p.regemini.io"
