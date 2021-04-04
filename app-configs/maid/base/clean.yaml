@@ -68,7 +68,7 @@ spec:
           - name: MARK_URI
             value: "http://maid-cracker:8080/mark"
           - name: MINIO_ENDPOINT
-            value: minio.p.digaweb.com
+            value: minio.p.regemini.io
           - name: REDIS_ADDRS
             value: rfs-redisfailover:26379
           - name: REDIS_MASTER

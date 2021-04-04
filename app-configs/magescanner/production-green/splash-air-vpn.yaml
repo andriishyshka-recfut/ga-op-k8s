@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splash-air-vpn
+spec:
+  replicas: 0
+  template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/auth-path: auth/k8s-production-green

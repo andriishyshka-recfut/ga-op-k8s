@@ -32,7 +32,7 @@ spec:
   commonName: minio.p.regemini.io
   dnsNames:
   - minio.p.regemini.io
-  - minio.p.digaweb.com
+  # - minio.p.digaweb.com
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
