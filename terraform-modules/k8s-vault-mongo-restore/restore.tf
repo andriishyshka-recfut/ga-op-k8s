@@ -1,5 +1,5 @@
 locals {
-  backupCommand = <<EOT
+  restoreCommand = <<EOT
 set -e;
 apt-get update -q && apt-get install wget -yq ;
 wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
@@ -10,7 +10,7 @@ EOT
 }
 
 resource "kubernetes_job" "mongo_restore" {
-  count = local.restoreSwitcher
+
   metadata {
     name      = "mongo-restore"
     namespace = local.mongoNs
@@ -27,7 +27,7 @@ resource "kubernetes_job" "mongo_restore" {
         container {
           name    = "restore"
           image   = "mongo"
-          command = ["bash", "-c", local.backupCommand]
+          command = ["bash", "-c", local.restoreCommand]
           resources {
             limits = {
               cpu = 2
@@ -90,7 +90,4 @@ resource "kubernetes_job" "mongo_restore" {
     create = "120m"
     update = "120m"
   }
-  depends_on = [
-    helm_release.mongo_cluster
-  ]
 }

@@ -8,7 +8,7 @@ spec:
   commonName: maid.p.regemini.io
   dnsNames:
   - maid.p.regemini.io
-  - maid.p.digaweb.com
+  # - maid.p.digaweb.com
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt-prod

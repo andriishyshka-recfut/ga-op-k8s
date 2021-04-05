@@ -1,11 +1,17 @@
 
-resource "google_compute_address" "static" {
-  name = "ipv4-address"
+resource "google_compute_address" "envoy" {
+  name = "envoy"
   depends_on = [
     google_project_iam_member.service_account
   ]
 }
 
+resource "google_compute_address" "wireguard" {
+  name = "wireguard"
+  depends_on = [
+    google_project_iam_member.service_account
+  ]
+}
 
 resource "google_compute_instance" "bastion" {
   name         = var.Settings.bastion_hostname
@@ -27,10 +33,17 @@ resource "google_compute_instance" "bastion" {
   }
   // Define a network interface in the correct subnet.
   network_interface {
-    subnetwork = google_compute_subnetwork.net.name
+    subnetwork = google_compute_subnetwork.envoy.name
     // Add an ephemeral external IP.
     access_config {
-      nat_ip = google_compute_address.static.address
+      nat_ip = google_compute_address.envoy.address
+    }
+  }
+  network_interface {
+    subnetwork = google_compute_subnetwork.wireguard.name
+    // Add an ephemeral external IP.
+    access_config {
+      nat_ip = google_compute_address.wireguard.address
     }
   }
   // Allow the instance to be stopped by terraform when updating configuration
@@ -38,6 +51,17 @@ resource "google_compute_instance" "bastion" {
   metadata = {
     enable-oslogin = "TRUE"
   }
+  metadata_startup_script = <<EOT
+
+  iptables -t mangle -A PREROUTING -m conntrack --ctstate NEW -i ens5 -j CONNMARK --set-mark 0x7
+  iptables -t mangle -A PREROUTING --src 172.18.0.0/16 -j CONNMARK --restore-mark
+  sysctl net.ipv4.conf.ens5.rp_filter=2
+  sysctl net.ipv4.conf.all.rp_filter=2
+  ip rule add fwmark 0x7 table 7
+  ip route add default via ${trim(var.Settings.wireguard_subnet_range,"0/24")}1 dev ens5 table 7
+  ip route add ${var.Settings.wireguard_subnet_range}  dev ens5 table 7
+
+EOT
   provisioner "remote-exec" {
     inline = [
       "echo",
@@ -46,7 +70,7 @@ resource "google_compute_instance" "bastion" {
       type = "ssh"
       user = "sa_${data.google_service_account.me.unique_id}"
       //private_key = file("./ssh-key-ansible-sa")
-      host = google_compute_address.static.address
+      host = google_compute_address.envoy.address
     }
   }
 
@@ -72,7 +96,7 @@ resource "google_os_login_ssh_public_key" "cache" {
 output "DnsRecord" {
   value = <<DNS
   Please make sure that this DNS record configured this way:
-    ${var.Settings.bastion_dns}    A  ${google_compute_address.static.address}
+    ${var.Settings.bastion_dns}    A  ${google_compute_address.wireguard.address}
 
 DNS
 

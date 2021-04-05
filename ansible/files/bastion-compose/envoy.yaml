@@ -16,7 +16,7 @@ static_resources:
           stat_prefix: ingress_tcp
           cluster: subspace-https
     - filter_chain_match:
-        server_names: ["b.digaweb.com","24.regemini.io."]
+        server_names: ["b.digaweb.com","24.regemini.io"]
       filters:
       - name: envoy.filters.network.tcp_proxy
         config:
@@ -72,7 +72,7 @@ static_resources:
                 redirect:
                   https_redirect: true
             - name: subspace
-              domains: ["p.digaweb.com","42.regemini.io","b.digaweb.com","24.regemini.io."]
+              domains: ["p.digaweb.com","42.regemini.io","b.digaweb.com","24.regemini.io"]
               routes:
               - match: { prefix: "/.well-known/acme-challenge/" }
                 route: { cluster: subspace-http }

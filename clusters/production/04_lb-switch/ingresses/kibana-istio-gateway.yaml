@@ -9,36 +9,11 @@ spec:
   commonName: mon.p.regemini.io
   dnsNames:
   - mon.p.regemini.io
-  - mon.p.digaweb.com
   duration: 1460h
   renewBefore: 12h
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
----
-# https://istio.io/latest/docs/ops/integrations/certmanager/
-# https://cert-manager.io/docs/usage/ingress/
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: monitoring-kb-ingress
-  namespace: monitoring
-  annotations:
-    kubernetes.io/ingress.class: istio
-spec:
-  tls:
-  rules:
-  - host:  mon.p.digaweb.com
-    http:
-      paths:
-      - backend:
-          serviceName: kibana-kb-http
-          servicePort: 5601
-        path: /*
-  tls:
-  - hosts:
-    - mon.p.digaweb.com
-    secretName: monitoring-cert
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

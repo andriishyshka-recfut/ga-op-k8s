@@ -15,7 +15,7 @@ spec:
         args:
           - -f
           - --endpoint
-          -  https://minio.p.digaweb.com/
+          -  https://minio.p.regemini.io/
           - --dir-mode
           - "777"
           - --file-mode

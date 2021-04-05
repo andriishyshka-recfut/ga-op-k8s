@@ -1,10 +1,8 @@
 
-
-
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-workloads/state-7"
+    prefix = "tf-backup/state-2"
   }
   required_providers {
     kubernetes = {
@@ -12,7 +10,4 @@ terraform {
     }
   }
 
-}
-output "ActiceCluuster" {
-  value = local.activeCluster
 }

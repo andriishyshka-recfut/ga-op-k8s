@@ -20,7 +20,21 @@ spec:
   tls:
   - hosts:
     - minio.p.digaweb.com
-    secretName: minio-cert
+    secretName: minio-cert-old
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-cert-digaweb
+  namespace: istio-system
+spec:
+  secretName: minio-cert-digaweb
+  commonName: minio.p.digaweb.com
+  dnsNames:
+  - minio.p.digaweb.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -32,7 +46,7 @@ spec:
   commonName: minio.p.regemini.io
   dnsNames:
   - minio.p.regemini.io
-  - minio.p.digaweb.com
+  # - minio.p.digaweb.com
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
