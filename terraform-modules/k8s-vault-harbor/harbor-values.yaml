@@ -5,7 +5,7 @@ expose:
   tls:
     enabled: false
 
-externalURL: "https://harbor.infra.digaweb.com"
+externalURL: "https://harbor.t.regemini.io"
 logLevel: debug
 
 persistence:
