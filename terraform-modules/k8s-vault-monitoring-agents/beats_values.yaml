@@ -67,9 +67,8 @@ filebeat:
                 json.add_error_key: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
-            # Sandbox section
             - condition.equals:
-                kubernetes.namespace: sandbox
+                kubernetes.namespace: core
               config:
               - type: container
                 json.add_error_key: true
