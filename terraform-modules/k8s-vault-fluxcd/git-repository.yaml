@@ -4,7 +4,7 @@ metadata:
   name: k8s-configs
   namespace: flux-system
 spec:
-  interval: 1m
+  interval: 30s
   url: https://gitlab.regemini.com/op/k8s-configs.git
   ref:
     branch: CHANGEME
