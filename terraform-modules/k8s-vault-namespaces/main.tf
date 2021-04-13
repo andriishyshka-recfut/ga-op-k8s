@@ -29,10 +29,10 @@ resource "kubernetes_limit_range" "limit" {
 }
 
 
-resource "kubernetes_role_binding" "developers" {
+resource "kubernetes_role_binding" "developers_admins" {
   for_each = local.namespaceAdmins
   metadata {
-    name      = "developers"
+    name      = "developers-admins"
     namespace = each.key
   }
   role_ref {
@@ -53,39 +53,80 @@ resource "kubernetes_role_binding" "developers" {
   ]
 }
 
-resource "kubernetes_cluster_role" "kubefwd_access_role" {
+resource "kubernetes_cluster_role" "developers_access_role" {
   metadata {
-    name = "kubefwd-access"
+    name = "developers-access"
   }
 
   rule {
     api_groups = [""]
-    resources  = ["services", "pods"]
+    resources  = ["services", "pods","secrets"]
     verbs      = ["get", "list", "watch"]
+  }
+  rule {
+    api_groups = [""]
+    resources  = ["pods/portforward"]
+    verbs      = ["get", "list", "create", "delete"]
+
   }
 }
 
-resource "kubernetes_role_binding" "kubefwd_groups_binding" {
-  for_each = local.namespaceKubefwd
+resource "kubernetes_cluster_role" "list_ns_role" {
   metadata {
-    name      = "kubefwd-groups"
-    namespace = each.key
+    name = "list-ns"
+  }
+
+  rule {
+    api_groups = [""]
+    resources  = ["namesapces"]
+    verbs      = ["get", "list"]
+
+  }
+}
+resource "kubernetes_cluster_role_binding" "developers_groups_binding" {
+  metadata {
+    name      = "developers-list-ns"
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "ClusterRole"
-    name      = "kubefwd-access"
+    name      = "list-ns"
   }
   dynamic "subject" {
-    for_each = toset(flatten(each.value))
+    for_each = toset(flatten(local.developers))
     content {
-      kind      = "Group"
+      kind      = "User"
       name      = subject.key
       api_group = "rbac.authorization.k8s.io"
     }
   }
   depends_on = [
     kubernetes_namespace.ns,
-    kubernetes_cluster_role.kubefwd_access_role
+    kubernetes_cluster_role.list_ns_role
+  ]
+}
+
+resource "kubernetes_role_binding" "developers_groups_binding" {
+  for_each = local.namespaceDevAccess
+  metadata {
+    name      = "developers-access"
+    namespace = each.key
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "developers-access"
+  }
+  dynamic "subject" {
+    for_each = toset(flatten(local.developers))
+    content {
+      kind      = "User"
+      name      = subject.key
+      api_group = "rbac.authorization.k8s.io"
+    }
+  }
+  depends_on = [
+    kubernetes_namespace.ns,
+    kubernetes_cluster_role.developers_access_role
   ]
 }

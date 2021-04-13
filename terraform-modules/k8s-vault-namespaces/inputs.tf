@@ -16,11 +16,20 @@ locals {
     namespace.name => namespace.admins...
     if can(namespace.admins)
   }
-  namespaceKubefwd = {
-    for namespace in var.Settings.clusters[var.Cluster].namespaces :
-    namespace.name => namespace.kubefwdGroups...
-    if can(namespace.kubefwdGroups)
-  }
+  developers = [
+    "valerii.korolov@geminiadvisory.io",
+    "andrei.lavrenyuk@geminiadvisory.io",
+    "anton@geminiadvisory.io",
+    "eugene@geminiadvisory.io",
+    "nikita.leonov@geminiadvisory.io",
+    "oleg.chernov@geminiadvisory.io",
+    "rafael.m@geminiadvisory.io"
+  ]
+  namespaceDevAccess = toset(flatten([
+    for namespace in var.Settings.clusters[var.Cluster].namespaces : [
+      namespace.name
+    ] if can(namespace.devAccess)
+  ]))
 
   injectHarborImagePullSecrets = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "injectHarborImagePullSecrets", false)
