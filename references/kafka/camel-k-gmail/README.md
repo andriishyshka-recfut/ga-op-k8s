@@ -5,7 +5,7 @@
 2. Install camel-k:
 
 ```
-kamel install -n kafka --registry https://harbor.t.regemini.io/op --registry-secret harbor
+kamel install -n kafka --registry harbor.t.regemini.io --registry-secret harbor
 ```
 
 3. Create kafka topic:
