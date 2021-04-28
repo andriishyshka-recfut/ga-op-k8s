@@ -36,7 +36,7 @@ spec:
       .setHeader("to", simple("stepan.biriukov@geminiadvisory.io"))
       .setHeader("from", simple("stepan.biriukov@geminiadvisory.io"))
       .setHeader("subject",simple("Message from Camel"))
-      .setBody(constant("test"))
+      .setBody(simple(" test - 2 "))
       .to("log:info")
       .toD("smtps://smtp.gmail.com:465?"
           + "username={{gmail.username}}"

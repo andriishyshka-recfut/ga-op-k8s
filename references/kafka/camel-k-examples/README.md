@@ -8,13 +8,14 @@
 kamel install -n kafka --registry harbor.t.regemini.io --registry-secret harbor
 ```
 
-3. Create kafka topic:
-```
-k apply -f topics.yaml
-```
 
-4. Create `gmail-credentials` :
+3. Create `gmail-credentials` :
 ```
 kubectl create secret generic gmail-credentials --from-literal=username=stepan.biriukov@geminiadvisory.io --from-literal=password=<secret>
+
+```
+4. Apply :
+```
+k apply -f camel-mail.yaml
 
 ```
