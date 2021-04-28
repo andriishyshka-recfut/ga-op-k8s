@@ -15,5 +15,6 @@ k apply -f topics.yaml
 
 4. Create `gmail-credentials` :
 ```
-kubectl create secret generic gmail-credentials --from-literal=clinetId=<ID> --from-literal=clinetSecret=<secret>
+kubectl create secret generic gmail-credentials --from-literal=username=stepan.biriukov@geminiadvisory.io --from-literal=password=<secret>
+
 ```
