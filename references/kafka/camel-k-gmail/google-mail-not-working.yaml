@@ -11,6 +11,8 @@ data:
    consumer.group=kafka-gmail
    gmail.clientId={{secret:gmail-credentials/clinetId}}
    gmail.clientSecret={{secret:gmail-credentials/clinetSecret}}
+   client.id={{secret:gmail-test/client_id}}
+   refresh.token={{secret:gmail-test/refresh_token}}
 
 
 ---
@@ -29,6 +31,8 @@ spec:
     value: gmail.props
   - type: secret
     value: gmail-credentials
+  - type: secret
+    value: gmail-test
   sources:
   - name: MyRouteBuilder.java
     content: |
@@ -50,8 +54,8 @@ spec:
             .setHeader("CamelGoogleMail.content", method(this,"getMessage()"))
             .to("log:info")
             .toD("google-mail:messages/send?applicationName=camel-k-gmail"
-                + "&clientId={{gmail.clientId}}"
-                + "&clientSecret={{gmail.clientSecret}}"
+                + "&clientId={{client.id}}"
+                + "&refreshToken={{refresh.token}}"
                 + "&userId=me" );
           }
         public Message getMessage(){
