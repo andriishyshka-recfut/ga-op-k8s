@@ -1,5 +1,5 @@
 data "vault_generic_secret" "oidc_secrets" {
-  path = "secret/oidc_google_prod"
+  path = var.OidcSecretVaultPath
 }
 
 data "vault_generic_secret" "grafana" {
@@ -15,16 +15,16 @@ resource "helm_release" "prometheus" {
   namespace         = local.prometheusNs
   dependency_update = true
   values = [
-    file("${path.module}/values.yaml")
+    file("${path.module}/kube-prometheous-stack-values.yaml")
   ]
   set {
     name  = "grafana.adminPassword"
     value = data.vault_generic_secret.grafana.data.adminPassword
   }
-  # set {
-  #   name  = "grafana.grafana\\.ini.server.root_url"
-  #   value = data.vault_generic_secret.grafana.data.root_url
-  # }
+  set {
+    name  = "grafana.grafana\\.ini.server.root_url"
+    value = data.vault_generic_secret.grafana.data.root_url
+  }
   set {
     name  = "grafana.grafana\\.ini.auth\\.google.client_id"
     value = data.vault_generic_secret.oidc_secrets.data.oidc_client_id

@@ -1,6 +1,7 @@
 nameOverride: "prometheus"
+
 namespaceOverride: "monitoring"
-kubeTargetVersionOverride: ""
+
 fullnameOverride: "prometheus"
 
 grafana:
@@ -8,17 +9,12 @@ grafana:
   namespaceOverride: "monitoring"
   podAnnotations:
     sidecar.istio.io/inject: "false"
-  defaultDashboardsEnabled: true
-
   adminPassword: prom-operator
   grafana.ini:
     server:
       root_url: https://grafana.p.regemini.io
-      # root_url: ${ROOT_URL}
     auth.google:
       enabled: true
-      # client_id: ${CLIENT_ID}
-      # client_secret: ${CLIENT_SECRET}
       scopes: https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
       auth_url: https://accounts.google.com/o/oauth2/auth
       token_url: https://accounts.google.com/o/oauth2/token
@@ -27,7 +23,17 @@ grafana:
 
 kube-state-metrics:
   namespaceOverride: "monitoring"
-  rbac:
-    create: true
-  podSecurityPolicy:
-    enabled: true
+
+prometheus-node-exporter:
+  namespaceOverride: "monitoring"
+
+prometheusOperator:
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  admissionWebhooks:
+    patch:
+      podAnnotations:
+        sidecar.istio.io/inject: "false"
+
+prometheusSpec:
+  prometheusRulesExcludedFromEnforce: false
