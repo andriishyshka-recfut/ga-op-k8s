@@ -1,6 +1,9 @@
 
 resource "kubectl_manifest" "fluxcd2_podmonitor" {
     yaml_body  = file("${path.module}/fluxcd-podmonitor.yaml")
+    depends_on = [
+        helm_release.prometheus
+    ]
 }
 
 data "http" "grafana_dashboard_fluxcd1" {
