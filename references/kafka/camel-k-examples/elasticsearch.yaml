@@ -27,7 +27,7 @@ spec:
   - type: secret
     value: es-creds
   sources:
-  - name: elastic.groovy
+  - name: elasticRoute.java
     content: |
 
       from("timer:java?repeatCount=1")
