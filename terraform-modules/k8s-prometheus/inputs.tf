@@ -1,6 +1,8 @@
-variable "Settings" {}
-variable "Cluster" {}
-variable "Color" {}
+
+variable "OidcSecretVaultPath" {
+  default = "secret/oidc_google_prod"
+}
+
 
 locals {
   prometheusNs = "monitoring"

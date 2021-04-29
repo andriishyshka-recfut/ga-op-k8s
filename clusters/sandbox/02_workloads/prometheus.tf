@@ -1,8 +1,4 @@
-# 
-#
-# module "prometheus" {
-#   source   = "../../../terraform-modules/k8s-prometheus"
-#   Settings = var.Settings
-#   Cluster  = "sandbox"
-#   Color    = "green"
-# }
+module "prometheus" {
+  source   = "../../../terraform-modules/k8s-prometheus"
+  OidcSecretVaultPath = "secret/oidc_google_test"
+}
