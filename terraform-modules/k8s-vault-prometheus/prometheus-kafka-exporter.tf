@@ -1,5 +1,5 @@
 
-resource "helm_release" "prometheus-kafka-exporter" {
+resource "helm_release" "prometheus_kafka_exporter" {
   name              = "prometheus-kafka-exporter"
   repository        = "https://prometheus-community.github.io/helm-charts"
   chart             = "prometheus-kafka-exporter"
@@ -39,7 +39,7 @@ data "http" "grafana_dashboard" {
 
 resource "kubernetes_config_map" "kafka_exporter_dashboard" {
   metadata {
-    name = "kafka-exporter-dashboard"
+    name = "fluxcd2-dashboards"
     namespace = "monitoring"
     labels = {
       grafana_dashboard = 1

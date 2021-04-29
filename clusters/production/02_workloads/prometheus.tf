@@ -1,8 +1,6 @@
 
 
 module "prometheus" {
-  source   = "../../../terraform-modules/k8s-prometheus"
-  Settings = var.Settings
-  Cluster  = "production"
-  Color    = local.activeCluster
+  source   = "../../../terraform-modules/k8s-vault-prometheus"
+
 }
