@@ -10,7 +10,8 @@ spec:
     matchNames:
       - flux-system
   selector:
-    matchLabels:
-      app: source-controller
+    matchExpressions:
+    - key: app
+      operator: Exists
   podMetricsEndpoints:
   - port: http-prom
