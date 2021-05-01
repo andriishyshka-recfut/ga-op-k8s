@@ -118,7 +118,7 @@ resource "google_container_node_pool" "cluster_preemptible_nodes" {
     preemptible = local.isPreemptible
 
     machine_type    = var.Settings.clusters[var.Cluster][var.Color].machine_type
-    tags            = [var.Cluster]
+    tags            = [var.Cluster,"${var.Cluster}-${var.Color}"]
     service_account = google_service_account.gke_sa.unique_id
 
     metadata = {
@@ -157,7 +157,7 @@ resource "google_container_node_pool" "cluster_nodes_data" {
   node_config {
     preemptible     = local.isPreemptible
     machine_type    = var.Settings.clusters[var.Cluster][var.Color].machine_type
-    tags            = [var.Cluster]
+    tags            = [var.Cluster,"${var.Cluster}-${var.Color}"]
     service_account = google_service_account.gke_sa.unique_id
     metadata = {
       disable-legacy-endpoints = "true"

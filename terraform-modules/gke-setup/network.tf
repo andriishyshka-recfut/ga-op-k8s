@@ -95,3 +95,20 @@ resource "google_compute_firewall" "cluster_to_bastion" {
     ports    = ["443"]
   }
 }
+
+resource "google_compute_firewall" "clusters_nodeport" {
+  name          = "${var.Cluster}-${var.Color}-nodeports"
+  network       = data.google_compute_network.vpc.self_link
+  direction     = "INGRESS"
+  source_ranges = [local.blueNodes, local.greenNodes]
+  target_tags   = ["${var.Cluster}-${var.Color}"]
+
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = [ "30000-32767"]
+  }
+}
