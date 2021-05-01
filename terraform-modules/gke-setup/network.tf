@@ -100,7 +100,7 @@ resource "google_compute_firewall" "clusters_nodeport" {
   name          = "${var.Cluster}-${var.Color}-nodeports"
   network       = data.google_compute_network.vpc.self_link
   direction     = "INGRESS"
-  source_ranges = [local.blueNodes, local.greenNodes]
+  source_ranges = [local.bluePods, local.greenPods]
   target_tags   = ["${var.Cluster}-${var.Color}"]
 
   allow {

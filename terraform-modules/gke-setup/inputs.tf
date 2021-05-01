@@ -31,6 +31,5 @@ locals {
   additionalNodepools =  var.Settings.clusters[var.Cluster][var.Color].additionalNodepools
   bluePods      = var.Settings.clusters[var.Cluster]["blue"].pods_subnet_range
   greenPods     = var.Settings.clusters[var.Cluster]["green"].pods_subnet_range
-  blueNodes      = var.Settings.clusters[var.Cluster]["blue"].nodes_subnet_range
-  greenNodes     = var.Settings.clusters[var.Cluster]["green"].nodes_subnet_range
+
 }
