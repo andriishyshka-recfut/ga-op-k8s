@@ -1,21 +1,9 @@
 
-terraform {
-  backend "gcs" {
-    bucket = "terraform-state-production111"
-    prefix = "terraform-prod-blue/state"
-  }
-}
-
-
-
 provider "google" {
-  # version = "v3.19.0"
 }
 
 provider "google-beta" {
-  # version = "v3.19.0"
 }
-
 
 
 locals {
@@ -33,9 +21,14 @@ provider "helm" {
 }
 
 provider "kubernetes" {
-  load_config_file       = false
   host                   = local.gkeClusterEndpoint
   token                  = local.gkeBearerToken
   cluster_ca_certificate = local.clusterCaCertificate
 
+}
+terraform {
+  backend "gcs" {
+    bucket = "terraform-state-production111"
+    prefix = "terraform-prod-blue/state"
+  }
 }

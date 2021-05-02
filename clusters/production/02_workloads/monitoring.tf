@@ -20,3 +20,8 @@ module "monitoring-agents" {
   source     = "../../../terraform-modules/k8s-vault-monitoring-agents"
   depends_on = [module.monitoring-elastic]
 }
+
+module "prometheus" {
+  source   = "../../../terraform-modules/k8s-vault-prometheus"
+  depends_on = [module.monitoring-elastic]
+}
