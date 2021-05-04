@@ -57,14 +57,3 @@
     delay: 40
 
   - debug: msg="{{ info.resources[0].status | to_nice_json }}"
-
-
-  # - name: try https://{{ test_workload_name }}.{{ cluster_name }}.{{ domain }}
-  #   uri:
-  #       url: "https://{{ test_workload_name }}.{{ cluster_name }}.{{ domain }}"
-  #       return_content: yes
-  #       validate_certs: no
-  #   register: result
-  #   retries: 3
-  #   delay: 10
-  #   until: result.content.find("Self Destructing Notes") != -1
