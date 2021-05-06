@@ -8,6 +8,8 @@ elastic_settings:
     appVersion: "6.8.13"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "no"
+    gcs:
+      enabled: "yes"
     apm:
       enabled: "no"
     labels:
@@ -36,7 +38,7 @@ elastic_settings:
           xpack.monitoring.collection.enabled: false
           xpack.security.authc.token.enabled: true
         storageSize: "100Gi"
-        ES_JAVA_OPTS: -Xms3g -Xmx3g
+        ES_JAVA_OPTS: -Xms3g -Xmx3g -Des.http.cname_in_publish_address=true
         nodesCount: 3
         memoryRequests: "4Gi"
         cpuRequests: "0.5"

@@ -64,7 +64,7 @@ spec:
           - sh
           - -c
           - |
-            bin/elasticsearch-plugin install --batch repository-s3
+            bin/elasticsearch-plugin install --batch repository-gcs && bin/elasticsearch-plugin install --batch repository-s3
         containers:
         - name: elasticsearch
           resources:
