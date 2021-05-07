@@ -24,6 +24,14 @@ resource "kubernetes_job" "mongo_restore" {
         }
       }
       spec {
+        node_selector = {
+          workloadsType =  "data"
+        }
+        toleration {
+           key =  "workloadsType"
+            operator = "Exists"
+            effect= "NoSchedule"
+          }
         container {
           name    = "restore"
           image   = "mongo"
