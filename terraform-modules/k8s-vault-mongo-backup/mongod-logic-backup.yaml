@@ -12,6 +12,7 @@ spec:
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/agent-inject-secret-config: "secret/backup/gpg"
         vault.hashicorp.com/role: "mongo"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
         vault.hashicorp.com/auth-path: auth/k8s-sandbox-green
         vault.hashicorp.com/agent-inject-template-config: |
           {{ with secret "secret/backup/gpg" -}}
@@ -19,7 +20,6 @@ spec:
           echo "{{.Data.ownertrust}}" | gpg --import-ownertrust
           {{- end }}
     spec:
-      shareProcessNamespace: true
       containers:
       - name: mongod-backup
         image: mongo
@@ -32,7 +32,6 @@ spec:
            source /vault/secrets/config ;
            mongodump --archive="auth.tar" --gzip --uri=$MONGODB_URL --db auth ;
            gpg -r Backup  --armor -o - --encrypt auth.tar |  ./mc pipe backup/minio-xbackup-ardent-rarity-239115/mongo/auth ;
-           pkill -SIGINT vault;
            # base64 -d /vault/secrets/config | gpg --import
            # echo "CD5EB7C6E709481C38C8125E066861EE58D05091:6:" | gpg --import-ownertrust
            # /mc cp artifact.tar backup/minio-xbackup-ardent-rarity-239115/mongod-backup/artifact.tar;
