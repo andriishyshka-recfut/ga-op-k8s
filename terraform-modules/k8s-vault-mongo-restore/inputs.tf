@@ -1,4 +1,7 @@
 
+variable "BackupSettings" { }
+variable "Cluster" {}
+variable "Color" {}
 data "google_project" "current_project" {
 }
 
