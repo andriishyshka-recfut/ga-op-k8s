@@ -20,7 +20,7 @@ spec:
            wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
            chmod +x mc ;
            /mc cp  backup/minio-xbackup-ardent-rarity-239115/mongod-backup/artifact.tar artifact.tar.gz;
-           mongorestore --archive="artifact.tar.gz" --gzip --uri=$MONGODB_URL --db artifact ;
+           mongorestore --archive="auth.tar.gz" --gzip --uri=$MONGODB_URL --db auth ;
            # mongo $MONGODB_URL <(echo "use artifact;"; echo "db.dropDatabase();")   ;
            # mongo $MONGODB_URL <<EOF
            #    use artifact;
