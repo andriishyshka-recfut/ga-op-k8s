@@ -36,3 +36,10 @@ gcsgateway:
 
 serviceAccount:
   create: false
+
+nodeSelector:
+  workloadsType: data
+tolerations:
+- key: "workloadsType"
+  operator: "Exists"
+  effect: "NoSchedule"
