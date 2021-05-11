@@ -7,37 +7,14 @@ metadata:
     managed-by: terraform
 spec:
   secretName: vault-cert
-  commonName: vault.infra.digaweb.com
+  commonName: vault.t.regemini.io
   dnsNames:
-  - vault.infra.digaweb.com
   - vault.t.regemini.io
   duration: 12h
   renewBefore: 6h
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: istio
-  name: vault
-  namespace: vault
-spec:
-  rules:
-  - host: vault.infra.digaweb.com
-    http:
-      paths:
-      - backend:
-          serviceName: vault-active
-          servicePort: 8200
-        path: /*
-        pathType: ImplementationSpecific
-  tls:
-  - hosts:
-    - vault.infra.digaweb.com
-    secretName: vault-cert
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
