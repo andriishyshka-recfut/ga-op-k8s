@@ -31,7 +31,7 @@ provider "kubernetes" {
 
 terraform {
   backend "gcs" {
-    bucket = "terraform-state-223"
-    prefix = "tf-blue-green/state"
+    bucket = "terraform-state-222"
+    prefix = "tf-blue-green/blue-state"
   }
 }

@@ -15,4 +15,20 @@ resource "helm_release" "etcd" {
     name  = "auth.rbac.enabled"
     value = "false"
   }
+  set {
+    name = "nodeSelector.workloadsType"
+    value = "data"
+  }
+  set {
+    name = "tolerations[0].key"
+    value = "workloadsType"
+  }
+  set {
+    name = "tolerations[0].operator"
+    value = "Exists"
+  }
+  set {
+    name = "tolerations[0].effect"
+    value = "NoSchedule"
+  }
 }

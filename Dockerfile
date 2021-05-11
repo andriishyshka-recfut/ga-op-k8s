@@ -3,7 +3,7 @@ FROM debian:10
 
 RUN apt update && \
     apt install -y python3 python3-pip unzip ssh jq wget curl rustc libssl-dev && \
-    python3 -m pip install ansible==2.10.5 kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl &&\
+    python3 -m pip install ansible==2.10.5 jmespath kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl &&\
     rm -rf /var/lib/apt/lists/*
 
 RUN wget  -q https://releases.hashicorp.com/terraform/0.14.7/terraform_0.14.7_linux_amd64.zip -O /usr/bin/terraform.zip && \

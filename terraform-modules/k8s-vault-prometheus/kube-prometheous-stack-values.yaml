@@ -20,6 +20,12 @@ grafana:
       token_url: https://accounts.google.com/o/oauth2/token
       allowed_domains: geminiadvisory.io
       allow_sign_up: true
+  nodeSelector:
+    workloadsType: data
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
 
 kube-state-metrics:
   namespaceOverride: "monitoring"
@@ -28,6 +34,12 @@ prometheus-node-exporter:
   namespaceOverride: "monitoring"
 
 prometheusOperator:
+  nodeSelector:
+    workloadsType: data
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
   podAnnotations:
     sidecar.istio.io/inject: "false"
   admissionWebhooks:
