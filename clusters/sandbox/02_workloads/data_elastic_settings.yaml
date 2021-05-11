@@ -8,8 +8,7 @@ elastic_settings:
     appVersion: "6.8.13"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "no"
-    gcs:
-      enabled: "yes"
+    gcs_enable: "yes"
     apm:
       enabled: "no"
     labels:

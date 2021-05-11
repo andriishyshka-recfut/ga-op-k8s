@@ -12,6 +12,9 @@ spec:
   {{- if eq .Values.oidc_gcloud.enabled "yes" }}
   - secretName: {{ .Values.oidc_gcloud.secret_name }}
   {{- end }}
+  {{- if eq .Values.gcs_enable "yes" }}
+  - secretName: gcs-es-credentional
+  {{- end }}
   http:
     tls:
 {{- if eq .Values.nativeTLS.enabled "yes" }}
