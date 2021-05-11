@@ -1,5 +1,4 @@
 data "google_service_account" "es_server" {
-  count = local.gcsSetup
   account_id = "elastic-backup"
 }
 
@@ -21,7 +20,6 @@ EOT
 }
 
 resource "google_service_account_key" "es_key" {
-  count = local.gcsSetup
   service_account_id = data.google_service_account.es_server.name
 }
 
@@ -30,7 +28,7 @@ resource "kubernetes_secret" "gcs-es-credentional" {
   metadata {
     name = "gcs-es-credentional"
     //after test change to variable
-    namespace = "elastic-test"
+    namespace = local.esValues.namespace
   }
   data = {
     "gcs.client.default.credentials_file" = base64decode(google_service_account_key.es_key.private_key)

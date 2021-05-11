@@ -17,7 +17,7 @@ locals {
   oidcRealmName          = lookup(var.ElasticSettings.elastic.oidc_gcloud, "oidc_realm_name", "")
   esValues               = var.ElasticSettings.elastic
   kibanaValues           = var.ElasticSettings.kibana
-  gcsSetup               = lookup(var.ElasticSettings.elastic.gcs, "enabled", "no") == "yes" ? 1 : 0
+  gcsSetup               = lookup(var.ElasticSettings.elastic, "gcs_enable", "no") == "yes" ? 1 : 0
   ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
     ANSIBLE_STDOUT_CALLBACK = "debug"
     namespace               = local.esValues.namespace
