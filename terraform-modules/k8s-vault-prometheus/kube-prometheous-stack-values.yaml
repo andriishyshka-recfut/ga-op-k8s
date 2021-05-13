@@ -49,3 +49,8 @@ prometheusOperator:
 
 prometheusSpec:
   prometheusRulesExcludedFromEnforce: false
+
+# Fix for used with istio
+alertmanager:
+  alertmanagerSpec:
+    listenLocal: true
