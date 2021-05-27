@@ -60,7 +60,7 @@ resource "kubernetes_cluster_role" "developers_access_role" {
 
   rule {
     api_groups = [""]
-    resources  = ["services", "pods","secrets"]
+    resources  = ["services", "pods","secrets","pods/logs"]
     verbs      = ["get", "list", "watch"]
   }
   rule {
@@ -68,6 +68,11 @@ resource "kubernetes_cluster_role" "developers_access_role" {
     resources  = ["pods/portforward"]
     verbs      = ["get", "list", "create", "delete"]
 
+  }
+  rule {
+    api_groups = [""]
+    resources  = ["pods/exec"]
+    verbs      = ["create", "delete"]
   }
 }
 

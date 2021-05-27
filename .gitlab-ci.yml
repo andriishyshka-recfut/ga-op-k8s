@@ -1,0 +1,42 @@
+
+stages:
+- build
+- deploy
+
+include:
+  - project: 'dev/gitlab-ci-library'
+    ref: 'master'
+    file:
+     - harbor.yaml
+build:
+  stage: build
+  script:
+  - echo pass
+  only:
+    - tags
+
+# chart_upload:
+#   retry:
+#     max: 2
+#   image: alpine:latest
+#   stage: deploy
+#   variables:
+#     GOPATH: "$CI_PROJECT_DIR/.cache"
+#     GOPRIVATE: "gitlab.regemini.com"
+#   before_script:
+#     - apk add unzip wget git
+#     - wget --quiet https://releases.hashicorp.com/vault/1.7.1/vault_1.7.1_linux_amd64.zip
+#     - unzip vault_1.7.1_linux_amd64.zip
+#     - export VAULT_ADDR=https://vault.t.regemini.io
+#     - export VAULT_TOKEN="$(./vault write -field=token auth/jwt/login role=gitlab-dev jwt=$CI_JOB_JWT)"
+#     - export HARBOR_USER=$(./vault kv get -field=user  secret/goharbor/docker_login)
+#     - export HARBOR_PASSWORD=$(./vault kv get -field=password  secret/goharbor/docker_login)
+#     - wget --quiet https://get.helm.sh/helm-v3.5.4-linux-amd64.tar.gz -O helm.tgz
+#     - tar zxvf   helm.tgz
+#   script:
+#     - cd helm-kamel
+#     - ../linux-amd64/helm template --debug ./
+#     - ../linux-amd64/helm plugin install https://github.com/chartmuseum/helm-push
+#     - ../linux-amd64/helm push  --username=${HARBOR_USER} --password=${HARBOR_PASSWORD}  --version="0.1.$(date +'%s%6N')" . https://harbor.t.regemini.io/chartrepo/op
+
+#--version="$CI_COMMIT_SHORT_SHA"
