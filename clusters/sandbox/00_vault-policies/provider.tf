@@ -1,6 +1,6 @@
 
 provider "vault" {
-  address = "https://vault.infra.digaweb.com"
+  address = "https://vault.t.regemini.io"
 }
 
 
