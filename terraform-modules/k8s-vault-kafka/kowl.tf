@@ -10,4 +10,7 @@ resource "helm_release" "kowl" {
     name = "kowl.config.kafka.brokers[0]"
     value = "kafka-cluster-kafka-bootstrap:9092"
   }
+  depends_on = [
+    helm_release.kafka_cluster,
+  ]
 }

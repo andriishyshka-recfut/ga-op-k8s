@@ -22,5 +22,5 @@ server:
 
       ha:
         enabled: true
-        disruptionBudget:
-          maxUnavailable: 0
+        # disruptionBudget:
+        #   maxUnavailable: 0
