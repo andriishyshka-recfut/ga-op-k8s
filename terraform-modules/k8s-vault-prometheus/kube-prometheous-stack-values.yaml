@@ -47,8 +47,13 @@ prometheusOperator:
       podAnnotations:
         sidecar.istio.io/inject: "false"
 
-prometheusSpec:
-  prometheusRulesExcludedFromEnforce: false
+prometheus:
+  prometheusSpec:
+    prometheusRulesExcludedFromEnforce: false
+    # listenLocal: true
+    # podMetadata:
+    #   annotations:
+    #     sidecar.istio.io/inject: "false"
 
 # Fix for used with istio
 alertmanager:
