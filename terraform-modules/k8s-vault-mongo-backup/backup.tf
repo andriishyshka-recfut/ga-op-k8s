@@ -4,8 +4,16 @@ set -e;
 apt-get update -q && apt-get install wget -yq ;
 wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
 chmod +x mc ;
-mongodump --archive="artifact.tar" --gzip --uri=$MONGODB_URL --db artifact ;
-/mc cp artifact.tar backup/minio-xbackup-${local.currentProject}/mongod-backup/artifact.tar;
+source /vault/secrets/config ;
+%{ for setting in var.BackupSettings }
+mongodump --archive="${setting.dbName}.tar.gz" --gzip --uri=$MONGODB_URL --db ${setting.dbName} ;
+%{ if setting.encrypt }
+ gpg -r Backup  --armor -o - --encrypt ${setting.dbName}.tar.gz |  ./mc pipe backup/minio-xbackup-${local.currentProject}/mongod-backup/${setting.dbName}.gpg ;
+%{ else }
+/mc cp ${setting.dbName}.tar.gz backup/minio-xbackup-${local.currentProject}/mongod-backup/${setting.dbName}.tar.gz;
+%{ endif }
+%{ endfor }
+
 EOT
 }
 resource "kubernetes_job" "mongo_backup" {
@@ -18,6 +26,18 @@ resource "kubernetes_job" "mongo_backup" {
       metadata {
         annotations = {
           "sidecar.istio.io/inject" = "false"
+          "vault.hashicorp.com/agent-inject" = "true"
+          "vault.hashicorp.com/agent-inject-secret-config" = "secret/backup/gpg"
+          "vault.hashicorp.com/role" = "mongo"
+          "vault.hashicorp.com/agent-pre-populate-only" = "true"
+          "vault.hashicorp.com/auth-path" = "auth/k8s-${var.Cluster}-${var.Color}"
+          "vault.hashicorp.com/agent-inject-template-config" = <<EOT
+                    {{ with secret "secret/backup/gpg" -}}
+                      echo "{{.Data.key}}" | base64 -d | gpg --import
+                      echo "{{.Data.ownertrust}}" | gpg --import-ownertrust
+                    {{- end }}
+EOT
+
         }
       }
       spec {

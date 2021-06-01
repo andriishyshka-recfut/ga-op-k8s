@@ -98,27 +98,27 @@ resource "google_container_cluster" "cluster" {
 }
 
 
-resource "google_container_node_pool" "cluster_preemptible_nodes" {
+resource "google_container_node_pool" "nodepool_default" {
   lifecycle {
     ignore_changes = all
   }
 
   provider = google-beta
-  name     = "${var.Cluster}-node-pool"
+  name     = "${var.Cluster}-${var.Color}-default"
   location = var.Settings.clusters[var.Cluster].region
   cluster  = google_container_cluster.cluster.name
   autoscaling {
-    min_node_count = var.Settings.clusters[var.Cluster][var.Color].min_node_count
-    max_node_count = var.Settings.clusters[var.Cluster][var.Color].max_node_count
+    min_node_count = 1
+    max_node_count = 1
   }
-  node_count = var.Settings.clusters[var.Cluster][var.Color].min_node_count
+  node_count = 1
   # version = data.google_container_engine_versions.version.latest_node_version
 
   node_config {
     preemptible = local.isPreemptible
 
-    machine_type    = var.Settings.clusters[var.Cluster][var.Color].machine_type
-    tags            = [var.Cluster]
+    machine_type    = local.defaultMachineType
+    tags            = [var.Cluster,"${var.Cluster}-${var.Color}"]
     service_account = google_service_account.gke_sa.unique_id
 
     metadata = {
@@ -142,22 +142,27 @@ resource "google_container_node_pool" "cluster_preemptible_nodes" {
   }
 }
 
-resource "google_container_node_pool" "cluster_nodes_data" {
+resource "google_container_node_pool" "nodepool_additional" {
+  for_each = local.additionalNodepools
   lifecycle {
     ignore_changes = all
   }
 
   provider = google-beta
-  name     = "${var.Cluster}-node-pool-data"
+  name     = "${var.Cluster}-${var.Color}-${each.key}"
   location = var.Settings.clusters[var.Cluster].region
   cluster  = google_container_cluster.cluster.name
 
-  node_count = var.Settings.clusters[var.Cluster][var.Color].data_nodes_count
+  autoscaling {
+    min_node_count = each.value.minNodes
+    max_node_count = each.value.maxNodes
+  }
+  node_count = each.value.minNodes
 
   node_config {
-    preemptible     = local.isPreemptible
-    machine_type    = var.Settings.clusters[var.Cluster][var.Color].machine_type
-    tags            = [var.Cluster]
+    preemptible     = each.value.preemptible
+    machine_type    = each.value.machineType
+    tags            = [var.Cluster,"${var.Cluster}-${var.Color}","${var.Cluster}-${var.Color}-${each.key}"]
     service_account = google_service_account.gke_sa.unique_id
     metadata = {
       disable-legacy-endpoints = "true"
@@ -167,11 +172,11 @@ resource "google_container_node_pool" "cluster_nodes_data" {
       "https://www.googleapis.com/auth/monitoring",
     ]
     labels = {
-      "workloadsType" = "data"
+      "workloadsType" = each.value.taintWorkloadsType
     }
     taint {
       key    = "workloadsType"
-      value  = "data"
+      value  = each.value.taintWorkloadsType
       effect = "NO_SCHEDULE"
     }
   }

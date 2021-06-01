@@ -13,20 +13,6 @@ resource "helm_release" "elasticsearch" {
   ]
 }
 
-
-resource "helm_release" "kibana" {
-  name   = local.kibanaValues.name
-  chart  = "${path.module}/kibana"
-  wait   = true
-  atomic = true
-  values = [
-    yamlencode(local.kibanaValues)
-  ]
-  depends_on = [
-    null_resource.ansible_validate_resources
-  ]
-}
-
 resource "null_resource" "ansible_validate_resources" {
 
   triggers = {
@@ -49,6 +35,20 @@ COMMAND
     helm_release.elasticsearch
   ]
 }
+
+resource "helm_release" "kibana" {
+  name   = local.kibanaValues.name
+  chart  = "${path.module}/kibana"
+  wait   = true
+  atomic = true
+  values = [
+    yamlencode(local.kibanaValues)
+  ]
+  depends_on = [
+    null_resource.ansible_validate_resources
+  ]
+}
+
 
 resource "null_resource" "ansible_validate_kibana" {
 

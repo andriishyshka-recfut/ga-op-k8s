@@ -1,0 +1,61 @@
+nameOverride: "prometheus"
+
+namespaceOverride: "monitoring"
+
+fullnameOverride: "prometheus"
+
+grafana:
+  enabled: true
+  namespaceOverride: "monitoring"
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  adminPassword: prom-operator
+  grafana.ini:
+    server:
+      root_url: https://grafana.p.regemini.io
+    auth.google:
+      enabled: true
+      scopes: https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
+      auth_url: https://accounts.google.com/o/oauth2/auth
+      token_url: https://accounts.google.com/o/oauth2/token
+      allowed_domains: geminiadvisory.io
+      allow_sign_up: true
+  nodeSelector:
+    workloadsType: data
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+kube-state-metrics:
+  namespaceOverride: "monitoring"
+
+prometheus-node-exporter:
+  namespaceOverride: "monitoring"
+
+prometheusOperator:
+  nodeSelector:
+    workloadsType: data
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  admissionWebhooks:
+    patch:
+      podAnnotations:
+        sidecar.istio.io/inject: "false"
+
+prometheus:
+  prometheusSpec:
+    prometheusRulesExcludedFromEnforce: false
+    # listenLocal: true
+    # podMetadata:
+    #   annotations:
+    #     sidecar.istio.io/inject: "false"
+
+# Fix for used with istio
+alertmanager:
+  alertmanagerSpec:
+    listenLocal: true

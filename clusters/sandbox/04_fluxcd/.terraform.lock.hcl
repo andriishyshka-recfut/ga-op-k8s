@@ -2,7 +2,8 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/fluxcd/flux" {
-  version = "0.1.1"
+  version     = "0.1.1"
+  constraints = ">= 0.0.13"
   hashes = [
     "h1:X2nuhk1Ulw2rJeb+MvAQl2wRgDkqY8BRrCDElTCGwaU=",
     "zh:1bd0a3e78f8e941afd28d8be484600a047bcb8e055b222b8b2504605de7b31da",
@@ -21,7 +22,8 @@ provider "registry.terraform.io/fluxcd/flux" {
 }
 
 provider "registry.terraform.io/gavinbunney/kubectl" {
-  version = "1.10.0"
+  version     = "1.10.0"
+  constraints = ">= 1.10.0"
   hashes = [
     "h1:x5NHOW8DG0cBE1QmJ/Hl4ktMpeIfkEpoOvnf/kISdBU=",
     "zh:0786e6cb375e4e6a70220bb67fc3de80c8c30dcb00c0f4f0ec7bb10404a120db",

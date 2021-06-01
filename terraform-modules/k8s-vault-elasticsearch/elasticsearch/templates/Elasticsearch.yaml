@@ -12,6 +12,9 @@ spec:
   {{- if eq .Values.oidc_gcloud.enabled "yes" }}
   - secretName: {{ .Values.oidc_gcloud.secret_name }}
   {{- end }}
+  {{- if eq .Values.gcs_enable "yes" }}
+  - secretName: gcs-es-credentional
+  {{- end }}
   http:
     tls:
 {{- if eq .Values.nativeTLS.enabled "yes" }}
@@ -64,7 +67,7 @@ spec:
           - sh
           - -c
           - |
-            bin/elasticsearch-plugin install --batch repository-s3
+            bin/elasticsearch-plugin install --batch repository-gcs && bin/elasticsearch-plugin install --batch repository-s3
         containers:
         - name: elasticsearch
           resources:

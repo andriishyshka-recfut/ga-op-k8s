@@ -3,6 +3,7 @@
                 esName: "es"
                 namespace: "monitoring"
                 appVersion: "7.8.0"
+                gcs_enable: "no"
                 labels:
                   testlabel: testvalue
 
