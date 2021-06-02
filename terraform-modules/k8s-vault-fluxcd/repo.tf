@@ -16,6 +16,23 @@ resource "kubernetes_secret" "gitlab_token" {
   depends_on = [kubectl_manifest.install]
 }
 
+data "vault_generic_secret" "helm_creds" {
+  path = "secret/goharbor/docker_login"
+}
+
+resource "kubernetes_secret" "helm_creds" {
+  metadata{
+    name = "helm-credentials"
+    namespace = data.flux_install.main.namespace
+  }
+  data = {
+    "username" = data.vault_generic_secret.helm_creds.data.user
+    "password" = data.vault_generic_secret.helm_creds.data.password
+  }
+  depends_on = [kubectl_manifest.install]
+
+}
+
 locals{
   helmRepo = file("${path.module}/helm-repository.yaml")
   repo = replace (
