@@ -17,6 +17,7 @@ resource "kubernetes_secret" "gitlab_token" {
 }
 
 locals{
+  helmRepo = file("${path.module}/helm-repository.yaml")
   repo = replace (
          file("${path.module}/git-repository.yaml"),
          "CHANGEME",
@@ -31,6 +32,9 @@ locals{
 }
 resource "kubectl_manifest" "repo" {
   yaml_body  = local.repo
+}
+resource "kubectl_manifest" "helm_repo" {
+  yaml_body  = local.helmRepo
 }
 resource "kubectl_manifest" "kustomization" {
   yaml_body  = local.kustomization
