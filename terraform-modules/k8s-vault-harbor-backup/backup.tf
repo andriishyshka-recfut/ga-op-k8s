@@ -8,8 +8,8 @@ locals {
   pg_dump --host=harbor-harbor-database --port=5432 --username=postgres --dbname=registry   |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/registry.sql ;
   pg_dump --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notarysigner  |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/notarysigner.sql ;
   pg_dump --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notaryserver  |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/notaryserver.sql ;
-  redis-cli -h harbor-harbor-redis  SAVE ;
-  cat /redis/dump.rdb |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/dump.rdb
+  # redis-cli -h harbor-harbor-redis  SAVE ;
+  # cat /redis/dump.rdb |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/dump.rdb
 EOF
 }
 
@@ -41,12 +41,12 @@ resource "kubernetes_job" "harbor_backup" {
       }
     }
 
-        volume {
-          name = "redis"
-          persistent_volume_claim {
-            claim_name = "data-harbor-harbor-redis-0"
-          }
-        }
+        # volume {
+        #   name = "redis"
+        #   persistent_volume_claim {
+        #     claim_name = "data-harbor-harbor-redis-0"
+        #   }
+        # }
         container {
           name    = "dump"
           image   = "postgres:9.6"
@@ -86,10 +86,10 @@ resource "kubernetes_job" "harbor_backup" {
            name = "DATE"
            value = formatdate("DD-MMM-YYYY-hh", timestamp())
          }
-          volume_mount {
-            name = "redis"
-            mount_path = "/redis"
-          }
+          # volume_mount {
+          #   name = "redis"
+          #   mount_path = "/redis"
+          # }
         }
         restart_policy = "Never"
       }
