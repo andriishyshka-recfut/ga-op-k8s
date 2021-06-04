@@ -2,16 +2,16 @@ resource "vault_policy" "core" {
   name = "core"
 
   policy = <<EOT
-path "secret/minio/users" {
+path "secret/data/minio/users" {
   capabilities = ["read","list"]
 }
-path "secret/elasticsearch-admin/*" {
+path "secret/data/elasticsearch-admin/*" {
   capabilities = ["read","list"]
 }
-path "secret/mongo/*" {
+path "secret/data/mongo/*" {
   capabilities = ["read","list"]
 }
-path "secret/captcha" {
+path "secret/data/captcha" {
   capabilities = ["read","list"]
 }
 EOT
