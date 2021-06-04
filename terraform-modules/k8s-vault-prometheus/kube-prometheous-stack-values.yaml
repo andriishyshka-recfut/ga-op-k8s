@@ -50,6 +50,8 @@ prometheusOperator:
 prometheus:
   prometheusSpec:
     prometheusRulesExcludedFromEnforce: false
+    ###  Url for replace internal cluster domain name for generate url in message
+    #externalUrl: "https://prometheus.t.regemini.io"
     # listenLocal: true
     # podMetadata:
     #   annotations:
@@ -59,3 +61,46 @@ prometheus:
 alertmanager:
   alertmanagerSpec:
     listenLocal: true
+  config:
+    global:
+      resolve_timeout: 5m
+    receivers:
+    - name: "null"
+    - name: "slack-notifications"
+      slack_configs:
+      - channel: '#prometheus'
+        send_resolved: true
+        text: '{{ template "slack.custom.text" . }}'
+    route:
+      group_by:
+      - alertname
+      - job
+      group_interval: 5m
+      group_wait: 30s
+      receiver: "slack-notifications"
+      repeat_interval: 12h
+      routes:
+      - match:
+          alertname: Watchdog
+        receiver: "null"
+      - match:
+          alertname: "KubeSchedulerDown"
+        receiver: "slack-notifications"
+    templates:
+    - /etc/alertmanager/config/*.tmpl
+  templateFiles:
+    slack-my.tmpl: |-
+      {{ define "slack.custom.text"}}
+      {{ with index .Alerts 0 -}}
+          :chart_with_upwards_trend: *<{{ .GeneratorURL }}|Graph>*
+          {{- if .Annotations.runbook }}   :notebook: *<{{ .Annotations.runbook }}|Runbook>*{{ end }}
+      {{ end }}
+      *Alert details*:
+      {{ range .Alerts }}
+      *Alert:* {{ .Annotations.summary }}
+      *Description:* {{ .Annotations.description }}
+      *Details:*
+        {{ range .Labels.SortedPairs -}} • *{{ .Name }}:* `{{ .Value }}`
+        {{ end }}
+      {{ end }}
+      {{ end }}
