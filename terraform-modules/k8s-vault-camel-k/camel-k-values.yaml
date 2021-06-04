@@ -1,0 +1,15 @@
+platform:
+  traits:
+    prometheus:
+      configuration:
+        enabled: true
+  build:
+    baseImage: openjdk:17-oraclelinux7
+    # publishStrategy: Kaniko
+    maven:
+      settings: {}
+    registry:
+      address: harbor.t.regemini.io/op
+      secret: camel-k-registry-secret
+  kamelet: {}
+  resources: {}
