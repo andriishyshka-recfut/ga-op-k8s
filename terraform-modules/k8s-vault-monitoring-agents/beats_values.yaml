@@ -102,3 +102,12 @@ filebeat:
                 # include_lines: ['^{.*$']
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
+            # camel-k section
+            - condition.equals:
+                kubernetes.namespace: camel-k
+              config:
+              - type: container
+                json.add_error_key: true
+                # include_lines: ['^{.*$']
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log

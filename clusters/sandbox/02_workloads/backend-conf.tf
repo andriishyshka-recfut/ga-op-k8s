@@ -4,7 +4,7 @@
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-workloads/state-11"
+    prefix = "tf-workloads/state-13"
   }
   required_providers {
     kubectl = {
@@ -24,5 +24,5 @@ provider "kubectl" {
   cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
   host                   = data.vault_generic_secret.k8s_auth.data.HOST
   token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
-
+  load_config_file       = false
 }

@@ -104,6 +104,7 @@
       hashivault_write:
         secret: "kubernetes-{{ cluster_name }}-{{ cluster_color }}"
         data: "{{ k8s_creds | from_yaml }}"
+        version: 2
       register: status
 
     environment:

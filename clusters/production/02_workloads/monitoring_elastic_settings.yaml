@@ -25,7 +25,7 @@ elastic_settings:
       enabled: "yes" # required for xpack.security.authc.token and oidc
     oidc_gcloud:
       enabled: "yes"
-      vault_path: "/secret/oidc_google_prod" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
+      vault_path: "secret/oidc_google_prod" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
       oidc_realm_name: "google"
       secret_name: "oidc"
       configmap_name: "oidc"

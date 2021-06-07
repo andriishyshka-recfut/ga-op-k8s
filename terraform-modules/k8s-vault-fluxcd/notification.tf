@@ -17,6 +17,7 @@ resource "kubernetes_secret" "slack" {
 
 locals {
   alert = file("${path.module}/alert.yaml")
+  helmAlert = file("${path.module}/helm-alert.yaml")
   provider = replace(
                   file("${path.module}/slack-notification-provider.yaml"),
                   "CHANGEME",
@@ -28,4 +29,8 @@ resource "kubectl_manifest" "provider" {
 }
 resource "kubectl_manifest" "alert" {
   yaml_body  = local.alert
+}
+
+resource "kubectl_manifest" "helm_alert" {
+  yaml_body  = local.helmAlert
 }

@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: op
+  namespace: flux-system
+spec:
+  interval: 30s
+  url: https://harbor.t.regemini.io/chartrepo/op
+  secretRef:
+    name: helm-credentials

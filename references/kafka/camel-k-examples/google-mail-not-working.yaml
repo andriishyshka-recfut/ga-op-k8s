@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gmail.props
+data:
+  application.properties: |
+   kafka.brokers=kafka-cluster-kafka-bootstrap:9092
+   consumer.topic=gmail
+   consumer.maxPollRecords=5000
+   consumer.consumersCount=1
+   consumer.group=kafka-gmail
+   gmail.clientId={{secret:gmail-credentials/clinetId}}
+   gmail.clientSecret={{secret:gmail-credentials/clinetSecret}}
+   client.id={{secret:gmail-test/client_id}}
+   refresh.token={{secret:gmail-test/refresh_token}}
+
+
+---
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: gmail
+spec:
+  dependencies:
+  # https://repo.maven.apache.org/maven2/org/apache/camel/camel-minio/3.5.0/camel-minio-3.5.0.jar
+  # - mvn:org.apache.camel:camel-minio:3.5.0:camel-minio-3.5.0.jar
+  - mvn:javax.mail:mail:jar:1.4.7
+  - mvn:javax.xml.bind:jaxb-api:jar:2.3.1
+  configuration:
+  - type: configmap
+    value: gmail.props
+  - type: secret
+    value: gmail-credentials
+  - type: secret
+    value: gmail-test
+  sources:
+  - name: MyRouteBuilder.java
+    content: |
+
+        import javax.mail.* ;
+        import javax.mail.internet.* ;
+        import java.util.Properties;
+        import java.io.ByteArrayOutputStream;
+        import java.io.*;
+        import com.google.api.services.gmail.model.Message ;
+        import org.apache.camel.support.DefaultRegistry ;
+        import org.apache.camel.impl.DefaultCamelContext ;
+        import org.apache.camel.builder.RouteBuilder;
+
+        public class MyRouteBuilder extends RouteBuilder {
+          @Override
+          public void configure() throws Exception {
+            from("timer:java?repeatCount=1")
+            .setHeader("CamelGoogleMail.content", method(this,"getMessage()"))
+            .to("log:info")
+            .toD("google-mail:messages/send?applicationName=camel-k-gmail"
+                + "&clientId={{client.id}}"
+                + "&refreshToken={{refresh.token}}"
+                + "&userId=me" );
+          }
+        public Message getMessage(){
+            Properties props = new Properties();
+            Session session = Session.getDefaultInstance(props, null);
+            MimeMessage email = new MimeMessage(session) ;
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            try {
+              email.addRecipient(javax.mail.Message.RecipientType.TO,
+                new InternetAddress("stepan.biriukov@geminiadvisory.io"));
+              email.setSubject("Test from k8s");
+              email.setText("Body text");
+              email.writeTo(buffer);
+            } catch (AddressException ae) {
+              System.err.println("AddressException occure");
+            } catch (MessagingException me) {
+              System.err.println("MessagingException occure");
+            } catch(IOException ioe) {
+              System.err.println("IOException occure");
+            }
+
+            byte[] bytes = buffer.toByteArray();
+            String encodedEmail = org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString(bytes);
+            Message message = new Message();
+            message.setRaw(encodedEmail);
+            return message ;
+
+          }
+        }

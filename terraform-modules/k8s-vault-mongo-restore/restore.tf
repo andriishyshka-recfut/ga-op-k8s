@@ -37,8 +37,8 @@ resource "kubernetes_job" "mongo_restore" {
           "vault.hashicorp.com/auth-path" = "auth/k8s-${var.Cluster}-${var.Color}"
           "vault.hashicorp.com/agent-inject-template-config" = <<EOT
                     {{ with secret "secret/backup/gpg" -}}
-                      echo "{{.Data.key}}" | base64 -d | gpg --import
-                      echo "{{.Data.ownertrust}}" | gpg --import-ownertrust
+                      echo "{{.Data.data.key}}" | base64 -d | gpg --import
+                      echo "{{.Data.data.ownertrust}}" | gpg --import-ownertrust
                     {{- end }}
 EOT
         }

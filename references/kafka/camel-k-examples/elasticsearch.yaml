@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: es.props
+data:
+  application.properties: |
+   es.username={{secret:es-creds/username}}
+   es.password={{secret:es-creds/password}}
+   logging.level.org.apache.camel=DEBUG
+
+
+
+---
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: elastic
+spec:
+  # dependencies:
+  # https://repo.maven.apache.org/maven2/org/apache/camel/camel-minio/3.5.0/camel-minio-3.5.0.jar
+  # - mvn:org.apache.camel:camel-minio:3.5.0:camel-minio-3.5.0.jar
+  # - mvn:javax.mail:mail:jar:1.4.7
+  # - mvn:javax.xml.bind:jaxb-api:jar:2.3.1
+  configuration:
+  - type: configmap
+    value: es.props
+  - type: secret
+    value: es-creds
+  sources:
+  - name: elasticRoute.java
+    content: |
+
+      from("timer:java?repeatCount=1")
+      .setProperty("camel.component.elasticsearch-rest.user", simple("{{es.username}}"))
+      .setProperty("camel.component.elasticsearch-rest.password",simple("{{es.password}}"))
+      .setProperty("camel.component.elasticsearch-rest.hostAddresses",simple("monitoring-es-http.monitoring:9200"))
+      .setBody(simple("\"query\": { \"bool\": {\"must\": [{\"query_string\": { \"query\": \"kubernetes.namespace: vault  AND NOT container.image.name: docker.io*\",\"analyze_wildcard\": true, \"time_zone\": \"Europe/Kiev\" }}],\"filter\": [ \"range\": { \"@timestamp\": { \"gte\": \"2021-04-28T12:16:39.365Z\", \"lte\": \"2021-04-28T12:31:39.365Z\", \"format\": \"strict_date_optional_time\" } } } ], \"should\": [], \"must_not\": [] } }, "))
+      .toD("elasticsearch-rest://monitoring?hostAddresses=monitoring-es-http.monitoring:9200"
+          + "&enableSSL=true"
+          + "&indexName=filebeat-7.10.1-2021.04.06-000001"
+          + "&operation=Search" )
+      .to("log:info");
+
+# + "&hostAddresses=monitoring-es-http.monitoring:9200"

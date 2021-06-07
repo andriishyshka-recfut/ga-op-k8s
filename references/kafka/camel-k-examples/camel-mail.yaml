@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gmail.props
+data:
+  application.properties: |
+   kafka.brokers=kafka-cluster-kafka-bootstrap:9092
+   consumer.topic=gmail
+   consumer.maxPollRecords=5000
+   consumer.consumersCount=1
+   consumer.group=kafka-gmail
+   gmail.username={{secret:gmail-credentials/username}}
+   gmail.password={{secret:gmail-credentials/password}}
+
+
+---
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: gmail
+spec:
+  # dependencies:
+  # https://repo.maven.apache.org/maven2/org/apache/camel/camel-minio/3.5.0/camel-minio-3.5.0.jar
+  # - mvn:org.apache.camel:camel-minio:3.5.0:camel-minio-3.5.0.jar
+  # - mvn:javax.mail:mail:jar:1.4.7
+  # - mvn:javax.xml.bind:jaxb-api:jar:2.3.1
+  configuration:
+  - type: configmap
+    value: gmail.props
+  - type: secret
+    value: gmail-credentials
+  sources:
+  - name: gmail.groovy
+    content: |
+      from("timer:java?repeatCount=1")
+      .setHeader("to", simple("stepan.biriukov@geminiadvisory.io"))
+      .setHeader("from", simple("stepan.biriukov@geminiadvisory.io"))
+      .setHeader("subject",simple("Message from Camel"))
+      .setBody(simple(" test - 2 "))
+      .to("log:info")
+      .toD("smtps://smtp.gmail.com:465?"
+          + "username={{gmail.username}}"
+          + "&password={{gmail.password}}" );
