@@ -6,6 +6,10 @@ data "vault_generic_secret" "grafana" {
   path = "secret/grafana"
 }
 
+data "vault_generic_secret" "prometheus" {
+  path = "secret/slack/prometheus"
+}
+
 resource "helm_release" "prometheus" {
   name              = "prometheus"
   repository        = "https://prometheus-community.github.io/helm-charts"
@@ -14,7 +18,7 @@ resource "helm_release" "prometheus" {
   atomic            = true
   namespace         = local.prometheusNs
   dependency_update = true
-  version = "15.3.1"
+  version           = "15.3.1"
   values = [
     file("${path.module}/kube-prometheous-stack-values.yaml")
   ]
@@ -33,5 +37,9 @@ resource "helm_release" "prometheus" {
   set {
     name  = "grafana.grafana\\.ini.auth\\.google.client_secret"
     value = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret
+  }
+  set {
+    name  = "alertmanager.config.global.slack_api_url"
+    value = data.vault_generic_secret.prometheus.data.url
   }
 }
