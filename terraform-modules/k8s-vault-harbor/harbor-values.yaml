@@ -32,25 +32,33 @@ nginx:
 database:
   podAnnotations:
     sidecar.istio.io/inject: "false"
-  tolerations:
-  - key: "workloadsType"
-    operator: "Exists"
-    effect: "NoSchedule"
-  nodeSelector:
-    workloadsType: data
+  internal:
+     tolerations:
+     - key: "workloadsType"
+       operator: "Exists"
+       effect: "NoSchedule"
+     nodeSelector:
+       workloadsType: data
 redis:
-  tolerations:
-  - key: "workloadsType"
-    operator: "Exists"
-    effect: "NoSchedule"
-  nodeSelector:
-    workloadsType: data
+  internal:
+     tolerations:
+     - key: "workloadsType"
+       operator: "Exists"
+       effect: "NoSchedule"
+     nodeSelector:
+       workloadsType: data
 
 
 core:
   replicas: 1
   podAnnotations:
     sidecar.istio.io/inject: "false"
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
+  nodeSelector:
+    workloadsType: data
 chartmuseum:
   replicas: 1
   podAnnotations:
@@ -68,6 +76,12 @@ notary:
     replicas: 1
 portal:
   replicas: 1
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
+  nodeSelector:
+    workloadsType: data
 jobservice:
   replicas: 1
   tolerations:
