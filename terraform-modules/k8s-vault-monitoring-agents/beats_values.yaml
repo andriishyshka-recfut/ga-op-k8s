@@ -108,6 +108,11 @@ filebeat:
               config:
               - type: container
                 json.add_error_key: true
-                # include_lines: ['^{.*$']
+                processors:
+                  - rename:
+                      fields:
+                        - from: "json.level"
+                          to: "json.logLevel"
+                      ignore_missing: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
