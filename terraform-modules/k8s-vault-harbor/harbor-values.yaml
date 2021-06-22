@@ -72,8 +72,20 @@ chartmuseum:
 notary:
   server:
     replicas: 1
+    tolerations:
+    - key: "workloadsType"
+      operator: "Exists"
+      effect: "NoSchedule"
+    nodeSelector:
+      workloadsType: data
   signer:
     replicas: 1
+    tolerations:
+    - key: "workloadsType"
+      operator: "Exists"
+      effect: "NoSchedule"
+    nodeSelector:
+      workloadsType: data
 portal:
   replicas: 1
   tolerations:
