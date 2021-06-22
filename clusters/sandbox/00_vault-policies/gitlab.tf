@@ -6,5 +6,8 @@ resource "vault_policy" "gitlab" {
 path "secret/data/goharbor/docker_login" {
   capabilities = ["read","list"]
 }
+path "secret/data/whitesource" {
+  capabilities = ["read","list"]
+}
 EOT
 }
