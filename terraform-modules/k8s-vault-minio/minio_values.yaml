@@ -1,6 +1,8 @@
 existingSecret: "minio-credentials"
 
-replicas: 1
+replicas: 4
+
+extraArgs: ["--json"]
 
 persistence:
   enabled: false
