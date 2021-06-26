@@ -30,42 +30,49 @@ spec:
       paths:
       - backend:
           service:
-            name: harbor-harbor-core
+            name: harbor-core
             port:
               number: 80
         path: /api/*
         pathType: ImplementationSpecific
       - backend:
           service:
-            name: harbor-harbor-core
+            name: harbor-core
             port:
               number: 80
         path: /service/*
         pathType: ImplementationSpecific
       - backend:
           service:
-            name: harbor-harbor-core
+            name: harbor-core
             port:
               number: 80
         path: /v2/*
         pathType: ImplementationSpecific
       - backend:
           service:
-            name: harbor-harbor-core
+            name: harbor-portal
+            port:
+              number: 80
+        path: /common-es2015.a9c073cba5c10a0453c8.js
+        pathType: ImplementationSpecific
+      - backend:
+          service:
+            name: harbor-core
             port:
               number: 80
         path: /chartrepo/*
         pathType: ImplementationSpecific
       - backend:
           service:
-            name: harbor-harbor-core
+            name: harbor-core
             port:
               number: 80
         path: /c/*
         pathType: ImplementationSpecific
       - backend:
           service:
-            name: harbor-harbor-portal
+            name: harbor-portal
             port:
               number: 80
         path: /*
