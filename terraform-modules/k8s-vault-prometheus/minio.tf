@@ -1,15 +1,12 @@
 
-resource "kubectl_manifest" "minio_podmonitor" {
-    yaml_body  = file("${path.module}/minio-podmonitor.yaml")
-    depends_on = [
-        helm_release.prometheus
-    ]
+
+data "kubectl_file_documents" "minio" {
+    content = file("${path.module}/minio.yaml")
 }
-resource "kubectl_manifest" "minio_servicemonitor" {
-    yaml_body  = file("${path.module}/minio-servicemonitor.yaml")
-    depends_on = [
-        helm_release.prometheus
-    ]
+
+resource "kubectl_manifest" "minio" {
+    count     = length(data.kubectl_file_documents.minio.documents)
+    yaml_body = element(data.kubectl_file_documents.minio.documents, count.index)
 }
 
 
