@@ -2,3 +2,4 @@
 
 injector:
   enabled: true
+  replicas: 2
