@@ -52,7 +52,7 @@ prometheus:
     prometheusRulesExcludedFromEnforce: false
     ###  Url for replace internal cluster domain name for generated url in slack messages
     # externalUrl: "https://prometheus.t.regemini.io"
-    externalUrl: "http://localhost:9090"
+    # externalUrl: "http://localhost:9090"
     # listenLocal: true
     # podMetadata:
     #   annotations:
