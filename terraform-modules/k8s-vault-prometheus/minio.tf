@@ -5,7 +5,7 @@ data "kubectl_file_documents" "minio" {
 }
 
 resource "kubectl_manifest" "minio" {
-    count     = length(data.kubectl_file_documents.minio.documents)
+    count     = 2
     yaml_body = element(data.kubectl_file_documents.minio.documents, count.index)
 }
 

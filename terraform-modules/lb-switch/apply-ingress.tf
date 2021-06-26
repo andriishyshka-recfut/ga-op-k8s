@@ -31,8 +31,8 @@ resource "null_resource" "ansible_wait_for_cert" {
   provisioner "local-exec" {
     command = <<COMMAND
     cd ${path.module}/../../ansible &&\
-    ansible-playbook k8s-wait-for.yml \
-      -e 'ansible_python_interpreter=/usr/bin/python3'
+    ansible-playbook k8s-wait-for.yml 
+
 COMMAND
     environment = merge(local.ansibleEnvs, {
       name       = "vault-cert"

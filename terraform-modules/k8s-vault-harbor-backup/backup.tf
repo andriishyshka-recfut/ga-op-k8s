@@ -26,27 +26,21 @@ resource "kubernetes_job" "harbor_backup" {
         }
       }
       spec {
-        affinity {
-      pod_affinity {
-        required_during_scheduling_ignored_during_execution {
-          label_selector {
-            match_expressions {
-              key      = "component"
-              operator = "In"
-              values   = ["redis"]
-            }
-          }
-          topology_key = "kubernetes.io/hostname"
-        }
-      }
-    }
+    #     affinity {
+    #   pod_affinity {
+    #     required_during_scheduling_ignored_during_execution {
+    #       label_selector {
+    #         match_expressions {
+    #           key      = "component"
+    #           operator = "In"
+    #           values   = ["redis"]
+    #         }
+    #       }
+    #       topology_key = "kubernetes.io/hostname"
+    #     }
+    #   }
+    # }
 
-        # volume {
-        #   name = "redis"
-        #   persistent_volume_claim {
-        #     claim_name = "data-harbor-harbor-redis-0"
-        #   }
-        # }
         container {
           name    = "dump"
           image   = "postgres:9.6"
@@ -86,10 +80,6 @@ resource "kubernetes_job" "harbor_backup" {
            name = "DATE"
            value = formatdate("DD-MMM-YYYY-hh", timestamp())
          }
-          # volume_mount {
-          #   name = "redis"
-          #   mount_path = "/redis"
-          # }
         }
         restart_policy = "Never"
       }

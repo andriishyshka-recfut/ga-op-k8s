@@ -7,11 +7,14 @@ resource "google_os_login_ssh_public_key" "cache" {
 }
 
 
-resource "local_file" "ansible_gcp_inventory" {
-  content  = templatefile("${path.module}/../../ansible/inventory.gcp.yml.tmpl", { project = data.google_project.current_project.number })
-  filename = "${path.module}/../../ansible/inventory.gcp.yaml"
-}
+# resource "local_file" "ansible_gcp_inventory" {
+#   content  = templatefile("${path.module}/../../ansible/inventory.gcp.yml.tmpl", { project = data.google_project.current_project.number })
+#   filename = "${path.module}/../../ansible/inventory.gcp.yaml"
+# }
 
+data "google_compute_address" "bastion" {
+  name = "envoy"
+}
 
 
 
@@ -26,8 +29,7 @@ resource "null_resource" "ansible_bastion_playbook" {
     cd  ${path.module}/../../ansible && \
     ansible-playbook bastion.yml \
       --user  sa_${data.google_service_account.account_who_running_terraform.unique_id} \
-      -e 'ansible_python_interpreter=/usr/bin/python3' \
-      -i ./inventory.gcp.yaml
+      -i ${data.google_compute_address.bastion.address},
 COMMAND
 
 
