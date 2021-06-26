@@ -42,4 +42,8 @@ resource "helm_release" "prometheus" {
     name  = "alertmanager.config.global.slack_api_url"
     value = data.vault_generic_secret.prometheus.data.url
   }
+  set {
+    name  = "prometheus.prometheusSpec.externalUrl"
+    value = local.prometheusExtUrl
+  }
 }

@@ -1,6 +1,6 @@
 
-locals{
-  monitoringEs           = yamldecode(file("monitoring_elastic_settings.yaml"))
+locals {
+  monitoringEs = yamldecode(file("monitoring_elastic_settings.yaml"))
 }
 
 
@@ -11,7 +11,7 @@ module "monitoring-elastic" {
   Cluster                      = var.Cluster
   Settings                     = var.Settings
   StoreEsPasswordInVault       = false
-  depends_on                   = [module.namespaces,module.minio]
+  depends_on                   = [module.namespaces, module.minio]
 }
 
 module "monitoring-agents" {
@@ -20,7 +20,9 @@ module "monitoring-agents" {
 }
 
 module "prometheus" {
-  source   = "../../../terraform-modules/k8s-vault-prometheus"
+  source              = "../../../terraform-modules/k8s-vault-prometheus"
   OidcSecretVaultPath = "secret/oidc_google_test"
-  depends_on = [module.monitoring-elastic]
+  Settings            = var.Settings
+  Cluster             = var.Cluster
+  depends_on          = [module.monitoring-elastic]
 }
