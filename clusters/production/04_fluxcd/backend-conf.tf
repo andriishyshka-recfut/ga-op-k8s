@@ -4,7 +4,7 @@
 terraform {
   backend "gcs" {
     bucket = "terraform-state-production111"
-    prefix = "tf-fluxcd/state-2"
+    prefix = "tf-fluxcd/state-3"
   }
   required_providers {
     kubernetes = {
