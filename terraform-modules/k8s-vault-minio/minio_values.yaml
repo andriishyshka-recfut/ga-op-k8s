@@ -18,6 +18,7 @@ resources:
 
 
 environment:
+  MINIO_PROMETHEUS_AUTH_TYPE: "public"
   MINIO_IDENTITY_OPENID_SCOPES: "openid,profile,email"
   MINIO_IDENTITY_OPENID_CLAIM_NAME: "email"
   GOOGLE_APPLICATION_CREDENTIALS: "/etc/credentials/gcs_key.json"

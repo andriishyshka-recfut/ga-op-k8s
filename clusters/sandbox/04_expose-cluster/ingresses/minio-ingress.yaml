@@ -6,7 +6,7 @@ metadata:
     kubernetes.io/ingress.class: istio
   labels:
     app: minio
-  name: minio-ingress2
+  name: minio-ingress
   namespace: minio
 spec:
   rules:
@@ -17,6 +17,16 @@ spec:
           serviceName: minio
           servicePort: 9000
         path: /*
+        pathType: ImplementationSpecific
+      - backend:
+          serviceName: fake
+          servicePort: 777
+        path: /minio/v2/metrics/*
+        pathType: ImplementationSpecific
+      - backend:
+          serviceName: fake
+          servicePort: 777
+        path: /minio/prometheus/*
         pathType: ImplementationSpecific
   tls:
   - hosts:
