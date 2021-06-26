@@ -17,6 +17,16 @@ spec:
           servicePort: 9000
         path: /*
         pathType: ImplementationSpecific
+      - backend:
+          serviceName: fake
+          servicePort: 777
+        path: /minio/v2/metrics/*
+        pathType: ImplementationSpecific
+      - backend:
+          serviceName: fake
+          servicePort: 777
+        path: /minio/prometheus/*
+        pathType: ImplementationSpecific
   tls:
   - hosts:
     - minio.p.digaweb.com
