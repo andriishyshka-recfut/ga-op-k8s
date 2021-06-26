@@ -9,7 +9,7 @@ variable "VaultAddress" {}
 terraform {
   backend "gcs" {
     bucket = "terraform-state-production111"
-    prefix = "terraform-production-lb-switch/state"
+    prefix = "terraform-production-lb-switch/state-2"
   }
 }
 
