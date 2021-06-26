@@ -11,12 +11,6 @@ variable "Cluster" { }
 
 
 
-# provider "kubernetes" {
-#   host                   = local.gkeClusterConnectionSettings.HOST
-#   cluster_ca_certificate = local.gkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
-#   token                  = local.gkeClusterConnectionSettings.API_KEY
-# }
-
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"

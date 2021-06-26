@@ -22,7 +22,7 @@ resource "null_resource" "ansible_bastion_playbook" {
   triggers = {
     //always_run = "${timestamp()}"
     playbook_contents = md5(file("${path.module}/../../ansible/bastion.yml"))
-    Color             = var.Color
+    Color             = local.activeCluster
   }
   provisioner "local-exec" {
     command = <<COMMAND
@@ -36,7 +36,5 @@ COMMAND
     environment = local.ansibleEnvs
 
   }
-  depends_on = [
-    local_file.ansible_gcp_inventory,
-  ]
+
 }

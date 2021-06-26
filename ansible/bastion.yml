@@ -1,6 +1,8 @@
-- hosts: gcp_name_bastion
+- hosts: all
   connection: ssh
   become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   vars_files:
     - vars/main.yml
   tasks:
@@ -83,36 +85,6 @@
       template:
         src: env.j2
         dest: "{{ compose_dest }}/.env"
-
-    # - name: Copy dockerfiles and other files
-    #   copy:
-    #     src: "{{ item }}"
-    #     dest: "{{ compose_dest }}/{{ item }}"
-    #   with_items:
-    #     - nginx.conf
-    #     - nginx-Dockerfile
-    #     - upstream-Dockerfile
-    #     - upstream.py
-    #     - inotify.sh
-
-    # - name: Start {{ cluster_name }}-upstreamd
-    #   shell:
-    #     set -e
-    #     docker-compose build &&
-    #     docker-compose up -d
-    #   changed_when: True
-    #   environment:
-    #     COMPOSE_PATH_SEPARATOR: ':'
-    #     COMPOSE_FILE: "{{ compose_files }}"
-    #
-    # - name: Start {{ subdomain }} control plane
-    #   docker_compose:
-    #     project_src: "{{ subdomain }}"
-    #     files: "{{ compose_files }}"
-    #     build: yes
-    #     recreate: always
-    #     remove_orphans: yes
-    #   register: output
 
     - name: Start all
       docker_compose:
