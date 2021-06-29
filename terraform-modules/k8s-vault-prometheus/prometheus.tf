@@ -46,4 +46,8 @@ resource "helm_release" "prometheus" {
     name  = "prometheus.prometheusSpec.externalUrl"
     value = local.prometheusExtUrl
   }
+  set {
+    name  = "alertmanager.alertmanagerSpec.externalUrl"
+    value = local.prometheusExtUrl
+  }
 }
