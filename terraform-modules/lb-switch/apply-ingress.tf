@@ -1,7 +1,3 @@
-locals{
-  gkeClusterEndpoint      = var.GkeClusterConnectionSettings.HOST
-  gkeBearerToken          = var.GkeClusterConnectionSettings.API_KEY
-}
 
 
 resource "null_resource" "kubectl_apply_ingresses" {
@@ -11,8 +7,8 @@ resource "null_resource" "kubectl_apply_ingresses" {
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<COMMAND
-    kubectl --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
+    kubectl --server ${local.gkeClusterConnectionSettings.HOST}  \
+     --token ${local.gkeClusterConnectionSettings.API_KEY}  --insecure-skip-tls-verify=true \
      apply -f ${path.root}/ingresses
 COMMAND
   }
@@ -31,8 +27,8 @@ resource "null_resource" "ansible_wait_for_cert" {
   provisioner "local-exec" {
     command = <<COMMAND
     cd ${path.module}/../../ansible &&\
-    ansible-playbook k8s-wait-for.yml \
-      -e 'ansible_python_interpreter=/usr/bin/python3'
+    ansible-playbook k8s-wait-for.yml
+
 COMMAND
     environment = merge(local.ansibleEnvs, {
       name       = "vault-cert"

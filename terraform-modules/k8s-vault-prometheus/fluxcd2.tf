@@ -26,7 +26,7 @@ data "http" "grafana_dashboard_fluxcd2" {
 
 resource "kubernetes_config_map" "fluxcd2_dashboards" {
   metadata {
-    name = "kafka-exporter-dashboard"
+    name = "fluxcd-dashboard"
     namespace = "monitoring"
     labels = {
       grafana_dashboard = 1

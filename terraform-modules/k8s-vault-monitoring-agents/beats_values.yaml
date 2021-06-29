@@ -1,5 +1,5 @@
 
-beatsVersion: "7.10.1"
+beatsVersion: "7.13.2"
 namespace: "monitoring"
 esName: "monitoring"
 metricbeat:
@@ -114,5 +114,14 @@ filebeat:
                         - from: "json.level"
                           to: "json.logLevel"
                       ignore_missing: true
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
+            # Crypto section
+            - condition.equals:
+                kubernetes.namespace: minio
+              config:
+              - type: container
+                json.add_error_key: true
+                # include_lines: ['^{.*$']
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log

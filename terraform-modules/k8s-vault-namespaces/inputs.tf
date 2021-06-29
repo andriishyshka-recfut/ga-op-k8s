@@ -23,7 +23,8 @@ locals {
     "eugene@geminiadvisory.io",
     "nikita.leonov@geminiadvisory.io",
     "oleg.chernov@geminiadvisory.io",
-    "rafael.m@geminiadvisory.io"
+    "rafael.m@geminiadvisory.io",
+    "agil.isayev@geminiadvisory.io"
   ]
   namespaceDevAccess = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [

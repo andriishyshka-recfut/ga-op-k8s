@@ -3,7 +3,7 @@ data "google_service_account" "es_server" {
 }
 
 locals {
-  gcs_integration_repo = <<EOT
+  gcsIntegrationRepo = <<EOT
   curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/gcs" -H 'Content-Type: application/json' -k -d '
 {
   "type": "gcs",
@@ -14,16 +14,18 @@ locals {
   }
   '
 EOT
-  gcs_full_backup = <<EOT
+  gcsFullBackup = <<EOT
   curl -s -i -k -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/gcs/%3Ces_full_%7Bnow%2Fd%7D%3E?wait_for_completion=true" | tee /dev/stderr | grep "200 OK"
 EOT
 }
 
 resource "google_service_account_key" "es_key" {
   service_account_id = data.google_service_account.es_server.name
+  key_algorithm      = "KEY_ALG_RSA_2048"
+  public_key_type    = "TYPE_X509_PEM_FILE"
 }
 
-resource "kubernetes_secret" "gcs-es-credentional" {
+resource "kubernetes_secret" "gcs_es_credentional" {
   count = local.gcsSetup
   metadata {
     name = "gcs-es-credentional"
@@ -52,7 +54,7 @@ resource "kubernetes_job" "gcs_es_backup_storage" {
         container {
           name    = "curl"
           image   = "curlimages/curl"
-          command = ["sh", "-c", local.gcs_integration_repo]
+          command = ["sh", "-c", local.gcsIntegrationRepo]
           env {
             name = "ES_PASSWORD"
             value_from {
@@ -105,7 +107,7 @@ resource "kubernetes_cron_job" "gcs_es_fullbackup" {
             container {
               name    = "curl"
               image   = "curlimages/curl"
-              command = ["sh", "-c", local.gcs_full_backup]
+              command = ["sh", "-c", local.gcsFullBackup]
               env {
                 name = "ES_PASSWORD"
                 value_from {

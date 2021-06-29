@@ -53,8 +53,3 @@ resource "google_project_iam_member" "es_service_account" {
     prevent_destroy = true
   }
 }
-
-
-resource "google_service_account_key" "es_key" {
-  service_account_id = google_service_account.es_server.name
-}
