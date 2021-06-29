@@ -16,9 +16,9 @@ module "infra-persistent" {
   Settings = var.Settings
   Cluster  = "sandbox"
 
-  providers = {
-    google = google
-  }
+  # providers = {
+  #   google = google
+  # }
 }
 
 # module "dns" {

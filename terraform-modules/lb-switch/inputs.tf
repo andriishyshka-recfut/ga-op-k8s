@@ -1,19 +1,7 @@
-variable "GkeClusterConnectionSettings" {}
+
 variable "Settings" {}
 variable "Cluster" {}
-variable "Color" {}
 
-
-locals {
-
-  ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
-    CLUSTER_SETTINGS        = jsonencode(var.Settings)
-    CLUSTER                 = var.Cluster
-    COLOR                   = var.Color
-    ANSIBLE_STDOUT_CALLBACK = "debug"
-    BASTION_DNS             = var.Settings.bastion_dns
-  })
-}
 
 data "google_compute_instance" "bastion" {
   name = var.Settings.bastion_hostname
@@ -32,4 +20,39 @@ data "google_service_account" "account_who_running_terraform" {
 }
 
 data "google_project" "current_project" {
+}
+
+
+data "google_container_cluster" "active_cluster" {
+  name     = "${var.Cluster}-${local.activeCluster}"
+  location = "us-east4"
+}
+
+data "google_container_cluster" "inactive_cluster" {
+  name     = "${var.Cluster}-${local.inActiveCluster}"
+  location = "us-east4"
+}
+
+data "google_client_config" "default" {
+}
+
+
+
+locals {
+  activeCluster = lookup(var.Settings.clusters[var.Cluster].blue, "active", false) == true ? "blue" : "green"
+  inActiveCluster = lookup(var.Settings.clusters[var.Cluster].blue, "active", false) == true ? "green" : "blue"
+
+  inActiveGkeEndpoint = "https://${data.google_container_cluster.inactive_cluster.endpoint}"
+  gkeClusterConnectionSettings = {
+    HOST                   = "https://${data.google_container_cluster.active_cluster.endpoint}"
+    API_KEY                = data.google_client_config.default.access_token
+    CLUSTER_CA_CERTIFICATE = base64decode(data.google_container_cluster.active_cluster.master_auth.0.cluster_ca_certificate, )
+  }
+  ansibleEnvs = merge(local.gkeClusterConnectionSettings, {
+    CLUSTER_SETTINGS        = jsonencode(var.Settings)
+    CLUSTER                 = var.Cluster
+    COLOR                   = local.activeCluster
+    ANSIBLE_STDOUT_CALLBACK = "debug"
+    BASTION_DNS             = var.Settings.bastion_dns
+  })
 }

@@ -1,13 +1,15 @@
 #!/bin/sh
-
+set -e
 eval $(ssh-agent)
 cd $CWD
+source /ansible/bin/activate
+export PYTHONPATH=/ansible/lib/python3.9/site-packages
+export HOME=/home/fake
 #env
-echo
-echo "You are running from docker"
-echo
-
-cat /etc/resolv.conf
-exec /usr/bin/terraform $@
-#cd /home/runner/ansible
-#exec ansible-inventory -vvvvvv --list --yaml
+# echo
+# echo "You are running from docker"
+# echo
+#
+ansible --version
+# cat /etc/resolv.conf
+exec /bin/terraform $@

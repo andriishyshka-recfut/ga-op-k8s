@@ -1,12 +1,3 @@
-#
-# data "google_service_account" "vault_sa" {
-#   account_id = "vault-sandbox"
-# }
-#
-# resource "google_service_account_key" "harbor_key" {
-#   service_account_id = data.google_service_account.vault_sa.name
-# }
-#
 
 
 data "vault_generic_secret" "minio_auth" {
@@ -20,7 +11,7 @@ resource "helm_release" "harbor" {
   wait       = true
   atomic     = true
   namespace  = "harbor"
-  version    = "v1.6.2"
+  version    = "v1.7.0"
   timeout    = 900
 
   values = [

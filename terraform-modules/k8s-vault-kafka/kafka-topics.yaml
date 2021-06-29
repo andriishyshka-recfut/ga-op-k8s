@@ -1,4 +1,4 @@
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: maid.upsert
@@ -9,10 +9,10 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: "172800000"
+    retention.ms: 2592000000
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: mage.task.scanned
@@ -23,11 +23,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: mage.task.target
@@ -38,12 +38,12 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: urlscan.task.scanned
@@ -54,12 +54,12 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: urlscan.task.target
@@ -70,12 +70,12 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: minion.upsert
@@ -86,12 +86,12 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: minion
@@ -102,12 +102,12 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: minion.sanitizer
@@ -118,12 +118,12 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: minion.mark
@@ -134,11 +134,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: dome.upsert
@@ -149,11 +149,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: dome
@@ -164,11 +164,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: dome.sanitizer
@@ -179,11 +179,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: magecart
@@ -194,11 +194,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: magecart.upsert
@@ -209,11 +209,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: magecart.sanitizer
@@ -224,12 +224,12 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: mage.scan
@@ -240,11 +240,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: mage.scan.upsert
@@ -255,11 +255,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: mage.analysis.upsert
@@ -270,11 +270,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: mage.task.target.priority
@@ -285,11 +285,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: union.mage.analysis
@@ -300,11 +300,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: union.mage.analysis.upsert
@@ -315,11 +315,11 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: union.magecart.upsert
@@ -330,10 +330,10 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000
 ---
 
-apiVersion: kafka.strimzi.io/v1alpha1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: mage.analysis
@@ -344,4 +344,4 @@ spec:
   partitions: 1
   replicas: 1
   config:
-    retention.ms: 259200000
+    retention.ms: 2592000000

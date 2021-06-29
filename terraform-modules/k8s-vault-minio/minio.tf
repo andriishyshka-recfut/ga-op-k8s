@@ -9,6 +9,8 @@ data "google_service_account" "minio_sa" {
 
 resource "google_service_account_key" "minio_key" {
   service_account_id = data.google_service_account.minio_sa.name
+  key_algorithm      = "KEY_ALG_RSA_2048"
+  public_key_type    = "TYPE_X509_PEM_FILE"
 }
 
 resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {

@@ -52,6 +52,8 @@ COMMAND
     null_resource.ansible_initial_provisioning_vault_playbook
   ]
 }
+
+# Provider cannot be declared in module. Defining this provider will conflict in case we would need to spin up vault from scratch
 # provider vault {
 #   address = "https://vault.infra.digaweb.com"
 # }

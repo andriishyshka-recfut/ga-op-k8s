@@ -1,10 +1,13 @@
 
-# 
-# variable "Settings" {}
-# variable "Cluster" {}
-# variable "Color" {}
-
 locals {
   kafkaNs = "kafka"
-  # vaultPathForMinioRootCredentials = "${var.Settings.clusters[var.Cluster][var.Color].minio.vault_users_config_path}/root"
+}
+
+terraform {
+  required_providers {
+    kubectl = {
+      source  = "registry.terraform.io/gavinbunney/kubectl"
+      version = ">= 1.10.0"
+    }
+  }
 }

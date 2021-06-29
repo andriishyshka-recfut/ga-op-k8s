@@ -15,6 +15,3 @@ resource "google_project_iam_member" "minio_service_account_member" {
   }
 
 }
-resource "google_service_account_key" "minio_key" {
-  service_account_id = google_service_account.minio_service_account.id
-}

@@ -3,7 +3,7 @@
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-workloads-harbor/state-1"
+    prefix = "tf-workloads-harbor/state-2"
   }
   }
 
