@@ -18,7 +18,7 @@ resource "helm_release" "prometheus" {
   atomic            = true
   namespace         = local.prometheusNs
   dependency_update = true
-  version           = "15.3.1"
+  version           = "16.12.0"
   values = [
     file("${path.module}/kube-prometheous-stack-values.yaml")
   ]

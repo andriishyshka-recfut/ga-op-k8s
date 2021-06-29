@@ -54,14 +54,17 @@ prometheus:
     # externalUrl: "https://prometheus.t.regemini.io"
     # externalUrl: "http://localhost:9090"
     # listenLocal: true
-    # podMetadata:
-    #   annotations:
-    #     sidecar.istio.io/inject: "false"
+    podMetadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
 
 # Fix for used with istio
 alertmanager:
   alertmanagerSpec:
-    listenLocal: true
+    podMetadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    # listenLocal: true
   config:
     global:
       resolve_timeout: 5m
@@ -105,3 +108,15 @@ alertmanager:
         {{ end }}
       {{ end }}
       {{ end }}
+
+kubeControllerManager:
+  enabled: false
+coreDns:
+  enabled: false
+kubeDns:
+  enabled: true
+
+defaultRules:
+  rules:
+    kubeScheduler: false
+    kubernetesResources: false
