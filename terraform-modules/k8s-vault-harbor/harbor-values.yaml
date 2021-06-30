@@ -124,3 +124,6 @@ trivy:
     effect: "NoSchedule"
   nodeSelector:
     workloadsType: data
+
+metrics:
+  enabled: true
