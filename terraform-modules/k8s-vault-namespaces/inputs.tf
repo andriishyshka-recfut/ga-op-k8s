@@ -1,4 +1,3 @@
-
 variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
@@ -17,14 +16,13 @@ locals {
     if can(namespace.admins)
   }
   developers = [
-    "valerii.korolov@geminiadvisory.io",
+    "agil.isayev@geminiadvisory.io",
     "andrei.lavrenyuk@geminiadvisory.io",
     "anton@geminiadvisory.io",
     "eugene@geminiadvisory.io",
+    "nahida.gubatova@geminiadvisory.io",
     "nikita.leonov@geminiadvisory.io",
-    "oleg.chernov@geminiadvisory.io",
-    "rafael.m@geminiadvisory.io",
-    "agil.isayev@geminiadvisory.io"
+    "valerii.korolov@geminiadvisory.io"
   ]
   namespaceDevAccess = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [
