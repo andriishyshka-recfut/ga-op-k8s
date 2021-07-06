@@ -14,5 +14,8 @@ path "secret/data/mongo/*" {
 path "secret/data/captcha" {
   capabilities = ["read","list"]
 }
+path "secret/data/challenger" {
+  capabilities = ["read","list"]
+}
 EOT
 }

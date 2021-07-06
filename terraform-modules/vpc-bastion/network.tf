@@ -111,6 +111,7 @@ resource "google_compute_firewall" "bastion_tor_proxy" {
   source_ranges = ["78.26.204.32/32",
                    "69.164.208.72/32",
                    "78.46.86.231/32",
+                   "138.201.188.166/32", //2captcha proxy gate
                    "${google_compute_address.envoy.address}/32",
                    "${google_compute_address.wireguard.address}/32"  ]
 
