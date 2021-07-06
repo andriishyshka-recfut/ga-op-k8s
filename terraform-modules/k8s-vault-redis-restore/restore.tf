@@ -1,4 +1,4 @@
-resource "kubernetes_secret" "minio-backup-redis-credentials" {
+resource "kubernetes_secret" "minio_backup_redis_credentials" {
   for_each = var.BackupSettings
   metadata {
     name      = "minio-backup-credentials"
@@ -75,5 +75,5 @@ resource "kubernetes_job" "redis_restore" {
     create = "10m"
     update = "10m"
   }
-  depends_on = [kubernetes_secret.minio-backup-redis-credentials]
+  depends_on = [kubernetes_secret.minio_backup_redis_credentials]
 }
