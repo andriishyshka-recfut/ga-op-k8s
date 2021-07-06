@@ -1,6 +1,21 @@
-resource "kubernetes_job" "redis_backup" {
+resource "kubernetes_secret" "minio-backup-redis-credentials" {
+  for_each = var.BackupSettings
   metadata {
-    name = "redis-backup"
+    name      = "minio-backup-credentials"
+    namespace = each.value["ns"]
+  }
+  data = {
+    accesskey = data.vault_generic_secret.minio-cred-redis.data["accessKey"]
+    secretkey = data.vault_generic_secret.minio-cred-redis.data["secretKey"]
+  }
+  type = "Opaque"
+}
+
+resource "kubernetes_job" "redis_backup" {
+  for_each = var.BackupSettings
+  metadata {
+    name      = "redis-backup"
+    namespace = each.value["ns"]
   }
   spec {
     template {
@@ -18,7 +33,7 @@ resource "kubernetes_job" "redis_backup" {
             name = "MINIO_ACCESS_KEY"
             value_from {
               secret_key_ref {
-                name = "minio-credentials"
+                name = "minio-backup-credentials"
                 key  = "accesskey"
               }
             }
@@ -27,7 +42,7 @@ resource "kubernetes_job" "redis_backup" {
             name = "MINIO_SECRET_KEY"
             value_from {
               secret_key_ref {
-                name = "minio-credentials"
+                name = "minio-backup-credentials"
                 key  = "secretkey"
               }
             }
@@ -35,6 +50,18 @@ resource "kubernetes_job" "redis_backup" {
           env {
             name  = "MC_HOST_backup"
             value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
+          }
+          env {
+            name  = "BACKUP_SERVICE_NAME"
+            value = each.value["service"]
+          }
+          env {
+            name  = "BACKUP_SERVICE_PORT"
+            value = each.value["port"]
+          }
+          env {
+            name  = "BACKUP_NAME"
+            value = each.value["name"]
           }
         }
         restart_policy = "Never"
@@ -48,4 +75,5 @@ resource "kubernetes_job" "redis_backup" {
     create = "10m"
     update = "10m"
   }
+  depends_on = [kubernetes_secret.minio-backup-redis-credentials]
 }
