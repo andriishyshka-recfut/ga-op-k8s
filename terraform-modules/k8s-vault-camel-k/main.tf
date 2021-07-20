@@ -38,6 +38,7 @@ resource "helm_release" "kamel" {
   namespace = "camel-k"
   wait   = true
   atomic = true
+  version = "0.6.0"
   values = [
     file("${path.module}/camel-k-values.yaml")
   ]
