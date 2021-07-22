@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  subspace:
+    build:
+       context: .
+       dockerfile: subspace-Dockerfile
+    container_name: subspace
+    restart: always
+    ports:
+      - "51820:51820/udp"
+    cap_add:
+    - NET_ADMIN
+    environment:
+    - SUBSPACE_HTTP_HOST={{ bastion_dns }}
+    volumes:
+    - "./data/subspace:/data"

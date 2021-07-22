@@ -15,7 +15,7 @@ resource "google_compute_address" "wireguard" {
 
 resource "google_compute_instance" "bastion" {
   name         = var.Settings.bastion_hostname
-  machine_type = "g1-small"
+  machine_type = "e2-medium"
   zone         = var.Settings.bastion_zone
   tags         = ["dmz"]
   labels = {
@@ -93,20 +93,25 @@ resource "google_os_login_ssh_public_key" "cache" {
   key                  = data.external.data.result["pub_certificate"]
   expiration_time_usec = data.external.data.result["expiration_date"]
 }
-output "DnsRecord" {
-  value = <<DNS
-  Please make sure that this DNS record configured this way:
-    ${var.Settings.bastion_dns}    A  ${google_compute_address.wireguard.address}
+# output "DnsRecord" {
+#   value = <<DNS
+#   Please make sure that this DNS record configured this way:
+#     ${var.Settings.bastion_dns}    A  ${google_compute_address.wireguard.address}
+#
+# DNS
+#
+# }
 
-DNS
 
+# resource "local_file" "ansible_gcp_inventory" {
+#   content  = templatefile("${path.module}/../../ansible/inventory.gcp.yml.tmpl", { project = data.google_service_account.me.project })
+#   filename = "${path.module}/../../ansible/inventory.gcp.yaml"
+# }
+
+data "google_compute_address" "bastion" {
+  name = "envoy"
 }
 
-
-resource "local_file" "ansible_gcp_inventory" {
-  content  = templatefile("${path.module}/../../ansible/inventory.gcp.yml.tmpl", { project = data.google_service_account.me.project })
-  filename = "${path.module}/../../ansible/inventory.gcp.yaml"
-}
 resource "null_resource" "ansible_playbook" {
 
   triggers = {
@@ -120,8 +125,7 @@ resource "null_resource" "ansible_playbook" {
     cd ${path.module}/../../ansible &&\
     ansible-playbook bastion-provision.yml \
       --user sa_${data.google_service_account.me.unique_id} \
-      -e 'ansible_python_interpreter=/usr/bin/python3.7' \
-      -i ./inventory.gcp.yaml
+      -i ${data.google_compute_address.bastion.address},
 COMMAND
     environment = {
       CLUSTER_SETTINGS = jsonencode(var.Settings)
@@ -131,6 +135,5 @@ COMMAND
   depends_on = [
     google_compute_instance.bastion,
     google_os_login_ssh_public_key.cache,
-    local_file.ansible_gcp_inventory
   ]
 }

@@ -1,0 +1,30 @@
+{# version: '3'
+services:
+  control-plane:
+    build:
+      context: ./go-control-plane
+    restart: unless-stopped
+    environment:
+    - MASTER_ENDPOINT_URL={{ k8s_host_url }}
+    - NODE_PORT={{ nodePort }}
+    - NODE_PORT_HTTP={{ nodePortHttp }}
+    - CLUSTER_HTTPS={{cluster_name }}-https
+    - CLUSTER_HTTP={{cluster_name }}-http #}
+
+
+
+lds:
+  - !lds/range
+    cluster_prefix: tor
+    range: 30000..30020
+cds:
+  - name: k8s-active-https
+    k8s_master: {{ k8s_host_url }}
+    endpoint_port: {{ nodePort }}
+  - name: k8s-active-http
+    k8s_master: {{ k8s_host_url }}
+    endpoint_port: {{ nodePortHttp }}
+  - !cds/range
+    range: "30000..30020"
+    name_prefix: "tor"
+    k8s_master_url: {{ k8s_host_url }}

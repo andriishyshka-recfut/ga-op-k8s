@@ -1,7 +1,9 @@
 ---
-- hosts: gcp_name_bastion
+- hosts: all
   connection: ssh
   become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   vars_files:
     - vars/main.yml
   tasks:
@@ -27,6 +29,7 @@
         - unzip
         - python-docker
         - docker-compose
+        - rsync
       retries: 3
       delay: 3
       register: result
@@ -71,7 +74,7 @@
     - name: Reboot
       reboot:
         reboot_timeout: 3600
-  
+
     - name: Load required modules
       modprobe:
         state: present
@@ -92,22 +95,32 @@
         - ip6table_nat
 
 
-    - name: Copy envoy files
-      copy:
+    - name: Rsync envoy files
+      synchronize:
         src: "bastion-compose"
         dest: "/etc"
-        mode: "preserve"
+        rsync_opts:
+        - "--exclude=.git"
+        - "--exclude=.gitignore"
+        - "--exclude=.gitlab-ci.yml"
 
 
-    - name: Copy docker-compose
+    - name: Copy subspace-compose
       template:
-          src: "docker-compose.yaml"
-          dest: "{{ compose_dest }}/docker-compose.yaml"
+          src: "subspace-compose.yaml.j2"
+          dest: "{{ compose_dest }}/subspace-compose.yaml"
+
+    - name: make subspace entrypoint executable
+      file:
+        dest: "{{ compose_dest }}/subspace-entrypoint.sh"
+        mode: "a+x"
 
     - name: find all *-compose.yaml file
       find:
         path: "{{ compose_dest }}"
-        patterns: "*-compose.yaml"
+        patterns:
+          - "*-compose.yaml"
+          - "*-compose.yml"
       register: registered_files
 
     - name: Create array from found files in format required for COMPOSE_FILE
@@ -117,6 +130,11 @@
                 {{ output.append( element.path ) }}\
              {% endfor %}\
              {{ output }}"
+
+    - name: Create .env file with multiple compose configs
+      template:
+        src: env.j2
+        dest: "{{ compose_dest }}/.env"
 
     - name: Start all
       docker_compose:
