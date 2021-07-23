@@ -24,5 +24,6 @@ module "prometheus" {
   OidcSecretVaultPath = "secret/oidc_google_test"
   Settings            = var.Settings
   Cluster             = var.Cluster
+  Color               = local.activeCluster
   depends_on          = [module.monitoring-elastic]
 }
