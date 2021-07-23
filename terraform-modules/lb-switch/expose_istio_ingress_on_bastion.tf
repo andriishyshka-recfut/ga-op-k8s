@@ -7,10 +7,6 @@ resource "google_os_login_ssh_public_key" "cache" {
 }
 
 
-# resource "local_file" "ansible_gcp_inventory" {
-#   content  = templatefile("${path.module}/../../ansible/inventory.gcp.yml.tmpl", { project = data.google_project.current_project.number })
-#   filename = "${path.module}/../../ansible/inventory.gcp.yaml"
-# }
 
 data "google_compute_address" "bastion" {
   name = "envoy"

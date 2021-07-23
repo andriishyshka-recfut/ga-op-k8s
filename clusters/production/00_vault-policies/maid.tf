@@ -8,5 +8,8 @@ path "secret/data/es-creds-compose-prod/maid/*" {
 path "secret/data/oidc_google_prod" {
   capabilities = ["read","list"]
 }
+path "secret/data/slack/maid" {
+  capabilities = ["read","list"]
+}
 EOT
 }

@@ -18,7 +18,7 @@ COPY --from=vault /bin/vault /bin/vault
 COPY --from=curl /tmp/kubectl /bin/kubectl
 COPY --from=ansible /ansible /ansible
 
-RUN apk add  --no-cache tar openssh-client jq bash  python3 openssl && \
+RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl && \
     chmod +x /bin/kubectl && \
     mkdir -p /home/runner/workdir && mkdir /home/fake && chmod 777 /home/fake
 

@@ -8,34 +8,34 @@ static_resources:
       - name: "envoy.filters.listener.tls_inspector"
         typed_config: {}
     filter_chains:
-    - filter_chain_match:
-        server_names: ["p.digaweb.com","42.regemini.io"]
-      filters:
-      - name: envoy.filters.network.tcp_proxy
-        config:
-          stat_prefix: ingress_tcp
-          cluster: subspace-https
-    - filter_chain_match:
-        server_names: ["b.digaweb.com","24.regemini.io"]
-      filters:
-      - name: envoy.filters.network.tcp_proxy
-        config:
-          stat_prefix: ingress_tcp
-          cluster: subspace-https
-    - filter_chain_match:
-        server_names: ["*.p.digaweb.com","*.p.regemini.io"]
-      filters:
-      - name: envoy.filters.network.tcp_proxy
-        config:
-          stat_prefix: ingress_tcp
-          cluster: production-https
-    - filter_chain_match:
-        server_names: ["*.infra.digaweb.com","*.t.regemini.io"]
-      filters:
-      - name: envoy.filters.network.tcp_proxy
-        config:
-          stat_prefix: ingress_tcp
-          cluster: sandbox-https
+    # - filter_chain_match:
+    #     server_names: ["p.digaweb.com","42.regemini.io"]
+    #   filters:
+    #   - name: envoy.filters.network.tcp_proxy
+    #     config:
+    #       stat_prefix: ingress_tcp
+    #       cluster: subspace-https
+    # - filter_chain_match:
+    #     server_names: ["b.digaweb.com","24.regemini.io"]
+    #   filters:
+    #   - name: envoy.filters.network.tcp_proxy
+    #     config:
+    #       stat_prefix: ingress_tcp
+    #       cluster: subspace-https
+    # - filter_chain_match:
+    #     server_names: ["*.p.digaweb.com","*.p.regemini.io"]
+    #   filters:
+    #   - name: envoy.filters.network.tcp_proxy
+    #     config:
+    #       stat_prefix: ingress_tcp
+    #       cluster: production-https
+    # - filter_chain_match:
+    #     server_names: ["*.infra.digaweb.com","*.t.regemini.io"]
+    #   filters:
+    #   - name: envoy.filters.network.tcp_proxy
+    #     config:
+    #       stat_prefix: ingress_tcp
+    #       cluster: sandbox-https
     - filters:
       - name: envoy.filters.network.tcp_proxy
         config:

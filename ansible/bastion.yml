@@ -16,7 +16,6 @@
       delegate_to: localhost
       become: False
 
-
     - name: Put cluster_ca_certificate
       copy:
         dest: "{{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt"
@@ -38,11 +37,11 @@
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'https'
 
-    - name: Copy control plane files
-      copy:
-        src: "bastion-compose/go-control-plane"
-        dest: "/etc/bastion-compose"
-        mode: "preserve"
+    # - name: Copy control plane files
+    #   copy:
+    #     src: "bastion-compose/go-control-plane"
+    #     dest: "/etc/bastion-compose"
+    #     mode: "preserve"
 
     - name: Copy envoy.yaml
       copy:
@@ -62,15 +61,17 @@
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'http2'
 
-    - name: add {{ subdomain }}-compose.yaml
+    - name: update xds config
       template:
-        src: upstream-compose.yaml.j2
-        dest: "{{ compose_dest }}/{{ subdomain }}-compose.yaml"
+        src: xds-config.yaml.j2
+        dest: "{{ compose_dest }}/config.yaml"
 
     - name: find all *-compose.yaml file
       find:
         path: "{{ compose_dest }}"
-        patterns: "*-compose.yaml"
+        patterns:
+          - "*-compose.yaml"
+          - "*-compose.yml"
       register: registered_files
 
     - name: Create array from found files in format required for COMPOSE_FILE
@@ -80,11 +81,6 @@
                 {{ output.append( element.path ) }}\
              {% endfor %}\
              {{ output }}"
-
-    - name: Create .env file with multiple compose configs
-      template:
-        src: env.j2
-        dest: "{{ compose_dest }}/.env"
 
     - name: Start all
       docker_compose:
@@ -100,7 +96,7 @@
     - pause:
         seconds: 5
 
-    - name: Recreate envoy
+    - name: Recreate discovery
       docker_compose:
         project_src: "{{ compose_dest }}"
         files: "{{ compose_files }}"
@@ -109,55 +105,13 @@
         debug: yes
         timeout: 60
         services:
-          - envoy
+          - control-plane
       register: output
-    # - debug: msg=" {{ output | to_nice_json }}"
-    # - name: Validate that {{ cluster_name }}-upstreamd container running
-    #   shell: |
-    #     sleep {{ 20 | random }}
-    #     docker inspect --format="{{ '{{' }}.State.Status{{ '}}' }}" {{ cluster_name }}-upstreamd
-    #   changed_when: False
-    #   retries: 5
-    #   delay: 5
-    #   register: inspect_status
-    #   until: inspect_status.stdout.find("running") != -1
 
-    # - name: Check if {{ subdomain }}-stream.conf created
-    #   stat:
-    #     path: "{{ compose_dest }}/data/nginx/{{ subdomain }}-stream.conf"
-    #   register: stream_stat
-    #
-    # - name: Assert that {{ subdomain }}-stream.conf exists
-    #   assert:
-    #     that:
-    #       - stream_stat.stat.exists
-    #       - "{{ subdomain }}_upstreamd.{{ subdomain }}_upstreamd.state.running"
-    #       - nginx.nginx.state.running
-    #
-    # - name: Update streams configuration
-    #   template:
-    #     src: "{{ item }}"
-    #     dest: "{{ compose_dest }}/data/nginx/"
-    #   with_items:
-    #     - default-stream.conf
-
-    # - name: Wait a random time to avoid race condition (race condition may occure when you create multiple clusters within one project)
-    #   pause:
-    #     seconds: "{{ 10 | random }}"
-
-    # - name: Reload nginx container
-    #   shell: |
-    #     docker restart nginx
-    #   changed_when: True
-    #   register: reload
-    #   retries: 2
-    #   delay: "{{ 10 | random }}"
-    #   until: reload.rc == 0
-
-    - name: Validate that envoy container running
+    - name: Validate that control-plane container running
       shell: |
         sleep 10
-        docker inspect --format="{{ '{{' }}.State.Status{{ '}}' }}" envoy
+        docker inspect --format="{{ '{{' }}.State.Status{{ '}}' }}" control-plane
       changed_when: False
       retries: 5
       delay: 5
