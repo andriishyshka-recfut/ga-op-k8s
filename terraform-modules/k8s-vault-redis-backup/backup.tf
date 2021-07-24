@@ -1,7 +1,7 @@
 resource "kubernetes_secret" "minio_backup_redis_credentials" {
   for_each = var.BackupSettings
   metadata {
-    name      = "minio_backup_credentials"
+    name      = "minio-backup-credentials"
     namespace = each.value["ns"]
   }
   data = {
@@ -33,7 +33,7 @@ resource "kubernetes_job" "redis_backup" {
             name = "MINIO_ACCESS_KEY"
             value_from {
               secret_key_ref {
-                name = "minio_backup_credentials"
+                name = "minio-backup-credentials"
                 key  = "accesskey"
               }
             }
@@ -75,5 +75,5 @@ resource "kubernetes_job" "redis_backup" {
     create = "10m"
     update = "10m"
   }
-  depends_on = [kubernetes_secret.minio-backup-redis-credentials]
+  depends_on = [kubernetes_secret.minio_backup_redis_credentials]
 }
