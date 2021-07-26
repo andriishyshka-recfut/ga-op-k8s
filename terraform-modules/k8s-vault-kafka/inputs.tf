@@ -1,6 +1,10 @@
+variable "GkeClusterConnectionSettings" {}
 
 locals {
   kafkaNs = "kafka"
+  ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
+    ANSIBLE_STDOUT_CALLBACK = "debug"
+  })
 }
 
 terraform {

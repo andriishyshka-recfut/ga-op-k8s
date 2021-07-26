@@ -47,9 +47,9 @@ resource "kubernetes_job" "harbor_restore" {
         }
       }
       spec {
-          container {
+        container {
           name    = "restore"
-          image   = "postgres:9.6"
+          image   = "postgres:13.3"
           command = ["bash", "-c", local.restoreCommand]
           env {
             name = "MINIO_ACCESS_KEY"
@@ -73,10 +73,10 @@ resource "kubernetes_job" "harbor_restore" {
             name  = "MC_HOST_backup"
             value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
           }
-         # env {
-         #   name = "DATE"
-         #   value = formatdate("DD-MMM-YYYY-hh", timestamp())
-         # }
+          # env {
+          #   name = "DATE"
+          #   value = formatdate("DD-MMM-YYYY-hh", timestamp())
+          # }
           env {
             name = "PGPASSWORD"
             value_from {

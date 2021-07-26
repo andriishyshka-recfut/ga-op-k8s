@@ -22,8 +22,9 @@ module "monitoring-agents" {
 }
 
 module "prometheus" {
-  source   = "../../../terraform-modules/k8s-vault-prometheus"
-  Settings                     = var.Settings
-  Cluster                      = "production"
+  source     = "../../../terraform-modules/k8s-vault-prometheus"
+  Settings   = var.Settings
+  Cluster    = "production"
+  Color      = local.activeCluster
   depends_on = [module.monitoring-elastic]
 }

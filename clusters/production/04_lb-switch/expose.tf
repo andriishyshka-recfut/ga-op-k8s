@@ -9,12 +9,12 @@ variable "VaultAddress" {}
 terraform {
   backend "gcs" {
     bucket = "terraform-state-production111"
-    prefix = "terraform-production-lb-switch/state-2"
+    prefix = "terraform-production-lb-switch/state-3"
   }
 }
 
 module "lb-switch" {
-  source                       = "../../../terraform-modules/lb-switch"
-  Settings                     = var.Settings
-  Cluster                      = var.Cluster
+  source   = "../../../terraform-modules/lb-switch"
+  Settings = var.Settings
+  Cluster  = var.Cluster
 }

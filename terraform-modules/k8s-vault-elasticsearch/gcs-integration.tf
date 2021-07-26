@@ -14,15 +14,15 @@ locals {
   }
   '
 EOT
-  gcsFullBackup = <<EOT
+  gcsFullBackup      = <<EOT
   curl -s -i -k -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/gcs/%3Ces_full_%7Bnow%2Fd%7D%3E?wait_for_completion=true" | tee /dev/stderr | grep "200 OK"
 EOT
 }
 
 resource "google_service_account_key" "es_key" {
   service_account_id = data.google_service_account.es_server.name
-  key_algorithm      = "KEY_ALG_RSA_2048"
-  public_key_type    = "TYPE_X509_PEM_FILE"
+  # key_algorithm      = "KEY_ALG_RSA_2048"
+  # public_key_type    = "TYPE_X509_PEM_FILE"
 }
 
 resource "kubernetes_secret" "gcs_es_credentional" {
@@ -40,7 +40,7 @@ resource "kubernetes_secret" "gcs_es_credentional" {
 resource "kubernetes_job" "gcs_es_backup_storage" {
   count = local.gcsSetup
   metadata {
-    name = "${local.esValues.esName}-gcs-snapshot-storage"
+    name      = "${local.esValues.esName}-gcs-snapshot-storage"
     namespace = local.esValues.namespace
   }
   spec {
@@ -75,27 +75,27 @@ resource "kubernetes_job" "gcs_es_backup_storage" {
       }
     }
     backoff_limit = 4
-    }
-    wait_for_completion = true
-    depends_on = [
+  }
+  wait_for_completion = true
+  depends_on = [
     null_resource.ansible_validate_resources
-    ]
-    timeouts {
+  ]
+  timeouts {
     create = "5m"
     update = "5m"
-    }
+  }
 }
 resource "kubernetes_cron_job" "gcs_es_fullbackup" {
   count = local.gcsSetup
   metadata {
-    name = "${local.esValues.esName}-gcs-es-cronjob"
+    name      = "${local.esValues.esName}-gcs-es-cronjob"
     namespace = local.esValues.namespace
   }
   spec {
-    concurrency_policy = "Replace"
-    failed_jobs_history_limit = 10
+    concurrency_policy            = "Replace"
+    failed_jobs_history_limit     = 10
     successful_jobs_history_limit = 10
-    schedule = "0 5 * * *"
+    schedule                      = "0 5 * * *"
     job_template {
       metadata {}
       spec {
@@ -129,7 +129,7 @@ resource "kubernetes_cron_job" "gcs_es_fullbackup" {
       }
     }
   }
-  depends_on =[
+  depends_on = [
     kubernetes_job.gcs_es_backup_storage
   ]
 }

@@ -3,14 +3,14 @@
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-workloads-harbor/state-2"
+    prefix = "tf-workloads-harbor/state-3"
   }
-  }
+}
 
 
 module "harbor" {
-  source              = "../../../terraform-modules/k8s-vault-harbor"
-  DoRestoreFromBackup = true
+  source                       = "../../../terraform-modules/k8s-vault-harbor"
+  DoRestoreFromBackup          = true
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   # depends_on          = [module.namespaces, module.minio]
 }

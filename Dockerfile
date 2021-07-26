@@ -1,5 +1,5 @@
 FROM vault:latest as vault
-FROM hashicorp/terraform:1.0.1 as terraform
+FROM hashicorp/terraform:1.0.3 as terraform
 FROM curlimages/curl as curl
 RUN curl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /tmp/kubectl
 

@@ -4,7 +4,7 @@
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-workloads/state-14"
+    prefix = "tf-workloads/state-17"
   }
   required_providers {
     kubectl = {

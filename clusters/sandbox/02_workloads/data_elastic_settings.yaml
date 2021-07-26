@@ -5,7 +5,7 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "sandbox"
     namespace: "elastic"
-    appVersion: "6.8.13"
+    appVersion: "6.8.17"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "no"
     gcs_enable: "yes"
@@ -50,7 +50,7 @@ elastic_settings:
     name: data
     esName: "sandbox"
     namespace: "elastic"
-    kibanaVersion: "6.8.13"
+    kibanaVersion: "6.8.17"
     oidc_provider:
       enabled: "yno"
       realm: "google"
