@@ -20,6 +20,4 @@ inventory.gcp.yaml
 
 __pycache__
 
-ansible/files/bastion-compose/envoy.yaml
-ansible/files/bastion-compose/subspace-Dockerfile
-ansible/files/bastion-compose/subspace-entrypoint.sh
+ansible/files/bastion-compose/*
