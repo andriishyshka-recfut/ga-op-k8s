@@ -16,7 +16,7 @@ spec:
         memory: 800M
   clusters:
   - alias: "my-source-cluster"
-    bootstrapServers: 10.100.1.22:30023
+    bootstrapServers: 10.200.1.12:31835
   - alias: "my-target-cluster"
     bootstrapServers: kafka-cluster-kafka-bootstrap:9092
     config:
