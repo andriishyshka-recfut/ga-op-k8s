@@ -113,6 +113,9 @@ resource "google_compute_firewall" "bastion_tor_proxy" {
                    "69.164.208.72/32",
                    "78.46.86.231/32",
                    "138.201.188.166/32", //2captcha proxy gate
+                   "34.86.175.17/32", //test account nat ip
+                   "35.188.246.238/32", // prod nat
+                   "34.85.254.253/32",// prod nat
                    "${google_compute_address.envoy.address}/32",
                    "${google_compute_address.wireguard.address}/32"  ]
 
