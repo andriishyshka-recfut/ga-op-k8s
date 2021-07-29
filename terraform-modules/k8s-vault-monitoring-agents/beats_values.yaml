@@ -1,5 +1,5 @@
 
-beatsVersion: "7.13.2"
+beatsVersion: "7.13.4"
 namespace: "monitoring"
 esName: "monitoring"
 metricbeat:
@@ -13,6 +13,7 @@ dashboards:
 filebeat:
   name: "log"
   config: |
+    logging.json: true
     # https://www.elastic.co/guide/en/beats/filebeat/current/configuration-autodiscover.html
     # https://www.elastic.co/guide/en/beats/filebeat/current/configuration-autodiscover-hints.html
     # https://logz.io/blog/what-is-autodiscover-filebeat/
@@ -116,12 +117,17 @@ filebeat:
                       ignore_missing: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
-            # Crypto section
+            # Minio section
             - condition.equals:
                 kubernetes.namespace: minio
               config:
               - type: container
                 json.add_error_key: true
-                # include_lines: ['^{.*$']
+                processors:
+                  - rename:
+                      fields:
+                        - from: "json.level"
+                          to: "json.logLevel"
+                      ignore_missing: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log

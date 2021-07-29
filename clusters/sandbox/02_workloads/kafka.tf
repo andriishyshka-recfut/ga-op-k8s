@@ -1,5 +1,6 @@
 
 module "kafka" {
-  source = "../../../terraform-modules/k8s-vault-kafka"
-  depends_on = [module.namespaces]
+  source                       = "../../../terraform-modules/k8s-vault-kafka"
+  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+  depends_on                   = [module.namespaces]
 }

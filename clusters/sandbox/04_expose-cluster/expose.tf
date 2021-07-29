@@ -3,8 +3,8 @@ provider "google" {
 }
 
 variable "Settings" {}
-variable "VaultAddress" { }
-variable "Cluster" { }
+variable "VaultAddress" {}
+variable "Cluster" {}
 
 
 
@@ -12,14 +12,14 @@ variable "Cluster" { }
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-lb-switch/state-2"
+    prefix = "tf-lb-switch/state-3"
   }
 
 }
 
 module "lb-switch" {
-  source                       = "../../../terraform-modules/lb-switch"
-  Settings                     = var.Settings
-  Cluster                      = "sandbox"
+  source   = "../../../terraform-modules/lb-switch"
+  Settings = var.Settings
+  Cluster  = "sandbox"
 
 }

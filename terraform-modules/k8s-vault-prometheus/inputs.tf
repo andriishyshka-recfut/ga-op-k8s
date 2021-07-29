@@ -1,5 +1,6 @@
 variable "Settings" {}
 variable "Cluster" {}
+variable "Color" {}
 
 variable "OidcSecretVaultPath" {
   default = "secret/oidc_google_prod"
@@ -7,9 +8,9 @@ variable "OidcSecretVaultPath" {
 
 
 locals {
-  prometheusNs = "monitoring"
-  prometheusExtUrl = lookup(var.Settings.clusters[var.Cluster], "prometheusExtUrl",
-  "http://localhost:9090") != "http://localhost:9090" ? var.Settings.clusters[var.Cluster].prometheusExtUrl : "http://localhost:9090"
+  helmVersion      = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus, "helm_version", "17.0.0")
+  prometheusNs     = "monitoring"
+  prometheusExtUrl = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus, "prometheusExtUrl", "http://localhost:9090")
 }
 
 terraform {

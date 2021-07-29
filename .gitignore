@@ -19,3 +19,5 @@ inventory.gcp.yaml
 .passwd
 
 __pycache__
+
+ansible/files/bastion-compose/*

@@ -87,6 +87,7 @@ resource "google_compute_firewall" "bastion_ssh_https" {
     "69.164.208.72/32",  // - Outline VPN
     "35.185.38.145/32",  // - Captcha resolver service
     "35.188.246.238/32", // prod nat
+    "34.85.254.253/32",// prod nat
     "35.242.253.39/32",  // sandbox-old
     "35.196.5.12/32",    //app11.digaweb.com
     "35.185.38.145/32",  //app12.digaweb.com
@@ -112,6 +113,9 @@ resource "google_compute_firewall" "bastion_tor_proxy" {
                    "69.164.208.72/32",
                    "78.46.86.231/32",
                    "138.201.188.166/32", //2captcha proxy gate
+                   "34.86.175.17/32", //test account nat ip
+                   "35.188.246.238/32", // prod nat
+                   "34.85.254.253/32",// prod nat
                    "${google_compute_address.envoy.address}/32",
                    "${google_compute_address.wireguard.address}/32"  ]
 
