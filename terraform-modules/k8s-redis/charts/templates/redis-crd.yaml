@@ -1,0 +1,27 @@
+{{- if .Values.redisCrd.enabled -}}
+apiVersion: databases.spotahome.com/v1
+kind: RedisFailover
+metadata:
+  name: redisfailover
+  namespace: {{ .Release.Namespace }}
+spec:
+  sentinel:
+    replicas: {{ .Values.redisCrd.sentinel.replicas }}
+    resources:
+      requests:
+        cpu: {{ .Values.redisCrd.sentinel.resources.requests.cpu }}
+      limits:
+        memory: {{ .Values.redisCrd.sentinel.resources.limits.memory }}
+  redis:
+    replicas: {{ .Values.redisCrd.redis.replicas}}
+    podAnnotations:
+      traffic.sidecar.istio.io/excludeOutboundPorts: "6379"
+      traffic.sidecar.istio.io/excludeInboundPorts: "6379"
+    resources:
+      requests:
+        cpu: {{ .Values.redisCrd.redis.resources.requests.cpu }}
+        memory: {{ .Values.redisCrd.redis.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.redisCrd.redis.resources.limits.cpu }}
+        memory: {{ .Values.redisCrd.redis.resources.limits.memory }}
+{{- end -}}

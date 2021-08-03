@@ -1,0 +1,16 @@
+{{- if .Values.redisService.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: rfr-redisfailover-0
+  namespace: {{ .Release.Namespace }}
+spec:
+  clusterIP: {{ .Values.redisService.clusterIP }}
+  selector:
+    statefulset.kubernetes.io/pod-name: rfr-redisfailover-0
+  ports:
+    - name: {{ .Values.redisService.portName }}
+      protocol: TCP
+      port: {{ .Values.redisService.port }}
+      targetPort: {{ .Values.redisService.targetPort }}
+{{- end -}}
