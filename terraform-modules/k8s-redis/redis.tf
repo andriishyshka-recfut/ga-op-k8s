@@ -1,13 +1,35 @@
 locals {
-  redisValues = yamldecode(file("${path.module}/charts/values.yaml"))
+  redisValues          = yamldecode(file("${path.module}/charts/redis/values.yaml"))
+  redisCommanderValues = yamldecode(file("${path.module}/charts/redis-commander/values.yaml"))
 }
 
 variable "Redis_settings" {}
 
+resource "kubernetes_config_map" "redis-commander" {
+  metadata {
+    name      = "redis-commander-sentinels"
+    namespace = "redis-operator-ns"
+  }
+  data = {
+    "connections.json" = "${file("${path.module}/connections.json")}"
+  }
+}
+
+resource "kubernetes_config_map" "redis-commander-ro" {
+  metadata {
+    name      = "redis-commander-sentinels-ro"
+    namespace = "redis-operator-ns"
+  }
+  data = {
+    "connections.json" = "${file("${path.module}/connections-ro.json")}"
+  }
+}
+
+
 resource "helm_release" "redis" {
   for_each  = var.Redis_settings
   name      = "redis"
-  chart     = "${path.module}/charts"
+  chart     = "${path.module}/charts/redis"
   wait      = true
   atomic    = true
   namespace = each.value["ns"]
@@ -61,5 +83,30 @@ resource "helm_release" "redis" {
   set {
     name  = "redisCrd.redis.resources.limits.memory"
     value = lookup(each.value, "redis-lim-mem", "500Mi")
+  }
+}
+
+resource "helm_release" "redis-commander" {
+  name      = "redis-commander"
+  chart     = "${path.module}/charts/redis-commander"
+  wait      = true
+  atomic    = true
+  namespace = "redis-operator-ns"
+  values = [
+    yamlencode(local.redisCommanderValues)
+  ]
+}
+resource "helm_release" "redis-commander-ro" {
+  name      = "redis-commander-ro"
+  chart     = "${path.module}/charts/redis-commander"
+  wait      = true
+  atomic    = true
+  namespace = "redis-operator-ns"
+  values = [
+    yamlencode(local.redisCommanderValues)
+  ]
+  set {
+    name  = "Deployment.configMapName"
+    value = "redis-commander-sentinels-ro"
   }
 }
