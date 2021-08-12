@@ -2,4 +2,6 @@
 
 injector:
   enabled: true
-  replicas: 2
+  replicas: 3
+  leaderElector:
+    ttl: "15s"

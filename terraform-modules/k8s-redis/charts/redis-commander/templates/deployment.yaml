@@ -1,0 +1,55 @@
+{{- if .Values.Deployment.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.Deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        tier: backend
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: rediscommander/redis-commander
+        volumeMounts:
+        - name: sentinels
+          mountPath: /redis-commander/config/local-production.json
+          subPath: connections.json
+        env:
+        # - name: SENTINELS
+        #   value: {{ .Values.Deployment.sentinelAddress }}
+        - name: K8S_SIGTERM
+          value: "1"
+        ports:
+        - name: rediscom-port
+          containerPort: 8081
+        livenessProbe:
+          httpGet:
+            path: /favicon.png
+            port: 8081
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        #resources:
+        #  limits:
+        #    cpu: "500m"
+        #    memory: "512M"
+        securityContext:
+          runAsNonRoot: true
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+      volumes:
+      - name: sentinels
+        configMap:
+          name: {{ .Values.Deployment.configMapName }}
+
+{{- end -}}

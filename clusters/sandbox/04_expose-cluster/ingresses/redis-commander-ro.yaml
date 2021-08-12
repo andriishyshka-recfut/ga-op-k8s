@@ -1,0 +1,39 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: redis-commander-cert
+  namespace: istio-system
+spec:
+  commonName: redis-commander.t.regemini.io
+  dnsNames:
+  - redis-commander.t.regemini.io
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: redis-commander-cert
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: redis-commander-ingress
+  namespace: redis-operator-ns
+spec:
+  rules:
+  - host: redis-commander.t.regemini.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: oauth2-proxy
+            port:
+              number: 4180
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - redis-commander.t.regemini.io
+    secretName: redis-commander-cert
