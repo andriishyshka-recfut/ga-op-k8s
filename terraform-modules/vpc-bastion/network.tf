@@ -100,7 +100,7 @@ resource "google_compute_firewall" "bastion_ssh_https" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "443"]
+    ports    = ["22", "443","32200-32202"]
   }
 
   target_tags = ["dmz"]
