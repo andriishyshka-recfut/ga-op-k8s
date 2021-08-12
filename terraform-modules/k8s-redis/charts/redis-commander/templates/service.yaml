@@ -1,0 +1,15 @@
+{{- if .Values.Service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: {{ .Release.Name }}
+  ports:
+    - name: {{ .Values.Service.portName }}
+      protocol: TCP
+      port: {{ .Values.Service.port }}
+      targetPort: {{ .Values.Service.targetPort }}
+{{- end -}}

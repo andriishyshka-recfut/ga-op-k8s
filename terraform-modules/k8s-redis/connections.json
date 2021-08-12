@@ -1,0 +1,22 @@
+{
+  "connections": [
+    {
+      "label": "maid",
+       "sentinels": "rfs-redisfailover.maid:26379",
+       "sentinelName": "mymaster",
+       "dbIndex": 0
+       },
+    {
+      "label": "core",
+      "sentinels": "rfs-redisfailover.core:26379",
+      "sentinelName": "mymaster",
+      "dbIndex": 0
+    },
+    {
+      "label": "magescanner",
+      "sentinels": "rfs-redisfailover.magescanner:26379",
+      "sentinelName": "mymaster",
+      "dbIndex": 0
+    }
+  ]
+}
