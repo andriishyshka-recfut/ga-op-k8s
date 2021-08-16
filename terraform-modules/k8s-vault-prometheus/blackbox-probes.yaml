@@ -1,0 +1,62 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: kibanas
+  labels:
+    release: prometheus
+spec:
+  module: http_2xx
+  prober:
+    url: blackbox-exporter-prometheus-blackbox-exporter:9115
+    scheme: http
+    path: /probe
+  targets:
+    staticConfig:
+      static:
+      - https://k.regemini.com
+      - https://fd.regemini.com/
+      - https://mr.regemini.com/
+      - https://mc.regemini.com/
+      - https://syf.regemini.com/
+      - https://boa.regemini.com/
+      - https://c1.regemini.com/
+      - https://bar.regemini.com/
+      - https://dscvr.regemini.com/
+      - https://eml.regemini.com/
+      - https://rb.regemini.com/
+      - https://bmo.regemini.com/
+      - https://usb.regemini.com/
+      - https://swed.regemini.com/
+      - https://dcu.regemini.com/
+      - https://max.regemini.com/
+      - https://bka.regemini.com/
+      - https://4iq.regemini.com/
+      - https://aeon.regemini.com/
+      - https://chainalysis.regemini.com/
+      - https://golomt.regemini.com/
+      - https://desjardins.regemini.com/
+      - https://nedbank.regemini.com/
+      - https://ica.regemini.com/
+      - https://danske.regemini.com/
+      - https://greendot.regemini.com/
+      - https://jpmc.regemini.com/
+# ---
+# apiVersion: monitoring.coreos.com/v1
+# kind: ServiceMonitor
+# metadata:
+#   labels:
+#     app.kubernetes.io/component: exporter
+#     app.kubernetes.io/name: blackbox-exporter
+#     app.kubernetes.io/part-of: kube-prometheus
+#     app.kubernetes.io/version: 0.19.0
+#   name: blackbox-exporter
+# spec:
+#   endpoints:
+#   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+#     interval: 30s
+#     path: /metrics
+#     port: http
+#     scheme: http
+#   selector:
+#     matchLabels:
+#       app.kubernetes.io/name: prometheus-blackbox-exporter
