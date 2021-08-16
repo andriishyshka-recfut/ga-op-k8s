@@ -26,3 +26,17 @@ resource "helm_release" "blackbox_exporter" {
         helm_release.prometheus
     ]
 }
+
+
+data "kubectl_file_documents" "blackbox_probes" {
+    content = file("${path.module}/blackbox-probes.yaml")
+}
+
+resource "kubectl_manifest" "blackbox_probes" {
+    count = 2
+    yaml_body  = element(data.kubectl_file_documents.blackbox_probes.documents, count.index)
+    override_namespace = local.prometheusNs
+    depends_on = [
+        helm_release.blackbox_exporter
+    ]
+}
