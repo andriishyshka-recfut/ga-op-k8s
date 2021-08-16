@@ -12,6 +12,8 @@ spec:
     path: /probe
   targets:
     staticConfig:
+      labels:
+        module: http_2xx
       static:
       - https://k.regemini.com
       - https://fd.regemini.com/
@@ -39,23 +41,22 @@ spec:
       - https://danske.regemini.com/
       - https://greendot.regemini.com/
       - https://jpmc.regemini.com/
-# ---
-# apiVersion: monitoring.coreos.com/v1
-# kind: ServiceMonitor
-# metadata:
-#   labels:
-#     app.kubernetes.io/component: exporter
-#     app.kubernetes.io/name: blackbox-exporter
-#     app.kubernetes.io/part-of: kube-prometheus
-#     app.kubernetes.io/version: 0.19.0
-#   name: blackbox-exporter
-# spec:
-#   endpoints:
-#   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-#     interval: 30s
-#     path: /metrics
-#     port: http
-#     scheme: http
-#   selector:
-#     matchLabels:
-#       app.kubernetes.io/name: prometheus-blackbox-exporter
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: harbor
+  labels:
+    release: prometheus
+spec:
+  module: harbor
+  prober:
+    url: blackbox-exporter-prometheus-blackbox-exporter:9115
+    scheme: http
+    path: /probe
+  targets:
+    staticConfig:
+      labels:
+        module: harbor
+      static:
+      - https://harbor.t.regemini.io/chartrepo/op/index.yaml
