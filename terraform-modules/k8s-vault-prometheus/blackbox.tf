@@ -40,3 +40,28 @@ resource "kubectl_manifest" "blackbox_probes" {
         helm_release.blackbox_exporter
     ]
 }
+
+
+data "http" "grafana_dashboard_blackbox" {
+  url = "https://grafana.com/api/dashboards/7587/revisions/3/download"
+
+  # Optional request headers
+  request_headers = {
+    Accept = "application/json"
+  }
+}
+
+resource "kubernetes_config_map" "blackbox_dashboards" {
+  metadata {
+    name = "blackbox-dashboard"
+    namespace = "monitoring"
+    labels = {
+      grafana_dashboard = 1
+    }
+  }
+
+  data = {
+    "blackbox.json"             = replace(data.http.grafana_dashboard_blackbox.body, "$${DS_SIGNCL-PROMETHEUS}","Prometheus")
+    }
+
+}
