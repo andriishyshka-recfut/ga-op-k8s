@@ -1,7 +1,8 @@
 FROM vault:latest as vault
-FROM hashicorp/terraform:1.0.3 as terraform
+FROM hashicorp/terraform:1.0.4 as terraform
 FROM curlimages/curl as curl
-RUN curl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /tmp/kubectl
+RUN curl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /tmp/kubectl &&\
+    curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.31.4/terragrunt_linux_amd64 --output /tmp/terragrunt
 
 
 FROM alpine:latest as ansible
@@ -16,15 +17,17 @@ FROM alpine:latest
 COPY --from=terraform /bin/terraform /bin/terraform
 COPY --from=vault /bin/vault /bin/vault
 COPY --from=curl /tmp/kubectl /bin/kubectl
+COPY --from=curl /tmp/terragrunt /bin/terragrunt
 COPY --from=ansible /ansible /ansible
 
 RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl && \
-    chmod +x /bin/kubectl && \
+    chmod +x /bin/kubectl && chmod +x /bin/terragrunt && \
     mkdir -p /home/runner/workdir && mkdir /home/fake && chmod 777 /home/fake
 
 USER 10123
 WORKDIR /home/runner/workdir
 
 COPY ./docker-entrypoint.sh /
+COPY ./docker-entrypoint-tg.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["--help"]
