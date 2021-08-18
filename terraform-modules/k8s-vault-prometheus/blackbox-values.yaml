@@ -28,18 +28,18 @@ config:
         # basic_auth:
         #   username:
         #   password:
-#         tls_config:
-#           ca_file: "/etc/secrets/ca_crt"
-#           cert_file: "/etc/secrets/client_crt"
-#           key_file: "/etc/secrets/client_key"
-#
-#
-# extraSecretMounts:
-#   - name: es-secret
-#     mountPath: /etc/secrets
-#     secretName: es-secret
-#     readOnly: true
-#     defaultMode: 420
+        tls_config:
+          ca_file: "/etc/secrets/ca_crt"
+          cert_file: "/etc/secrets/client_crt"
+          key_file: "/etc/secrets/client_key"
+
+
+extraSecretMounts:
+  - name: es-secret
+    mountPath: /etc/secrets
+    secretName: es-secret
+    readOnly: true
+    defaultMode: 420
 
 prometheusRule:
   enabled: true

@@ -3,6 +3,28 @@ data "vault_generic_secret" "harbor_token" {
   path = "secret/goharbor/docker_login"
 }
 
+
+
+
+data "vault_generic_secret" "es_access" {
+  path = "secret/es-creds-compose-prod/monitoring"
+}
+
+
+resource "kubernetes_secret" "es_creds" {
+  metadata {
+    name      = "es-secret"
+    namespace = local.prometheusNs
+  }
+
+  data = {
+    "ca_crt"    = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CA_CRT
+    "client_crt"    = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CLIENT_CRT
+    "client_key" = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CLIENT_KEY
+  }
+
+}
+
 resource "helm_release" "blackbox_exporter" {
   name              = "blackbox-exporter"
   repository        = "https://prometheus-community.github.io/helm-charts"
@@ -22,6 +44,14 @@ resource "helm_release" "blackbox_exporter" {
     name = "config.modules.harbor.http.basic_auth.password"
     value = data.vault_generic_secret.harbor_token.data.password
   }
+  set {
+    name = "config.modules.elastic.http.basic_auth.username"
+    value = data.vault_generic_secret.es_access.data.USERNAME
+  }
+  set {
+    name = "config.modules.elastic.http.basic_auth.password"
+    value = data.vault_generic_secret.es_access.data.PASSWORD
+  }
   depends_on = [
         helm_release.prometheus
     ]
@@ -33,7 +63,7 @@ data "kubectl_file_documents" "blackbox_probes" {
 }
 
 resource "kubectl_manifest" "blackbox_probes" {
-    count = 2
+    count = 3
     yaml_body  = element(data.kubectl_file_documents.blackbox_probes.documents, count.index)
     override_namespace = local.prometheusNs
     depends_on = [
