@@ -7,7 +7,7 @@ data "vault_generic_secret" "harbor_token" {
 
 
 data "vault_generic_secret" "es_access" {
-  path = "secret/es-creds-compose-prod/monitoring"
+  path = "secret/es-creds-compose-prod/prometheus"
 }
 
 
