@@ -78,4 +78,4 @@ spec:
       labels:
         module: elastic
       static:
-      - https://es23.regemini.com/_cat/health
+      - https://es23.regemini.com/_security/_authenticate
