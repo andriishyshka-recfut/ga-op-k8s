@@ -1,0 +1,59 @@
+secretConfig: true
+
+config:
+  modules:
+    http_2xx:
+      prober: http
+      timeout: 5s
+      http:
+        valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+        follow_redirects: true
+        preferred_ip_protocol: "ip4"
+    harbor:
+      prober: http
+      timeout: 5s
+      http:
+        valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+        follow_redirects: true
+        preferred_ip_protocol: "ip4"
+        method: GET
+    elastic:
+      prober: http
+      timeout: 5s
+      http:
+        valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+        follow_redirects: true
+        preferred_ip_protocol: "ip4"
+        method: GET
+        # basic_auth:
+        #   username:
+        #   password:
+        tls_config:
+          ca_file: "/etc/secrets/ca_crt"
+          cert_file: "/etc/secrets/client_crt"
+          key_file: "/etc/secrets/client_key"
+
+
+extraSecretMounts:
+  - name: es-secret
+    mountPath: /etc/secrets
+    secretName: es-secret
+    readOnly: true
+    defaultMode: 420
+
+prometheusRule:
+  enabled: true
+  additionalLabels:
+      app: prometheus
+      release: prometheus
+  namespace: "monitoring"
+  rules:
+    - alert: webServiceUnavailible
+      annotations:
+        description: 'HTTP response code {{`{{ $value }}`}} rather than 200  for {{`{{ $labels.instance }}`}}.'
+        summary: Service  unavailible
+      expr: |-
+        probe_http_status_code != 200
+      for: 10m
+      labels:
+        severity: critical

@@ -1,0 +1,81 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: kibanas
+  labels:
+    release: prometheus
+spec:
+  module: http_2xx
+  prober:
+    url: blackbox-exporter-prometheus-blackbox-exporter:9115
+    scheme: http
+    path: /probe
+  targets:
+    staticConfig:
+      labels:
+        module: http_2xx
+      static:
+      - https://k.regemini.com
+      - https://fd.regemini.com/
+      - https://mr.regemini.com/
+      - https://mc.regemini.com/
+      - https://syf.regemini.com/
+      - https://boa.regemini.com/
+      - https://c1.regemini.com/
+      - https://bar.regemini.com/
+      - https://dscvr.regemini.com/
+      - https://eml.regemini.com/
+      - https://rb.regemini.com/
+      - https://bmo.regemini.com/
+      - https://usb.regemini.com/
+      - https://swed.regemini.com/
+      - https://max.regemini.com/
+      - https://bka.regemini.com/
+      - https://4iq.regemini.com/
+      - https://aeon.regemini.com/
+      - https://chainalysis.regemini.com/
+      - https://golomt.regemini.com/
+      - https://desjardins.regemini.com/
+      - https://nedbank.regemini.com/
+      - https://ica.regemini.com/
+      - https://danske.regemini.com/
+      - https://greendot.regemini.com/
+      - https://jpmc.regemini.com/
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: harbor
+  labels:
+    release: prometheus
+spec:
+  module: harbor
+  prober:
+    url: blackbox-exporter-prometheus-blackbox-exporter:9115
+    scheme: http
+    path: /probe
+  targets:
+    staticConfig:
+      labels:
+        module: harbor
+      static:
+      - https://harbor.t.regemini.io/chartrepo/op/index.yaml
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: elastic
+  labels:
+    release: prometheus
+spec:
+  module: elastic
+  prober:
+    url: blackbox-exporter-prometheus-blackbox-exporter:9115
+    scheme: http
+    path: /probe
+  targets:
+    staticConfig:
+      labels:
+        module: elastic
+      static:
+      - https://es23.regemini.com/_cat/health
