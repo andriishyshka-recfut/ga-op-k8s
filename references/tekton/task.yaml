@@ -23,5 +23,17 @@ spec:
       script: |
         set +x
         cd $(workspaces.ws.path)
-        git clone https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
-        ls k8s
+        git clone --single-branch --branch \#47_minio_caching https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
+
+    - name: tg-plan
+      image: harbor.t.regemini.io/op/tf:latest
+      script: |
+       set +x
+       export VAULT_ADDR=http://vault-active.vault:8200
+       export VAULT_TOKEN=$(vault write -field=token auth/k8s-sandbox-green/login role=tekton jwt=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`)
+       export KUBE_CLIENT_CERT_DATA=$(vault kv get -field=k8s_sa_ca_cert secret/kubernetes-sandbox-green )
+       export KUBE_TOKEN=$(vault kv get -field=k8s_sa_token secret/kubernetes-sandbox-green )
+       export KUBE_HOST=$(vault kv get -field=HOST secret/kubernetes-sandbox-green )
+       export KUBE_CLUSTER_CA_CERT_DATA=$(vault kv get -field=CLUSTER_CA_CERTIFICATE secret/kubernetes-sandbox-green )
+       cd $(workspaces.ws.path)/k8s/tekton/minio
+       terragrunt init && terragrunt plan

@@ -22,3 +22,20 @@ Create gitlab token :
 ```
 kubectl create secret generic gitlab-token --from-literal=username=[[ USER ]] --from-literal=token=[[ TOKEN ]]
 ```
+
+Create vault role
+
+
+Create tekton task
+```
+ k apply -f /home/stepan/git/gemini/k8s/references/tekton/task.yaml
+```
+
+
+Create tuskrun
+```
+k apply -f /home/stepan/git/gemini/k8s/references/tekton/taskrun.yaml
+```
+
+Check results on tekton dashboard
+http://tekton-dashboard:9097/
