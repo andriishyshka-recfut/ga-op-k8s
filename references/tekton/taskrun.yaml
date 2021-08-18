@@ -1,0 +1,10 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: tg-taskrun
+spec:
+  taskRef:
+    name: tg-run
+  workspaces:
+    - name: ws # this workspace name must be declared in the Task
+      emptyDir: {}

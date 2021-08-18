@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: tg-run
+spec:
+  workspaces:
+  - name: ws
+    mountPath: /workspace
+  steps:
+    - name: git-clone
+      image: harbor.t.regemini.io/op/tf:latest
+      env:
+        - name: GIT_USER
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-token
+              key:  username
+        - name: GIT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-token
+              key: token
+      script: |
+        set +x
+        cd $(workspaces.ws.path)
+        git clone https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
+        ls k8s

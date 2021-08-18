@@ -20,7 +20,7 @@ COPY --from=curl /tmp/kubectl /bin/kubectl
 COPY --from=curl /tmp/terragrunt /bin/terragrunt
 COPY --from=ansible /ansible /ansible
 
-RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl && \
+RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git && \
     chmod +x /bin/kubectl && chmod +x /bin/terragrunt && \
     mkdir -p /home/runner/workdir && mkdir /home/fake && chmod 777 /home/fake
 
