@@ -4,6 +4,8 @@ locals {
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
     "roles/monitoring.viewer",
+    "roles/cloudkms.cryptoOperator",
+    "roles/cloudkms.cryptoKeyEncrypterDecrypter"
     # "roles/container.admin"
   ]
 }

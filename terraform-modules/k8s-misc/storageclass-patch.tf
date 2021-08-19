@@ -1,5 +1,5 @@
 locals {
-  gkeKmsVolumeKey = var.Settings.cluster.sandbox.persistent_resources.gke_kms_volume_key
+  gkeKmsVolumeKey = var.Settings.clusters[var.Cluster].persistent_resources.gke_kms_volume_key
 }
 
 resource "null_resource" "patch_storage_class" {
@@ -21,7 +21,7 @@ resource "null_resource" "patch_storage_class" {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      storageclass standard-rwo -p \
-     '{"parameters": {"disk-encryption-kms-key":${local.gkeKmsVolumeKey}}}}'
+     '{"parameters": {"disk-encryption-kms-key":"${local.gkeKmsVolumeKey}"}}}'
 COMMAND
   }
 }

@@ -1,12 +1,12 @@
 
 
 data "kubectl_file_documents" "minio" {
-    content = file("${path.module}/minio.yaml")
+  content = file("${path.module}/minio.yaml")
 }
 
 resource "kubectl_manifest" "minio" {
-    count     = 2
-    yaml_body = element(data.kubectl_file_documents.minio.documents, count.index)
+  count     = 2
+  yaml_body = element(data.kubectl_file_documents.minio.documents, count.index)
 }
 
 
@@ -22,7 +22,7 @@ data "http" "grafana_dashboard_minio" {
 
 resource "kubernetes_config_map" "minio_dashboards" {
   metadata {
-    name = "minio-dashboard"
+    name      = "minio-dashboard"
     namespace = "monitoring"
     labels = {
       grafana_dashboard = 1
@@ -30,7 +30,7 @@ resource "kubernetes_config_map" "minio_dashboards" {
   }
 
   data = {
-    "minio.json"             = replace(data.http.grafana_dashboard_minio.body, "$${DS_PROMETHEUS}","Prometheus")
+    "minio.json" = replace(data.http.grafana_dashboard_minio.body, "$${DS_PROMETHEUS}", "Prometheus")
   }
 
 }
