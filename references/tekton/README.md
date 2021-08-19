@@ -17,11 +17,6 @@ kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"
 
 ```
 
-Create gitlab token :
-
-```
-kubectl create secret generic gitlab-token --from-literal=username=[[ USER ]] --from-literal=token=[[ TOKEN ]]
-```
 
 Create vault role
 

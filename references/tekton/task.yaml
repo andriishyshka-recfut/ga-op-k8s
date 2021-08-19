@@ -3,6 +3,14 @@ kind: Task
 metadata:
   name: tg-run
 spec:
+  params:
+    - name: branch
+      type: string
+      description: Git branch to use for deployment
+      default: master
+    - name: path
+      type: string
+      description: path in k8s repo where to run terragrunt
   workspaces:
   - name: ws
     mountPath: /workspace
@@ -37,7 +45,7 @@ spec:
        export GIT_TOKEN=$(vault kv get -field=token_read_repo secret/gitlab )
 
        cd $(workspaces.ws.path)
-       git clone --single-branch --branch \#47_minio_caching https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
+       git clone --single-branch --branch $(params.branch) https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
 
-       cd $(workspaces.ws.path)/k8s/tekton/minio
+       cd $(workspaces.ws.path)/$(params.path)
        terragrunt init && terragrunt plan
