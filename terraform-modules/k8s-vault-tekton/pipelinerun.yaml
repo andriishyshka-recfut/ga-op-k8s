@@ -1,0 +1,11 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: pipelinerun-
+spec:
+  pipelineRef:
+    name: workloads
+  workspaces:
+    - name: ws
+      emptyDir: {}

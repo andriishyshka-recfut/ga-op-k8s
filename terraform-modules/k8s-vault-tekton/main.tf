@@ -54,6 +54,7 @@ resource "null_resource" "crds" {
 triggers = {
       task = md5(file("${path.module}/task.yaml"))
       pipeline = md5(file("${path.module}/pipeline.yaml"))
+      pipelinerun = md5(file("${path.module}/pipelinerun.yaml"))
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
@@ -68,6 +69,11 @@ triggers = {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      apply -f ${path.module}/pipeline.yaml \
+    --namespace=${local.tektonNs}
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     create -f ${path.module}/pipelinerun.yaml \
     --namespace=${local.tektonNs}
 
 COMMAND

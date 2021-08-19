@@ -14,7 +14,5 @@ module "minio" {
   Settings = var.Settings
   Cluster  = var.Cluster
   Color    = local.activeCluster
-  depends_on = [
-    kubernetes_namespace.ns
-  ]
+
 }

@@ -4,22 +4,28 @@ metadata:
   name: workloads
   namespace: tekton-pipelines
 spec:
+  workspaces:
+  - name: ws
   tasks:
     - name: namespaces
       taskRef:
         name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
       params:
         - name: path
           value: "k8s/tekton/namespaces"
         - name: branch
           value: "\\#47_minio_caching"
-    - name: minio
-      taskRef:
-        name: tg-run
-      runAfter:
-      - namespaces
-      params:
-        - name: path
-          value: "k8s/tekton/minio"
-        - name: branch
-          value: "\\#47_minio_caching"
+
+    # - name: minio
+    #   taskRef:
+    #     name: tg-run
+    #   runAfter:
+    #   - namespaces
+    #   params:
+    #     - name: path
+    #       value: "k8s/tekton/minio"
+    #     - name: branch
+    #       value: "\\#47_minio_caching"
