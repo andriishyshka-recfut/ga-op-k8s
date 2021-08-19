@@ -7,24 +7,6 @@ spec:
   - name: ws
     mountPath: /workspace
   steps:
-    - name: git-clone
-      image: harbor.t.regemini.io/op/tf:latest
-      env:
-        - name: GIT_USER
-          valueFrom:
-            secretKeyRef:
-              name: gitlab-token
-              key:  username
-        - name: GIT_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: gitlab-token
-              key: token
-      script: |
-        set +x
-        cd $(workspaces.ws.path)
-        git clone --single-branch --branch \#47_minio_caching https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
-
     - name: tg-plan
       image: harbor.t.regemini.io/op/tf:latest
       env:
@@ -51,5 +33,11 @@ spec:
        export KUBE_TOKEN=$(vault kv get -field=k8s_sa_token secret/kubernetes-${CLUSTER}-${COLOR} )
        export KUBE_HOST=$(vault kv get -field=HOST secret/kubernetes-${CLUSTER}-${COLOR} )
        export KUBE_CLUSTER_CA_CERT_DATA=$(vault kv get -field=CLUSTER_CA_CERTIFICATE secret/kubernetes-${CLUSTER}-${COLOR} )
+       export GIT_USER=$(vault kv get -field=username secret/gitlab )
+       export GIT_TOKEN=$(vault kv get -field=token_read_repo secret/gitlab )
+
+       cd $(workspaces.ws.path)
+       git clone --single-branch --branch \#47_minio_caching https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
+
        cd $(workspaces.ws.path)/k8s/tekton/minio
        terragrunt init && terragrunt plan
