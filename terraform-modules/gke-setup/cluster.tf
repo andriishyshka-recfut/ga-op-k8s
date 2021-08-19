@@ -9,7 +9,7 @@ resource "google_container_cluster" "cluster" {
   default_max_pods_per_node = var.Settings.clusters[var.Cluster][var.Color].pods_per_node
   #min_master_version = data.google_container_engine_versions.version.latest_master_version
   release_channel {
-    channel = "RAPID"
+    channel = "REGULAR"
   }
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -118,7 +118,7 @@ resource "google_container_node_pool" "nodepool_default" {
     preemptible = local.isPreemptible
 
     machine_type    = local.defaultMachineType
-    tags            = [var.Cluster,"${var.Cluster}-${var.Color}"]
+    tags            = [var.Cluster, "${var.Cluster}-${var.Color}"]
     service_account = google_service_account.gke_sa.unique_id
 
     metadata = {
@@ -162,7 +162,7 @@ resource "google_container_node_pool" "nodepool_additional" {
   node_config {
     preemptible     = each.value.preemptible
     machine_type    = each.value.machineType
-    tags            = [var.Cluster,"${var.Cluster}-${var.Color}","${var.Cluster}-${var.Color}-${each.key}"]
+    tags            = [var.Cluster, "${var.Cluster}-${var.Color}", "${var.Cluster}-${var.Color}-${each.key}"]
     service_account = google_service_account.gke_sa.unique_id
     metadata = {
       disable-legacy-endpoints = "true"

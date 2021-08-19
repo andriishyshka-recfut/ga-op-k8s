@@ -1,3 +1,6 @@
+locals {
+  gkeKmsVolumeKey = var.Settings.cluster.sandbox.persistent_resources.gke_kms_volume_key
+}
 
 resource "null_resource" "patch_storage_class" {
 
@@ -14,7 +17,11 @@ resource "null_resource" "patch_storage_class" {
      --insecure-skip-tls-verify=true  \
      storageclass standard-rwo -p \
      '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+    kubectl patch --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     storageclass standard-rwo -p \
+     '{"parameters": {"disk-encryption-kms-key":${local.gkeKmsVolumeKey}}}}'
 COMMAND
   }
-
 }
