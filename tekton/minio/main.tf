@@ -1,18 +1,10 @@
-resource "kubernetes_namespace" "ns" {
-    metadata {
-    name = "minio2"
-    labels = {
-      istio-injection = "enabled"
-    }
-  }
-}
 
 
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "kubernetes" {
     secret_suffix    = "minio-state"
-    namespace = "kube-system"
+    namespace = "tekton-pipelines"
     load_config_file = false
   }
 }
