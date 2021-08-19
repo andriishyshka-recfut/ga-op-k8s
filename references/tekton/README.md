@@ -26,6 +26,11 @@ kubectl create secret generic gitlab-token --from-literal=username=[[ USER ]] --
 Create vault role
 
 
+Create configmap
+```
+ k create configmap cluster-settings --from-literal=cluster=sandbox --from-literal=color=green --from-literal=configPath=config.tfvars.json
+```
+
 Create tekton task
 ```
  k apply -f /home/stepan/git/gemini/k8s/references/tekton/task.yaml
