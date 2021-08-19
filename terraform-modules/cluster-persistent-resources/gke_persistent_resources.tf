@@ -12,3 +12,19 @@ resource "google_kms_crypto_key" "gke_kms_volume_key" {
     prevent_destroy = true
   }
 }
+
+
+
+
+# Grant compute service account access to the key
+# https://github.com/hashicorp/terraform-provider-google/issues/5103#issuecomment-563402407
+# https://cloud.google.com/kubernetes-engine/docs/how-to/using-cmek#grant_permission
+resource "google_kms_crypto_key_iam_member" "gke_init" {
+
+  crypto_key_id = google_kms_crypto_key.gke_kms_volume_key.id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = "serviceAccount:service-${data.google_project.current.number}@compute-system.iam.gserviceaccount.com"
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
+}

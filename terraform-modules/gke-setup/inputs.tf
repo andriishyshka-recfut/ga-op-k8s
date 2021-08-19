@@ -18,8 +18,6 @@ data "google_service_account" "me" {
 data "google_client_config" "default" {
 }
 
-data "google_compute_default_service_account" "default" {
-}
 // Cluster settings from module common-vars
 variable "Settings" {}
 variable "Cluster" {}
