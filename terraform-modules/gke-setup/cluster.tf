@@ -3,7 +3,7 @@ resource "google_container_cluster" "cluster" {
   provider = google-beta
 
   name                      = "${var.Cluster}-${var.Color}"
-  location                  = var.Settings.clusters[var.Cluster].region
+  location                  = local.gkeRegion
   network                   = data.google_compute_network.vpc.self_link
   subnetwork                = google_compute_subnetwork.net.name
   default_max_pods_per_node = var.Settings.clusters[var.Cluster][var.Color].pods_per_node
@@ -105,7 +105,7 @@ resource "google_container_node_pool" "nodepool_default" {
 
   provider = google-beta
   name     = "${var.Cluster}-${var.Color}-default"
-  location = var.Settings.clusters[var.Cluster].region
+  location = local.gkeRegion
   cluster  = google_container_cluster.cluster.name
   autoscaling {
     min_node_count = 1
@@ -150,7 +150,7 @@ resource "google_container_node_pool" "nodepool_additional" {
 
   provider = google-beta
   name     = "${var.Cluster}-${var.Color}-${each.key}"
-  location = var.Settings.clusters[var.Cluster].region
+  location = local.gkeRegion
   cluster  = google_container_cluster.cluster.name
 
   autoscaling {

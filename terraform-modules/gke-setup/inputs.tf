@@ -18,18 +18,19 @@ data "google_service_account" "me" {
 data "google_client_config" "default" {
 }
 
-
-
+data "google_compute_default_service_account" "default" {
+}
 // Cluster settings from module common-vars
 variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
 
 locals {
-  isPreemptible = lookup(var.Settings.clusters[var.Cluster][var.Color], "preemptible", true)
-  defaultMachineType = lookup(var.Settings.clusters[var.Cluster][var.Color], "defaultMachineType", "e2-standard-4")
-  additionalNodepools =  var.Settings.clusters[var.Cluster][var.Color].additionalNodepools
-  bluePods      = var.Settings.clusters[var.Cluster]["blue"].pods_subnet_range
-  greenPods     = var.Settings.clusters[var.Cluster]["green"].pods_subnet_range
-
+  isPreemptible       = lookup(var.Settings.clusters[var.Cluster][var.Color], "preemptible", true)
+  defaultMachineType  = lookup(var.Settings.clusters[var.Cluster][var.Color], "defaultMachineType", "e2-standard-4")
+  additionalNodepools = var.Settings.clusters[var.Cluster][var.Color].additionalNodepools
+  bluePods            = var.Settings.clusters[var.Cluster]["blue"].pods_subnet_range
+  greenPods           = var.Settings.clusters[var.Cluster]["green"].pods_subnet_range
+  gkeKmsVolumeKey     = var.Settings.clusters[var.Cluster].persistent_resources.gke_kms_volume_key
+  gkeRegion           = var.Settings.clusters[var.Cluster].region
 }
