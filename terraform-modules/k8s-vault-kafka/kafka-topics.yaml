@@ -7,9 +7,9 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
-    retention.ms: 2592000000
+    retention.ms: 592000000
 ---
 
 apiVersion: kafka.strimzi.io/v1beta2
@@ -21,7 +21,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -36,7 +36,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -52,7 +52,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -68,118 +68,10 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
-
----
-
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaTopic
-metadata:
-  name: minion.upsert
-  namespace: kafka
-  labels:
-    strimzi.io/cluster: kafka-cluster
-spec:
-  partitions: 1
-  replicas: 1
-  config:
-    retention.ms: 2592000000
-
-
----
-
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaTopic
-metadata:
-  name: minion
-  namespace: kafka
-  labels:
-    strimzi.io/cluster: kafka-cluster
-spec:
-  partitions: 1
-  replicas: 1
-  config:
-    retention.ms: 2592000000
-
-
----
-
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaTopic
-metadata:
-  name: minion.sanitizer
-  namespace: kafka
-  labels:
-    strimzi.io/cluster: kafka-cluster
-spec:
-  partitions: 1
-  replicas: 1
-  config:
-    retention.ms: 2592000000
-
-
----
-
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaTopic
-metadata:
-  name: minion.mark
-  namespace: kafka
-  labels:
-    strimzi.io/cluster: kafka-cluster
-spec:
-  partitions: 1
-  replicas: 1
-  config:
-    retention.ms: 2592000000
-
----
-
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaTopic
-metadata:
-  name: dome.upsert
-  namespace: kafka
-  labels:
-    strimzi.io/cluster: kafka-cluster
-spec:
-  partitions: 1
-  replicas: 1
-  config:
-    retention.ms: 2592000000
-
----
-
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaTopic
-metadata:
-  name: dome
-  namespace: kafka
-  labels:
-    strimzi.io/cluster: kafka-cluster
-spec:
-  partitions: 1
-  replicas: 1
-  config:
-    retention.ms: 2592000000
-
----
-
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaTopic
-metadata:
-  name: dome.sanitizer
-  namespace: kafka
-  labels:
-    strimzi.io/cluster: kafka-cluster
-spec:
-  partitions: 1
-  replicas: 1
-  config:
-    retention.ms: 2592000000
 
 ---
 
@@ -192,7 +84,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -207,7 +99,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -222,7 +114,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -238,7 +130,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -253,7 +145,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -268,7 +160,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -283,7 +175,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -298,7 +190,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -313,7 +205,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -328,7 +220,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -343,7 +235,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     retention.ms: 2592000000
 
@@ -358,7 +250,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     max.message.bytes: 1048576
     retention.ms: 2592000000
@@ -374,7 +266,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     max.message.bytes: 1048576
     retention.ms: 2592000000
@@ -390,7 +282,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     max.message.bytes: 1048576
     retention.ms: 2592000000
@@ -406,7 +298,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
-  replicas: 1
+  replicas: 2
   config:
     max.message.bytes: 1048576
     retention.ms: 2592000000
