@@ -9,7 +9,7 @@ variable "Settings" {}
 variable "Color" {}
 variable "Cluster" { }
 locals{
-  version = var.Settings[var.Cluster][var.Color].elasticsearch.cluster.monitoring
+  version = var.Settings.clusters[var.Cluster][var.Color].elasticsearch.cluster.monitoring
  }
 
 
