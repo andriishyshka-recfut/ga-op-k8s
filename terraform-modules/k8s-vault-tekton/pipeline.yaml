@@ -95,6 +95,7 @@ spec:
         name: tg-run
       runAfter:
       - namespaces
+      - minio
       workspaces:
         - name: ws
           workspace: ws
