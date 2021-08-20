@@ -6,6 +6,9 @@ resource "vault_policy" "tekton" {
 path "secret/data/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/elasticsearch-admin/*" {
+  capabilities = ["read","list","create","update"]
+}
 path "auth/token/create" {
   capabilities=["update"]
 }
