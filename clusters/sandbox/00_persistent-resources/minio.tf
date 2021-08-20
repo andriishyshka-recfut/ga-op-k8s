@@ -25,7 +25,7 @@ resource "vault_generic_secret" "minio_sa" {
   data_json = <<EOT
 {
   "gcs_key" : "${ google_service_account_key.minio_key.private_key }"
-
+}
 EOT
 
 }

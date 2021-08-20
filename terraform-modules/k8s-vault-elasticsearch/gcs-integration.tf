@@ -1,6 +1,3 @@
-data "google_service_account" "es_server" {
-  account_id = "elastic-backup"
-}
 
 locals {
   gcsIntegrationRepo = <<EOT
@@ -19,10 +16,8 @@ EOT
 EOT
 }
 
-resource "google_service_account_key" "es_key" {
-  service_account_id = data.google_service_account.es_server.name
-  # key_algorithm      = "KEY_ALG_RSA_2048"
-  # public_key_type    = "TYPE_X509_PEM_FILE"
+data "vault_generic_secret" "elastic_sa" {
+  path = "secret/sa/elastic"
 }
 
 resource "kubernetes_secret" "gcs_es_credentional" {
@@ -33,7 +28,7 @@ resource "kubernetes_secret" "gcs_es_credentional" {
     namespace = local.esValues.namespace
   }
   data = {
-    "gcs.client.default.credentials_file" = base64decode(google_service_account_key.es_key.private_key)
+    "gcs.client.default.credentials_file" = base64decode(data.vault_generic_secret.elastic_sa.data.gcs_key)
   }
   type = "general"
 }
