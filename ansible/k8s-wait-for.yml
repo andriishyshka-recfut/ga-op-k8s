@@ -1,6 +1,7 @@
 - hosts: localhost
   connection: local
   become: False
+  gather_facts: no
   vars:
     kubernetes_host: "{{ lookup('env','HOST') }}"
     kubernetes_ca_cert: "{{ lookup('env','CLUSTER_CA_CERTIFICATE') }}"
