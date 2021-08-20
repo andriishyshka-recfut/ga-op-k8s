@@ -15,7 +15,7 @@ resource "vault_generic_secret" "es_admin_creds" {
   data_json = <<EOT
   {
     "username": "elastic",
-    "password": "${data.kubernetes_secret.es_password[0].data.elastic}"
+    "password": "${data.kubernetes_secret.es_password[0].elastic}"
   }
 EOT
 }
