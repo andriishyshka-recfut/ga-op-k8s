@@ -13,4 +13,5 @@ locals {
   currentProject  = var.Settings.gcpProject
   imageTag = var.Settings.clusters[var.Cluster][var.Color].minio.image_tag
   mcImageTag = var.Settings.clusters[var.Cluster][var.Color].minio.mc_image_tag
+  replicas = var.Settings.clusters[var.Cluster][var.Color].minio.replicas
 }

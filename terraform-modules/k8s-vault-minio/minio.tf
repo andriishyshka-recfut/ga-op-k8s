@@ -36,6 +36,10 @@ resource "helm_release" "minio" {
     file("${path.module}/minio_values.yaml")
   ]
   set {
+    name = "gcsgateway.replicas"
+    value = local.replicas
+  }
+  set {
     name  = "podAnnotations.sidecar\\.istio\\.io/inject"
     value = " False"
   }
