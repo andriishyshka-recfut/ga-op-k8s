@@ -91,7 +91,7 @@ resource "kubernetes_job" "configure_users_access" {
             name       = "policy"
           }
           volume_mount {
-            mount_path = "/etc/secret"
+            mount_path = "/etc/secret/"
             name       = "users"
           }
 
@@ -107,7 +107,7 @@ resource "kubernetes_job" "configure_users_access" {
           name = "users"
           secret {
             #key  = "policy_json"
-            name = "secret_name"
+            secret_name = "minio-users"
           }
         }
         restart_policy = "Never"
