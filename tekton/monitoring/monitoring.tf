@@ -9,12 +9,16 @@ module "monitoring-elastic" {
   ElasticSettings              = local.monitoringEs.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
+  Color                      = local.activeCluster
   Settings                     = var.Settings
   StoreEsPasswordInVault       = false
 }
 
 module "monitoring-agents" {
   source     = "../../terraform-modules/k8s-vault-monitoring-agents"
+  Cluster                      = var.Cluster
+  Color                      = local.activeCluster
+  Settings                     = var.Settings
   depends_on          = [module.monitoring-elastic]
 }
 

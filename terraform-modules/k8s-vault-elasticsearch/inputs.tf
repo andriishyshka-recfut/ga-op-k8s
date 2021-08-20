@@ -9,6 +9,8 @@ variable "Cluster" {}
 
 variable "Settings" {}
 
+variable "Color" {}
+
 
 
 locals {
@@ -17,6 +19,7 @@ locals {
   oidcRealmName          = lookup(var.ElasticSettings.elastic.oidc_gcloud, "oidc_realm_name", "")
   esValues               = var.ElasticSettings.elastic
   kibanaValues           = var.ElasticSettings.kibana
+  version = var.Settings[var.Cluster][var.Color].elasticsearch.cluster[local.esValues.esName]
   gcsSetup               = lookup(var.ElasticSettings.elastic, "gcs_enable", "no") == "yes" ? 1 : 0
   ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
     ANSIBLE_STDOUT_CALLBACK = "debug"

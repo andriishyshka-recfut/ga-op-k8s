@@ -17,5 +17,5 @@ locals {
     BASTION_DNS             = var.Settings.bastion_dns
   })
 
-  eckVersion = var.Settings.clusters[var.Cluster][var.Color].eck_version
+  eckVersion = var.Settings.clusters[var.Cluster][var.Color].elasticsearch.eck_version
 }

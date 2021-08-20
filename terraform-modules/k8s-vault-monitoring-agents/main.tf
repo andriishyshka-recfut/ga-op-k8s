@@ -5,6 +5,13 @@ locals {
 }
 
 
+variable "Settings" {}
+variable "Color" {}
+variable "Cluster" { }
+locals{
+  version = var.Settings[var.Cluster][var.Color].elasticsearch.cluster.monitoring
+ }
+
 
 
 resource "helm_release" "beat" {
@@ -16,5 +23,9 @@ resource "helm_release" "beat" {
   values = [
     yamlencode(local.beatsValues)
   ]
+  set {
+    name = "beatsVersion"
+    value = local.version
+  }
 
 }

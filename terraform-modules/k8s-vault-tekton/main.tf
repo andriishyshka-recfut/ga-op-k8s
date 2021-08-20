@@ -55,6 +55,9 @@ resource "null_resource" "harbor_creds" {
 COMMAND
   }
 
+depends_on = [
+  null_resource.deploy_tekton
+]
 }
 
 resource "null_resource" "crds" {
@@ -86,6 +89,7 @@ triggers = {
 COMMAND
   }
 depends_on = [
-  null_resource.deploy_tekton
+  null_resource.deploy_tekton,
+  null_resource.harbor_creds
 ]
 }

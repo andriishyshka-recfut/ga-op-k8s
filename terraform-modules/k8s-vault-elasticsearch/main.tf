@@ -9,6 +9,10 @@ resource "helm_release" "elasticsearch" {
     yamlencode(local.esValues),
     yamlencode(local.oidcConfig)
   ]
+  set{
+    name = "appVersion"
+    value = local.version
+  }
   depends_on = [
   ]
 }
@@ -44,6 +48,10 @@ resource "helm_release" "kibana" {
   values = [
     yamlencode(local.kibanaValues)
   ]
+  set {
+    name = "kibanaVersion"
+    value = local.version
+  }
   depends_on = [
     null_resource.ansible_validate_resources
   ]
@@ -59,7 +67,7 @@ resource "null_resource" "ansible_validate_kibana" {
   provisioner "local-exec" {
     command = <<COMMAND
     cd ${path.module}/../../ansible &&\
-    ansible-playbook validate_eck.yml 
+    ansible-playbook validate_eck.yml
 
 COMMAND
     environment = merge(local.ansibleEnvs, {
