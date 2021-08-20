@@ -22,8 +22,8 @@ resource "null_resource" "ansible_validate_resources" {
   provisioner "local-exec" {
     command = <<COMMAND
     cd ${path.module}/../../ansible &&\
-    ansible-playbook validate_eck.yml \
-      -e 'ansible_python_interpreter=/usr/bin/python3'
+    ansible-playbook validate_eck.yml
+
 COMMAND
     environment = merge(local.ansibleEnvs, {
       name       = local.esValues.esName
@@ -59,8 +59,8 @@ resource "null_resource" "ansible_validate_kibana" {
   provisioner "local-exec" {
     command = <<COMMAND
     cd ${path.module}/../../ansible &&\
-    ansible-playbook validate_eck.yml \
-      -e 'ansible_python_interpreter=/usr/bin/python3'
+    ansible-playbook validate_eck.yml 
+
 COMMAND
     environment = merge(local.ansibleEnvs, {
       name       = local.kibanaValues.name
