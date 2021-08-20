@@ -15,6 +15,10 @@ extra_arguments "custom_vars" {
   }
 }
 
+retryable_errors = [
+ "isn't valid for cluster, check the APIVersion and Kind fields are valid"
+]
+
 generate "provider" {
   path = "provider.tf"
   if_exists = "overwrite_terragrunt"
