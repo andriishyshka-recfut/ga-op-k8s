@@ -12,5 +12,4 @@ module "data-elastic" {
   Color                        = var.activeCluster
   Settings                     = var.Settings
   StoreEsPasswordInVault       = true
-  depends_on                   = [module.namespaces]
 }
