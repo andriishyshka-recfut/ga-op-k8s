@@ -16,7 +16,7 @@ spec:
         memory: 800M
   clusters:
   - alias: "my-source-cluster"
-    bootstrapServers: 10.101.0.18:31888
+    bootstrapServers: 10.201.1.222:31753
   - alias: "my-target-cluster"
     bootstrapServers: kafka-cluster-kafka-bootstrap:9092
     config:
@@ -26,7 +26,7 @@ spec:
   mirrors:
   - sourceCluster: "my-source-cluster"
     targetCluster: "my-target-cluster"
-    topicsPattern: "dome.*|minion.*|mage.*|union.*|urlscan.*|test.*"
+    topicsPattern: "mage.*|union.*|urlscan.*|test.*"
     groupsPattern: ".*"
     sourceConnector:
       config:
