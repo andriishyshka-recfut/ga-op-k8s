@@ -8,7 +8,8 @@ locals {
   "${replace(user,"@","-")}_policy.json" => jsonencode(jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).policy) })
 
   addPolicyCommand = <<EOF
-  set -x
+  set +x
+  set -e
   %{for user in keys(data.vault_generic_secret.users_credentials_from_vault.data)~}
   mc admin policy add minio ${user} /tmp/${replace(user,"@","-")}_policy.json
   mc admin user add minio ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).accessKey} ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).secretKey}
