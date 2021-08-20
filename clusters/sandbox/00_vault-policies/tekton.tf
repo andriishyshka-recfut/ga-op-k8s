@@ -9,6 +9,14 @@ path "secret/data/*" {
 path "auth/token/create" {
   capabilities=["update"]
 }
-
+path "auth/k8s-sandbox-green/role/*" {
+  capabilities=["create","update","read","list"]
+}
+path "auth/k8s-sandbox-blue/role/*" {
+  capabilities=["create","update","read","list"]
+}
+path "sys/auth" {
+  capabilities = ["read","list"]
+}
 EOT
 }
