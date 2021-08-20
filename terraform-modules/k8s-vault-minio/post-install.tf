@@ -84,7 +84,7 @@ resource "kubernetes_job" "configure_users_access" {
           }
           env {
             name  = "POLICY_MD5"
-            value = md5(tostring(local.policiesConfigMapData))
+            value = md5(jsonencode(local.policiesConfigMapData))
           }
           volume_mount {
             mount_path = "/tmp/"
