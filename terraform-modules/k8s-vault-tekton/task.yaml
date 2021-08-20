@@ -52,7 +52,8 @@ spec:
        cd $(workspaces.ws.path)
        git clone --single-branch --branch $(params.branch) https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
 
-       cd $(workspaces.ws.path)/$(params.path)
-       id
+       source /ansible/bin/activate
        export HOME=$(workspaces.ws.path)
+         
+       cd $(workspaces.ws.path)/$(params.path)
        terragrunt init && terragrunt apply -auto-approve

@@ -22,6 +22,7 @@ COPY --from=ansible /ansible /ansible
 
 RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git && \
     chmod +x /bin/kubectl && chmod +x /bin/terragrunt && \
+    adduser -u 10123 executor -S && \
     mkdir -p /home/runner/workdir && mkdir /home/fake && chmod 777 /home/fake
 
 USER 10123
