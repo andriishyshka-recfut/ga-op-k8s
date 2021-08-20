@@ -9,7 +9,7 @@ module "data-elastic" {
   ElasticSettings              = local.dataEs.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
-  Color                        = var.activeCluster
+  Color                        = local.activeCluster
   Settings                     = var.Settings
   StoreEsPasswordInVault       = true
 }
