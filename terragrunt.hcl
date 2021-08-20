@@ -63,5 +63,15 @@ provider "kubernetes" {
   token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
 }
 
+terraform {
+  # The configuration for this backend will be filled in by Terragrunt
+  backend "kubernetes" {
+    secret_suffix    = "${element(split("/",get_terragrunt_dir()),length(split("/",get_terragrunt_dir()))-1)}-state"
+    namespace = "tekton-pipelines"
+    load_config_file = false
+  }
+}
+
+
 EOF
 }
