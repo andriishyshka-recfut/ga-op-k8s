@@ -53,4 +53,4 @@ spec:
        git clone --single-branch --branch $(params.branch) https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
 
        cd $(workspaces.ws.path)/$(params.path)
-       terragrunt init && cat provider.tf && terragrunt apply -auto-approve
+       terragrunt init && terragrunt apply -auto-approve

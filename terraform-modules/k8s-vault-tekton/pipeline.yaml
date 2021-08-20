@@ -19,13 +19,45 @@ spec:
         - name: branch
           value: "\\#47_minio_caching"
 
-    # - name: minio
-    #   taskRef:
-    #     name: tg-run
-    #   runAfter:
-    #   - namespaces
-    #   params:
-    #     - name: path
-    #       value: "k8s/tekton/minio"
-    #     - name: branch
-    #       value: "\\#47_minio_caching"
+    - name: minio
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/minio"
+        - name: branch
+          value: "\\#47_minio_caching"
+
+    - name: mongo
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      - minio
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/mongo"
+        - name: branch
+          value: "\\#47_minio_caching"
+
+    - name: kafka
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/kafka"
+        - name: branch
+          value: "\\#47_minio_caching"

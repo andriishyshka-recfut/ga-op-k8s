@@ -45,10 +45,6 @@ data "vault_generic_secret" "k8s_auth" {
   path = local.activeClusterVaultPath
 }
 
-data "vault_generic_secret" "k8s_auth_inactive" {
-  path = local.inactiveClusterVaultPath
-}
-
 provider "helm" {
   kubernetes {
     host                   = data.vault_generic_secret.k8s_auth.data.HOST
