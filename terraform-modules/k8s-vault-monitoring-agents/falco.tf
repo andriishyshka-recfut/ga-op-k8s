@@ -27,7 +27,7 @@ resource "helm_release" "falco" {
   }
   set {
     name  = "resources.requests.memory"
-    value = "300Mi"
+    value = "30Mi"
   }
   # https://github.com/falcosecurity/falco/issues/669
   set {
