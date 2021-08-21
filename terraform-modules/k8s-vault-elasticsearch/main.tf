@@ -52,6 +52,10 @@ resource "helm_release" "kibana" {
     name = "kibanaVersion"
     value = local.version
   }
+  set {
+    name = "oidc_provider.istio_gateway_fqdn"
+    value = local.monUrl
+  }
   depends_on = [
     null_resource.ansible_validate_resources
   ]

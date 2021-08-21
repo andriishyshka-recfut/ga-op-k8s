@@ -23,7 +23,7 @@ xpack.security.authc.token.enabled: true
 xpack.security.authc.realms.oidc.${local.oidcRealmName}:
         order: 2
         rp.response_type: code
-        rp.redirect_uri: https://${local.kibanaValues.oidc_provider.istio_gateway_fqdn}/api/security/oidc/callback
+        rp.redirect_uri: https://${local.monUrl}/api/security/oidc/callback
         op.issuer: https://accounts.google.com
         op.authorization_endpoint: https://accounts.google.com/o/oauth2/v2/auth
         op.token_endpoint: https://oauth2.googleapis.com/token
