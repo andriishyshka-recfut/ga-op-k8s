@@ -302,3 +302,18 @@ spec:
   config:
     max.message.bytes: 1048576
     retention.ms: 2592000000
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: syncmage.events.attacker.url
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    max.message.bytes: 1048576
+    retention.ms: 2592000000
