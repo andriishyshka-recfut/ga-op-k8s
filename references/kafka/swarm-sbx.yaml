@@ -4,7 +4,7 @@ metadata:
   name: swarm-sbx
   namespace: kafka
 spec:
-  # cruiseControl: {}
+  cruiseControl: {}
   entityOperator:
     topicOperator: {}
     userOperator: {}
