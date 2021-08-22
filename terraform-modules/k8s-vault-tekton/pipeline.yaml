@@ -17,7 +17,7 @@ spec:
         - name: path
           value: "k8s/tekton/namespaces"
         - name: branch
-          value: "\\#47_minio_caching"
+          value: "master"
 
     - name: minio
       taskRef:
@@ -31,7 +31,7 @@ spec:
         - name: path
           value: "k8s/tekton/minio"
         - name: branch
-          value: "\\#47_minio_caching"
+          value: "master"
 
     - name: mongo
       taskRef:
@@ -46,7 +46,7 @@ spec:
         - name: path
           value: "k8s/tekton/mongo"
         - name: branch
-          value: "\\#47_minio_caching"
+          value: "master"
 
     - name: kafka
       taskRef:
@@ -60,7 +60,7 @@ spec:
         - name: path
           value: "k8s/tekton/kafka"
         - name: branch
-          value: "\\#47_minio_caching"
+          value: "master"
 
     - name: redis
       taskRef:
@@ -74,7 +74,7 @@ spec:
         - name: path
           value: "k8s/tekton/redis"
         - name: branch
-          value: "\\#47_minio_caching"
+          value: "master"
 
     - name: camel-k
       taskRef:
@@ -88,7 +88,7 @@ spec:
         - name: path
           value: "k8s/tekton/camel-k"
         - name: branch
-          value: "\\#47_minio_caching"
+          value: "master"
 
     - name: monitoring
       taskRef:
@@ -103,4 +103,4 @@ spec:
         - name: path
           value: "k8s/tekton/monitoring"
         - name: branch
-          value: "\\#47_minio_caching"
+          value: "master"
