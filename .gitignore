@@ -2,6 +2,7 @@
 terraform.tfstate*
 !/clusters/**/.terraform.lock.hcl
 
+tekton/**/provider.tf
 
 ssh-key*
 

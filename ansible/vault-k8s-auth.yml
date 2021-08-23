@@ -90,6 +90,14 @@
         bound_service_account_namespaces: ["kube-system"]
         mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
 
+    - name: Create k8s auth role for tekton
+      hashivault_k8s_auth_role:
+        name: "tekton"
+        policies: ["tekton"]
+        bound_service_account_names: ["default"]
+        bound_service_account_namespaces: ["tekton-pipelines"]
+        mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
+
     - name: Set k8s creds
       set_fact:
           k8s_creds:

@@ -6,7 +6,7 @@ data "kubectl_file_documents" "topics" {
 }
 
 resource "kubectl_manifest" "topics" {
-    count     = 23
+    count     = 21
     yaml_body = element(data.kubectl_file_documents.topics.documents, count.index)
     depends_on = [
       helm_release.kafka_cluster

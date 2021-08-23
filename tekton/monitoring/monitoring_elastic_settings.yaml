@@ -5,7 +5,7 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "monitoring"
     namespace: "monitoring"
-    appVersion: "7.13.4"
+    appVersion: "7.14.0"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
     apm:
@@ -20,7 +20,7 @@ elastic_settings:
       enabled: "yes" # required for xpack.security.authc.token and oidc
     oidc_gcloud:
       enabled: "yes"
-      vault_path: "secret/oidc_google_test" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
+      vault_path: "secret/oidc_google_prod" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
       oidc_realm_name: "google"
       secret_name: "oidc"
       configmap_name: "oidc"
@@ -52,7 +52,7 @@ elastic_settings:
     name: kibana
     esName: "monitoring"
     namespace: "monitoring"
-    kibanaVersion: "7.13.4"
+    kibanaVersion: "7.14.0"
     oidc_provider:
       enabled: "yes"
       realm: "google"

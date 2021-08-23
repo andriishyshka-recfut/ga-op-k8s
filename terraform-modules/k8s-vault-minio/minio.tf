@@ -2,15 +2,8 @@
 data "vault_generic_secret" "root_credentials_from_vault" {
   path = local.vaultRootCredentialsPath
 }
-
-data "google_service_account" "minio_sa" {
-  account_id = local.minioServiceAccountId
-}
-
-resource "google_service_account_key" "minio_key" {
-  service_account_id = data.google_service_account.minio_sa.name
-  key_algorithm      = "KEY_ALG_RSA_2048"
-  public_key_type    = "TYPE_X509_PEM_FILE"
+data "vault_generic_secret" "minio_sa" {
+  path = "secret/sa/minio"
 }
 
 resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {
@@ -22,7 +15,7 @@ resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {
   data = {
     "accesskey"    = data.vault_generic_secret.root_credentials_from_vault.data.accessKey
     "secretkey"    = data.vault_generic_secret.root_credentials_from_vault.data.secretKey
-    "gcs_key.json" = base64decode(google_service_account_key.minio_key.private_key)
+    "gcs_key.json" = base64decode(data.vault_generic_secret.minio_sa.data.gcs_key)
   }
 
 }
@@ -42,6 +35,10 @@ resource "helm_release" "minio" {
   values = [
     file("${path.module}/minio_values.yaml")
   ]
+  set {
+    name = "gcsgateway.replicas"
+    value = local.replicas
+  }
   set {
     name  = "podAnnotations.sidecar\\.istio\\.io/inject"
     value = " False"

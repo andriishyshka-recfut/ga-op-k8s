@@ -5,23 +5,26 @@ locals {
 
 
 module "monitoring-elastic" {
-  source                       = "../../../terraform-modules/k8s-vault-elasticsearch"
+  source                       = "../../terraform-modules/k8s-vault-elasticsearch"
   ElasticSettings              = local.monitoringEs.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
+  Color                      = local.activeCluster
   Settings                     = var.Settings
   StoreEsPasswordInVault       = false
-  depends_on                   = [module.namespaces, module.minio]
 }
 
 module "monitoring-agents" {
-  source     = "../../../terraform-modules/k8s-vault-monitoring-agents"
-  depends_on = [module.monitoring-elastic]
+  source     = "../../terraform-modules/k8s-vault-monitoring-agents"
+  Cluster                      = var.Cluster
+  Color                      = local.activeCluster
+  Settings                     = var.Settings
+  depends_on          = [module.monitoring-elastic]
 }
 
 module "prometheus" {
-  source              = "../../../terraform-modules/k8s-vault-prometheus"
-  OidcSecretVaultPath = "secret/oidc_google_test"
+  source              = "../../terraform-modules/k8s-vault-prometheus"
+  OidcSecretVaultPath = "secret/oidc_google_prod"
   Settings            = var.Settings
   Cluster             = var.Cluster
   Color               = local.activeCluster

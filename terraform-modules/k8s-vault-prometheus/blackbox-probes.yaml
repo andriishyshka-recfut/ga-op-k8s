@@ -41,6 +41,7 @@ spec:
       - https://danske.regemini.com/
       - https://greendot.regemini.com/
       - https://jpmc.regemini.com/
+      - https://geminiadvisory.io
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
