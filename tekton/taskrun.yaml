@@ -13,4 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/monitoring"
     - name: branch
-      value: "\\#47_minio_caching"
+      value: "master"
