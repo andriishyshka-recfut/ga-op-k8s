@@ -64,11 +64,11 @@ resource "google_compute_firewall" "wireguard_https" {
   network   = google_compute_network.wireguard.name
   direction = "INGRESS"
   source_ranges = [
-    "69.164.208.72/32",  // - Outline VPN
-    "35.242.253.39/32",  // sandbox-old
-    "78.26.204.32/32", // stepan
+    "69.164.208.72/32", // - Outline VPN
+    "35.242.253.39/32", // sandbox-old
+    "78.26.204.32/32",  // stepan
     "${google_compute_address.envoy.address}/32",
-    "${google_compute_address.wireguard.address}/32"]
+  "${google_compute_address.wireguard.address}/32"]
 
   allow {
     protocol = "tcp"
@@ -87,16 +87,16 @@ resource "google_compute_firewall" "bastion_ssh_https" {
     "69.164.208.72/32",  // - Outline VPN
     "35.185.38.145/32",  // - Captcha resolver service
     "35.188.246.238/32", // prod nat
-    "34.85.254.253/32",// prod nat
+    "34.85.254.253/32",  // prod nat
     "35.242.253.39/32",  // sandbox-old
     "35.196.5.12/32",    //app11.digaweb.com
     "35.185.38.145/32",  //app12.digaweb.com
     "34.86.87.120/32",   // bastion test account
     "34.86.176.12/32",   // bastion test account
-    "78.26.204.32/32", // stepan
-    "34.86.175.17/32", //test account nat ip
+    "78.26.204.32/32",   // stepan
+    "34.86.175.17/32",   //test account nat ip
     "${google_compute_address.envoy.address}/32",
-    "${google_compute_address.wireguard.address}/32"]
+  "${google_compute_address.wireguard.address}/32"]
 
   allow {
     protocol = "tcp"
@@ -105,19 +105,48 @@ resource "google_compute_firewall" "bastion_ssh_https" {
 
   target_tags = ["dmz"]
 }
+
+resource "google_compute_firewall" "bastion_cloudflare" {
+  name      = "bastion-cloudflare"
+  network   = google_compute_network.vpc.name
+  direction = "INGRESS"
+  source_ranges = [
+    "173.245.48.0/20",
+    "103.21.244.0/22",
+    "103.22.200.0/22",
+    "103.31.4.0/22",
+    "141.101.64.0/18",
+    "108.162.192.0/18",
+    "190.93.240.0/20",
+    "188.114.96.0/20",
+    "197.234.240.0/22",
+    "198.41.128.0/17",
+    "162.158.0.0/15",
+    "104.16.0.0/13",
+    "104.24.0.0/14",
+    "172.64.0.0/13",
+  "131.0.72.0/22"]
+  allow {
+    protocol = "tcp"
+    ports    = ["443"]
+  }
+
+  target_tags = ["dmz"]
+}
+
 resource "google_compute_firewall" "bastion_tor_proxy" {
-  name          = "bastion-tor-proxy"
-  network       = google_compute_network.vpc.name
-  direction     = "INGRESS"
+  name      = "bastion-tor-proxy"
+  network   = google_compute_network.vpc.name
+  direction = "INGRESS"
   source_ranges = ["78.26.204.32/32",
-                   "69.164.208.72/32",
-                   "78.46.86.231/32",
-                   "138.201.188.166/32", //2captcha proxy gate
-                   "34.86.175.17/32", //test account nat ip
-                   "35.188.246.238/32", // prod nat
-                   "34.85.254.253/32",// prod nat
-                   "${google_compute_address.envoy.address}/32",
-                   "${google_compute_address.wireguard.address}/32"  ]
+    "69.164.208.72/32",
+    "78.46.86.231/32",
+    "138.201.188.166/32", //2captcha proxy gate
+    "34.86.175.17/32",    //test account nat ip
+    "35.188.246.238/32",  // prod nat
+    "34.85.254.253/32",   // prod nat
+    "${google_compute_address.envoy.address}/32",
+  "${google_compute_address.wireguard.address}/32"]
 
   allow {
     protocol = "tcp"
@@ -156,9 +185,9 @@ resource "google_compute_firewall" "bastion_http2" {
 }
 
 resource "google_compute_firewall" "bastion_vpn" {
-  name      = "bastion-vpn"
-  network   = google_compute_network.wireguard.name
-  direction = "INGRESS"
+  name          = "bastion-vpn"
+  network       = google_compute_network.wireguard.name
+  direction     = "INGRESS"
   source_ranges = ["0.0.0.0/0"]
 
   allow {

@@ -16,7 +16,7 @@ spec:
         memory: 800M
   clusters:
   - alias: "my-source-cluster"
-    bootstrapServers: 10.101.0.18:32100
+    bootstrapServers: 10.201.1.222:31753
   - alias: "my-target-cluster"
     bootstrapServers: swarm-sbx-kafka-bootstrap:9092
     config:

@@ -1,0 +1,106 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: workloads
+  namespace: tekton-pipelines
+spec:
+  workspaces:
+  - name: ws
+  tasks:
+    - name: namespaces
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/namespaces"
+        - name: branch
+          value: "master"
+
+    - name: minio
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/minio"
+        - name: branch
+          value: "master"
+
+    - name: mongo
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      - minio
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/mongo"
+        - name: branch
+          value: "master"
+
+    - name: kafka
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/kafka"
+        - name: branch
+          value: "master"
+
+    - name: redis
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/redis"
+        - name: branch
+          value: "master"
+
+    - name: camel-k
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/camel-k"
+        - name: branch
+          value: "master"
+
+    - name: monitoring
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      - minio
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/monitoring"
+        - name: branch
+          value: "master"

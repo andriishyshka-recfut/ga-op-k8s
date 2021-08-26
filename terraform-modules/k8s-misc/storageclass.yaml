@@ -1,0 +1,14 @@
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    components.gke.io/layer: addon
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: kms-encrypted
+parameters:
+  disk-encryption-kms-key: KMS_KEY_ID
+  type: pd-balanced
+provisioner: pd.csi.storage.gke.io
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer

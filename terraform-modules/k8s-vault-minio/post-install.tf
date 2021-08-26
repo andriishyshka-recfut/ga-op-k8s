@@ -8,6 +8,8 @@ locals {
   "${replace(user,"@","-")}_policy.json" => jsonencode(jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).policy) })
 
   addPolicyCommand = <<EOF
+  set +x
+  set -e
   %{for user in keys(data.vault_generic_secret.users_credentials_from_vault.data)~}
   mc admin policy add minio ${user} /tmp/${replace(user,"@","-")}_policy.json
   mc admin user add minio ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).accessKey} ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).secretKey}
@@ -26,7 +28,17 @@ resource "kubernetes_config_map" "policy" {
   data = local.policiesConfigMapData
 }
 
+resource "kubernetes_secret" "minio_users_secret" {
+  metadata {
+    name      = "minio-users"
+    namespace = local.minioNs
+  }
 
+  data = {
+    "users.sh"    = local.addPolicyCommand
+  }
+
+}
 
 resource "kubernetes_job" "configure_users_access" {
   metadata {
@@ -44,7 +56,7 @@ resource "kubernetes_job" "configure_users_access" {
         container {
           name    = "mc"
           image   = "minio/mc:${local.mcImageTag}"
-          command = ["sh", "-c", local.addPolicyCommand]
+          command = ["bash", "/etc/secret/users.sh"]
           env {
             name = "accesskey"
             value_from {
@@ -67,9 +79,21 @@ resource "kubernetes_job" "configure_users_access" {
             name  = "MC_HOST_minio"
             value = "http://$(accesskey):$(secretkey)@minio:9000"
           }
+          env {
+            name  = "USERS_MD5"
+            value = md5(local.addPolicyCommand)
+          }
+          env {
+            name  = "POLICY_MD5"
+            value = md5(jsonencode(local.policiesConfigMapData))
+          }
           volume_mount {
             mount_path = "/tmp/"
             name       = "policy"
+          }
+          volume_mount {
+            mount_path = "/etc/secret/"
+            name       = "users"
           }
 
         }
@@ -78,6 +102,13 @@ resource "kubernetes_job" "configure_users_access" {
           config_map {
             #key  = "policy_json"
             name = "policy"
+          }
+        }
+        volume {
+          name = "users"
+          secret {
+            #key  = "policy_json"
+            secret_name = "minio-users"
           }
         }
         restart_policy = "Never"

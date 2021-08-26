@@ -1,6 +1,3 @@
-data "google_service_account" "es_server" {
-  account_id = "elastic-backup"
-}
 
 locals {
   gcsIntegrationRepo = <<EOT
@@ -15,14 +12,12 @@ locals {
   '
 EOT
   gcsFullBackup      = <<EOT
-  until curl --head localhost:15000 ; do echo Waiting for Sidecar; sleep 3 ; done ; echo Sidecar available; curl -s -i -k -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/gcs/%3Ces_full_%7Bnow%2Fd%7D%3E?wait_for_completion=true" | tee /dev/stderr | grep "200 OK"
+  until curl --head localhost:15000 ; do echo Waiting for Sidecar; sleep 3 ; done ; echo Sidecar available;curl -s -i -k -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/gcs/%3Ces_full_%7Bnow%2Fd%7D%3E?wait_for_completion=true" | tee /dev/stderr | grep "200 OK" && curl -XPOST "http://localhost:15000/quitquitquit"
 EOT
 }
 
-resource "google_service_account_key" "es_key" {
-  service_account_id = data.google_service_account.es_server.name
-  # key_algorithm      = "KEY_ALG_RSA_2048"
-  # public_key_type    = "TYPE_X509_PEM_FILE"
+data "vault_generic_secret" "elastic_sa" {
+  path = "secret/sa/elastic"
 }
 
 resource "kubernetes_secret" "gcs_es_credentional" {
@@ -33,7 +28,7 @@ resource "kubernetes_secret" "gcs_es_credentional" {
     namespace = local.esValues.namespace
   }
   data = {
-    "gcs.client.default.credentials_file" = base64decode(google_service_account_key.es_key.private_key)
+    "gcs.client.default.credentials_file" = base64decode(data.vault_generic_secret.elastic_sa.data.gcs_key)
   }
   type = "general"
 }
