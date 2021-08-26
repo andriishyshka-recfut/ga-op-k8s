@@ -23,17 +23,17 @@ spec:
       type: nodeport
       configuration:
         bootstrap:
-          nodePort: 32100
+          nodePort: 32110
         brokers:
         - broker: 0
           advertisedHost: broker-0.t.regemini.io
-          nodePort: 32200
+          nodePort: 32210
         - broker: 1
           advertisedHost: broker-1.t.regemini.io
-          nodePort: 32201
+          nodePort: 32211
         - broker: 2
           advertisedHost: broker-2.t.regemini.io
-          nodePort: 32202
+          nodePort: 32212
     - name: plain
       port: 9092
       tls: false

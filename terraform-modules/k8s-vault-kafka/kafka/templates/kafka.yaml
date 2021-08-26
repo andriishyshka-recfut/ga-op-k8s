@@ -31,10 +31,23 @@ spec:
         cpu: 0.1
         memory: 300M
     listeners:
-      - name: external
-        type: nodeport
-        port: 9094
-        tls: false
+    - name: external
+      port: 9094
+      tls: false
+      type: nodeport
+      configuration:
+        bootstrap:
+          nodePort: 32100
+        brokers:
+        - broker: 0
+          advertisedHost: broker-0.t.regemini.io
+          nodePort: 32200
+        - broker: 1
+          advertisedHost: broker-1.t.regemini.io
+          nodePort: 32201
+        - broker: 2
+          advertisedHost: broker-2.t.regemini.io
+          nodePort: 32202
       - name: plain
         port: 9092
         type: internal
