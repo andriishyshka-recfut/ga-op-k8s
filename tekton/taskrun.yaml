@@ -11,11 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/monitoring"
-<<<<<<< HEAD
-    # - name: branch
-    #   value: "\\#47_minio_caching"
-=======
+      value: "k8s/tekton/namespaces"
     - name: branch
-      value: "master"
->>>>>>> 500fc42862e2bcd5f3dde9ba7a9b1b0d91ace1d3
+      value: "\\#71_kafka"

@@ -7,6 +7,7 @@ locals {
   # [ "maid","magescanner", "crypto", ... ]
   namespaceNames = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name]
+    if can(namespace.skipNsCreation) == false
   ]))
 
   #  {  crypto  = [[ "andrei.lavrenyuk@geminiadvisory.io",     ],] }
