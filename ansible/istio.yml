@@ -47,6 +47,8 @@
         --set components.ingressGateways[0].k8s.hpaSpec.minReplicas=2 \
         --set components.ingressGateways[0].name=istio-ingressgateway \
         --set components.ingressGateways[0].k8s.service.type=NodePort \
+        --set components.ingressGateways[0].k8s.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchLabels.app=istio-ingressgateway \
+        --set components.ingressGateways[0].k8s.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey="topology.kubernetes.io/zone" \
           1> {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml &&\
         sed 's/ "cpu": "100m"/ "cpu": "10m"/' -i {{ temp_dir }}/{{ cluster_name }}_install-manifest.yaml
     args:
