@@ -261,8 +261,8 @@ resource "kubectl_manifest" "default_setting_topics" {
     for_each = toset(local.defaultSettingTopicsList)
     yaml_body = templatefile("${path.module}/topic-default.yaml", {
       config = {
-        TOPIC_NAME = each.key
-        TOPIC_RFC_1123_NAME = replace(each.key,"_",".")
+        "TOPIC_NAME" = each.key
+        "TOPIC_RFC_1123_NAME" = replace(each.key,"_",".")
         }})
     depends_on = [
       helm_release.kafka_cluster
