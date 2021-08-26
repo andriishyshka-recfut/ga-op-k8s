@@ -259,7 +259,11 @@ locals{
 
 resource "kubectl_manifest" "default_setting_topics" {
     count     = length(local.defaultSettingTopicsList)
-    yaml_body = replace(file("${path.module}/topic-default.yaml"),"TOPIC_NAME",element(local.defaultSettingTopicsList, count.index))
+    yaml_body = templatefile("${path.module}/topic-default.yaml", {
+      config = {
+        TOPIC_NAME = element(local.defaultSettingTopicsList, count.index)
+        TOPIC_RFC_1123_NAME = replace(element(local.defaultSettingTopicsList, count.index),"_",".")
+        }})
     depends_on = [
       helm_release.kafka_cluster
     ]
