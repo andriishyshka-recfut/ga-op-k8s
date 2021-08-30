@@ -1,7 +1,7 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaMirrorMaker2
 metadata:
-  name: my-mirror-maker-2
+  name: mm-2
   namespace: kafka
 spec:
   version: 2.7.0
@@ -18,7 +18,7 @@ spec:
   - alias: "my-source-cluster"
     bootstrapServers: 10.201.1.222:31753
   - alias: "my-target-cluster"
-    bootstrapServers: kafka-cluster-kafka-bootstrap:9092
+    bootstrapServers: swarm-sbx-kafka-bootstrap:9092
     config:
       config.storage.replication.factor: 1
       offset.storage.replication.factor: 1
@@ -26,7 +26,7 @@ spec:
   mirrors:
   - sourceCluster: "my-source-cluster"
     targetCluster: "my-target-cluster"
-    topicsPattern: "mage.*|union.*|urlscan.*|test.*"
+    topicsPattern: "minion.*|dome.*|crypto.*|artifact"
     groupsPattern: ".*"
     sourceConnector:
       config:

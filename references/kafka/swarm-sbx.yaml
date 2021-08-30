@@ -1,0 +1,102 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: swarm-sbx
+  namespace: kafka
+spec:
+  cruiseControl: {}
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+  kafka:
+    config:
+      log.message.format.version: "2.5"
+      message.max.bytes: 5000000
+      offsets.topic.replication.factor: 1
+      retention.ms: 2592000000
+      transaction.state.log.min.isr: 1
+      transaction.state.log.replication.factor: 1
+    listeners:
+    - name: external
+      port: 9094
+      tls: false
+      type: nodeport
+      configuration:
+        bootstrap:
+          nodePort: 32110
+        brokers:
+        - broker: 0
+          advertisedHost: broker-0.t.regemini.io
+          nodePort: 32210
+        - broker: 1
+          advertisedHost: broker-1.t.regemini.io
+          nodePort: 32211
+        - broker: 2
+          advertisedHost: broker-2.t.regemini.io
+          nodePort: 32212
+    - name: plain
+      port: 9092
+      tls: false
+      type: internal
+    replicas: 3
+    resources:
+      limits:
+        cpu: 1
+        memory: 2G
+      requests:
+        cpu: 0.1
+        memory: 300M
+    storage:
+      type: jbod
+      volumes:
+      - deleteClaim: false
+        id: 0
+        size: 50Gi
+        type: persistent-claim
+    template:
+      pod:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: workloadsType
+                  operator: In
+                  values:
+                  - data
+        tolerations:
+        - effect: NoSchedule
+          key: workloadsType
+          operator: Exists
+    version: 2.7.0
+  zookeeper:
+    replicas: 3
+    resources:
+      limits:
+        cpu: 1
+        memory: 2G
+      requests:
+        cpu: 0.1
+        memory: 100M
+    storage:
+      deleteClaim: false
+      size: 10Gi
+      type: persistent-claim
+    template:
+      pod:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: workloadsType
+                  operator: In
+                  values:
+                  - data
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: false
+        tolerations:
+        - effect: NoSchedule
+          key: workloadsType
+          operator: Exists
