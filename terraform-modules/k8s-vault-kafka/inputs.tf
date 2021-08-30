@@ -1,4 +1,7 @@
 variable "GkeClusterConnectionSettings" {}
+variable "Cluster" {}
+variable "Settings" {}
+
 
 locals {
   kafkaNs = "kafka"

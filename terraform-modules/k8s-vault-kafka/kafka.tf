@@ -19,6 +19,10 @@ resource "helm_release" "kafka_cluster" {
   namespace = local.kafkaNs
   wait      = true
   atomic    = true
+  set {
+    name = "subdomain"
+    value = "${var.Settings.clusters[var.Cluster].subdomain}.${ar.Settings.clusters[var.Cluster].domain}"
+  }
   depends_on = [
     helm_release.kafka_operator,
   ]

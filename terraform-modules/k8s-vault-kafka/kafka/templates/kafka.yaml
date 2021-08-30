@@ -44,13 +44,13 @@ spec:
           nodePort: 32100
         brokers:
         - broker: 0
-          advertisedHost: broker-0.t.regemini.io
+          advertisedHost: broker-0.{{ .Values.subdomain}}
           nodePort: 32200
         - broker: 1
-          advertisedHost: broker-1.t.regemini.io
+          advertisedHost: broker-1.{{ .Values.subdomain}}
           nodePort: 32201
         - broker: 2
-          advertisedHost: broker-2.t.regemini.io
+          advertisedHost: broker-2.{{ .Values.subdomain}}
           nodePort: 32202
     config:
       default.replication.factor: 2
