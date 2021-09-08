@@ -59,6 +59,7 @@ spec:
       transaction.state.log.min.isr: 1
       log.message.format.version: "2.5"
       message.max.bytes: 5000000
+      replica.fetch.max.bytes: 5500000
       retention.ms: 2592000000
     storage:
       type: jbod
