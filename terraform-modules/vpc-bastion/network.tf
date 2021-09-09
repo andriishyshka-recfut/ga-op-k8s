@@ -91,6 +91,7 @@ resource "google_compute_firewall" "bastion_ssh_https" {
     "35.242.253.39/32",  // sandbox-old
     "35.196.5.12/32",    //app11.digaweb.com
     "35.185.38.145/32",  //app12.digaweb.com
+    "34.74.154.117/32", //app13.digaweb.com
     "34.86.87.120/32",   // bastion test account
     "34.86.176.12/32",   // bastion test account
     "78.26.204.32/32",   // stepan
