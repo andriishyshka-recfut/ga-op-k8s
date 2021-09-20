@@ -23,6 +23,7 @@ resource "null_resource" "deploy_tekton" {
        --token ${local.gkeBearerToken}  \
        --insecure-skip-tls-verify=true  \
        --namespace=${local.tektonNs}  \
+       --filename https://storage.googleapis.com/tekton-releases/triggers/latest/interceptors.yaml
      kubectl --server ${local.gkeClusterEndpoint}  \
       --token ${local.gkeBearerToken}  \
       --insecure-skip-tls-verify=true  \
