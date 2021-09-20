@@ -2,7 +2,8 @@ existingSecret: "minio-credentials"
 
 replicas: 4
 
-extraArgs: ["--json"]
+extraArgs: ["--json "]
+# extraArgs: ["--json --console-address :9001"]
 
 persistence:
   enabled: false

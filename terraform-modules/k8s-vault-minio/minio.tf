@@ -28,9 +28,10 @@ resource "helm_release" "minio" {
   name       = "minio"
   chart      = "minio"
   repository = "https://helm.min.io/"
-  #version           = "0.1.0"
+  # version           = "3.1.1"
   namespace         = local.minioNs
   dependency_update = "true"
+  timeout = 120
 
   values = [
     file("${path.module}/minio_values.yaml")
@@ -54,6 +55,10 @@ resource "helm_release" "minio" {
   set {
     name = "environment.MINIO_DOMAIN"
     value = local.minioFqdn
+  }
+  set {
+    name = "environment.MINIO_BROWSER_REDIRECT_URL"
+    value = local.minioConsoleFqdn
   }
   set {
     name = "gcsgateway.projectId"

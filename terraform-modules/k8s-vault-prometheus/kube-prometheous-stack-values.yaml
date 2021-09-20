@@ -5,14 +5,28 @@ namespaceOverride: "monitoring"
 fullnameOverride: "prometheus"
 
 grafana:
+  envFromSecret: "monitoring-es-elastic-user"
+  additionalDataSources:
+    - name: "elastic"
+      type:  "elasticsearch"
+      url: "https://monitoring-es-http:9200"
+      database: "filebeat-*"
+      uid: elastic_uid
+      basicAuth: true
+      isDefault: false
+      access: proxy
+      basicAuthUser: elastic
+      jsonData:
+        esVersion: 70
+        timeField: "@timestamp"
+        tlsSkipVerify: true
+      secureJsonData:
+        basicAuthPassword: "$elastic"
   enabled: true
   namespaceOverride: "monitoring"
   podAnnotations:
     sidecar.istio.io/inject: "false"
-  adminPassword: prom-operator
   grafana.ini:
-    server:
-      root_url: https://grafana.p.regemini.io
     auth.google:
       enabled: true
       scopes: https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
@@ -26,6 +40,7 @@ grafana:
   - key: "workloadsType"
     operator: "Exists"
     effect: "NoSchedule"
+
 
 kube-state-metrics:
   namespaceOverride: "monitoring"

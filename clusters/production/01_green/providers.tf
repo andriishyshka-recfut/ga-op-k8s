@@ -31,9 +31,4 @@ terraform {
     bucket = "terraform-state-production111"
     prefix = "terraform-prod-green/state"
   }
-  required_providers {
-    kubernetes = {
-      version = "2.0.1"
-    }
-  }
 }

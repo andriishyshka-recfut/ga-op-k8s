@@ -5,7 +5,7 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "monitoring"
     namespace: "monitoring"
-    appVersion: "7.14.0"
+    appVersion: "7.14.1"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
     apm:
@@ -28,17 +28,37 @@ elastic_settings:
       - name: master
         config: |
           node.master: true
-          node.data: true
+          node.data: false
           node.ingest: true
           node.ml: true
           node.store.allow_mmap: false
           index.store.type: niofs
-          xpack.monitoring.collection.enabled: false
+          xpack.monitoring.collection.enabled: true
           xpack.security.authc.realms:
             native:
               native1:
                 order: 1
-        storageSize: "99Gi"
+        storageSize: "1Gi"
+        ES_JAVA_OPTS: -Xms2g -Xmx2g
+        nodesCount: 3
+        memoryRequests: "2Gi"
+        cpuRequests: "0.2"
+        memoryLimit: 2.5Gi
+        cpuLimit: 1
+      - name: data
+        config: |
+          node.master: false
+          node.data: true
+          node.ingest: false
+          node.ml: false
+          node.store.allow_mmap: false
+          index.store.type: niofs
+          xpack.monitoring.collection.enabled: true
+          xpack.security.authc.realms:
+            native:
+              native1:
+                order: 1
+        storageSize: "500Gi"
         ES_JAVA_OPTS: -Xms2g -Xmx2g
         nodesCount: 3
         memoryRequests: "2Gi"
@@ -52,7 +72,7 @@ elastic_settings:
     name: kibana
     esName: "monitoring"
     namespace: "monitoring"
-    kibanaVersion: "7.14.0"
+    kibanaVersion: "7.14.1"
     oidc_provider:
       enabled: "yes"
       realm: "google"

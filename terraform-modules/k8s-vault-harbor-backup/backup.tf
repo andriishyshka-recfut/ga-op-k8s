@@ -5,11 +5,10 @@ locals {
   apt-get update -q && apt-get install wget  redis-tools -yq ;
   wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
   chmod +x mc ;
-  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=registry   |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/registry.sql ;
-  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner  |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/notarysigner.sql ;
-  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver  |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/notaryserver.sql ;
-  # redis-cli -h harbor-harbor-redis  SAVE ;
-  # cat /redis/dump.rdb |  ./mc pipe backup/minio-xbackup-${local.currentProject}/harbor-backup/dump.rdb
+  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=registry   |  ./mc pipe backup/minio-xbackup-ardent-rarity-239115/harbor-backup/registry.sql ;
+  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner  |  ./mc pipe backup/minio-xbackup-ardent-rarity-239115/harbor-backup/notarysigner.sql ;
+  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver  |  ./mc pipe backup/minio-xbackup-ardent-rarity-239115/harbor-backup/notaryserver.sql ;
+
 EOF
 }
 
@@ -26,20 +25,6 @@ resource "kubernetes_job" "harbor_backup" {
         }
       }
       spec {
-        #     affinity {
-        #   pod_affinity {
-        #     required_during_scheduling_ignored_during_execution {
-        #       label_selector {
-        #         match_expressions {
-        #           key      = "component"
-        #           operator = "In"
-        #           values   = ["redis"]
-        #         }
-        #       }
-        #       topology_key = "kubernetes.io/hostname"
-        #     }
-        #   }
-        # }
 
         container {
           name    = "dump"

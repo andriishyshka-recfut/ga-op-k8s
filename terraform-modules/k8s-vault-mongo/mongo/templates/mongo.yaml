@@ -26,7 +26,7 @@ spec:
     serverHost: monitoring-service
   replsets:
   - name: rs0
-    size: 3
+    size: {{ .Values.replicas }}
     annotations:
         sidecar.istio.io/proxyCPU: 5m
         sidecar.istio.io/proxyMemory: 30M
@@ -89,7 +89,7 @@ spec:
 #        accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
-            storage: 40Gi
+            storage: {{ .Values.volumeSize }}
   mongod:
     net:
       port: 27017
@@ -136,7 +136,7 @@ spec:
     enabled: true
     restartOnFailure: true
     image: percona/percona-server-mongodb-operator:1.5.0-backup
-    serviceAccountName: percona-server-mongodb-operator
+    serviceAccountName: psmdb-operator
 #    resources:
 #      limits:
 #        cpu: "300m"
@@ -148,16 +148,16 @@ spec:
      minio:
        type: s3
        s3:
-         bucket: minio-{{.Values.currentProject}}
+         bucket: {{.Values.BackupBucket}}
          region: minio
          credentialsSecret: mongo-backup
          endpointUrl: http://minio.minio:9000/
-    tasks:
-#      - name: daily-s3-us-west
-#        enabled: true
-#        schedule: "0 0 * * *"
-#        storageName: s3-us-west
-#        compressionType: gzip
+    # tasks:
+    #  - name: daily-minio
+    #    enabled: true
+    #    schedule: "0 0 * * *"
+    #    storageName: minio
+    #    compressionType: gzip
 #      - name: weekly-s3-us-west
 #        enabled: false
 #        schedule: "0 0 * * 0"

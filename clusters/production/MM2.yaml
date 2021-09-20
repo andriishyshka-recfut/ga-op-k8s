@@ -6,7 +6,7 @@ metadata:
 spec:
   version: 2.7.0
   replicas: 1
-  connectCluster: "my-target-cluster"
+  connectCluster: "target"
   resources:
       limits:
         cpu: 2
@@ -15,32 +15,34 @@ spec:
         cpu: 0.1
         memory: 800M
   clusters:
-  - alias: "my-source-cluster"
-    bootstrapServers: 10.201.1.222:31753
-  - alias: "my-target-cluster"
-    bootstrapServers: swarm-sbx-kafka-bootstrap:9092
+  - alias: "source"
+    bootstrapServers: 10.200.0.18:32100
+  - alias: "target"
+    bootstrapServers: kafka-cluster-kafka-bootstrap:9092
     config:
-      config.storage.replication.factor: 1
-      offset.storage.replication.factor: 1
-      status.storage.replication.factor: 1
+      config.storage.replication.factor: 2
+      offset.storage.replication.factor: 2
+      status.storage.replication.factor: 2
   mirrors:
-  - sourceCluster: "my-source-cluster"
-    targetCluster: "my-target-cluster"
-    topicsPattern: "minion.*|dome.*|crypto.*|artifact"
+  - sourceCluster: "source"
+    targetCluster: "target"
+    topicsPattern: "mage.*|maid.*|syncmage.*|testcart.*|union.*|upsert.*|urlscan.*"
     groupsPattern: ".*"
     sourceConnector:
       config:
-        replication.factor: 1
-        offset-syncs.topic.replication.factor: 1
+        cluster.producer.enable.idempotence: true
+        cluster.producer.enable.idempotence: true
+        offset-syncs.topic.replication.factor: 2
         sync.topic.acls.enabled: "false"
         replication.policy.separator: ""
         replication.policy.class: "io.strimzi.kafka.connect.mirror.IdentityReplicationPolicy"
+        # replication.factor: 1
     heartbeatConnector:
       config:
         heartbeats.topic.replication.factor: 1
     checkpointConnector:
       config:
-        checkpoints.topic.replication.factor: 1
+        checkpoints.topic.replication.factor: 2
         replication.policy.separator: ""
         replication.policy.class: "io.strimzi.kafka.connect.mirror.IdentityReplicationPolicy"
         sync.group.offsets.enabled: "true"
