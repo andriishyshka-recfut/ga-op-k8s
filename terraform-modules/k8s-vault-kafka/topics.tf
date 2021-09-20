@@ -1,17 +1,17 @@
 
 
 
-data "kubectl_file_documents" "topics" {
-    content = file("${path.module}/kafka-topics.yaml")
-}
-
-resource "kubectl_manifest" "topics" {
-    count     = 21
-    yaml_body = element(data.kubectl_file_documents.topics.documents, count.index)
-    depends_on = [
-      helm_release.kafka_cluster
-    ]
-}
+# data "kubectl_file_documents" "topics" {
+#     content = file("${path.module}/kafka-topics.yaml")
+# }
+#
+# resource "kubectl_manifest" "topics" {
+#     count     = 21
+#     yaml_body = element(data.kubectl_file_documents.topics.documents, count.index)
+#     depends_on = [
+#       helm_release.kafka_cluster
+#     ]
+# }
 
 
 locals{
@@ -257,13 +257,13 @@ locals{
   ]
 }
 
-resource "kubectl_manifest" "default_setting_topics" {
-    for_each = toset(local.defaultSettingTopicsList)
-    yaml_body = templatefile("${path.module}/topic-default.yaml", {
-        "TOPIC_NAME" = each.key
-        "TOPIC_RFC_1123_NAME" = replace(each.key,"_",".")
-        })
-    depends_on = [
-      helm_release.kafka_cluster
-    ]
-}
+# resource "kubectl_manifest" "default_setting_topics" {
+#     for_each = toset(local.defaultSettingTopicsList)
+#     yaml_body = templatefile("${path.module}/topic-default.yaml", {
+#         "TOPIC_NAME" = each.key
+#         "TOPIC_RFC_1123_NAME" = replace(each.key,"_",".")
+#         })
+#     depends_on = [
+#       helm_release.kafka_cluster
+#     ]
+# }

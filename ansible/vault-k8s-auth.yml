@@ -63,6 +63,10 @@
           method_type: kubernetes
           mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
 
+    - name: Sleep for 10 seconds
+      pause:
+        seconds: 10
+
     - name: create config
       hashivault_k8s_auth_config:
           kubernetes_host: "{{ kubernetes_host }}"

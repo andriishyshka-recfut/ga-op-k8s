@@ -1,6 +1,8 @@
 
 // should be set with tfvars
 variable "Settings" {}
+variable "VaultAddress" {}
+variable "Cluster" {}
 variable "OidcDiscoveryUrl" { default = "SAMPLE" }
 variable "OidcClientId" { default = "SAMPLE" }
 variable "OidcClientSecret" { default = "SAMPLE" }
@@ -41,4 +43,13 @@ module "k8s-vault" {
   OidcClientId                 = var.OidcClientId
   OidcClientSecret             = var.OidcClientSecret
   depends_on                   = [module.k8s-istio, module.k8s-misc-operators]
+}
+
+module "k8s-vault-tekton" {
+  source                       = "../../../terraform-modules/k8s-vault-tekton"
+  GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  Cluster                      = "production"
+  Color                        = "green"
+  VaultAddress = var.VaultAddress
+  depends_on                   = [module.k8s-vault]
 }

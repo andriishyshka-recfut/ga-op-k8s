@@ -1,10 +1,14 @@
 variable "GkeClusterConnectionSettings" {}
+variable "Cluster" {}
+variable "Settings" {}
+
 
 locals {
   kafkaNs = "kafka"
   ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
     ANSIBLE_STDOUT_CALLBACK = "debug"
   })
+   diskSize = var.Cluster == "production" ? "700Gi" : "10Gi"
 }
 
 terraform {

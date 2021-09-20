@@ -5,6 +5,8 @@ kind: ApmServer
 metadata:
   name: apm-{{ .Values.esName }}
   namespace: {{ .Values.namespace  }}
+  annotations:
+    "helm.sh/hook": post-install
 spec:
   version: {{ .Values.appVersion }}
   count: 1

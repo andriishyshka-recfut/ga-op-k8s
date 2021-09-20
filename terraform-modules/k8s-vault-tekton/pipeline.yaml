@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: workloads
+  name: 01-workloads
   namespace: tekton-pipelines
 spec:
   workspaces:
@@ -102,5 +102,47 @@ spec:
       params:
         - name: path
           value: "k8s/tekton/monitoring"
+        - name: branch
+          value: "master"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 02-data-migration
+  namespace: tekton-pipelines
+spec:
+  workspaces:
+  - name: ws
+  tasks:
+    - name: data-migration
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/data-migration"
+        - name: branch
+          value: "master"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 03-fluxcd
+  namespace: tekton-pipelines
+spec:
+  workspaces:
+  - name: ws
+  tasks:
+    - name: fluxcd
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/fluxcd"
         - name: branch
           value: "master"

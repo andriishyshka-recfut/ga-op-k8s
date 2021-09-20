@@ -41,7 +41,10 @@ spec:
       - https://danske.regemini.com/
       - https://greendot.regemini.com/
       - https://jpmc.regemini.com/
+      - https://usss.regemini.com/
+      - https://creditone.regemini.com/
       - https://geminiadvisory.io
+      - https://cluster-info.t.regemini.io
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe

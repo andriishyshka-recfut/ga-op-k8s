@@ -31,4 +31,8 @@ resource "helm_release" "etcd" {
     name = "tolerations[0].effect"
     value = "NoSchedule"
   }
+  set {
+    name = "podAnnotations.sidecar\\.istio\\.io/inject"
+    value = " false"
+  }
 }

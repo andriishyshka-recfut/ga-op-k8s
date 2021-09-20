@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: tg-taskrun-
+  generateName: mongo-taskrun-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/monitoring"
-    # - name: branch
-    #   value: "\\#47_minio_caching"
+      value: "k8s/tekton/mongo"
+    - name: branch
+      value: "\\#99_dr18-09-2021"
