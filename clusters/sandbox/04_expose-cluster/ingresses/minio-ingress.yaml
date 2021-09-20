@@ -28,9 +28,18 @@ spec:
           servicePort: 777
         path: /minio/prometheus/*
         pathType: ImplementationSpecific
+  - host: minio-console.t.regemini.io
+    http:
+      paths:
+      - backend:
+          serviceName: minio-console
+          servicePort: 9001
+        path: /*
+        pathType: ImplementationSpecific
   tls:
   - hosts:
     - minio.t.regemini.io
+    - minio-console.t.regemini.io
     secretName: minio-cert2
 ---
 apiVersion: cert-manager.io/v1
@@ -43,6 +52,7 @@ spec:
   commonName: minio.t.regemini.io
   dnsNames:
   - minio.t.regemini.io
+  - minio-console.t.regemini.io
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer

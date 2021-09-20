@@ -2,6 +2,7 @@
 
 resource "helm_release" "elasticsearch" {
   name   = local.esValues.esName
+  namespace = local.esValues.namespace
   chart  = "${path.module}/elasticsearch"
   wait   = true
   atomic = true
@@ -42,6 +43,7 @@ COMMAND
 
 resource "helm_release" "kibana" {
   name   = local.kibanaValues.name
+  namespace = local.esValues.namespace
   chart  = "${path.module}/kibana"
   wait   = true
   atomic = true

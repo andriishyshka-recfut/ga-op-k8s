@@ -7,10 +7,10 @@ chmod +x mc ;
 source /vault/secrets/config ;
 %{ for setting in var.BackupSettings }
 %{ if setting.encrypt }
-/mc cp  backup/minio-xbackup-${local.currentProject}/mongod-backup/${setting.dbName}.gpg ${setting.dbName}.gpg;
+/mc cp  backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.gpg ${setting.dbName}.gpg;
 gpg -r Backup   -o ${setting.dbName}.tar.gz --decrypt ${setting.dbName}.gpg ;
 %{ else }
-/mc cp  backup/minio-xbackup-${local.currentProject}/mongod-backup/${setting.dbName}.tar.gz ${setting.dbName}.tar.gz;
+/mc cp  backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.tar.gz ${setting.dbName}.tar.gz;
 %{ endif }
 mongorestore --archive="${setting.dbName}.tar.gz" --gzip --uri=$MONGODB_URL --db ${setting.dbName} ;
 %{ endfor }
@@ -22,7 +22,7 @@ resource "kubernetes_job" "mongo_restore" {
 
   metadata {
     name      = "mongo-restore"
-    namespace = local.mongoNs
+    namespace = var.MongoNs
   }
   spec {
     ttl_seconds_after_finished = 270000

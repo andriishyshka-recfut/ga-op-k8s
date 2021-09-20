@@ -20,16 +20,22 @@ spec:
 {{- if eq .Values.nativeTLS.enabled "yes" }}
       certificate:
         secretName: {{ .Values.esName }}-es-cert
+    service:
+      spec:
+        ports:
+          - name: https
+            port: 9200
+            targetPort: 9200
  {{- else }}
       selfSignedCertificate:
          disabled: true
-{{- end }}
     service:
       spec:
         ports:
           - name: http
             port: 9200
             targetPort: 9200
+{{- end }}
   nodeSets:
 ## https://github.com/elastic/cloud-on-k8s/issues/2064#issuecomment-584033436
 # Istio should should be disabled for port 9300
@@ -45,7 +51,7 @@ spec:
         resources:
           requests:
             storage: {{ .storageSize }}
-        storageClassName: standard
+        storageClassName: kms-encrypted
     podTemplate:
       metadata:
         annotations:

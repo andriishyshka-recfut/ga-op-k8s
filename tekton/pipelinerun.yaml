@@ -2,10 +2,11 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: pipelinerun-
+  generateName: fluxcd-
+  namespace: tekton-pipelines
 spec:
   pipelineRef:
-    name: workloads
+    name: 03-fluxcd
   workspaces:
     - name: ws
       emptyDir: {}

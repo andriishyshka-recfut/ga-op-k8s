@@ -1,11 +1,11 @@
 
 resource "helm_release" "psmdb_operator" {
   name       = "psmdb-operator"
+  namespace = var.MongoNs
   chart      = "psmdb-operator"
   repository = "https://percona.github.io/percona-helm-charts/"
   wait       = true
   atomic     = true
-  namespace  = local.mongoNs
   timeout    = 900
 }
 
@@ -17,7 +17,7 @@ data "vault_generic_secret" "mongo_creds" {
 resource "kubernetes_secret" "mongo" {
   metadata {
     name      = "mongo"
-    namespace = local.mongoNs
+    namespace = var.MongoNs
   }
 
   data = data.vault_generic_secret.mongo_creds.data
@@ -31,7 +31,7 @@ data "vault_generic_secret" "minio_backup_user" {
 resource "kubernetes_secret" "mongo_backup" {
   metadata {
     name      = "mongo-backup"
-    namespace = local.mongoNs
+    namespace = var.MongoNs
   }
 
   data = {
@@ -40,15 +40,24 @@ resource "kubernetes_secret" "mongo_backup" {
   }
 
 }
+
 resource "helm_release" "mongo_cluster" {
   name      = "mongo-cluster"
   chart     = "${path.module}/mongo"
-  namespace = local.mongoNs
+  namespace = var.MongoNs
   wait      = true
   atomic    = true
   set {
-    name  = "currentProject"
-    value = local.currentProject
+    name  = "BackupBucket"
+    value = var.BackupBucket
+  }
+  set {
+    name = "volumeSize"
+    value = var.VolumeSize
+  }
+  set {
+    name = "replicas"
+    value = var.Replicas
   }
   depends_on = [
     helm_release.psmdb_operator,

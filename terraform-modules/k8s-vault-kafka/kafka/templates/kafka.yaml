@@ -66,7 +66,7 @@ spec:
       volumes:
       - id: 0
         type: persistent-claim
-        size: 500Gi
+        size: {{ .Values.diskSize }}
         deleteClaim: false
 
   zookeeper:

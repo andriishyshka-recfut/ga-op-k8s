@@ -1,0 +1,35 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: prometheus-kafka-lag.rules
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 1m
+    name: Kafka consumer lag
+    rules:
+    - expr: sum(rate(kafka_consumergroup_current_offset[60m])) by (consumergroup,topic)
+      record: kafka_consumer_rate
+    - expr: sum(kafka_consumergroup_lag{consumergroup=~"mage.*"}) by (consumergroup,topic)
+      record: kafka_consumer_lag
+    - alert: KafkaConsumerLagSeconds
+      annotations:
+        description: |
+          Kafka {{ $labels.topic }} lag is {{ $value }}
+        summary: Kafka consumer lag is increased or more than 100k (instance {{ $labels.instance
+          }})
+      expr: |
+        kafka_consumer_lag > 100000
+        # or
+        # kafka_consumer_rate > 30
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning

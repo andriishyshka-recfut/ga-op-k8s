@@ -7,15 +7,6 @@ metadata:
 spec:
   version: {{ .Values.kibanaVersion }}
   count: 1
-  containers:
-      - name: kibana
-        resources:
-          requests:
-            memory: 0.5Gi
-            cpu: 0.5
-          limits:
-            memory: 1Gi
-            cpu: 1
 
   elasticsearchRef:
     name: "{{ .Values.esName }}"
@@ -27,6 +18,16 @@ spec:
     metadata:
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+    spec:
+      containers:
+      - name: kibana
+        resources:
+          requests:
+            memory: 0.5Gi
+            cpu: 0.5
+          limits:
+            memory: 1Gi
+            cpu: 1
 {{- if eq .Values.oidc_provider.enabled "yes" }}
   config:
     xpack.security.authc.providers:

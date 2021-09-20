@@ -54,3 +54,10 @@ resource "kubernetes_config_map" "kafka_exporter_dashboard" {
   }
 
 }
+data "kubectl_file_documents" "rule_lag" {
+    content = file("${path.module}/kafka-lag-prometheusrule.yaml")
+}
+resource "kubectl_manifest" "rule_lag" {
+    count     = 1
+    yaml_body = element(data.kubectl_file_documents.rule_lag.documents, count.index)
+}
