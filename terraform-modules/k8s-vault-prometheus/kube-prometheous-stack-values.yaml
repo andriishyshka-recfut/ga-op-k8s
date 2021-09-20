@@ -90,6 +90,10 @@ alertmanager:
       - channel: '#prometheus'
         send_resolved: true
         text: '{{ template "slack.custom.text" . }}'
+    - name: "tekton-webhook-notifications"
+      webhook_configs:
+      - send_resolved: false
+        url: "http://webhook-test.tekton-pipelines"
     route:
       group_by:
       - alertname
@@ -105,6 +109,8 @@ alertmanager:
       - match:
           alertname: "KubeSchedulerDown"
         receiver: "slack-notifications"
+      - matchers: [ "alertname =~ .*" ]
+        receiver: "tekton-webhook-notifications"
     templates:
     - /etc/alertmanager/config/*.tmpl
   templateFiles:

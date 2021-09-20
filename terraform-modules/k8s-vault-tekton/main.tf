@@ -14,6 +14,15 @@ resource "null_resource" "deploy_tekton" {
      --insecure-skip-tls-verify=true  \
      --namespace=${local.tektonNs}  \
      --filename https://storage.googleapis.com/tekton-releases/dashboard/latest/tekton-dashboard-release.yaml
+     kubectl apply --server ${local.gkeClusterEndpoint}  \
+      --token ${local.gkeBearerToken}  \
+      --insecure-skip-tls-verify=true  \
+      --namespace=${local.tektonNs}  \
+      --filename https://storage.googleapis.com/tekton-releases/triggers/latest/release.yaml
+      kubectl apply --server ${local.gkeClusterEndpoint}  \
+       --token ${local.gkeBearerToken}  \
+       --insecure-skip-tls-verify=true  \
+       --namespace=${local.tektonNs}  \
      kubectl --server ${local.gkeClusterEndpoint}  \
       --token ${local.gkeBearerToken}  \
       --insecure-skip-tls-verify=true  \
@@ -55,15 +64,15 @@ resource "null_resource" "harbor_creds" {
 COMMAND
   }
 
-depends_on = [
-  null_resource.deploy_tekton
-]
+  depends_on = [
+    null_resource.deploy_tekton
+  ]
 }
 
 resource "null_resource" "crds" {
-triggers = {
-      task = md5(file("${path.module}/task.yaml"))
-      pipeline = md5(file("${path.module}/pipeline.yaml"))
+  triggers = {
+    task     = md5(file("${path.module}/task.yaml"))
+    pipeline = md5(file("${path.module}/pipeline.yaml"))
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
@@ -82,8 +91,8 @@ triggers = {
 
 COMMAND
   }
-depends_on = [
-  null_resource.deploy_tekton,
-  null_resource.harbor_creds
-]
+  depends_on = [
+    null_resource.deploy_tekton,
+    null_resource.harbor_creds
+  ]
 }
