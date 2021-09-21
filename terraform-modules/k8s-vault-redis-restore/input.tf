@@ -2,9 +2,6 @@ variable "BackupSettings" {}
 variable "Cluster" {}
 variable "Color" {}
 
-data "vault_generic_secret" "minio-cred-redis" {
-  path = "secret/minio-credentials"
-}
 locals {
   currentProject = var.Cluster == "production" ? "orbital-wording-233917" : "ardent-rarity-239115"
   backupCommand  = <<EOT
