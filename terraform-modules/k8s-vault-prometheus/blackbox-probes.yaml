@@ -44,7 +44,7 @@ spec:
       - https://usss.regemini.com/
       - https://creditone.regemini.com/
       - https://geminiadvisory.io
-      - https://cluster-info.t.regemini.io
+      - https://cluster-info.t.regemini.io/ping
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
