@@ -146,3 +146,25 @@ spec:
           value: "k8s/tekton/fluxcd"
         - name: branch
           value: "master"
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 04-op
+  namespace: tekton-pipelines
+spec:
+  workspaces:
+  - name: ws
+  tasks:
+    - name: op
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/op"
+        - name: branch
+          value: "\\#101-CrashloopBackoffpod"
