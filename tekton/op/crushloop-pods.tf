@@ -10,5 +10,8 @@ resource "null_resource" "crushloop_pod_delete" {
       --token ${local.gkeClusterConnectionSettings.API_KEY}  --insecure-skip-tls-verify=true delete pod
 COMMAND
   }
+  triggers = {
+    always_run = "${timestamp()}"
+  }
 
 }
