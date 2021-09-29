@@ -2,23 +2,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: mongod-restore
+  name: mongod-sanitizer-restore
   namespace: mongo
 spec:
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "false"
-        vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/agent-inject-secret-config: "secret/backup/gpg"
-        vault.hashicorp.com/role: "mongo"
-        vault.hashicorp.com/agent-pre-populate-only: "true"
-        vault.hashicorp.com/auth-path: auth/k8s-sandbox-blue
-        vault.hashicorp.com/agent-inject-template-config: |
-          {{ with secret "secret/backup/gpg" -}}
-          echo "{{.Data.key}}" | base64 -d | gpg --import
-          echo "{{.Data.ownertrust}}" | gpg --import-ownertrust
-          {{- end }}
     spec:
       containers:
       - name: mongod-restore
@@ -29,10 +19,10 @@ spec:
            apt-get update -q && apt-get install wget -yq ;
            wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
            chmod +x mc ;
-           source /vault/secrets/config ;
-           /mc cp  backup/minio-xbackup-ardent-rarity-239115/mongo/auth auth;
-           gpg -r Backup   -o auth.tar.gz --decrypt auth ;
-           mongorestore --archive="auth.tar.gz" --gzip --uri=$MONGODB_URL --db auth ;
+           sleep 3d ;
+           #/mc cp  backup/minio-xbackup-ardent-rarity-239115/mongo/auth auth;
+           #gpg -r Backup   -o auth.tar.gz --decrypt auth ;
+           # mongorestore --archive="auth.tar.gz" --gzip --uri=$MONGODB_URL --db auth ;
            # mongo $MONGODB_URL <(echo "use artifact;"; echo "db.dropDatabase();")   ;
            # mongo $MONGODB_URL <<EOF
            #    use artifact;
@@ -42,19 +32,6 @@ spec:
            #    db.mage_attacker.createIndex({ url: 1 }, { unique: true });
            # EOF ;
         env:
-        - name: MINIO_ACCESS_KEY
-          valueFrom:
-                secretKeyRef:
-                  name: minio-credentials
-                  key:  accesskey
-
-        - name: MINIO_SECRET_KEY
-          valueFrom:
-                secretKeyRef:
-                  name: minio-credentials
-                  key: secretkey
-        - name: MC_HOST_backup
-          value: "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
         - name: MONGO_USER
           valueFrom:
                 secretKeyRef:
