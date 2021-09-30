@@ -17,5 +17,11 @@ path "secret/data/captcha" {
 path "secret/data/challenger" {
   capabilities = ["read","list"]
 }
+path "secret/data/geo/*" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/*" {
+  capabilities = ["read","list"]
+}
 EOT
 }
