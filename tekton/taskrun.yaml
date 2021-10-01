@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: ns-taskrun-
+  generateName: monitoring-taskrun-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/namespaces"
+      value: "k8s/tekton/monitoring"
     - name: branch
-      value: "\\#111_geo"
+      value: "\\#116_es-update"
