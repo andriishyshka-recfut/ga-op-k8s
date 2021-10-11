@@ -68,6 +68,12 @@ filebeat:
                 json.add_error_key: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
+            - condition.contains:
+                kubernetes.container.image: oauth2-proxy
+              config:
+              - type: container
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
             - condition.equals:
                 kubernetes.namespace: core
               config:
