@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: monitoring-taskrun-
+  generateName: camel-taskrun-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/monitoring"
+      value: "k8s/tekton/camel-k"
     - name: branch
-      value: "\\#116_es-update"
+      value: "\\#111_camel-k-roi-calc"
