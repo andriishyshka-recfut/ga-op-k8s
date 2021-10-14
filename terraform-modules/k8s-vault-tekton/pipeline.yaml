@@ -103,7 +103,7 @@ spec:
         - name: path
           value: "k8s/tekton/monitoring"
         - name: branch
-          value: "\\#101-CrashloopBackoffpod"
+          value: "master"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
