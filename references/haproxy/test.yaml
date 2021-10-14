@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: haproxy-deployment
+  labels:
+    app: haproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: haproxy
+  template:
+    metadata:
+      labels:
+        app: haproxy
+    spec:
+      securityContext:
+        runAsUser: 0
+      containers:
+      - name: haproxy
+        image: haproxy
+        volumeMounts:
+          - name: foo
+            mountPath: "/etc/foo"
+            readOnly: true
+          - name: config-volume
+            mountPath: /usr/local/etc/haproxy/
+        ports:
+        - containerPort: 9200
+        - containerPort: 9201
+      volumes:
+        - name: foo
+          secret:
+            secretName: ssl
+        - name: config-volume
+          configMap:
+            name: haproxy-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy
+spec:
+  selector:
+    app: haproxy
+  ports:
+    - protocol: TCP
+      port: 9200
+      targetPort: 9200
+      name: first
+    - protocol: TCP
+      port: 9201
+      targetPort: 9201
+      name: second

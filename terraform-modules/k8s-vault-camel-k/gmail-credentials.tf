@@ -7,13 +7,13 @@ resource "kubernetes_secret" "gmail_creds" {
 
   metadata {
     name      = "gmail-credentials"
-    namespace = "camel-k"
+    namespace = local.camelNs
   }
 
   data = data.vault_generic_secret.gmail_creds.data
 
   depends_on = [
-    
+
   ]
 
 }

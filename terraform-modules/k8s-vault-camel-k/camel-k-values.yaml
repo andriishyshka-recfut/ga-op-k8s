@@ -5,7 +5,7 @@ platform:
         enabled: true
   build:
     baseImage: openjdk:17-oraclelinux7
-    # publishStrategy: Kaniko
+    #publishStrategy: Kaniko
     maven:
       settings: {}
     registry:
