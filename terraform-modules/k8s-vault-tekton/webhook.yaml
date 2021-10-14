@@ -4,7 +4,7 @@ metadata:
   name: webhook-alertmanager-listener
   namespace: tekton-pipelines
 spec:
-  serviceAccountName: tekton-role-test
+  serviceAccountName: tekton-webhook
   triggers:
   - name: crashloopbackoffpod-filter
     interceptors:
@@ -37,17 +37,17 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: tekton-role-test
+  name: tekton-webhook
   namespace: tekton-pipelines
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tekton-triggers-controller-test
+  name: tekton-triggers-controller-webhook
 subjects:
   - kind: ServiceAccount
-    name: tekton-role-test
+    name: tekton-webhook
     namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
@@ -57,10 +57,10 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tekton-triggers-controller-cluster-test
+  name: tekton-triggers-controller-cluster-webhook
 subjects:
   - kind: ServiceAccount
-    name: tekton-role-test
+    name: tekton-webhook
     namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
