@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: camel-taskrun-
+  generateName: test-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/camel-k"
+      value: "k8s/tekton/es-restore"
     - name: branch
-      value: "\\#111_camel-k-roi-calc"
+      value: "\\#16-10-2021_dr"

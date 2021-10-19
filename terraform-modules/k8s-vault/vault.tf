@@ -52,22 +52,3 @@ COMMAND
     null_resource.ansible_initial_provisioning_vault_playbook
   ]
 }
-
-# Provider cannot be declared in module. Defining this provider will conflict in case we would need to spin up vault from scratch
-# provider vault {
-#   address = "https://vault.infra.digaweb.com"
-# }
-# resource "vault_auth_backend" "kubernetes" {
-#   type = "kubernetes"
-#   path = "k8s-${var.Cluster}"
-#   depends_on = [
-#     google_container_cluster.cluster
-#   ]
-# }
-#
-# resource "vault_kubernetes_auth_backend_config" "example" {
-#   backend            = vault_auth_backend.kubernetes.path
-#   kubernetes_host    = "https://${google_container_cluster.cluster.endpoint}"
-#   kubernetes_ca_cert = lookup(data.kubernetes_secret.vault.data, "ca.crt")
-#   token_reviewer_jwt = lookup(data.kubernetes_secret.vault.data, "token")
-# }

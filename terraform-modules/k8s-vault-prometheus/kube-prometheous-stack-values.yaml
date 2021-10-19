@@ -72,6 +72,12 @@ prometheus:
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 50Gi
 
 # Fix for used with istio
 alertmanager:
