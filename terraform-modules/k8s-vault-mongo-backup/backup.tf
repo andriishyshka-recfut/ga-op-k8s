@@ -5,20 +5,46 @@ apt-get update -q && apt-get install wget -yq ;
 wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
 chmod +x mc ;
 source /vault/secrets/config ;
+cd /data ;
 %{ for setting in var.BackupSettings }
 mongodump --archive="${setting.dbName}.tar.gz" --gzip --uri=$MONGODB_URL --db ${setting.dbName} ;
 %{ if setting.encrypt }
  gpg -r Backup  --armor -o - --encrypt ${setting.dbName}.tar.gz |  ./mc pipe backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.gpg ;
 %{ else }
-/mc cp ${setting.dbName}.tar.gz backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.tar.gz;
+/mc cp --disable-multipart ${setting.dbName}.tar.gz backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.tar.gz;
 %{ endif }
 %{ endfor }
 
 EOT
 }
+
+resource "random_id" "rand" {
+  byte_length = 8
+}
+
+resource "kubernetes_persistent_volume_claim" "volume" {
+  metadata {
+    name = "backup-${lower(random_id.rand.hex)}"
+    namespace = var.MongoNs
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    storage_class_name = "kms-encrypted"
+    resources {
+      requests = {
+        storage = "200Gi"
+      }
+    }
+  }
+}
+
+
+
+
+
 resource "kubernetes_job" "mongo_backup" {
   metadata {
-    name      = "mongo-backup"
+    name      = "mongo-backup-${lower(random_id.rand.hex)}"
     namespace = var.MongoNs
   }
   spec {
@@ -42,10 +68,21 @@ EOT
         }
       }
       spec {
+        volume {
+          name = "data"
+           persistent_volume_claim {
+            claim_name = "backup-${lower(random_id.rand.hex)}"
+          }
+        }
         container {
           name    = "dump"
           image   = "mongo"
           command = ["bash", "-c", local.backupCommand]
+          volume_mount {
+            name = "data"
+            mount_path = "/data"
+          }
+
           env {
             name = "MINIO_ACCESS_KEY"
             value_from {
@@ -99,7 +136,7 @@ EOT
   }
   wait_for_completion = true
   timeouts {
-    create = "10m"
-    update = "10m"
+    create = "1200m"
+    update = "1200m"
   }
 }

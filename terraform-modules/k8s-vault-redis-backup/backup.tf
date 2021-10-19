@@ -62,5 +62,5 @@ resource "kubernetes_job" "redis_backup" {
     create = "10m"
     update = "10m"
   }
-  depends_on = [kubernetes_secret.minio_backup_redis_credentials]
+  # depends_on = [kubernetes_secret.minio_backup_redis_credentials]
 }

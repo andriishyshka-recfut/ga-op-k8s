@@ -91,6 +91,7 @@ terraform {
   }
 }
 
+provider "random" {}
 
 EOF
 }

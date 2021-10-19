@@ -8,7 +8,7 @@ resource "null_resource" "deploy_tekton" {
     kubectl apply --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.27.1/release.yaml && sleep 30 && \
+     -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.28.2/release.yaml && sleep 30 && \
     kubectl apply --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \

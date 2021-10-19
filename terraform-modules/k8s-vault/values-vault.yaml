@@ -9,6 +9,14 @@ server:
       image:
         repository: 'vault'
 
+
+      tolerations:
+      - key: "workloadsType"
+        operator: "Exists"
+        effect: "NoSchedule"
+      nodeSelector:
+        workloadsType: data
+
       extraEnvironmentVars:
         GOOGLE_REGION: global
         GOOGLE_APPLICATION_CREDENTIALS: /vault/userconfig/kms-creds/credentials.json

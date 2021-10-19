@@ -1,0 +1,34 @@
+---
+actions:
+  1:
+    action: restore
+    description: "Restore all indices in the most recent snapshot with state SUCCESS"
+    options:
+      repository: "minio"
+      name:
+      indices:
+      - .kibana_7.*
+      # rename_pattern: '.kibana(.+)'
+      # rename_replacement: 'restored_kibana$1'
+      wait_for_completion: False
+      include_global_state: True
+      # wait_interval: 20
+    filters:
+      - filtertype: state
+        state: SUCCESS
+  # 2:
+  #   description: >-
+  #     Reindex previous kibana indexes into .kibana
+  #   action: reindex
+  #   options:
+  #     wait_interval: 9
+  #     max_wait: -1
+  #     request_body:
+  #       source:
+  #         index: REINDEX_SELECTION
+  #       dest:
+  #         index: .kibana
+  #   filters:
+  #   - filtertype: pattern
+  #     kind: prefix
+  #     value: restored_kibana

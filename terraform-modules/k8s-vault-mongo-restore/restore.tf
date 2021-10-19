@@ -5,6 +5,7 @@ apt-get update -q && apt-get install wget -yq ;
 wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
 chmod +x mc ;
 source /vault/secrets/config ;
+cd /data;
 %{ for setting in var.BackupSettings }
 %{ if setting.encrypt }
 /mc cp  backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.gpg ${setting.dbName}.gpg;
@@ -17,11 +18,30 @@ mongorestore --archive="${setting.dbName}.tar.gz" --gzip --uri=$MONGODB_URL --db
 
 EOT
 }
+resource "random_id" "rand" {
+  byte_length = 8
+}
+
+resource "kubernetes_persistent_volume_claim" "volume" {
+  metadata {
+    name = "restore-${lower(random_id.rand.hex)}"
+    namespace = var.MongoNs
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    storage_class_name = "kms-encrypted"
+    resources {
+      requests = {
+        storage = "200Gi"
+      }
+    }
+  }
+}
+
 
 resource "kubernetes_job" "mongo_restore" {
-
   metadata {
-    name      = "mongo-restore"
+    name      = "mongo-restore-${lower(random_id.rand.hex)}"
     namespace = var.MongoNs
   }
   spec {
@@ -44,18 +64,28 @@ EOT
         }
       }
       spec {
-        node_selector = {
-          workloadsType =  "data"
-        }
-        toleration {
-           key =  "workloadsType"
-            operator = "Exists"
-            effect= "NoSchedule"
+        # node_selector = {
+        #   workloadsType =  "data"
+        # }
+        # toleration {
+        #    key =  "workloadsType"
+        #     operator = "Exists"
+        #     effect= "NoSchedule"
+        #   }
+        volume {
+          name = "data"
+           persistent_volume_claim {
+            claim_name = "restore-${lower(random_id.rand.hex)}"
           }
+        }
         container {
           name    = "restore"
           image   = "mongo"
           command = ["bash", "-c", local.restoreCommand]
+          volume_mount {
+            name = "data"
+            mount_path = "/data"
+          }
           resources {
             limits = {
               cpu = 2
@@ -115,7 +145,7 @@ EOT
   }
   wait_for_completion = true
   timeouts {
-    create = "120m"
-    update = "120m"
+    create = "1200m"
+    update = "1200m"
   }
 }
