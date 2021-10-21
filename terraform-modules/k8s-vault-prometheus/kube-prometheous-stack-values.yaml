@@ -92,14 +92,18 @@ alertmanager:
     receivers:
     - name: "null"
     - name: "slack-notifications"
+      # slack_configs:
+      # - channel: '#prometheus'
+      #   send_resolved: true
+      #   text: '{{ template "slack.custom.text" . }}'
+    - name: "tekton-webhook-notifications-and-slack"
+      webhook_configs:
+      - send_resolved: false
+        url: "http://el-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
       - channel: '#prometheus'
         send_resolved: true
         text: '{{ template "slack.custom.text" . }}'
-    - name: "tekton-webhook-notifications"
-      webhook_configs:
-      - send_resolved: false
-        url: "http://el-webhook-alertmanager-listener.tekton-pipelines:8080"
     route:
       group_by:
       - alertname
@@ -112,15 +116,12 @@ alertmanager:
       - match:
           alertname: Watchdog
         receiver: "null"
-      - match:
-          alertname: "KubeSchedulerDown"
-        receiver: "slack-notifications"
       #Activate this after update prometheus version more than 0.22.2, and disable match_re
       # - matchers: [ "alertname =~ .*" ]
       #   receiver: "tekton-webhook-notifications"
       - match_re:
           alertname: ".*"
-        receiver: "tekton-webhook-notifications"
+        receiver: "tekton-webhook-notifications-and-slack"
         continue: true
     templates:
     - /etc/alertmanager/config/*.tmpl
