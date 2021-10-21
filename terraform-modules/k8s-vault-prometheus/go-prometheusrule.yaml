@@ -1,0 +1,43 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: go.rules
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 1m
+    name: Kafka consumer lag
+    rules:
+    - alert: MinionBeatHealthchek
+      annotations:
+        description: |
+          Something wrong with minion
+        summary:  Something wrong with {{ $labels.container }}
+      expr: |
+        last_over_time(beat_minion_reader_watermark[20m]) > last_over_time(beat_minion_reader_offset[20m])
+        and max_over_time(beat_minion_waiting_for_complete[20m]) == 0
+        and max_over_time(beat_minion_tasks_in_progress[20m]) == 0
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: DomeBeatHealthchek
+      annotations:
+        description: |
+          Something wrong with dome
+        summary:  Something wrong with {{ $labels.container }}
+      expr: |
+        last_over_time(beat_dome_reader_watermark[20m]) > last_over_time(beat_dome_reader_offset[20m])
+        and max_over_time(beat_dome_waiting_for_complete[20m]) == 0
+        and max_over_time(beat_dome_tasks_in_progress[20m]) == 0
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning
