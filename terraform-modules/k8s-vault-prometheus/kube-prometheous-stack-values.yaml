@@ -122,7 +122,6 @@ alertmanager:
       - match_re:
           alertname: ".*"
         receiver: "tekton-webhook-notifications-and-slack"
-        continue: true
     templates:
     - /etc/alertmanager/config/*.tmpl
   templateFiles:
