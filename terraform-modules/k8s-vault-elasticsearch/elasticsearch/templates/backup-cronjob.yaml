@@ -33,5 +33,5 @@ spec:
             command:
             - /bin/bash
             - -ec
-            - curator --config /curator/config.yml /curator/action_file.yml &&  curl -XPOST "http://localhost:15000/quitquitquit
+            - curator --config /curator/config.yml /curator/action_file.yml
           restartPolicy: OnFailure
