@@ -13,12 +13,12 @@ resource "null_resource" "deploy_tekton" {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      --namespace=${local.tektonNs}  \
-     --filename https://storage.googleapis.com/tekton-releases/dashboard/latest/tekton-dashboard-release.yaml
+     --filename https://storage.googleapis.com/tekton-releases/dashboard/latest/tekton-dashboard-release.yaml && sleep 30 && \
      kubectl apply --server ${local.gkeClusterEndpoint}  \
       --token ${local.gkeBearerToken}  \
       --insecure-skip-tls-verify=true  \
       --namespace=${local.tektonNs}  \
-      --filename https://storage.googleapis.com/tekton-releases/triggers/latest/release.yaml
+      --filename https://storage.googleapis.com/tekton-releases/triggers/latest/release.yaml && sleep 30 && \
       kubectl apply --server ${local.gkeClusterEndpoint}  \
        --token ${local.gkeBearerToken}  \
        --insecure-skip-tls-verify=true  \
