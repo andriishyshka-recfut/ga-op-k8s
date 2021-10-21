@@ -108,7 +108,7 @@ alertmanager:
       group_wait: 30s
       receiver: "slack-notifications"
       repeat_interval: 12h
-      continue: true
+      - continue: true
       routes:
       - match:
           alertname: Watchdog
