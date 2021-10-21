@@ -13,6 +13,8 @@ spec:
   namespaceSelector:
     matchNames:
     - magescanner
+    - core
+    - maid
   selector:
     matchLabels:
       podMonitor: "go"
