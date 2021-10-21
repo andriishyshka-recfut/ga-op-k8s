@@ -108,7 +108,6 @@ alertmanager:
       group_wait: 30s
       receiver: "slack-notifications"
       repeat_interval: 12h
-      - continue: true
       routes:
       - match:
           alertname: Watchdog
@@ -122,6 +121,7 @@ alertmanager:
       - match_re:
           alertname: ".*"
         receiver: "tekton-webhook-notifications"
+        continue: true
     templates:
     - /etc/alertmanager/config/*.tmpl
   templateFiles:
