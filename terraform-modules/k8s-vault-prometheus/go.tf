@@ -31,3 +31,13 @@ resource "kubernetes_config_map" "go_dashboards" {
   }
 
 }
+
+
+data "kubectl_file_documents" "go_rules" {
+    content = file("${path.module}/go-prometheusrule.yaml")
+}
+
+resource "kubectl_manifest" "go_rules" {
+    count     = 1
+    yaml_body = element(data.kubectl_file_documents.go_rules.documents, count.index)
+}
