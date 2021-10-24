@@ -63,6 +63,12 @@ prometheusOperator:
         sidecar.istio.io/inject: "false"
 
 prometheus:
+  nodeSelector:
+    workloadsType: data
+  tolerations:
+    - key: "workloadsType"
+      operator: "Exists"
+      effect: "NoSchedule"
   prometheusSpec:
     prometheusRulesExcludedFromEnforce: false
     ###  Url for replace internal cluster domain name for generated url in slack messages
