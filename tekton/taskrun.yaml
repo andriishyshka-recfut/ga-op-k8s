@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: mon-
+  generateName: mm2-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/monitoring"
+      value: "k8s/tekton/mm2-start"
     - name: branch
-      value: "\\#1111_fix_backup_job"
+      value: "\\#1111-dr-22-10-2021"
