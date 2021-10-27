@@ -44,6 +44,7 @@ spec:
       - https://usss.regemini.com/
       - https://creditone.regemini.com/
       - https://geminiadvisory.io
+      - https://texascapital.regemini.com/
       - https://cluster-info.t.regemini.io/ping
 ---
 apiVersion: monitoring.coreos.com/v1
