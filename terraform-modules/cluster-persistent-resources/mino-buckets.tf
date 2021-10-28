@@ -7,7 +7,8 @@ locals {
     "magescanner-splash",
     "dome-attachements",
     "magescanner-geoip",
-    "meganz-migrate"
+    "meganz-migrate",
+    "magescanner-scan"
   ]
 }
 
