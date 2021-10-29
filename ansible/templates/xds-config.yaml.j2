@@ -2,7 +2,7 @@
 lds:
   - !lds/range
     cluster_prefix: tor
-    range: 30000..30020
+    range: 30000..30120
   - !lds/range
     cluster_prefix: kafka-brokers
     range: 32200..32202
@@ -14,7 +14,7 @@ cds:
     k8s_master: {{ k8s_host_url }}
     endpoint_port: {{ nodePortHttp }}
   - !cds/range
-    range: "30000..30020"
+    range: "30000..30120"
     name_prefix: "tor"
     k8s_master_url: {{ k8s_host_url }}
   - !cds/range

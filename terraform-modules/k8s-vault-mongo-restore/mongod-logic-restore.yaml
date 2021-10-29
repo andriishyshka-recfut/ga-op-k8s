@@ -2,8 +2,8 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: mongod-sanitizer-restore
-  namespace: mongo
+  name: mongod-auth-restore
+  namespace: mongo-auth
 spec:
   template:
     metadata:
@@ -19,10 +19,8 @@ spec:
            apt-get update -q && apt-get install wget -yq ;
            wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
            chmod +x mc ;
-           sleep 3d ;
-           #/mc cp  backup/minio-xbackup-ardent-rarity-239115/mongo/auth auth;
-           #gpg -r Backup   -o auth.tar.gz --decrypt auth ;
-           # mongorestore --archive="auth.tar.gz" --gzip --uri=$MONGODB_URL --db auth ;
+           /mc cp  backup/minio-xbackup-orbital-wording-233917/mongod-backup/auth.gz auth.tar.gz;
+           mongorestore --archive="auth.tar.gz" --gzip --uri=$MONGODB_URL --db auth ;
            # mongo $MONGODB_URL <(echo "use artifact;"; echo "db.dropDatabase();")   ;
            # mongo $MONGODB_URL <<EOF
            #    use artifact;
@@ -32,6 +30,18 @@ spec:
            #    db.mage_attacker.createIndex({ url: 1 }, { unique: true });
            # EOF ;
         env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key:  accesskey
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: secretkey
+        - name: MC_HOST_backup
+          value: "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
         - name: MONGO_USER
           valueFrom:
                 secretKeyRef:
