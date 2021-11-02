@@ -39,6 +39,10 @@ resource "helm_release" "prometheus" {
     value = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret
   }
   set {
+    name  = "grafana.grafana\\.ini.users.auto_assign_org_role"
+    value = local.grafanaRole
+  }
+  set {
     name  = "alertmanager.config.global.slack_api_url"
     value = data.vault_generic_secret.prometheus.data.url
   }
