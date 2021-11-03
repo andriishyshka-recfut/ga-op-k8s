@@ -5,7 +5,11 @@ namespaceOverride: "monitoring"
 fullnameOverride: "prometheus"
 
 grafana:
-  envFromSecret: "monitoring-es-elastic-user"
+  envValueFrom:
+    ELASTIC_PASSWORD:
+      secretKeyRef:
+        name: "monitoring-es-elastic-user"
+        key: elastic
   additionalDataSources:
     - name: "elastic"
       type:  "elasticsearch"
@@ -21,7 +25,7 @@ grafana:
         timeField: "@timestamp"
         tlsSkipVerify: true
       secureJsonData:
-        basicAuthPassword: "$elastic"
+        basicAuthPassword: "$ELASTIC_PASSWORD"
   enabled: true
   namespaceOverride: "monitoring"
   podAnnotations:
@@ -34,6 +38,8 @@ grafana:
       token_url: https://accounts.google.com/o/oauth2/token
       allowed_domains: geminiadvisory.io
       allow_sign_up: true
+    users:
+      auto_assign_org_role: Viewer
   nodeSelector:
     workloadsType: data
   tolerations:
