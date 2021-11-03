@@ -13,4 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/monitoring"
     - name: branch
-      value: "test"
+      value: "dev"
