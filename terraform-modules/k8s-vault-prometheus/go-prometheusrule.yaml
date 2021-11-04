@@ -21,9 +21,10 @@ spec:
           Something wrong with minion
         summary:  Something wrong with {{ $labels.container }}
       expr: |
-        last_over_time(beat_minion_reader_watermark[20m]) > last_over_time(beat_minion_reader_offset[20m])
-        and max_over_time(beat_minion_waiting_for_complete[20m]) == 0
-        and max_over_time(beat_minion_tasks_in_progress[20m]) == 0
+        last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='minion'}[20m]) > 0
+        and max_over_time(kafka_reader_tasks_in_progress{topic="minion"}[20m]) == 0
+        and max_over_time(kafka_reader_waiting_for_complete{project="minion"}[20m]) == 0
+
       for: 5m
       labels:
         component: stream-processor
@@ -34,9 +35,61 @@ spec:
           Something wrong with dome
         summary:  Something wrong with {{ $labels.container }}
       expr: |
-        last_over_time(beat_dome_reader_watermark[20m]) > last_over_time(beat_dome_reader_offset[20m])
-        and max_over_time(beat_dome_waiting_for_complete[20m]) == 0
-        and max_over_time(beat_dome_tasks_in_progress[20m]) == 0
+        last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='dome'}[20m]) > 0
+        and max_over_time(kafka_reader_tasks_in_progress{topic="dome"}[20m]) == 0
+        and max_over_time(kafka_reader_waiting_for_complete{project="dome"}[20m]) == 0
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: MagescannerBeatHealthchek1
+      annotations:
+        description: |
+          Something wrong with magescanner
+        summary:  Something wrong with {{ $labels.container }} {{$labels.topic }}
+      expr: |
+        last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='mage.scan'}[20m]) > 0
+        and max_over_time(kafka_reader_tasks_in_progress{topic="mage.scan"}[20m]) == 0
+        and max_over_time(kafka_reader_waiting_for_complete{project="magescanner"}[20m]) == 0
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: MagescannerBeatHealthchek2
+      annotations:
+        description: |
+          Something wrong with magescanner
+        summary:  Something wrong with {{ $labels.container }} {{$labels.topic}}
+      expr: |
+        last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='mage.analysis'}[20m]) > 0
+        and max_over_time(kafka_reader_tasks_in_progress{topic="mage.analysis"}[20m]) == 0
+        and max_over_time(kafka_reader_waiting_for_complete{project="mageanalyst"}[20m]) == 0
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: MagescannerBeatHealthchek3
+      annotations:
+        description: |
+          Something wrong with magescanner
+        summary:  Something wrong with {{ $labels.container }} {{$labels.topic}}
+      expr: |
+        last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='magecart'}[20m]) > 0
+        and max_over_time(kafka_reader_tasks_in_progress{topic="magecart"}[20m]) == 0
+        and max_over_time(kafka_reader_waiting_for_complete{project="magecart"}[20m]) == 0
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: MagescannerBeatHealthchek4
+      annotations:
+        description: |
+          Something wrong with magescanner
+        summary:  Something wrong with {{ $labels.container }} {{$labels.topic}}
+      expr: |
+        last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='testcart'}[20m]) > 0
+        and max_over_time(kafka_reader_tasks_in_progress{topic="testcart"}[20m]) == 0
+        and max_over_time(kafka_reader_waiting_for_complete{project="testcart"}[20m]) == 0
       for: 5m
       labels:
         component: stream-processor

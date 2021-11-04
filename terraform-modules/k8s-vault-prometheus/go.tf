@@ -41,3 +41,18 @@ resource "kubectl_manifest" "go_rules" {
     count     = 1
     yaml_body = element(data.kubectl_file_documents.go_rules.documents, count.index)
 }
+
+resource "kubernetes_config_map" "urlscan_dashboards" {
+  metadata {
+    name      = "urlscan-dashboard"
+    namespace = "monitoring"
+    labels = {
+      grafana_dashboard = 1
+    }
+  }
+
+  data = {
+    "urlscan-preps.json" = file("${path.module}/urlscan-preps.json")
+  }
+
+}
