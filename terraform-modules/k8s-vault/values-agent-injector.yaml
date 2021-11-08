@@ -8,4 +8,9 @@ injector:
   agentDefaults:
     cpuRequest: "10m"
     memRequest: "64Mi"
-  
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
+  nodeSelector:
+    workloadsType: data
