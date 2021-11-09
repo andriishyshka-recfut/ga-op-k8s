@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: monitoring-
+  generateName: mon-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -13,4 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/monitoring"
     - name: branch
-      value: "dev"
+      value: "\\#1111_shout"
