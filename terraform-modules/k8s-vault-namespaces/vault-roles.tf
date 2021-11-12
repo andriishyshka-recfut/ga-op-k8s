@@ -14,3 +14,20 @@ resource "vault_kubernetes_auth_backend_role" "harbor_role" {
   token_ttl                        = 3600
   token_policies                   = flatten(each.value)
 }
+
+resource "vault_kubernetes_auth_backend_role" "dome_role" {
+  backend                          = data.vault_auth_backend.kubernetes.path
+  role_name                        = "dome"
+  bound_service_account_names      = ["default"]
+  bound_service_account_namespaces = ["dome-*"]
+  token_ttl                        = 3600
+  token_policies                   = ["dome"]
+}
+resource "vault_kubernetes_auth_backend_role" "minion_role" {
+  backend                          = data.vault_auth_backend.kubernetes.path
+  role_name                        = "minion"
+  bound_service_account_names      = ["default"]
+  bound_service_account_namespaces = ["minion-*"]
+  token_ttl                        = 3600
+  token_policies                   = ["minion"]
+}

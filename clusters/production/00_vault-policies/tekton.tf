@@ -12,6 +12,9 @@ path "secret/data/elasticsearch-admin/*" {
 path "auth/token/create" {
   capabilities=["update"]
 }
+path "secret/data/apm/*" {
+  capabilities = ["read","list","create","update"]
+}
 path "auth/k8s-production-green/role/*" {
   capabilities=["create","update","read","list"]
 }

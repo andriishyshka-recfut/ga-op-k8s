@@ -40,6 +40,7 @@ locals{
          "CHANGEME",
          var.Cluster
   )
+  chartsGitRepo = file("${path.module}/git-charts-repository.yaml")
   kustomization = replace(
                   file("${path.module}/kustomization.yaml"),
                   "CHANGEME",
@@ -55,4 +56,7 @@ resource "kubectl_manifest" "helm_repo" {
 }
 resource "kubectl_manifest" "kustomization" {
   yaml_body  = local.kustomization
+}
+resource "kubectl_manifest" "git_charts" {
+  yaml_body  = local.chartsGitRepo
 }

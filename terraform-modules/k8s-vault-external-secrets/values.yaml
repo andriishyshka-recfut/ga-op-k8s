@@ -1,0 +1,17 @@
+env:
+  VAULT_ADDR: http://vault-active.vault:8200
+
+serviceAccount:
+  create: false
+
+tolerations:
+- key: "workloadsType"
+  operator: "Exists"
+  effect: "NoSchedule"
+nodeSelector:
+  workloadsType: data
+
+serviceMonitor:
+  enabled: true
+  interval: "30s"
+  namespace: monitoring

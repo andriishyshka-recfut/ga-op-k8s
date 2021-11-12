@@ -17,10 +17,19 @@ path "secret/data/captcha" {
 path "secret/data/challenger" {
   capabilities = ["read","list"]
 }
+path "secret/data/pi/*" {
+  capabilities = ["read","list"]
+}
 path "secret/data/geo/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/es-creds-compose-prod/*" {
+  capabilities = ["read","list"]
+}
+path "secret/data/cppminion/*" {
+  capabilities = ["read","list"]
+}
+path "secret/data/apm/*" {
   capabilities = ["read","list"]
 }
 EOT
