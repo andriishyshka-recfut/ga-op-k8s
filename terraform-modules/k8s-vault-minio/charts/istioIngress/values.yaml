@@ -2,5 +2,5 @@ namespace: minio
 service: minio
 port: 9000
 domain: domain
-issuer: letsencrypt-stage
+issuer: letsencrypt-staging
 #issuer: letsencrypt-prod
