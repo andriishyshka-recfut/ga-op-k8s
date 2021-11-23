@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Release.Name }}-cert
+  namespace: istio-system
+spec:
+  dnsNames:
+  - {{ .Values.domain }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ .Values.issuer }}
+  secretName: {{ .Release.Name }}-cert
