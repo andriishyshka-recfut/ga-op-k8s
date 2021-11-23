@@ -2,7 +2,7 @@ locals {
   istioIngressValues = yamldecode(file("${path.module}/charts/istioIngress/values.yaml"))
   subDomains         = var.Settings.clusters[var.Cluster].minioBucketIngress
   projectName        = var.Settings.gcpProject
-  minioFQDN          = var.Settings.clusters[var.Cluster][var.color].minio.fqdn
+  minioFQDN          = var.Settings.clusters[var.Cluster][var.Color].minio.fqdn
 }
 
 resource "helm_release" "minio-subdomains" {
