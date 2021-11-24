@@ -5,22 +5,22 @@ locals {
   minioFQDN          = var.Settings.clusters[var.Cluster][var.Color].minio.fqdn
 }
 
-# resource "helm_release" "minio-subdomains" {
-#   name      = "minio-buckets"
-#   namespace = "istio-system"
-#   chart     = "${path.module}/charts/istioIngress"
-#   wait      = true
-#   atomic    = true
-#   values = [
-#     yamlencode(local.istioIngressValues)
-#   ]
-#   set {
-#     name  = "domain"
-#     value = local.minioFQDN
-#   }
-#   set {
-#     name  = "buckets"
-#     value = "{${join(",", local.subDomains)}}"
-#     type  = "auto"
-#   }
-# }
+resource "helm_release" "minio-subdomains" {
+  name      = "minio-buckets"
+  namespace = "istio-system"
+  chart     = "${path.module}/charts/istioIngress"
+  wait      = true
+  atomic    = true
+  values = [
+    yamlencode(local.istioIngressValues)
+  ]
+  set {
+    name  = "domain"
+    value = local.minioFQDN
+  }
+  set {
+    name  = "buckets"
+    value = "{${join(",", local.subDomains)}}"
+    type  = "auto"
+  }
+}
