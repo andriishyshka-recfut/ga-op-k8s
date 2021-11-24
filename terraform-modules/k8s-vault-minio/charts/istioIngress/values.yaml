@@ -3,5 +3,5 @@ service: minio
 port: 9000
 domain: domain
 buckets: buckets
-issuer: letsencrypt-staging
-#issuer: letsencrypt-prod
+# issuer: letsencrypt-staging
+issuer: letsencrypt-prod
