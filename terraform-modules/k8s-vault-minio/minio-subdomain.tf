@@ -20,7 +20,7 @@ resource "helm_release" "minio-subdomains" {
   }
   set {
     name  = "buckets"
-    value = local.subDomains
+    value = "{${join(",", local.subDomains)}}"
     type  = "auto"
   }
 }
