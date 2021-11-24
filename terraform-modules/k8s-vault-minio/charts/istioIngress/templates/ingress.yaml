@@ -8,7 +8,7 @@ metadata:
 spec:
   rules:
   {{- range .Values.buckets }}
-  - host: {{ . }}.{{ .Values.domain }}
+  - host: "{{ . }}.{{ .Values.domain }}"
     http:
       paths:
       - backend:
