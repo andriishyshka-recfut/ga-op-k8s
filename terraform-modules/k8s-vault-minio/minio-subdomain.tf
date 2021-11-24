@@ -21,5 +21,6 @@ resource "helm_release" "minio-subdomains" {
   set {
     name  = "buckets"
     value = local.subDomains
+    type  = "tuple"
   }
 }
