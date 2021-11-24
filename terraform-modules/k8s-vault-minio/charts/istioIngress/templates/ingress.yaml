@@ -8,20 +8,20 @@ metadata:
 spec:
   rules:
   {{- range .Values.buckets }}
-  - host: "{{ . }}.{{ .Values.domain }}"
+  - host: "{{ . }}.{{ $.Values.domain }}"
     http:
       paths:
       - backend:
           service:
-            name: {{ .Values.service }}
+            name: {{ $.Values.service }}
             port:
-              number: {{ .Values.port }}
+              number: {{ $.Values.port }}
         path: /*
         pathType: ImplementationSpecific
     {{- end }}
   tls:
   - hosts:
     {{- range .Values.buckets }}
-    - {{ . }}.{{ .Values.domain }}
+    - "{{ . }}.{{ .$Values.domain }}"
     {{- end }}
     secretName: {{ .Release.Name }}-cert

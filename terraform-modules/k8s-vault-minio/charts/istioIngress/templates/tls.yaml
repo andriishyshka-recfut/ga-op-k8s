@@ -6,7 +6,7 @@ metadata:
 spec:
   dnsNames:
       {{- range .Values.buckets }}
-      - "{{ . }}.{{ .Values.domain }}"
+      - "{{ . }}.{{ $.Values.domain }}"
       {{- end }}
   issuerRef:
     kind: ClusterIssuer
