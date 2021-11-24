@@ -5,7 +5,9 @@ metadata:
   namespace: istio-system
 spec:
   dnsNames:
-  - {{ .Values.domain }}
+      {{- range .Values.buckets }}
+      - {{ . }}.{{ .Values.domain }}
+      {{- end }}
   issuerRef:
     kind: ClusterIssuer
     name: {{ .Values.issuer }}

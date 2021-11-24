@@ -7,7 +7,8 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   rules:
-  - host: {{ .Values.domain }}
+  {{- range .Values.buckets }}
+  - host: {{ . }}.{{ .Values.domain }}
     http:
       paths:
       - backend:
@@ -17,7 +18,10 @@ spec:
               number: {{ .Values.port }}
         path: /*
         pathType: ImplementationSpecific
+    {{- end }}
   tls:
   - hosts:
-    - {{ .Values.domain }}
+    {{- range .Values.buckets }}
+    - {{ . }}.{{ .Values.domain }}
+    {{- end }}
     secretName: {{ .Release.Name }}-cert
