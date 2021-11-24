@@ -6,7 +6,7 @@ locals {
 }
 
 resource "helm_release" "minio-subdomains" {
-  name      = "buckets_minio"
+  name      = "bucketsMinio"
   namespace = "istio-system"
   chart     = "${path.module}/charts/istioIngress"
   wait      = true
