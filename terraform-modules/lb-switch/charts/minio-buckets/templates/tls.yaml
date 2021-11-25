@@ -1,0 +1,15 @@
+{{- $dot := . -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Release.Name }}-cert
+  namespace: istio-system
+spec:
+  dnsNames:
+      {{- range .Values.buckets }}
+      - "{{ . }}.{{ $.Values.domain }}"
+      {{- end }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ .Values.issuer }}
+  secretName: {{ .Release.Name }}-cert

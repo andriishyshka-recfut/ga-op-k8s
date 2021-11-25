@@ -27,7 +27,7 @@ data "google_container_cluster" "active_cluster" {
   name     = "${var.Cluster}-${local.activeCluster}"
   location = "us-east4"
 }
-# 
+#
 # data "google_container_cluster" "inactive_cluster" {
 #   name     = "${var.Cluster}-${local.inActiveCluster}"
 #   location = "us-east4"
@@ -39,7 +39,7 @@ data "google_client_config" "default" {
 
 
 locals {
-  activeCluster = lookup(var.Settings.clusters[var.Cluster].blue, "active", false) == true ? "blue" : "green"
+  activeCluster   = lookup(var.Settings.clusters[var.Cluster].blue, "active", false) == true ? "blue" : "green"
   inActiveCluster = lookup(var.Settings.clusters[var.Cluster].blue, "active", false) == true ? "green" : "blue"
 
   # inActiveGkeEndpoint = "https://${data.google_container_cluster.inactive_cluster.endpoint}"
