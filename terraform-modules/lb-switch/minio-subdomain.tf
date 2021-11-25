@@ -1,6 +1,6 @@
 locals {
   istioIngressValues = yamldecode(file("${path.module}/charts/istioIngress/values.yaml"))
-  subDomains         = var.Settings.clusters[var.Cluster].minioBucketIngress
+  subDomains         = var.Settings.clusters[var.Cluster][var.Color].minio.buckets
   projectName        = var.Settings.gcpProject
   minioFQDN          = var.Settings.clusters[var.Cluster][var.Color].minio.fqdn
 }
@@ -8,7 +8,7 @@ locals {
 resource "helm_release" "minio-subdomains" {
   name      = "minio-buckets"
   namespace = "istio-system"
-  chart     = "${path.module}/charts/istioIngress"
+  chart     = "${path.module}/charts/minio-buckets"
   wait      = true
   atomic    = true
   values = [
