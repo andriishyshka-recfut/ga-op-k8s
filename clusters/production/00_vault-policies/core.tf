@@ -32,5 +32,9 @@ path "secret/data/cppminion/*" {
 path "secret/data/apm/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/slack/auth" {
+  capabilities = ["read","list"]
+}
+
 EOT
 }

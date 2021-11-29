@@ -10,7 +10,7 @@ path "secret/data/minio/users" {
 path "secret/data/es-creds-compose-prod/dome" {
   capabilities = ["read","list"]
 }
-path "secret/data/mongo/magescanner" {
+path "secret/data/mongo/production" {
   capabilities = ["read","list"]
 }
 path "secret/data/apm/*" {

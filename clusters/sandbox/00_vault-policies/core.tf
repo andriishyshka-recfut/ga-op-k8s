@@ -32,5 +32,8 @@ path "database/creds/*" {
 path "secret/data/apm/*" {
   capabilities = ["read","list"]
 }
+path "sys/leases/renew" {
+  capabilities = ["read","list","create","update"]
+}
 EOT
 }
