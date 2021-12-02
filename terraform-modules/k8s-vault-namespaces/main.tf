@@ -61,7 +61,7 @@ resource "kubernetes_cluster_role" "developers_access_role" {
   rule {
     api_groups = [""]
     resources  = ["services", "pods","secrets","pods/log"]
-    verbs      = ["get", "list", "watch"]
+    verbs      = ["get", "list", "watch","delete"]
   }
   rule {
     api_groups = [""]
