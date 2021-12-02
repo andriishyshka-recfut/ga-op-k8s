@@ -1,0 +1,40 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kiali-cert
+  namespace: istio-system
+spec:
+  commonName: kiali.t.regemini.io
+  dnsNames:
+  - kiali.t.regemini.io
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: kiali-cert
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: kiali-ingress
+  namespace: istio-system
+spec:
+  rules:
+  - host: kiali.t.regemini.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: kiali
+            port:
+              number: 20001
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - kiali.t.regemini.io
+    secretName: kiali-cert
