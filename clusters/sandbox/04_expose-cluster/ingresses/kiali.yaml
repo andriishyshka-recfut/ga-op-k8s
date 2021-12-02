@@ -29,7 +29,7 @@ spec:
       paths:
       - backend:
           service:
-            name: kiali
+            name: oauth2-proxy
             port:
               number: 20001
         path: /*
