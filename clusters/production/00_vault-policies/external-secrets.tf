@@ -6,5 +6,8 @@ resource "vault_policy" "external_secrets" {
 path "secret/data/goharbor/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/apm/*" {
+  capabilities = ["read","list"]
+}
 EOT
 }
