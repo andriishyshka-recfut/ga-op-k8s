@@ -10,7 +10,13 @@ path "secret/data/minio/users" {
 path "secret/data/es-creds-compose-prod/minion" {
   capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/metaMinion" {
+  capabilities = ["read","list"]
+}
 path "secret/data/mongo/production" {
+  capabilities = ["read","list"]
+}
+path "secret/data/mongo/metaMinion" {
   capabilities = ["read","list"]
 }
 path "secret/data/apm/*" {

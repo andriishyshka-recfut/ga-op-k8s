@@ -13,6 +13,12 @@ path "secret/data/es-creds-compose-prod/dome" {
 path "secret/data/mongo/production" {
   capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/metaDome" {
+  capabilities = ["read","list"]
+}
+path "secret/data/mongo/metaDome" {
+  capabilities = ["read","list"]
+}
 path "secret/data/apm/*" {
   capabilities = ["read","list"]
 }
