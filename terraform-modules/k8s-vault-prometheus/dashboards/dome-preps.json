@@ -104,11 +104,7 @@
           ],
           "metrics": [
             {
-              "$$hashKey": "object:108",
-              "field": "count",
               "id": "1",
-              "meta": {},
-              "settings": {},
               "type": "count"
             }
           ],
@@ -240,11 +236,7 @@
           ],
           "metrics": [
             {
-              "$$hashKey": "object:108",
-              "field": "count",
               "id": "1",
-              "meta": {},
-              "settings": {},
               "type": "count"
             }
           ],
@@ -376,11 +368,7 @@
           ],
           "metrics": [
             {
-              "$$hashKey": "object:108",
-              "field": "count",
               "id": "1",
-              "meta": {},
-              "settings": {},
               "type": "count"
             }
           ],
@@ -512,11 +500,7 @@
           ],
           "metrics": [
             {
-              "$$hashKey": "object:108",
-              "field": "count",
               "id": "1",
-              "meta": {},
-              "settings": {},
               "type": "count"
             }
           ],
