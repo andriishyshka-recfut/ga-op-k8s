@@ -1,6 +1,6 @@
-resource "kubernetes_config_map" "dome_dashboards" {
+resource "kubernetes_config_map" "custom_dashboards" {
   metadata {
-    name      = "dome-dashboard"
+    name      = "custom-dashboards"
     namespace = "monitoring"
     labels = {
       grafana_dashboard = 1
@@ -8,7 +8,8 @@ resource "kubernetes_config_map" "dome_dashboards" {
   }
 
   data = {
-    "urlscan-preps.json" = file("${path.module}/dashboards/dome-preps.json")
+    "dome-preps.json"    = file("${path.module}/dashboards/dome-preps.json")
+    "urlscan-preps.json" = file("${path.module}/dashboards/urlscan-preps.json")
   }
 
 }
