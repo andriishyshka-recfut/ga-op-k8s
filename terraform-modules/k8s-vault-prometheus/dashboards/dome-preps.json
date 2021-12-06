@@ -32,7 +32,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "filebeat",
+      "datasource": "elastic",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -80,7 +80,7 @@
             {
               "$$hashKey": "object:716",
               "fake": true,
-              "field": "sourceId.keyword",
+              "field": "json.sourceId",
               "id": "6",
               "settings": {
                 "min_doc_count": 1,
@@ -112,7 +112,7 @@
               "type": "sum"
             }
           ],
-          "query": "tag:dome AND action:PREP AND recordType:POST",
+          "query": "json.action:PREP AND json.recordType:POST",
           "refId": "A",
           "timeField": "@timestamp"
         }
@@ -168,7 +168,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "filebeat",
+      "datasource": "elastic",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -216,7 +216,7 @@
             {
               "$$hashKey": "object:716",
               "fake": true,
-              "field": "sourceId.keyword",
+              "field": "json.sourceId",
               "id": "6",
               "settings": {
                 "min_doc_count": 1,
@@ -248,7 +248,7 @@
               "type": "sum"
             }
           ],
-          "query": "tag:dome AND action:PREP AND recordType:PROFILE",
+          "query": "json.action:PREP AND json.recordType:PROFILE",
           "refId": "A",
           "timeField": "@timestamp"
         }
@@ -304,7 +304,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "filebeat",
+      "datasource": "elastic",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -352,7 +352,7 @@
             {
               "$$hashKey": "object:716",
               "fake": true,
-              "field": "sourceId.keyword",
+              "field": "json.sourceId",
               "id": "6",
               "settings": {
                 "min_doc_count": 1,
@@ -384,7 +384,7 @@
               "type": "sum"
             }
           ],
-          "query": "tag:dome AND action:PREP AND recordType:ACTIVITY",
+          "query": "json.action:PREP AND json.recordType:ACTIVITY",
           "refId": "A",
           "timeField": "@timestamp"
         }
@@ -440,7 +440,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "filebeat",
+      "datasource": "elastic",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -488,7 +488,7 @@
             {
               "$$hashKey": "object:716",
               "fake": true,
-              "field": "sourceId.keyword",
+              "field": "json.sourceId",
               "id": "6",
               "settings": {
                 "min_doc_count": 1,
@@ -520,7 +520,7 @@
               "type": "sum"
             }
           ],
-          "query": "tag:dome AND action:PREP AND recordType:CHAT",
+          "query": "json.action:PREP AND json.recordType:CHAT",
           "refId": "A",
           "timeField": "@timestamp"
         }
@@ -597,7 +597,7 @@
     ]
   },
   "timezone": "",
-  "title": "Parsing progress",
+  "title": "Dome / Parsing progress",
   "uid": "RXCsBKeZk",
   "version": 10
 }
