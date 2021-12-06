@@ -32,7 +32,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "logstash",
+      "datasource": "-- Grafana --",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -168,7 +168,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "logstash",
+      "datasource": "-- Grafana --",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -304,7 +304,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "logstash",
+      "datasource": "-- Grafana --",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -440,7 +440,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "logstash",
+      "datasource": "-- Grafana --",
       "fieldConfig": {
         "defaults": {
           "links": []
