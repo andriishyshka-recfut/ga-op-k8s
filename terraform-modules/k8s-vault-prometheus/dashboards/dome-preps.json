@@ -109,7 +109,7 @@
               "id": "1",
               "meta": {},
               "settings": {},
-              "type": "sum"
+              "type": "count"
             }
           ],
           "query": "json.action:PREP AND json.recordType:POST",
@@ -245,7 +245,7 @@
               "id": "1",
               "meta": {},
               "settings": {},
-              "type": "sum"
+              "type": "count"
             }
           ],
           "query": "json.action:PREP AND json.recordType:PROFILE",
@@ -381,7 +381,7 @@
               "id": "1",
               "meta": {},
               "settings": {},
-              "type": "sum"
+              "type": "count"
             }
           ],
           "query": "json.action:PREP AND json.recordType:ACTIVITY",
@@ -517,7 +517,7 @@
               "id": "1",
               "meta": {},
               "settings": {},
-              "type": "sum"
+              "type": "count"
             }
           ],
           "query": "json.action:PREP AND json.recordType:CHAT",
