@@ -1,11 +1,11 @@
 
 data "kubectl_file_documents" "go" {
-    content = file("${path.module}/go-podmonitor.yaml")
+  content = file("${path.module}/go-podmonitor.yaml")
 }
 
 resource "kubectl_manifest" "go" {
-    count     = 1
-    yaml_body = element(data.kubectl_file_documents.go.documents, count.index)
+  count     = 1
+  yaml_body = element(data.kubectl_file_documents.go.documents, count.index)
 }
 
 data "http" "grafana_dashboard_go" {
@@ -19,7 +19,7 @@ data "http" "grafana_dashboard_go" {
 
 resource "kubernetes_config_map" "go_dashboards" {
   metadata {
-    name = "go-dashboard"
+    name      = "go-dashboard"
     namespace = "monitoring"
     labels = {
       grafana_dashboard = 1
@@ -27,32 +27,17 @@ resource "kubernetes_config_map" "go_dashboards" {
   }
 
   data = {
-    "go.json"             = replace(data.http.grafana_dashboard_go.body, "$${DS_PROMETHEUS-APL}","Prometheus")
+    "go.json" = replace(data.http.grafana_dashboard_go.body, "$${DS_PROMETHEUS-APL}", "Prometheus")
   }
 
 }
 
 
 data "kubectl_file_documents" "go_rules" {
-    content = file("${path.module}/go-prometheusrule.yaml")
+  content = file("${path.module}/go-prometheusrule.yaml")
 }
 
 resource "kubectl_manifest" "go_rules" {
-    count     = 1
-    yaml_body = element(data.kubectl_file_documents.go_rules.documents, count.index)
-}
-
-resource "kubernetes_config_map" "urlscan_dashboards" {
-  metadata {
-    name      = "urlscan-dashboard"
-    namespace = "monitoring"
-    labels = {
-      grafana_dashboard = 1
-    }
-  }
-
-  data = {
-    "urlscan-preps.json" = file("${path.module}/urlscan-preps.json")
-  }
-
+  count     = 1
+  yaml_body = element(data.kubectl_file_documents.go_rules.documents, count.index)
 }
