@@ -11,10 +11,11 @@ spec:
     port: metrics
     path: /metrics
   namespaceSelector:
-    matchNames:
-    - magescanner
-    - core
-    - maid
+    any: true
+  #   matchNames:
+  #   - magescanner
+  #   - core
+  #   - maid
   selector:
     matchLabels:
       podMonitor: "go"

@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: minio-taskrun-
+  generateName: mon-taskrun-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/minio"
+      value: "k8s/tekton/monitoring"
     - name: branch
-      value: "master"
+      value: "\\#134"
