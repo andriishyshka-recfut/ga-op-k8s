@@ -31,7 +31,7 @@ spec:
           service:
             name: oauth2-proxy
             port:
-              number: 20001
+              number: 4180
         path: /*
         pathType: ImplementationSpecific
   tls:
