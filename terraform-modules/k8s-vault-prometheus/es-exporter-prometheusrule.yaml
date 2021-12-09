@@ -1,0 +1,127 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: es-exporter.rules
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 5m
+    name: Elastic logs alert
+    rules:
+    - alert: UrlscanPublicNoPreps
+      annotations:
+        description: |
+          No PREPs logged by urlscan-public for last 24h
+        summary: No PREPs logged by urlscan-public for last 24h
+      expr: |
+        sum_over_time ( urlscan_public_hits[10m] ) == 0
+      for: 30m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: UrlscanPrivateNoPreps
+      annotations:
+        description: |
+          No PREPs logged by urlscan-private for last 24h
+        summary: No PREPs logged by urlscan-private for last 24h
+      expr: |
+        sum_over_time ( urlscan_private_hits[10m] ) == 0
+      for: 30m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: SyncMageAttackerUrl
+      annotations:
+        description: |
+          The syncmage-attacker-url service has not analyzed any data in the last 12 hours.
+        summary: syncmage-attacker-url has exceeded the threshold
+      expr: |
+        sum_over_time ( syncmage_attacker_url_hits[10m] ) == 0
+      for: 30m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: SyncMageAttackerScript
+      annotations:
+        description: |
+          The syncmage-attacker-script service has not analyzed any data in the last 12 hours.
+        summary: syncmage-attacker-script has exceeded the threshold
+      expr: |
+        sum_over_time ( syncmage_attacker_script_hits[10m] ) == 0
+      for: 30m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: SyncMageAttackerTest
+      annotations:
+        description: |
+          The syncmage-attacker-script-test service has not analyzed any data in the last 12 hours.
+        summary: syncmage-attacker-script-test has exceeded the threshold
+      expr: |
+        sum_over_time ( syncmage_attacker_test_hits[10m] ) == 0
+      for: 30m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: SyncMageSkipRule
+      annotations:
+        description: |
+          The syncmage-attacker-skip-rule service has not analyzed any data in the last 12 hours.
+        summary: syncmage-attacker-skip-rule has exceeded the threshold
+      expr: |
+        sum_over_time ( syncmage_skip_rule_hits[10m] ) == 0
+      for: 30m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: GeoNoAction
+      annotations:
+        description: |
+          No action GO in geo logs for  1 hour.
+        summary: No action GO in geo logs for  1 hour
+      expr: |
+        sum_over_time ( geo_hits[1h] ) == 0
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: ChallengerNoAction
+      annotations:
+        description: |
+          No challenges failed or resolved  by challenger  for  30 mins.
+        summary: No challenges failed or resolved  by challenger  for  30 mins
+      expr: |
+        sum_over_time ( challenger_hits[30m] ) == 0
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: ShoutNoTasks
+      annotations:
+        description: |
+          No tasks completed by shout  within  24h.
+        summary: No tasks completed by shout  within  24h.
+      expr: |
+        sum_over_time ( shout_hits[10m] ) == 0
+      for: 30m
+      labels:
+        component: stream-processor
+        severity: warning
+    - alert: CaptchaNotReady
+      annotations:
+        description: |
+          No sollution is ready logs by captcha  within  30m.
+        summary: No sollution is ready logs by captcha  within  30m.
+      expr: |
+        sum_over_time ( captcha_hits[30m] ) == 0
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning

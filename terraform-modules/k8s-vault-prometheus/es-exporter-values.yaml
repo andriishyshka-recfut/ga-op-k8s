@@ -1,0 +1,61 @@
+elasticsearch:
+  cluster: https://monitoring-es-http:9200
+  queries: |-
+    [DEFAULT]
+    QueryIntervalSecs = 300
+    QueryTimeoutSecs = 10
+    QueryIndices = <filebeat-7*>
+    QueryOnError = drop
+    QueryOnMissing = drop
+
+    [query_urlscan_public]
+    QueryJson = {"size": 0,"query":{"bool": {"filter":[{"bool":{"filter":[{"bool":{"should":[{"match_phrase":{"kubernetes.container.name":"urlscan-public"}}],"minimum_should_match":1}},{"bool":{"should":[{"match":{"json.action":"PREP"}}],"minimum_should_match":1}}]}},{"range":{"@timestamp":{"gte":"now-24h"}}}]}}}
+    [query_urlscan_private]
+    QueryJson = {"size": 0,"query":{"bool":{"filter":[{"bool":{"filter":[{"bool":{"should":[{"match_phrase":{"kubernetes.container.name":"urlscan-private"}}],"minimum_should_match":1}},{"bool":{"should":[{"match":{"json.action":"PREP"}}],"minimum_should_match":1}}]}},{"range":{"@timestamp":{"gte":"now-24h"}}}]}}}
+    [query_syncmage_attacker_url]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"syncmage-attacker-url"}},{"term":{"json.action":"UPDATE"}},{"exists":{"field":"json.inserted"}},{"range":{"@timestamp":{"gte":"now-12h"}}}]}}}
+    [query_syncmage_attacker_script]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"syncmage-attacker-script"}},{"term":{"json.action":"UPDATE"}},{"exists":{"field":"json.inserted"}},{"range":{"@timestamp":{"gte":"now-12h"}}}]}}}
+    [query_syncmage_attacker_test]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"syncmage-attacker-script-test"}},{"term":{"json.action":"UPDATE"}},{"exists":{"field":"json.inserted"}},{"range":{ "@timestamp":{"gte":"now-12h"}}}]}}}
+    [query_syncmage_skip_rule]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"syncmage-skip-rule"}},{"term":{"json.action":"UPDATE"}},{"exists":{"field":"json.inserted"}},{"range":{"@timestamp":{"gte":"now-12h"}}}]}}}
+    [query_geo]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"geo"}},{"term":{"json.action":"GO"}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
+    [query_challenger]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"challenger"}},{"terms":{"json.msg":["Challenge is resolved successfully","Failed to resolve the challenge"]}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
+    [query_shout]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"shout"}},{"wildcard":{"json.msg":"Task completed successfully*"}},{"range":{"@timestamp":{"gte":"now-24h"}}}]}}}
+    [query_captcha]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"captcha"}},{"term":{"json.msg":"The solution is ready"}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
+
+
+
+container:
+  extraEnv:
+  - name: ES_EXPORTER_BASIC_PASSWORD
+    valueFrom:
+          secretKeyRef:
+            name: monitoring-es-elastic-user
+            key: elastic
+  extraVolumeMounts:
+    - name: foo
+      mountPath: "/etc/ssl/certs/"
+      readOnly: true
+  extraArgs:
+    - --basic-user
+    - elastic
+    - --ca-certs
+    - /etc/ssl/certs/ca-certificates.crt
+
+image:
+  tag: 0.14.0
+
+pod:
+  extraVolumes:
+  - name: foo
+    secret:
+      secretName: monitoring-es-cert
+      items:
+      - key: ca.crt
+        path: ca-certificates.crt
