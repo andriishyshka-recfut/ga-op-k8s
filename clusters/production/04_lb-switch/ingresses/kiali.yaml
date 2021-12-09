@@ -29,9 +29,9 @@ spec:
       paths:
       - backend:
           service:
-            name: oauth2-proxy
+            name: kiali
             port:
-              number: 4180
+              number: 20001
         path: /*
         pathType: ImplementationSpecific
   tls:
