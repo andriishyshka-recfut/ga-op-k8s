@@ -12,7 +12,7 @@
 # }
 module "es-restore" {
   source = "../../terraform-modules/k8s-vault-elasticsearch-restore"
-  Namespace = "elastic"
-  ElasticName = "sandbox"
+  Namespace = "monitoring"
+  ElasticName = "monitoring"
 
 }
