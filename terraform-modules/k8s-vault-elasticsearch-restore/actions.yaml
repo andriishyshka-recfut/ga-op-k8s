@@ -1,6 +1,17 @@
 ---
 actions:
   1:
+    action: delete_indices
+    description: >-
+      delete .kibana_7 indices
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: .kiabana
+  2:
     action: restore
     description: "Restore all indices in the most recent snapshot with state SUCCESS"
     options:
@@ -8,27 +19,25 @@ actions:
       name:
       indices:
       - .kibana_7.*
-      # rename_pattern: '.kibana(.+)'
-      # rename_replacement: 'restored_kibana$1'
       wait_for_completion: False
       include_global_state: True
       # wait_interval: 20
     filters:
       - filtertype: state
         state: SUCCESS
-  # 2:
-  #   description: >-
-  #     Reindex previous kibana indexes into .kibana
-  #   action: reindex
-  #   options:
-  #     wait_interval: 9
-  #     max_wait: -1
-  #     request_body:
-  #       source:
-  #         index: REINDEX_SELECTION
-  #       dest:
-  #         index: .kibana
-  #   filters:
-  #   - filtertype: pattern
-  #     kind: prefix
-  #     value: restored_kibana
+  3:
+    action: restore
+    description: "Restore filebeat-7 indices in the most recent snapshot with state SUCCESS"
+    options:
+      repository: "minio"
+      # name: 11-12-2021
+      indices:
+      - filebeat-7*
+      rename_pattern: 'filebeat(.+)'
+      rename_replacement: 'filebeat-previous$1'
+      wait_for_completion: False
+      include_global_state: True
+      # wait_interval: 20
+    filters:
+      - filtertype: state
+        state: SUCCESS
