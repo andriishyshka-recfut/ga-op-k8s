@@ -20,13 +20,18 @@ resource "random_id" "rand" {
   byte_length = 8
 }
 
-resource "kubernetes_job" "mongo_backup" {
+resource "kubernetes_cron_job" "mongo_backup" {
   metadata {
-    name      = "mongo-backup-${lower(random_id.rand.hex)}"
+    name      = "mongo-backup"
     namespace = var.MongoNs
   }
   spec {
-    template {
+    concurrency_policy            = "Replace"
+    failed_jobs_history_limit     = 5
+    schedule                      = "1 0 * * *"
+    starting_deadline_seconds     = 120
+    successful_jobs_history_limit = 120
+    job_template {
       metadata {
         annotations = {
           "sidecar.istio.io/inject"                          = "false"
