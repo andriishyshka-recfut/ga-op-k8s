@@ -32,83 +32,86 @@ resource "kubernetes_cron_job" "mongo_backup" {
     starting_deadline_seconds     = 120
     successful_jobs_history_limit = 120
     job_template {
-      metadata {
-        annotations = {
-          "sidecar.istio.io/inject"                          = "false"
-          "vault.hashicorp.com/agent-inject"                 = "true"
-          "vault.hashicorp.com/agent-inject-secret-config"   = "secret/backup/gpg"
-          "vault.hashicorp.com/role"                         = "mongo"
-          "vault.hashicorp.com/agent-pre-populate-only"      = "true"
-          "vault.hashicorp.com/auth-path"                    = "auth/k8s-${var.Cluster}-${var.Color}"
-          "vault.hashicorp.com/agent-inject-template-config" = <<EOT
-                    {{ with secret "secret/backup/gpg" -}}
-                      echo "{{.Data.data.key}}" | base64 -d | gpg --import
-                      echo "{{.Data.data.ownertrust}}" | gpg --import-ownertrust
-                      echo "GPG settings imported successfully"
-                    {{- end }}
-EOT
-
-        }
-      }
       spec {
-        container {
-          name    = "dump"
-          image   = "mongo"
-          command = ["bash", "-c", local.backupCommand]
-          volume_mount {
-            name       = "data"
-            mount_path = "/data"
+        backoff_limit = 1
+        template {
+          metadata {
+            annotations = {
+              "sidecar.istio.io/inject"                          = "false"
+              "vault.hashicorp.com/agent-inject"                 = "true"
+              "vault.hashicorp.com/agent-inject-secret-config"   = "secret/backup/gpg"
+              "vault.hashicorp.com/role"                         = "mongo"
+              "vault.hashicorp.com/agent-pre-populate-only"      = "true"
+              "vault.hashicorp.com/auth-path"                    = "auth/k8s-${var.Cluster}-${var.Color}"
+              "vault.hashicorp.com/agent-inject-template-config" = <<EOT
+                {{ with secret "secret/backup/gpg" -}}
+                  echo "{{.Data.data.key}}" | base64 -d | gpg --import
+                  echo "{{.Data.data.ownertrust}}" | gpg --import-ownertrust
+                  echo "GPG settings imported successfully"
+                {{- end }}
+EOT
+            }
           }
+          spec {
+            container {
+              name    = "dump"
+              image   = "mongo"
+              command = ["bash", "-c", local.backupCommand]
+              volume_mount {
+                name       = "data"
+                mount_path = "/data"
+              }
 
-          env {
-            name = "MINIO_ACCESS_KEY"
-            value_from {
-              secret_key_ref {
-                name = "minio-credentials"
-                key  = "accesskey"
+              env {
+                name = "MINIO_ACCESS_KEY"
+                value_from {
+                  secret_key_ref {
+                    name = "minio-credentials"
+                    key  = "accesskey"
+                  }
+                }
+              }
+              env {
+                name = "MINIO_SECRET_KEY"
+                value_from {
+                  secret_key_ref {
+                    name = "minio-credentials"
+                    key  = "secretkey"
+                  }
+                }
+              }
+              env {
+                name  = "MC_HOST_backup"
+                value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
+              }
+              env {
+                name = "MONGO_USER"
+                value_from {
+                  secret_key_ref {
+                    name = "mongo"
+                    key  = "MONGODB_BACKUP_USER"
+                  }
+                }
+              }
+              env {
+                name = "MONGO_PASS"
+                value_from {
+                  secret_key_ref {
+                    name = "mongo"
+                    key  = "MONGODB_BACKUP_PASSWORD"
+                  }
+                }
+              }
+              env {
+                name  = "MONGODB_URL"
+                value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@my-cluster-name-rs0-0:27017,my-cluster-name-rs0-1:27017,my-cluster-name-rs0-2:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
               }
             }
-          }
-          env {
-            name = "MINIO_SECRET_KEY"
-            value_from {
-              secret_key_ref {
-                name = "minio-credentials"
-                key  = "secretkey"
-              }
-            }
-          }
-          env {
-            name  = "MC_HOST_backup"
-            value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
-          }
-          env {
-            name = "MONGO_USER"
-            value_from {
-              secret_key_ref {
-                name = "mongo"
-                key  = "MONGODB_BACKUP_USER"
-              }
-            }
-          }
-          env {
-            name = "MONGO_PASS"
-            value_from {
-              secret_key_ref {
-                name = "mongo"
-                key  = "MONGODB_BACKUP_PASSWORD"
-              }
-            }
-          }
-          env {
-            name  = "MONGODB_URL"
-            value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@my-cluster-name-rs0-0:27017,my-cluster-name-rs0-1:27017,my-cluster-name-rs0-2:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
           }
         }
         restart_policy = "Never"
       }
     }
-    backoff_limit = 1
   }
   wait_for_completion = true
   timeouts {
