@@ -57,11 +57,6 @@ EOT
               name    = "dump"
               image   = "mongo"
               command = ["bash", "-c", local.backupCommand]
-              volume_mount {
-                name       = "data"
-                mount_path = "/data"
-              }
-
               env {
                 name = "MINIO_ACCESS_KEY"
                 value_from {
@@ -109,13 +104,7 @@ EOT
             }
           }
         }
-        restart_policy = "Never"
       }
     }
-  }
-  wait_for_completion = true
-  timeouts {
-    create = "1200m"
-    update = "1200m"
   }
 }
