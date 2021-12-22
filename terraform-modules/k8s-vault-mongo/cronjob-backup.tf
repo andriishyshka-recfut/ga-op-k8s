@@ -32,6 +32,7 @@ resource "kubernetes_cron_job" "mongo_backup" {
     starting_deadline_seconds     = 120
     successful_jobs_history_limit = 120
     job_template {
+      metadata {}
       spec {
         backoff_limit = 1
         template {
