@@ -40,12 +40,12 @@ resource "kubernetes_cron_job" "mongo_backup" {
             annotations = {
               "sidecar.istio.io/inject"                          = "false"
               "vault.hashicorp.com/agent-inject"                 = "true"
-              "vault.hashicorp.com/agent-inject-secret-config"   = "secret/backup/gpg"
+              "vault.hashicorp.com/agent-inject-secret-config"   = "secret/data/backup/gpg"
               "vault.hashicorp.com/role"                         = "mongo"
               "vault.hashicorp.com/agent-pre-populate-only"      = "true"
               "vault.hashicorp.com/auth-path"                    = "auth/k8s-${var.Cluster}-${var.Color}"
               "vault.hashicorp.com/agent-inject-template-config" = <<EOT
-                {{ with secret "secret/backup/gpg" -}}
+                {{ with secret "secret/data/backup/gpg" -}}
                   echo "{{.Data.data.key}}" | base64 -d | gpg --import
                   echo "{{.Data.data.ownertrust}}" | gpg --import-ownertrust
                   echo "GPG settings imported successfully"
