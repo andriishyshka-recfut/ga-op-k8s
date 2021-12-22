@@ -8,9 +8,9 @@ source /vault/secrets/config ;
 date_time=`date '+%Y%m%d-%H:%M:%S'`;
 %{for setting in var.BackupSettings}
 %{if setting.encrypt}
-mongodump --gzip --uri=$MONGODB_URL --db ${setting.dbName} | gpg -r Backup  --armor  --encrypt| ./mc pipe backup/${var.BackupBucket}/mongod-backup/${var.MongoNs}/${setting.dbName}-$date_time.gpg ;
+mongodump --gzip --archive --uri=$MONGODB_URL --db ${setting.dbName} | gpg -r Backup  --armor  --encrypt| ./mc pipe backup/${var.BackupBucket}/mongod-backup/${var.MongoNs}/${setting.dbName}-$date_time.gpg ;
 %{else}
-mongodump --gzip --uri=$MONGODB_URL --db ${setting.dbName} | ./mc pipe backup/${var.BackupBucket}/mongod-backup/${var.MongoNs}/${setting.dbName}-$date_time.gpg ;
+mongodump --gzip --archive --uri=$MONGODB_URL --db ${setting.dbName} | ./mc pipe backup/${var.BackupBucket}/mongod-backup/${var.MongoNs}/${setting.dbName}-$date_time.gz ;
 %{endif}
 %{endfor}
 EOT
