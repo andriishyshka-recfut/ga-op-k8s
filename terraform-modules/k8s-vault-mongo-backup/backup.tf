@@ -6,14 +6,14 @@ wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
 chmod +x mc ;
 source /vault/secrets/config ;
 cd /data ;
-%{ for setting in var.BackupSettings }
+%{for setting in var.BackupSettings}
 mongodump --archive="${setting.dbName}.tar.gz" --gzip --uri=$MONGODB_URL --db ${setting.dbName} ;
-%{ if setting.encrypt }
+%{if setting.encrypt}
  gpg -r Backup  --armor -o - --encrypt ${setting.dbName}.tar.gz |  ./mc pipe backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.gpg ;
-%{ else }
+%{else}
 /mc cp --disable-multipart ${setting.dbName}.tar.gz backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.tar.gz;
-%{ endif }
-%{ endfor }
+%{endif}
+%{endfor}
 
 EOT
 }
@@ -24,11 +24,11 @@ resource "random_id" "rand" {
 
 resource "kubernetes_persistent_volume_claim" "volume" {
   metadata {
-    name = "backup-${lower(random_id.rand.hex)}"
+    name      = "backup-${lower(random_id.rand.hex)}"
     namespace = var.MongoNs
   }
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes       = ["ReadWriteOnce"]
     storage_class_name = "kms-encrypted"
     resources {
       requests = {
@@ -51,12 +51,12 @@ resource "kubernetes_job" "mongo_backup" {
     template {
       metadata {
         annotations = {
-          "sidecar.istio.io/inject" = "false"
-          "vault.hashicorp.com/agent-inject" = "true"
-          "vault.hashicorp.com/agent-inject-secret-config" = "secret/backup/gpg"
-          "vault.hashicorp.com/role" = "mongo"
-          "vault.hashicorp.com/agent-pre-populate-only" = "true"
-          "vault.hashicorp.com/auth-path" = "auth/k8s-${var.Cluster}-${var.Color}"
+          "sidecar.istio.io/inject"                          = "false"
+          "vault.hashicorp.com/agent-inject"                 = "true"
+          "vault.hashicorp.com/agent-inject-secret-config"   = "secret/backup/gpg"
+          "vault.hashicorp.com/role"                         = "mongo"
+          "vault.hashicorp.com/agent-pre-populate-only"      = "true"
+          "vault.hashicorp.com/auth-path"                    = "auth/k8s-${var.Cluster}-${var.Color}"
           "vault.hashicorp.com/agent-inject-template-config" = <<EOT
                     {{ with secret "secret/backup/gpg" -}}
                       echo "{{.Data.data.key}}" | base64 -d | gpg --import
@@ -70,7 +70,7 @@ EOT
       spec {
         volume {
           name = "data"
-           persistent_volume_claim {
+          persistent_volume_claim {
             claim_name = "backup-${lower(random_id.rand.hex)}"
           }
         }
@@ -79,7 +79,7 @@ EOT
           image   = "mongo"
           command = ["bash", "-c", local.backupCommand]
           volume_mount {
-            name = "data"
+            name       = "data"
             mount_path = "/data"
           }
 
