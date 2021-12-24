@@ -125,3 +125,14 @@ spec:
       labels:
         component: stream-processor
         severity: warning
+    - alert: UpsertdomeUnauthorized
+      annotations:
+        description: |
+          action [indices:admin/create] is unauthorized for user [_upsertDome.ms] found.
+        summary: action [indices:admin/create] is unauthorized for user [_upsertDome.ms] found.
+      expr: |
+        sum_over_time ( upsertdome_unauthorized_hits[5m] ) > 0
+      for: 5m
+      labels:
+        component: stream-processor
+        severity: warning
