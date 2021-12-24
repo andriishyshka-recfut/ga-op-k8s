@@ -142,7 +142,7 @@ spec:
           action [indices:data/write/bulk[s]] is unauthorized for user [_upsertMinion.ms]
         summary: action [indices:data/write/bulk[s]] is unauthorized for user [_upsertMinion.ms] found.
       expr: |
-        sum_over_time ( upsertdome_upsertminion_hits[5m] ) > 0
+        sum_over_time ( upsertminion_unauthorized_hits[5m] ) > 0
       for: 5m
       labels:
         component: stream-processor
