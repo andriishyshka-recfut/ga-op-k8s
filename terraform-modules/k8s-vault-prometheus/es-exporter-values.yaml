@@ -30,7 +30,8 @@ elasticsearch:
     QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"captcha"}},{"term":{"json.msg":"The solution is ready"}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
     [query_upsertdome_unauthorized]
     QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"upsertdome"}},{"term":{"json.err": "action [indices:admin/create] is unauthorized for user [_upsertDome.ms]"}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
-    
+    [query_upsertminion_unauthorized]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"upsertminion"}},{"term":{"json.err": "action [indices:data/write/bulk[s]] is unauthorized for user [_upsertMinion.ms]"}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
 
 
 
