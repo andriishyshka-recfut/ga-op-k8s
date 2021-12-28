@@ -1,5 +1,4 @@
 
-
 resource "google_compute_network" "vpc" {
   name                            = var.Settings.vpc_name
   auto_create_subnetworks         = "false"
@@ -94,7 +93,6 @@ resource "google_compute_firewall" "bastion_ssh_https" {
     "34.74.154.117/32", //app13.digaweb.com
     "34.86.87.120/32",   // bastion test account
     "34.86.176.12/32",   // bastion test account
-    "78.26.204.32/32",   // stepan
     "34.86.175.17/32",   //test account nat ip
     "${google_compute_address.envoy.address}/32",
   "${google_compute_address.wireguard.address}/32"]
@@ -139,7 +137,7 @@ resource "google_compute_firewall" "bastion_tor_proxy" {
   name      = "bastion-tor-proxy"
   network   = google_compute_network.vpc.name
   direction = "INGRESS"
-  source_ranges = ["78.26.204.32/32",
+  source_ranges = [
     "69.164.208.72/32",
     "78.46.86.231/32",
     "35.196.5.12/32",    //app11.digaweb.com
