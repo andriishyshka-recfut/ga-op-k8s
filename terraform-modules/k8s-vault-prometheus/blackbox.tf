@@ -63,7 +63,7 @@ data "kubectl_file_documents" "blackbox_probes" {
 }
 
 resource "kubectl_manifest" "blackbox_probes" {
-    count = 3
+    count = 4
     yaml_body  = element(data.kubectl_file_documents.blackbox_probes.documents, count.index)
     override_namespace = local.prometheusNs
     depends_on = [

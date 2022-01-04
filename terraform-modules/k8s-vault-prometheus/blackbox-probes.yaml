@@ -84,3 +84,26 @@ spec:
         module: elastic
       static:
       - https://es23.regemini.com/_security/_authenticate
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: ssh
+  labels:
+    release: prometheus
+spec:
+  module: ssh_banner
+  prober:
+    url: blackbox-exporter-prometheus-blackbox-exporter:9115
+    scheme: http
+    path: /probe
+  targets:
+    staticConfig:
+      labels:
+        module: ssh_banner
+      static:
+      - bmo.regemini.com:2222
+      - chainalysis.regemini.com:2222
+      - creditone.regemini.com:2222
+      - max.regemini.com:2222
+      - bka.regemini.com:2222
