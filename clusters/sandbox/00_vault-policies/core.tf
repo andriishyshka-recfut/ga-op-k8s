@@ -35,5 +35,8 @@ path "secret/data/apm/*" {
 path "sys/leases/renew" {
   capabilities = ["read","list","create","update"]
 }
+path "secret/data/ching/*" {
+  capabilities = ["read","list"]
+}
 EOT
 }

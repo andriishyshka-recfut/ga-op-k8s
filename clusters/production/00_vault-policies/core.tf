@@ -35,6 +35,8 @@ path "secret/data/apm/*" {
 path "secret/data/slack/auth" {
   capabilities = ["read","list"]
 }
-
+path "secret/data/ching/*" {
+  capabilities = ["read","list"]
+}
 EOT
 }
