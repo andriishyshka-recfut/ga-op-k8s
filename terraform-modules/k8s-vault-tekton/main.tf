@@ -95,6 +95,11 @@ resource "null_resource" "crds" {
      --insecure-skip-tls-verify=true  \
      apply -f ${path.module}/webhook.yaml \
     --namespace=${local.tektonNs}
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     apply -f ${path.module}/pipelinerun.yaml \
+    --namespace=${local.tektonNs}
 
 COMMAND
   }
