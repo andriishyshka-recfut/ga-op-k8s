@@ -23,7 +23,7 @@
         content: "{{ kubernetes_ca_cert }}"
 
   - pause:
-      seconds: 10
+      seconds: 20
 
   - name: "{{ kind }} info"
     k8s_info:
