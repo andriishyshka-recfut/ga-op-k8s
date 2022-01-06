@@ -74,6 +74,7 @@ resource "null_resource" "crds" {
   triggers = {
     task     = md5(file("${path.module}/task.yaml"))
     pipeline = md5(file("${path.module}/pipeline.yaml"))
+    pipelinerun = md5(file("${path.module}/pipelinerun.yaml"))
     webhook  = md5(file("${path.module}/webhook.yaml"))
   }
   provisioner "local-exec" {
