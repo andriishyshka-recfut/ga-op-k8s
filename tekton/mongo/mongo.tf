@@ -8,5 +8,5 @@ module "mongo" {
   VolumeSize     = each.value.volumeSize
   Replicas       = each.value.replicas
   Cluster        = var.Cluster
-  Color          = local.activeCluster
+  Color          = var.Color
 }

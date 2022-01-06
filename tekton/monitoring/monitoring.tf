@@ -9,7 +9,7 @@ module "monitoring-elastic" {
   ElasticSettings              = local.monitoringEs.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
-  Color                      = local.activeCluster
+  Color                      = var.Color
   Settings                     = var.Settings
   StoreEsPasswordInVault       = false
 }
@@ -17,7 +17,7 @@ module "monitoring-elastic" {
 module "monitoring-agents" {
   source     = "../../terraform-modules/k8s-vault-monitoring-agents"
   Cluster                      = var.Cluster
-  Color                      = local.activeCluster
+  Color                      = var.Color
   Settings                     = var.Settings
   depends_on          = [module.monitoring-elastic]
 }
@@ -27,6 +27,6 @@ module "prometheus" {
   OidcSecretVaultPath = "secret/oidc_google_prod"
   Settings            = var.Settings
   Cluster             = var.Cluster
-  Color               = local.activeCluster
+  Color               =  var.Color
   depends_on          = [module.monitoring-elastic]
 }

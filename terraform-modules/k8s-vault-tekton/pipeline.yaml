@@ -17,7 +17,7 @@ spec:
         - name: path
           value: "k8s/tekton/namespaces"
         - name: branch
-          value: "master"
+          value: "\\#150_dr"
 
     - name: minio
       taskRef:
@@ -31,7 +31,7 @@ spec:
         - name: path
           value: "k8s/tekton/minio"
         - name: branch
-          value: "master"
+          value: "\\#150_dr"
 
     - name: mongo
       taskRef:
@@ -46,7 +46,7 @@ spec:
         - name: path
           value: "k8s/tekton/mongo"
         - name: branch
-          value: "master"
+          value: "\\#150_dr"
 
     - name: kafka
       taskRef:
@@ -60,7 +60,7 @@ spec:
         - name: path
           value: "k8s/tekton/kafka"
         - name: branch
-          value: "master"
+          value: "\\#150_dr"
 
     - name: redis
       taskRef:
@@ -88,7 +88,7 @@ spec:
         - name: path
           value: "k8s/tekton/camel-k"
         - name: branch
-          value: "master"
+          value: "\\#150_dr"
 
     - name: monitoring
       taskRef:
@@ -103,7 +103,7 @@ spec:
         - name: path
           value: "k8s/tekton/monitoring"
         - name: branch
-          value: "master"
+          value: "\\#150_dr"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -124,7 +124,7 @@ spec:
         - name: path
           value: "k8s/tekton/data-migration"
         - name: branch
-          value: "master"
+          value: "\\#150_dr"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -145,7 +145,7 @@ spec:
         - name: path
           value: "k8s/tekton/fluxcd"
         - name: branch
-          value: "master"
+          value: "\\#150_dr"
 ---
 
 apiVersion: tekton.dev/v1beta1
@@ -167,4 +167,4 @@ spec:
         - name: path
           value: "k8s/tekton/op"
         - name: branch
-          value: "master"
+          value: "\\#150_dr"

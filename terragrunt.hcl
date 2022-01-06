@@ -26,6 +26,7 @@ generate "provider" {
   contents = <<EOF
 variable "Settings" {}
 variable "Cluster" {}
+variable "Color" {}
 variable "VaultAddress" {}
 
 
