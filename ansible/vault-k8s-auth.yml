@@ -63,17 +63,29 @@
           method_type: kubernetes
           mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
 
+    - name: enable k8s secret engine
+      hashivault_auth_method:
+          method_type: kubernetes
+          mount_point: "default-issuer-{{ cluster_name }}-{{ cluster_color }}"
+
     - name: Sleep for 10 seconds
       pause:
         seconds: 10
 
-    - name: create config
+    - name: create auth endpoint config
       hashivault_k8s_auth_config:
           kubernetes_host: "{{ kubernetes_host }}"
           kubernetes_ca_cert: "{{ kubernetes_ca_cert }}"
           token_reviewer_jwt: "{{ token_reviewer_jwt }}"
           mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
           issuer: "https://container.googleapis.com/v1/projects/{{ project }}/locations/us-east4/clusters/{{ cluster_name }}-{{ cluster_color }}"
+
+    - name: create auth endpoint config with default issuer
+      hashivault_k8s_auth_config:
+          kubernetes_host: "{{ kubernetes_host }}"
+          kubernetes_ca_cert: "{{ kubernetes_ca_cert }}"
+          token_reviewer_jwt: "{{ token_reviewer_jwt }}"
+          mount_point: "default-issuer-{{ cluster_name }}-{{ cluster_color }}"
 
     - name: Create/Update Role
       hashivault_pki_role:
@@ -93,7 +105,7 @@
         policies: ["pki"]
         bound_service_account_names: ["{{ cluster_name }}-cert-manager"]
         bound_service_account_namespaces: ["kube-system"]
-        mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
+        mount_point: "default-issuer-{{ cluster_name }}-{{ cluster_color }}"
 
     - name: Create k8s auth role for tekton
       hashivault_k8s_auth_role:

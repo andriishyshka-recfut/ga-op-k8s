@@ -10,7 +10,7 @@ spec:
     auth:
       kubernetes:
         role: cert-manager-${cluster}-${color}
-        mountPath: /v1/auth/k8s-${cluster}-${color}
+        mountPath: /v1/auth/default-issuer-${cluster}-${color}
         secretRef:
           name: ${default_secret_name}
           key: token
