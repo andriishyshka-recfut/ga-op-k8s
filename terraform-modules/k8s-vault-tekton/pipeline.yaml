@@ -74,7 +74,7 @@ spec:
         - name: path
           value: "k8s/tekton/redis"
         - name: branch
-          value: "#131-redis-changes"
+          value: "\\#150_dr"
 
     - name: camel-k
       taskRef:
