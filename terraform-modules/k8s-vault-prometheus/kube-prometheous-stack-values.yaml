@@ -116,6 +116,14 @@ alertmanager:
       - channel: '#prometheus'
         send_resolved: true
         text: '{{ template "slack.custom.text" . }}'
+    - name: "tekton-and-slack-woresolve"
+      webhook_configs:
+      - send_resolved: false
+        url: "http://el-webhook-alertmanager-listener.tekton-pipelines:8080"
+      slack_configs:
+      - channel: '#prometheus'
+        send_resolved: false
+        text: '{{ template "slack.custom.text" . }}'
     route:
       group_by:
       - alertname
@@ -134,6 +142,10 @@ alertmanager:
       - match_re:
           alertname: ".*"
         receiver: "tekton-webhook-notifications-and-slack"
+        routes:
+          - match:
+              not_resolve: "yes"
+            receiver: "tekton-and-slack-woresolve"
     templates:
     - /etc/alertmanager/config/*.tmpl
   templateFiles:
@@ -164,3 +176,4 @@ defaultRules:
   rules:
     kubeScheduler: false
     kubernetesResources: false
+    kubeApiserver: false

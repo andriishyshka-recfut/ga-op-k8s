@@ -1,0 +1,56 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus
+  name: tekton
+  namespace: monitoring
+spec:
+  endpoints:
+    - port: http-metrics
+      path: /metrics
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels:
+      app: tekton-pipelines-controller
+  namespaceSelector:
+    matchNames:
+      - tekton-pipelines
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: tekton.rules
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+    - interval: 1m
+      name: Tekton Alerts
+      rules:
+        - alert: TektonTaskRunFailed
+          annotations:
+            description: |
+              Tekton Taskrun was failed
+            summary: Tekton Taskrun was failed
+          expr: |
+            increase(tekton_pipelines_controller_taskrun_count{status="failed"}[1m]) > 0
+          labels:
+            severity: warning
+            not_resolve: "yes"
+        - alert: TektonPipeLineFailed
+          annotations:
+            description: |
+              Tekton Pipeline was failed
+            summary: Tekton Pipeline was failed
+          expr: |
+            increase(tekton_pipelines_controller_pipelinerun_count{status="failed"}[1m]) > 0
+          labels:
+            severity: warning
+            not_resolve: "yes"
