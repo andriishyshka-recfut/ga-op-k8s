@@ -73,6 +73,7 @@
           kubernetes_ca_cert: "{{ kubernetes_ca_cert }}"
           token_reviewer_jwt: "{{ token_reviewer_jwt }}"
           mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
+          issuer: "https://container.googleapis.com/v1/projects/{{ project }}/locations/us-east4/clusters/{{ cluster_name }}-{{ cluster_color }}"
 
     - name: Create/Update Role
       hashivault_pki_role:
