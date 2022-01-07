@@ -59,10 +59,6 @@ resource "helm_release" "mongo_cluster" {
     name = "replicas"
     value = var.Replicas
   }
-  set {
-    name = "Color"
-    value = var.Color
-  }
   depends_on = [
     helm_release.psmdb_operator,
     kubernetes_secret.mongo,
