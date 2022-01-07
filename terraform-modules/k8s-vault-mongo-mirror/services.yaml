@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rs0-0
+  namespace: mongo
+spec:
+  type: NodePort
+  ports:
+  - name: port1
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+    nodePort: 32170
+  selector:
+    statefulset.kubernetes.io/pod-name: my-cluster-name-rs0-0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rs0-1
+  namespace: mongo
+spec:
+  type: NodePort
+  ports:
+  - name: port1
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+    nodePort: 32171
+  selector:
+    statefulset.kubernetes.io/pod-name: my-cluster-name-rs0-1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rs0-2
+  namespace: mongo
+spec:
+  type: NodePort
+  ports:
+  - name: port1
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+    nodePort: 32172
+  selector:
+    statefulset.kubernetes.io/pod-name: my-cluster-name-rs0-2

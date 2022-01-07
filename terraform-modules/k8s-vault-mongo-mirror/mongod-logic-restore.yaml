@@ -1,0 +1,67 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongod-mirror
+  namespace: mongo
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      hostAliases:
+      - ip: "10.101.23.206"
+        hostnames:
+        - "my-cluster-name-rs0-0.my-cluster-name-rs0.mongo.svc.cluster.local"
+      - ip: "10.101.24.6"
+        hostnames:
+        - "my-cluster-name-rs0-1.my-cluster-name-rs0.mongo.svc.cluster.local"
+      - ip: "10.101.20.94"
+        hostnames:
+        - "my-cluster-name-rs0-2.my-cluster-name-rs0.mongo.svc.cluster.local"
+      containers:
+      - name: mongod-restore
+        image: mongo
+        command: ["bash",  "-c"]
+        args:
+         - set -e;
+           apt-get update -q && apt-get install wget -yq ;
+           wget https://translators-connectors-releases.s3.amazonaws.com/mongomirror/binaries/linux/mongomirror-linux-x86_64-ubuntu2004-0.12.3.tgz;
+           tar xf mongomirror-linux-x86_64-ubuntu2004-0.12.3.tgz;
+           cd mongomirror-linux-x86_64-ubuntu2004-0.12.3;
+           sleep 3d;
+           bin/mongomirror \
+           --host 10.101.0.85:32170 \
+           -u $MONGO_USER -p $MONGO_PASS \
+           --authenticationDatabase=admin \
+           --destinationUsername $MONGO_USER \
+           --destinationPassword $MONGO_PASS \
+           --destination=my-cluster-name-rs0:27017
+        env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key:  accesskey
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: secretkey
+        - name: MC_HOST_backup
+          value: "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
+        - name: MONGO_USER
+          valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key: MONGODB_BACKUP_USER
+        - name: MONGO_PASS
+          valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key:  MONGODB_BACKUP_PASSWORD
+        - name: MONGODB_URL
+          value: 'mongodb://$(MONGO_USER):$(MONGO_PASS)@my-cluster-name-rs0-0:27017,my-cluster-name-rs0-1:27017,my-cluster-name-rs0-2:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0'
+      restartPolicy: Never
+  backoffLimit: 4
