@@ -80,7 +80,7 @@ spec:
         image: mongo
         command: ["bash",  "-c"]
         volumeMounts:
-        - name: foo
+        - name: config
           mountPath: "/etc/mongoshake"
           readOnly: true
         args:
@@ -103,5 +103,3 @@ spec:
                   key:  MONGODB_BACKUP_PASSWORD
         - name: MONGODB_URL
           value: 'mongodb://$(MONGO_USER):$(MONGO_PASS)@my-cluster-name-rs0-0:27017,my-cluster-name-rs0-1:27017,my-cluster-name-rs0-2:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0'
-      restartPolicy: Never
-  backoffLimit: 4
