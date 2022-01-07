@@ -36,6 +36,9 @@ spec:
     - key: "workloadsType"
       operator: "Exists"
       effect: "NoSchedule"
+    - key: "node.kubernetes.io/memory-pressure"
+      operator: "Exists"
+      effect: "NoSchedule"
     affinity:
       antiAffinityTopologyKey: "kubernetes.io/hostname"
 #      advanced:
