@@ -61,7 +61,7 @@ resource "helm_release" "mongo_cluster" {
   }
   set {
     name = "Color"
-    value - var.Color
+    value = var.Color
   }
   depends_on = [
     helm_release.psmdb_operator,
