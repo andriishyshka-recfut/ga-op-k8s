@@ -30,7 +30,6 @@ resource "null_resource" "chek_kafka_connect" {
      --token ${data.vault_generic_secret.k8s_auth.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
      exec  -it -n kafka kafka-cluster-kafka-2 -c kafka -- bin/kafka-topics.sh --bootstrap-server ${data.external.get_remote_node.result.ip}:32100 --list
-￼
 COMMAND
   }
 }
