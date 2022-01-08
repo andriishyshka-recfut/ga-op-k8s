@@ -85,3 +85,30 @@ resource "helm_release" "mongo_cluster" {
     kubernetes_secret.mongo_backup
   ]
 }
+
+resource "null_resource" "ansible_wait_for_mongo" {
+
+  triggers = {
+    playbook_contents = md5(file("${path.module}/../../ansible/k8s-wait-for.yml"))
+    kafka_id          = helm_release.kafka_cluster.id
+    kafka_operator_id = helm_release.kafka_operator.id
+  }
+  provisioner "local-exec" {
+    command = <<COMMAND
+    cd ${path.module}/../../ansible &&\
+    ansible-playbook k8s-wait-for.yml
+
+COMMAND
+    environment = merge(local.ansibleEnvs, {
+      name           = "${var.Color}"
+      kind           = "PerconaServerMongoDB"
+      namespace      = var.MongoNs
+      apiVersion     = "psmdb.percona.com/v1-4-0"
+      statusPath     = "state"
+      requiredStatus = "ready"
+    })
+  }
+  depends_on = [
+    helm_release.mongo_cluster
+  ]
+}
