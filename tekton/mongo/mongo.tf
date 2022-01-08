@@ -9,4 +9,5 @@ module "mongo" {
   Replicas       = each.value.replicas
   Cluster        = var.Cluster
   Color          = var.Color
+  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
 }
