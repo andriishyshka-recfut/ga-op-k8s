@@ -29,7 +29,7 @@ spec:
   - sourceCluster: "source"
     targetCluster: "target"
     topicsPattern: "artifact|crypto.*|mage.*|dome.*|minion.*|syncmage.*|testcart.*|union.*|urlscan.*|upsert.*"
-    topicsBlacklistPattern: "^(dome\\..*\\..*|minion\\..*\\..*)$"
+    topicsBlacklistPattern: "dome[.].*[.].*|minion[.].*[.].*"
     groupsPattern: ".*"
     sourceConnector:
       tasksMax: 40
