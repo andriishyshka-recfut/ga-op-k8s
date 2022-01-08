@@ -63,6 +63,22 @@ resource "helm_release" "mongo_cluster" {
     name = "color"
     value = var.Color
   }
+  set {
+    name = "cpuReuest"
+    value = local.request.cpu
+  }
+  set {
+    name = "memReuest"
+    value = local.request.memory
+  }
+  set {
+    name = "memLimit"
+    value = local.limit.memory
+  }
+  set {
+    name = "cpuLimit"
+    value = local.limit.cpu
+  }
   depends_on = [
     helm_release.psmdb_operator,
     kubernetes_secret.mongo,

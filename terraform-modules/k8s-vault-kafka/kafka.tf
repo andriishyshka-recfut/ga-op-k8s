@@ -27,6 +27,22 @@ resource "helm_release" "kafka_cluster" {
     name = "diskSize"
     value = local.diskSize
   }
+  set {
+    name = "cpuReuest"
+    value = local.request.cpu
+  }
+  set {
+    name = "memReuest"
+    value = local.request.memory
+  }
+  set {
+    name = "memLimit"
+    value = local.limit.memory
+  }
+  set {
+    name = "cpuLimit"
+    value = local.limit.cpu
+  }
   depends_on = [
     helm_release.kafka_operator,
   ]
