@@ -112,3 +112,18 @@ COMMAND
     helm_release.mongo_cluster
   ]
 }
+
+resource "helm_release" "mongo_express" {
+  name      = "mongo-express"
+  chart     = "${path.module}/mongo-express"
+  namespace = var.MongoNs
+  wait      = true
+  atomic    = true
+  set {
+    name = "color"
+    value = var.Color
+  }
+  depends_on = [
+    null_resource.ansible_wait_for_mongo
+  ]
+}
