@@ -10,6 +10,6 @@ export HOME=/home/fake
 # echo "You are running from docker"
 # echo
 #
-ansible --version
+# ansible --version
 # cat /etc/resolv.conf
 exec /bin/terraform $@
