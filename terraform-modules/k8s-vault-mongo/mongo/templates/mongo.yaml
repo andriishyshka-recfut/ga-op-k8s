@@ -77,11 +77,11 @@ spec:
        antiAffinityTopologyKey: "kubernetes.io/hostname"
     resources:
       limits:
-        cpu: {{ .Values.cpuLimit }}
-        memory: {{ .Values.memLimit }}
+        cpu: "{{ .Values.cpuLimit }}"
+        memory: "{{ .Values.memLimit }}"
       requests:
-        cpu: {{ .Values.cpuReuest }}
-        memory: {{ .Values.memReuest }}
+        cpu: "{{ .Values.cpuReuest }}"
+        memory: "{{ .Values.memReuest }}"
     volumeSpec:
 #      emptyDir: {}
 #      hostPath:
