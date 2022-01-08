@@ -90,8 +90,8 @@ resource "null_resource" "ansible_wait_for_mongo" {
 
   triggers = {
     playbook_contents = md5(file("${path.module}/../../ansible/k8s-wait-for.yml"))
-    kafka_id          = helm_release.kafka_cluster.id
-    kafka_operator_id = helm_release.kafka_operator.id
+    mongo          = helm_release.mongo_cluster.id
+    operator = helm_release.psmdb_operator.id
   }
   provisioner "local-exec" {
     command = <<COMMAND
