@@ -15,7 +15,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/namespaces"
+          value: "k8s/tekton/01-namespaces"
         - name: branch
           value: "\\#150_dr"
 
@@ -29,7 +29,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/minio"
+          value: "k8s/tekton/01-minio"
         - name: branch
           value: "\\#150_dr"
 
@@ -44,7 +44,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/mongo"
+          value: "k8s/tekton/01-mongo"
         - name: branch
           value: "\\#150_dr"
 
@@ -58,7 +58,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/kafka"
+          value: "k8s/tekton/01-kafka"
         - name: branch
           value: "\\#150_dr"
 
@@ -72,7 +72,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/redis"
+          value: "k8s/tekton/01-redis"
         - name: branch
           value: "\\#150_dr"
 
@@ -86,7 +86,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/camel-k"
+          value: "k8s/tekton/01-camel-k"
         - name: branch
           value: "\\#150_dr"
 
@@ -101,7 +101,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/monitoring"
+          value: "k8s/tekton/01-monitoring"
         - name: branch
           value: "\\#150_dr"
     - name: external-secrets
@@ -114,7 +114,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/external-secrets"
+          value: "k8s/tekton/01-external-secrets"
         - name: branch
           value: "\\#150_dr"
 
@@ -130,7 +130,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/mirroring"
+          value: "k8s/tekton/01-mirroring"
         - name: branch
           value: "\\#150_dr"
 ---
@@ -143,7 +143,7 @@ spec:
   workspaces:
   - name: ws
   tasks:
-    - name: data-migration
+    - name: stop-apps
       taskRef:
         name: tg-run
       workspaces:
@@ -151,7 +151,33 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/data-migration"
+          value: "k8s/tekton/02-stop-apps"
+        - name: branch
+          value: "\\#150_dr"
+    - name: data-migration
+      taskRef:
+        name: tg-run
+      runAfter:
+      - stop-apps
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/02-data-migration"
+        - name: branch
+          value: "\\#150_dr"
+    - name: stop-mirrorings
+      taskRef:
+        name: tg-run
+      runAfter:
+      - data-migration
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/02-stop-mirrorings"
         - name: branch
           value: "\\#150_dr"
 ---
@@ -172,7 +198,20 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/fluxcd"
+          value: "k8s/tekton/03-fluxcd"
+        - name: branch
+          value: "\\#150_dr"
+    - name: fluxcd
+      taskRef:
+        name: tg-run
+      runAfter:
+      - fluxcd
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/03-logs-restore"
         - name: branch
           value: "\\#150_dr"
 ---
