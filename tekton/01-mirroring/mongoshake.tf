@@ -6,9 +6,9 @@ locals {
   mongoshakeCommand = <<EOT
   set -e;
   apt-get update -q && apt-get install wget -yq ;
-  wget https://github.com/alibaba/MongoShake/releases/download/release-v2.6.5-20210723-1/mongo-shake-v2.6.5.tar.gz -O mongoshake.tar.gz ;
+  wget https://github.com/alibaba/MongoShake/releases/download/release-v2.4.22-20210319/mongo-shake-v2.4.22.tar.gz -O mongoshake.tar.gz ;
   tar zxvf mongoshake.tar.gz ;
-  cd mongo-shake-v2.6.5;
+  cd mongo-shake-v2.4.22;
   ./collector.linux -conf=/etc/mongoshake/config -verbose 2
 
 EOT
