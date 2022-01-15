@@ -12,4 +12,5 @@ export HOME=/home/fake
 #
 # ansible --version
 # cat /etc/resolv.conf
+# export TF_LOG=debug
 exec /bin/terraform $@
