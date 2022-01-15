@@ -24,7 +24,7 @@ module "restore-service-indexes" {
 }
 
 module "monitoring-kibana" {
-  source                       = "../../terraform-modules/k8s-vault-elasticsearch"
+  source                       = "../../terraform-modules/k8s-vault-kibana"
   ElasticSettings              = local.monitoringEs.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
