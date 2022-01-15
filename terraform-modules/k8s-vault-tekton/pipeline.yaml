@@ -109,6 +109,7 @@ spec:
         name: tg-run
       runAfter:
       - namespaces
+      - monitoring
       workspaces:
         - name: ws
           workspace: ws
