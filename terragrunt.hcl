@@ -17,6 +17,7 @@ extra_arguments "custom_vars" {
 
 retryable_errors = [
  "isn't valid for cluster, check the APIVersion and Kind fields are valid",
+ "'dict object' has no .* attribute 'status'",
  "Provider produced inconsistent final plan"
 ]
 
