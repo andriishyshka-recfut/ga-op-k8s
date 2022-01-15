@@ -24,7 +24,7 @@ resource "null_resource" "stop_flux" {
      scale deploy -n {} --replicas=0
      sleep 30
 
-    echo core maid magescanner | xargs -n 1 -I{} \
+    echo "core\n maid\n magescanner" | xargs -n 1 -I{} \
      kubectl --server ${data.vault_generic_secret.k8s_auth.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
