@@ -25,7 +25,7 @@ locals{
      kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
       --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
       --insecure-skip-tls-verify=true  \
-      get deploy -n core | grep -v -e NAME -e rfs-redisfailover | awk '{print $1}'
+      get deploy -n core | grep -v -e NAME -e rfs-redisfailover | awk '{print $1}'\
       | xargs -n 1 -I{} \
       kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
       --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
@@ -35,7 +35,7 @@ locals{
      kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
       --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
       --insecure-skip-tls-verify=true  \
-      get deploy -n maid | grep -v -e NAME -e rfs-redisfailover | awk '{print $1}'
+      get deploy -n maid | grep -v -e NAME -e rfs-redisfailover | awk '{print $1}' \
       | xargs -n 1 -I{} \
       kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
       --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
