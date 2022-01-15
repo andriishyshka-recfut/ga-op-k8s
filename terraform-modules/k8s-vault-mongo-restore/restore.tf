@@ -52,7 +52,7 @@ resource "kubernetes_job" "mongo_restore" {
           "sidecar.istio.io/inject" = "false"
           "vault.hashicorp.com/agent-inject" = "true"
           "vault.hashicorp.com/agent-inject-secret-config" = "secret/backup/gpg"
-          "vault.hashicorp.com/role" = "mongo"
+          "vault.hashicorp.com/role" = var.MongoNs
           "vault.hashicorp.com/agent-pre-populate-only" = "true"
           "vault.hashicorp.com/auth-path" = "auth/k8s-${var.Cluster}-${var.Color}"
           "vault.hashicorp.com/agent-inject-template-config" = <<EOT
