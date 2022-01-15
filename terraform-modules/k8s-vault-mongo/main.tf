@@ -1,4 +1,19 @@
 
+resource "null_resource" "mongod_crd_deploy" {
+  triggers = {
+    # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<COMMAND
+    kubectl apply --server ${var.GkeClusterConnectionSettings.HOST}  \
+     --token ${var.GkeClusterConnectionSettings.API_KEY}  --insecure-skip-tls-verify=true \
+     -n mongo-system \
+     -f https://raw.githubusercontent.com/percona/percona-server-mongodb-operator/master/deploy/crd.yaml
+COMMAND
+  }
+}
+
 resource "helm_release" "psmdb_operator" {
   name       = "psmdb-operator"
   namespace = var.MongoNs
@@ -7,6 +22,7 @@ resource "helm_release" "psmdb_operator" {
   wait       = true
   atomic     = true
   timeout    = 900
+  depends_on = [null_resource.mongod_crd_deploy]
 }
 
 data "vault_generic_secret" "mongo_creds" {
