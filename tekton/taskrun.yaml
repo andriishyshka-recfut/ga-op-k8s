@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: sanbdox-
+  generateName: data-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/sandbox"
+      value: "k8s/tekton/02-data-migration"
     - name: branch
       value: "\\#150_dr"
