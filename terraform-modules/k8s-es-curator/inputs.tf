@@ -5,3 +5,11 @@ variable "ElasticName" {
 variable "Namespace" {
   default = "monitoring"
 }
+
+variable "Actions" {
+  default = ""
+}
+
+variable "NamePrefix" {
+  default = ""
+}

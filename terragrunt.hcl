@@ -36,7 +36,7 @@ provider "vault" {
 
 locals {
 
-  activeCluster          = lookup(var.Settings.clusters[var.Cluster].blue, "active", false) == true ? "blue" : "green"
+  activeCluster          = var.Color
   inactiveCluster        = local.activeCluster == "blue" ? "green" : "blue"
   activeClusterVaultPath = "secret/kubernetes-$${var.Cluster}-$${local.activeCluster}"
   inactiveClusterVaultPath = "secret/kubernetes-$${var.Cluster}-$${local.inactiveCluster}"

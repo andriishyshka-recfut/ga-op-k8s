@@ -1,17 +1,18 @@
 
 resource "random_id" "rand" {
   byte_length = 8
+  prefix = "tf-curator"
 }
 
 locals {
   cm = "config-curator-${lower(random_id.rand.hex)}"
-  job = "job-curator-${lower(random_id.rand.hex)}"
+  job = "${var.NamePrefix}-${lower(random_id.rand.hex)}"
   backupCommand = <<EOT
 set -e;
+sleep 30;
 curator --config /curator/config.yml /curator/actions.yml ;
 EOT
 }
-
 
 resource "kubernetes_config_map" "curator" {
   metadata {
@@ -21,13 +22,13 @@ resource "kubernetes_config_map" "curator" {
 
   data = {
     "config.yml" = "${file("${path.module}/config.yaml")}"
-    "actions.yml" = "${file("${path.module}/actions.yaml")}"
+    "actions.yml" = var.Actions
   }
 }
 
 
 
-resource "kubernetes_job" "es_backup" {
+resource "kubernetes_job" "es_restore" {
   metadata {
     name      = local.job
     namespace = var.Namespace
@@ -72,7 +73,7 @@ resource "kubernetes_job" "es_backup" {
       }
     }
 
-    backoff_limit = 3
+    backoff_limit = 1
   }
   wait_for_completion = true
   timeouts {
