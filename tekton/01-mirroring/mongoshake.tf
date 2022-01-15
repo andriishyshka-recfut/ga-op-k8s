@@ -9,7 +9,7 @@ locals {
   wget https://github.com/alibaba/MongoShake/releases/download/release-v2.4.22-20210319/mongo-shake-v2.4.22.tar.gz -O mongoshake.tar.gz ;
   tar zxvf mongoshake.tar.gz ;
   cd mongo-shake-v2.4.22;
-  ./collector.linux -conf=/etc/mongoshake/config -verbose 2
+  ./collector.linux -conf=/etc/mongoshake/config -verbose 
 
 EOT
 }
