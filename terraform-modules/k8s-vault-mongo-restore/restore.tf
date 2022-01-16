@@ -1,6 +1,7 @@
 locals {
   restoreCommand = <<EOT
 set -e;
+set +x ;
 apt-get update -q && apt-get install wget -yq ;
 wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
 chmod +x mc ;
