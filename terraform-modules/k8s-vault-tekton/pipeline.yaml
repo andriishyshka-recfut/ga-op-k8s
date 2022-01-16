@@ -168,19 +168,6 @@ spec:
           value: "k8s/tekton/02-data-migration"
         - name: branch
           value: "\\#150_dr"
-    - name: stop-mirrorings
-      taskRef:
-        name: tg-run
-      runAfter:
-      - data-migration
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/02-stop-mirrorings"
-        - name: branch
-          value: "\\#150_dr"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -191,7 +178,7 @@ spec:
   workspaces:
   - name: ws
   tasks:
-    - name: fluxcd
+    - name: stop-mirrorings
       taskRef:
         name: tg-run
       workspaces:
@@ -199,20 +186,20 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-fluxcd"
+          value: "k8s/tekton/02-stop-mirrorings"
         - name: branch
           value: "\\#150_dr"
     - name: fluxcd
       taskRef:
         name: tg-run
       runAfter:
-      - fluxcd
+      - stop-mirrorings
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-logs-restore"
+          value: "k8s/tekton/03-fluxcd"
         - name: branch
           value: "\\#150_dr"
 ---
