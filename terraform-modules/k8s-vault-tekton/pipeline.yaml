@@ -186,7 +186,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/02-stop-mirrorings"
+          value: "k8s/tekton/03-stop-mirrorings"
         - name: branch
           value: "\\#150_dr"
     - name: fluxcd
