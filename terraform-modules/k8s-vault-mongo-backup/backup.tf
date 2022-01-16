@@ -10,7 +10,7 @@ cd /data ;
 %{for setting in var.BackupSettings}
 mongodump --archive="${setting.dbName}.tar.gz" --gzip --uri=$MONGODB_URL --db ${setting.dbName} ;
 %{if setting.encrypt}
- gpg -r Backup  --armor -o - --encrypt ${setting.dbName}.tar.gz |  ./mc pipe backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.gpg ;
+ gpg -r Backup  --armor -o - --encrypt ${setting.dbName}.tar.gz |  /mc pipe backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.gpg ;
 %{else}
 /mc cp --disable-multipart ${setting.dbName}.tar.gz backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.tar.gz;
 %{endif}
