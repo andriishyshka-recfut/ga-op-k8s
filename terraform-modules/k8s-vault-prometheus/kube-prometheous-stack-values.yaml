@@ -50,6 +50,8 @@ grafana:
 
 kube-state-metrics:
   namespaceOverride: "monitoring"
+  customLabels:
+    release: prometheus
 
 prometheus-node-exporter:
   namespaceOverride: "monitoring"
