@@ -92,6 +92,10 @@ EOT
               cpu = 2
               memory = "2Gi"
             }
+            requests = {
+              cpu = 0.5
+              memory = "1Gi"
+            }
           }
           env {
             name = "MINIO_ACCESS_KEY"
@@ -135,7 +139,7 @@ EOT
           }
           env {
             name  = "MONGODB_URL"
-            value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@my-cluster-name-rs0-0:27017,my-cluster-name-rs0-1:27017,my-cluster-name-rs0-2:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
+            value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@blue-rs0:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
           }
         }
         restart_policy = "Never"
