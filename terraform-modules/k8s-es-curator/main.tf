@@ -80,4 +80,7 @@ resource "kubernetes_job" "es_restore" {
     create = "20m"
     update = "20m"
   }
+  depends_on = [
+    kubernetes_job.minio_snapshot_storage
+  ]
 }
