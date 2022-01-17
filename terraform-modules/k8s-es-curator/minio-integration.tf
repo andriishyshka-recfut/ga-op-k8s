@@ -4,8 +4,8 @@ locals {
   secretKey               = jsondecode(data.vault_generic_secret.minio_creds.data["backup"]).secretKey
   minioIntegrationCommand = <<EOT
 
-  curl -X DELETE "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/minio"
-  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
+  curl -X DELETE "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio"
+  curl -X PUT "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
 {
      "type": "s3",
       "settings": {
@@ -21,12 +21,10 @@ EOT
 
 
 
-
-
 resource "kubernetes_job" "minio_snapshot_storage" {
   metadata {
-    name      = "${local.esValues.esName}-minio-snapshot-storage-reenable-${lower(random_id.rand.hex)}"
-    namespace = local.esValues.namespace
+    name      = "${var.ElasticName}-minio-snapshot-storage-reenable-${lower(random_id.rand.hex)}"
+    namespace = var.Namespace
   }
   spec {
     template {
