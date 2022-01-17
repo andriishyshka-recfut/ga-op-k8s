@@ -22,7 +22,7 @@ EOT
 
 resource "kubernetes_job" "minio_snapshot_storage" {
   metadata {
-    name      = "${var.ElasticName}-minio-snapshot-storage-reenable-${lower(random_id.rand.hex)}"
+    name      = "snapstor-reenable-${lower(random_id.rand.hex)}"
     namespace = var.Namespace
   }
   spec {
