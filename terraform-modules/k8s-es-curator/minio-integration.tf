@@ -1,7 +1,6 @@
 
 locals {
-  accessKey               = jsondecode(data.vault_generic_secret.minio_creds.data["backup"]).accessKey
-  secretKey               = jsondecode(data.vault_generic_secret.minio_creds.data["backup"]).secretKey
+
   minioIntegrationCommand = <<EOT
 
   curl -X DELETE "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio"
@@ -43,7 +42,7 @@ resource "kubernetes_job" "minio_snapshot_storage" {
             name = "ES_PASSWORD"
             value_from {
               secret_key_ref {
-                name = "${local.esValues.esName}-es-elastic-user"
+                name = "${var.ElasticName}-es-elastic-user"
                 key  = "elastic"
               }
             }
@@ -61,9 +60,7 @@ resource "kubernetes_job" "minio_snapshot_storage" {
     backoff_limit = 4
   }
   wait_for_completion = true
-  depends_on = [
-    null_resource.ansible_validate_resources
-  ]
+
   timeouts {
     create = "5m"
     update = "5m"
