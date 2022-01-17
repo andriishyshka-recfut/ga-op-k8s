@@ -11,7 +11,7 @@ actions:
     options:
         repository: minio
           # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
-        name: dr-%Y%m%d%H
+        name: monitoring-dr-%Y%m%d%H
         ignore_unavailable: False
         include_global_state: True
         partial: False

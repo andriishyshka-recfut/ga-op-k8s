@@ -17,4 +17,4 @@ actions:
         state: SUCCESS
       - filtertype: pattern
         kind: prefix
-        value: dr-
+        value: monitoring-dr-
