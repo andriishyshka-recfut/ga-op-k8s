@@ -2,7 +2,7 @@
 locals {
 
   minioIntegrationCommand = <<EOT
-  set -x 
+  set +x 
   curl -X DELETE "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio"
   curl -X PUT "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
 {
