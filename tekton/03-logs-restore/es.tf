@@ -18,7 +18,7 @@ module "restore" {
   Namespace = "monitoring"
   ElasticName = "monitoring"
   NamePrefix = "restore-logs"
-  Actions = file("${path.root}/es-backup-actions.yaml")
+  Actions = file("${path.root}/es-restore-actions.yaml")
   Settings                     = var.Settings
   depends_on = [ module.backup]
 }
