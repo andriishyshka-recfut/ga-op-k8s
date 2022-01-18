@@ -14,7 +14,8 @@ variable "NamePrefix" {
   default = ""
 }
 
-data "google_client_config" "current" {}
+variable "Settings" { }
+
 locals{
-  currentProject  = data.google_client_config.current.project
+  currentProject  = var.Settings.gcpProject
 }

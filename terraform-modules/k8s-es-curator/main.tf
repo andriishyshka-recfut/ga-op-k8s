@@ -77,8 +77,8 @@ resource "kubernetes_job" "es_restore" {
   }
   wait_for_completion = true
   timeouts {
-    create = "20m"
-    update = "20m"
+    create = "70m"
+    update = "70m"
   }
   depends_on = [
     kubernetes_job.minio_snapshot_storage
