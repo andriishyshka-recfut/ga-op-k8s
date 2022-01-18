@@ -38,5 +38,8 @@ path "secret/data/slack/auth" {
 path "secret/data/ching/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/oidc_google_prod" {
+  capabilities = ["read","list"]
+}
 EOT
 }
