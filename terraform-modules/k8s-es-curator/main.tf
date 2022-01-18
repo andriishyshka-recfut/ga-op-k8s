@@ -1,7 +1,7 @@
 
 resource "random_id" "rand" {
   byte_length = 8
-  prefix = "tf-curator"
+  prefix = "-curator-"
 }
 
 locals {
