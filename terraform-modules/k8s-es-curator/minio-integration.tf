@@ -2,8 +2,8 @@
 locals {
 
   minioIntegrationCommand = <<EOT
-  set +x
-  curl -X DELETE "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio"
+  set -e
+  curl -k -X DELETE "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio"
   curl -X PUT "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
 {
      "type": "s3",
@@ -15,7 +15,7 @@ locals {
       }
   }
   '
-  curl -X GET "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_cat/snapshots/minio"
+  curl -k -X GET "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_cat/snapshots/minio"
 EOT
 }
 
