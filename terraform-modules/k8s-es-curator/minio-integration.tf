@@ -2,7 +2,7 @@
 locals {
 
   minioIntegrationCommand = <<EOT
-  set +x 
+  set +x
   curl -X DELETE "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio"
   curl -X PUT "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
 {
@@ -15,7 +15,7 @@ locals {
       }
   }
   '
-  curl -X GET "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_cat/snapshots/minio"
+  curl -X GET "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_cat/snapshots/minio"
 EOT
 }
 
@@ -58,7 +58,7 @@ resource "kubernetes_job" "minio_snapshot_storage" {
         restart_policy = "Never"
       }
     }
-    backoff_limit = 4
+    backoff_limit = 1
   }
   wait_for_completion = true
 
