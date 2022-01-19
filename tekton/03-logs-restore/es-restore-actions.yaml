@@ -14,6 +14,8 @@ actions:
     filters:
       - filtertype: state
         state: SUCCESS
+      - filtertype: opened
+        exclude: True
       - filtertype: pattern
         kind: prefix
         value: monitoring-dr
