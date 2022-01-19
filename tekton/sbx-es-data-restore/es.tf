@@ -7,6 +7,7 @@ module "backup" {
   ElasticName = "sandbox"
   NamePrefix = "backup"
   Actions = file("${path.root}/es-backup-actions.yaml")
+  Settings                     = var.Settings
   providers = {
     kubernetes = kubernetes.kubernetes-inactive
   }
@@ -18,5 +19,6 @@ module "restore" {
   ElasticName = "sendbox"
   NamePrefix = "restore-logs"
   Actions = file("${path.root}/es-backup-actions.yaml")
+  Settings                     = var.Settings
   depends_on = [ module.backup]
 }
