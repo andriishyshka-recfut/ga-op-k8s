@@ -6,16 +6,16 @@ actions:
     options:
       repository: "minio"
       # name: monitoring-dr-%Y%m%d
+      indices:
+      - filebeat-7*
       rename_pattern: 'filebeat(.+)'
       rename_replacement: 'filebeat-previous$1'
-      wait_for_completion: True
+      wait_for_completion: False
       include_global_state: True
       # wait_interval: 20
     filters:
       - filtertype: state
         state: SUCCESS
-      - filtertype: opened
-        exclude: True
       - filtertype: pattern
         kind: prefix
         value: monitoring-dr
