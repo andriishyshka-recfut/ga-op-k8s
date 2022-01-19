@@ -19,4 +19,6 @@ actions:
         skip_repo_fs_check: False
         disable_action: False
     filters:
-     - filtertype: none
+     - filtertype: pattern
+       kind: prefix
+       value: filebeat-7
