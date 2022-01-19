@@ -14,14 +14,6 @@ module "data-elastic" {
   StoreEsPasswordInVault       = true
 }
 
-module "restore-service-indexes" {
-  source                       = "../../terraform-modules/k8s-es-curator"
-  Namespace = local.dataEs.elastic_settings.elastic.namespace
-  ElasticName = local.dataEs.elastic_settings.elastic.esName
-  NamePrefix = "restore-service-indexes"
-  Actions = file("${path.root}/actions.yaml")
-  depends_on          = [module.data-elastic]
-}
 
 module "data-kibana" {
   source                       = "../../terraform-modules/k8s-vault-kibana"

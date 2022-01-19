@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: mon-
+  generateName: data-restore-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,7 +11,7 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/01-monitoring"
+      value: "k8s/tekton/sbx-es-data-restore"
     - name: branch
       # value: "master"
       value: "\\#150_dr"
