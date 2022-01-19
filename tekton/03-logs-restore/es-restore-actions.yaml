@@ -5,7 +5,7 @@ actions:
     description: "Restore filebeat-7 indices in the most recent snapshot with state SUCCESS"
     options:
       repository: "minio"
-      name: monitoring-dr-%Y%m%d
+      # name: monitoring-dr-%Y%m%d
       rename_pattern: 'filebeat(.+)'
       rename_replacement: 'filebeat-previous$1'
       wait_for_completion: True
@@ -16,4 +16,4 @@ actions:
         state: SUCCESS
       - filtertype: pattern
         kind: prefix
-        value: filebeat-7
+        value: monitoring-dr
