@@ -2,21 +2,19 @@
 actions:
   1:
     action: restore
-    description: "Restore all indices from the most recent dr snapshot with state SUCCESS"
+    description: "Restore all indices from the most recent dr snapshot with state SUCCESS except those starting with ."
     options:
       repository: "minio"
       # name: 11-12-2021
+      include_aliases: True
       indices:
-      rename_pattern: 'filebeat(.+)'
-      rename_replacement: 'filebeat-previous$1'
+        - ^[^.].*$
       wait_for_completion: False
       include_global_state: True
       # wait_interval: 20
     filters:
       - filtertype: state
         state: SUCCESS
-      - filtertype: opened
-        exclude: True
       - filtertype: pattern
         kind: prefix
-        value: dr-
+        value: sandbox-dr-
