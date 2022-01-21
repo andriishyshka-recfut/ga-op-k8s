@@ -14,15 +14,30 @@ module "monitoring-elastic" {
   StoreEsPasswordInVault       = false
 }
 
-# module "restore-service-indexes" {
-#   source                       = "../../terraform-modules/k8s-es-curator"
-#   Namespace = local.monitoringEs.elastic_settings.elastic.namespace
-#   ElasticName = local.monitoringEs.elastic_settings.elastic.esName
-#   NamePrefix = "restore-service-indexes"
-#   Actions = file("${path.root}/actions.yaml")
-#   depends_on          = [module.monitoring-elastic]
-# }
-#
+module "backup" {
+  source                       = "../../terraform-modules/k8s-es-curator"
+  Namespace = local.monitoringEs.elastic_settings.elastic.namespace
+  ElasticName = local.monitoringEs.elastic_settings.elastic.esName
+  NamePrefix = "backup-service-indexes"
+  Actions = file("${path.root}/backup-actions.yaml")
+  Settings                     = var.Settings
+  providers = {
+    kubernetes = kubernetes.kubernetes-inactive
+  }
+}
+module "restore-service-indexes" {
+  source                       = "../../terraform-modules/k8s-es-curator"
+  Namespace = local.monitoringEs.elastic_settings.elastic.namespace
+  ElasticName = local.monitoringEs.elastic_settings.elastic.esName
+  NamePrefix = "restore-service-indexes"
+  Actions = file("${path.root}/restore-actions.yaml")
+  Settings                     = var.Settings
+  depends_on          = [
+    module.monitoring-elastic,
+    module.backup
+  ]
+}
+
 module "monitoring-kibana" {
   source                       = "../../terraform-modules/k8s-vault-kibana"
   ElasticSettings              = local.monitoringEs.elastic_settings
@@ -30,7 +45,7 @@ module "monitoring-kibana" {
   Cluster                      = var.Cluster
   Color                      = var.Color
   Settings                     = var.Settings
-  # depends_on          = [module.restore-service-indexes]
+   depends_on          = [module.restore-service-indexes]
 }
 
 module "monitoring-agents" {
