@@ -22,4 +22,4 @@ actions:
     filters:
      - filtertype: pattern
        kind: prefix
-       value: filebeat-7
+       value: .kibana_7
