@@ -25,4 +25,6 @@ actions:
     filters:
       - filtertype: state
         state: SUCCESS
-        state: SUCCESS
+      - filtertype: pattern
+        kind: prefix
+        value: monitoring-system-indices
