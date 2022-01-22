@@ -7,6 +7,11 @@ spec:
   version: 2.7.0
   replicas: 1
   connectCluster: "target"
+  template:
+    pod:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "false"
   jvmOptions:
     -Xms: 7G
     -Xmx: 7G
