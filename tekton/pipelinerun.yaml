@@ -2,7 +2,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: flux-
+  generateName: fluxcd
   namespace: tekton-pipelines
 spec:
   # timeouts:
