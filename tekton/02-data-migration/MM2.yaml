@@ -7,13 +7,21 @@ spec:
   version: 2.7.0
   replicas: 1
   connectCluster: "target"
+  template:
+    pod:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "false"
+  jvmOptions:
+    -Xms: 7G
+    -Xmx: 7G
   resources:
       limits:
-        cpu: 2
-        memory: 6G
+        cpu: 6
+        memory: 9G
       requests:
         cpu: 1
-        memory: 2G
+        memory: 7G
   clusters:
   - alias: "source"
     bootstrapServers: CHANGEME:32100
