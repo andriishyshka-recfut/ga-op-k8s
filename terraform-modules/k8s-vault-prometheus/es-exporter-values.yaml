@@ -4,7 +4,7 @@ elasticsearch:
     [DEFAULT]
     QueryIntervalSecs = 300
     QueryTimeoutSecs = 10
-    QueryIndices = <filebeat-7*>
+    QueryIndices = <filebeat-*>
     QueryOnError = drop
     QueryOnMissing = drop
 

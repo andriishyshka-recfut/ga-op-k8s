@@ -1,7 +1,7 @@
 
 variable "Settings" {}
 variable "Cluster" {}
-
+variable "Color" {}
 
 data "google_compute_instance" "bastion" {
   name = var.Settings.bastion_hostname
@@ -27,11 +27,11 @@ data "google_container_cluster" "active_cluster" {
   name     = "${var.Cluster}-${local.activeCluster}"
   location = "us-east4"
 }
-#
-# data "google_container_cluster" "inactive_cluster" {
-#   name     = "${var.Cluster}-${local.inActiveCluster}"
-#   location = "us-east4"
-# }
+
+data "google_container_cluster" "inactive_cluster" {
+  name     = "${var.Cluster}-${local.inActiveCluster}"
+  location = "us-east4"
+}
 
 data "google_client_config" "default" {
 }
@@ -39,10 +39,10 @@ data "google_client_config" "default" {
 
 
 locals {
-  activeCluster   = lookup(var.Settings.clusters[var.Cluster].blue, "active", false) == true ? "blue" : "green"
-  inActiveCluster = lookup(var.Settings.clusters[var.Cluster].blue, "active", false) == true ? "green" : "blue"
+  activeCluster   = var.Color
+  inActiveCluster = var.Color == "blue" ? "green" : "blue"
 
-  # inActiveGkeEndpoint = "https://${data.google_container_cluster.inactive_cluster.endpoint}"
+  inActiveGkeEndpoint = "https://${data.google_container_cluster.inactive_cluster.endpoint}"
   gkeClusterConnectionSettings = {
     HOST                   = "https://${data.google_container_cluster.active_cluster.endpoint}"
     API_KEY                = data.google_client_config.default.access_token

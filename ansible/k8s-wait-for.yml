@@ -38,5 +38,5 @@
       namespace: "{{ namespace }}"
     register: info
     until: info.resources[0].status | json_query(statusPath) == requiredStatus
-    retries: 10
+    retries: 15
     delay: 30

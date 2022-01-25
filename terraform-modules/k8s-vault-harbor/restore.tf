@@ -33,10 +33,15 @@ echo "Postgres restore completed";
 EOF
 }
 
+
+resource "random_id" "rand" {
+  byte_length = 8
+}
+
 resource "kubernetes_job" "harbor_restore" {
   count = local.restoreSwitcher
   metadata {
-    name      = "harbor-restore"
+    name      = "harbor-restore-${lower(random_id.rand.hex)}"
     namespace = local.harborNs
   }
   spec {

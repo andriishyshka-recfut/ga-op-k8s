@@ -15,7 +15,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/namespaces"
+          value: "k8s/tekton/01-namespaces"
         - name: branch
           value: "master"
 
@@ -29,7 +29,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/minio"
+          value: "k8s/tekton/01-minio"
         - name: branch
           value: "master"
 
@@ -44,7 +44,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/mongo"
+          value: "k8s/tekton/01-mongo"
         - name: branch
           value: "master"
 
@@ -58,7 +58,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/kafka"
+          value: "k8s/tekton/01-kafka"
         - name: branch
           value: "master"
 
@@ -72,9 +72,9 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/redis"
+          value: "k8s/tekton/01-redis"
         - name: branch
-          value: "#131-redis-changes"
+          value: "master"
 
     - name: camel-k
       taskRef:
@@ -86,7 +86,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/camel-k"
+          value: "k8s/tekton/01-camel-k"
         - name: branch
           value: "master"
 
@@ -101,9 +101,39 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/monitoring"
+          value: "k8s/tekton/01-monitoring"
         - name: branch
           value: "master"
+    - name: external-secrets
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      - monitoring
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/01-external-secrets"
+        - name: branch
+          value: "master"
+
+    # - name: mirroring
+    #   taskRef:
+    #     name: tg-run
+    #   runAfter:
+    #   - namespaces
+    #   - mongo
+    #   - kafka
+    #   workspaces:
+    #     - name: ws
+    #       workspace: ws
+    #   params:
+    #     - name: path
+    #       value: "k8s/tekton/01-mirroring"
+    #     - name: branch
+    #       value: "master"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -114,7 +144,7 @@ spec:
   workspaces:
   - name: ws
   tasks:
-    - name: data-migration
+    - name: stop-apps
       taskRef:
         name: tg-run
       workspaces:
@@ -122,7 +152,20 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/data-migration"
+          value: "k8s/tekton/02-stop-apps"
+        - name: branch
+          value: "master"
+    - name: data-migration
+      taskRef:
+        name: tg-run
+      runAfter:
+      - stop-apps
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/02-data-migration"
         - name: branch
           value: "master"
 ---
@@ -135,7 +178,7 @@ spec:
   workspaces:
   - name: ws
   tasks:
-    - name: fluxcd
+    - name: stop-mirrorings
       taskRef:
         name: tg-run
       workspaces:
@@ -143,11 +186,23 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/fluxcd"
+          value: "k8s/tekton/03-stop-mirrorings"
+        - name: branch
+          value: "master"
+    - name: fluxcd
+      taskRef:
+        name: tg-run
+      runAfter:
+      - stop-mirrorings
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/03-fluxcd"
         - name: branch
           value: "master"
 ---
-
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:

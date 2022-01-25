@@ -1,0 +1,20 @@
+---
+actions:
+  1:
+    action: restore
+    description: "Restore all indices from the most recent dr snapshot with state SUCCESS except those starting with ."
+    options:
+      repository: "minio"
+      # name: 11-12-2021
+      include_aliases: True
+      indices:
+        - ^[^.].*$
+      wait_for_completion: False
+      include_global_state: True
+      # wait_interval: 20
+    filters:
+      - filtertype: state
+        state: SUCCESS
+      - filtertype: pattern
+        kind: prefix
+        value: sandbox-dr-

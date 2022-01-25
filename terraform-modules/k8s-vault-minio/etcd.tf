@@ -3,7 +3,7 @@ resource "helm_release" "etcd" {
   name       = "etcd"
   chart      = "etcd"
   repository = "https://charts.bitnami.com/bitnami"
-  #version           = "0.1.0"
+  version           = "6.8.2"
   namespace         = local.minioNs
   dependency_update = "true"
 

@@ -1,7 +1,7 @@
 apiVersion: psmdb.percona.com/v1-4-0
 kind: PerconaServerMongoDB
 metadata:
-  name: my-cluster-name
+  name: {{ .Values.color }}
   namespace: {{ .Release.Namespace }}
 spec:
 #  platform: openshift
@@ -34,6 +34,9 @@ spec:
       workloadsType: data
     tolerations:
     - key: "workloadsType"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "node.kubernetes.io/memory-pressure"
       operator: "Exists"
       effect: "NoSchedule"
     affinity:
@@ -74,11 +77,11 @@ spec:
        antiAffinityTopologyKey: "kubernetes.io/hostname"
     resources:
       limits:
-        cpu: "1000m"
-        memory: "2G"
+        cpu: "{{ .Values.cpuLimit }}"
+        memory: "{{ .Values.memLimit }}"
       requests:
-        cpu: "100m"
-        memory: "0.2G"
+        cpu: "{{ .Values.cpuReuest }}"
+        memory: "{{ .Values.memReuest }}"
     volumeSpec:
 #      emptyDir: {}
 #      hostPath:

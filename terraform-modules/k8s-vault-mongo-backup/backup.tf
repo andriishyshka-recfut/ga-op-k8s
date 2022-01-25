@@ -1,6 +1,7 @@
 locals {
   backupCommand = <<EOT
 set -e;
+set +x ;
 apt-get update -q && apt-get install wget -yq ;
 wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
 chmod +x mc ;
@@ -9,7 +10,7 @@ cd /data ;
 %{for setting in var.BackupSettings}
 mongodump --archive="${setting.dbName}.tar.gz" --gzip --uri=$MONGODB_URL --db ${setting.dbName} ;
 %{if setting.encrypt}
- gpg -r Backup  --armor -o - --encrypt ${setting.dbName}.tar.gz |  ./mc pipe backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.gpg ;
+ gpg -r Backup  --armor -o - --encrypt ${setting.dbName}.tar.gz |  /mc pipe backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.gpg ;
 %{else}
 /mc cp --disable-multipart ${setting.dbName}.tar.gz backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.tar.gz;
 %{endif}
@@ -54,7 +55,7 @@ resource "kubernetes_job" "mongo_backup" {
           "sidecar.istio.io/inject"                          = "false"
           "vault.hashicorp.com/agent-inject"                 = "true"
           "vault.hashicorp.com/agent-inject-secret-config"   = "secret/backup/gpg"
-          "vault.hashicorp.com/role"                         = "mongo"
+          "vault.hashicorp.com/role"                         = var.MongoNs
           "vault.hashicorp.com/agent-pre-populate-only"      = "true"
           "vault.hashicorp.com/auth-path"                    = "auth/k8s-${var.Cluster}-${var.Color}"
           "vault.hashicorp.com/agent-inject-template-config" = <<EOT

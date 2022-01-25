@@ -17,6 +17,7 @@ extra_arguments "custom_vars" {
 
 retryable_errors = [
  "isn't valid for cluster, check the APIVersion and Kind fields are valid",
+ "'dict object' has no .* attribute 'status'",
  "Provider produced inconsistent final plan"
 ]
 
@@ -26,6 +27,7 @@ generate "provider" {
   contents = <<EOF
 variable "Settings" {}
 variable "Cluster" {}
+variable "Color" {}
 variable "VaultAddress" {}
 
 
@@ -35,7 +37,7 @@ provider "vault" {
 
 locals {
 
-  activeCluster          = lookup(var.Settings.clusters[var.Cluster].blue, "active", false) == true ? "blue" : "green"
+  activeCluster          = var.Color
   inactiveCluster        = local.activeCluster == "blue" ? "green" : "blue"
   activeClusterVaultPath = "secret/kubernetes-$${var.Cluster}-$${local.activeCluster}"
   inactiveClusterVaultPath = "secret/kubernetes-$${var.Cluster}-$${local.inactiveCluster}"

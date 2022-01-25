@@ -6,6 +6,9 @@ resource "vault_policy" "magescanner" {
 path "secret/data/es-creds-compose-prod/magescanner" {
   capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/metaMagescanner" {
+  capabilities = ["read","list"]
+}
 path "secret/data/mongo/production" {
   capabilities = ["read","list"]
 }

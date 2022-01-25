@@ -25,11 +25,11 @@ spec:
     replicas: 3
     resources:
       limits:
-        cpu: 1
-        memory: 2G
+        cpu: {{ .Values.cpuLimit }}
+        memory: {{ .Values.memLimit }}
       requests:
-        cpu: 0.1
-        memory: 300M
+        cpu: {{ .Values.cpuReuest }}
+        memory: {{ .Values.memReuest }}
     listeners:
     - name: plain
       port: 9092

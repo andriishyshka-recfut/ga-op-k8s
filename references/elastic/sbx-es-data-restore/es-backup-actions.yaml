@@ -1,0 +1,21 @@
+---
+actions:
+  1:
+    action: snapshot
+    description: >-
+      Snapshot all.
+    options:
+        repository: minio
+          # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
+        name: sanbdox-dr-%Y%m%d
+        ignore_unavailable: False
+        include_global_state: True
+        partial: False
+        wait_for_completion: True
+        skip_repo_fs_check: False
+        disable_action: False
+        allow_ilm_indices: True
+    filters:
+     - filtertype: pattern
+       kind: regex
+       value: ".*$"

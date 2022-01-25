@@ -3,9 +3,9 @@ locals {
   redisCommanderValues = yamldecode(file("${path.module}/charts/redis-commander/values.yaml"))
 }
 
-variable "Redis_settings" {}
+variable "RedisSettings" {}
 
-resource "kubernetes_config_map" "redis-commander" {
+resource "kubernetes_config_map" "redis_commander" {
   metadata {
     name      = "redis-commander-sentinels"
     namespace = "redis-operator-ns"
@@ -15,7 +15,7 @@ resource "kubernetes_config_map" "redis-commander" {
   }
 }
 
-resource "kubernetes_config_map" "redis-commander-ro" {
+resource "kubernetes_config_map" "redis_commander_ro" {
   metadata {
     name      = "redis-commander-sentinels-ro"
     namespace = "redis-operator-ns"
@@ -27,7 +27,7 @@ resource "kubernetes_config_map" "redis-commander-ro" {
 
 
 resource "helm_release" "redis" {
-  for_each  = var.Redis_settings
+  for_each  = var.RedisSettings
   name      = "redis"
   chart     = "${path.module}/charts/redis"
   wait      = true
@@ -84,9 +84,10 @@ resource "helm_release" "redis" {
     name  = "redisCrd.redis.resources.limits.memory"
     value = lookup(each.value, "redis-lim-mem", "500Mi")
   }
+  depends_on = [helm_release.operator]
 }
 
-resource "helm_release" "redis-commander" {
+resource "helm_release" "redis_commander" {
   name      = "redis-commander"
   chart     = "${path.module}/charts/redis-commander"
   wait      = true
@@ -96,7 +97,7 @@ resource "helm_release" "redis-commander" {
     yamlencode(local.redisCommanderValues)
   ]
 }
-resource "helm_release" "redis-commander-ro" {
+resource "helm_release" "redis_commander_ro" {
   name      = "redis-commander-ro"
   chart     = "${path.module}/charts/redis-commander"
   wait      = true

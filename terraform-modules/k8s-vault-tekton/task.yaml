@@ -19,7 +19,7 @@ spec:
     - name: tg-apply
       image: harbor.t.regemini.io/op/tf:latest
       env:
-        - name: COLOR
+        - name: TF_VAR_Color
           valueFrom:
             configMapKeyRef:
               name: cluster-settings
@@ -42,10 +42,10 @@ spec:
       script: |
        set +x
        set -e
-       export VAULT_TOKEN=$(vault write -field=token auth/k8s-${CLUSTER}-${COLOR}/login role=tekton jwt=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`)
-       export KUBE_TOKEN=$(vault kv get -field=k8s_sa_token secret/kubernetes-${CLUSTER}-${COLOR} )
-       export KUBE_HOST=$(vault kv get -field=HOST secret/kubernetes-${CLUSTER}-${COLOR} )
-       export KUBE_CLUSTER_CA_CERT_DATA=$(vault kv get -field=CLUSTER_CA_CERTIFICATE secret/kubernetes-${CLUSTER}-${COLOR} )
+       export VAULT_TOKEN=$(vault write -field=token auth/k8s-${CLUSTER}-${TF_VAR_Color}/login role=tekton jwt=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`)
+       export KUBE_TOKEN=$(vault kv get -field=k8s_sa_token secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
+       export KUBE_HOST=$(vault kv get -field=HOST secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
+       export KUBE_CLUSTER_CA_CERT_DATA=$(vault kv get -field=CLUSTER_CA_CERTIFICATE secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
        export GIT_USER=$(vault kv get -field=username secret/gitlab )
        export GIT_TOKEN=$(vault kv get -field=token_read_repo secret/gitlab )
 

@@ -109,6 +109,6 @@ resource "google_compute_firewall" "clusters_nodeport" {
 
   allow {
     protocol = "tcp"
-    ports    = [ "30000-32767"]
+    ports    = [ "30000-32767","27017"]
   }
 }

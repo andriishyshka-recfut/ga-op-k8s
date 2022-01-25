@@ -1,6 +1,7 @@
 locals {
   restoreCommand = <<EOT
 set -e;
+set +x ;
 apt-get update -q && apt-get install wget -yq ;
 wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
 chmod +x mc ;
@@ -52,7 +53,7 @@ resource "kubernetes_job" "mongo_restore" {
           "sidecar.istio.io/inject" = "false"
           "vault.hashicorp.com/agent-inject" = "true"
           "vault.hashicorp.com/agent-inject-secret-config" = "secret/backup/gpg"
-          "vault.hashicorp.com/role" = "mongo"
+          "vault.hashicorp.com/role" = var.MongoNs
           "vault.hashicorp.com/agent-pre-populate-only" = "true"
           "vault.hashicorp.com/auth-path" = "auth/k8s-${var.Cluster}-${var.Color}"
           "vault.hashicorp.com/agent-inject-template-config" = <<EOT
@@ -90,6 +91,10 @@ EOT
             limits = {
               cpu = 2
               memory = "2Gi"
+            }
+            requests = {
+              cpu = 0.5
+              memory = "1Gi"
             }
           }
           env {
@@ -134,7 +139,7 @@ EOT
           }
           env {
             name  = "MONGODB_URL"
-            value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@my-cluster-name-rs0-0:27017,my-cluster-name-rs0-1:27017,my-cluster-name-rs0-2:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
+            value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@blue-rs0:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
           }
         }
         restart_policy = "Never"

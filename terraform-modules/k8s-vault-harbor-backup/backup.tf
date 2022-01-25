@@ -12,9 +12,14 @@ locals {
 EOF
 }
 
+
+resource "random_id" "rand" {
+  byte_length = 8
+}
+
 resource "kubernetes_job" "harbor_backup" {
   metadata {
-    name      = "harbor-backup"
+    name      = "harbor-backup-${lower(random_id.rand.hex)}"
     namespace = local.harborNs
   }
   spec {
