@@ -3,6 +3,8 @@ platform:
     prometheus:
       configuration:
         enabled: true
+        podMonitorLabels:
+        - release=prometheus
   build:
     baseImage: openjdk:17-oraclelinux7
     #publishStrategy: Kaniko
