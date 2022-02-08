@@ -14,8 +14,8 @@
 # }
 
 
-locals{
-  defaultSettingTopicsList= [
+locals {
+  defaultSettingTopicsList = [
     "dome.altenen.post",
     "dome.altenen.post_vip",
     "dome.altenen.post_vip_infinite",
@@ -176,6 +176,15 @@ locals{
     "dome.xss.profile",
     "dome.youhack.post",
     "dome.youhack.profile",
+    "dome.crdpro.post",
+    "dome.crdpro.post_prime",
+    "dome.crdpro.post_vip",
+    "dome.crdpro.profile",
+    "dome.ramp.post",
+    "dome.ramp.profile",
+    "dome.eternia.post",
+    "dome.eternia.post_prime",
+    "dome.eternia.profile",
     "minion.allworld.cnp",
     "minion.allworld.cnp_vip",
     "minion.amigos.cnp",
@@ -252,17 +261,17 @@ locals{
     "minion.wixxx.cnp",
     "minion.wsstore.cnp",
     "minion.yalelodge.cnp",
-
+    "minion.carder007.cnp"
   ]
 }
 
 resource "kubectl_manifest" "default_setting_topics" {
-    for_each = toset(local.defaultSettingTopicsList)
-    yaml_body = templatefile("${path.module}/topic-default.yaml", {
-        "TOPIC_NAME" = each.key
-        "TOPIC_RFC_1123_NAME" = replace(each.key,"_",".")
-        })
-    depends_on = [
-      helm_release.kafka_cluster
-    ]
+  for_each = toset(local.defaultSettingTopicsList)
+  yaml_body = templatefile("${path.module}/topic-default.yaml", {
+    "TOPIC_NAME"          = each.key
+    "TOPIC_RFC_1123_NAME" = replace(each.key, "_", ".")
+  })
+  depends_on = [
+    helm_release.kafka_cluster
+  ]
 }

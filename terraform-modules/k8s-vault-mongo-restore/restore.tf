@@ -7,15 +7,15 @@ wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
 chmod +x mc ;
 source /vault/secrets/config ;
 cd /data;
-%{ for setting in var.BackupSettings }
-%{ if setting.encrypt }
+%{for setting in var.BackupSettings}
+%{if setting.encrypt}
 /mc cp  backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.gpg ${setting.dbName}.gpg;
 gpg -r Backup   -o ${setting.dbName}.tar.gz --decrypt ${setting.dbName}.gpg ;
-%{ else }
+%{else}
 /mc cp  backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.tar.gz ${setting.dbName}.tar.gz;
-%{ endif }
+%{endif}
 mongorestore --archive="${setting.dbName}.tar.gz" --gzip --uri=$MONGODB_URL --db ${setting.dbName} ;
-%{ endfor }
+%{endfor}
 
 EOT
 }
@@ -25,11 +25,11 @@ resource "random_id" "rand" {
 
 resource "kubernetes_persistent_volume_claim" "volume" {
   metadata {
-    name = "restore-${lower(random_id.rand.hex)}"
+    name      = "restore-${lower(random_id.rand.hex)}"
     namespace = var.MongoNs
   }
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes       = ["ReadWriteOnce"]
     storage_class_name = "kms-encrypted"
     resources {
       requests = {
@@ -50,12 +50,12 @@ resource "kubernetes_job" "mongo_restore" {
     template {
       metadata {
         annotations = {
-          "sidecar.istio.io/inject" = "false"
-          "vault.hashicorp.com/agent-inject" = "true"
-          "vault.hashicorp.com/agent-inject-secret-config" = "secret/backup/gpg"
-          "vault.hashicorp.com/role" = var.MongoNs
-          "vault.hashicorp.com/agent-pre-populate-only" = "true"
-          "vault.hashicorp.com/auth-path" = "auth/k8s-${var.Cluster}-${var.Color}"
+          "sidecar.istio.io/inject"                          = "false"
+          "vault.hashicorp.com/agent-inject"                 = "true"
+          "vault.hashicorp.com/agent-inject-secret-config"   = "secret/backup/gpg"
+          "vault.hashicorp.com/role"                         = var.MongoNs
+          "vault.hashicorp.com/agent-pre-populate-only"      = "true"
+          "vault.hashicorp.com/auth-path"                    = "auth/k8s-${var.Cluster}-${var.Color}"
           "vault.hashicorp.com/agent-inject-template-config" = <<EOT
                     {{ with secret "secret/backup/gpg" -}}
                       echo "{{.Data.data.key}}" | base64 -d | gpg --import
@@ -75,7 +75,7 @@ EOT
         #   }
         volume {
           name = "data"
-           persistent_volume_claim {
+          persistent_volume_claim {
             claim_name = "restore-${lower(random_id.rand.hex)}"
           }
         }
@@ -84,16 +84,16 @@ EOT
           image   = "mongo"
           command = ["bash", "-c", local.restoreCommand]
           volume_mount {
-            name = "data"
+            name       = "data"
             mount_path = "/data"
           }
           resources {
             limits = {
-              cpu = 2
+              cpu    = 2
               memory = "2Gi"
             }
             requests = {
-              cpu = 0.5
+              cpu    = 0.5
               memory = "1Gi"
             }
           }
@@ -139,7 +139,7 @@ EOT
           }
           env {
             name  = "MONGODB_URL"
-            value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@blue-rs0:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
+            value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@${var.Color}-rs0:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
           }
         }
         restart_policy = "Never"

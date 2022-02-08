@@ -57,4 +57,4 @@ spec:
 
        cd $(workspaces.ws.path)/$(params.path)
        git log -1
-       terragrunt force-unlock -force  21006d3b-1bce-b51d-dbf9-39a222d8775f
+       terragrunt force-unlock -force  aed6cd39-7126-60c2-6c98-672c9e1a3cd2

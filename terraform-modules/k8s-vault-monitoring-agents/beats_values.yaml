@@ -143,12 +143,6 @@ filebeat:
               config:
               - type: container
                 json.add_error_key: true
-                processors:
-                  - rename:
-                      fields:
-                        - from: "json.level"
-                          to: "json.logLevel"
-                      ignore_missing: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
             # Minion
@@ -157,12 +151,6 @@ filebeat:
               config:
               - type: container
                 json.add_error_key: true
-                processors:
-                  - rename:
-                      fields:
-                        - from: "json.level"
-                          to: "json.logLevel"
-                      ignore_missing: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
             # Shout
@@ -171,11 +159,5 @@ filebeat:
               config:
               - type: container
                 json.add_error_key: true
-                processors:
-                  - rename:
-                      fields:
-                        - from: "json.level"
-                          to: "json.logLevel"
-                      ignore_missing: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log

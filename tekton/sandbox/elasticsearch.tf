@@ -1,6 +1,6 @@
 
-locals{
-  dataEs                 = yamldecode(file("data_elastic_settings.yaml"))
+locals {
+  dataEs = yamldecode(file("data_elastic_settings.yaml"))
 }
 
 
@@ -20,7 +20,7 @@ module "data-kibana" {
   ElasticSettings              = local.dataEs.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
-  Color                      = var.Color
+  Color                        = var.Color
   Settings                     = var.Settings
-  depends_on          = [module.restore-service-indexes]
+  # depends_on          = [module.restore-service-indexes]
 }

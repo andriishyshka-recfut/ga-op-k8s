@@ -14,7 +14,7 @@ data "vault_generic_secret" "k8s_auth" {
   path = local.activeClusterVaultPath
 }
 locals {
-  activeCluster          =  "blue"
+  activeCluster          = "blue"
   activeClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
 }
 provider "helm" {
@@ -37,5 +37,5 @@ module "lb-switch" {
   source   = "../../../terraform-modules/lb-switch"
   Settings = var.Settings
   Cluster  = "sandbox"
-  Color = local.activeCluster
+  Color    = local.activeCluster
 }

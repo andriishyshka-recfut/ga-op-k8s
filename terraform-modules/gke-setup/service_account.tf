@@ -17,7 +17,8 @@ resource "google_service_account" "gke_sa" {
 }
 
 resource "google_project_iam_member" "service_account" {
-  count  = length(local.serviceAccountIamRoles)
-  role   = element(local.serviceAccountIamRoles, count.index)
-  member = format("serviceAccount:%s", google_service_account.gke_sa.email)
+  count   = length(local.serviceAccountIamRoles)
+  role    = element(local.serviceAccountIamRoles, count.index)
+  member  = format("serviceAccount:%s", google_service_account.gke_sa.email)
+  project = data.google_project.current.number
 }

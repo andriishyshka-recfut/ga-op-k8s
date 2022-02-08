@@ -1,6 +1,14 @@
 data "vault_generic_secret" "mongo_creds" {
- path = var.Settings.clusters[var.Cluster].mongo.magescanner.vaultPath
+  path = var.Settings.clusters[var.Cluster].mongo.magescanner.vaultPath
 }
+
+provider "kubernetes" {
+  alias                  = "kubernetes-inactive"
+  host                   = data.vault_generic_secret.k8s_auth_inactive.data.HOST
+  cluster_ca_certificate = data.vault_generic_secret.k8s_auth_inactive.data.CLUSTER_CA_CERTIFICATE
+  token                  = data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token
+}
+
 
 locals {
   mongoshakeCommand = <<EOT
@@ -16,40 +24,50 @@ EOT
 
 resource "kubernetes_secret" "mongoshake_config" {
   metadata {
-    name = "mongoshake-config"
+    name      = "mongoshake-config"
     namespace = "mongo"
   }
   data = {
     config = templatefile("${path.root}/mongoshake-conf.tftpl", {
-      USER = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_USER
-      PASSWORD = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_PASSWORD
-      COLOR = var.Color
+      USER              = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_USER
+      PASSWORD          = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_PASSWORD
+      COLOR             = var.Color
       SOURCE_CLUSTER_IP = data.external.get_remote_node.result.ip
-      })
+    })
   }
 }
 
 
 
-resource "null_resource" "mongo_nodeport" {
-
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = <<COMMAND
-    set -x
-    kubectl apply --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-     --insecure-skip-tls-verify=true  \
-     -f ${path.root}/mongo-nodeport.yaml
-
-COMMAND
+resource "kubernetes_service" "mongo_nodeport" {
+  metadata {
+    name      = "rs0-mongo-nodeport"
+    namespace = "mongo"
+  }
+  provider = kubernetes.kubernetes-inactive
+  spec {
+    selector = {
+      "app.kubernetes.io/instance"   = "${local.inactiveCluster}"
+      "app.kubernetes.io/managed-by" = "percona-server-mongodb-operator"
+      "app.kubernetes.io/name"       = "percona-server-mongodb"
+      "app.kubernetes.io/part-of"    = "percona-server-mongodb"
+      "app.kubernetes.io/replset"    = "rs0"
+    }
+    port {
+      name        = "nodeportredis"
+      port        = 27017
+      target_port = 27017
+      node_port   = 32170
+      protocol    = "TCP"
+    }
+    type = "NodePort"
   }
 }
 
 
 resource "kubernetes_deployment" "mongoshake" {
   metadata {
-    name = "mongoshake"
+    name      = "mongoshake"
     namespace = "mongo"
   }
   spec {
@@ -73,7 +91,7 @@ resource "kubernetes_deployment" "mongoshake" {
         dynamic "host_aliases" {
           for_each = jsondecode(data.external.get_remote_node.result.mongo_dns)
           content {
-            ip = host_aliases.value.ip
+            ip        = host_aliases.value.ip
             hostnames = [host_aliases.value.hostname]
           }
         }

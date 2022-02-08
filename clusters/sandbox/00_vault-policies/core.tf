@@ -38,5 +38,8 @@ path "sys/leases/renew" {
 path "secret/data/ching/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/oidc_google_test" {
+  capabilities = ["read","list"]
+}
 EOT
 }
