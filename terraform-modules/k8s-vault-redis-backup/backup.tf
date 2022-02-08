@@ -1,7 +1,11 @@
+resource "random_id" "rand" {
+  byte_length = 8
+}
+
 resource "kubernetes_job" "redis_backup" {
   for_each = var.BackupSettings
   metadata {
-    name      = "redis-backup"
+    name      = "redis-backup-${lower(random_id.rand.hex)}"
     namespace = each.value["ns"]
   }
   spec {
@@ -49,6 +53,10 @@ resource "kubernetes_job" "redis_backup" {
           env {
             name  = "BACKUP_NAME"
             value = each.value["name"]
+          }
+          env {
+            name  = "SENTINEL"
+            value = each.value["sentinel"] ? "yes" : "no"
           }
         }
         restart_policy = "Never"

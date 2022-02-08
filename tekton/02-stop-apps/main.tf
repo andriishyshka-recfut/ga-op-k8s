@@ -3,7 +3,7 @@ data "vault_generic_secret" "k8s_auth_inactive" {
 }
 
 
-locals{
+locals {
   command = <<COMMAND
     set -x
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
@@ -15,7 +15,7 @@ locals{
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
-     get ns | grep -e dome -e minion | awk '{print $0}' | xargs -n 1 -I{} \
+     get ns | grep -e dome -e minion | awk '{print $1}' | xargs -n 1 -I{} \
      kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
@@ -46,6 +46,11 @@ locals{
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
      scale deploy -n magescanner --replicas=0 --all
+
+     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     scale deploy -n camel-k --replicas=0 --all
 
 COMMAND
 }

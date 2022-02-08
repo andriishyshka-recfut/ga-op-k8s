@@ -27,12 +27,13 @@ resource "kubernetes_config_map" "redis_commander_ro" {
 
 
 resource "helm_release" "redis" {
-  for_each  = var.RedisSettings
-  name      = "redis"
-  chart     = "${path.module}/charts/redis"
-  wait      = true
-  atomic    = true
-  namespace = each.value["ns"]
+  for_each     = var.RedisSettings
+  name         = "redis"
+  chart        = "${path.module}/charts/redis"
+  wait         = true
+  atomic       = true
+  namespace    = each.value["ns"]
+  reset_values = true
   values = [
     yamlencode(local.redisValues)
   ]
@@ -109,5 +110,25 @@ resource "helm_release" "redis_commander_ro" {
   set {
     name  = "Deployment.configMapName"
     value = "redis-commander-sentinels-ro"
+  }
+}
+
+resource "kubernetes_service" "redis_core_nodeport" {
+  metadata {
+    name      = "redis-core-nodeport"
+    namespace = "core"
+  }
+  spec {
+    selector = {
+      "statefulset.kubernetes.io/pod-name" = "rfr-redisfailover-0"
+    }
+    port {
+      name        = "nodeportredis"
+      port        = 6379
+      target_port = 6379
+      node_port   = 32305
+      protocol    = "TCP"
+    }
+    type = "NodePort"
   }
 }

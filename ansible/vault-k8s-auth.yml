@@ -57,7 +57,12 @@
           mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
           state: "disabled"
       ignore_errors: yes
-
+    - name: disable k8s secret engine
+      hashivault_auth_method:
+          method_type: kubernetes
+          mount_point: "default-issuer-{{ cluster_name }}-{{ cluster_color }}"
+          state: "disabled"
+      ignore_errors: yes
     - name: enable k8s secret engine
       hashivault_auth_method:
           method_type: kubernetes
@@ -70,7 +75,7 @@
 
     - name: Sleep for 10 seconds
       pause:
-        seconds: 10
+        seconds: 20
 
     - name: create auth endpoint config
       hashivault_k8s_auth_config:

@@ -18,12 +18,6 @@
       "sentinels": "rfs-redisfailover.core:26379",
       "sentinelName": "mymaster",
       "dbIndex": 0
-    },
-    {
-      "label": "magescanner",
-      "sentinels": "rfs-redisfailover.magescanner:26379",
-      "sentinelName": "mymaster",
-      "dbIndex": 0
     }
   ]
 }

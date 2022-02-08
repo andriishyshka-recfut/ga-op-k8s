@@ -1,6 +1,6 @@
 locals {
   gkeKmsVolumeKey = var.Settings.clusters[var.Cluster].persistent_resources.gke_kms_volume_key
-  gkeRegion           = var.Settings.clusters[var.Cluster].region
+  gkeRegion       = var.Settings.clusters[var.Cluster].region
 }
 
 data "google_kms_key_ring" "key_ring" {
@@ -10,7 +10,7 @@ data "google_kms_key_ring" "key_ring" {
 
 data "google_kms_crypto_key" "crypto_key" {
   name     = local.gkeKmsVolumeKey
-  key_ring = data.google_kms_key_ring.key_ring.self_link
+  key_ring = data.google_kms_key_ring.key_ring.id
 }
 
 
@@ -29,7 +29,7 @@ resource "null_resource" "patch_storage_class" {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  -f -
 
-${replace(file("${path.module}/storageclass.yaml"),"KMS_KEY_ID",data.google_kms_crypto_key.crypto_key.id)}
+${replace(file("${path.module}/storageclass.yaml"), "KMS_KEY_ID", data.google_kms_crypto_key.crypto_key.id)}
 
 EOF
 

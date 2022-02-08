@@ -24,4 +24,14 @@ spec:
       limits:
         cpu: {{ .Values.redisCrd.redis.resources.limits.cpu }}
         memory: {{ .Values.redisCrd.redis.resources.limits.memory }}
+    storage:
+      persistentVolumeClaim:
+        metadata:
+          name: redisfailover-persistent-data
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
 {{- end -}}

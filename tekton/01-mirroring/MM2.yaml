@@ -9,6 +9,19 @@ spec:
   connectCluster: "target"
   template:
     pod:
+      tolerations:
+        - key: "workloadsType"
+          operator: "Exists"
+          effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: workloadsType
+                  operator: In
+                  values:
+                    - mm2
       metadata:
         annotations:
           sidecar.istio.io/inject: "false"

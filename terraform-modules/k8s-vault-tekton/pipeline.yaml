@@ -17,7 +17,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-namespaces"
         - name: branch
-          value: "master"
+          value: "\\#110"
 
     - name: minio
       taskRef:
@@ -31,7 +31,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-minio"
         - name: branch
-          value: "master"
+          value: "\\#110"
 
     - name: mongo
       taskRef:
@@ -46,7 +46,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-mongo"
         - name: branch
-          value: "master"
+          value: "\\#110"
 
     - name: kafka
       taskRef:
@@ -60,7 +60,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-kafka"
         - name: branch
-          value: "master"
+          value: "\\#110"
 
     - name: redis
       taskRef:
@@ -74,7 +74,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-redis"
         - name: branch
-          value: "master"
+          value: "\\#110"
 
     - name: camel-k
       taskRef:
@@ -88,9 +88,9 @@ spec:
         - name: path
           value: "k8s/tekton/01-camel-k"
         - name: branch
-          value: "master"
+          value: "\\#110"
 
-    - name: monitoring
+    - name: monitoring-elastic
       taskRef:
         name: tg-run
       runAfter:
@@ -101,9 +101,39 @@ spec:
           workspace: ws
       params:
         - name: path
+          value: "k8s/tekton/01-monitoring-elastic"
+        - name: branch
+          value: "\\#110"
+    - name: monitoring-elastic-backup-restore
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      - minio
+      - monitoring-elastic
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/01-monitoring-backup-restore"
+        - name: branch
+          value: "\\#110"
+    - name: monitoring
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      - minio
+      - monitoring-elastic-backup-restore
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
           value: "k8s/tekton/01-monitoring"
         - name: branch
-          value: "master"
+          value: "\\#110"
     - name: external-secrets
       taskRef:
         name: tg-run
@@ -117,23 +147,23 @@ spec:
         - name: path
           value: "k8s/tekton/01-external-secrets"
         - name: branch
-          value: "master"
+          value: "\\#110"
 
-    # - name: mirroring
-    #   taskRef:
-    #     name: tg-run
-    #   runAfter:
-    #   - namespaces
-    #   - mongo
-    #   - kafka
-    #   workspaces:
-    #     - name: ws
-    #       workspace: ws
-    #   params:
-    #     - name: path
-    #       value: "k8s/tekton/01-mirroring"
-    #     - name: branch
-    #       value: "master"
+    - name: mirroring
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      - mongo
+      - kafka
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/01-mirroring"
+        - name: branch
+          value: "\\#110"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -154,7 +184,7 @@ spec:
         - name: path
           value: "k8s/tekton/02-stop-apps"
         - name: branch
-          value: "master"
+          value: "\\#110"
     - name: data-migration
       taskRef:
         name: tg-run
@@ -167,7 +197,7 @@ spec:
         - name: path
           value: "k8s/tekton/02-data-migration"
         - name: branch
-          value: "master"
+          value: "\\#110"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -188,7 +218,7 @@ spec:
         - name: path
           value: "k8s/tekton/03-stop-mirrorings"
         - name: branch
-          value: "master"
+          value: "\\#110"
     - name: fluxcd
       taskRef:
         name: tg-run
@@ -201,7 +231,7 @@ spec:
         - name: path
           value: "k8s/tekton/03-fluxcd"
         - name: branch
-          value: "master"
+          value: "\\#110"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -222,4 +252,4 @@ spec:
         - name: path
           value: "k8s/tekton/op"
         - name: branch
-          value: "master"
+          value: "\\#110"
