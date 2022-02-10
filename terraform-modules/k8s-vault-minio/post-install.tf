@@ -5,13 +5,13 @@ data "vault_generic_secret" "users_credentials_from_vault" {
 
 locals {
   policiesConfigMapData = tomap({ for user in keys(data.vault_generic_secret.users_credentials_from_vault.data) :
-  "${replace(user,"@","-")}_policy.json" => jsonencode(jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).policy) })
+  "${replace(user, "@", "-")}_policy.json" => jsonencode(jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).policy) })
 
   addPolicyCommand = <<EOF
   set +x
   set -e
   %{for user in keys(data.vault_generic_secret.users_credentials_from_vault.data)~}
-  mc admin policy add minio ${user} /tmp/${replace(user,"@","-")}_policy.json
+  mc admin policy add minio ${user} /tmp/${replace(user, "@", "-")}_policy.json
   mc admin user add minio ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).accessKey} ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).secretKey}
   mc admin policy set minio  ${user} user=${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).accessKey}
   %{endfor~}
@@ -35,7 +35,7 @@ resource "kubernetes_secret" "minio_users_secret" {
   }
 
   data = {
-    "users.sh"    = local.addPolicyCommand
+    "users.sh" = local.addPolicyCommand
   }
 
 }
@@ -118,8 +118,8 @@ resource "kubernetes_job" "configure_users_access" {
   }
   wait_for_completion = true
   timeouts {
-    create = "5m"
-    update = "5m"
+    create = "15m"
+    update = "15m"
   }
   depends_on = [
     helm_release.minio,
