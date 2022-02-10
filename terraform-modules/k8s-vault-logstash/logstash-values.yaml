@@ -1,0 +1,61 @@
+persistence:
+  enabled: true
+replicas: 1
+logstashPipeline:
+  uptime.conf: |
+    input { exec { command => "uptime"
+                   interval => 60 } }
+    output { stdout { }  }
+logstashConfig:
+  logstash.yml: |
+    http.host: 0.0.0.0
+    xpack.monitoring.enabled: true
+    xpack.management.enabled: true
+    xpack.management.logstash.poll_interval: 5s
+    xpack.monitoring.elasticsearch.username: '${USERNAME}'
+    xpack.monitoring.elasticsearch.password: '${PASSWORD}'
+    xpack.monitoring.elasticsearch.hosts: ["https://monitoring-es-http.monitoring.svc:9200"]
+    xpack.monitoring.elasticsearch.ssl.certificate_authority: /ssl/ca.crt
+    xpack.management.elasticsearch.username: '${USERNAME}'
+    xpack.management.elasticsearch.password: '${PASSWORD}'
+    xpack.management.elasticsearch.hosts: ["https://monitoring-es-http.monitoring.svc:9200"]
+    xpack.management.elasticsearch.ssl.certificate_authority: /ssl/ca.crt
+    xpack.management.pipeline.id: ["*"]
+extraEnvs:
+  - name: 'USERNAME'
+    value: 'elastic'
+  - name: 'PASSWORD'
+    valueFrom:
+      secretKeyRef:
+        name: monitoring-es-elastic-user
+        key: elastic
+  - name: MINIO_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: minio-credentials
+        key: s3.client.default.access_key
+  - name: MINIO_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: minio-credentials
+        key: s3.client.default.secret_key
+  - name: 'ELASTIC_HOSTS'
+    value: 'https://sandbox-es-http.elastic.svc:9200'
+  - name: 'ELASTIC_USER'
+    value: 'elastic'
+  - name: 'ELASTIC_PASSWORD'
+    valueFrom:
+      secretKeyRef:
+        name: 'elastic-es-elastic-user'
+        key: elastic
+secretMounts:
+  - name: monitoring-es-cert
+    secretName: monitoring-es-cert
+    path: /ssl
+  - name: elastic-es-cert
+    secretName: elastic-es-cert
+    path: /ssl-es
+lifecycle:
+  postStart:
+    exec:
+      command: ["/opt/logstash/jdk/bin/keytool", "-import", "-noprompt", "-trustcacerts", "-alias", "CA_ES", "-file", "/ssl-es/ca.crt", "-keystore", "/opt/logstash/jdk/lib/security/cacerts", "-storepass", "changeit"]
