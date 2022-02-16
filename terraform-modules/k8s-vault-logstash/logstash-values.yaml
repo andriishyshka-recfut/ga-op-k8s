@@ -33,12 +33,12 @@ extraEnvs:
     valueFrom:
       secretKeyRef:
         name: minio-credentials
-        key: s3.client.default.access_key
+        key: accesskey
   - name: MINIO_SECRET_ACCESS_KEY
     valueFrom:
       secretKeyRef:
         name: minio-credentials
-        key: s3.client.default.secret_key
+        key: secretkey
   - name: 'ELASTIC_HOSTS'
     value: 'https://sandbox-es-http.elastic.svc:9200'
   - name: 'ELASTIC_USER'

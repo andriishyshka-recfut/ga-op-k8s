@@ -5,6 +5,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: auditbeat
+    app: auditbeat
+    version: "7.17.0"
 spec:
   selector:
     matchLabels:
@@ -13,6 +15,8 @@ spec:
     metadata:
       labels:
         k8s-app: auditbeat
+        app: auditbeat
+        version: "7.17.0"
     spec:
       serviceAccountName: auditbeat
       terminationGracePeriodSeconds: 30
