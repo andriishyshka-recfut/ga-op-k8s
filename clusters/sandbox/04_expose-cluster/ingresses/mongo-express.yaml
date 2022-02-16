@@ -1,0 +1,38 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mongo-express-cert
+  namespace: istio-system
+spec:
+  secretName: mongo-express-cert
+  commonName: mongo-express.t.regemini.io
+  dnsNames:
+  - mongo-express.t.regemini.io
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: mongo-express
+  namespace: mongo
+spec:
+  rules:
+  - host: mongo-express.t.regemini.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: oauth2-proxy
+            port:
+              number: 4180
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - mongo-express.t.regemini.io
+    secretName: mongo-express-cert

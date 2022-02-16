@@ -1,6 +1,6 @@
 
 data "vault_generic_secret" "cppfeed_creds" {
-  path ="secret/camel-k/weekly-cpp-feed"
+  path = "secret/camel-k/weekly-cpp-feed"
 }
 
 resource "kubernetes_secret" "cppfeed_creds" {
@@ -16,7 +16,7 @@ resource "kubernetes_secret" "cppfeed_creds" {
 
 
 data "vault_generic_secret" "cppfeed_sa" {
-  path ="secret/sa/camel-cppfeed"
+  path = "secret/sa/camel-cppfeed"
 }
 resource "kubernetes_secret" "cppfeed_sa_creds" {
 
@@ -26,7 +26,7 @@ resource "kubernetes_secret" "cppfeed_sa_creds" {
   }
 
   data = {
-    token = base64decode(data.vault_generic_secret.cppfeed_sa.data.gcs_key)
+    token = data.vault_generic_secret.cppfeed_sa.data.gcs_key
   }
 
 
