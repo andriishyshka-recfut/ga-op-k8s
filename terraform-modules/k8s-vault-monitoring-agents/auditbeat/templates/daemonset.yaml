@@ -6,7 +6,7 @@ metadata:
   labels:
     k8s-app: auditbeat
     app: auditbeat
-    version: "7.17.0"
+    version: "{{ .Values.tag }}"
 spec:
   selector:
     matchLabels:
@@ -16,7 +16,7 @@ spec:
       labels:
         k8s-app: auditbeat
         app: auditbeat
-        version: "7.17.0"
+        version: "{{ .Values.tag }}"
     spec:
       serviceAccountName: auditbeat
       terminationGracePeriodSeconds: 30
