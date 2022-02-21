@@ -6,6 +6,7 @@ wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
 chmod +x mc ;
 source /vault/secrets/config ;
 date_time=`date '+%Y%m%d-%H:%M:%S'`;
+./mc rm --force --recursive --older-than 30d backup/${var.BackupBucket}/mongod-backup/${var.MongoNs}/;
 %{for setting in var.BackupSettings}
 %{if setting.encrypt}
 mongodump --gzip --archive --uri=$MONGODB_URL --db ${setting.dbName} | gpg -r Backup  --armor  --encrypt| ./mc pipe backup/${var.BackupBucket}/mongod-backup/${var.MongoNs}/${setting.dbName}/${setting.dbName}-$date_time.gpg ;
@@ -100,7 +101,7 @@ EOT
               }
               env {
                 name  = "MONGODB_URL"
-                value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@my-cluster-name-rs0-0:27017,my-cluster-name-rs0-1:27017,my-cluster-name-rs0-2:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
+                value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@${var.Color}-rs0:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
               }
             }
           }
