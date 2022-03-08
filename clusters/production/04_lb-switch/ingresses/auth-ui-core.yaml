@@ -1,0 +1,39 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: auth-ui-cert
+  namespace: istio-system
+spec:
+  commonName: auth.p.regemini.io
+  dnsNames:
+  - auth.p.regemini.io
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: auth-ui-cert
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: auth-ui-ingress
+  namespace: core
+spec:
+  rules:
+  - host: auth.p.regemini.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: oauth2-proxy
+            port:
+              number: 4180
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - auth.p.regemini.io
+    secretName: auth-ui-cert
