@@ -1,0 +1,58 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongod-auth-restore
+  namespace: mongo-auth
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      containers:
+      - name: mongod-restore
+        image: mongo
+        command: ["bash",  "-c"]
+        args:
+         - set -e;
+           apt-get update -q && apt-get install wget -yq ;
+           wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
+           chmod +x mc ;
+           /mc cp  backup/minio-xbackup-orbital-wording-233917/mongod-backup/auth.gz auth.tar.gz;
+           mongorestore --archive="auth.tar.gz" --gzip --uri=$MONGODB_URL --db auth ;
+           # mongo $MONGODB_URL <(echo "use artifact;"; echo "db.dropDatabase();")   ;
+           # mongo $MONGODB_URL <<EOF
+           #    use artifact;
+           #    db.createCollection('mage_target');
+           #    db.createCollection('mage_attacker');
+           #    db.mage_target.createIndex({ url: 1 }, { unique: true });
+           #    db.mage_attacker.createIndex({ url: 1 }, { unique: true });
+           # EOF ;
+        env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key:  accesskey
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: secretkey
+        - name: MC_HOST_backup
+          value: "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
+        - name: MONGO_USER
+          valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key: MONGODB_BACKUP_USER
+        - name: MONGO_PASS
+          valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key:  MONGODB_BACKUP_PASSWORD
+        - name: MONGODB_URL
+          value: 'mongodb://$(MONGO_USER):$(MONGO_PASS)@my-cluster-name-rs0-0:27017,my-cluster-name-rs0-1:27017,my-cluster-name-rs0-2:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0'
+      restartPolicy: Never
+  backoffLimit: 4
