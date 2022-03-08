@@ -19,3 +19,7 @@ actions:
         skip_repo_fs_check: False
         disable_action: False
         allow_ilm_indices: True
+    filters:
+     - filtertype: pattern
+       kind: regex
+       value: '^.*$' 
