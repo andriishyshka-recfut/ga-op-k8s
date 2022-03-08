@@ -4,6 +4,7 @@ pullPolicy: Always
 redisCrd:
   enabled: true
   sentinel:
+
     replicas: 3
     resources:
       requests:

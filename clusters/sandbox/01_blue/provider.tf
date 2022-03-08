@@ -34,4 +34,9 @@ terraform {
     bucket = "terraform-state-222"
     prefix = "tf-blue-green/blue-state"
   }
+  required_providers {
+    kubernetes = {
+      version = "2.3.2"
+    }
+  }
 }
