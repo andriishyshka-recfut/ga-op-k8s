@@ -1,7 +1,7 @@
 
 locals {
   gcsIntegrationRepo = <<EOT
-  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
+  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_snapshot/gcs" -H 'Content-Type: application/json' -k -d '
 {
   "type": "gcs",
   "settings": {
