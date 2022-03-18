@@ -10,8 +10,3 @@ tolerations:
   effect: "NoSchedule"
 nodeSelector:
   workloadsType: data
-
-serviceMonitor:
-  enabled: true
-  interval: "30s"
-  namespace: monitoring
