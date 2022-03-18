@@ -33,4 +33,7 @@ resource "kubernetes_manifest" "external_secrets_store" {
       }
     }
   }
+  depends_on = [
+    helm_release.external_secrets
+  ]
 }
