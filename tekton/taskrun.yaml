@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: camel-
+  generateName: camel-k-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -13,5 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/01-camel-k"
     - name: branch
-      # value: "master"
-      value: "\\#150_dr"
+      value: "\\#77-stakater"
