@@ -303,10 +303,7 @@
 #     }
 #   }
 # }
-output "debug_value" {
-  value     = local.projects_haproxy
+output "debug" {
+  value     = [local.projects_haproxy, var.Projects]
   sensitive = true
-}
-output "Projects" {
-  value = var.Projects
 }
