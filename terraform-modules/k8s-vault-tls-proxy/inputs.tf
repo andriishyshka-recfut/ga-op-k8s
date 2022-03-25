@@ -1,3 +1,4 @@
+variable "Projects" {}
 data "vault_generic_secret" "clients" {
   for_each = local.projects
   path     = "secret/tls-proxy/projects/${each.value}"
