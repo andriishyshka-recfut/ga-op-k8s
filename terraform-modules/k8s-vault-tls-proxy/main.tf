@@ -1,66 +1,66 @@
-resource "tls_private_key" "clients_rsa_key" {
-  for_each  = local.projects_setup_csr
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "tls_cert_request" "clients_csr" {
-  for_each        = local.projects_setup_csr
-  key_algorithm   = "RSA"
-  private_key_pem = tls_private_key.clients_rsa_key[each.key].private_key_pem
-
-  subject {
-    common_name  = each.key
-    organization = "GeminiAdvisory"
-  }
-  depends_on = [
-    tls_private_key.clients_rsa_key
-  ]
-}
-
-# Add var for role name
-resource "vault_pki_secret_backend_sign" "clients" {
-  for_each    = local.projects_setup_csr
-  backend     = "pki"
-  name        = "cert-manager-sandbox-green"
-  csr         = tls_cert_request.clients_csr[each.key].cert_request_pem
-  common_name = each.key
-  depends_on = [
-    tls_cert_request.clients_csr
-  ]
-}
-
-resource "local_file" "tmp_json" {
-  for_each = local.projects_setup_csr
-  filename = "${each.key}.json"
-  content = jsonencode({
-    "key"        = tls_private_key.clients_rsa_key[each.key].private_key_pem
-    "cert"       = vault_pki_secret_backend_sign.clients[each.key].certificate,
-    "ca"         = vault_pki_secret_backend_sign.clients[each.key].issuing_ca,
-    "serial"     = vault_pki_secret_backend_sign.clients[each.key].serial,
-    "expiration" = tostring(vault_pki_secret_backend_sign.clients[each.key].expiration)
-  })
-}
-
-resource "null_resource" "certs" {
-  for_each = local.projects_setup_csr
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-  provisioner "local-exec" {
-    command = "vault kv put secret/tls-proxy/certs/${each.key} @${each.key}.json"
-  }
-}
-
-resource "null_resource" "certs_installed" {
-  for_each = local.projects_setup_csr
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-  provisioner "local-exec" {
-    command = "vault kv patch secret/tls-proxy/projects/${each.key} crt_installed=true"
-  }
-}
+# resource "tls_private_key" "clients_rsa_key" {
+#   for_each  = local.projects_setup_csr
+#   algorithm = "RSA"
+#   rsa_bits  = 4096
+# }
+#
+# resource "tls_cert_request" "clients_csr" {
+#   for_each        = local.projects_setup_csr
+#   key_algorithm   = "RSA"
+#   private_key_pem = tls_private_key.clients_rsa_key[each.key].private_key_pem
+#
+#   subject {
+#     common_name  = each.key
+#     organization = "GeminiAdvisory"
+#   }
+#   depends_on = [
+#     tls_private_key.clients_rsa_key
+#   ]
+# }
+#
+# # Add var for role name
+# resource "vault_pki_secret_backend_sign" "clients" {
+#   for_each    = local.projects_setup_csr
+#   backend     = "pki"
+#   name        = "cert-manager-sandbox-green"
+#   csr         = tls_cert_request.clients_csr[each.key].cert_request_pem
+#   common_name = each.key
+#   depends_on = [
+#     tls_cert_request.clients_csr
+#   ]
+# }
+#
+# resource "local_file" "tmp_json" {
+#   for_each = local.projects_setup_csr
+#   filename = "${each.key}.json"
+#   content = jsonencode({
+#     "key"        = tls_private_key.clients_rsa_key[each.key].private_key_pem
+#     "cert"       = vault_pki_secret_backend_sign.clients[each.key].certificate,
+#     "ca"         = vault_pki_secret_backend_sign.clients[each.key].issuing_ca,
+#     "serial"     = vault_pki_secret_backend_sign.clients[each.key].serial,
+#     "expiration" = tostring(vault_pki_secret_backend_sign.clients[each.key].expiration)
+#   })
+# }
+#
+# resource "null_resource" "certs" {
+#   for_each = local.projects_setup_csr
+#   triggers = {
+#     always_run = "${timestamp()}"
+#   }
+#   provisioner "local-exec" {
+#     command = "vault kv put secret/tls-proxy/certs/${each.key} @${each.key}.json"
+#   }
+# }
+#
+# resource "null_resource" "certs_installed" {
+#   for_each = local.projects_setup_csr
+#   triggers = {
+#     always_run = "${timestamp()}"
+#   }
+#   provisioner "local-exec" {
+#     command = "vault kv patch secret/tls-proxy/projects/${each.key} crt_installed=true"
+#   }
+# }
 #
 # resource "kubernetes_manifest" "tls_proxy_cert" {
 #   for_each = local.project_data
