@@ -40,6 +40,9 @@ resource "local_file" "tmp_json" {
     "serial"     = vault_pki_secret_backend_sign.clients[each.key].serial,
     "expiration" = tostring(vault_pki_secret_backend_sign.clients[each.key].expiration)
   })
+  depends_on = [
+    vault_pki_secret_backend_sign.clients
+  ]
 }
 
 resource "null_resource" "certs" {
@@ -50,6 +53,9 @@ resource "null_resource" "certs" {
   provisioner "local-exec" {
     command = "vault kv put secret/tls-proxy/certs/${each.key} @${each.key}.json"
   }
+  depends_on = [
+    local_file.tmp_json
+  ]
 }
 
 resource "null_resource" "certs_installed" {
@@ -60,6 +66,9 @@ resource "null_resource" "certs_installed" {
   provisioner "local-exec" {
     command = "vault kv patch secret/tls-proxy/projects/${each.key} crt_installed=true"
   }
+  depends_on = [
+    null_resource.certs
+  ]
 }
 
 resource "kubernetes_manifest" "tls_proxy_cert" {
