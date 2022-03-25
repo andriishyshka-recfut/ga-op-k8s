@@ -304,5 +304,9 @@
 #   }
 # }
 output "debug_value" {
-  value = local.projects_haproxy
+  value     = local.projects_haproxy
+  sensitive = true
+}
+output "Projects" {
+  value = var.Projects
 }
