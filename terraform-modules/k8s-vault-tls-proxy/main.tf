@@ -122,7 +122,7 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
     "kind"       = "VirtualService"
     "metadata" = {
       "name"      = "${each.key}-virtualservice"
-      "namespace" = nonsensitive(each.value.namespace)
+      "namespace" = each.value.namespace
     }
     "spec" = {
       "gateways" = [
@@ -163,7 +163,7 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_wo_haproxy" {
     "kind"       = "VirtualService"
     "metadata" = {
       "name"      = "${each.key}-virtualservice"
-      "namespace" = nonsensitive(each.value.namespace)
+      "namespace" = each.value.namespace
     }
     "spec" = {
       "gateways" = [
@@ -201,7 +201,7 @@ resource "kubernetes_config_map" "haproxy_configmap" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
     name      = "haproxy-config"
-    namespace = nonsensitive(each.value.namespace)
+    namespace = each.value.namespace
   }
   data = {
     "haproxy.cfg" = <<EOF
@@ -223,7 +223,7 @@ resource "kubernetes_deployment" "basic_auth_proxy" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
     name      = "basic-auth-proxy"
-    namespace = nonsensitive(each.value.namespace)
+    namespace = each.value.namespace
     labels = {
       app = "basic-auth-proxy"
     }
@@ -291,7 +291,7 @@ resource "kubernetes_service" "basic_auth_proxy" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
     name      = "basic-auth-proxy"
-    namespace = nonsensitive(each.value.namespace)
+    namespace = each.value.namespace
   }
   spec {
     selector = {
