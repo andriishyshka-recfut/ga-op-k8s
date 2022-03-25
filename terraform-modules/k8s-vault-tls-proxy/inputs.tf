@@ -1,4 +1,5 @@
 variable "Projects" {}
+variable "Color" {}
 
 data "vault_generic_secret" "clients" {
   for_each = local.projects
