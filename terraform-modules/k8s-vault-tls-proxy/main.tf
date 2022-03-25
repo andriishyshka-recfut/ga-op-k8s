@@ -75,7 +75,7 @@ resource "kubernetes_manifest" "tls_proxy_cert" {
       "commonName" = each.value["domain"]
       "issuerRef" = {
         "kind" = "ClusterIssuer"
-        "name" = each.value["clusterissue"]
+        "name" = each.value.clusterissue
       }
       "secretName" = "${each.key}-cert"
     }
