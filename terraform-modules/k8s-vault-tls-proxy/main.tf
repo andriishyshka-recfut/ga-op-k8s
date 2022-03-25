@@ -72,7 +72,7 @@ resource "kubernetes_manifest" "tls_proxy_cert" {
       "namespace" = "istio-system"
     }
     "spec" = {
-      "commonName" = each.value["domain"]
+      "commonName" = each.value.domain
       "issuerRef" = {
         "kind" = "ClusterIssuer"
         "name" = each.value.cluster_issuer
@@ -98,7 +98,7 @@ resource "kubernetes_manifest" "tls_proxy_gateway" {
       "servers" = [
         {
           "hosts" = [
-            each.value["domain"]
+            each.value.domain
           ]
           "port" = {
             "name"     = "https"
@@ -115,21 +115,21 @@ resource "kubernetes_manifest" "tls_proxy_gateway" {
   }
 }
 
-resource "kubernetes_manifest" "tls_proxy_virtualservice" {
+resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
   for_each = nonsensitive(local.projects_wo_haproxy)
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
     "metadata" = {
       "name"      = "${each.key}-virtualservice"
-      "namespace" = nonsensitive(each.value["namespace"])
+      "namespace" = nonsensitive(each.value.namespace)
     }
     "spec" = {
       "gateways" = [
         "istio-system/vortex-gateway",
       ]
       "hosts" = [
-        each.value["domain"]
+        each.value.domain
       ]
       "http" = [
         {
@@ -156,21 +156,21 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice" {
   }
 }
 
-resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
+resource "kubernetes_manifest" "tls_proxy_virtualservice_wo_haproxy" {
   for_each = nonsensitive(local.projects_haproxy)
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
     "metadata" = {
       "name"      = "${each.key}-virtualservice"
-      "namespace" = nonsensitive(each.value["namespace"])
+      "namespace" = nonsensitive(each.value.namespace)
     }
     "spec" = {
       "gateways" = [
         "istio-system/vortex-gateway",
       ]
       "hosts" = [
-        each.value["domain"]
+        each.value.domain
       ]
       "http" = [
         {
@@ -184,9 +184,9 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
           "route" = [
             {
               "destination" = {
-                "host" = nonsensitive(each.value["destination_service"])
+                "host" = nonsensitive(each.value.destination_service)
                 "port" = {
-                  "number" = nonsensitive(each.value["destination_port"])
+                  "number" = nonsensitive(each.value.destination_port)
                 }
               }
             },
@@ -201,7 +201,7 @@ resource "kubernetes_config_map" "haproxy_configmap" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
     name      = "haproxy-config"
-    namespace = nonsensitive(each.value["namespace"])
+    namespace = nonsensitive(each.value.namespace)
   }
   data = {
     "haproxy.cfg" = <<EOF
@@ -223,7 +223,7 @@ resource "kubernetes_deployment" "basic_auth_proxy" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
     name      = "basic-auth-proxy"
-    namespace = nonsensitive(each.value["namespace"])
+    namespace = nonsensitive(each.value.namespace)
     labels = {
       app = "basic-auth-proxy"
     }
@@ -273,6 +273,14 @@ resource "kubernetes_deployment" "basic_auth_proxy" {
             protocol       = "TCP"
             container_port = 8080
           }
+          env {
+            name  = "SERVICE_HOST"
+            value = each.value.destination_service
+          }
+          env {
+            name  = "SERVICE_PORT"
+            value = each.value.destination_port
+          }
         }
       }
     }
@@ -283,7 +291,7 @@ resource "kubernetes_service" "basic_auth_proxy" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
     name      = "basic-auth-proxy"
-    namespace = nonsensitive(nonsensitive(each.value["namespace"]))
+    namespace = nonsensitive(nonsensitive(each.value.namespace))
   }
   spec {
     selector = {
