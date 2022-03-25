@@ -62,8 +62,8 @@ resource "null_resource" "certs_installed" {
   }
 }
 
-resource "kubernetes_manifest" "vortex_cert" {
-  for_each = local.project_data
+resource "kubernetes_manifest" "tls_proxy_cert" {
+  for_each = nonsensitive(local.project_data)
   manifest = {
     "apiVersion" = "cert-manager.io/v1"
     "kind"       = "Certificate"
@@ -82,8 +82,8 @@ resource "kubernetes_manifest" "vortex_cert" {
   }
 }
 
-resource "kubernetes_manifest" "vortex_gateway" {
-  for_each = local.project_data
+resource "kubernetes_manifest" "tls_proxy_gateway" {
+  for_each = nonsensitive(local.project_data)
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "Gateway"
@@ -115,8 +115,8 @@ resource "kubernetes_manifest" "vortex_gateway" {
   }
 }
 
-resource "kubernetes_manifest" "vortex_virtualservice" {
-  for_each = local.projects_wo_haproxy
+resource "kubernetes_manifest" "tls_proxy_virtualservice" {
+  for_each = nonsensitive(local.projects_wo_haproxy)
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
@@ -156,8 +156,8 @@ resource "kubernetes_manifest" "vortex_virtualservice" {
   }
 }
 
-resource "kubernetes_manifest" "vortex_virtualservice_haproxy" {
-  for_each = local.projects_haproxy
+resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
+  for_each = nonsensitive(local.projects_haproxy)
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
@@ -198,7 +198,7 @@ resource "kubernetes_manifest" "vortex_virtualservice_haproxy" {
 }
 
 resource "kubernetes_config_map" "haproxy_configmap" {
-  for_each = local.projects_haproxy
+  for_each = nonsensitive(local.projects_haproxy)
   metadata {
     name      = "haproxy-config"
     namespace = each.value["namespace"]
@@ -220,7 +220,7 @@ EOF
 }
 
 resource "kubernetes_deployment" "basic_auth_proxy" {
-  for_each = local.projects_haproxy
+  for_each = nonsensitive(local.projects_haproxy)
   metadata {
     name      = "basic-auth-proxy"
     namespace = each.value["namespace"]
@@ -280,7 +280,7 @@ resource "kubernetes_deployment" "basic_auth_proxy" {
 }
 
 resource "kubernetes_service" "basic_auth_proxy" {
-  for_each = local.projects_haproxy
+  for_each = nonsensitive(local.projects_haproxy)
   metadata {
     name      = "basic-auth-proxy"
     namespace = each.value["namespace"]
