@@ -116,7 +116,7 @@ resource "kubernetes_manifest" "tls_proxy_gateway" {
 }
 
 resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
-  for_each = nonsensitive(local.projects_wo_haproxy)
+  for_each = nonsensitive(local.projects_haproxy)
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
@@ -157,7 +157,7 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
 }
 
 resource "kubernetes_manifest" "tls_proxy_virtualservice_wo_haproxy" {
-  for_each = nonsensitive(local.projects_haproxy)
+  for_each = nonsensitive(local.projects_wo_haproxy)
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
@@ -291,7 +291,7 @@ resource "kubernetes_service" "basic_auth_proxy" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
     name      = "basic-auth-proxy"
-    namespace = nonsensitive(nonsensitive(each.value.namespace))
+    namespace = nonsensitive(each.value.namespace)
   }
   spec {
     selector = {
