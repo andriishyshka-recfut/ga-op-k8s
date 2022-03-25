@@ -303,3 +303,6 @@
 #     }
 #   }
 # }
+output "debug_value" {
+  value = local.projects_haproxy
+}
