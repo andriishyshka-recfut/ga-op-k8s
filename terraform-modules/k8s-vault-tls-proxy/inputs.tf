@@ -26,3 +26,6 @@ locals {
     for project, tmp in local.projects_haproxy : project => nonsensitive(join("\n  ", [for user, password in data.vault_generic_secret.basic_auth[project].data : join(" ", ["user", user, "password", bcrypt(password)])]))
   }
 }
+output "debug_value" {
+  value = local.projects_haproxy
+}
