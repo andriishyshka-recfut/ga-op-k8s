@@ -135,7 +135,7 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
     }
     "spec" = {
       "gateways" = [
-        "istio-system/vortex-gateway",
+        "istio-system/${each.key}-gateway",
       ]
       "hosts" = [
         each.value.domain
@@ -176,7 +176,7 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_wo_haproxy" {
     }
     "spec" = {
       "gateways" = [
-        "istio-system/vortex-gateway",
+        "istio-system/${each.key}-gateway",
       ]
       "hosts" = [
         each.value.domain
