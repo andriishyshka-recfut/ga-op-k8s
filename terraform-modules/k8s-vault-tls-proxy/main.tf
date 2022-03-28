@@ -110,6 +110,19 @@ resource "kubernetes_manifest" "tls_proxy_gateway" {
             each.value.domain
           ]
           "port" = {
+            "name"     = "http"
+            "number"   = 80
+            "protocol" = "HTTP"
+          }
+          "tls" = {
+            "httpsRedirect" = "true"
+          }
+        },
+        {
+          "hosts" = [
+            each.value.domain
+          ]
+          "port" = {
             "name"     = "https"
             "number"   = 443
             "protocol" = "HTTPS"
@@ -118,7 +131,7 @@ resource "kubernetes_manifest" "tls_proxy_gateway" {
             "credentialName" = "${each.key}-cert"
             "mode"           = "MUTUAL"
           }
-        },
+        }
       ]
     }
   }
