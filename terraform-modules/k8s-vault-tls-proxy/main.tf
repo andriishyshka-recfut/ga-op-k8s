@@ -102,7 +102,7 @@ resource "kubernetes_manifest" "tls_proxy_gateway" {
     }
     "spec" = {
       "selector" = {
-        "istio" = "ingressgateway"
+        "istio" = "ingressgateway-lb"
       }
       "servers" = [
         {
