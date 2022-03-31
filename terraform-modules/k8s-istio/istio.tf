@@ -22,7 +22,7 @@ resource "kubernetes_namespace" "istio_system" {
 
 resource "helm_release" "istio_base" {
   name       = "istio-base"
-  chart      = "istio/base"
+  chart      = "base"
   repository = "https://istio-release.storage.googleapis.com/charts"
   wait       = true
   atomic     = true
@@ -34,7 +34,7 @@ resource "helm_release" "istio_base" {
 
 resource "helm_release" "istiod" {
   name       = "istiod"
-  chart      = "istio/istiod"
+  chart      = "istiod"
   repository = "https://istio-release.storage.googleapis.com/charts"
   wait       = true
   atomic     = true
@@ -46,7 +46,7 @@ resource "helm_release" "istiod" {
 
 resource "helm_release" "istio_ingress" {
   name       = "istio-ingress"
-  chart      = "istio/gateway"
+  chart      = "gateway"
   repository = "https://istio-release.storage.googleapis.com/charts"
   wait       = true
   atomic     = true
@@ -66,7 +66,7 @@ resource "helm_release" "istio_ingress" {
 
 resource "helm_release" "istio_ingress_lb" {
   name       = "istio-ingress-lb"
-  chart      = "istio/gateway"
+  chart      = "gateway"
   repository = "https://istio-release.storage.googleapis.com/charts"
   wait       = true
   atomic     = true
