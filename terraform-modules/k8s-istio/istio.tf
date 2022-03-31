@@ -73,7 +73,7 @@ resource "helm_release" "istio_ingress_lb" {
   namespace  = "istio-system"
   set {
     name  = "service.type"
-    value = "NodePort"
+    value = "LoadBalancer"
   }
   set {
     name   = "autoscaling.minReplicas"
