@@ -40,7 +40,7 @@ resource "helm_release" "istiod" {
   atomic     = true
   namespace  = "istio-system"
   depends_on = [
-    kubernetes_namespace.istio_base
+    helm_release.istio_base
   ]
 }
 
@@ -60,7 +60,7 @@ resource "helm_release" "istio_ingress" {
     values = 2
   }
   depends_on = [
-    kubernetes_namespace.istiod
+    helm_release.istiod
   ]
 }
 
@@ -80,6 +80,6 @@ resource "helm_release" "istio_ingress_lb" {
     values = 2
   }
   depends_on = [
-    kubernetes_namespace.istiod
+    helm_release.istiod
   ]
 }
