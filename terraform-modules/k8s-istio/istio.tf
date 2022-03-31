@@ -56,8 +56,8 @@ resource "helm_release" "istio_ingress" {
     value = "NodePort"
   }
   set {
-    name   = "autoscaling.minReplicas"
-    values = 2
+    name  = "autoscaling.minReplicas"
+    value = 2
   }
   depends_on = [
     helm_release.istiod
@@ -76,8 +76,8 @@ resource "helm_release" "istio_ingress_lb" {
     value = "LoadBalancer"
   }
   set {
-    name   = "autoscaling.minReplicas"
-    values = 2
+    name  = "autoscaling.minReplicas"
+    value = 2
   }
   depends_on = [
     helm_release.istiod
