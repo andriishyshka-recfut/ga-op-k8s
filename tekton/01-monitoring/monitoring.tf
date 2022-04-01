@@ -12,18 +12,18 @@ locals {
 #   Settings                     = var.Settings
 # }
 
-module "monitoring-agents" {
-  source   = "../../terraform-modules/k8s-vault-monitoring-agents"
-  Cluster  = var.Cluster
-  Color    = var.Color
-  Settings = var.Settings
-  # depends_on = [module.monitoring-kibana]
-}
-
-module "prometheus" {
-  source              = "../../terraform-modules/k8s-vault-prometheus"
-  OidcSecretVaultPath = "secret/oidc_google_prod"
-  Settings            = var.Settings
-  Cluster             = var.Cluster
-  Color               = var.Color
-}
+# module "monitoring-agents" {
+#   source   = "../../terraform-modules/k8s-vault-monitoring-agents"
+#   Cluster  = var.Cluster
+#   Color    = var.Color
+#   Settings = var.Settings
+#   # depends_on = [module.monitoring-kibana]
+# }
+#
+# module "prometheus" {
+#   source              = "../../terraform-modules/k8s-vault-prometheus"
+#   OidcSecretVaultPath = "secret/oidc_google_prod"
+#   Settings            = var.Settings
+#   Cluster             = var.Cluster
+#   Color               = var.Color
+# }
