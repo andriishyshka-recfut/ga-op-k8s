@@ -3,14 +3,14 @@ locals {
   monitoringEs = yamldecode(file("monitoring_elastic_settings.yaml"))
 }
 
-module "monitoring-kibana" {
-  source                       = "../../terraform-modules/k8s-vault-kibana"
-  ElasticSettings              = local.monitoringEs.elastic_settings
-  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
-  Cluster                      = var.Cluster
-  Color                        = var.Color
-  Settings                     = var.Settings
-}
+# module "monitoring-kibana" {
+#   source                       = "../../terraform-modules/k8s-vault-kibana"
+#   ElasticSettings              = local.monitoringEs.elastic_settings
+#   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+#   Cluster                      = var.Cluster
+#   Color                        = var.Color
+#   Settings                     = var.Settings
+# }
 
 module "monitoring-agents" {
   source   = "../../terraform-modules/k8s-vault-monitoring-agents"
