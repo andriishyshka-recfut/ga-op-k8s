@@ -22,7 +22,7 @@ resource "helm_release" "psmdb_operator" {
   wait       = true
   atomic     = true
   timeout    = 900
-  depends_on = [null_resource.mongod_crd_deploy]
+  # depends_on = [null_resource.mongod_crd_deploy]
 }
 
 data "vault_generic_secret" "mongo_creds" {
