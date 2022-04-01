@@ -133,7 +133,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-monitoring"
         - name: branch
-          value: "master"
+          value: "\\#1DR-010422"
     - name: external-secrets
       taskRef:
         name: tg-run
