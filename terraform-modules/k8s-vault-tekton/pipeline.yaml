@@ -103,7 +103,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-monitoring-elastic"
         - name: branch
-          value: "master"
+          value: "\\#1DR-010422"
     - name: monitoring-elastic-backup-restore
       taskRef:
         name: tg-run
