@@ -6,7 +6,7 @@ actions:
     options:
       repository: "gcs"
       # name: monitoring-dr-%Y%m%d
-      indices: ["-.security*,-kibana_1"]
+      indices: ["-.security*", "-kibana_1"]
       wait_for_completion: False
       include_global_state: True
       # wait_interval: 20
