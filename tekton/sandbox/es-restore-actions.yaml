@@ -6,9 +6,8 @@ actions:
     options:
       repository: "gcs"
       # name: monitoring-dr-%Y%m%d
-      indices:
-        rename_pattern: '.security(.+)'
-        rename_replacement: 'restored_security$1'
+      rename_pattern: '.security(.+)'
+      rename_replacement: 'restored_security$1'
       wait_for_completion: False
       include_global_state: True
       # wait_interval: 20
