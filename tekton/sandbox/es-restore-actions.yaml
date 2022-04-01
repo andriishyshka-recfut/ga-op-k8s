@@ -6,8 +6,8 @@ actions:
     options:
       repository: "gcs"
       # name: monitoring-dr-%Y%m%d
-      rename_pattern: ['.security(.+)', '.kibana_1']
-      rename_replacement: ['restored_security$1', 'restored_kibana1']
+      rename_pattern: ['.(security.+)', '.(kibana_1.+)']
+      rename_replacement: 'restored_security$1'
       wait_for_completion: False
       include_global_state: True
       # wait_interval: 20
