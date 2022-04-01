@@ -46,7 +46,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-mongo"
         - name: branch
-          value: "\\1DR-010422"
+          value: "\\#1DR-010422"
 
     - name: kafka
       taskRef:
