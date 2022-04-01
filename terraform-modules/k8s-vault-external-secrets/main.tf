@@ -3,6 +3,8 @@ resource "helm_release" "external_secrets" {
   chart             = "external-secrets"
   repository        = "https://charts.external-secrets.io"
   namespace         = "external-secrets"
+  wait              = true
+  atomic            = true
   dependency_update = "true"
   values = [
     file("${path.module}/values.yaml")
