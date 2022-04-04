@@ -22,7 +22,7 @@ resource "vault_pki_secret_backend_sign" "clients" {
   for_each    = local.projects_setup_csr
   backend     = "pki_${each.key}"
   name        = each.key
-  ttl         = 31622440
+  ttl         = 31522440
   csr         = tls_cert_request.clients_csr[each.key].cert_request_pem
   common_name = each.key
   depends_on = [
