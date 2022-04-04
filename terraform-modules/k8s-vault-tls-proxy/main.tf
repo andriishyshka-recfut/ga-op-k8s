@@ -23,6 +23,7 @@ resource "vault_pki_secret_backend_sign" "clients" {
   for_each    = local.projects_setup_csr
   backend     = "pki"
   name        = "external-test"
+  ttl         = 31622440
   csr         = tls_cert_request.clients_csr[each.key].cert_request_pem
   common_name = each.key
   depends_on = [
