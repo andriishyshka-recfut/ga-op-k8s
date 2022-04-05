@@ -265,7 +265,7 @@ resource "kubernetes_deployment" "basic_auth_proxy" {
           app = "basic-auth-proxy"
         }
         annotations = {
-          sidecar.istio.io / inject = "true"
+          "sidecar.istio.io/inject" = "true"
         }
       }
 
