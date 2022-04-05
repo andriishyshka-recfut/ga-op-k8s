@@ -20,7 +20,7 @@ resource "tls_cert_request" "clients_csr" {
 # Add var for role name
 resource "vault_pki_secret_backend_sign" "clients" {
   for_each    = local.projects_setup_csr
-  backend     = "pki_${each.key}"
+  backend     = "pki-${each.key}"
   name        = each.key
   ttl         = 31522440
   csr         = tls_cert_request.clients_csr[each.key].cert_request_pem
