@@ -71,25 +71,25 @@ resource "null_resource" "certs_installed" {
   ]
 }
 
-# resource "kubernetes_manifest" "tls_proxy_cert" {
-#   for_each = local.project_data
-#   manifest = {
-#     "apiVersion" = "cert-manager.io/v1"
-#     "kind"       = "Certificate"
-#     "metadata" = {
-#       "name"      = "${each.key}-cert"
-#       "namespace" = "istio-system"
-#     }
-#     "spec" = {
-#       "commonName" = each.value.domain
-#       "issuerRef" = {
-#         "kind" = "ClusterIssuer"
-#         "name" = each.value.cluster_issuer
-#       }
-#       "secretName" = "${each.key}-cert"
-#     }
-#   }
-# }
+resource "kubernetes_manifest" "tls_proxy_cert" {
+  for_each = local.project_data
+  manifest = {
+    "apiVersion" = "cert-manager.io/v1"
+    "kind"       = "Certificate"
+    "metadata" = {
+      "name"      = "${each.key}-cert"
+      "namespace" = "istio-system"
+    }
+    "spec" = {
+      "commonName" = each.value.domain
+      "issuerRef" = {
+        "kind" = "ClusterIssuer"
+        "name" = each.value.cluster_issuer
+      }
+      "secretName" = "${each.key}-cert"
+    }
+  }
+}
 
 resource "kubernetes_manifest" "tls_proxy_gateway" {
   for_each = local.project_data
