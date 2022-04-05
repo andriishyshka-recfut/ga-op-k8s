@@ -50,6 +50,7 @@ spec:
       - https://rakuten.regemini.com/
       - https://rb.regemini.com/
       - https://rbc.regemini.com/
+      - https://s3.regemini.com/
       - https://standard.regemini.com/
       - https://swed.regemini.com/
       - https://syf.regemini.com/
@@ -57,6 +58,7 @@ spec:
       - https://trm.regemini.com/
       - https://usb.regemini.com/
       - https://usss.regemini.com/
+      - https://wsecu.regemini.com/
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
