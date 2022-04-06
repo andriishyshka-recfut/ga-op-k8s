@@ -101,7 +101,7 @@ resource "kubernetes_service" "elastic_internal_proxy" {
   }
   spec {
     selector = {
-      app = "elastic-intrnal-proxy"
+      app = "elastic-internal-proxy"
     }
     port {
       port        = 9200
