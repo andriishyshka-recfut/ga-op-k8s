@@ -165,7 +165,7 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
           "route" = [
             {
               "destination" = {
-                "host" = "basic-auth-proxy"
+                "host" = "${each.key}-basic-auth-proxy"
                 "port" = {
                   "number" = 8080
                 }
@@ -222,7 +222,7 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_wo_haproxy" {
 resource "kubernetes_config_map" "haproxy_configmap" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
-    name      = "haproxy-config"
+    name      = "${each.key}-haproxy-config"
     namespace = each.value.namespace
   }
   data = {
@@ -244,10 +244,10 @@ EOF
 resource "kubernetes_deployment" "basic_auth_proxy" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
-    name      = "basic-auth-proxy"
+    name      = "${each.key}-basic-auth-proxy"
     namespace = each.value.namespace
     labels = {
-      app = "basic-auth-proxy"
+      app = "${each.key}-basic-auth-proxy"
     }
   }
   spec {
@@ -255,14 +255,14 @@ resource "kubernetes_deployment" "basic_auth_proxy" {
 
     selector {
       match_labels = {
-        app = "basic-auth-proxy"
+        app = "${each.key}-basic-auth-proxy"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "basic-auth-proxy"
+          app = "${each.key}-basic-auth-proxy"
         }
         annotations = {
           "sidecar.istio.io/inject" = "true"
@@ -273,12 +273,12 @@ resource "kubernetes_deployment" "basic_auth_proxy" {
         volume {
           name = "haproxy-config"
           config_map {
-            name = "haproxy-config"
+            name = "${each.key}-haproxy-config"
           }
         }
         container {
           image = "haproxy:alpine"
-          name  = "basic-auth-proxy"
+          name  = "${each.key}-basic-auth-proxy"
           volume_mount {
             name       = "haproxy-config"
             mount_path = "/usr/local/etc/haproxy"
@@ -315,12 +315,12 @@ resource "kubernetes_deployment" "basic_auth_proxy" {
 resource "kubernetes_service" "basic_auth_proxy" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
-    name      = "basic-auth-proxy"
+    name      = "${each.key}-basic-auth-proxy"
     namespace = each.value.namespace
   }
   spec {
     selector = {
-      app = "basic-auth-proxy"
+      app = "${each.key}-basic-auth-proxy"
     }
     port {
       port        = 8080

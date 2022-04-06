@@ -1,4 +1,5 @@
 variable "Projects" {}
+variable "ElasticProxyNS" {}
 variable "Color" {}
 
 data "vault_generic_secret" "clients" {
