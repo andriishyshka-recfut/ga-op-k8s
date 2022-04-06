@@ -12,7 +12,7 @@ frontend auth
   default_backend elastic
 backend elastic
   mode  http
-  server srv1 $SERVICE_HOST:$SERVICE_PORT ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt crt /usr/local/etc/haproxy/ssl/tls.crt
+  server srv1 $SERVICE_HOST:$SERVICE_PORT ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt
 EOF
   }
 }
@@ -94,7 +94,7 @@ resource "kubernetes_deployment" "elastic_internal_proxy" {
 }
 
 resource "kubernetes_service" "elastic_internal_proxy" {
-  for_each = toset(var.ElasticProxyNS)
+  for_each = var.ElasticProxyNS
   metadata {
     name      = "elastic-internal-proxy"
     namespace = each.key
