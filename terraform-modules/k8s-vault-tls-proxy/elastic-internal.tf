@@ -18,7 +18,7 @@ EOF
 }
 
 resource "kubernetes_deployment" "elastic_internal_proxy" {
-  for_each = var.ElasticProxyNS
+  for_each = toset(var.ElasticProxyNS)
   metadata {
     name      = "elstic-internal-proxy"
     namespace = each.key
@@ -94,7 +94,7 @@ resource "kubernetes_deployment" "elastic_internal_proxy" {
 }
 
 resource "kubernetes_service" "elastic_internal_proxy" {
-  for_each = var.ElasticProxyNS
+  for_each = toset(var.ElasticProxyNS)
   metadata {
     name      = "elastic-internal-proxy"
     namespace = each.key
