@@ -1,5 +1,5 @@
 resource "kubernetes_config_map" "haproxy_elastic_configmap" {
-  for_each = var.ElasticProxyNS
+  for_each = toset(var.ElasticProxyNS)
   metadata {
     name      = "elastic-internal-proxy-config"
     namespace = each.key
