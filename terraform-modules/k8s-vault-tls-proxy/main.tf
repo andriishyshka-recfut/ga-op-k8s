@@ -236,7 +236,7 @@ resource "kubernetes_manifest" "ip_whitelist" {
           "from" = [
             {
               "source" = {
-                "ipBlocks" = tolist(each.value.ip_whitelist)
+                "ipBlocks" = nonsensitive(tolist(each.value.ip_whitelist))
               }
             },
           ]
