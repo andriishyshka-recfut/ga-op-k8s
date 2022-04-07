@@ -10,7 +10,7 @@ resource "tls_cert_request" "clients_csr" {
 
   subject {
     common_name  = each.key
-    organization = "GeminiAdvisory"
+    organization = "Gemini Advisory"
   }
   depends_on = [
     tls_private_key.clients_rsa_key
