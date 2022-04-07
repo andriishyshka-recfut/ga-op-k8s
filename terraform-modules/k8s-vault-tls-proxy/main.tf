@@ -223,7 +223,8 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_wo_haproxy" {
 resource "kubernetes_manifest" "ip_whitelist" {
   for_each = local.project_data
   manifest = {
-    "kind" = "AuthorizationPolicy"
+    "apiVersion" = "security.istio.io/v1beta1"
+    "kind"       = "AuthorizationPolicy"
     "metadata" = {
       "name"      = "ingress-policy"
       "namespace" = "istio-system"
