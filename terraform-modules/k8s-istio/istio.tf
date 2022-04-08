@@ -20,6 +20,19 @@ resource "kubernetes_namespace" "istio_system" {
   }
 }
 
+resource "kubernetes_namespace" "istio_ingress" {
+  metadata {
+    name = "istio-ingress"
+    labels = {
+      istio-injection = "enabled"
+    }
+  }
+  depends_on = [
+    helm_release.istiod
+  ]
+}
+
+
 resource "helm_release" "istio_base" {
   name       = "istio-base"
   chart      = "base"
@@ -45,12 +58,12 @@ resource "helm_release" "istiod" {
 }
 
 resource "helm_release" "istio_ingress" {
-  name       = "istio-ingress"
+  name       = "istio-ingressgateway"
   chart      = "gateway"
   repository = "https://istio-release.storage.googleapis.com/charts"
   wait       = true
   atomic     = true
-  namespace  = "istio-system"
+  namespace  = "istio-ingress"
   set {
     name  = "service.type"
     value = "NodePort"
@@ -60,17 +73,17 @@ resource "helm_release" "istio_ingress" {
     value = 2
   }
   depends_on = [
-    helm_release.istiod
+    kubernetes_namespace.istio_ingress
   ]
 }
 
 resource "helm_release" "istio_ingress_lb" {
-  name       = "istio-ingress-lb"
+  name       = "istio-ingressgateway-lb"
   chart      = "gateway"
   repository = "https://istio-release.storage.googleapis.com/charts"
   wait       = true
   atomic     = true
-  namespace  = "istio-system"
+  namespace  = "istio-ingress"
   set {
     name  = "service.type"
     value = "LoadBalancer"
@@ -80,6 +93,6 @@ resource "helm_release" "istio_ingress_lb" {
     value = 2
   }
   depends_on = [
-    helm_release.istiod
+    kubernetes_namespace.istio_ingress
   ]
 }
