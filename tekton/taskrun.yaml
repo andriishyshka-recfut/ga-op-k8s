@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: camel-k-
+  generateName: minio-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/01-camel-k"
+      value: "k8s/tekton/01-minio"
     - name: branch
-      value: "\\#77-stakater"
+      value: "master"
