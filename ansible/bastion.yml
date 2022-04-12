@@ -27,7 +27,11 @@
       shell: |
         kubectl --server {{ k8s_host_url }} \
           --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt \
+<<<<<<< HEAD
           get svc istio-ingress -o json -n istio-system
+=======
+          get svc istio-ingressgateway -o json -n istio-ingress
+>>>>>>> abe26523b5bc3973f3b877ed8c50cf503a098515
       register: nodeport_mapping
       delegate_to: localhost
       become: False
