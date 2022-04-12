@@ -6,7 +6,7 @@ actions:
     options:
       repository: "gcs"
       # name: monitoring-dr-%Y%m%d
-      indices: "-.kibana*"
+      # indices: "-.kibana*"
       wait_for_completion: False
       include_global_state: True
       # wait_interval: 20
@@ -16,3 +16,7 @@ actions:
       - filtertype: pattern
         kind: prefix
         value: elastic-dr
+      - filtertype: pattern
+        kind: prefix
+        value: ".kibana"
+        exclude: True
