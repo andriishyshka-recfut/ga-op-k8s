@@ -19,4 +19,4 @@ actions:
       - filtertype: pattern
         kind: prefix
         value: '.kibana'
-        exclude: false
+        exclude: true
