@@ -16,7 +16,5 @@ actions:
       - filtertype: pattern
         kind: prefix
         value: elastic-dr
-      - filtertype: pattern
-        kind: prefix
-        value: '.kibana'
-        exclude: true
+      - filtertype: kibana
+        exclude: True
