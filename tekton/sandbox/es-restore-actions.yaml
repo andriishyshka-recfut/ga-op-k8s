@@ -18,5 +18,5 @@ actions:
         value: elastic-dr
       - filtertype: pattern
         kind: regex
-        value: '^\.kibana'
+        value: '^\\.kibana.*$'
         exclude: True
