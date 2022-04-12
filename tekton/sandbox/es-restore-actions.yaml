@@ -17,6 +17,6 @@ actions:
         kind: prefix
         value: elastic-dr
       - filtertype: pattern
-        kind: regex
-        value: '^\.kiban.*$'
-        exclude: True
+        kind: prefix
+        value: '.kibana'
+        exclude: false
