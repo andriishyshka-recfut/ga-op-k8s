@@ -55,4 +55,6 @@ locals {
     ANSIBLE_STDOUT_CALLBACK = "debug"
     BASTION_DNS             = var.Settings.bastion_dns
   })
+  ingressSettings  = var.Settings.clusters[var.Cluster].ingress
+  load_balancer_ip = var.Settings.clusters[var.Cluster].load_balancer_ip
 }
