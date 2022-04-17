@@ -58,6 +58,7 @@ spec:
       - https://trm.regemini.com/
       - https://usb.regemini.com/
       - https://usss.regemini.com/
+      - https://visa.regemini.com/
       - https://wsecu.regemini.com/
 ---
 apiVersion: monitoring.coreos.com/v1
