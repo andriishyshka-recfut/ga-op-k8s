@@ -1,28 +1,28 @@
 
-resource "null_resource" "mongod_crd_deploy" {
-  triggers = {
-    # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = <<COMMAND
-    kubectl apply --server ${var.GkeClusterConnectionSettings.HOST}  \
-     --token ${var.GkeClusterConnectionSettings.API_KEY}  --insecure-skip-tls-verify=true \
-     -n mongo-system \
-     -f https://raw.githubusercontent.com/percona/percona-server-mongodb-operator/master/deploy/crd.yaml
-COMMAND
-  }
-}
+# resource "null_resource" "mongod_crd_deploy" {
+#   triggers = {
+#     # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = <<COMMAND
+#     kubectl create --server ${var.GkeClusterConnectionSettings.HOST}  \
+#      --token ${var.GkeClusterConnectionSettings.API_KEY}  --insecure-skip-tls-verify=true \
+#      -n mongo-system \
+#      -f https://raw.githubusercontent.com/percona/percona-server-mongodb-operator/master/deploy/crd.yaml
+# COMMAND
+#   }
+# }
 
 resource "helm_release" "psmdb_operator" {
   name       = "psmdb-operator"
-  namespace = var.MongoNs
+  namespace  = var.MongoNs
   chart      = "psmdb-operator"
   repository = "https://percona.github.io/percona-helm-charts/"
   wait       = true
   atomic     = true
   timeout    = 900
-  depends_on = [null_resource.mongod_crd_deploy]
+  # depends_on = [null_resource.mongod_crd_deploy]
 }
 
 data "vault_generic_secret" "mongo_creds" {
@@ -68,31 +68,31 @@ resource "helm_release" "mongo_cluster" {
     value = var.BackupBucket
   }
   set {
-    name = "volumeSize"
+    name  = "volumeSize"
     value = var.VolumeSize
   }
   set {
-    name = "replicas"
+    name  = "replicas"
     value = var.Replicas
   }
   set {
-    name = "color"
+    name  = "color"
     value = var.Color
   }
   set {
-    name = "cpuReuest"
+    name  = "cpuReuest"
     value = local.request.cpu
   }
   set {
-    name = "memReuest"
+    name  = "memReuest"
     value = local.request.memory
   }
   set {
-    name = "memLimit"
+    name  = "memLimit"
     value = local.limit.memory
   }
   set {
-    name = "cpuLimit"
+    name  = "cpuLimit"
     value = local.limit.cpu
   }
   depends_on = [
@@ -106,8 +106,8 @@ resource "null_resource" "ansible_wait_for_mongo" {
 
   triggers = {
     playbook_contents = md5(file("${path.module}/../../ansible/k8s-wait-for.yml"))
-    mongo          = helm_release.mongo_cluster.id
-    operator = helm_release.psmdb_operator.id
+    mongo             = helm_release.mongo_cluster.id
+    operator          = helm_release.psmdb_operator.id
   }
   provisioner "local-exec" {
     command = <<COMMAND
@@ -136,7 +136,7 @@ resource "helm_release" "mongo_express" {
   wait      = true
   atomic    = true
   set {
-    name = "color"
+    name  = "color"
     value = var.Color
   }
   depends_on = [

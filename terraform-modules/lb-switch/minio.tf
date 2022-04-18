@@ -6,8 +6,8 @@ locals {
 }
 
 resource "helm_release" "minio-subdomains" {
-  name      = "minio-buckets"
-  namespace = "istio-system"
+  name      = "minio"
+  namespace = "istio-ingress"
   chart     = "${path.module}/charts/minio-buckets"
   wait      = true
   atomic    = true

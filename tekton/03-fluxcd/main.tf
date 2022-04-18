@@ -1,8 +1,8 @@
 
 module "fluxcd" {
-  source = "../../terraform-modules/k8s-vault-fluxcd"
+  source  = "../../terraform-modules/k8s-vault-fluxcd"
   Cluster = var.Cluster
-  Color = var.Color
+  Color   = var.Color
 }
 
 provider "flux" {

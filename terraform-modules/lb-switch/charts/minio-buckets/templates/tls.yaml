@@ -3,12 +3,13 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{ .Release.Name }}-cert
-  namespace: istio-system
+  namespace: istio-ingress
 spec:
   dnsNames:
-      {{- range .Values.buckets }}
-      - "{{ . }}.{{ $.Values.domain }}"
-      {{- end }}
+    - {{ $.Values.domain }}
+    {{- range .Values.buckets }}
+    - "{{ . }}.{{ $.Values.domain }}"
+    {{- end }}
   issuerRef:
     kind: ClusterIssuer
     name: {{ .Values.issuer }}

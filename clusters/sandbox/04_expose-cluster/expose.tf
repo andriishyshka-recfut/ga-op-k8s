@@ -14,7 +14,7 @@ data "vault_generic_secret" "k8s_auth" {
   path = local.activeClusterVaultPath
 }
 locals {
-  activeCluster          = "blue"
+  activeCluster          = "green"
   activeClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
 }
 provider "helm" {
@@ -23,6 +23,11 @@ provider "helm" {
     cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
     token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
   }
+}
+provider "kubernetes" {
+  host                   = data.vault_generic_secret.k8s_auth.data.HOST
+  cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
+  token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
 }
 
 terraform {
