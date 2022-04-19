@@ -2,6 +2,7 @@
 variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
+variable "Harbor" {}
 
 data "google_compute_instance" "bastion" {
   name = var.Settings.bastion_hostname

@@ -37,4 +37,5 @@ module "lb-switch" {
   Settings = var.Settings
   Cluster  = var.Cluster
   Color    = local.activeCluster
+  Harbor   = false
 }
