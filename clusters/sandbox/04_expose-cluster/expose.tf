@@ -43,4 +43,5 @@ module "lb-switch" {
   Settings = var.Settings
   Cluster  = "sandbox"
   Color    = local.activeCluster
+  Harbor   = true
 }
