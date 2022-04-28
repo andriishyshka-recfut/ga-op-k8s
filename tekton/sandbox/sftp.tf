@@ -41,8 +41,19 @@ resource "kubernetes_manifest" "deployment_camel_k_sftp" {
                   "subPath"   = "users.conf"
                 },
                 {
+                  "mountPath" = "/etc/ssh/sshd_config"
+                  "name"      = "sftp-sshd"
+                  "readOnly"  = true
+                  "subPath"   = "sshd_config"
+                },
+                {
                   "mountPath" = "/home/user/.ssh/keys/"
                   "name"      = "sftp-user-key"
+                  "readOnly"  = true
+                },
+                {
+                  "mountPath" = "/home/user3/.ssh/keys/"
+                  "name"      = "sftp-user2-key"
                   "readOnly"  = true
                 },
               ]
@@ -56,7 +67,25 @@ resource "kubernetes_manifest" "deployment_camel_k_sftp" {
               "name" = "sftp-users"
             },
             {
+              "configMap" = {
+                "name" = "sftp-sshd"
+              }
+              "name" = "sftp-sshd"
+            },
+            {
               "name" = "sftp-user-key"
+              "secret" = {
+                "items" = [
+                  {
+                    "key"  = "id_rsa.pub"
+                    "path" = "id_rsa.pub"
+                  },
+                ]
+                "secretName" = "sftp-pub-key"
+              }
+            },
+            {
+              "name" = "sftp-user2-key"
               "secret" = {
                 "items" = [
                   {
@@ -104,11 +133,39 @@ resource "kubernetes_manifest" "configmap_camel_k_sftp_users" {
       "users.conf" = <<-EOT
       user::1001
       user2:password:1001
+      user3:password:1001
       EOT
     }
     "kind" = "ConfigMap"
     "metadata" = {
       "name"      = "sftp-users"
+      "namespace" = "camel-k"
+    }
+  }
+}
+
+resource "kubernetes_manifest" "configmap_camel_k_sftp_sshd" {
+  manifest = {
+    "apiVersion" = "v1"
+    "data" = {
+      "sshd_config" = <<-EOT
+      Protocol 2
+      HostKey /etc/ssh/ssh_host_ed25519_key
+      HostKey /etc/ssh/ssh_host_rsa_key
+      UseDNS no
+      PermitRootLogin no
+      X11Forwarding no
+      AllowTcpForwarding no
+      Subsystem sftp internal-sftp
+      ForceCommand internal-sftp
+      ChrootDirectory %h
+      Match User user3
+        AuthenticationMethods publickey,password
+      EOT
+    }
+    "kind" = "ConfigMap"
+    "metadata" = {
+      "name"      = "sftp-sshd"
       "namespace" = "camel-k"
     }
   }
