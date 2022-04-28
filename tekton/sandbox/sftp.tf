@@ -40,6 +40,11 @@ resource "kubernetes_manifest" "deployment_camel_k_sftp" {
                   "readOnly"  = true
                   "subPath"   = "users.conf"
                 },
+                {
+                  "mountPath" = "/home/user/.ssh/keys/"
+                  "name"      = "sftp-user-key"
+                  "readOnly"  = true
+                },
               ]
             },
           ]
@@ -49,6 +54,18 @@ resource "kubernetes_manifest" "deployment_camel_k_sftp" {
                 "name" = "sftp-users"
               }
               "name" = "sftp-users"
+            },
+            {
+              "name" = "sftp-user-key"
+              "secret" = {
+                "items" = [
+                  {
+                    "key"  = "id_rsa.pub"
+                    "path" = "id_rsa.pub"
+                  },
+                ]
+                "secretName" = "sftp-pub-key"
+              }
             },
           ]
         }
@@ -85,13 +102,27 @@ resource "kubernetes_manifest" "configmap_camel_k_sftp_users" {
     "apiVersion" = "v1"
     "data" = {
       "users.conf" = <<-EOT
-      user:password:1001
-
+      user::1001
+      user2:password:1001
       EOT
     }
     "kind" = "ConfigMap"
     "metadata" = {
       "name"      = "sftp-users"
+      "namespace" = "camel-k"
+    }
+  }
+}
+
+resource "kubernetes_manifest" "secret_camel_k_sftp_pub_key" {
+  manifest = {
+    "apiVersion" = "v1"
+    "data" = {
+      "id_rsa.pub" = "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCZ1FDNkEzVE9aZlpNQlZ0MEZWNnRtT1VacUd5a0NWcE9iWkJDQmh1K0dCVW9pb0M3WktEYW9DZk5CdWovRnpCVzNQQW9qM0F1UU11RUh0K3d2a3lGWUU0bU4vdUI5dkluT08ybVBzU3MvMVFZV2RiRkVLamkxaEdEY1BHcFNZUGJiQUcwQTVFVU9HZGxHWU1jV0tnZlM5SlVDZVJYc0hrR0lOZmRqemNpVDlMR1paZ1kvVnpGYnBMcE1iQUN2R09sOFlYOFN6VlRxK3NST1JVQTZDTnZoempNaXVDeDRaMHVRSDU5eFVndmRRTTl0Q0VrYjEzSG5JMGJEYU5pOTUxTEYxY3NsemIrRUdlSkFIc2tnOU05clFRdzB1VmwzSGFRKyt0YTV6OWhqQ0FGVzY2Z3hPUFp3NTdkbDA0bjkxNjJNd2ZnTjZ3L1AzRHM2cnBxYzBaQXNmOU84UmROUlExWTIxZ2ZnTGo1SVBNRmJqSnMxU3N4S0ZaUnNBQUF1dk1PR1lYQjVYM3hxRTQ5ZVJxdjhrRHlZaFZUdWF6OWpIbjBuS2JjRDFuZDMxNmhDbiszWkNrUGRFejlkZGoydWFCM0c4bjV3NERHc1Z0djF3dVlTN2pBWHVSeE1YZ2RGRy9uOXpLU3UrSFB4TUpFdXkySTluMWFEb1lybnFXVGNhWHh2YWs9IGRteXRyb2t1Ym92QE1hY0Jvb2stUHJvLURteXRyby5sb2NhbAo="
+    }
+    "kind" = "Secret"
+    "metadata" = {
+      "name"      = "sftp-pub-key"
       "namespace" = "camel-k"
     }
   }
