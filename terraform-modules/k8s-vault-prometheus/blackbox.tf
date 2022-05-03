@@ -18,8 +18,8 @@ resource "kubernetes_secret" "es_creds" {
   }
 
   data = {
-    "ca_crt"    = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CA_CRT
-    "client_crt"    = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CLIENT_CRT
+    "ca_crt"     = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CA_CRT
+    "client_crt" = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CLIENT_CRT
     "client_key" = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CLIENT_KEY
   }
 
@@ -37,38 +37,58 @@ resource "helm_release" "blackbox_exporter" {
     file("${path.module}/blackbox-values.yaml")
   ]
   set {
-    name = "config.modules.harbor.http.basic_auth.username"
+    name  = "config.modules.harbor.http.basic_auth.username"
     value = data.vault_generic_secret.harbor_token.data.user
   }
   set {
-    name = "config.modules.harbor.http.basic_auth.password"
+    name  = "config.modules.harbor.http.basic_auth.password"
     value = data.vault_generic_secret.harbor_token.data.password
   }
   set {
-    name = "config.modules.elastic.http.basic_auth.username"
+    name  = "config.modules.elastic.http.basic_auth.username"
     value = data.vault_generic_secret.es_access.data.USERNAME
   }
   set {
-    name = "config.modules.elastic.http.basic_auth.password"
+    name  = "config.modules.elastic.http.basic_auth.password"
     value = data.vault_generic_secret.es_access.data.PASSWORD
   }
+  set {
+    name  = "prometheusRule.rules[0].labels.cluster"
+    value = var.Cluster
+  }
+  set {
+    name  = "prometheusRule.rules[1].labels.cluster"
+    value = var.Cluster
+  }
+  set {
+    name  = "prometheusRule.rules[2].labels.cluster"
+    value = var.Cluster
+  }
+  set {
+    name  = "prometheusRule.rules[3].labels.cluster"
+    value = var.Cluster
+  }
+  set {
+    name  = "prometheusRule.rules[4].labels.cluster"
+    value = var.Cluster
+  }
   depends_on = [
-        helm_release.prometheus
-    ]
+    helm_release.prometheus
+  ]
 }
 
 
 data "kubectl_file_documents" "blackbox_probes" {
-    content = file("${path.module}/blackbox-probes.yaml")
+  content = file("${path.module}/blackbox-probes.yaml")
 }
 
 resource "kubectl_manifest" "blackbox_probes" {
-    count = 4
-    yaml_body  = element(data.kubectl_file_documents.blackbox_probes.documents, count.index)
-    override_namespace = local.prometheusNs
-    depends_on = [
-        helm_release.blackbox_exporter
-    ]
+  count              = 4
+  yaml_body          = element(data.kubectl_file_documents.blackbox_probes.documents, count.index)
+  override_namespace = local.prometheusNs
+  depends_on = [
+    helm_release.blackbox_exporter
+  ]
 }
 
 
@@ -83,7 +103,7 @@ data "http" "grafana_dashboard_blackbox" {
 
 resource "kubernetes_config_map" "blackbox_dashboards" {
   metadata {
-    name = "blackbox-dashboard"
+    name      = "blackbox-dashboard"
     namespace = "monitoring"
     labels = {
       grafana_dashboard = 1
@@ -91,7 +111,7 @@ resource "kubernetes_config_map" "blackbox_dashboards" {
   }
 
   data = {
-    "blackbox.json"             = replace(data.http.grafana_dashboard_blackbox.body, "$${DS_SIGNCL-PROMETHEUS}","Prometheus")
-    }
+    "blackbox.json" = replace(data.http.grafana_dashboard_blackbox.body, "$${DS_SIGNCL-PROMETHEUS}", "Prometheus")
+  }
 
 }
