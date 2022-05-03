@@ -7,17 +7,17 @@ spec:
   selector:
     istio: ingressgateway
   servers:
-    - hosts:
-        - {{ $.Values.domain }}
-      {{- range .Values.buckets }}
-        - {{ . }}.{{ $.Values.domain }}
-      {{- end }}
-      port:
-        name: http
-        number: 80
-        protocol: HTTP
-      tls:
-        httpsRedirect: true
+    # - hosts:
+    #     - {{ $.Values.domain }}
+    #   {{- range .Values.buckets }}
+    #     - {{ . }}.{{ $.Values.domain }}
+    #   {{- end }}
+    #   port:
+    #     name: http
+    #     number: 80
+    #     protocol: HTTP
+    #   tls:
+    #     httpsRedirect: true
     - hosts:
         - {{ $.Values.domain }}
       {{- range .Values.buckets }}

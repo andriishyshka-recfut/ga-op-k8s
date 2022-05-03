@@ -35,19 +35,19 @@ resource "kubernetes_manifest" "ingress_harbor_gateway" {
         "istio" = "ingressgateway"
       }
       "servers" = [
-        {
-          "hosts" = [
-            "harbor.t.regemini.io"
-          ]
-          "port" = {
-            "name"     = "http"
-            "number"   = 80
-            "protocol" = "HTTP"
-          }
-          "tls" = {
-            "httpsRedirect" = "true"
-          }
-        },
+        # {
+        #   "hosts" = [
+        #     "harbor.t.regemini.io"
+        #   ]
+        #   "port" = {
+        #     "name"     = "http"
+        #     "number"   = 80
+        #     "protocol" = "HTTP"
+        #   }
+        #   "tls" = {
+        #     "httpsRedirect" = "true"
+        #   }
+        # },
         {
           "hosts" = [
             "harbor.t.regemini.io"

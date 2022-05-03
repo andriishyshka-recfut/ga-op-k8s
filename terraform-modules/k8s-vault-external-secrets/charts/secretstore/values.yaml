@@ -1,0 +1,2 @@
+mountPath: k8s-sanndbox-blue
+namespaces: ["camel-k"]

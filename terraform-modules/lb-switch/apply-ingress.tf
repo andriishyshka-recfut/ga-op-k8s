@@ -80,19 +80,19 @@ resource "kubernetes_manifest" "ingress_gateway" {
         "istio" = "ingressgateway"
       }
       "servers" = [
-        {
-          "hosts" = [
-            each.value.domain
-          ]
-          "port" = {
-            "name"     = "http"
-            "number"   = 80
-            "protocol" = "HTTP"
-          }
-          "tls" = {
-            "httpsRedirect" = "true"
-          }
-        },
+        # {
+        #   "hosts" = [
+        #     each.value.domain
+        #   ]
+        #   "port" = {
+        #     "name"     = "http"
+        #     "number"   = 80
+        #     "protocol" = "HTTP"
+        #   }
+        #   "tls" = {
+        #     "httpsRedirect" = "true"
+        #   }
+        # },
         {
           "hosts" = [
             each.value.domain
