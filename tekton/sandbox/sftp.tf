@@ -131,9 +131,9 @@ resource "kubernetes_manifest" "configmap_camel_k_sftp_users" {
     "apiVersion" = "v1"
     "data" = {
       "users.conf" = <<-EOT
-      user::1001
-      user2:password:1001
-      user3:password:1001
+      user::1001:100:share
+      user2:password:1002:100:share
+      user3:password:1003:100:share
       EOT
     }
     "kind" = "ConfigMap"

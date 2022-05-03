@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: 01-monitoring-
+  generateName: 01-external-secrets
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/01-monitoring"
+      value: "k8s/tekton/01-external-secrets"
     - name: branch
-      value: "\\#1DR-010422"
+      value: "\\#176-DR-280422"

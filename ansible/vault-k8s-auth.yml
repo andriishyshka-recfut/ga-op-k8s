@@ -47,7 +47,7 @@
     assert:
       that:
         - vault_token | length > 1
-        - vault_token is regex("^s\.\w+$")
+        # - vault_token is regex("^s\.\w+$")
 
   - name: Configure vault
     block:
