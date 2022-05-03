@@ -51,6 +51,9 @@ resource "kubernetes_manifest" "ingress_letsencrypt_cert" {
     "metadata" = {
       "name"      = "${each.key}-cert"
       "namespace" = "istio-ingress"
+      "annotations" = {
+        "kubernetes.io/ingress.class" = "istio"
+      }
     }
     "spec" = {
       "commonName" = each.value.domain

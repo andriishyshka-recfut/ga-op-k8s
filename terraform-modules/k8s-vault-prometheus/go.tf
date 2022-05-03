@@ -34,7 +34,8 @@ resource "kubernetes_config_map" "go_dashboards" {
 
 
 data "kubectl_file_documents" "go_rules" {
-  content = file("${path.module}/go-prometheusrule.yaml")
+  # content = file("${path.module}/go-prometheusrule.yaml")
+  content = templatefile("${path.module}/go-prometheusrule.yaml", { cluster_label : var.Cluster })
 }
 
 resource "kubectl_manifest" "go_rules" {

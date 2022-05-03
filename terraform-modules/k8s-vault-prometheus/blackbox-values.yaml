@@ -40,8 +40,6 @@ config:
         - expect: "^SSH-2.0-"
         - send: "SSH-2.0-blackbox-ssh-check"
 
-
-
 extraSecretMounts:
   - name: es-secret
     mountPath: /etc/secrets

@@ -19,7 +19,7 @@ spec:
       annotations:
         description: |
           Something wrong with minion
-        summary:  Something wrong with {{ $labels.container }}
+        summary: Something wrong with {{ $labels.container }}
       expr: |
         last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='minion'}[20m]) > 0
         and max_over_time(kafka_reader_tasks_in_progress{topic="minion"}[20m]) == 0
@@ -27,70 +27,76 @@ spec:
 
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: DomeBeatHealthchek
       annotations:
         description: |
           Something wrong with dome
-        summary:  Something wrong with {{ $labels.container }}
+        summary: Something wrong with {{ $labels.container }}
       expr: |
         last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='dome'}[20m]) > 0
         and max_over_time(kafka_reader_tasks_in_progress{topic="dome"}[20m]) == 0
         and max_over_time(kafka_reader_waiting_for_complete{project="dome"}[20m]) == 0
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: MagescannerBeatHealthchek1
       annotations:
         description: |
           Something wrong with magescanner
-        summary:  Something wrong with {{ $labels.container }} {{$labels.topic }}
+        summary: Something wrong with {{ $labels.container }} {{$labels.topic }}
       expr: |
         last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='mage.scan'}[20m]) > 0
         and max_over_time(kafka_reader_tasks_in_progress{topic="mage.scan"}[20m]) == 0
         and max_over_time(kafka_reader_waiting_for_complete{project="magescanner"}[20m]) == 0
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: MagescannerBeatHealthchek2
       annotations:
         description: |
           Something wrong with magescanner
-        summary:  Something wrong with {{ $labels.container }} {{$labels.topic}}
+        summary: Something wrong with {{ $labels.container }} {{$labels.topic}}
       expr: |
         last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='mage.analysis'}[20m]) > 0
         and max_over_time(kafka_reader_tasks_in_progress{topic="mage.analysis"}[20m]) == 0
         and max_over_time(kafka_reader_waiting_for_complete{project="mageanalyst"}[20m]) == 0
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: MagescannerBeatHealthchek3
       annotations:
         description: |
           Something wrong with magescanner
-        summary:  Something wrong with {{ $labels.container }} {{$labels.topic}}
+        summary: Something wrong with {{ $labels.container }} {{$labels.topic}}
       expr: |
         last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='magecart'}[20m]) > 0
         and max_over_time(kafka_reader_tasks_in_progress{topic="magecart"}[20m]) == 0
         and max_over_time(kafka_reader_waiting_for_complete{project="magecart"}[20m]) == 0
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: MagescannerBeatHealthchek4
       annotations:
         description: |
           Something wrong with magescanner
-        summary:  Something wrong with {{ $labels.container }} {{$labels.topic}}
+        summary: Something wrong with {{ $labels.container }} {{$labels.topic}}
       expr: |
         last_over_time(kafka_consumergroup_lag_sum{consumergroup="beat", topic='testcart'}[20m]) > 0
         and max_over_time(kafka_reader_tasks_in_progress{topic="testcart"}[20m]) == 0
         and max_over_time(kafka_reader_waiting_for_complete{project="testcart"}[20m]) == 0
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical

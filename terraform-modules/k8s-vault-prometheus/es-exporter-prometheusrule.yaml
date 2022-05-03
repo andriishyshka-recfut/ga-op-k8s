@@ -24,8 +24,9 @@ spec:
         sum_over_time ( urlscan_public_hits[10m] ) == 0
       for: 30m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: UrlscanPrivateNoPreps
       annotations:
         description: |
@@ -35,8 +36,9 @@ spec:
         sum_over_time ( urlscan_private_hits[10m] ) == 0
       for: 30m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: SyncMageAttackerUrl
       annotations:
         description: |
@@ -46,8 +48,9 @@ spec:
         sum_over_time ( syncmage_attacker_url_hits[10m] ) == 0
       for: 30m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: SyncMageAttackerScript
       annotations:
         description: |
@@ -57,8 +60,9 @@ spec:
         sum_over_time ( syncmage_attacker_script_hits[10m] ) == 0
       for: 30m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: SyncMageAttackerTest
       annotations:
         description: |
@@ -68,8 +72,9 @@ spec:
         sum_over_time ( syncmage_attacker_test_hits[10m] ) == 0
       for: 30m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: SyncMageSkipRule
       annotations:
         description: |
@@ -79,8 +84,9 @@ spec:
         sum_over_time ( syncmage_skip_rule_hits[10m] ) == 0
       for: 30m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: GeoNoAction
       annotations:
         description: |
@@ -90,8 +96,9 @@ spec:
         sum_over_time ( geo_hits[1h] ) == 0
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: ChallengerNoAction
       annotations:
         description: |
@@ -101,8 +108,9 @@ spec:
         sum_over_time ( challenger_hits[30m] ) == 0
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: ShoutNoTasks
       annotations:
         description: |
@@ -112,8 +120,9 @@ spec:
         sum_over_time ( shout_hits[10m] ) == 0
       for: 30m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: CaptchaNotReady
       annotations:
         description: |
@@ -123,8 +132,9 @@ spec:
         sum_over_time ( captcha_hits[30m] ) == 0
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: UpsertdomeUnauthorized
       annotations:
         description: |
@@ -134,8 +144,9 @@ spec:
         sum_over_time ( upsertdome_unauthorized_hits[5m] ) > 0
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
     - alert: UpsertminionUnauthorized
       annotations:
         description: |
@@ -145,5 +156,6 @@ spec:
         sum_over_time ( upsertminion_unauthorized_hits[5m] ) > 0
       for: 5m
       labels:
+        cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: critical
