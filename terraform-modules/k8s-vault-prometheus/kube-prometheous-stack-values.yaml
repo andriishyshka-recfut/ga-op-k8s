@@ -130,6 +130,7 @@ alertmanager:
       slack_configs:
         - channel: '#prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
     route:
       group_by:
         - alertname
