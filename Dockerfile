@@ -1,14 +1,14 @@
 FROM vault:latest as vault
-FROM hashicorp/terraform:1.1.7 as terraform
+FROM hashicorp/terraform:1.1.9 as terraform
 FROM curlimages/curl as curl
 RUN curl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /tmp/kubectl &&\
-    curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.33.0/terragrunt_linux_amd64 --output /tmp/terragrunt
+    curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.37.1/terragrunt_linux_amd64 --output /tmp/terragrunt
 
 
 FROM alpine:latest as ansible
 RUN apk add python3 py3-pip unzip py3-virtualenv bash python3-dev libffi-dev build-base rust rustup cargo openssl-dev musl-dev
 RUN cd / && python3 -m venv ansible && \
-    bash -c "source /ansible/bin/activate && pip install --upgrade pip && pip install ansible pyyaml docker-compose jmespath kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl"
+    bash -c "source /ansible/bin/activate && pip install --upgrade pip && pip install ansible pyyaml docker-compose jmespath kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl kafka-python"
 
 
 FROM openjdk:18-jdk-alpine as java
