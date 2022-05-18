@@ -1,3 +1,36 @@
+data "kubernetes_service_account" "cert_manager" {
+  metadata {
+    name      = "${var.Cluster}-cert-manager"
+    namespace = "kube-system"
+  }
+}
+
+resource "kubernetes_manifest" "vault_pki" {
+  for_each = local.projects
+  manifest = {
+    "apiVersion" = "cert-manager.io/v1"
+    "kind"       = "ClusterIssuer"
+    "metadata" = {
+      "name" = "vault-${each.key}-issuer"
+    }
+    "spec" = {
+      "vault" = {
+        "auth" = {
+          "kubernetes" = {
+            "mountPath" = "/v1/auth/default-issuer-${var.Cluster}-${var.Color}"
+            "role" = "cert-manager-${var.Cluster}-${var.Color}"
+            "secretRef" = {
+              "key" = "token"
+              "name" = data.kubernetes_service_account.cert_manager[0].default_secret_name
+            }
+          }
+        }
+        "path" = "pki-${each.key}/sign/${each.key}"
+        "server" = "https://vault.${var.Settings.clusters[var.Cluster].subdomain}.regemini.io"
+      }
+  }
+}
+
 resource "tls_private_key" "clients_rsa_key" {
   for_each  = local.projects_setup_csr
   algorithm = "RSA"
