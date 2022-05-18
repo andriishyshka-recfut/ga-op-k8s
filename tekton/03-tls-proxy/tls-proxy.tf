@@ -3,4 +3,5 @@ module "tls-proxy" {
   Projects       = var.Settings.clusters[var.Cluster].tlsProxy
   Color          = var.Color
   ElasticProxyNS = var.Settings.clusters[var.Cluster].elasticProxy
+  Cluster        = var.Cluster
 }
