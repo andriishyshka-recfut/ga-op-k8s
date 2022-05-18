@@ -18,16 +18,17 @@ resource "kubernetes_manifest" "vault_pki" {
         "auth" = {
           "kubernetes" = {
             "mountPath" = "/v1/auth/default-issuer-${var.Cluster}-${var.Color}"
-            "role" = "cert-manager-${var.Cluster}-${var.Color}"
+            "role"      = "cert-manager-${var.Cluster}-${var.Color}"
             "secretRef" = {
-              "key" = "token"
+              "key"  = "token"
               "name" = data.kubernetes_service_account.cert_manager[0].default_secret_name
             }
           }
         }
-        "path" = "pki-${each.key}/sign/${each.key}"
+        "path"   = "pki-${each.key}/sign/${each.key}"
         "server" = "https://vault.${var.Settings.clusters[var.Cluster].subdomain}.regemini.io"
       }
+    }
   }
 }
 
