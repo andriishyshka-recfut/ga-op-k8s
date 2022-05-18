@@ -111,7 +111,7 @@ resource "kubernetes_manifest" "tls_proxy_cert" {
     "kind"       = "Certificate"
     "metadata" = {
       "name"      = "${each.key}-cert"
-      "namespace" = "istio-system"
+      "namespace" = "istio-ingress"
     }
     "spec" = {
       "commonName" = each.value.domain
@@ -131,7 +131,7 @@ resource "kubernetes_manifest" "tls_proxy_gateway" {
     "kind"       = "Gateway"
     "metadata" = {
       "name"      = "${each.key}-gateway"
-      "namespace" = "istio-system"
+      "namespace" = "istio-ingress"
     }
     "spec" = {
       "selector" = {
@@ -181,7 +181,7 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
     }
     "spec" = {
       "gateways" = [
-        "istio-system/${each.key}-gateway",
+        "istio-ingress/${each.key}-gateway",
       ]
       "hosts" = [
         each.value.domain
@@ -222,7 +222,7 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_wo_haproxy" {
     }
     "spec" = {
       "gateways" = [
-        "istio-system/${each.key}-gateway",
+        "istio-ingress/${each.key}-gateway",
       ]
       "hosts" = [
         each.value.domain
@@ -260,7 +260,7 @@ resource "kubernetes_manifest" "ip_whitelist" {
     "kind"       = "AuthorizationPolicy"
     "metadata" = {
       "name"      = "ingress-policy"
-      "namespace" = "istio-system"
+      "namespace" = "istio-ingress"
     }
     "spec" = {
       "action" = "ALLOW"
