@@ -156,6 +156,7 @@ spec:
       - namespaces
       - mongo
       - kafka
+      - monitoring
       workspaces:
         - name: ws
           workspace: ws

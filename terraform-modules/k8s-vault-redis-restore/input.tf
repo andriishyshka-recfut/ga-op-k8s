@@ -11,7 +11,9 @@ apk add redis;
 wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc;
 chmod +x mc;
 if [ $SENTINEL = "yes" ]; then
+echo "Step1";
 /usr/bin/redis-cli -h $BACKUP_SERVICE_NAME -p $BACKUP_SERVICE_PORT --csv SENTINEL get-master-addr-by-name mymaster > redisdb;
+cat redisdb;
 redis_url=`cut -d, -f1<redisdb|sed 's/\"//g'`;
 redis_port=`cut -d, -f2<redisdb|sed 's/\"//g'`;
 else

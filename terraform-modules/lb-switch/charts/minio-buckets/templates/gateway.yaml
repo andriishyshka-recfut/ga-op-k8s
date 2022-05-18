@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ .Release.Name }}-wg-gateway
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    # - hosts:
+    #     - {{ $.Values.domain }}
+    #   {{- range .Values.buckets }}
+    #     - {{ . }}.{{ $.Values.domain }}
+    #   {{- end }}
+    #   port:
+    #     name: http
+    #     number: 80
+    #     protocol: HTTP
+    #   tls:
+    #     httpsRedirect: true
+    - hosts:
+        - {{ $.Values.domain }}
+      {{- range .Values.buckets }}
+        - {{ . }}.{{ $.Values.domain }}
+      {{- end }}
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        credentialName: {{ .Release.Name }}-cert
+        mode: SIMPLE

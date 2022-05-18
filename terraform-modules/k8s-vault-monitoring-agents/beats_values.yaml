@@ -153,6 +153,14 @@ filebeat:
                 json.add_error_key: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
+            # Paste
+            - condition.contains:
+                kubernetes.namespace: paste-
+              config:
+              - type: container
+                json.add_error_key: true
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
             # Shout
             - condition.contains:
                 kubernetes.namespace: shout

@@ -2,6 +2,7 @@
 variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
+variable "Harbor" {}
 
 data "google_compute_instance" "bastion" {
   name = var.Settings.bastion_hostname
@@ -55,4 +56,6 @@ locals {
     ANSIBLE_STDOUT_CALLBACK = "debug"
     BASTION_DNS             = var.Settings.bastion_dns
   })
+  ingressSettings  = var.Settings.clusters[var.Cluster].ingress
+  load_balancer_ip = var.Settings.clusters[var.Cluster].load_balancer_ip
 }

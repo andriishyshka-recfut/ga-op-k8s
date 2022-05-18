@@ -4,8 +4,9 @@ actions:
     action: restore
     description: "Restore filebeat-7 indices in the most recent snapshot with state SUCCESS"
     options:
-      repository: "minio"
+      repository: "gcs"
       # name: monitoring-dr-%Y%m%d
+      # indices: "-.kibana*"
       wait_for_completion: False
       include_global_state: True
       # wait_interval: 20
@@ -15,3 +16,9 @@ actions:
       - filtertype: pattern
         kind: prefix
         value: elastic-dr
+      # - filtertype: pattern
+      #   kind: regex
+      #   value: "^\.kibana.*$"
+      #   exclude: True
+      - filtertype: kibana
+        exclude: True

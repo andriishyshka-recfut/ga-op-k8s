@@ -45,11 +45,13 @@ spec:
       - https://max.regemini.com/
       - https://mc.regemini.com/
       - https://mr.regemini.com/
+      - https://nabancard.regemini.com/
       - https://nedbank.regemini.com/
       - https://petal.regemini.com/
       - https://rakuten.regemini.com/
       - https://rb.regemini.com/
       - https://rbc.regemini.com/
+      - https://s3.regemini.com/
       - https://standard.regemini.com/
       - https://swed.regemini.com/
       - https://syf.regemini.com/
@@ -57,6 +59,8 @@ spec:
       - https://trm.regemini.com/
       - https://usb.regemini.com/
       - https://usss.regemini.com/
+      - https://visa.regemini.com/
+      - https://wsecu.regemini.com/
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
@@ -118,3 +122,4 @@ spec:
       - creditone.regemini.com:2222
       - max.regemini.com:2222
       - bka.regemini.com:2222
+      - fd.regemini.com:2222
