@@ -21,7 +21,7 @@ resource "kubernetes_manifest" "vault_pki" {
             "role"      = "cert-manager-${var.Cluster}-${var.Color}"
             "secretRef" = {
               "key"  = "token"
-              "name" = data.kubernetes_service_account.cert_manager[0].default_secret_name
+              "name" = data.kubernetes_service_account.cert_manager.default_secret_name
             }
           }
         }
