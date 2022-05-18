@@ -17,10 +17,9 @@ locals {
     if can(namespace.admins)
   }
   developers = [
-    "alakbar.alikperov@geminiadvisory.io",
+    "askat.abdikary@geminiadvisory.io",
     "anton@geminiadvisory.io",
     "eugene@geminiadvisory.io",
-    "nahida.gubatova@geminiadvisory.io",
     "nikita.leonov@geminiadvisory.io",
     "valerii.korolov@geminiadvisory.io",
     "serhii.hutsaliuk@geminiadvisory.io"
