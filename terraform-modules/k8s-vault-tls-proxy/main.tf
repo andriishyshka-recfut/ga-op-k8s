@@ -317,7 +317,7 @@ resource "kubernetes_manifest" "ip_whitelist" {
     "apiVersion" = "security.istio.io/v1beta1"
     "kind"       = "AuthorizationPolicy"
     "metadata" = {
-      "name"      = "${each.key}-ip_whitelist_ingress-policy"
+      "name"      = "${each.key}_ip_whitelist_ingress-policy"
       "namespace" = "istio-ingress"
     }
     "spec" = {
