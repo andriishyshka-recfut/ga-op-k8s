@@ -4,7 +4,7 @@ resource "null_resource" "pki_enable" {
     always_run = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "vault secrets enable pki-${each.key}"
+    command = "vault secrets enable -path=pki-${each.key} pki"
   }
 }
 
