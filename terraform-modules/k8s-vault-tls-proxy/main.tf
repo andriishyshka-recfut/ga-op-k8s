@@ -1,3 +1,60 @@
+resource "null_resource" "pki_enable" {
+  for_each = local.projects_setup_csr
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    command = "vault secrets enable pki-${each.key}"
+  }
+}
+
+resource "null_resource" "pki_init_settings" {
+  for_each = local.projects_setup_csr
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    command = "vault secrets tune -max-lease-ttl=31708800 pki-${each.key}"
+  }
+  depends_on = [
+    null_resource.pki_enable
+  ]
+}
+
+resource "null_resource" "pki_generate_root" {
+  for_each = local.projects_setup_csr
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    command = <<-EOT
+      vault vault write pki-${each.key}/root/generate/internal common_name=regemini.com ttl=31708800 \
+      ou=IT organization="Gemini Advisory LLC" \
+      country=US locality=Miami province=FL
+    EOT
+  }
+  depends_on = [
+    null_resource.pki_init_settings
+  ]
+}
+
+resource "null_resource" "pki_setup_role" {
+  for_each = local.projects_setup_csr
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    command = <<-EOT
+      vault write pki-${each.key}/roles/${each.key} max_ttl=32832000 allow_localhost=true \
+      allowed_domains=regemini.com,${each.key} allow_bare_domains=true allow_subdomains=true \
+      allow_wildcard_certificates=true ou=IT organization="Gemini Advisory LLC"
+    EOT
+  }
+  depends_on = [
+    null_resource.pki_generate_root
+  ]
+}
+
 data "kubernetes_service_account" "cert_manager" {
   metadata {
     name      = "${var.Cluster}-cert-manager"
@@ -5,7 +62,7 @@ data "kubernetes_service_account" "cert_manager" {
   }
 }
 
-resource "kubernetes_manifest" "vault_pki" {
+resource "kubernetes_manifest" "vault_certmanager" {
   for_each = local.projects
   manifest = {
     "apiVersion" = "cert-manager.io/v1"
@@ -60,7 +117,7 @@ resource "vault_pki_secret_backend_sign" "clients" {
   csr         = tls_cert_request.clients_csr[each.key].cert_request_pem
   common_name = each.key
   depends_on = [
-    tls_cert_request.clients_csr
+    tls_cert_request.clients_csr, null_resource.pki_setup_role
   ]
 }
 
