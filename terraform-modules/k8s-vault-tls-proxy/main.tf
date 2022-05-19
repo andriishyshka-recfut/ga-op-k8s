@@ -342,6 +342,37 @@ resource "kubernetes_manifest" "ip_whitelist" {
   }
 }
 
+resource "kubernetes_manifest" "ip_whitelist_our_networks" {
+  manifest = {
+    "apiVersion" = "security.istio.io/v1beta1"
+    "kind"       = "AuthorizationPolicy"
+    "metadata" = {
+      "name"      = "our-networks-ip-whitelist"
+      "namespace" = "istio-ingress"
+    }
+    "spec" = {
+      "action" = "ALLOW"
+      "rules" = [
+        {
+          "from" = [
+            {
+              "source" = {
+                "ipBlocks" = ["34.86.176.12/32", "34.86.109.65/32"]
+              }
+            },
+          ]
+        },
+      ]
+      "selector" = {
+        "matchLabels" = {
+          "istio" = "ingressgateway-lb"
+        }
+      }
+    }
+  }
+}
+
+
 resource "kubernetes_config_map" "haproxy_configmap" {
   for_each = nonsensitive(local.projects_haproxy)
   metadata {
