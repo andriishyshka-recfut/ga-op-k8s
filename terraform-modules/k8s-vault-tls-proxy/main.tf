@@ -175,7 +175,7 @@ resource "kubernetes_manifest" "tls_proxy_cert" {
       "commonName" = each.value.domain
       "issuerRef" = {
         "kind" = "ClusterIssuer"
-        "name" = each.value.cluster_issuer
+        "name" = lookup(each.value, "cluster_issuer", each.key)
       }
       "secretName" = "${each.key}-cert"
     }
@@ -390,6 +390,7 @@ frontend auth
   default_backend service
 backend service
   mode  http
+  http-request add-header clientId "${each.key}"
   server srv1 $SERVICE_HOST:$SERVICE_PORT
 EOF
   }
