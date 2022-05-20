@@ -96,6 +96,10 @@ resource "helm_release" "istio_ingress_lb" {
     name  = "service.loadBalancerIP"
     value = var.Settings.clusters[var.Cluster].load_balancer_ip
   }
+  set {
+    name  = "service.externalTrafficPolicy"
+    value = "Local"
+  }
   depends_on = [
     kubernetes_namespace.istio_ingress
   ]
