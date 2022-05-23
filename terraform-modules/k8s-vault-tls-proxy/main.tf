@@ -390,7 +390,7 @@ frontend auth
   default_backend service
 backend service
   mode  http
-  http-request add-header Client-ID "${each.key}"
+  http-request add-header Client-ID ${each.key}
   server srv1 $SERVICE_HOST:$SERVICE_PORT
 EOF
   }
