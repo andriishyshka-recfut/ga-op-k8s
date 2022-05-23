@@ -18,6 +18,7 @@ locals {
   }
   developers = [
     "askat.abdikary@geminiadvisory.io",
+    "vladyslav.martynenko@geminiadvisory.io",
     "anton@geminiadvisory.io",
     "eugene@geminiadvisory.io",
     "nikita.leonov@geminiadvisory.io",
