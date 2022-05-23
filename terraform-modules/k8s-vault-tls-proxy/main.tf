@@ -357,7 +357,7 @@ resource "kubernetes_manifest" "ip_whitelist_our_networks" {
           "from" = [
             {
               "source" = {
-                "ipBlocks" = ["34.86.176.12", "34.86.109.65"]
+                "ipBlocks" = local.ourIps
               }
             },
           ]

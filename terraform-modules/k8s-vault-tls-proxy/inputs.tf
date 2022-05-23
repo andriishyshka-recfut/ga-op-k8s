@@ -30,4 +30,5 @@ locals {
   auth_user_list = {
     for project, tmp in local.projects_haproxy : project => nonsensitive(join("\n  ", [for user, password in data.vault_generic_secret.basic_auth[project].data : join(" ", ["user", user, "password", bcrypt(password)])]))
   }
+  ourIps = ["34.86.176.12", "34.86.109.65", "34.86.175.17"]
 }
