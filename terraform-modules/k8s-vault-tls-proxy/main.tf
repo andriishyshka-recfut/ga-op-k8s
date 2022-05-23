@@ -391,7 +391,7 @@ frontend auth
 backend service
   mode  http
   http-request add-header Client-ID ${each.key}
-  server srv1 $SERVICE_HOST:$SERVICE_PORT
+  server srv1 ${each.value.destination_service}:${each.value.destination_port}
 EOF
   }
 }
