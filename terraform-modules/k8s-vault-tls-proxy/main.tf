@@ -432,7 +432,7 @@ resource "kubernetes_deployment" "basic_auth_proxy" {
           }
         }
         container {
-          image = "haproxy:alpine"
+          image = "haproxy:bullseye"
           name  = "${each.key}-basic-auth-proxy"
           volume_mount {
             name       = "haproxy-config"
