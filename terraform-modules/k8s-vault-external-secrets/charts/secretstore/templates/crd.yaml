@@ -13,4 +13,5 @@ spec:
           role: external-secrets
       server: "http://vault-active.vault:8200"
       version: v2
+---
 {{- end }}
