@@ -11,25 +11,25 @@ resource "helm_release" "external_secrets" {
   ]
 }
 
-resource "helm_release" "external_secret_secretstore" {
-  name      = "secretstore"
-  chart     = "${path.module}/charts/secretstore"
-  namespace = "external-secrets"
-  wait      = true
-  atomic    = true
-  set {
-    name  = "mountPath"
-    value = "k8s-${var.Cluster}-${var.Color}"
-  }
-  dynamic "set" {
-    for_each = local.namespaces
-    content {
-      name  = "namespaces[${set.key}]"
-      value = set.value
-    }
-  }
-  depends_on = [helm_release.external_secrets]
-}
+# resource "helm_release" "external_secret_secretstore" {
+#   name      = "secretstore"
+#   chart     = "${path.module}/charts/secretstore"
+#   namespace = "external-secrets"
+#   wait      = true
+#   atomic    = true
+#   set {
+#     name  = "mountPath"
+#     value = "k8s-${var.Cluster}-${var.Color}"
+#   }
+#   dynamic "set" {
+#     for_each = local.namespaces
+#     content {
+#       name  = "namespaces[${set.key}]"
+#       value = set.value
+#     }
+#   }
+#   depends_on = [helm_release.external_secrets]
+# }
 
 # resource "kubernetes_manifest" "external_secrets_store" {
 #   for_each = toset(local.namespaces)
