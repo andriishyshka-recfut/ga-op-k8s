@@ -1,8 +1,8 @@
 FROM vault:latest as vault
-FROM hashicorp/terraform:1.1.9 as terraform
+FROM hashicorp/terraform:1.0.11 as terraform
 FROM curlimages/curl as curl
 RUN curl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /tmp/kubectl &&\
-    curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.37.1/terragrunt_linux_amd64 --output /tmp/terragrunt
+    curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.35.20/terragrunt_linux_amd64 --output /tmp/terragrunt
 
 
 FROM alpine:latest as ansible

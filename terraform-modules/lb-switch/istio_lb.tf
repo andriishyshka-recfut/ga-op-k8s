@@ -1,5 +1,3 @@
-# Need to run disable load balancer service on old cluster
-
 resource "helm_release" "istio_ingress_lb" {
   name       = "istio-ingressgateway-lb"
   chart      = "gateway"
@@ -17,6 +15,10 @@ resource "helm_release" "istio_ingress_lb" {
   }
   set {
     name  = "service.loadBalancerIP"
-    value = local.load_balancer_ip
+    value = var.Settings.clusters[var.Cluster].load_balancer_ip
+  }
+  set {
+    name  = "service.externalTrafficPolicy"
+    value = "Local"
   }
 }

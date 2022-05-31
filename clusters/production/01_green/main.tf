@@ -50,6 +50,6 @@ module "k8s-vault-tekton" {
   GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
   Cluster                      = "production"
   Color                        = "green"
-  VaultAddress = var.VaultAddress
+  VaultAddress                 = var.VaultAddress
   depends_on                   = [module.k8s-vault]
 }

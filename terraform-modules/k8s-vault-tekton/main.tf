@@ -8,7 +8,7 @@ resource "null_resource" "deploy_tekton" {
     kubectl apply --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.28.2/release.yaml && sleep 30 && \
+     -f https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml && sleep 30 && \
     kubectl apply --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
@@ -72,10 +72,10 @@ COMMAND
 
 resource "null_resource" "crds" {
   triggers = {
-    task     = md5(file("${path.module}/task.yaml"))
-    pipeline = md5(file("${path.module}/pipeline.yaml"))
+    task        = md5(file("${path.module}/task.yaml"))
+    pipeline    = md5(file("${path.module}/pipeline.yaml"))
     pipelinerun = md5(file("${path.module}/pipelinerun.yaml"))
-    webhook  = md5(file("${path.module}/webhook.yaml"))
+    webhook     = md5(file("${path.module}/webhook.yaml"))
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
