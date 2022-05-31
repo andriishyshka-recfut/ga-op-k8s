@@ -61,6 +61,7 @@ spec:
       - https://usss.regemini.com/
       - https://visa.regemini.com/
       - https://wsecu.regemini.com/
+      - https://epl.regemini.io/
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
