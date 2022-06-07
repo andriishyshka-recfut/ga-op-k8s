@@ -42,3 +42,12 @@ resource "kubectl_manifest" "go_rules" {
   count     = 1
   yaml_body = element(data.kubectl_file_documents.go_rules.documents, count.index)
 }
+
+data "kubectl_file_documents" "upsert_rules" {
+  content = templatefile("${path.module}/upsert-rules.yaml", { cluster_label : var.Cluster })
+}
+
+resource "kubectl_manifest" "upsert_rules" {
+  count     = 1
+  yaml_body = element(data.kubectl_file_documents.upsert_rules.documents, count.index)
+}
