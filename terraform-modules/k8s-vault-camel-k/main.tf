@@ -8,7 +8,7 @@ resource "kubernetes_secret" "harbor_image_pull_secrets" {
 
   metadata {
     name      = "camel-k-registry-secret"
-    namespace =  local.camelNs
+    namespace = local.camelNs
   }
 
   data = {
@@ -32,13 +32,13 @@ DOCKER
 }
 
 resource "helm_release" "kamel" {
-  name   = "camel-k"
-  chart = "camel-k"
-  repository  = "https://apache.github.io/camel-k/charts"
-  namespace = local.camelNs
-  wait   = true
-  atomic = true
-  version = "0.6.0"
+  name       = "camel-k"
+  chart      = "camel-k"
+  repository = "https://apache.github.io/camel-k/charts"
+  namespace  = local.camelNs
+  wait       = true
+  atomic     = true
+  version    = "0.10.3"
   values = [
     file("${path.module}/camel-k-values.yaml")
   ]
