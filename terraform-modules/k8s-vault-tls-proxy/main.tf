@@ -175,7 +175,7 @@ resource "kubernetes_manifest" "tls_proxy_cert" {
       "commonName" = each.value.domain
       "issuerRef" = {
         "kind" = "ClusterIssuer"
-        "name" = lookup(each.value, "cluster_issuer", each.key)
+        "name" = lookup(each.value, "cluster_issuer", "vault-${each.key}-issuer")
       }
       "secretName" = "${each.key}-cert"
     }
@@ -219,8 +219,9 @@ resource "kubernetes_manifest" "tls_proxy_gateway" {
             "protocol" = "HTTPS"
           }
           "tls" = {
-            "credentialName" = "${each.key}-cert"
-            "mode"           = "MUTUAL"
+            "credentialName"     = "${each.key}-cert"
+            "minProtocolVersion" = lookup(each.value, "minimum_tls_version", "TLSV1_3")
+            "mode"               = "MUTUAL"
           }
         }
       ]
@@ -259,6 +260,13 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
                 "host" = "${each.key}-basic-auth-proxy"
                 "port" = {
                   "number" = 8080
+                }
+              }
+              "headers" = {
+                "response" = {
+                  "set" = {
+                    "Strict-Transport-Security" = "max-age=31536000; includeSubDomains"
+                  }
                 }
               }
             },
@@ -300,6 +308,13 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_wo_haproxy" {
                 "host" = nonsensitive(each.value.destination_service)
                 "port" = {
                   "number" = nonsensitive(each.value.destination_port)
+                }
+              }
+              "headers" = {
+                "response" = {
+                  "set" = {
+                    "Strict-Transport-Security" = "max-age=31536000; includeSubDomains"
+                  }
                 }
               }
             },
