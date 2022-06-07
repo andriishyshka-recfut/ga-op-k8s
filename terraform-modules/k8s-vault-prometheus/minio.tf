@@ -12,7 +12,7 @@ resource "kubectl_manifest" "minio" {
 
 
 data "http" "grafana_dashboard_minio" {
-  url = "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/minio-overview.json"
+  url = "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/minio-dashboard.json"
 
   # Optional request headers
   request_headers = {

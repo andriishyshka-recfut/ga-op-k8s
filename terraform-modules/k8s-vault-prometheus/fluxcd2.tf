@@ -1,13 +1,13 @@
 
 resource "kubectl_manifest" "fluxcd2_podmonitor" {
-    yaml_body  = file("${path.module}/fluxcd-podmonitor.yaml")
-    depends_on = [
-        helm_release.prometheus
-    ]
+  yaml_body = file("${path.module}/fluxcd-podmonitor.yaml")
+  depends_on = [
+    helm_release.prometheus
+  ]
 }
 
 data "http" "grafana_dashboard_fluxcd1" {
-  url = "https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/cluster.json"
+  url = "https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/cluster.json"
 
   # Optional request headers
   request_headers = {
@@ -16,7 +16,7 @@ data "http" "grafana_dashboard_fluxcd1" {
 }
 
 data "http" "grafana_dashboard_fluxcd2" {
-  url = "https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/control-plane.json"
+  url = "https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/control-plane.json"
 
   # Optional request headers
   request_headers = {
@@ -26,7 +26,7 @@ data "http" "grafana_dashboard_fluxcd2" {
 
 resource "kubernetes_config_map" "fluxcd2_dashboards" {
   metadata {
-    name = "fluxcd-dashboard"
+    name      = "fluxcd-dashboard"
     namespace = "monitoring"
     labels = {
       grafana_dashboard = 1
@@ -34,8 +34,8 @@ resource "kubernetes_config_map" "fluxcd2_dashboards" {
   }
 
   data = {
-    "cluster.json"             = replace(data.http.grafana_dashboard_fluxcd1.body, "$${DS_PROMETHEUS}","Prometheus")
-    "control-plane.json"             = replace(data.http.grafana_dashboard_fluxcd2.body, "$${DS_PROMETHEUS}","Prometheus")
+    "cluster.json"       = replace(data.http.grafana_dashboard_fluxcd1.body, "$${DS_PROMETHEUS}", "Prometheus")
+    "control-plane.json" = replace(data.http.grafana_dashboard_fluxcd2.body, "$${DS_PROMETHEUS}", "Prometheus")
   }
 
 }
