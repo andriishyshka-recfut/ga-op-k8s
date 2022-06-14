@@ -32,6 +32,7 @@ spec:
       - https://desjardins.regemini.com/
       - https://dscvr.regemini.com/
       - https://eml.regemini.com/
+      - https://epl.regemini.io/
       - https://firstcitizens.regemini.com/
       - https://fd.regemini.com/
       - https://fnbo.regemini.com/
@@ -42,6 +43,8 @@ spec:
       - https://hsi.regemini.com/
       - https://ica.regemini.com/
       - https://k.regemini.com
+      - https://kiali.p.regemini.io/
+      - https://kowl.t.regemini.io/
       - https://mediolanum.regemini.com/
       - https://max.regemini.com/
       - https://mc.regemini.com/
@@ -62,7 +65,6 @@ spec:
       - https://usss.regemini.com/
       - https://visa.regemini.com/
       - https://wsecu.regemini.com/
-      - https://epl.regemini.io/
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
