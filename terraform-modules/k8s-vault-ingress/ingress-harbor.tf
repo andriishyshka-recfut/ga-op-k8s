@@ -1,5 +1,5 @@
 resource "kubernetes_manifest" "ingress_harbor_letsencrypt_cert" {
-  count = var.Harbor ? 1 : 0
+  count = local.harbor
   manifest = {
     "apiVersion" = "cert-manager.io/v1"
     "kind"       = "Certificate"
@@ -22,7 +22,7 @@ resource "kubernetes_manifest" "ingress_harbor_letsencrypt_cert" {
 }
 
 resource "kubernetes_manifest" "ingress_harbor_gateway" {
-  count = var.Harbor ? 1 : 0
+  count = local.harbor
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "Gateway"
@@ -68,7 +68,7 @@ resource "kubernetes_manifest" "ingress_harbor_gateway" {
 }
 
 resource "kubernetes_manifest" "ingress_harbor_virtualservice" {
-  count = var.Harbor ? 1 : 0
+  count = local.harbor
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"

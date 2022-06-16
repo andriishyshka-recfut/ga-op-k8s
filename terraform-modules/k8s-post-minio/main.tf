@@ -1,10 +1,3 @@
-
-locals {
-  istioIngressValues = yamldecode(file("${path.module}/charts/minio-buckets/values.yaml"))
-  subDomains         = var.Settings.clusters[var.Cluster][local.activeCluster].minio.buckets
-  minioFQDN          = var.Settings.clusters[var.Cluster][local.activeCluster].minio.fqdn
-}
-
 resource "helm_release" "minio-subdomains" {
   name      = "minio"
   namespace = "istio-ingress"
