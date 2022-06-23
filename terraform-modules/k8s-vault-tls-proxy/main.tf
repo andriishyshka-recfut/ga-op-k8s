@@ -142,7 +142,7 @@ resource "null_resource" "certs" {
     always_run = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "vault kv put secret/tls-proxy/certs/${each.key} @${each.key}.json"
+    command = "vault kv put secret/${var.SecretPath}/certs/${each.key} @${each.key}.json"
   }
   depends_on = [
     local_file.tmp_json
@@ -155,7 +155,7 @@ resource "null_resource" "certs_installed" {
     always_run = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "vault kv patch secret/tls-proxy/projects/${each.key} crt_installed=true"
+    command = "vault kv patch secret/${var.SecretPath}/projects/${each.key} crt_installed=true"
   }
   depends_on = [
     null_resource.certs
@@ -183,7 +183,7 @@ resource "kubernetes_manifest" "tls_proxy_cert" {
 }
 
 resource "kubernetes_manifest" "tls_proxy_gateway" {
-  for_each = local.project_data
+  for_each = nonsensitive(local.project_data_enabled)
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "Gateway"
@@ -327,7 +327,7 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice_wo_haproxy" {
 
 
 resource "kubernetes_manifest" "ip_whitelist" {
-  for_each = local.project_data
+  for_each = nonsensitive(local.project_data_enabled)
   manifest = {
     "apiVersion" = "security.istio.io/v1beta1"
     "kind"       = "AuthorizationPolicy"
