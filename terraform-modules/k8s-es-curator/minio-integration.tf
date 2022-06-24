@@ -21,49 +21,49 @@ EOT
 
 
 
-resource "kubernetes_job" "minio_snapshot_storage" {
-  metadata {
-    name      = "snapstor-reenable-${lower(random_id.rand.hex)}"
-    namespace = var.Namespace
-  }
-  spec {
-    template {
-      metadata {
+# resource "kubernetes_job" "minio_snapshot_storage" {
+#   metadata {
+#     name      = "snapstor-reenable-${lower(random_id.rand.hex)}"
+#     namespace = var.Namespace
+#   }
+#   spec {
+#     template {
+#       metadata {
 
-        annotations = {
-          "sidecar.istio.io/inject" = "false"
-        }
-      }
-      spec {
-        container {
-          name    = "curl"
-          image   = "curlimages/curl"
-          command = ["sh", "-c", local.minioIntegrationCommand]
-          env {
-            name = "ES_PASSWORD"
-            value_from {
-              secret_key_ref {
-                name = "${var.ElasticName}-es-elastic-user"
-                key  = "elastic"
-              }
-            }
-          }
-          resources {
-            requests = {
-              cpu    = "10m"
-              memory = "10M"
-            }
-          }
-        }
-        restart_policy = "Never"
-      }
-    }
-    backoff_limit = 1
-  }
-  wait_for_completion = true
+#         annotations = {
+#           "sidecar.istio.io/inject" = "false"
+#         }
+#       }
+#       spec {
+#         container {
+#           name    = "curl"
+#           image   = "curlimages/curl"
+#           command = ["sh", "-c", local.minioIntegrationCommand]
+#           env {
+#             name = "ES_PASSWORD"
+#             value_from {
+#               secret_key_ref {
+#                 name = "${var.ElasticName}-es-elastic-user"
+#                 key  = "elastic"
+#               }
+#             }
+#           }
+#           resources {
+#             requests = {
+#               cpu    = "10m"
+#               memory = "10M"
+#             }
+#           }
+#         }
+#         restart_policy = "Never"
+#       }
+#     }
+#     backoff_limit = 1
+#   }
+#   wait_for_completion = true
 
-  timeouts {
-    create = "5m"
-    update = "5m"
-  }
-}
+#   timeouts {
+#     create = "5m"
+#     update = "5m"
+#   }
+# }
