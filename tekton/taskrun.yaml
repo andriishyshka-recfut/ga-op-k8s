@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: 01-external-secrets
+  generateName: elastic7-
   namespace: tekton-pipelines
 spec:
   taskRef:
@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/01-external-secrets"
+      value: "k8s/tekton/elastic7"
     - name: branch
-      value: "\\#176-DR-280422"
+      value: "\\#180-elastic7-sandbox"

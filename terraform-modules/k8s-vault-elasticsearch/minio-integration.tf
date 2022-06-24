@@ -10,10 +10,11 @@ locals {
 {
      "type": "s3",
       "settings": {
-         "bucket": "minio-xbackup-${local.currentProject}",
+         "bucket": "minio-${var.BackupBucketName}-${local.currentProject}",
          "endpoint": "minio.minio:9000",
          "protocol": "http",
-         "path_style_access": true
+         "path_style_access": true,
+         "base_path": ${var.BackupBucketBasePath}
       }
   }
   '

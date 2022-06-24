@@ -7,9 +7,32 @@ locals {
    "indices":[{"names":"*","privileges":["read","view_index_metadata"]}]
 }
   ' &&\
-  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-example?pretty" -H 'Content-Type: application/json' -k -d '
+  curl -X POST "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role/developers" -H 'Content-Type: application/json' -k -d  '
+  {
+    "cluster":["monitor"],
+     "indices":[{"names":"*","privileges":["all"]}]
+  }
+  ' &&\
+  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-dev?pretty" -H 'Content-Type: application/json' -k -d '
 {
-  "roles": [  "kibana_user","oidc_ro","monitoring_user" ],
+  "roles": [  "developers" ],
+  "enabled": true,
+  "rules": { "all": [
+        { "field": { "realm.name": "google" } },
+        { "field": { "username": "anton@geminiadvisory.io" } },
+        { "field": { "username": "valerii.korolov@geminiadvisory.io" } },
+        { "field": { "username": "askat.abdikary@geminiadvisory.io" } },
+        { "field": { "username": "eugene@geminiadvisory.io" } },
+        { "field": { "username": "nikita.leonov@geminiadvisory.io" } },
+        { "field": { "username": "vladyslav.martynenko@geminiadvisory.io" } },
+        { "field": { "username": "mykhailo.kalashnikov@geminiadvisory.io" } },
+        { "field": { "username": "serhii.hutsaliuk@geminiadvisory.io" } }
+  ] }
+}
+  ' &&\
+  curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-ro?pretty" -H 'Content-Type: application/json' -k -d '
+{
+  "roles": [  "viewer","monitoring_user" ],
   "enabled": true,
   "rules": {
     "field": { "realm.name": "${local.oidcRealmName}" }
@@ -26,17 +49,17 @@ curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/
   ] }
 }
 ￼' &&\
-curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-sb" -H 'Content-Type: application/json' -k -d '
+curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-dk" -H 'Content-Type: application/json' -k -d '
 {
   "roles": [ "superuser" ],
   "enabled": true,
   "rules": { "all": [
         { "field": { "realm.name": "google" } },
-        { "field": { "username": "stepan.biriukov@geminiadvisory.io" } }
+        { "field": { "username": "dmytro.kubov@geminiadvisory.io" } }
   ] }
 }
 ￼' &&\
-curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-anton" -H 'Content-Type: application/json' -k -d '
+curl -X PUT "https://elastic:$ES_PASSWORD@${local.esValues.esName}-es-http:9200/_security/role_mapping/oidc-am" -H 'Content-Type: application/json' -k -d '
 {
   "roles": [ "superuser" ],
   "enabled": true,

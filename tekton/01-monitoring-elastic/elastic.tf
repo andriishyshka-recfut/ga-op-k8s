@@ -11,4 +11,7 @@ module "monitoring-elastic" {
   Color                        = var.Color
   Settings                     = var.Settings
   StoreEsPasswordInVault       = false
+  BackupBucketName             = "xbackup"
+  BackupBucketBasePath         = "/"
+  OidcRedirectUri              = var.Settings.MonElasticFQDN
 }
