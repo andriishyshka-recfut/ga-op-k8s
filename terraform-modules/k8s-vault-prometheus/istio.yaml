@@ -26,7 +26,25 @@ spec:
       istio: ingressgateway
   namespaceSelector:
     matchNames:
-      - istio-system
+      - istio-ingress
+  endpoints:
+    - targetPort: http-envoy-prom
+      path: /stats/prometheus
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-ingressgateway-lb
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway-lb
+  namespaceSelector:
+    matchNames:
+      - istio-ingress
   endpoints:
     - targetPort: http-envoy-prom
       path: /stats/prometheus
