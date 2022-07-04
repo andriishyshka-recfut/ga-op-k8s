@@ -8,10 +8,11 @@ elastic_settings:
     appVersion: "7.14.1"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
+    apmToken: "es7-apm-token"
     apm:
       enabled: "yes"
     labels:
-      monitoring: elastic
+      elastic: 6to7
     annotations:
       sidecar.istio.io/inject: "false" # istio-proxy conflicts with nativeTLS
     istio:
@@ -40,7 +41,7 @@ elastic_settings:
                 order: 1
         storageSize: "1Gi"
         ES_JAVA_OPTS: -Xms4g -Xmx4g
-        nodesCount: 3
+        nodesCount: 1
         memoryRequests: "4Gi"
         cpuRequests: "1"
         memoryLimit: 5Gi
@@ -60,7 +61,7 @@ elastic_settings:
                 order: 1
         storageSize: "900Gi"
         ES_JAVA_OPTS: -Xms6g -Xmx6g
-        nodesCount: 3
+        nodesCount: 2
         memoryRequests: "6Gi"
         cpuRequests: "1"
         memoryLimit: 7Gi
@@ -76,4 +77,4 @@ elastic_settings:
     oidc_provider:
       enabled: "yes"
       realm: "google"
-      istio_gateway_fqdn: "logs.t.regemini.io"
+      istio_gateway_fqdn: "es7.t.regemini.io"

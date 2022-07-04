@@ -8,6 +8,7 @@ elastic_settings:
     appVersion: "6.8.17"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "no"
+    apmToken: "es6-apm-token"
     gcs_enable: "yes"
     apm:
       enabled: "no"

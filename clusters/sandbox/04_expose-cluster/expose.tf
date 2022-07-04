@@ -14,7 +14,7 @@ data "vault_generic_secret" "k8s_auth" {
   path = local.activeClusterVaultPath
 }
 locals {
-  activeCluster          = "green"
+  activeCluster          = "blue"
   activeClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
 }
 provider "helm" {
@@ -33,15 +33,16 @@ provider "kubernetes" {
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-lb-switch/state-4"
+    prefix = "tf-lb-switch/state-5"
   }
 
 }
 
 module "lb-switch" {
-  source   = "../../../terraform-modules/lb-switch"
-  Settings = var.Settings
-  Cluster  = "sandbox"
-  Color    = local.activeCluster
-  Harbor   = true
+  source       = "../../../terraform-modules/lb-switch"
+  Settings     = var.Settings
+  Cluster      = var.Cluster
+  VaultAddress = var.VaultAddress
+  Color        = local.activeCluster
+  Harbor       = true
 }

@@ -6,6 +6,7 @@ elastic_settings:
     esName: "monitoring"
     namespace: "monitoring"
     appVersion: "7.14.1"
+    apmToken: "apm-token"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
     apm:

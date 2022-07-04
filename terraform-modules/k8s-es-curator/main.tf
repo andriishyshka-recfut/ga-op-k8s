@@ -1,12 +1,12 @@
 
 resource "random_id" "rand" {
   byte_length = 8
-  prefix = "curator-"
+  prefix      = "curator-"
 }
 
 locals {
-  cm = "config-curator-${lower(random_id.rand.hex)}"
-  job = "${var.NamePrefix}-${lower(random_id.rand.hex)}"
+  cm            = "config-curator-${lower(random_id.rand.hex)}"
+  job           = "${var.NamePrefix}-${lower(random_id.rand.hex)}"
   backupCommand = <<EOT
 set -e;
 sleep 30;
@@ -16,12 +16,12 @@ EOT
 
 resource "kubernetes_config_map" "curator" {
   metadata {
-    name = local.cm
+    name      = local.cm
     namespace = var.Namespace
   }
 
   data = {
-    "config.yml" = "${file("${path.module}/config.yaml")}"
+    "config.yml"  = "${file("${path.module}/config.yaml")}"
     "actions.yml" = var.Actions
   }
 }
@@ -35,7 +35,7 @@ resource "kubernetes_job" "es_restore" {
   }
   spec {
     template {
-      metadata{
+      metadata {
         annotations = {
           "sidecar.istio.io/inject" = "false"
         }
@@ -52,7 +52,7 @@ resource "kubernetes_job" "es_restore" {
           image   = "bitnami/elasticsearch-curator"
           command = ["bash", "-c", local.backupCommand]
           volume_mount {
-            name = "curator"
+            name       = "curator"
             mount_path = "/curator"
           }
           env {
@@ -66,7 +66,7 @@ resource "kubernetes_job" "es_restore" {
           }
           env {
             name  = "ES_HOST"
-            value = "${var.ElasticName }-es-http"
+            value = "${var.ElasticName}-es-http"
           }
         }
         restart_policy = "Never"
@@ -80,7 +80,7 @@ resource "kubernetes_job" "es_restore" {
     create = "70m"
     update = "70m"
   }
-  depends_on = [
-    kubernetes_job.minio_snapshot_storage
-  ]
+  # depends_on = [
+  #   kubernetes_job.minio_snapshot_storage
+  # ]
 }

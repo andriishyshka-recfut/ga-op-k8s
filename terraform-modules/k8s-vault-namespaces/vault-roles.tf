@@ -31,3 +31,11 @@ resource "vault_kubernetes_auth_backend_role" "minion_role" {
   token_ttl                        = 3600
   token_policies                   = ["minion"]
 }
+resource "vault_kubernetes_auth_backend_role" "paste" {
+  backend                          = data.vault_auth_backend.kubernetes.path
+  role_name                        = "paste"
+  bound_service_account_names      = ["default"]
+  bound_service_account_namespaces = ["paste-*"]
+  token_ttl                        = 3600
+  token_policies                   = ["paste"]
+}

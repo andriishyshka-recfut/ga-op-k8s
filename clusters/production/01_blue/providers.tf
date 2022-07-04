@@ -5,7 +5,9 @@ provider "google" {
 provider "google-beta" {
 }
 
-
+provider "vault" {
+  address = "https://vault.p.regemini.io"
+}
 locals {
   gkeClusterEndpoint   = module.gke-setup-blue.GkeClusterConnectionSettings.HOST
   gkeBearerToken       = module.gke-setup-blue.GkeClusterConnectionSettings.API_KEY

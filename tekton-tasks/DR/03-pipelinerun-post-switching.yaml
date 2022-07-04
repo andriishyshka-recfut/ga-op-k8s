@@ -1,14 +1,14 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: fluxcd
+  name: post-switching
   namespace: tekton-pipelines
 spec:
   # timeouts:
   #   pipeline: "24h0m0s"
   #   tasks: "20h0m0s"
   pipelineRef:
-    name: 03-fluxcd
+    name: 03-post-switching
   workspaces:
     - name: ws
       emptyDir: {}

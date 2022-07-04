@@ -42,6 +42,7 @@ data "google_client_config" "default" {
 locals {
   activeCluster   = var.Color
   inActiveCluster = var.Color == "blue" ? "green" : "blue"
+  harbor = var.Harbor ? 1 : 0
 
   inActiveGkeEndpoint = "https://${data.google_container_cluster.inactive_cluster.endpoint}"
   gkeClusterConnectionSettings = {
