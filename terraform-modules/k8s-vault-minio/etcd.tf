@@ -1,9 +1,9 @@
 
 resource "helm_release" "etcd" {
-  name       = "etcd"
-  chart      = "etcd"
-  repository = "https://charts.bitnami.com/bitnami"
-  version           = "6.8.2"
+  name              = "etcd"
+  chart             = "etcd"
+  repository        = "https://charts.bitnami.com/bitnami"
+  version           = "6.10.8"
   namespace         = local.minioNs
   dependency_update = "true"
 
@@ -16,23 +16,23 @@ resource "helm_release" "etcd" {
     value = "false"
   }
   set {
-    name = "nodeSelector.workloadsType"
+    name  = "nodeSelector.workloadsType"
     value = "data"
   }
   set {
-    name = "tolerations[0].key"
+    name  = "tolerations[0].key"
     value = "workloadsType"
   }
   set {
-    name = "tolerations[0].operator"
+    name  = "tolerations[0].operator"
     value = "Exists"
   }
   set {
-    name = "tolerations[0].effect"
+    name  = "tolerations[0].effect"
     value = "NoSchedule"
   }
   set {
-    name = "podAnnotations.sidecar\\.istio\\.io/inject"
+    name  = "podAnnotations.sidecar\\.istio\\.io/inject"
     value = " false"
   }
 }

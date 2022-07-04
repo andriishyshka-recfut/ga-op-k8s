@@ -2,7 +2,7 @@
 data "kubernetes_secret" "apm_token" {
   count = local.apmCredsToggle
   metadata {
-    name      = "apm-elastic7-apm-token" #hardcode secret name
+    name      = "apm-${local.esValues.namespace}-apm-token"
     namespace = local.esValues.namespace
   }
   depends_on = [null_resource.ansible_validate_resources]
@@ -11,7 +11,7 @@ data "kubernetes_secret" "apm_token" {
 resource "kubernetes_secret" "apm_token" {
   for_each = local.injectApmCreds
   metadata {
-    name      = "es7-apm-token" #hardcode secret name
+    name      = local.apmToken
     namespace = each.key
   }
 

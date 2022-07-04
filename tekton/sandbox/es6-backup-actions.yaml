@@ -11,7 +11,7 @@ actions:
     options:
         repository: gcs
           # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
-        name: elastic-dr-%Y%m%d
+        name: elastic6-dr-%Y%m%d
         ignore_unavailable: False
         include_global_state: True
         partial: False

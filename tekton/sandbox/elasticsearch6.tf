@@ -1,30 +1,29 @@
 
 locals {
-  dataEs = yamldecode(file("elastic7_settings.yaml"))
+  dataEs6 = yamldecode(file("elastic6_settings.yaml"))
 }
 
 
-module "elastic7-elastic" {
+module "data-elastic" {
   source                       = "../../terraform-modules/k8s-vault-elasticsearch"
-  ElasticSettings              = local.dataEs.elastic_settings
+  ElasticSettings              = local.dataEs6.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
   Color                        = var.Color
   Settings                     = var.Settings
   StoreEsPasswordInVault       = true
-  BackupBucketName             = "es7"
-  BackupBucketBasePath         = "6"
-  OidcRedirectUri              = "es7.t.regemini.io"
-
+  BackupBucketName             = "xbackup"
+  BackupBucketBasePath         = "es/elastic/"
+  OidcRedirectUri              = var.Settings.MonElasticFQDN
 }
 
 
-module "elastic7-kibana" {
+module "data-kibana" {
   source                       = "../../terraform-modules/k8s-vault-kibana"
-  ElasticSettings              = local.dataEs.elastic_settings
+  ElasticSettings              = local.dataEs6.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
   Color                        = var.Color
   Settings                     = var.Settings
-  # depends_on          = [module.restore-service-indexes]
+  depends_on                   = [module.es6-restore]
 }

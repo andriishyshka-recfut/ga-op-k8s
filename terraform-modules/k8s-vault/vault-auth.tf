@@ -1,0 +1,46 @@
+resource "null_resource" "auth_kubernetes_disable" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      vault auth disable k8s-${var.Cluster}-${var.Color}
+    EOT
+    environment = {
+      VAULT_ADDR = "https://vault.p.regemini.io"
+    }
+  }
+}
+
+resource "vault_auth_backend" "auth_kubernetes" {
+  type = "kubernetes"
+  path = "k8s-${var.Cluster}-${var.Color}"
+  tune {
+    max_lease_ttl = "2764800s"
+  }
+  depends_on = [
+    null_resource.auth_kubernetes_disable
+  ]
+}
+
+resource "vault_kubernetes_auth_backend_config" "auth_kubernetes" {
+  backend                = "k8s-${var.Cluster}-${var.Color}"
+  kubernetes_host        = data.vault_generic_secret.cluster_token.data["HOST"]
+  kubernetes_ca_cert     = data.kubernetes_secret.vault_sa.data["ca.crt"]
+  token_reviewer_jwt     = data.kubernetes_secret.vault_sa.data["token"]
+  issuer                 = "kubernetes/serviceaccount"
+  disable_local_ca_jwt   = "true"
+  disable_iss_validation = "true"
+  depends_on = [
+    vault_auth_backend.auth_kubernetes
+  ]
+}
+resource "vault_kubernetes_auth_backend_role" "auth_kubernetes" {
+  backend                          = "k8s-${var.Cluster}-${var.Color}"
+  role_name                        = "tekton"
+  bound_service_account_names      = ["default"]
+  bound_service_account_namespaces = ["tekton-pipelines"]
+  token_ttl                        = 0
+  token_policies                   = ["tekton"]
+  depends_on = [
+    vault_kubernetes_auth_backend_config.auth_kubernetes
+  ]
+}
+

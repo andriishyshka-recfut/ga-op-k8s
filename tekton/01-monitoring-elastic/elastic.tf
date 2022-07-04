@@ -12,6 +12,6 @@ module "monitoring-elastic" {
   Settings                     = var.Settings
   StoreEsPasswordInVault       = false
   BackupBucketName             = "xbackup"
-  BackupBucketBasePath         = "/"
+  BackupBucketBasePath         = "es/monitoring"
   OidcRedirectUri              = var.Settings.MonElasticFQDN
 }

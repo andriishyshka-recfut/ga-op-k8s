@@ -3,5 +3,5 @@ variable "Cluster" {}
 
 locals {
   ingressSettings = var.Settings.clusters[var.Cluster].ingress
-  harbor          = lookup(var.Settings.clusters, "sandbox", false) ? 1 : 0
+  # harbor          = lookup(var.Settings.clusters, "sandbox", false) ? 1 : 0
 }
