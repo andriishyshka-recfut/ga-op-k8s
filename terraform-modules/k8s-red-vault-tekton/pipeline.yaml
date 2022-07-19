@@ -1,0 +1,47 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 01-workloads
+  namespace: tekton-pipelines
+spec:
+  workspaces:
+  - name: ws
+  tasks:
+    - name: namespaces
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/01-namespaces"
+        - name: branch
+          value: "master"
+    - name: monitoring-elastic
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/01-monitoring-elastic"
+        - name: branch
+          value: "\\#1DR-010422"
+    - name: monitoring
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      - monitoring-elastic-backup-restore
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/01-monitoring"
+        - name: branch
+          value: "\\#1DR-010422"

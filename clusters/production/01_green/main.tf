@@ -42,6 +42,7 @@ module "k8s-vault" {
   OidcDiscoveryUrl             = var.OidcDiscoveryUrl
   OidcClientId                 = var.OidcClientId
   OidcClientSecret             = var.OidcClientSecret
+  VaultAddress                 = var.VaultAddress
   depends_on                   = [module.k8s-istio, module.k8s-misc-operators]
 }
 

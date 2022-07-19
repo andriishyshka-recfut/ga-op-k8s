@@ -54,7 +54,7 @@ resource "google_compute_firewall" "bastion_to_cluster" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22-1000", "6379", "8200","9200", "30000-32767"]
+    ports    = ["22-1000", "6379", "8200", "9200", "30000-32767"]
   }
 
 }
@@ -100,7 +100,7 @@ resource "google_compute_firewall" "clusters_nodeport" {
   name          = "${var.Cluster}-${var.Color}-nodeports"
   network       = data.google_compute_network.vpc.self_link
   direction     = "INGRESS"
-  source_ranges = [local.bluePods, local.greenPods]
+  source_ranges = [local.bluePods, local.greenPods, local.redPods]
   target_tags   = ["${var.Cluster}-${var.Color}"]
 
   allow {
@@ -109,6 +109,6 @@ resource "google_compute_firewall" "clusters_nodeport" {
 
   allow {
     protocol = "tcp"
-    ports    = [ "30000-32767","27017"]
+    ports    = ["30000-32767", "27017"]
   }
 }

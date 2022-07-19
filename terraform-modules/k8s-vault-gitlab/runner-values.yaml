@@ -1,0 +1,19 @@
+runners:
+  config: |
+    concurrent = 4
+    check_interval = 0
+    [session_server]
+      session_timeout = 1800
+    [[runners]]
+      [runners.kubernetes]
+        image_pull_secrets = ["harbor"]
+      [runners.cache]
+        Type = "s3"
+        Path = "/cache/"
+        Shared = true
+        [runners.cache.s3]
+          ServerAddress = "minio.t.regemini.io:443"
+          AuthenticationType = "access-key"
+          BucketName = "ardent-rarity-239115-gitlab-tmp"
+  cache:
+    secretName: minio

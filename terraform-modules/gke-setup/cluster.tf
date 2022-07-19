@@ -55,6 +55,10 @@ resource "google_container_cluster" "cluster" {
       display_name = "green-pods"
       cidr_block   = local.greenPods
     }
+    cidr_blocks {
+      display_name = "red-pods"
+      cidr_block   = local.redPods
+    }
   }
 
   // Allocate IPs in our subnetwork

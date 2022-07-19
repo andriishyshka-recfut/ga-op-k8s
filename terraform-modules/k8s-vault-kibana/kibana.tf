@@ -1,20 +1,20 @@
 
 resource "helm_release" "kibana" {
-  name   = local.kibanaValues.name
+  name      = local.kibanaValues.name
   namespace = local.esValues.namespace
-  chart  = "${path.module}/kibana"
-  wait   = true
-  atomic = true
+  chart     = "${path.module}/kibana"
+  wait      = true
+  atomic    = true
   values = [
     yamlencode(local.kibanaValues)
   ]
   set {
-    name = "kibanaVersion"
+    name  = "kibanaVersion"
     value = local.version
   }
   set {
-    name = "oidc_provider.istio_gateway_fqdn"
-    value = local.monUrl
+    name  = "oidc_provider.istio_gateway_fqdn"
+    value = "oidc_provider.istio_gateway_fqdn"
   }
 }
 

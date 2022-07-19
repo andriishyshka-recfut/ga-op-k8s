@@ -1,5 +1,5 @@
 resource "null_resource" "pki_enable" {
-  for_each = local.projects_setup_csr
+  for_each = nonsensitive(local.projects_setup_csr)
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -9,7 +9,7 @@ resource "null_resource" "pki_enable" {
 }
 
 resource "null_resource" "pki_init_settings" {
-  for_each = local.projects_setup_csr
+  for_each = nonsensitive(local.projects_setup_csr)
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -22,7 +22,7 @@ resource "null_resource" "pki_init_settings" {
 }
 
 resource "null_resource" "pki_generate_root" {
-  for_each = local.projects_setup_csr
+  for_each = nonsensitive(local.projects_setup_csr)
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -39,14 +39,14 @@ resource "null_resource" "pki_generate_root" {
 }
 
 resource "null_resource" "pki_setup_role" {
-  for_each = local.projects_setup_csr
+  for_each = nonsensitive(local.projects_setup_csr)
   triggers = {
     always_run = "${timestamp()}"
   }
   provisioner "local-exec" {
     command = <<-EOT
       vault write pki-${each.key}/roles/${each.key} max_ttl=32832000 allow_localhost=true \
-      allowed_domains=regemini.com,${each.key} allow_bare_domains=true allow_subdomains=true \
+      allowed_domains=${each.value.domain} allow_bare_domains=true allow_subdomains=true \
       allow_wildcard_certificates=true ou=IT organization="Gemini Advisory LLC"
     EOT
   }
@@ -55,9 +55,9 @@ resource "null_resource" "pki_setup_role" {
   ]
 }
 
-data "kubernetes_service_account" "cert_manager" {
+data "kubernetes_service_account" "vault_sa" {
   metadata {
-    name      = "${var.Cluster}-cert-manager"
+    name      = "vault-sa"
     namespace = "kube-system"
   }
 }
@@ -78,25 +78,25 @@ resource "kubernetes_manifest" "vault_certmanager" {
             "role"      = "cert-manager-${var.Cluster}-${var.Color}"
             "secretRef" = {
               "key"  = "token"
-              "name" = data.kubernetes_service_account.cert_manager.default_secret_name
+              "name" = data.kubernetes_service_account.vault_sa.default_secret_name
             }
           }
         }
         "path"   = "pki-${each.key}/sign/${each.key}"
-        "server" = "https://vault.${var.Settings.clusters[var.Cluster].subdomain}.regemini.io"
+        "server" = var.VaultAddress
       }
     }
   }
 }
 
 resource "tls_private_key" "clients_rsa_key" {
-  for_each  = local.projects_setup_csr
+  for_each  = nonsensitive(local.projects_setup_csr)
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_cert_request" "clients_csr" {
-  for_each        = local.projects_setup_csr
+  for_each        = nonsensitive(local.projects_setup_csr)
   private_key_pem = tls_private_key.clients_rsa_key[each.key].private_key_pem
 
   subject {
@@ -110,7 +110,7 @@ resource "tls_cert_request" "clients_csr" {
 
 # Add var for role name
 resource "vault_pki_secret_backend_sign" "clients" {
-  for_each    = local.projects_setup_csr
+  for_each    = nonsensitive(local.projects_setup_csr)
   backend     = "pki-${each.key}"
   name        = each.key
   ttl         = 31522440
@@ -122,7 +122,7 @@ resource "vault_pki_secret_backend_sign" "clients" {
 }
 
 resource "local_file" "tmp_json" {
-  for_each = local.projects_setup_csr
+  for_each = nonsensitive(local.projects_setup_csr)
   filename = "${each.key}.json"
   content = jsonencode({
     "key"        = tls_private_key.clients_rsa_key[each.key].private_key_pem
@@ -137,7 +137,7 @@ resource "local_file" "tmp_json" {
 }
 
 resource "null_resource" "certs" {
-  for_each = local.projects_setup_csr
+  for_each = nonsensitive(local.projects_setup_csr)
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -150,7 +150,7 @@ resource "null_resource" "certs" {
 }
 
 resource "null_resource" "certs_installed" {
-  for_each = local.projects_setup_csr
+  for_each = nonsensitive(local.projects_setup_csr)
   triggers = {
     always_run = "${timestamp()}"
   }

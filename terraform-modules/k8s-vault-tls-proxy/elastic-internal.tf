@@ -81,7 +81,7 @@ resource "kubernetes_deployment" "elastic_internal_proxy" {
           }
           env {
             name  = "SERVICE_HOST"
-            value = "${each.value}-es-http"
+            value = "${each.value}-es-master"
           }
           env {
             name  = "SERVICE_PORT"

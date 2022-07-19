@@ -5,4 +5,5 @@ module "tls-proxy" {
   ElasticProxyNS = var.Settings.clusters[var.Cluster].elasticProxy
   Cluster        = var.Cluster
   Settings       = var.Settings
+  VaultAddress   = var.VaultAddress
 }

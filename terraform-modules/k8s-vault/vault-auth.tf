@@ -4,7 +4,7 @@ resource "null_resource" "auth_kubernetes_disable" {
       vault auth disable k8s-${var.Cluster}-${var.Color}
     EOT
     environment = {
-      VAULT_ADDR = "https://vault.p.regemini.io"
+      VAULT_ADDR = var.VaultAddress
     }
   }
 }
@@ -20,19 +20,23 @@ resource "vault_auth_backend" "auth_kubernetes" {
   ]
 }
 
+data "vault_generic_secret" "cluster_token" {
+  path = "secret/kubernetes-${var.Cluster}-${var.Color}"
+}
+
 resource "vault_kubernetes_auth_backend_config" "auth_kubernetes" {
-  backend                = "k8s-${var.Cluster}-${var.Color}"
-  kubernetes_host        = data.vault_generic_secret.cluster_token.data["HOST"]
-  kubernetes_ca_cert     = data.kubernetes_secret.vault_sa.data["ca.crt"]
-  token_reviewer_jwt     = data.kubernetes_secret.vault_sa.data["token"]
-  issuer                 = "kubernetes/serviceaccount"
+  backend            = "k8s-${var.Cluster}-${var.Color}"
+  kubernetes_host    = data.vault_generic_secret.cluster_token.data["HOST"]
+  kubernetes_ca_cert = data.kubernetes_secret.vault_sa.data["ca.crt"]
+  token_reviewer_jwt = data.kubernetes_secret.vault_sa.data["token"]
+  # issuer                 = "kubernetes/serviceaccount"
   disable_local_ca_jwt   = "true"
   disable_iss_validation = "true"
   depends_on = [
     vault_auth_backend.auth_kubernetes
   ]
 }
-resource "vault_kubernetes_auth_backend_role" "auth_kubernetes" {
+resource "vault_kubernetes_auth_backend_role" "role_tekton" {
   backend                          = "k8s-${var.Cluster}-${var.Color}"
   role_name                        = "tekton"
   bound_service_account_names      = ["default"]
@@ -44,3 +48,14 @@ resource "vault_kubernetes_auth_backend_role" "auth_kubernetes" {
   ]
 }
 
+resource "vault_kubernetes_auth_backend_role" "role_cert-manager" {
+  backend                          = "k8s-${var.Cluster}-${var.Color}"
+  role_name                        = "cert-manager"
+  bound_service_account_names      = ["default"]
+  bound_service_account_namespaces = ["kube-system"]
+  token_ttl                        = 0
+  token_policies                   = ["pki"]
+  depends_on = [
+    vault_kubernetes_auth_backend_config.auth_kubernetes
+  ]
+}

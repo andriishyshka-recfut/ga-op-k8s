@@ -1,0 +1,2 @@
+variable "Settings" {}
+variable "Cluster" {}

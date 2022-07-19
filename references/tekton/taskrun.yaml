@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  name: tg-taskrun-4
+  name: es7
 spec:
   taskRef:
     name: tg-run
@@ -10,6 +10,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/minio"
+      value: "k8s/tekton/01-elastic"
     - name: branch
-      value: "\\#47_minio_caching"
+      value: "\\#169-k8s-red"

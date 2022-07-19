@@ -4,7 +4,7 @@ locals {
 
 
 module "monitoring-elastic" {
-  source                       = "../../terraform-modules/k8s-vault-elasticsearch"
+  source                       = "../../terraform-modules/k8s-vault-monitoring-elastic"
   ElasticSettings              = local.monitoringEs.elastic_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
