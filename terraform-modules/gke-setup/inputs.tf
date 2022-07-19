@@ -29,6 +29,7 @@ locals {
   additionalNodepools = var.Settings.clusters[var.Cluster][var.Color].additionalNodepools
   bluePods            = var.Settings.clusters[var.Cluster]["blue"].pods_subnet_range
   greenPods           = var.Settings.clusters[var.Cluster]["green"].pods_subnet_range
+  redPods             = var.Settings.clusters[var.Cluster]["red"].pods_subnet_range
   gkeKmsVolumeKey     = var.Settings.clusters[var.Cluster].persistent_resources.gke_kms_volume_key
   gkeRegion           = var.Settings.clusters[var.Cluster].region
 }

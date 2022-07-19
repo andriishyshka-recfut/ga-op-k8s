@@ -4,7 +4,7 @@
     name: test
     esName: "test"
     namespace: "test"
-    kibanaVersion: "7.10.0"
+    kibanaVersion: "7.17.4"
     oidc_provider:
       enabled: "no"
       realm: "google"

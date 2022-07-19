@@ -10,6 +10,7 @@ variable "Color" {}
 variable "OidcDiscoveryUrl" { default = "SAMPLE" }
 variable "OidcClientId" { default = "SAMPLE" }
 variable "OidcClientSecret" { default = "SAMPLE" }
+variable "VaultAddress" {}
 
 
 data "google_client_config" "current" {}
@@ -39,7 +40,7 @@ locals {
   initialProvisioningToggle = var.Settings.clusters[var.Cluster][var.Color].vault.do_initial_provisioning ? 1 : 0
   certManagerIssuerToggle   = var.Settings.clusters[var.Cluster][var.Color].vault.create_cert-manager_issuer ? 1 : 0
   # istioExposeToggle         = var.Settings.clusters[var.Cluster][var.Color].vault.istio_expose ? 1 : 0
-  replicasCount =  0
-  vaultVersion  = var.Settings.clusters[var.Cluster][var.Color].vault.version
-  currentProject  = data.google_client_config.current.project
+  replicasCount  = 0
+  vaultVersion   = var.Settings.clusters[var.Cluster][var.Color].vault.version
+  currentProject = data.google_client_config.current.project
 }

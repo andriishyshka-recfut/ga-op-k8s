@@ -43,6 +43,7 @@ module "k8s-vault" {
   OidcDiscoveryUrl             = var.OidcDiscoveryUrl
   OidcClientId                 = var.OidcClientId
   OidcClientSecret             = var.OidcClientSecret
+  VaultAddress                 = var.VaultAddress
   depends_on                   = [module.k8s-istio, module.k8s-misc-operators]
 }
 
@@ -51,6 +52,6 @@ module "k8s-vault-tekton" {
   GkeClusterConnectionSettings = module.gke-setup-blue.GkeClusterConnectionSettings
   Cluster                      = "production"
   Color                        = "blue"
-  VaultAddress = var.VaultAddress
+  VaultAddress                 = var.VaultAddress
   depends_on                   = [module.k8s-vault]
 }

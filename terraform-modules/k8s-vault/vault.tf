@@ -1,33 +1,3 @@
-resource "kubernetes_service_account" "vault" {
-  metadata {
-    name      = "vault"
-    namespace = "kube-system"
-  }
-}
-
-data "kubernetes_secret" "vault" {
-  metadata {
-    name      = kubernetes_service_account.vault.default_secret_name
-    namespace = "kube-system"
-  }
-}
-
-resource "kubernetes_cluster_role_binding" "vault" {
-  metadata {
-    name = "vault-auth"
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "system:auth-delegator"
-  }
-  subject {
-    kind      = "ServiceAccount"
-    name      = "vault"
-    namespace = "kube-system"
-  }
-}
-
 
 # resource "null_resource" "ansible_vault_k8s_auth" {
 
