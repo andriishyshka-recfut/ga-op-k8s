@@ -9,7 +9,7 @@ variable "OidcClientSecret" { default = "SAMPLE" }
 
 
 module "gke-setup-green" {
-  source        = "../../../terraform-modules/gke-setup"
+  source        = "../../../../terraform-modules/gke-setup"
   Settings      = var.Settings
   Cluster       = "production"
   Color         = "blue"
