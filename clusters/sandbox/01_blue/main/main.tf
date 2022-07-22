@@ -5,36 +5,39 @@ variable "VaultAddress" {}
 variable "OidcDiscoveryUrl" { default = "SAMPLE" }
 variable "OidcClientId" { default = "SAMPLE" }
 variable "OidcClientSecret" { default = "SAMPLE" }
+variable "GkeClusterConnectionSettings" {}
 
-
-module "gke-setup-blue" {
-  source   = "../../../terraform-modules/gke-setup"
-  Settings = var.Settings
-  Cluster  = "sandbox"
-  Color    = "blue"
+locals {
+  GkeClusterConnectionSettings = jsondecode(var.GkeClusterConnectionSettings)
 }
 
+
+
 module "k8s-istio" {
-  source                       = "../../../terraform-modules/k8s-istio"
-  GkeClusterConnectionSettings = module.gke-setup-blue.GkeClusterConnectionSettings
+  source = "../../../../terraform-modules/k8s-istio"
+  # GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Settings                     = var.Settings
   Cluster                      = "sandbox"
   Color                        = "blue"
-  depends_on                   = [module.gke-setup-blue]
+  # depends_on                   = [module.gke-setup-green]
 }
 
 
 module "k8s-misc-operators" {
-  source                       = "../../../terraform-modules/k8s-misc"
-  GkeClusterConnectionSettings = module.gke-setup-blue.GkeClusterConnectionSettings
+  source = "../../../../terraform-modules/k8s-misc"
+  # GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Settings                     = var.Settings
   Cluster                      = "sandbox"
   Color                        = "blue"
   depends_on                   = [module.k8s-istio]
 }
+
 module "k8s-vault" {
-  source                       = "../../../terraform-modules/k8s-vault"
-  GkeClusterConnectionSettings = module.gke-setup-blue.GkeClusterConnectionSettings
+  source = "../../../../terraform-modules/k8s-vault"
+  # GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Settings                     = var.Settings
   Cluster                      = "sandbox"
   Color                        = "blue"
@@ -44,9 +47,11 @@ module "k8s-vault" {
   VaultAddress                 = var.VaultAddress
   depends_on                   = [module.k8s-istio, module.k8s-misc-operators]
 }
+
 module "k8s-vault-tekton" {
-  source                       = "../../../terraform-modules/k8s-vault-tekton"
-  GkeClusterConnectionSettings = module.gke-setup-blue.GkeClusterConnectionSettings
+  source = "../../../../terraform-modules/k8s-vault-tekton"
+  # GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Cluster                      = "sandbox"
   Color                        = "blue"
   VaultAddress                 = var.VaultAddress

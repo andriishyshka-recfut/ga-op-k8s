@@ -6,6 +6,7 @@ runners:
       session_timeout = 1800
     [[runners]]
       [runners.kubernetes]
+        image = "alpine:3.16.1"
         image_pull_secrets = ["harbor"]
       [runners.cache]
         Type = "s3"

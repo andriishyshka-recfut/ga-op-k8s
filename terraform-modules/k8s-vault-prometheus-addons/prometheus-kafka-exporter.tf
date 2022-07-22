@@ -23,9 +23,6 @@ resource "helm_release" "prometheus_kafka_exporter" {
     name  = "prometheus.serviceMonitor.additionalLabels.release"
     value = "prometheus"
   }
-  depends_on = [
-    helm_release.prometheus
-  ]
 }
 
 #

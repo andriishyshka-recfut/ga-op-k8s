@@ -72,9 +72,6 @@ resource "helm_release" "blackbox_exporter" {
     name  = "prometheusRule.rules[4].labels.cluster"
     value = var.Cluster
   }
-  depends_on = [
-    helm_release.prometheus
-  ]
 }
 
 

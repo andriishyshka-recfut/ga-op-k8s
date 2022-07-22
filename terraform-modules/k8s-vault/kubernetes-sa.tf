@@ -58,3 +58,10 @@ resource "kubernetes_cluster_role_binding" "vault" {
     namespace = "kube-system"
   }
 }
+
+data "kubernetes_service_account" "vault" {
+  metadata {
+    name      = "vault"
+    namespace = "kube-system"
+  }
+}

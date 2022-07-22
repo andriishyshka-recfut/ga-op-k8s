@@ -47,18 +47,25 @@ resource "google_container_cluster" "cluster" {
       display_name = "bastion"
       cidr_block   = format("%s/32", data.google_compute_instance.bastion.network_interface.0.network_ip)
     }
-    cidr_blocks {
-      display_name = "blue-pods"
-      cidr_block   = local.bluePods
+    dynamic "cidr_blocks" {
+      for_each = var.ClusterColors
+      content {
+        display_name = "${cidr_blocks.value}-pods"
+        cidr_block   = var.Settings.clusters[var.Cluster][cidr_blocks.value].pods_subnet_range
+      }
     }
-    cidr_blocks {
-      display_name = "green-pods"
-      cidr_block   = local.greenPods
-    }
-    cidr_blocks {
-      display_name = "red-pods"
-      cidr_block   = local.redPods
-    }
+    # cidr_blocks {
+    #   display_name = "blue-pods"
+    #   cidr_block   = local.bluePods
+    # }
+    # cidr_blocks {
+    #   display_name = "green-pods"
+    #   cidr_block   = local.greenPods
+    # }
+    # cidr_blocks {
+    #   display_name = "red-pods"
+    #   cidr_block   = local.redPods
+    # }
   }
 
   // Allocate IPs in our subnetwork
