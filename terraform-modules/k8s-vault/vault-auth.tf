@@ -15,9 +15,9 @@ resource "vault_auth_backend" "auth_kubernetes" {
   tune {
     max_lease_ttl = "2764800s"
   }
-  # depends_on = [
-  #   null_resource.auth_kubernetes_disable
-  # ]
+  depends_on = [
+    null_resource.auth_kubernetes_disable
+  ]
 }
 
 data "vault_generic_secret" "cluster_token" {
