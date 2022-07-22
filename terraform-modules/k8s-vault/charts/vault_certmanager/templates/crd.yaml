@@ -7,10 +7,9 @@ spec:
     auth:
       kubernetes:
         mountPath: {{ $.Values.mountPath }}
-        role: {{ $.Values.pkitRole }}
-        secretRef: 
+        role: {{ $.Values.pkiRole }}
+        secretRef:
           key: "token"
           name: {{ $.Values.secretName }}
     server: {{ $.Values.vaultAddress }}
     path: {{ $.Values.pkiPath }}
-
