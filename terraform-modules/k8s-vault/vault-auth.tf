@@ -1,13 +1,13 @@
-# resource "null_resource" "auth_kubernetes_disable" {
-#   provisioner "local-exec" {
-#     command = <<-EOT
-#       vault auth disable k8s-${var.Cluster}-${var.Color}
-#     EOT
-#     environment = {
-#       VAULT_ADDR = var.VaultAddress
-#     }
-#   }
-# }
+resource "null_resource" "auth_kubernetes_disable" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      vault auth disable k8s-${var.Cluster}-${var.Color}
+    EOT
+    environment = {
+      VAULT_ADDR = var.VaultAddress
+    }
+  }
+}
 
 resource "vault_auth_backend" "auth_kubernetes" {
   type = "kubernetes"
