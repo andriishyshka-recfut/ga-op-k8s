@@ -1,3 +1,23 @@
+terraform {
+
+  extra_arguments "custom_vars" {
+    commands = [
+      "init",
+      "apply",
+      "plan",
+      "import",
+      "push",
+      "refresh"
+    ]
+
+    required_var_files = ["${get_parent_terragrunt_dir()}/../../../../${get_env("CONF_PATH")}"]
+  }
+}
+
+generate "provider" {
+  path      = "provider.tf"
+  if_exists = "overwrite_terragrunt"
+  contents  = <<EOF
 
 provider "google" {
   # version = "v3.19.0"
@@ -15,6 +35,7 @@ locals {
   gkeClusterEndpoint   = module.gke-setup-green.GkeClusterConnectionSettings.HOST
   gkeBearerToken       = module.gke-setup-green.GkeClusterConnectionSettings.API_KEY
   clusterCaCertificate = module.gke-setup-green.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
+
 }
 
 provider "helm" {
@@ -34,22 +55,21 @@ provider "kubernetes" {
 
 provider "kubectl" {
   # alias = "kube"
-  cluster_ca_certificate = module.gke-setup-green.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
-  host                   = module.gke-setup-green.GkeClusterConnectionSettings.HOST
-  token                  = module.gke-setup-green.GkeClusterConnectionSettings.API_KEY
+  cluster_ca_certificate = local.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
+  host                   = local.GkeClusterConnectionSettings.HOST
+  token                  = local.GkeClusterConnectionSettings.API_KEY
   load_config_file       = false
 }
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-blue-green/green-state"
+    prefix = "tf-blue-green/green-state-cluster"
   }
   required_providers {
     kubectl = {
       source = "gavinbunney/kubectl"
     }
-    kubernetes = {
-      version = "2.0.1"
-    }
   }
+}
+EOF
 }

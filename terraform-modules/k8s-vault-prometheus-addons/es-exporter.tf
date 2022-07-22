@@ -11,7 +11,6 @@ resource "helm_release" "es_exporter" {
   values = [
     file("${path.module}/es-exporter-values.yaml")
   ]
-  depends_on = [helm_release.prometheus]
 }
 
 data "kubectl_file_documents" "es_exporter" {

@@ -13,11 +13,11 @@ module "monitoring-kibana" {
 }
 
 module "monitoring-agents" {
-  source   = "../../terraform-modules/k8s-vault-monitoring-agents"
-  Cluster  = var.Cluster
-  Color    = var.Color
-  Settings = var.Settings
-  # depends_on = [module.monitoring-kibana]
+  source     = "../../terraform-modules/k8s-vault-monitoring-agents"
+  Cluster    = var.Cluster
+  Color      = var.Color
+  Settings   = var.Settings
+  depends_on = [module.monitoring-kibana]
 }
 
 module "prometheus" {
@@ -34,4 +34,7 @@ module "prometheus-addons" {
   Settings            = var.Settings
   Cluster             = var.Cluster
   Color               = var.Color
+  depends_on = [
+    module.prometheus
+  ]
 }

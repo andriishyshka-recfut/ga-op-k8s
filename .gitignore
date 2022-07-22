@@ -6,6 +6,8 @@ tekton/**/provider.tf
 tekton/taskrun.yaml
 tekton/pipelinerun.yaml
 
+clusters/**/provider.tf
+
 ssh-key*
 
 kubeconfig

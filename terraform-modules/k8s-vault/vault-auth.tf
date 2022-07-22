@@ -27,8 +27,8 @@ data "vault_generic_secret" "cluster_token" {
 resource "vault_kubernetes_auth_backend_config" "auth_kubernetes" {
   backend            = "k8s-${var.Cluster}-${var.Color}"
   kubernetes_host    = data.vault_generic_secret.cluster_token.data["HOST"]
-  kubernetes_ca_cert = data.kubernetes_secret.vault_sa.data["ca.crt"]
-  token_reviewer_jwt = data.kubernetes_secret.vault_sa.data["token"]
+  kubernetes_ca_cert = data.kubernetes_secret.vault.data["ca.crt"]
+  token_reviewer_jwt = data.kubernetes_secret.vault.data["token"]
   # issuer                 = "kubernetes/serviceaccount"
   disable_local_ca_jwt   = "true"
   disable_iss_validation = "true"
@@ -51,7 +51,7 @@ resource "vault_kubernetes_auth_backend_role" "role_tekton" {
 resource "vault_kubernetes_auth_backend_role" "role_cert-manager" {
   backend                          = "k8s-${var.Cluster}-${var.Color}"
   role_name                        = "cert-manager"
-  bound_service_account_names      = ["default"]
+  bound_service_account_names      = ["vault"]
   bound_service_account_namespaces = ["kube-system"]
   token_ttl                        = 0
   token_policies                   = ["pki"]

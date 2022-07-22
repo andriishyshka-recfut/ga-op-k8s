@@ -45,28 +45,59 @@
 #   ]
 # }
 
-resource "kubernetes_manifest" "vault_certmanager" {
-  manifest = {
-    "apiVersion" = "cert-manager.io/v1"
-    "kind"       = "ClusterIssuer"
-    "metadata" = {
-      "name" = "vault-issuer"
-    }
-    "spec" = {
-      "vault" = {
-        "auth" = {
-          "kubernetes" = {
-            "mountPath" = "/v1/auth/k8s-${var.Cluster}-${var.Color}"
-            "role"      = "cert-manager"
-            "secretRef" = {
-              "key"  = "token"
-              "name" = data.kubernetes_service_account.vault_sa.default_secret_name
-            }
-          }
-        }
-        "path"   = "pki/sign/cert-manager"
-        "server" = var.VaultAddress
-      }
-    }
+# resource "kubernetes_manifest" "vault_certmanager" {
+#   manifest = {
+#     "apiVersion" = "cert-manager.io/v1"
+#     "kind"       = "ClusterIssuer"
+#     "metadata" = {
+#       "name" = "vault-issuer"
+#     }
+#     "spec" = {
+#       "vault" = {
+#         "auth" = {
+#           "kubernetes" = {
+#             "mountPath" = "/v1/auth/k8s-${var.Cluster}-${var.Color}"
+#             "role"      = "cert-manager"
+#             "secretRef" = {
+#               "key"  = "token"
+#               "name" = data.kubernetes_service_account.vault.default_secret_name
+#             }
+#           }
+#         }
+#         "path"   = "pki/sign/cert-manager"
+#         "server" = var.VaultAddress
+#       }
+#     }
+#   }
+# }
+
+data "kubernetes_service_account" "cert_manager" {
+  metadata {
+    name      = "${var.Cluster}-cert-manager"
+    namespace = "kube-system"
+  }
+}
+
+resource "helm_release" "vault_certmanager" {
+  name      = "vault-issuer"
+  chart     = "${path.module}/charts/vault_certmanager"
+  namespace = "istio-ingress"
+  wait      = true
+  atomic    = true
+  set {
+    name  = "mountPath"
+    value = "/v1/auth/k8s-${var.Cluster}-${var.Color}"
+  }
+  set {
+    name  = "secretName"
+    value = data.kubernetes_service_account.cert_manager.default_secret_name
+  }
+  set {
+    name  = "vaultAddress"
+    value = var.VaultAddress
+  }
+  set {
+    name  = "pkiRole"
+    value = "cert-manager-${var.Cluster}-${var.Color}"
   }
 }
