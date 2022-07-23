@@ -57,7 +57,7 @@ resource "null_resource" "pki_setup_role" {
 
 data "kubernetes_service_account" "vault_sa" {
   metadata {
-    name      = "vault-sa"
+    name      = "vault"
     namespace = "kube-system"
   }
 }
