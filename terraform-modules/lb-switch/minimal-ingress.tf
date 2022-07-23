@@ -95,7 +95,7 @@ resource "kubernetes_manifest" "vault_ingress_virtualservice" {
           "route" = [
             {
               "destination" = {
-                "host" = "vault-active"
+                "host" = vault-active
                 "port" = {
                   "number" = "8200"
                 }
