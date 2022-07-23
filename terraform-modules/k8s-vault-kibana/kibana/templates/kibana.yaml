@@ -28,12 +28,18 @@ spec:
           limits:
             memory: 1Gi
             cpu: 1
-{{- if eq .Values.oidc_provider.enabled "yes" }}
   config:
+{{- if eq .Values.oidc_provider.enabled "yes" }}
+    server.xsrf.whitelist: [/api/security/v1/saml]
     xpack.security.authc.providers:
-      oidc.Google:
+{{- if eq .Values.saml_provider.enabled "yes" }}
+      saml.gsuite:
         order: 0
+        realm: {{ .Values.saml_provider.realm }}
+{{- end }}
+      oidc.Google:
+        order: 1
         realm: {{ .Values.oidc_provider.realm }}
       basic.basic1:
-        order: 1
+        order: 2
 {{- end }}
