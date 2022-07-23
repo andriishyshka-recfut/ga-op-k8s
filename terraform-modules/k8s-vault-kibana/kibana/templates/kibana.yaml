@@ -29,6 +29,9 @@ spec:
             memory: 1Gi
             cpu: 1
   config:
+    server.ssl.supportedProtocols: ["TLSv1.2","TLSv1.3"]
+    xpack.security.audit.enabled: "true"
+    xpack.reporting.encryptionKey: "X6mJKMED9tGuSK21g4IY"
 {{- if eq .Values.oidc_provider.enabled "yes" }}
     server.xsrf.whitelist: [/api/security/v1/saml]
     xpack.security.authc.providers:

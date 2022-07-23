@@ -4,20 +4,20 @@ locals {
 }
 
 
-module "elastic-elastic" {
-  source                       = "../../terraform-modules/k8s-vault-elastic"
-  ElasticSettings              = local.dataEs.elastic_settings
-  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
-  Cluster                      = var.Cluster
-  Color                        = var.Color
-  Settings                     = var.Settings
-  StoreEsPasswordInVault       = true
-  MinioAddress                 = var.Settings.clusters[var.Cluster].MinioAddress
-  BackupBucketName             = "es7"
-  BackupBucketBasePath         = "6"
-  OidcRedirectUri              = "kk.regemini.io"
-
-}
+# module "elastic-elastic" {
+#   source                       = "../../terraform-modules/k8s-vault-elastic"
+#   ElasticSettings              = local.dataEs.elastic_settings
+#   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+#   Cluster                      = var.Cluster
+#   Color                        = var.Color
+#   Settings                     = var.Settings
+#   StoreEsPasswordInVault       = true
+#   MinioAddress                 = var.Settings.clusters[var.Cluster].MinioAddress
+#   BackupBucketName             = "es7"
+#   BackupBucketBasePath         = "6"
+#   OidcRedirectUri              = "kk.regemini.io"
+#
+# }
 
 
 module "elastic-kibana" {
