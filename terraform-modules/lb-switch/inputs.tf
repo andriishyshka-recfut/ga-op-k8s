@@ -3,6 +3,7 @@ variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
 variable "Harbor" {}
+variable "VaultAddress" {}
 
 data "google_compute_instance" "bastion" {
   name = var.Settings.bastion_hostname
@@ -42,7 +43,7 @@ data "google_client_config" "default" {
 locals {
   activeCluster   = var.Color
   inActiveCluster = var.Color == "blue" ? "green" : "blue"
-  harbor = var.Harbor ? 1 : 0
+  harbor          = var.Harbor ? 1 : 0
 
   inActiveGkeEndpoint = "https://${data.google_container_cluster.inactive_cluster.endpoint}"
   gkeClusterConnectionSettings = {
