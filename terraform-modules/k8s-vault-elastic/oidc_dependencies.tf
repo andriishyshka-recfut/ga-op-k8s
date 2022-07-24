@@ -57,8 +57,7 @@ xpack.security.authc.realms.saml.gsuite:
         idp.metadata.path: "/usr/share/elasticsearch/config/saml/metadata"
         idp.entity_id: "https://accounts.google.com/o/saml2?idpid=C04a7ynfq"
         sp.entity_id: "https://kk.regemini.io/"
-        sp.acs: "https://kk.regemini.io/api/security/v1/saml"
-        # sp.acs: "https://kk.regemini.io/api/security/saml/callback"
+        sp.acs: "https://kk.regemini.io/api/security/saml/callback"
         sp.logout: "https://kk.regemini.io/logout"
 
 EOF

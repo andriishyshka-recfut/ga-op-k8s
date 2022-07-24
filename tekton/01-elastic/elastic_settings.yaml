@@ -87,4 +87,4 @@ elastic_settings:
     saml_provider:
       enabled: "yes"
       realm: "gsuite"
-      istio_gateway_fqdn: "kk.regemini.io"
+      istio_gateway_fqdn: "https://kk.regemini.io"
