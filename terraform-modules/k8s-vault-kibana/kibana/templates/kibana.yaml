@@ -29,11 +29,14 @@ spec:
             memory: 1Gi
             cpu: 1
   config:
+    # server.publicBaseUrl: {{ .Values.saml_provider.istio_gateway_fqdn }}
+    server.publicBaseUrl: "https://kk.regemini.io"
     server.ssl.supportedProtocols: ["TLSv1.2","TLSv1.3"]
     xpack.security.audit.enabled: "true"
     xpack.reporting.encryptionKey: "X6mJKMED9tGuSK21g4IY"
 {{- if eq .Values.oidc_provider.enabled "yes" }}
-    server.xsrf.whitelist: [/api/security/v1/saml]
+    server.xsrf.allowlist: [/api/security/saml/callback]
+    xpack.security.authc.providers: [saml,oidc,basic]
     xpack.security.authc.providers:
 {{- if eq .Values.saml_provider.enabled "yes" }}
       saml.gsuite:
