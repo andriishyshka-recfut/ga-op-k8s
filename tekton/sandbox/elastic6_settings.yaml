@@ -56,3 +56,5 @@ elastic_settings:
       enabled: "yno"
       realm: "google"
       istio_gateway_fqdn: "data.p.digaweb.com"
+    saml_provider:
+      enabled: "no"        

@@ -15,7 +15,6 @@ module "elastic7-elastic" {
   BackupBucketName             = "es7"
   BackupBucketBasePath         = "6"
   OidcRedirectUri              = "es7.t.regemini.io"
-
 }
 
 

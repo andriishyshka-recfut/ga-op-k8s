@@ -78,3 +78,5 @@ elastic_settings:
       enabled: "yes"
       realm: "google"
       istio_gateway_fqdn: "es7.t.regemini.io"
+    saml_provider:
+      enabled: "no"
