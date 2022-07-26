@@ -1,3 +1,3 @@
-module "logstash" {
-  source = "../../terraform-modules/k8s-vault-logstash"
-}
+# module "logstash" {
+#   source = "../../terraform-modules/k8s-vault-logstash"
+# }

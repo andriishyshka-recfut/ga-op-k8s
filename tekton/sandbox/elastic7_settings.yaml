@@ -8,7 +8,7 @@ elastic_settings:
     appVersion: "7.14.1"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
-    apmToken: "es7-apm-token"
+    apmToken: "apm-elastic7-apm-token"
     apm:
       enabled: "yes"
     labels:
