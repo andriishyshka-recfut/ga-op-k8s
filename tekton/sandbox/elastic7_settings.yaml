@@ -25,6 +25,12 @@ elastic_settings:
       oidc_realm_name: "google"
       secret_name: "oidc"
       configmap_name: "oidc"
+    saml_gcloud:
+      enabled: "yes"
+      vault_path: "secret/saml_google_prod" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
+      saml_realm_name: "gsuite"
+      secret_name: "saml"
+      configmap_name: "saml"
     elasticNodeSets:
       - name: master
         config: |
