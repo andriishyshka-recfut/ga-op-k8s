@@ -3,7 +3,7 @@ data "vault_generic_secret" "oidc_secrets" {
 }
 
 data "vault_generic_secret" "grafana" {
-  path = "secret/grafana"
+  path = local.grafanaSecretpath
 }
 
 data "vault_generic_secret" "prometheus" {
@@ -20,7 +20,7 @@ resource "helm_release" "prometheus" {
   dependency_update = true
   version           = local.helmVersion
   values = [
-    file("${path.module}/kube-prometheous-stack-values.yaml")
+    file("${path.module}/${local.prometheusConfigFile}")
   ]
   set {
     name  = "grafana.adminPassword"
