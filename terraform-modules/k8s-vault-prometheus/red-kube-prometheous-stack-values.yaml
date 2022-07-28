@@ -5,11 +5,11 @@ namespaceOverride: "monitoring"
 fullnameOverride: "prometheus"
 
 grafana:
-  envValueFrom:
-    ELASTIC_PASSWORD:
-      secretKeyRef:
-        name: "monitoring-es-elastic-user"
-        key: elastic
+  # envValueFrom:
+  #   ELASTIC_PASSWORD:
+  #     secretKeyRef:
+  #       name: "monitoring-es-elastic-user"
+  #       key: elastic
   enabled: true
   namespaceOverride: "monitoring"
   podAnnotations:
