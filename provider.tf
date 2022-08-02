@@ -11,9 +11,9 @@ provider "vault" {
 
 locals {
 
-  activeCluster          = var.Color
-  inactiveCluster        = local.activeCluster == "blue" ? "green" : "blue"
-  activeClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
+  activeCluster            = var.Color
+  inactiveCluster          = local.activeCluster == "blue" ? "green" : "blue"
+  activeClusterVaultPath   = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
   inactiveClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.inactiveCluster}"
   gkeClusterConnectionSettings = {
     HOST                   = data.vault_generic_secret.k8s_auth.data.HOST
@@ -38,22 +38,22 @@ provider "kubernetes" {
   host                   = data.vault_generic_secret.k8s_auth.data.HOST
   cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
   token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
-  
+
 }
 
 provider "kubectl" {
-    # alias = "kube"
-    cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
-    host                   = data.vault_generic_secret.k8s_auth.data.HOST
-    token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
-    load_config_file       = false
-  }
+  # alias = "kube"
+  cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
+  host                   = data.vault_generic_secret.k8s_auth.data.HOST
+  token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
+  load_config_file       = false
+}
 
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "kubernetes" {
     secret_suffix    = "k8s-state"
-    namespace = "tekton-pipelines"
+    namespace        = "tekton-pipelines"
     load_config_file = false
   }
   required_providers {
@@ -69,4 +69,3 @@ terraform {
 }
 
 provider "random" {}
-
