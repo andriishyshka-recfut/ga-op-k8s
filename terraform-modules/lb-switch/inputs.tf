@@ -59,4 +59,5 @@ locals {
     BASTION_DNS             = var.Settings.bastion_dns
   })
   load_balancer_ip = var.Settings.clusters[var.Cluster].load_balancer_ip
+  VaultAddress     = element(split("/", var.VaultAddress), length(split("/", var.VaultAddress)) - 1)
 }
