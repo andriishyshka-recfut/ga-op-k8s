@@ -6,13 +6,27 @@ resource "kubernetes_config_map" "haproxy_elastic_configmap" {
   }
   data = {
     "haproxy.cfg" = <<EOF
+defaults
+  retries 3
+  option  redispatch
+  timeout client 30s
+  timeout connect 4s
+  timeout server 30s
+  timeout http-request 10s
+  timeout http-keep-alive 2s
+  timeout queue 5s
+  timeout tunnel 2m
+  timeout client-fin 1s
+  timeout server-fin 1s
 frontend auth
-  mode  http
+  mode  tcp
   bind  :9200
   default_backend elastic
 backend elastic
-  mode  http
-  server srv1 $SERVICE_HOST:$SERVICE_PORT ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt
+  mode  tcp
+  server srv0 elastic-es-master-0.elastic-es-master:9200 ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt check
+  server srv1 elastic-es-master-1.elastic-es-master:9200 ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt check
+  server srv2 elastic-es-master-2.elastic-es-master:9200 ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt check
 EOF
   }
 }

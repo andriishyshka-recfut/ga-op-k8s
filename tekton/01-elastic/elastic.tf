@@ -14,9 +14,8 @@ module "elastic-elastic" {
   StoreEsPasswordInVault       = true
   MinioAddress                 = var.Settings.clusters[var.Cluster].MinioAddress
   BackupBucketName             = "es7"
-  BackupBucketBasePath         = "6"
+  BackupBucketBasePath         = "7"
   OidcRedirectUri              = "kk.regemini.io"
-
 }
 
 

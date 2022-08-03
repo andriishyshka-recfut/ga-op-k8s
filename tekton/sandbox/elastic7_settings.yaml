@@ -8,7 +8,7 @@ elastic_settings:
     appVersion: "7.14.1"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
-    apmToken: "es7-apm-token"
+    apmToken: "apm-elastic7-apm-token"
     apm:
       enabled: "yes"
     labels:
@@ -25,6 +25,12 @@ elastic_settings:
       oidc_realm_name: "google"
       secret_name: "oidc"
       configmap_name: "oidc"
+    saml_gcloud:
+      enabled: "yes"
+      vault_path: "secret/saml_google_prod" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
+      saml_realm_name: "gsuite"
+      secret_name: "saml"
+      configmap_name: "saml"
     elasticNodeSets:
       - name: master
         config: |
@@ -78,3 +84,5 @@ elastic_settings:
       enabled: "yes"
       realm: "google"
       istio_gateway_fqdn: "es7.t.regemini.io"
+    saml_provider:
+      enabled: "no"

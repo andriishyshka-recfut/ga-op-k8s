@@ -24,6 +24,12 @@ elastic_settings:
       oidc_realm_name: "google"
       secret_name: "oidc"
       configmap_name: "oidc"
+    saml_gcloud:
+      enabled: "yes"
+      vault_path: "secret/saml_google_prod" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
+      saml_realm_name: "gsuite"
+      secret_name: "saml"
+      configmap_name: "saml"
     elasticNodeSets:
       - name: master
         config: |
@@ -59,9 +65,9 @@ elastic_settings:
             native:
               native1:
                 order: 1
-        storageSize: "900Gi"
+        storageSize: "750Gi"
         ES_JAVA_OPTS: -Xms29g -Xmx29g
-        nodesCount: 3
+        nodesCount: 12
         memoryRequests: "30Gi"
         cpuRequests: "4"
         memoryLimit: 31Gi
@@ -78,3 +84,7 @@ elastic_settings:
       enabled: "yes"
       realm: "google"
       istio_gateway_fqdn: "kk.regemini.io"
+    saml_provider:
+      enabled: "yes"
+      realm: "gsuite"
+      istio_gateway_fqdn: "https://kk.regemini.io"

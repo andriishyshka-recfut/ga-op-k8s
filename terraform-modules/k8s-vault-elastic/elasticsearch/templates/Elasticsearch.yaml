@@ -62,7 +62,7 @@ spec:
           traffic.sidecar.istio.io/excludeInboundPorts: "9300"
       spec:
         nodeSelector:
-          workloadsType: {{ .workloadsType | default "data"}} 
+          workloadsType: {{ .workloadsType | default "data"}}
         tolerations:
           - key: "workloadsType"
             operator: "Exists"
@@ -86,6 +86,14 @@ spec:
           env:
           - name: ES_JAVA_OPTS
             value: {{ .ES_JAVA_OPTS }}
+          volumeMounts:
+          - name: saml
+            mountPath: "/usr/share/elasticsearch/config/saml/"
+            readOnly: true
+        volumes:
+        - name: saml
+          secret:
+            secretName: saml
     config:
 {{ indent 6 .config }}
 {{ indent 6 $.Values.oidc_config }}

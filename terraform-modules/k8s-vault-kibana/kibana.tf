@@ -16,6 +16,10 @@ resource "helm_release" "kibana" {
     name  = "oidc_provider.istio_gateway_fqdn"
     value = "oidc_provider.istio_gateway_fqdn"
   }
+  set {
+    name  = "saml_provider.istio_gateway_fqdn"
+    value = "saml_provider.istio_gateway_fqdn"
+  }
 }
 
 

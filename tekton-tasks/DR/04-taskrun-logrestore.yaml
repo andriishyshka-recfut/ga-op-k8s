@@ -13,5 +13,5 @@ spec:
     - name: path
       value: "k8s/tekton/03-logs-restore"
     - name: branch
-      value: "\\#191-DR-24062022"
+      value: "\\#194-DR-22-07-22"
   timeout: 3h

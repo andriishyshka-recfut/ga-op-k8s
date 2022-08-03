@@ -32,8 +32,20 @@ spec:
   config:
     xpack.security.authc.providers:
       oidc.Google:
-        order: 0
+        order: 1
         realm: {{ .Values.oidc_provider.realm }}
       basic.basic1:
-        order: 1
+        order: 2
+{{- end }}
+{{- if eq .Values.saml_provider.enabled "yes" }}
+      saml.gsuite:
+        order: 0
+        realm: {{ .Values.saml_provider.realm }}
+    # server.publicBaseUrl: {{ .Values.saml_provider.istio_gateway_fqdn }}
+    server.publicBaseUrl: "https://kk.regemini.io"
+    server.ssl.supportedProtocols: ["TLSv1.2","TLSv1.3"]
+    xpack.security.audit.enabled: "true"
+    xpack.reporting.encryptionKey: "X6mJKMED9tGuSK21g4IY"
+    server.xsrf.allowlist: [/api/security/saml/callback]
+    # xpack.security.authc.providers: [saml,oidc,basic]
 {{- end }}

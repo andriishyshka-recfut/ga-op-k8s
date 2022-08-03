@@ -13,7 +13,7 @@ locals {
 }
 
 module "k8s-istio" {
-  source                       = "../../../terraform-modules/k8s-istio"
+  source                       = "../../../../terraform-modules/k8s-istio"
   GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Settings                     = var.Settings
   Cluster                      = "production"
@@ -22,7 +22,7 @@ module "k8s-istio" {
 
 
 module "k8s-misc-operators" {
-  source                       = "../../../terraform-modules/k8s-misc"
+  source                       = "../../../../terraform-modules/k8s-misc"
   GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Settings                     = var.Settings
   Cluster                      = "production"
@@ -30,7 +30,7 @@ module "k8s-misc-operators" {
   depends_on                   = [module.k8s-istio]
 }
 module "k8s-vault" {
-  source                       = "../../../terraform-modules/k8s-vault"
+  source                       = "../../../../terraform-modules/k8s-vault"
   GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Settings                     = var.Settings
   Cluster                      = "production"
@@ -43,7 +43,7 @@ module "k8s-vault" {
 }
 
 module "k8s-vault-tekton" {
-  source                       = "../../../terraform-modules/k8s-vault-tekton"
+  source                       = "../../../../terraform-modules/k8s-vault-tekton"
   GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Cluster                      = "production"
   Color                        = "green"

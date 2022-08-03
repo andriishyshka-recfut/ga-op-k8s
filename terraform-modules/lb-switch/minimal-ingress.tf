@@ -12,7 +12,7 @@ resource "kubernetes_manifest" "vault_letsencrypt_cert" {
     "spec" = {
       "commonName" = var.VaultAddress
       "dnsNames" = [
-        var.VaultAddress,
+        local.VaultAddress,
       ]
       "issuerRef" = {
         "kind" = "ClusterIssuer"
@@ -51,7 +51,7 @@ resource "kubernetes_manifest" "vault_ingress_gateway" {
         # },
         {
           "hosts" = [
-            var.VaultAddress
+            local.VaultAddress
           ]
           "port" = {
             "name"     = "https"
@@ -81,7 +81,7 @@ resource "kubernetes_manifest" "vault_ingress_virtualservice" {
         "istio-ingress/vault-wg-gateway",
       ]
       "hosts" = [
-        var.VaultAddress
+        local.VaultAddress
       ]
       "http" = [
         {
@@ -95,7 +95,7 @@ resource "kubernetes_manifest" "vault_ingress_virtualservice" {
           "route" = [
             {
               "destination" = {
-                "host" = vault-active
+                "host" = "vault-active.vault"
                 "port" = {
                   "number" = "8200"
                 }
