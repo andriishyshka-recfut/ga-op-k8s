@@ -12,6 +12,12 @@ spec:
   {{- if eq .Values.oidc_gcloud.enabled "yes" }}
   - secretName: {{ .Values.oidc_gcloud.secret_name }}
   {{- end }}
+  {{- if eq .Values.slack_notification.enabled "yes" }}
+  - secretName: {{ .Values.slack_notification.secret_name }}
+  {{- end }}
+  {{- if eq .Values.smtp_notification.enabled "yes" }}
+  - secretName: {{ .Values.smtp_notification.secret_name }}
+  {{- end }}
   {{- if eq .Values.gcs_enable "yes" }}
   - secretName: gcs-es-credentional
   {{- end }}
@@ -97,4 +103,5 @@ spec:
     config:
 {{ indent 6 .config }}
 {{ indent 6 $.Values.oidc_config }}
+{{ indent 6 $.Values.notification_config }}
 {{- end }}

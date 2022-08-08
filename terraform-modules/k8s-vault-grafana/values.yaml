@@ -1,36 +1,21 @@
-# grafana.ini:
-#   grafana_net:
-#     url: https://g.regemini.com/
-#   server:
-#     root_url: https://g.regemini.com/
 # smtp:
 #   existingSecret: ""
 #   userKey: "user"
 #   passwordKey: "password"
-
-datasources:
- datasources.yaml:
-   apiVersion: 1
-   datasources:
-   - name: artifact-ideone.com
-     type: elasticsearch
-     access: proxy
-     url: http://elastic-es-http.elastic:9200
-     database: paste-ideone.com-*
-     basicAuth: enable
-     basicAuthUser: elastic
-     secureJsonData:
-       # tlsCACert: '...'
-       # tlsClientCert: '...'
-       # tlsClientKey: '...'
-       basicAuthPassword: 5Uk9UL4f5dOu1D2Yd71Ga88R
-     jsonData:
-       interval: 10s
-       timeField: "@timestamp"
-       esVersion: 70
-       logMessageField: _source
-       # logLevelField: fields.level
-
+grafana.ini:
+  auth.google:
+    enabled: true
+    scopes: https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
+    auth_url: https://accounts.google.com/o/oauth2/auth
+    token_url: https://accounts.google.com/o/oauth2/token
+    allowed_domains: geminiadvisory.io
+    allow_sign_up: true
+    org_name: Regemini
+  users:
+    auto_assign_org_role: Viewer
+    auto_assign_org: true
+    auto_assign_org_id: 2
+  org_name: Regemini
 persistence:
   type: pvc
   enabled: true

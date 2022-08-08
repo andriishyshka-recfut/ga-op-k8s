@@ -34,7 +34,7 @@ resource "kubernetes_secret" "oidc" {
 
 locals {
   clientId   = local.oidcSetup == 1 ? data.vault_generic_secret.oidc.0.data.oidc_client_id : ""
-  config     = <<EOF
+  configAuth = <<EOF
 xpack.security.authc.token.enabled: true
 xpack.security.authc.realms.oidc.${local.oidcRealmName}:
         order: 2
@@ -59,8 +59,7 @@ xpack.security.authc.realms.saml.gsuite:
         sp.entity_id: "https://kk.regemini.io/"
         sp.acs: "https://kk.regemini.io/api/security/saml/callback"
         sp.logout: "https://kk.regemini.io/logout"
-
 EOF
-  oidcConfig = local.oidcSetup == 1 ? { "oidc_config" = local.config } : { "oidc_config" = "" }
+  oidcConfig = local.oidcSetup == 1 ? { "oidc_config" = local.configAuth } : { "oidc_config" = "" }
 
 }
