@@ -26,10 +26,18 @@ elastic_settings:
       configmap_name: "oidc"
     saml_gcloud:
       enabled: "yes"
-      vault_path: "secret/saml_google_prod" # expect oidc_client_id, oidc_client_secret & oidc_discovery_url
+      vault_path: "secret/saml_google_prod"
       saml_realm_name: "gsuite"
       secret_name: "saml"
       configmap_name: "saml"
+    slack_notification:
+      enabled: "yes"
+      vault_path: "secret/red/elastic-notification-accounts"
+      secret_name: "slack-notification"
+    smtp_notification:
+      enabled: "yes"
+      vault_path: "secret/red/elastic-notification-accounts"
+      secret_name: "smtp-notification"
     elasticNodeSets:
       - name: master
         config: |
@@ -44,14 +52,14 @@ elastic_settings:
             native:
               native1:
                 order: 1
-        storageSize: "10Gi"
+        storageSize: "20Gi"
         ES_JAVA_OPTS: -Xms16g -Xmx16g
         nodesCount: 3
         workloadsType: master
         memoryRequests: "16Gi"
-        cpuRequests: "3"
+        cpuRequests: "7"
         memoryLimit: 20Gi
-        cpuLimit: "3.5"
+        cpuLimit: "7"
       - name: data
         config: |
           node.master: false
@@ -87,4 +95,4 @@ elastic_settings:
     saml_provider:
       enabled: "yes"
       realm: "gsuite"
-      istio_gateway_fqdn: "https://kk.regemini.io"
+      istio_gateway_fqdn: "kk.regemini.io"

@@ -1,5 +1,14 @@
-locals {
-  grafanaValues = yamldecode(file("${path.module}/values.yaml"))
+# locals {
+#   grafanaValues = yamldecode(file("${path.module}/values.yaml"))
+# }
+data "vault_generic_secret" "elastic" {
+  path = "secret/red/elasticsearch-admin/elastic"
+}
+data "vault_generic_secret" "grafana" {
+  path = local.grafanaSecretpath
+}
+data "vault_generic_secret" "oidc_secrets" {
+  path = "secret/oidc_google_prod"
 }
 
 resource "helm_release" "grafana-clients" {
@@ -9,7 +18,30 @@ resource "helm_release" "grafana-clients" {
   wait       = true
   atomic     = true
   namespace  = "grafana-clients"
+  # values = [
+  #   yamlencode(local.grafanaValues)
+  # ]
   values = [
-    yamlencode(local.grafanaValues)
+    "${file("${path.module}/values.yaml")}"
   ]
+  set {
+    name  = "grafana-clients.adminPassword"
+    value = data.vault_generic_secret.grafana.data.password
+  }
+  set {
+    name  = "grafana\\.ini.server.root_url"
+    value = data.vault_generic_secret.grafana.data.root_url
+  }
+  set {
+    name  = "grafana\\.ini.auth\\.google.client_id"
+    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
+  }
+  set {
+    name  = "grafana\\.ini.auth\\.google.client_secret"
+    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret
+  }
+  set {
+    name  = "grafana\\.ini.users.auto_assign_org_role"
+    value = local.grafanaRole
+  }
 }
