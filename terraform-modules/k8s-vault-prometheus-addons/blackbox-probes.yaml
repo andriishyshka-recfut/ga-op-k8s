@@ -104,7 +104,8 @@ spec:
       labels:
         module: elastic
       static:
-      - https://es23.regemini.com/_security/_authenticate
+      - https://tls12.regemini.io
+      - https://tls13.regemini.io
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
