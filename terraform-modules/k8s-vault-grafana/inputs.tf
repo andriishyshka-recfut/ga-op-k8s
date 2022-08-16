@@ -11,4 +11,7 @@ locals {
   url               = "http://grafana-clients.grafana-clients/" #  WTF????
   grafanaRole       = var.Cluster == "production" ? "Viewer" : "Editor"
   grafanaSecretpath = var.Color == "red" ? "secret/red/grafanaElastic" : "secret/grafana"
+  grafanaAdmins     = ["anton.moliavko@geminiadvisory.io", "dc@geminiadvisory.io", "dmytro.kubov@geminiadvisory.io"]
+  grafanaEditors    = ["anton@geminiadvisory.io"]
+  grafanaViewers    = ["artem.kiazimov@geminiadvisory.io", "mk@geminiadvisory.io", "serhii.hutsaliuk@geminiadvisory.io"]
 }
