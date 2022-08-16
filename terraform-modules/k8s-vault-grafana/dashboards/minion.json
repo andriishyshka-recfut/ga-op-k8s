@@ -83,6 +83,17 @@
           "alias": "",
           "bucketAggs": [
             {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
+            {
               "field": "timeStampLastSeen",
               "id": "2",
               "settings": {
@@ -143,114 +154,6 @@
       "dashes": false,
       "datasource": {
         "type": "elasticsearch",
-        "uid": "B4rBfqkVk"
-      },
-      "description": "yesbro",
-      "fieldConfig": {
-        "defaults": {
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 6,
-        "w": 24,
-        "x": 0,
-        "y": 6
-      },
-      "hiddenSeries": false,
-      "id": 162,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.0.4",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "",
-          "bucketAggs": [
-            {
-              "field": "timeStampLastSeen",
-              "id": "2",
-              "settings": {
-                "interval": "auto"
-              },
-              "type": "date_histogram"
-            }
-          ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "B4rBfqkVk"
-          },
-          "metrics": [
-            {
-              "id": "1",
-              "type": "count"
-            }
-          ],
-          "query": "",
-          "refId": "A",
-          "timeField": "timeStampLastSeen"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "YESBRO",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "elasticsearch",
         "uid": "-7BdwlkVk"
       },
       "description": "savastan0",
@@ -266,7 +169,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 6
       },
       "hiddenSeries": false,
       "id": 113,
@@ -298,6 +201,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -374,7 +288,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 12
       },
       "hiddenSeries": false,
       "id": 70,
@@ -406,6 +320,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -482,7 +407,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 18
       },
       "hiddenSeries": false,
       "id": 125,
@@ -514,6 +439,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -590,7 +526,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 24
       },
       "hiddenSeries": false,
       "id": 4,
@@ -622,6 +558,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -698,7 +645,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 30
       },
       "hiddenSeries": false,
       "id": 111,
@@ -730,6 +677,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -806,7 +764,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 36
       },
       "hiddenSeries": false,
       "id": 58,
@@ -838,6 +796,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -914,7 +883,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 42
       },
       "hiddenSeries": false,
       "id": 118,
@@ -946,6 +915,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -1016,7 +996,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 54
+        "y": 48
       },
       "hiddenSeries": false,
       "id": 102,
@@ -1048,6 +1028,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -1118,7 +1109,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 54
       },
       "hiddenSeries": false,
       "id": 128,
@@ -1150,6 +1141,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -1226,7 +1228,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 66
+        "y": 60
       },
       "hiddenSeries": false,
       "id": 16,
@@ -1258,6 +1260,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -1334,7 +1347,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 72
+        "y": 66
       },
       "hiddenSeries": false,
       "id": 117,
@@ -1366,6 +1379,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -1442,7 +1466,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 72
       },
       "hiddenSeries": false,
       "id": 121,
@@ -1474,6 +1498,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -1550,7 +1585,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 84
+        "y": 78
       },
       "hiddenSeries": false,
       "id": 122,
@@ -1582,6 +1617,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -1658,7 +1704,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 90
+        "y": 84
       },
       "hiddenSeries": false,
       "id": 24,
@@ -1690,6 +1736,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -1766,7 +1823,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 96
+        "y": 90
       },
       "hiddenSeries": false,
       "id": 126,
@@ -1798,6 +1855,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -1874,7 +1942,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 102
+        "y": 96
       },
       "hiddenSeries": false,
       "id": 26,
@@ -1906,6 +1974,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -1982,7 +2061,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 108
+        "y": 102
       },
       "hiddenSeries": false,
       "id": 44,
@@ -2014,6 +2093,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -2090,7 +2180,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 114
+        "y": 108
       },
       "hiddenSeries": false,
       "id": 28,
@@ -2122,6 +2212,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -2198,7 +2299,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 120
+        "y": 114
       },
       "hiddenSeries": false,
       "id": 72,
@@ -2230,6 +2331,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -2306,7 +2418,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 126
+        "y": 120
       },
       "hiddenSeries": false,
       "id": 60,
@@ -2338,6 +2450,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -2414,7 +2537,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 132
+        "y": 126
       },
       "hiddenSeries": false,
       "id": 68,
@@ -2446,6 +2569,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -2522,7 +2656,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 138
+        "y": 132
       },
       "hiddenSeries": false,
       "id": 30,
@@ -2554,6 +2688,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -2630,7 +2775,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 144
+        "y": 138
       },
       "hiddenSeries": false,
       "id": 115,
@@ -2663,6 +2808,17 @@
           "alias": "",
           "bucketAggs": [
             {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
+            {
               "field": "timeStampLastSeen",
               "id": "2",
               "settings": {
@@ -2689,6 +2845,125 @@
       "thresholds": [],
       "timeRegions": [],
       "title": "PISCES",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "B4rBfqkVk"
+      },
+      "description": "yesbro",
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 144
+      },
+      "hiddenSeries": false,
+      "id": 162,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "9.0.4",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "",
+          "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
+            {
+              "field": "timeStampLastSeen",
+              "id": "2",
+              "settings": {
+                "interval": "auto"
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "B4rBfqkVk"
+          },
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "query": "",
+          "refId": "A",
+          "timeField": "timeStampLastSeen"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "POLARIS",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -2770,6 +3045,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -2873,6 +3159,17 @@
           "alias": "",
           "bucketAggs": [
             {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
+            {
               "field": "timeStampLastSeen",
               "id": "2",
               "settings": {
@@ -2974,6 +3271,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -3083,6 +3391,17 @@
           "alias": "",
           "bucketAggs": [
             {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
+            {
               "field": "timeStampLastSeen",
               "id": "2",
               "settings": {
@@ -3190,6 +3509,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -3299,6 +3629,17 @@
           "alias": "",
           "bucketAggs": [
             {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
+            {
               "field": "timeStampLastSeen",
               "id": "2",
               "settings": {
@@ -3406,6 +3747,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -3515,6 +3867,17 @@
           "alias": "",
           "bucketAggs": [
             {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
+            {
               "field": "timeStampLastSeen",
               "id": "2",
               "settings": {
@@ -3622,6 +3985,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -3731,6 +4105,17 @@
           "alias": "",
           "bucketAggs": [
             {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
+            {
               "field": "timeStampLastSeen",
               "id": "2",
               "settings": {
@@ -3838,6 +4223,17 @@
         {
           "alias": "",
           "bucketAggs": [
+            {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
             {
               "field": "timeStampLastSeen",
               "id": "2",
@@ -3947,6 +4343,17 @@
           "alias": "",
           "bucketAggs": [
             {
+              "field": "recordType",
+              "id": "3",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
+            {
               "field": "timeStampLastSeen",
               "id": "2",
               "settings": {
@@ -4040,6 +4447,6 @@
   "timezone": "",
   "title": "MINION (AIO)",
   "uid": "Et8QF7wWz",
-  "version": 7,
+  "version": 10,
   "weekStart": ""
 }
