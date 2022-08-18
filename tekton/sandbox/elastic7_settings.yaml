@@ -31,6 +31,10 @@ elastic_settings:
       saml_realm_name: "gsuite"
       secret_name: "saml"
       configmap_name: "saml"
+    slack_notification:
+      enabled: "no"
+    smtp_notification:
+      enabled: "no"
     elasticNodeSets:
       - name: master
         config: |
