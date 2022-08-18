@@ -2,9 +2,9 @@ module "es7-backup" {
   source               = "../../terraform-modules/k8s-es-curator"
   Namespace            = "elastic7"
   ElasticName          = "elastic7"
-  NamePrefix           = "backup"
-  BackupBucketName     = "es7"
-  BackupBucketBasePath = "7"
+  NamePrefix           = "xbackup"
+  BackupBucketName     = "xbackup"
+  BackupBucketBasePath = "es-backup/es7"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/es7-backup-actions.yaml")
   Settings             = var.Settings
@@ -21,8 +21,8 @@ module "es7-restore" {
   Namespace            = "elastic7"
   ElasticName          = "elastic7"
   NamePrefix           = "restore-logs"
-  BackupBucketName     = "es7"
-  BackupBucketBasePath = "7"
+  BackupBucketName     = "xbackup"
+  BackupBucketBasePath = "es-backup/es7"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/es7-restore-actions.yaml")
   Settings             = var.Settings
