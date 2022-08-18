@@ -104,28 +104,12 @@ spec:
           value: "k8s/tekton/01-monitoring-elastic"
         - name: branch
           value: "\\#200-DR-180822"
-    - name: monitoring-elastic-backup-restore
-      taskRef:
-        name: tg-run
-      runAfter:
-      - namespaces
-      - minio
-      - monitoring-elastic
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/01-monitoring-backup-restore"
-        - name: branch
-          value: "\\#200-DR-180822"
     - name: monitoring
       taskRef:
         name: tg-run
       runAfter:
       - namespaces
       - minio
-      - monitoring-elastic-backup-restore
       workspaces:
         - name: ws
           workspace: ws
