@@ -16,6 +16,8 @@ variable "NamePrefix" {
 
 variable "Settings" {}
 
+variable "MinioAddress" {}
+
 variable "BackupBucketName" {}
 
 variable "BackupBucketBasePath" {}

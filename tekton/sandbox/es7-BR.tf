@@ -5,6 +5,7 @@ module "es7-backup" {
   NamePrefix           = "backup"
   BackupBucketName     = "es7"
   BackupBucketBasePath = "7"
+  MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/es7-backup-actions.yaml")
   Settings             = var.Settings
   providers = {
@@ -22,6 +23,7 @@ module "es7-restore" {
   NamePrefix           = "restore-logs"
   BackupBucketName     = "es7"
   BackupBucketBasePath = "7"
+  MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/es7-restore-actions.yaml")
   Settings             = var.Settings
   depends_on           = [module.es7-backup]
