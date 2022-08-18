@@ -23,6 +23,14 @@
       delegate_to: localhost
       become: False
 
+    - name: Put red cluster_ca_certificate
+      copy:
+        dest: "{{ temp_dir }}/production-red_clstr_ca.crt"
+        content: "{{ k8s_red_cluster_ca_certificate }}"
+      delegate_to: localhost
+      become: False
+      when: cluster_name == "production"
+
     - name: Get mapping of istio gw NodePort
       shell: |
         kubectl --server {{ k8s_host_url }} \
@@ -32,6 +40,17 @@
       delegate_to: localhost
       become: False
       changed_when: False
+
+    - name: Get mapping of red istio gw NodePort
+      shell: |
+        kubectl --server {{ k8s_red_host_url }} \
+          --token {{ k8s_red_api_key }} --certificate-authority {{ temp_dir }}/production-red_clstr_ca.crt \
+          get svc istio-ingressgateway -o json -n istio-ingress
+      register: nodeport_red_mapping
+      delegate_to: localhost
+      become: False
+      changed_when: False
+      when: cluster_name == "production"
 
     - debug: msg="nodePort is {{ item.nodePort }}"
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
@@ -45,8 +64,8 @@
 
     - name: Copy envoy.yaml
       copy:
-        src: "bastion-compose/envoy.yaml"
-        dest: "/etc/bastion-compose"
+        src: "bastion-compose/envoy-{{ cluster_name }}.yaml"
+        dest: "/etc/bastion-compose/envoy.yaml"
 
 
     - name: set nodePort
@@ -61,9 +80,21 @@
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'http2'
 
+    - name: set nodePortRed
+      set_fact:
+        nodePortRed:  "{{ item.nodePort }}"
+      with_items: '{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}'
+      when: item.name == 'https' and cluster_name == "production"
+
+    - name: set nodePortRed HTTP
+      set_fact:
+        nodePortHttpRed:  "{{ item.nodePort }}"
+      with_items: '{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}'
+      when: item.name == 'http2' and cluster_name == "production"
+
     - name: update xds config
       template:
-        src: xds-config.yaml.j2
+        src: xds-config-{{ cluster_name }}.yaml.j2
         dest: "{{ compose_dest }}/config.yaml"
 
     - name: find all *-compose.yaml file

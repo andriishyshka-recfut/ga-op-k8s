@@ -35,15 +35,21 @@ data "google_container_cluster" "inactive_cluster" {
   location = "us-east4"
 }
 
-data "google_client_config" "default" {
+data "google_container_cluster" "red_cluster" {
+  count    = local.isProduction
+  name     = "production-red"
+  location = "us-east4"
 }
 
+data "google_client_config" "default" {
+}
 
 
 locals {
   activeCluster   = var.Color
   inActiveCluster = var.Color == "blue" ? "green" : "blue"
   harbor          = var.Harbor ? 1 : 0
+  isProduction    = var.Cluster == "production" ? 1 : 0
 
   inActiveGkeEndpoint = "https://${data.google_container_cluster.inactive_cluster.endpoint}"
   gkeClusterConnectionSettings = {
@@ -51,7 +57,12 @@ locals {
     API_KEY                = data.google_client_config.default.access_token
     CLUSTER_CA_CERTIFICATE = base64decode(data.google_container_cluster.active_cluster.master_auth.0.cluster_ca_certificate, )
   }
-  ansibleEnvs = merge(local.gkeClusterConnectionSettings, {
+  gkeRedClusterConnectionSettings = local.isProduction == 1 ? {
+    RED_HOST                   = "https://${data.google_container_cluster.red_cluster.endpoint}"
+    RED_API_KEY                = data.google_client_config.default.access_token
+    RED_CLUSTER_CA_CERTIFICATE = base64decode(data.google_container_cluster.red_cluster.master_auth.0.cluster_ca_certificate, )
+  } : {}
+  ansibleEnvs = merge(local.gkeClusterConnectionSettings, local.gkeRedClusterConnectionSettings, {
     CLUSTER_SETTINGS        = jsonencode(var.Settings)
     CLUSTER                 = var.Cluster
     COLOR                   = local.activeCluster
