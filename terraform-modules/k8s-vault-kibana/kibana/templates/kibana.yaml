@@ -49,8 +49,6 @@ spec:
     server.xsrf.allowlist: [/api/security/saml/callback]
     # xpack.security.authc.providers: [saml,oidc,basic]
 {{- end }}
-{{- if .Values.xpack_reporting_index_re.enabled }}
-  {{- if eq .Values.xpack_reporting_index_re.enabled "yes" }}
+{{- if eq .Values.xpack_reporting_index_re.enabled "yes" }}
     xpack.reporting.index: ".reporting-re"
-  {{- end }}
 {{- end }}
