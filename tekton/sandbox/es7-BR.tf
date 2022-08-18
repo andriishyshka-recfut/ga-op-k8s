@@ -18,7 +18,7 @@ module "es7-restore" {
   Namespace   = "elastic7"
   ElasticName = "elastic7"
   NamePrefix  = "restore-logs"
-  Actions     = file("${path.root}/es6-restore-actions.yaml")
+  Actions     = file("${path.root}/es7-restore-actions.yaml")
   Settings    = var.Settings
   depends_on  = [module.es7-backup]
 }
