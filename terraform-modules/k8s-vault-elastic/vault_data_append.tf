@@ -7,10 +7,10 @@ data "kubernetes_secret" "es_password" {
   depends_on = [helm_release.elasticsearch]
 }
 
-
+#need to find fix
 resource "vault_generic_secret" "es_admin_creds" {
   count = local.storeEsPasswordInVault
-  path  = "secret/red/elasticsearch-admin/${local.esValues.esName}"
+  path  = "secret/elasticsearch-admin/${local.esValues.esName}"
 
   data_json = <<EOT
   {
@@ -22,7 +22,7 @@ EOT
 
 resource "vault_generic_secret" "apm_creds" {
   count = local.apmCredsToggle
-  path  = "secret/red/apm/${local.esValues.esName}-${var.Color}"
+  path  = "secret/apm/${local.esValues.esName}-${var.Color}"
 
   data_json = <<EOT
   {
