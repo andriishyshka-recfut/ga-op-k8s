@@ -96,3 +96,5 @@ elastic_settings:
       enabled: "yes"
       realm: "gsuite"
       istio_gateway_fqdn: "kk.regemini.io"
+    xpack_reporting_index_re:
+      enabled: "yes"
