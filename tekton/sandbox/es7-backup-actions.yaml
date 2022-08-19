@@ -20,6 +20,10 @@ actions:
         disable_action: False
         allow_ilm_indices: True
     filters:
-     - filtertype: pattern
-       kind: regex
-       value: '^.*$'
+    - filtertype: pattern
+      kind: regex
+      value: '^.*$'
+    - filtertype: pattern
+      kind: regex
+      value: '^(\.monitoring|apm).*$'
+      exclude: True
