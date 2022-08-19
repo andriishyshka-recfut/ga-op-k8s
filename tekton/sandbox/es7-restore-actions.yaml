@@ -16,4 +16,11 @@ actions:
       - filtertype: pattern
         kind: prefix
         value: elastic7-dr
-
+      - filtertype: pattern
+        kind: prefix
+        value: .monitoring
+        exclude: True
+      - filtertype: pattern
+        kind: prefix
+        value: apm
+        exclude: True
