@@ -79,18 +79,20 @@
         nodePortHttp:  "{{ item.nodePort }}"
       with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
       when: item.name == 'http2'
+    
+    - when: cluster_name == "production"
+      block:
+        - name: set nodePortRed
+          set_fact:
+            nodePortRed:  "{{ item.nodePort }}"
+          with_items: '{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}'
+          when: item.name == 'https'
 
-    - name: set nodePortRed
-      set_fact:
-        nodePortRed:  "{{ item.nodePort }}"
-      with_items: '{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}'
-      when: item.name == 'https' and cluster_name == "production"
-
-    - name: set nodePortRed HTTP
-      set_fact:
-        nodePortHttpRed:  "{{ item.nodePort }}"
-      with_items: '{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}'
-      when: item.name == 'http2' and cluster_name == "production"
+        - name: set nodePortRed HTTP
+          set_fact:
+            nodePortHttpRed:  "{{ item.nodePort }}"
+          with_items: '{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}'
+          when: item.name == 'http2'
 
     - name: update xds config
       template:

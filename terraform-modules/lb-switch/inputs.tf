@@ -58,9 +58,9 @@ locals {
     CLUSTER_CA_CERTIFICATE = base64decode(data.google_container_cluster.active_cluster.master_auth.0.cluster_ca_certificate, )
   }
   gkeRedClusterConnectionSettings = local.isProduction == 1 ? {
-    RED_HOST                   = "https://${data.google_container_cluster.red_cluster.endpoint}"
+    RED_HOST                   = "https://${data.google_container_cluster.red_cluster[0].endpoint}"
     RED_API_KEY                = data.google_client_config.default.access_token
-    RED_CLUSTER_CA_CERTIFICATE = base64decode(data.google_container_cluster.red_cluster.master_auth.0.cluster_ca_certificate, )
+    RED_CLUSTER_CA_CERTIFICATE = base64decode(data.google_container_cluster.red_cluster[0].master_auth.0.cluster_ca_certificate, )
   } : {}
   ansibleEnvs = merge(local.gkeClusterConnectionSettings, local.gkeRedClusterConnectionSettings, {
     CLUSTER_SETTINGS        = jsonencode(var.Settings)
