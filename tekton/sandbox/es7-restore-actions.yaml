@@ -17,10 +17,10 @@ actions:
         kind: prefix
         value: elastic7-dr
       - filtertype: pattern
-        kind: prefix
-        value: .monitoring
+        kind: regex
+        value: '^\.monitoring.*$'
         exclude: True
       - filtertype: pattern
-        kind: prefix
-        value: apm
+        kind: regex
+        value: '^apm.*'
         exclude: True
