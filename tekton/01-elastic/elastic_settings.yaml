@@ -94,12 +94,12 @@ elastic_settings:
               native1:
                 order: 1
         storageSize: "30Gi"
-        ES_JAVA_OPTS: -Xms14g -Xmx14g
+        ES_JAVA_OPTS: -Xms13g -Xmx13g
         nodesCount: 3
         workloadsType: coor
-        memoryRequests: "26Gi"
+        memoryRequests: "24Gi"
         cpuRequests: "4"
-        memoryLimit: 28Gi
+        memoryLimit: 26Gi
         cpuLimit: "7"
   kibana:
     enabled: true
