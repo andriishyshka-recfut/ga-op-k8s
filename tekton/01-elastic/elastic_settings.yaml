@@ -93,7 +93,7 @@ elastic_settings:
             native:
               native1:
                 order: 1
-        storageSize: "10Gi"
+        storageSize: "30Gi"
         ES_JAVA_OPTS: -Xms14g -Xmx14g
         nodesCount: 3
         workloadsType: coor
