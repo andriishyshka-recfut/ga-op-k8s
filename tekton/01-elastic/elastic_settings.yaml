@@ -76,11 +76,31 @@ elastic_settings:
         storageSize: "750Gi"
         ES_JAVA_OPTS: -Xms31g -Xmx31g
         nodesCount: 13
-        memoryRequests: "46Gi"
+        memoryRequests: "52Gi"
+        cpuRequests: "8"
+        memoryLimit: 54Gi
+        cpuLimit: "15"
+      - name: coor
+        config: |
+          node.master: false
+          node.data: false
+          node.ingest: false
+          node.ml: false
+          node.store.allow_mmap: false
+          index.store.type: niofs
+          xpack.monitoring.collection.enabled: true
+          xpack.security.authc.realms:
+            native:
+              native1:
+                order: 1
+        storageSize: "10Gi"
+        ES_JAVA_OPTS: -Xms14g -Xmx14g
+        nodesCount: 3
+        workloadsType: coor
+        memoryRequests: "26Gi"
         cpuRequests: "4"
-        memoryLimit: 45Gi
-        cpuLimit: "8"
-
+        memoryLimit: 28Gi
+        cpuLimit: "7"
   kibana:
     enabled: true
     # cert_ttl: "143h"
