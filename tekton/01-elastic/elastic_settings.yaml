@@ -52,13 +52,13 @@ elastic_settings:
             native:
               native1:
                 order: 1
-        storageSize: "20Gi"
-        ES_JAVA_OPTS: -Xms16g -Xmx16g
+        storageSize: "30Gi"
+        ES_JAVA_OPTS: -Xms13g -Xmx13g
         nodesCount: 3
-        workloadsType: master
-        memoryRequests: "16Gi"
-        cpuRequests: "7"
-        memoryLimit: 20Gi
+        workloadsType: mstr
+        memoryRequests: "24Gi"
+        cpuRequests: "4"
+        memoryLimit: 26Gi
         cpuLimit: "7"
       - name: data
         config: |
