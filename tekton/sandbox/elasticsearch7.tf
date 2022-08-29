@@ -15,7 +15,7 @@ module "elastic7-elastic" {
   MinioAddress                 = var.Settings.clusters[var.Cluster].MinioAddress
   BackupBucketName             = "es7"
   BackupBucketBasePath         = "7"
-  OidcRedirectUri              = "es7.t.regemini.io"
+  OidcRedirectUri              = "k.t.regemini.io"
 }
 
 
