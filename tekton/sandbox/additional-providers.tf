@@ -1,6 +1,5 @@
 data "vault_generic_secret" "k8s_auth_inactive" {
-  # path = local.inactiveClusterVaultPath
-  path = "secret/kubernetes-sandbox-blue"
+  path = local.inactiveClusterVaultPath
 }
 provider "kubernetes" {
   alias                  = "kubernetes-inactive"
