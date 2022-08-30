@@ -3,7 +3,7 @@ kibana1_settings:
   kibana:
     enabled: true
     # cert_ttl: "143h"
-    name: kibana-user-1
+    name: kibana-lb-1
     esName: "elastic"
     namespace: "elastic"
     kibanaVersion: "7.17.4"
@@ -19,7 +19,7 @@ kibana2_settings:
   kibana:
     enabled: true
     # cert_ttl: "143h"
-    name: kibana-user-2
+    name: kibana-lb-2
     esName: "elastic"
     namespace: "elastic"
     kibanaVersion: "7.17.4"
@@ -34,7 +34,7 @@ kibana3_settings:
   kibana:
     enabled: true
     # cert_ttl: "143h"
-    name: kibana-user-3
+    name: kibana-lb-3
     esName: "elastic"
     namespace: "elastic"
     kibanaVersion: "7.17.4"
