@@ -9,8 +9,6 @@ variable "Settings" {}
 
 variable "Color" {}
 
-
-
 locals {
   esValues     = var.ElasticSettings.elastic
   kibanaValues = var.ElasticSettings.kibana

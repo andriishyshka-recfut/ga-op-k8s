@@ -51,7 +51,7 @@ resource "vault_kubernetes_auth_backend_role" "role_tekton" {
 resource "vault_kubernetes_auth_backend_role" "role_cert-manager" {
   backend                          = "k8s-${var.Cluster}-${var.Color}"
   role_name                        = "cert-manager"
-  bound_service_account_names      = ["vault"]
+  bound_service_account_names      = ["${var.Cluster}-cert-manager"]
   bound_service_account_namespaces = ["kube-system"]
   token_ttl                        = 0
   token_policies                   = ["pki"]

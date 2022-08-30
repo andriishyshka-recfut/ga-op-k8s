@@ -31,6 +31,10 @@ elastic_settings:
       saml_realm_name: "gsuite"
       secret_name: "saml"
       configmap_name: "saml"
+    slack_notification:
+      enabled: "no"
+    smtp_notification:
+      enabled: "no"
     elasticNodeSets:
       - name: master
         config: |
@@ -83,6 +87,6 @@ elastic_settings:
     oidc_provider:
       enabled: "yes"
       realm: "google"
-      istio_gateway_fqdn: "es7.t.regemini.io"
+      istio_gateway_fqdn: "k.t.regemini.io"
     saml_provider:
       enabled: "no"

@@ -97,7 +97,15 @@ resource "helm_release" "vault_certmanager" {
     value = var.VaultAddress
   }
   set {
+    name  = "vaultRole"
+    value = "cert-manager"
+  }
+  set {
     name  = "pkiRole"
-    value = "cert-manager-${var.Cluster}-${var.Color}"
+    value = "elastic"
+  }
+  set {
+    name  = "pkiPath"
+    value = "pki-elastic-int"
   }
 }

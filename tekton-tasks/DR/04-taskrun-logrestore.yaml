@@ -1,17 +1,53 @@
+# apiVersion: tekton.dev/v1beta1
+# kind: TaskRun
+# metadata:
+#   generateName: es-log-restore-
+#   namespace: tekton-pipelines
+# spec:
+#   taskRef:
+#     name: tg-run
+#   workspaces:
+#     - name: ws # this workspace name must be declared in the Task
+#       emptyDir: {}
+#   params:
+#     - name: path
+#       value: "k8s/tekton/03-logs-restore"
+#     - name: branch
+#       value: "\\#194-DR-22-07-22"
+#   timeout: 3h
 apiVersion: tekton.dev/v1beta1
-kind: TaskRun
+kind: Pipeline
 metadata:
-  generateName: es-log-restore-
+  name: 4-logs-br
   namespace: tekton-pipelines
 spec:
-  taskRef:
-    name: tg-run
   workspaces:
-    - name: ws # this workspace name must be declared in the Task
+  - name: ws
+  tasks:
+    - name: monitorings-logs-br
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/03-logs-restore"
+        - name: branch
+          value: "\\#200-DR-180822"
+      timeout: 3h
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: monitorings-logs-br
+  namespace: tekton-pipelines
+spec:
+  timeouts:
+    pipeline: "6h0m0s"
+    tasks: "6h0m0s"
+  pipelineRef:
+    name: 4-logs-br
+  workspaces:
+    - name: ws
       emptyDir: {}
-  params:
-    - name: path
-      value: "k8s/tekton/03-logs-restore"
-    - name: branch
-      value: "\\#194-DR-22-07-22"
-  timeout: 3h

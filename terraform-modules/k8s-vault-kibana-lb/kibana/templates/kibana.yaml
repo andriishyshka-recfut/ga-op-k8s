@@ -1,0 +1,58 @@
+---
+apiVersion: kibana.k8s.elastic.co/v1beta1
+kind: Kibana
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  version: {{ .Values.kibanaVersion }}
+  count: 1
+
+  elasticsearchRef:
+    name: "{{ .Values.esName }}"
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  podTemplate:
+    metadata:
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+    spec:
+      containers:
+      - name: kibana
+        resources:
+          requests:
+            memory: 0.5Gi
+            cpu: 0.5
+          limits:
+            memory: 1Gi
+            cpu: 1
+{{- if eq .Values.oidc_provider.enabled "yes" }}
+  config:
+    xpack.security.authc.providers:
+      oidc.Google:
+        order: 1
+        realm: {{ .Values.oidc_provider.realm }}
+      basic.basic1:
+        order: 2
+{{- end }}
+{{- if eq .Values.saml_provider.enabled "yes" }}
+      saml.gsuite:
+        order: 0
+        realm: {{ .Values.saml_provider.realm }}
+    # server.publicBaseUrl: https://{{ .Values.saml_provider.istio_gateway_fqdn }}
+    server.publicBaseUrl: "https://kk.regemini.io"
+    server.xsrf.allowlist: [/api/security/saml/callback]
+    server.ssl.supportedProtocols: ["TLSv1.2","TLSv1.3"]
+{{- end }}
+    xpack.security.audit.enabled: "true"
+    xpack.security.encryptionKey: "Hu59Id0sD5D1wyiuAYY0Jj6YPK3TyDNP"
+    xpack.reporting.encryptionKey: "X6mJKMED9tGuSK21g4IY"
+    xpack.encryptedSavedObjects.encryptionKey: "yV0oq6z9zvt5XAYMlmkS0ufKgieGQ9Ks"
+    xpack.encryptedSavedObjects.keyRotation.decryptionOnlyKeys: "M7btYAQVod1WnrcI6GWyDvg0W4yz8uj1"
+    xpack.security.cookieName: "sid"
+    # xpack.security.cookieName: {{ .Values.name }}
+{{- if eq .Values.xpack_reporting_index_re.enabled "yes" }}
+    xpack.reporting.index: ".reporting-re"
+{{- end }}

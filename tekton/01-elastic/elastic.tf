@@ -29,10 +29,10 @@ module "elastic-kibana" {
   # depends_on          = [module.restore-service-indexes]
 }
 
-module "elastic-beats" {
-  source   = "../../terraform-modules/k8s-vault-elastic-beats"
-  Cluster  = var.Cluster
-  Color    = var.Color
-  Settings = var.Settings
-  # depends_on = [module.elastic-kibana]
-}
+# module "elastic-beats" {
+#   source   = "../../terraform-modules/k8s-vault-elastic-beats"
+#   Cluster  = var.Cluster
+#   Color    = var.Color
+#   Settings = var.Settings
+#   # depends_on = [module.elastic-kibana]
+# }
