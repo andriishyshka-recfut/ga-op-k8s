@@ -61,7 +61,7 @@ resource "kubernetes_manifest" "ingress_gateway" {
             "protocol" = "HTTPS"
           }
           "tls" = {
-            "credentialName" = "${each.key}-cert"
+            "credentialName" = lookup(var.Settings.clusters[var.Cluster].ingress[each.key], "cert-name", "${each.key}-cert")
             "mode"           = "SIMPLE"
           }
         }
@@ -71,7 +71,7 @@ resource "kubernetes_manifest" "ingress_gateway" {
 }
 
 resource "kubernetes_manifest" "ingress_virtualservice" {
-  for_each = local.ingressSettings
+  for_each = local.certManager
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
