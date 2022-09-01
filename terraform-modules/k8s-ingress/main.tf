@@ -110,3 +110,11 @@ resource "kubernetes_manifest" "ingress_virtualservice" {
     }
   }
 }
+
+output "ingressSettings" {
+  value = local.ingressSettings
+}
+
+output "certManager" {
+  value = local.certManager
+}

@@ -31,6 +31,10 @@ elastic_settings:
       saml_realm_name: "gsuite"
       secret_name: "saml"
       configmap_name: "saml"
+    slack_notification:
+      enabled: "no"
+    smtp_notification:
+      enabled: "no"
     elasticNodeSets:
       - name: master
         config: |
@@ -72,7 +76,26 @@ elastic_settings:
         cpuRequests: "1"
         memoryLimit: 7Gi
         cpuLimit: 4
-
+      - name: coor
+        config: |
+          node.master: false
+          node.data: false
+          node.ingest: false
+          node.ml: false
+          node.store.allow_mmap: false
+          index.store.type: niofs
+          xpack.monitoring.collection.enabled: true
+          xpack.security.authc.realms:
+            native:
+              native1:
+                order: 1
+        storageSize: "900Gi"
+        ES_JAVA_OPTS: -Xms6g -Xmx6g
+        nodesCount: 1
+        memoryRequests: "6Gi"
+        cpuRequests: "1"
+        memoryLimit: 7Gi
+        cpuLimit: 4
   kibana:
     enabled: true
     # cert_ttl: "143h"

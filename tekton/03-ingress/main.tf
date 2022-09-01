@@ -3,3 +3,11 @@ module "ingress" {
   Cluster  = var.Cluster
   Settings = var.Settings
 }
+
+output "ingressSettings" {
+  value = module.ingress.ingressSettings
+}
+
+output "certManager" {
+  value = module.ingress.certManager
+}
