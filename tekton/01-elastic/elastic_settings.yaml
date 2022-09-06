@@ -38,6 +38,8 @@ elastic_settings:
       enabled: "yes"
       vault_path: "secret/red/elastic-notification-accounts"
       secret_name: "smtp-notification"
+    performance_settings:
+      enabled: "no"
     elasticNodeSets:
       - name: master
         config: |

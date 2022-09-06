@@ -35,6 +35,8 @@ elastic_settings:
       enabled: "no"
     smtp_notification:
       enabled: "no"
+    performance_settings:
+      enabled: "yes"
     elasticNodeSets:
       - name: master
         config: |

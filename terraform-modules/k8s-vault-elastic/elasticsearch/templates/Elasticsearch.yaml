@@ -104,4 +104,7 @@ spec:
 {{ indent 6 .config }}
 {{ indent 6 $.Values.oidc_config }}
 {{ indent 6 $.Values.notification_config }}
+{{- if eq .Values.performance_settings.enabled "yes" }}
+      bootstrap.memory_lock: true
+{{- end }}
 {{- end }}
