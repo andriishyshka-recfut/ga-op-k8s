@@ -5,7 +5,7 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "elastic7"
     namespace: "elastic7"
-    appVersion: "7.14.1"
+    appVersion: "7.17.5"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
     apmToken: "apm-elastic7-apm-token"
@@ -49,6 +49,9 @@ elastic_settings:
             native:
               native1:
                 order: 1
+          xpack.security.transport.ssl.certificate_authorities:
+          - /usr/share/elasticsearch/config/other/remote.ca.crt
+          xpack.security.transport.ssl.client_authentication: optional
         storageSize: "1Gi"
         ES_JAVA_OPTS: -Xms4g -Xmx4g
         nodesCount: 1
@@ -56,6 +59,17 @@ elastic_settings:
         cpuRequests: "1"
         memoryLimit: 5Gi
         cpuLimit: 3
+        podTemplate:
+          spec:
+            containers:
+            - name: elasticsearch
+              volumeMounts:
+              - mountPath: /usr/share/elasticsearch/config/other
+                name: remote-certs
+            volumes:
+            - name: remote-certs
+              secret:
+                secretName: remote-certs
       - name: data
         config: |
           node.master: false
@@ -69,6 +83,9 @@ elastic_settings:
             native:
               native1:
                 order: 1
+          xpack.security.transport.ssl.certificate_authorities:
+          - /usr/share/elasticsearch/config/other/remote.ca.crt
+          xpack.security.transport.ssl.client_authentication: optional
         storageSize: "900Gi"
         ES_JAVA_OPTS: -Xms6g -Xmx6g
         nodesCount: 2
@@ -76,6 +93,17 @@ elastic_settings:
         cpuRequests: "1"
         memoryLimit: 7Gi
         cpuLimit: 4
+        podTemplate:
+          spec:
+            containers:
+            - name: elasticsearch
+              volumeMounts:
+              - mountPath: /usr/share/elasticsearch/config/other
+                name: remote-certs
+            volumes:
+            - name: remote-certs
+              secret:
+                secretName: remote-certs
       - name: coor
         config: |
           node.master: false
@@ -89,6 +117,9 @@ elastic_settings:
             native:
               native1:
                 order: 1
+          xpack.security.transport.ssl.certificate_authorities:
+          - /usr/share/elasticsearch/config/other/remote.ca.crt
+          xpack.security.transport.ssl.client_authentication: optional
         storageSize: "900Gi"
         ES_JAVA_OPTS: -Xms6g -Xmx6g
         nodesCount: 1
@@ -96,13 +127,25 @@ elastic_settings:
         cpuRequests: "1"
         memoryLimit: 7Gi
         cpuLimit: 4
+        extvolumeMounts:
+        podTemplate:
+          spec:
+            containers:
+            - name: elasticsearch
+              volumeMounts:
+              - mountPath: /usr/share/elasticsearch/config/other
+                name: remote-certs
+            volumes:
+            - name: remote-certs
+              secret:
+                secretName: remote-certs
   kibana:
     enabled: true
     # cert_ttl: "143h"
     name: kibana
     esName: "elastic7"
     namespace: "elastic7"
-    kibanaVersion: "7.14.1"
+    kibanaVersion: "7.17.5"
     oidc_provider:
       enabled: "yes"
       realm: "google"
