@@ -67,6 +67,7 @@ spec:
       - https://wsecu.regemini.com/
       - https://epl.regemini.io/
       - https://kowl.t.regemini.io/
+      - https://k.regemini.com/
 
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
