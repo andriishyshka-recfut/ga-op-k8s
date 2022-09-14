@@ -1,5 +1,5 @@
 resource "kubernetes_manifest" "ingress_letsencrypt_cert" {
-  for_each = local.ingressSettings
+  for_each = local.certManager
   manifest = {
     "apiVersion" = "cert-manager.io/v1"
     "kind"       = "Certificate"
@@ -11,10 +11,8 @@ resource "kubernetes_manifest" "ingress_letsencrypt_cert" {
       }
     }
     "spec" = {
-      "commonName" = each.value.domain
-      "dnsNames" = [
-        each.value.domain,
-      ]
+      "commonName" = each.value.domain[0]
+      "dnsNames"   = each.value.domain
       "issuerRef" = {
         "kind" = "ClusterIssuer"
         "name" = "letsencrypt-prod"
@@ -30,12 +28,12 @@ resource "kubernetes_manifest" "ingress_gateway" {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "Gateway"
     "metadata" = {
-      "name"      = "${each.key}-wg-gateway"
+      "name"      = lookup(each.value, "ingressgateway", false) != false ? "${each.key}-${split("-", each.value.ingressgateway)[1]}-gateway" : "${each.key}-wg-gateway"
       "namespace" = "istio-ingress"
     }
     "spec" = {
       "selector" = {
-        "istio" = "ingressgateway"
+        "istio" = lookup(each.value, "ingressgateway", "ingressgateway")
       }
       "servers" = [
         # {
@@ -52,16 +50,14 @@ resource "kubernetes_manifest" "ingress_gateway" {
         #   }
         # },
         {
-          "hosts" = [
-            each.value.domain
-          ]
+          "hosts" = each.value.domain
           "port" = {
             "name"     = "https"
             "number"   = 443
             "protocol" = "HTTPS"
           }
           "tls" = {
-            "credentialName" = lookup(var.Settings.clusters[var.Cluster].ingress[each.key], "cert-name", "${each.key}-cert")
+            "credentialName" = lookup(each.value, "cert-name", "${each.key}-cert")
             "mode"           = "SIMPLE"
           }
         }
@@ -71,7 +67,7 @@ resource "kubernetes_manifest" "ingress_gateway" {
 }
 
 resource "kubernetes_manifest" "ingress_virtualservice" {
-  for_each = local.certManager
+  for_each = local.ingressSettings
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
@@ -81,11 +77,9 @@ resource "kubernetes_manifest" "ingress_virtualservice" {
     }
     "spec" = {
       "gateways" = [
-        "istio-ingress/${each.key}-wg-gateway",
+        lookup(each.value, "ingressgateway", false) != false ? "istio-ingress/${each.key}-${split("-", each.value.ingressgateway)[1]}-gateway" : "istio-ingress/${each.key}-wg-gateway",
       ]
-      "hosts" = [
-        each.value.domain
-      ]
+      "hosts" = each.value.domain
       "http" = [
         {
           "match" = [
@@ -109,12 +103,4 @@ resource "kubernetes_manifest" "ingress_virtualservice" {
       ]
     }
   }
-}
-
-output "ingressSettings" {
-  value = local.ingressSettings
-}
-
-output "certManager" {
-  value = local.certManager
 }
