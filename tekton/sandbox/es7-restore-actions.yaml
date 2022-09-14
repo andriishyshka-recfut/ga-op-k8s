@@ -8,12 +8,16 @@ actions:
       # name: monitoring-dr-%Y%m%d
       # indices: "-.kibana*"
       wait_for_completion: False
-      include_global_state: True
+      include_global_state: False
       # wait_interval: 20
     filters:
       - filtertype: state
         state: SUCCESS
       - filtertype: pattern
         kind: prefix
-        value: elastic-dr
+        value: elastic7-dr
+      - filtertype: pattern
+        kind: regex
+        value: '^(\.monitoring|apm).*$'
+        exclude: True
 

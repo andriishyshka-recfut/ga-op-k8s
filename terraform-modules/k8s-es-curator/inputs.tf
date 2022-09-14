@@ -14,8 +14,14 @@ variable "NamePrefix" {
   default = ""
 }
 
-variable "Settings" { }
+variable "Settings" {}
 
-locals{
-  currentProject  = var.Settings.gcpProject
+variable "MinioAddress" {}
+
+variable "BackupBucketName" {}
+
+variable "BackupBucketBasePath" {}
+
+locals {
+  currentProject = var.Settings.gcpProject
 }

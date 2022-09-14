@@ -1,0 +1,46 @@
+
+kibana1_settings:
+  kibana:
+    enabled: true
+    # cert_ttl: "143h"
+    name: kibana-lb-1
+    esName: "elastic"
+    namespace: "elastic"
+    kibanaVersion: "7.17.4"
+    oidc_provider:
+      enabled: "no"
+    saml_provider:
+      enabled: "no"
+    xpack_reporting_index_re:
+      enabled: "no"
+    gcs_enable: "no"
+
+kibana2_settings:
+  kibana:
+    enabled: true
+    # cert_ttl: "143h"
+    name: kibana-lb-2
+    esName: "elastic"
+    namespace: "elastic"
+    kibanaVersion: "7.17.4"
+    oidc_provider:
+      enabled: "no"
+    saml_provider:
+      enabled: "no"
+    xpack_reporting_index_re:
+      enabled: "no"
+
+kibana3_settings:
+  kibana:
+    enabled: true
+    # cert_ttl: "143h"
+    name: kibana-lb-3
+    esName: "elastic"
+    namespace: "elastic"
+    kibanaVersion: "7.17.4"
+    oidc_provider:
+      enabled: "no"
+    saml_provider:
+      enabled: "no"
+    xpack_reporting_index_re:
+      enabled: "no"

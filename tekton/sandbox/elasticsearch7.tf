@@ -14,8 +14,8 @@ module "elastic7-elastic" {
   StoreEsPasswordInVault       = true
   MinioAddress                 = var.Settings.clusters[var.Cluster].MinioAddress
   BackupBucketName             = "es7"
-  BackupBucketBasePath         = "6"
-  OidcRedirectUri              = "es7.t.regemini.io"
+  BackupBucketBasePath         = "7"
+  OidcRedirectUri              = "k.t.regemini.io"
 }
 
 
@@ -26,4 +26,7 @@ module "elastic7-kibana" {
   Cluster                      = var.Cluster
   Color                        = var.Color
   Settings                     = var.Settings
+  # depends_on = [
+  #   module.es7-restore
+  # ]
 }

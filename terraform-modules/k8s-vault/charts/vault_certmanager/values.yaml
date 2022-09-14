@@ -1,5 +1,6 @@
 mountPath: k8s-sanndbox-blue
 secretName: default
 vaultAddress: "http://vault-active.vault"
-pkiRole: cert-manager
-pkiPath: "pki/sign/cert-manager"
+vaultRole: cert-manager
+pkiPath: "pki"
+pkiRole: "cert-manager"

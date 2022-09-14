@@ -7,7 +7,8 @@ terraform {
       "plan",
       "import",
       "push",
-      "refresh"
+      "refresh",
+      "destroy"
     ]
 
     required_var_files = ["${get_parent_terragrunt_dir()}/../../../../${get_env("CONF_PATH")}"]
@@ -24,6 +25,7 @@ dependency "cluster" {
 inputs = {
   GkeClusterConnectionSettings = dependency.cluster.outputs.GkeClusterConnectionSettings
 }
+
 
 generate "provider" {
   path      = "provider.tf"
@@ -43,6 +45,9 @@ locals {
   gkeClusterEndpoint   = local.GkeClusterConnectionSettings.HOST
   gkeBearerToken       = local.GkeClusterConnectionSettings.API_KEY
   clusterCaCertificate = local.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
+ # gkeClusterEndpoint   = data.vault_generic_secret.GkeClusterConnectionSettings.data["HOST"]
+ # gkeBearerToken       = data.vault_generic_secret.GkeClusterConnectionSettings.data["API_KEY"]
+ # clusterCaCertificate = data.vault_generic_secret.GkeClusterConnectionSettings.data["CLUSTER_CA_CERTIFICATE"]
 }
 
 provider "helm" {
@@ -57,7 +62,6 @@ provider "kubernetes" {
   host                   = local.gkeClusterEndpoint
   token                  = local.gkeBearerToken
   cluster_ca_certificate = local.clusterCaCertificate
-
 }
 
 provider "kubectl" {

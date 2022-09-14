@@ -42,13 +42,15 @@ spec:
         order: 0
         realm: {{ .Values.saml_provider.realm }}
     # server.publicBaseUrl: https://{{ .Values.saml_provider.istio_gateway_fqdn }}
-    server.publicBaseUrl: "https://kk.regemini.io"
-    server.ssl.supportedProtocols: ["TLSv1.2","TLSv1.3"]
-    xpack.security.audit.enabled: "true"
-    xpack.reporting.encryptionKey: "X6mJKMED9tGuSK21g4IY"
+    server.publicBaseUrl: "https://k.regemini.com/"
     server.xsrf.allowlist: [/api/security/saml/callback]
-    # xpack.security.authc.providers: [saml,oidc,basic]
+    server.ssl.supportedProtocols: ["TLSv1.2","TLSv1.3"]
 {{- end }}
+    xpack.security.audit.enabled: "true"
+    # xpack.security.encryptionKey: "Hu59Id0sD5D1wyiuAYY0Jj6YPK3TyDNP"
+    xpack.reporting.encryptionKey: "X6mJKMED9tGuSK21g4IY"
+    # xpack.encryptedSavedObjects.encryptionKey: "yV0oq6z9zvt5XAYMlmkS0ufKgieGQ9Ks"
+    # xpack.encryptedSavedObjects.keyRotation.decryptionOnlyKeys: "M7btYAQVod1WnrcI6GWyDvg0W4yz8uj1"
 {{- if eq .Values.xpack_reporting_index_re.enabled "yes" }}
     xpack.reporting.index: ".reporting-re"
 {{- end }}

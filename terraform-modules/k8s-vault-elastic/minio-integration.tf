@@ -14,7 +14,7 @@ locals {
          "endpoint": "${var.MinioAddress}",
          "protocol": "http",
          "path_style_access": true,
-         "base_path": ${var.BackupBucketBasePath}
+         "base_path": "${var.BackupBucketBasePath}"
       }
   }
   '

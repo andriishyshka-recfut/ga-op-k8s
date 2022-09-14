@@ -2,7 +2,7 @@
 #   grafanaValues = yamldecode(file("${path.module}/values.yaml"))
 # }
 data "vault_generic_secret" "elastic" {
-  path = "secret/red/elasticsearch-admin/elastic"
+  path = "secret/elasticsearch-admin/elastic"
 }
 data "vault_generic_secret" "grafana" {
   path = local.grafanaSecretpath

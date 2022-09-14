@@ -35,6 +35,8 @@ elastic_settings:
       enabled: "no"
     smtp_notification:
       enabled: "no"
+    performance_settings:
+      enabled: "yes"
     elasticNodeSets:
       - name: master
         config: |
@@ -149,6 +151,6 @@ elastic_settings:
     oidc_provider:
       enabled: "yes"
       realm: "google"
-      istio_gateway_fqdn: "es7.t.regemini.io"
+      istio_gateway_fqdn: "k.t.regemini.io"
     saml_provider:
       enabled: "no"

@@ -1,0 +1,4638 @@
+actions:
+  1:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-altenen-20220820
+        source:
+          index: dome-altenen-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  2:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-altenen-20220820)$
+    description: _aliases
+    options:
+      name: dome-altenen
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-altenen-20211129)$
+  3:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-altenen-20220820)$
+    description: _aliases
+    options:
+      name: forum-altenen
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-altenen-20211129)$
+  4:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-altenen-20211129)$
+    options:
+      continue_if_exception: 'False'
+  5:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-antichat-20220820
+        source:
+          index: dome-antichat-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  6:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-antichat-20220820)$
+    description: _aliases
+    options:
+      name: dome-antichat
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-antichat-20211129)$
+  7:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-antichat-20220820)$
+    description: _aliases
+    options:
+      name: forum-antichat
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-antichat-20211129)$
+  8:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-antichat-20211129)$
+    options:
+      continue_if_exception: 'False'
+  9:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-antimigalki-20220820
+        source:
+          index: dome-antimigalki-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  10:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-antimigalki-20220820)$
+    description: _aliases
+    options:
+      name: dome-antimigalki
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-antimigalki-20211129)$
+  11:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-antimigalki-20211129)$
+    options:
+      continue_if_exception: 'False'
+  12:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-ascarding-20220820
+        source:
+          index: dome-ascarding-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  13:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ascarding-20220820)$
+    description: _aliases
+    options:
+      name: dome-ascarding
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ascarding-20211129)$
+  14:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ascarding-20220820)$
+    description: _aliases
+    options:
+      name: forum-ascarding
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ascarding-20211129)$
+  15:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-ascarding-20211129)$
+    options:
+      continue_if_exception: 'False'
+  16:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-bdf-20220820
+        source:
+          index: dome-bdf-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  17:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bdf-20220820)$
+    description: _aliases
+    options:
+      name: dome-bdf
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bdf-20211129)$
+  18:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bdf-20220820)$
+    description: _aliases
+    options:
+      name: forum-bdf
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bdf-20211129)$
+  19:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-bdf-20211129)$
+    options:
+      continue_if_exception: 'False'
+  20:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-bhf-20220820
+        source:
+          index: dome-bhf-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  21:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bhf-20220820)$
+    description: _aliases
+    options:
+      name: dome-bhf
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bhf-20211129)$
+  22:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bhf-20220820)$
+    description: _aliases
+    options:
+      name: forum-bhf
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bhf-20211129)$
+  23:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-bhf-20211129)$
+    options:
+      continue_if_exception: 'False'
+  24:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-bitcointalk-20220820
+        source:
+          index: dome-bitcointalk-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  25:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bitcointalk-20220820)$
+    description: _aliases
+    options:
+      name: dome-bitcointalk
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bitcointalk-20211129)$
+  26:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bitcointalk-20220820)$
+    description: _aliases
+    options:
+      name: forum-bitcointalk
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-bitcointalk-20211129)$
+  27:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-bitcointalk-20211129)$
+    options:
+      continue_if_exception: 'False'
+  28:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-blackbiz-20220820
+        source:
+          index: dome-blackbiz-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  29:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blackbiz-20220820)$
+    description: _aliases
+    options:
+      name: dome-blackbiz
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blackbiz-20211129)$
+  30:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blackbiz-20220820)$
+    description: _aliases
+    options:
+      name: forum-blackbiz
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blackbiz-20211129)$
+  31:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-blackbiz-20211129)$
+    options:
+      continue_if_exception: 'False'
+  32:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-blackhacker-20220820
+        source:
+          index: dome-blackhacker-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  33:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blackhacker-20220820)$
+    description: _aliases
+    options:
+      name: dome-blackhacker
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blackhacker-20211129)$
+  34:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blackhacker-20220820)$
+    description: _aliases
+    options:
+      name: forum-blackhacker
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blackhacker-20211129)$
+  35:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-blackhacker-20211129)$
+    options:
+      continue_if_exception: 'False'
+  36:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-blackhatworld-20220820
+        source:
+          index: dome-blackhatworld-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  37:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blackhatworld-20220820)$
+    description: _aliases
+    options:
+      name: dome-blackhatworld
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blackhatworld-20211129)$
+  38:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-blackhatworld-20211129)$
+    options:
+      continue_if_exception: 'False'
+  39:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-blasthack-20220820
+        source:
+          index: dome-blasthack-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  40:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blasthack-20220820)$
+    description: _aliases
+    options:
+      name: dome-blasthack
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blasthack-20211129)$
+  41:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blasthack-20220820)$
+    description: _aliases
+    options:
+      name: forum-blasthack
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-blasthack-20211129)$
+  42:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-blasthack-20211129)$
+    options:
+      continue_if_exception: 'False'
+  43:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-breached-20220820
+        source:
+          index: dome-breached-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  44:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-breached-20220820)$
+    description: _aliases
+    options:
+      name: dome-breached
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-breached-20211129)$
+  45:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-breached-20220820)$
+    description: _aliases
+    options:
+      name: forum-breached
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-breached-20211129)$
+  46:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-breached-20211129)$
+    options:
+      continue_if_exception: 'False'
+  47:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-carderone-20220820
+        source:
+          index: dome-carderone-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  48:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-carderone-20220820)$
+    description: _aliases
+    options:
+      name: dome-carderone
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-carderone-20211129)$
+  49:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-carderone-20220820)$
+    description: _aliases
+    options:
+      name: forum-carderone
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-carderone-20211129)$
+  50:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-carderone-20211129)$
+    options:
+      continue_if_exception: 'False'
+  51:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-cardingforum-20220820
+        source:
+          index: dome-cardingforum-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  52:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cardingforum-20220820)$
+    description: _aliases
+    options:
+      name: dome-cardingforum
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cardingforum-20211129)$
+  53:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-cardingforum-20211129)$
+    options:
+      continue_if_exception: 'False'
+  54:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-cardingmafia-20220820
+        source:
+          index: dome-cardingmafia-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  55:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cardingmafia-20220820)$
+    description: _aliases
+    options:
+      name: dome-cardingmafia
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cardingmafia-20211129)$
+  56:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cardingmafia-20220820)$
+    description: _aliases
+    options:
+      name: forum-cardingmafia
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cardingmafia-20211129)$
+  57:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-cardingmafia-20211129)$
+    options:
+      continue_if_exception: 'False'
+  58:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-cardvilla-20220820
+        source:
+          index: dome-cardvilla-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  59:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cardvilla-20220820)$
+    description: _aliases
+    options:
+      name: dome-cardvilla
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cardvilla-20211129)$
+  60:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cardvilla-20220820)$
+    description: _aliases
+    options:
+      name: forum-cardvilla
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cardvilla-20211129)$
+  61:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-cardvilla-20211129)$
+    options:
+      continue_if_exception: 'False'
+  62:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-centerclub-20220820
+        source:
+          index: dome-centerclub-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  63:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-centerclub-20220820)$
+    description: _aliases
+    options:
+      name: dome-centerclub
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-centerclub-20211129)$
+  64:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-centerclub-20220820)$
+    description: _aliases
+    options:
+      name: forum-centerclub
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-centerclub-20211129)$
+  65:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-centerclub-20211129)$
+    options:
+      continue_if_exception: 'False'
+  66:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-chf-20220820
+        source:
+          index: dome-chf-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  67:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-chf-20220820)$
+    description: _aliases
+    options:
+      name: dome-chf
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-chf-20211129)$
+  68:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-chf-20220820)$
+    description: _aliases
+    options:
+      name: forum-chf
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-chf-20211129)$
+  69:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-chf-20211129)$
+    options:
+      continue_if_exception: 'False'
+  70:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-club2crd-20220820
+        source:
+          index: dome-club2crd-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  71:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-club2crd-20220820)$
+    description: _aliases
+    options:
+      name: dome-club2crd
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-club2crd-20211129)$
+  72:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-club2crd-20220820)$
+    description: _aliases
+    options:
+      name: forum-club2crd
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-club2crd-20211129)$
+  73:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-club2crd-20211129)$
+    options:
+      continue_if_exception: 'False'
+  74:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-codeby-20220820
+        source:
+          index: dome-codeby-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  75:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-codeby-20220820)$
+    description: _aliases
+    options:
+      name: dome-codeby
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-codeby-20211129)$
+  76:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-codeby-20220820)$
+    description: _aliases
+    options:
+      name: forum-codeby
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-codeby-20211129)$
+  77:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-codeby-20211129)$
+    options:
+      continue_if_exception: 'False'
+  78:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-combolist-20220820
+        source:
+          index: dome-combolist-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  79:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-combolist-20220820)$
+    description: _aliases
+    options:
+      name: dome-combolist
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-combolist-20211129)$
+  80:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-combolist-20211129)$
+    options:
+      continue_if_exception: 'False'
+  81:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-cracked-20220820
+        source:
+          index: dome-cracked-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  82:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cracked-20220820)$
+    description: _aliases
+    options:
+      name: dome-cracked
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cracked-20211129)$
+  83:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cracked-20220820)$
+    description: _aliases
+    options:
+      name: forum-cracked
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cracked-20211129)$
+  84:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-cracked-20211129)$
+    options:
+      continue_if_exception: 'False'
+  85:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-cracking-20220820
+        source:
+          index: dome-cracking-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  86:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cracking-20220820)$
+    description: _aliases
+    options:
+      name: dome-cracking
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cracking-20211129)$
+  87:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cracking-20220820)$
+    description: _aliases
+    options:
+      name: forum-cracking
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cracking-20211129)$
+  88:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-cracking-20211129)$
+    options:
+      continue_if_exception: 'False'
+  89:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-crackingitaly-20220820
+        source:
+          index: dome-crackingitaly-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  90:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crackingitaly-20220820)$
+    description: _aliases
+    options:
+      name: dome-crackingitaly
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crackingitaly-20211129)$
+  91:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-crackingitaly-20211129)$
+    options:
+      continue_if_exception: 'False'
+  92:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-crax-20220820
+        source:
+          index: dome-crax-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  93:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crax-20220820)$
+    description: _aliases
+    options:
+      name: dome-crax
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crax-20211129)$
+  94:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-crax-20211129)$
+    options:
+      continue_if_exception: 'False'
+  95:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-crdpro-20220820
+        source:
+          index: dome-crdpro-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  96:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crdpro-20220820)$
+    description: _aliases
+    options:
+      name: dome-crdpro
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crdpro-20211129)$
+  97:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crdpro-20220820)$
+    description: _aliases
+    options:
+      name: forum-crdpro
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crdpro-20211129)$
+  98:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-crdpro-20211129)$
+    options:
+      continue_if_exception: 'False'
+  99:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-crimemarket-20220820
+        source:
+          index: dome-crimemarket-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  100:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crimemarket-20220820)$
+    description: _aliases
+    options:
+      name: dome-crimemarket
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crimemarket-20211129)$
+  101:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crimemarket-20220820)$
+    description: _aliases
+    options:
+      name: forum-crimemarket
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crimemarket-20211129)$
+  102:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-crimemarket-20211129)$
+    options:
+      continue_if_exception: 'False'
+  103:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-crimenetwork-20220820
+        source:
+          index: dome-crimenetwork-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  104:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crimenetwork-20220820)$
+    description: _aliases
+    options:
+      name: dome-crimenetwork
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crimenetwork-20211129)$
+  105:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crimenetwork-20220820)$
+    description: _aliases
+    options:
+      name: forum-crimenetwork
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-crimenetwork-20211129)$
+  106:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-crimenetwork-20211129)$
+    options:
+      continue_if_exception: 'False'
+  107:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-cybercarders-20220820
+        source:
+          index: dome-cybercarders-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  108:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cybercarders-20220820)$
+    description: _aliases
+    options:
+      name: dome-cybercarders
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cybercarders-20211129)$
+  109:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cybercarders-20220820)$
+    description: _aliases
+    options:
+      name: forum-cybercarders
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-cybercarders-20211129)$
+  110:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-cybercarders-20211129)$
+    options:
+      continue_if_exception: 'False'
+  111:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-dark2web-20220820
+        source:
+          index: dome-dark2web-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  112:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-dark2web-20220820)$
+    description: _aliases
+    options:
+      name: dome-dark2web
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-dark2web-20211129)$
+  113:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-dark2web-20211129)$
+    options:
+      continue_if_exception: 'False'
+  114:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-darkmarket-20220820
+        source:
+          index: dome-darkmarket-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  115:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darkmarket-20220820)$
+    description: _aliases
+    options:
+      name: dome-darkmarket
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darkmarket-20211129)$
+  116:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darkmarket-20220820)$
+    description: _aliases
+    options:
+      name: forum-darkmarket
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darkmarket-20211129)$
+  117:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-darkmarket-20211129)$
+    options:
+      continue_if_exception: 'False'
+  118:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-darkmoney-20220820
+        source:
+          index: dome-darkmoney-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  119:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darkmoney-20220820)$
+    description: _aliases
+    options:
+      name: dome-darkmoney
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darkmoney-20211129)$
+  120:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darkmoney-20220820)$
+    description: _aliases
+    options:
+      name: forum-darkmoney
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darkmoney-20211129)$
+  121:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-darkmoney-20211129)$
+    options:
+      continue_if_exception: 'False'
+  122:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-darknet-20220820
+        source:
+          index: dome-darknet-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  123:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darknet-20220820)$
+    description: _aliases
+    options:
+      name: dome-darknet
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darknet-20211129)$
+  124:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darknet-20220820)$
+    description: _aliases
+    options:
+      name: forum-darknet
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darknet-20211129)$
+  125:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-darknet-20211129)$
+    options:
+      continue_if_exception: 'False'
+  126:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-darktime-20220820
+        source:
+          index: dome-darktime-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  127:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darktime-20220820)$
+    description: _aliases
+    options:
+      name: dome-darktime
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-darktime-20211129)$
+  128:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-darktime-20211129)$
+    options:
+      continue_if_exception: 'False'
+  129:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-demonforums-20220820
+        source:
+          index: dome-demonforums-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  130:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-demonforums-20220820)$
+    description: _aliases
+    options:
+      name: dome-demonforums
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-demonforums-20211129)$
+  131:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-demonforums-20220820)$
+    description: _aliases
+    options:
+      name: forum-demonforums
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-demonforums-20211129)$
+  132:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-demonforums-20211129)$
+    options:
+      continue_if_exception: 'False'
+  133:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-dread-20220820
+        source:
+          index: dome-dread-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  134:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-dread-20220820)$
+    description: _aliases
+    options:
+      name: dome-dread
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-dread-20211129)$
+  135:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-dread-20220820)$
+    description: _aliases
+    options:
+      name: forum-dread
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-dread-20211129)$
+  136:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-dread-20211129)$
+    options:
+      continue_if_exception: 'False'
+  137:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-dublikat-20220820
+        source:
+          index: dome-dublikat-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  138:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-dublikat-20220820)$
+    description: _aliases
+    options:
+      name: dome-dublikat
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-dublikat-20211129)$
+  139:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-dublikat-20220820)$
+    description: _aliases
+    options:
+      name: forum-dublikat
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-dublikat-20211129)$
+  140:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-dublikat-20211129)$
+    options:
+      continue_if_exception: 'False'
+  141:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-eleaks-20220820
+        source:
+          index: dome-eleaks-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  142:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-eleaks-20220820)$
+    description: _aliases
+    options:
+      name: dome-eleaks
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-eleaks-20211129)$
+  143:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-eleaks-20211129)$
+    options:
+      continue_if_exception: 'False'
+  144:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-elhacker-20220820
+        source:
+          index: dome-elhacker-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  145:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-elhacker-20220820)$
+    description: _aliases
+    options:
+      name: dome-elhacker
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-elhacker-20211129)$
+  146:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-elhacker-20211129)$
+    options:
+      continue_if_exception: 'False'
+  147:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-enclave-20220820
+        source:
+          index: dome-enclave-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  148:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-enclave-20220820)$
+    description: _aliases
+    options:
+      name: dome-enclave
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-enclave-20211129)$
+  149:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-enclave-20211129)$
+    options:
+      continue_if_exception: 'False'
+  150:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-eternia-20220820
+        source:
+          index: dome-eternia-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  151:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-eternia-20220820)$
+    description: _aliases
+    options:
+      name: dome-eternia
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-eternia-20211129)$
+  152:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-eternia-20220820)$
+    description: _aliases
+    options:
+      name: forum-eternia
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-eternia-20211129)$
+  153:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-eternia-20211129)$
+    options:
+      continue_if_exception: 'False'
+  154:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-exploit.in-20220820
+        source:
+          index: dome-exploit.in-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  155:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-exploit.in-20220820)$
+    description: _aliases
+    options:
+      name: dome-exploit.in
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-exploit.in-20211129)$
+  156:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-exploit.in-20220820)$
+    description: _aliases
+    options:
+      name: forum-exploit.in
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-exploit.in-20211129)$
+  157:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-exploit.in-20211129)$
+    options:
+      continue_if_exception: 'False'
+  158:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-forumteam-20220820
+        source:
+          index: dome-forumteam-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  159:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-forumteam-20220820)$
+    description: _aliases
+    options:
+      name: dome-forumteam
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-forumteam-20211129)$
+  160:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-forumteam-20220820)$
+    description: _aliases
+    options:
+      name: forum-forumteam
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-forumteam-20211129)$
+  161:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-forumteam-20211129)$
+    options:
+      continue_if_exception: 'False'
+  162:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-fssquad-20220820
+        source:
+          index: dome-fssquad-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  163:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-fssquad-20220820)$
+    description: _aliases
+    options:
+      name: dome-fssquad
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-fssquad-20211129)$
+  164:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-fssquad-20220820)$
+    description: _aliases
+    options:
+      name: forum-fssquad
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-fssquad-20211129)$
+  165:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-fssquad-20211129)$
+    options:
+      continue_if_exception: 'False'
+  166:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-fuckav-20220820
+        source:
+          index: dome-fuckav-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  167:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-fuckav-20220820)$
+    description: _aliases
+    options:
+      name: dome-fuckav
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-fuckav-20211129)$
+  168:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-fuckav-20220820)$
+    description: _aliases
+    options:
+      name: forum-fuckav
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-fuckav-20211129)$
+  169:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-fuckav-20211129)$
+    options:
+      continue_if_exception: 'False'
+  170:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-gerki-20220820
+        source:
+          index: dome-gerki-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  171:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-gerki-20220820)$
+    description: _aliases
+    options:
+      name: dome-gerki
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-gerki-20211129)$
+  172:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-gerki-20220820)$
+    description: _aliases
+    options:
+      name: forum-gerki
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-gerki-20211129)$
+  173:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-gerki-20211129)$
+    options:
+      continue_if_exception: 'False'
+  174:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-hackforums-20220820
+        source:
+          index: dome-hackforums-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  175:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-hackforums-20220820)$
+    description: _aliases
+    options:
+      name: dome-hackforums
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-hackforums-20211129)$
+  176:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-hackforums-20220820)$
+    description: _aliases
+    options:
+      name: forum-hackforums
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-hackforums-20211129)$
+  177:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-hackforums-20211129)$
+    options:
+      continue_if_exception: 'False'
+  178:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-hashkiller-20220820
+        source:
+          index: dome-hashkiller-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  179:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-hashkiller-20220820)$
+    description: _aliases
+    options:
+      name: dome-hashkiller
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-hashkiller-20211129)$
+  180:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-hashkiller-20211129)$
+    options:
+      continue_if_exception: 'False'
+  181:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-hpc-20220820
+        source:
+          index: dome-hpc-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  182:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-hpc-20220820)$
+    description: _aliases
+    options:
+      name: dome-hpc
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-hpc-20211129)$
+  183:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-hpc-20211129)$
+    options:
+      continue_if_exception: 'False'
+  184:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-ifud-20220820
+        source:
+          index: dome-ifud-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  185:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ifud-20220820)$
+    description: _aliases
+    options:
+      name: dome-ifud
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ifud-20211129)$
+  186:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ifud-20220820)$
+    description: _aliases
+    options:
+      name: forum-ifud
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ifud-20211129)$
+  187:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-ifud-20211129)$
+    options:
+      continue_if_exception: 'False'
+  188:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-infraud-20220820
+        source:
+          index: dome-infraud-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  189:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-infraud-20211129)$
+    options:
+      continue_if_exception: 'False'
+  190:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-instanthack-20220820
+        source:
+          index: dome-instanthack-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  191:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-instanthack-20220820)$
+    description: _aliases
+    options:
+      name: dome-instanthack
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-instanthack-20211129)$
+  192:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-instanthack-20211129)$
+    options:
+      continue_if_exception: 'False'
+  193:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-korovka-20220820
+        source:
+          index: dome-korovka-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  194:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-korovka-20220820)$
+    description: _aliases
+    options:
+      name: dome-korovka
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-korovka-20211129)$
+  195:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-korovka-20220820)$
+    description: _aliases
+    options:
+      name: forum-korovka
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-korovka-20211129)$
+  196:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-korovka-20211129)$
+    options:
+      continue_if_exception: 'False'
+  197:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-lcp-20220820
+        source:
+          index: dome-lcp-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  198:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-lcp-20220820)$
+    description: _aliases
+    options:
+      name: dome-lcp
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-lcp-20211129)$
+  199:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-lcp-20220820)$
+    description: _aliases
+    options:
+      name: forum-lcp
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-lcp-20211129)$
+  200:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-lcp-20211129)$
+    options:
+      continue_if_exception: 'False'
+  201:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-leakforums-20220820
+        source:
+          index: dome-leakforums-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  202:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-leakforums-20220820)$
+    description: _aliases
+    options:
+      name: dome-leakforums
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-leakforums-20211129)$
+  203:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-leakforums-20211129)$
+    options:
+      continue_if_exception: 'False'
+  204:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-level23hacktools-20220820
+        source:
+          index: dome-level23hacktools-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  205:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-level23hacktools-20220820)$
+    description: _aliases
+    options:
+      name: dome-level23hacktools
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-level23hacktools-20211129)$
+  206:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-level23hacktools-20220820)$
+    description: _aliases
+    options:
+      name: forum-level23hacktools
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-level23hacktools-20211129)$
+  207:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-level23hacktools-20211129)$
+    options:
+      continue_if_exception: 'False'
+  208:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-lolzteam-20220820
+        source:
+          index: dome-lolzteam-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  209:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-lolzteam-20220820)$
+    description: _aliases
+    options:
+      name: dome-lolzteam
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-lolzteam-20211129)$
+  210:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-lolzteam-20220820)$
+    description: _aliases
+    options:
+      name: forum-lolzteam
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-lolzteam-20211129)$
+  211:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-lolzteam-20211129)$
+    options:
+      continue_if_exception: 'False'
+  212:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-mailpass-20220820
+        source:
+          index: dome-mailpass-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  213:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mailpass-20220820)$
+    description: _aliases
+    options:
+      name: dome-mailpass
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mailpass-20211129)$
+  214:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-mailpass-20211129)$
+    options:
+      continue_if_exception: 'False'
+  215:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-mazafaka-20220820
+        source:
+          index: dome-mazafaka-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  216:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mazafaka-20220820)$
+    description: _aliases
+    options:
+      name: dome-mazafaka
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mazafaka-20211129)$
+  217:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-mazafaka-20211129)$
+    options:
+      continue_if_exception: 'False'
+  218:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-migalki-20220820
+        source:
+          index: dome-migalki-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  219:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-migalki-20220820)$
+    description: _aliases
+    options:
+      name: dome-migalki
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-migalki-20211129)$
+  220:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-migalki-20220820)$
+    description: _aliases
+    options:
+      name: forum-migalki
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-migalki-20211129)$
+  221:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-migalki-20211129)$
+    options:
+      continue_if_exception: 'False'
+  222:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-mmgp-20220820
+        source:
+          index: dome-mmgp-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  223:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mmgp-20220820)$
+    description: _aliases
+    options:
+      name: dome-mmgp
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mmgp-20211129)$
+  224:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mmgp-20220820)$
+    description: _aliases
+    options:
+      name: forum-mmgp
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mmgp-20211129)$
+  225:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-mmgp-20211129)$
+    options:
+      continue_if_exception: 'False'
+  226:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-monopoly-20220820
+        source:
+          index: dome-monopoly-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  227:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-monopoly-20220820)$
+    description: _aliases
+    options:
+      name: dome-monopoly
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-monopoly-20211129)$
+  228:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-monopoly-20220820)$
+    description: _aliases
+    options:
+      name: forum-monopoly
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-monopoly-20211129)$
+  229:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-monopoly-20211129)$
+    options:
+      continue_if_exception: 'False'
+  230:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-moon-20220820
+        source:
+          index: dome-moon-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  231:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-moon-20220820)$
+    description: _aliases
+    options:
+      name: dome-moon
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-moon-20211129)$
+  232:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-moon-20220820)$
+    description: _aliases
+    options:
+      name: forum-moon
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-moon-20211129)$
+  233:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-moon-20211129)$
+    options:
+      continue_if_exception: 'False'
+  234:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-mpgh-20220820
+        source:
+          index: dome-mpgh-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  235:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mpgh-20220820)$
+    description: _aliases
+    options:
+      name: dome-mpgh
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mpgh-20211129)$
+  236:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mpgh-20220820)$
+    description: _aliases
+    options:
+      name: forum-mpgh
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-mpgh-20211129)$
+  237:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-mpgh-20211129)$
+    options:
+      continue_if_exception: 'False'
+  238:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-navigator-20220820
+        source:
+          index: dome-navigator-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  239:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-navigator-20220820)$
+    description: _aliases
+    options:
+      name: dome-navigator
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-navigator-20211129)$
+  240:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-navigator-20220820)$
+    description: _aliases
+    options:
+      name: forum-navigator
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-navigator-20211129)$
+  241:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-navigator-20211129)$
+    options:
+      continue_if_exception: 'False'
+  242:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-nulled-20220820
+        source:
+          index: dome-nulled-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  243:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-nulled-20220820)$
+    description: _aliases
+    options:
+      name: dome-nulled
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-nulled-20211129)$
+  244:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-nulled-20220820)$
+    description: _aliases
+    options:
+      name: forum-nulled
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-nulled-20211129)$
+  245:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-nulled-20211129)$
+    options:
+      continue_if_exception: 'False'
+  246:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-nulledbb-20220820
+        source:
+          index: dome-nulledbb-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  247:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-nulledbb-20220820)$
+    description: _aliases
+    options:
+      name: dome-nulledbb
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-nulledbb-20211129)$
+  248:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-nulledbb-20220820)$
+    description: _aliases
+    options:
+      name: forum-nulledbb
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-nulledbb-20211129)$
+  249:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-nulledbb-20211129)$
+    options:
+      continue_if_exception: 'False'
+  250:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-offensivecommunity-20220820
+        source:
+          index: dome-offensivecommunity-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  251:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-offensivecommunity-20220820)$
+    description: _aliases
+    options:
+      name: dome-offensivecommunity
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-offensivecommunity-20211129)$
+  252:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-offensivecommunity-20220820)$
+    description: _aliases
+    options:
+      name: forum-offensivecommunity
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-offensivecommunity-20211129)$
+  253:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-offensivecommunity-20211129)$
+    options:
+      continue_if_exception: 'False'
+  254:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-ogusers-20220820
+        source:
+          index: dome-ogusers-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  255:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ogusers-20220820)$
+    description: _aliases
+    options:
+      name: dome-ogusers
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ogusers-20211129)$
+  256:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ogusers-20220820)$
+    description: _aliases
+    options:
+      name: forum-ogusers
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ogusers-20211129)$
+  257:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-ogusers-20211129)$
+    options:
+      continue_if_exception: 'False'
+  258:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-omerta-20220820
+        source:
+          index: dome-omerta-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  259:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-omerta-20220820)$
+    description: _aliases
+    options:
+      name: dome-omerta
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-omerta-20211129)$
+  260:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-omerta-20220820)$
+    description: _aliases
+    options:
+      name: forum-omerta
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-omerta-20211129)$
+  261:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-omerta-20211129)$
+    options:
+      continue_if_exception: 'False'
+  262:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-piratebuhta-20220820
+        source:
+          index: dome-piratebuhta-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  263:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-piratebuhta-20220820)$
+    description: _aliases
+    options:
+      name: dome-piratebuhta
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-piratebuhta-20211129)$
+  264:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-piratebuhta-20220820)$
+    description: _aliases
+    options:
+      name: forum-piratebuhta
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-piratebuhta-20211129)$
+  265:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-piratebuhta-20211129)$
+    options:
+      continue_if_exception: 'False'
+  266:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-probiv-20220820
+        source:
+          index: dome-probiv-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  267:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-probiv-20220820)$
+    description: _aliases
+    options:
+      name: dome-probiv
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-probiv-20211129)$
+  268:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-probiv-20220820)$
+    description: _aliases
+    options:
+      name: forum-probiv
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-probiv-20211129)$
+  269:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-probiv-20211129)$
+    options:
+      continue_if_exception: 'False'
+  270:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-procrd-20220820
+        source:
+          index: dome-procrd-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  271:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-procrd-20220820)$
+    description: _aliases
+    options:
+      name: dome-procrd
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-procrd-20211129)$
+  272:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-procrd-20220820)$
+    description: _aliases
+    options:
+      name: forum-procrd
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-procrd-20211129)$
+  273:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-procrd-20211129)$
+    options:
+      continue_if_exception: 'False'
+  274:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-prologic-20220820
+        source:
+          index: dome-prologic-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  275:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-prologic-20220820)$
+    description: _aliases
+    options:
+      name: dome-prologic
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-prologic-20211129)$
+  276:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-prologic-20220820)$
+    description: _aliases
+    options:
+      name: forum-prologic
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-prologic-20211129)$
+  277:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-prologic-20211129)$
+    options:
+      continue_if_exception: 'False'
+  278:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-raid-20220820
+        source:
+          index: dome-raid-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  279:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-raid-20220820)$
+    description: _aliases
+    options:
+      name: dome-raid
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-raid-20211129)$
+  280:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-raid-20220820)$
+    description: _aliases
+    options:
+      name: forum-raid
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-raid-20211129)$
+  281:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-raid-20211129)$
+    options:
+      continue_if_exception: 'False'
+  282:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-ramp-20220820
+        source:
+          index: dome-ramp-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  283:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ramp-20220820)$
+    description: _aliases
+    options:
+      name: dome-ramp
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ramp-20211129)$
+  284:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ramp-20220820)$
+    description: _aliases
+    options:
+      name: forum-ramp
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ramp-20211129)$
+  285:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-ramp-20211129)$
+    options:
+      continue_if_exception: 'False'
+  286:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-rstforums-20220820
+        source:
+          index: dome-rstforums-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  287:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-rstforums-20220820)$
+    description: _aliases
+    options:
+      name: dome-rstforums
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-rstforums-20211129)$
+  288:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-rstforums-20220820)$
+    description: _aliases
+    options:
+      name: forum-rstforums
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-rstforums-20211129)$
+  289:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-rstforums-20211129)$
+    options:
+      continue_if_exception: 'False'
+  290:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-runion-20220820
+        source:
+          index: dome-runion-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  291:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-runion-20220820)$
+    description: _aliases
+    options:
+      name: dome-runion
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-runion-20211129)$
+  292:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-runion-20220820)$
+    description: _aliases
+    options:
+      name: forum-runion
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-runion-20211129)$
+  293:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-runion-20211129)$
+    options:
+      continue_if_exception: 'False'
+  294:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-rutor-20220820
+        source:
+          index: dome-rutor-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  295:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-rutor-20220820)$
+    description: _aliases
+    options:
+      name: dome-rutor
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-rutor-20211129)$
+  296:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-rutor-20211129)$
+    options:
+      continue_if_exception: 'False'
+  297:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-sinisterly-20220820
+        source:
+          index: dome-sinisterly-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  298:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-sinisterly-20220820)$
+    description: _aliases
+    options:
+      name: dome-sinisterly
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-sinisterly-20211129)$
+  299:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-sinisterly-20220820)$
+    description: _aliases
+    options:
+      name: forum-sinisterly
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-sinisterly-20211129)$
+  300:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-sinisterly-20211129)$
+    options:
+      continue_if_exception: 'False'
+  301:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-skyfraud-20220820
+        source:
+          index: dome-skyfraud-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  302:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-skyfraud-20220820)$
+    description: _aliases
+    options:
+      name: dome-skyfraud
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-skyfraud-20211129)$
+  303:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-skyfraud-20220820)$
+    description: _aliases
+    options:
+      name: forum-skyfraud
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-skyfraud-20211129)$
+  304:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-skyfraud-20211129)$
+    options:
+      continue_if_exception: 'False'
+  305:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-skynetzone-20220820
+        source:
+          index: dome-skynetzone-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  306:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-skynetzone-20220820)$
+    description: _aliases
+    options:
+      name: dome-skynetzone
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-skynetzone-20211129)$
+  307:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-skynetzone-20220820)$
+    description: _aliases
+    options:
+      name: forum-skynetzone
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-skynetzone-20211129)$
+  308:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-skynetzone-20211129)$
+    options:
+      continue_if_exception: 'False'
+  309:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-slivup-20220820
+        source:
+          index: dome-slivup-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  310:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-slivup-20220820)$
+    description: _aliases
+    options:
+      name: dome-slivup
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-slivup-20211129)$
+  311:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-slivup-20220820)$
+    description: _aliases
+    options:
+      name: forum-slivup
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-slivup-20211129)$
+  312:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-slivup-20211129)$
+    options:
+      continue_if_exception: 'False'
+  313:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-thebotnet-20220820
+        source:
+          index: dome-thebotnet-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  314:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-thebotnet-20220820)$
+    description: _aliases
+    options:
+      name: dome-thebotnet
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-thebotnet-20211129)$
+  315:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-thebotnet-20211129)$
+    options:
+      continue_if_exception: 'False'
+  316:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-thehub-20220820
+        source:
+          index: dome-thehub-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  317:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-thehub-20220820)$
+    description: _aliases
+    options:
+      name: dome-thehub
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-thehub-20211129)$
+  318:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-thehub-20211129)$
+    options:
+      continue_if_exception: 'False'
+  319:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-ufolabs-20220820
+        source:
+          index: dome-ufolabs-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  320:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ufolabs-20220820)$
+    description: _aliases
+    options:
+      name: dome-ufolabs
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ufolabs-20211129)$
+  321:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ufolabs-20220820)$
+    description: _aliases
+    options:
+      name: forum-ufolabs
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-ufolabs-20211129)$
+  322:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-ufolabs-20211129)$
+    options:
+      continue_if_exception: 'False'
+  323:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-verified-20220820
+        source:
+          index: dome-verified-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  324:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-verified-20220820)$
+    description: _aliases
+    options:
+      name: dome-verified
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-verified-20211129)$
+  325:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-verified-20220820)$
+    description: _aliases
+    options:
+      name: forum-verified
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-verified-20211129)$
+  326:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-verified-20211129)$
+    options:
+      continue_if_exception: 'False'
+  327:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-veryleaks-20220820
+        source:
+          index: dome-veryleaks-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  328:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-veryleaks-20220820)$
+    description: _aliases
+    options:
+      name: dome-veryleaks
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-veryleaks-20211129)$
+  329:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-veryleaks-20211129)$
+    options:
+      continue_if_exception: 'False'
+  330:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-vlmi-20220820
+        source:
+          index: dome-vlmi-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  331:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-vlmi-20220820)$
+    description: _aliases
+    options:
+      name: dome-vlmi
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-vlmi-20211129)$
+  332:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-vlmi-20220820)$
+    description: _aliases
+    options:
+      name: forum-vlmi
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-vlmi-20211129)$
+  333:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-vlmi-20211129)$
+    options:
+      continue_if_exception: 'False'
+  334:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-wwhclub-20220820
+        source:
+          index: dome-wwhclub-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  335:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-wwhclub-20220820)$
+    description: _aliases
+    options:
+      name: dome-wwhclub
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-wwhclub-20211129)$
+  336:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-wwhclub-20220820)$
+    description: _aliases
+    options:
+      name: forum-wwhclub
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-wwhclub-20211129)$
+  337:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-wwhclub-20211129)$
+    options:
+      continue_if_exception: 'False'
+  338:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-xakepok-20220820
+        source:
+          index: dome-xakepok-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  339:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-xakepok-20220820)$
+    description: _aliases
+    options:
+      name: dome-xakepok
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-xakepok-20211129)$
+  340:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-xakepok-20220820)$
+    description: _aliases
+    options:
+      name: forum-xakepok
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-xakepok-20211129)$
+  341:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-xakepok-20211129)$
+    options:
+      continue_if_exception: 'False'
+  342:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-xss-20220820
+        source:
+          index: dome-xss-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  343:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-xss-20220820)$
+    description: _aliases
+    options:
+      name: dome-xss
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-xss-20211129)$
+  344:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-xss-20220820)$
+    description: _aliases
+    options:
+      name: forum-xss
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-xss-20211129)$
+  345:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-xss-20211129)$
+    options:
+      continue_if_exception: 'False'
+  346:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-youhack-20220820
+        source:
+          index: dome-youhack-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  347:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-youhack-20220820)$
+    description: _aliases
+    options:
+      name: dome-youhack
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-youhack-20211129)$
+  348:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-youhack-20220820)$
+    description: _aliases
+    options:
+      name: forum-youhack
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-youhack-20211129)$
+  349:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-youhack-20211129)$
+    options:
+      continue_if_exception: 'False'
+  350:
+    action: reindex
+    description: _reindex
+    filters:
+    - filtertype: none
+    options:
+      max_wait: -1
+      request_body:
+        dest:
+          index: dome-zloy-20220820
+        source:
+          index: dome-zloy-20211129
+      wait_for_completion: 'True'
+      wait_interval: 15
+  351:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-zloy-20220820)$
+    description: _aliases
+    options:
+      name: dome-zloy
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-zloy-20211129)$
+  352:
+    action: alias
+    add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-zloy-20220820)$
+    description: _aliases
+    options:
+      name: forum-zloy
+    remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ^(dome-zloy-20211129)$
+  353:
+    action: delete_indices
+    description: Delete indices
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ^(dome-zloy-20211129)$
+    options:
+      continue_if_exception: 'False'

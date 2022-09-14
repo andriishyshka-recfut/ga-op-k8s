@@ -1,4 +1,3 @@
-
 sa_key_json: "{{ lookup('env','GOOGLE_CREDENTIALS') }}"
 kube_config: "{{ lookup('env','KUBECONFIG') }}"
 project: "{{ lookup('env','GOOGLE_PROJECT') }}"
