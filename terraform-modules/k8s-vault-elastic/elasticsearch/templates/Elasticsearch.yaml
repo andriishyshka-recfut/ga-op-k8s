@@ -96,10 +96,15 @@ spec:
           - name: saml
             mountPath: "/usr/share/elasticsearch/config/saml/"
             readOnly: true
+          - mountPath: /usr/share/elasticsearch/config/other
+            name: remote-certs
         volumes:
         - name: saml
           secret:
             secretName: saml
+        - name: remote-certs
+          secret:
+            secretName: remote-certs
     config:
 {{ indent 6 .config }}
 {{ indent 6 $.Values.oidc_config }}
