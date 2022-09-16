@@ -1,0 +1,46 @@
+# Environment name and cluster name
+ClusterEnv: "dev"
+ClusterName: "vortex"
+ClusterDomainName: cluster.local
+TarantoolWorkDir: /var/lib/tarantool
+LuaMemoryReserveMB: 2048
+# Docker image of the application
+image:
+  repository: "harbor.t.regemini.io/minion/vortex"
+  tag: "tarantool-1.0.0"
+  pullPolicy: "IfNotPresent"
+
+# The cluster topology includes a description of the number and
+# characteristics of replicasets and is described in the RoleConfig section.
+securityContext:
+  fsGroup: 1200
+
+service:
+  type: ClusterIP
+  port: 8081
+
+Prometheus:
+  port: 8081
+  path: /metrics
+# For example, we want to create a cluster containing two types of replicasets:
+# routers and storages:
+RoleConfig:
+  - RoleName: "routers" # Name of the replicaset type
+    ReplicaCount: 1     # Number of replicas in the replicaset
+    ReplicaSetCount: 1  # Number of replicasets for this role
+    DiskSize: "1Gi"     # Persistent storage size
+    CPUallocation: 0.1  # Part of vCPUs allocated for each container
+    MemtxMemoryMB: 1024 # Size of RAM allocated for each container
+    RolesToAssign:      # Cartridge roles
+      - "app.roles.custom"
+      - "vshard-router"
+
+  - RoleName: "storage"
+    ReplicaCount: 2
+    ReplicaSetCount: 1
+    DiskSize: "1Gi"
+    CPUallocation: 0.1
+    MemtxMemoryMB: 4096
+    RolesToAssign:
+      - "app.roles.custom"
+      - "vshard-storage"

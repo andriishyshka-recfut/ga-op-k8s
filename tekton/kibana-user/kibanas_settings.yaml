@@ -11,9 +11,14 @@ kibana1_settings:
       enabled: "no"
     saml_provider:
       enabled: "no"
+    xpack_security:
+      enabled: "yes"
+      vault_path: "secret/red/kibana"
+      secret_name: "xpack-security"      
     xpack_reporting_index_re:
-      enabled: "no"
+      enabled: "yes"
     gcs_enable: "no"
+    istio_gateway_fqdn: "k1.regemini.com"
 
 kibana2_settings:
   kibana:
@@ -27,8 +32,13 @@ kibana2_settings:
       enabled: "no"
     saml_provider:
       enabled: "no"
+    xpack_security:
+      enabled: "yes"   
+      vault_path: "secret/red/kibana"         
     xpack_reporting_index_re:
-      enabled: "no"
+      enabled: "yes"
+    gcs_enable: "no"
+    istio_gateway_fqdn: "k2.regemini.com"
 
 kibana3_settings:
   kibana:
@@ -42,5 +52,10 @@ kibana3_settings:
       enabled: "no"
     saml_provider:
       enabled: "no"
+    xpack_security:
+      enabled: "yes"
+      vault_path: "secret/red/kibana"          
     xpack_reporting_index_re:
-      enabled: "no"
+      enabled: "yes"
+    gcs_enable: "no"
+    istio_gateway_fqdn: "k3.regemini.com"

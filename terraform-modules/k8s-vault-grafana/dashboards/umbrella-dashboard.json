@@ -3,10 +3,7 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
+        "datasource" : "logstash",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -29,10 +26,7 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource" : "logstash",
       "gridPos": {
         "h": 18,
         "w": 4,
@@ -60,10 +54,7 @@
       "tags": [],
       "targets": [
         {
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
+          "datasource" : "logstash",
           "refId": "A"
         }
       ],
@@ -73,10 +64,7 @@
     {
       "dashboardFilter": "",
       "dashboardTags": [],
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
+      "datasource" : "logstash",
       "gridPos": {
         "h": 18,
         "w": 6,
@@ -114,10 +102,7 @@
       ],
       "targets": [
         {
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
+          "datasource" : "logstash",
           "refId": "A"
         }
       ],

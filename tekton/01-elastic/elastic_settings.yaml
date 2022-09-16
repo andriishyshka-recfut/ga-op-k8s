@@ -39,7 +39,7 @@ elastic_settings:
       vault_path: "secret/red/elastic-notification-accounts"
       secret_name: "smtp-notification"
     performance_settings:
-      enabled: "no"
+      enabled: "yes"
     elasticNodeSets:
       - name: master
         config: |
@@ -54,14 +54,27 @@ elastic_settings:
             native:
               native1:
                 order: 1
+          xpack.security.transport.ssl.certificate_authorities:
+          - /usr/share/elasticsearch/config/other/remote.ca.crt
         storageSize: "30Gi"
         ES_JAVA_OPTS: -Xms13g -Xmx13g
         nodesCount: 3
         workloadsType: mstr
-        memoryRequests: "24Gi"
-        cpuRequests: "4"
-        memoryLimit: 26Gi
+        memoryRequests: "14Gi"
+        cpuRequests: "7"
+        memoryLimit: 14Gi
         cpuLimit: "7"
+        podTemplate:
+          spec:
+            containers:
+            - name: elasticsearch
+              volumeMounts:
+              - mountPath: /usr/share/elasticsearch/config/other
+                name: remote-certs
+            volumes:
+            - name: remote-certs
+              secret:
+                secretName: remote-certs
       - name: data
         config: |
           node.master: false
@@ -75,13 +88,26 @@ elastic_settings:
             native:
               native1:
                 order: 1
+          xpack.security.transport.ssl.certificate_authorities:
+          - /usr/share/elasticsearch/config/other/remote.ca.crt
         storageSize: "750Gi"
-        ES_JAVA_OPTS: -Xms31g -Xmx31g
+        ES_JAVA_OPTS: -Xms26g -Xmx26g
         nodesCount: 13
-        memoryRequests: "52Gi"
-        cpuRequests: "8"
-        memoryLimit: 54Gi
+        memoryRequests: "29Gi"
+        cpuRequests: "15"
+        memoryLimit: "29Gi"
         cpuLimit: "15"
+        podTemplate:
+          spec:
+            containers:
+            - name: elasticsearch
+              volumeMounts:
+              - mountPath: /usr/share/elasticsearch/config/other
+                name: remote-certs
+            volumes:
+            - name: remote-certs
+              secret:
+                secretName: remote-certs
       - name: coor
         config: |
           node.master: false
@@ -95,14 +121,27 @@ elastic_settings:
             native:
               native1:
                 order: 1
+          xpack.security.transport.ssl.certificate_authorities:
+          - /usr/share/elasticsearch/config/other/remote.ca.crt
         storageSize: "30Gi"
         ES_JAVA_OPTS: -Xms13g -Xmx13g
         nodesCount: 3
         workloadsType: coor
-        memoryRequests: "24Gi"
-        cpuRequests: "4"
-        memoryLimit: 26Gi
+        memoryRequests: "14Gi"
+        cpuRequests: "7"
+        memoryLimit: 14Gi
         cpuLimit: "7"
+        podTemplate:
+          spec:
+            containers:
+            - name: elasticsearch
+              volumeMounts:
+              - mountPath: /usr/share/elasticsearch/config/other
+                name: remote-certs
+            volumes:
+            - name: remote-certs
+              secret:
+                secretName: remote-certs
   kibana:
     enabled: true
     # cert_ttl: "143h"

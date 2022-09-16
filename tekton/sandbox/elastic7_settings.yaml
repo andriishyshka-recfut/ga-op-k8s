@@ -36,8 +36,43 @@ elastic_settings:
     smtp_notification:
       enabled: "no"
     performance_settings:
-      enabled: "yes"
+      enabled: "no"
     elasticNodeSets:
+      - name: coor
+        config: |
+          node.master: false
+          node.data: false
+          node.ingest: false
+          node.ml: false
+          node.store.allow_mmap: false
+          index.store.type: niofs
+          xpack.monitoring.collection.enabled: true
+          xpack.security.authc.realms:
+            native:
+              native1:
+                order: 1
+          xpack.security.transport.ssl.certificate_authorities:
+          - /usr/share/elasticsearch/config/other/remote.ca.crt
+          xpack.security.transport.ssl.client_authentication: optional
+        storageSize: "5Gi"
+        ES_JAVA_OPTS: -Xms6g -Xmx6g
+        nodesCount: 1
+        memoryRequests: "6Gi"
+        cpuRequests: "1"
+        memoryLimit: 7Gi
+        cpuLimit: 4
+        extvolumeMounts:
+        podTemplate:
+          spec:
+            containers:
+            - name: elasticsearch
+              volumeMounts:
+              - mountPath: /usr/share/elasticsearch/config/other
+                name: remote-certs
+            volumes:
+            - name: remote-certs
+              secret:
+                secretName: remote-certs
       - name: master
         config: |
           node.master: true
@@ -54,7 +89,7 @@ elastic_settings:
           xpack.security.transport.ssl.certificate_authorities:
           - /usr/share/elasticsearch/config/other/remote.ca.crt
           xpack.security.transport.ssl.client_authentication: optional
-        storageSize: "1Gi"
+        storageSize: "5Gi"
         ES_JAVA_OPTS: -Xms4g -Xmx4g
         nodesCount: 1
         memoryRequests: "4Gi"
@@ -88,7 +123,7 @@ elastic_settings:
           xpack.security.transport.ssl.certificate_authorities:
           - /usr/share/elasticsearch/config/other/remote.ca.crt
           xpack.security.transport.ssl.client_authentication: optional
-        storageSize: "900Gi"
+        storageSize: "100Gi"
         ES_JAVA_OPTS: -Xms6g -Xmx6g
         nodesCount: 2
         memoryRequests: "6Gi"
@@ -106,41 +141,7 @@ elastic_settings:
             - name: remote-certs
               secret:
                 secretName: remote-certs
-      - name: coor
-        config: |
-          node.master: false
-          node.data: false
-          node.ingest: false
-          node.ml: false
-          node.store.allow_mmap: false
-          index.store.type: niofs
-          xpack.monitoring.collection.enabled: true
-          xpack.security.authc.realms:
-            native:
-              native1:
-                order: 1
-          xpack.security.transport.ssl.certificate_authorities:
-          - /usr/share/elasticsearch/config/other/remote.ca.crt
-          xpack.security.transport.ssl.client_authentication: optional
-        storageSize: "900Gi"
-        ES_JAVA_OPTS: -Xms6g -Xmx6g
-        nodesCount: 1
-        memoryRequests: "6Gi"
-        cpuRequests: "1"
-        memoryLimit: 7Gi
-        cpuLimit: 4
-        extvolumeMounts:
-        podTemplate:
-          spec:
-            containers:
-            - name: elasticsearch
-              volumeMounts:
-              - mountPath: /usr/share/elasticsearch/config/other
-                name: remote-certs
-            volumes:
-            - name: remote-certs
-              secret:
-                secretName: remote-certs
+
   kibana:
     enabled: true
     # cert_ttl: "143h"
@@ -154,3 +155,8 @@ elastic_settings:
       istio_gateway_fqdn: "k.t.regemini.io"
     saml_provider:
       enabled: "no"
+    xpack_security:
+      enabled: "no"
+    xpack_reporting_index_re:
+      enabled: "no"
+    gcs_enable: "no"       

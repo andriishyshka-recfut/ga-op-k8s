@@ -1,7 +1,7 @@
 locals {
-  index_dome     = split(",\n", file("${path.module}/dome.txt"))
-  index_minion   = split(",\n", file("${path.module}/minion.txt"))
-  index_artifact = split(",\n", file("${path.module}/artifact.txt"))
+  index_dome     = split("\n", file("${path.module}/dome.txt"))
+  index_minion   = split("\n", file("${path.module}/minion.txt"))
+  index_artifact = split("\n", file("${path.module}/artifact.txt"))
 }
 
 resource "grafana_data_source" "dome" {
@@ -78,7 +78,7 @@ resource "grafana_data_source" "logstash" {
   basic_auth_enabled  = "true"
   basic_auth_username = local.elasticUsername
   access_mode         = "proxy"
-  database_name       = "logstash-*"
+  database_name       = "logstash"
   is_default          = false
   json_data {
     time_field = "@timestamp"

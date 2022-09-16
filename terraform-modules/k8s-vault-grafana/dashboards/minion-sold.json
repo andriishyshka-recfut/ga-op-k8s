@@ -3,10 +3,7 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
+        "datasource" : "logstash",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -29,10 +26,7 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "elasticsearch",
-        "uid": "QGRDmuzVz"
-      },
+      "datasource" : "logstash",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -115,10 +109,7 @@
               "type": "date_histogram"
             }
           ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "QGRDmuzVz"
-          },
+          "datasource" : "logstash",
           "metrics": [
             {
               "id": "1",

@@ -82,6 +82,17 @@ spec:
             bin/elasticsearch-plugin install --batch repository-gcs && bin/elasticsearch-plugin install --batch repository-s3
         containers:
         - name: elasticsearch
+          command:
+           - /bin/sh
+           - -cxe
+           - |
+             ulimit -l unlimited
+             /usr/local/bin/docker-entrypoint.sh eswrapper
+          securityContext:
+           capabilities:
+             add:
+             - IPC_LOCK
+             - SYS_RESOURCE
           resources:
             limits:
               memory: {{ .memoryLimit }}
@@ -91,7 +102,7 @@ spec:
               cpu: {{ .cpuRequests }}
           env:
           - name: ES_JAVA_OPTS
-            value: {{ .ES_JAVA_OPTS }}
+            value: {{ .ES_JAVA_OPTS | quote}}
           volumeMounts:
           - name: saml
             mountPath: "/usr/share/elasticsearch/config/saml/"
@@ -109,7 +120,5 @@ spec:
 {{ indent 6 .config }}
 {{ indent 6 $.Values.oidc_config }}
 {{ indent 6 $.Values.notification_config }}
-{{- if eq .Values.performance_settings.enabled "yes" }}
-      bootstrap.memory_lock: true
-{{- end }}
+{{ indent 6 $.Values.performance_config }}
 {{- end }}

@@ -41,6 +41,9 @@ data "kubernetes_secret" "vault" {
     name      = kubernetes_service_account.vault.default_secret_name
     namespace = "kube-system"
   }
+  depends_on = [
+    kubernetes_service_account.vault
+  ]
 }
 
 resource "kubernetes_cluster_role_binding" "vault" {
@@ -57,6 +60,9 @@ resource "kubernetes_cluster_role_binding" "vault" {
     name      = "vault"
     namespace = "kube-system"
   }
+  depends_on = [
+    kubernetes_service_account.vault
+  ]
 }
 
 data "kubernetes_service_account" "vault" {
@@ -64,4 +70,7 @@ data "kubernetes_service_account" "vault" {
     name      = "vault"
     namespace = "kube-system"
   }
+  depends_on = [
+    kubernetes_service_account.vault
+  ]
 }

@@ -19,15 +19,15 @@ module "elastic-elastic" {
 }
 
 
-module "elastic-kibana" {
-  source                       = "../../terraform-modules/k8s-vault-kibana"
-  ElasticSettings              = local.dataEs.elastic_settings
-  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
-  Cluster                      = var.Cluster
-  Color                        = var.Color
-  Settings                     = var.Settings
-  # depends_on          = [module.restore-service-indexes]
-}
+# module "elastic-kibana" {
+#   source                       = "../../terraform-modules/k8s-vault-kibana"
+#   ElasticSettings              = local.dataEs.elastic_settings
+#   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+#   Cluster                      = var.Cluster
+#   Color                        = var.Color
+#   Settings                     = var.Settings
+#   # depends_on          = [module.restore-service-indexes]
+# }
 
 # module "elastic-beats" {
 #   source   = "../../terraform-modules/k8s-vault-elastic-beats"
