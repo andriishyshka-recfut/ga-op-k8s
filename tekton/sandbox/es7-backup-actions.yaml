@@ -23,7 +23,7 @@ actions:
     - filtertype: pattern
       kind: regex
       value: '^.*$'
-    - filtertype: pattern
-      kind: regex
-      value: '^(\.monitoring|apm).*$'
-      exclude: True
+    # - filtertype: pattern
+    #   kind: regex
+    #   value: '^(\.monitoring|apm).*$'
+      # exclude: True

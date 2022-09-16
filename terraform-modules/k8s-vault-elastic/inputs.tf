@@ -28,6 +28,7 @@ locals {
   samlSetup              = lookup(var.ElasticSettings.elastic.saml_gcloud, "enabled", "no") == "yes" ? 1 : 0
   slackNotificationSetup = lookup(var.ElasticSettings.elastic.slack_notification, "enabled", "no") == "yes" ? 1 : 0
   smtpNotificationSetup  = lookup(var.ElasticSettings.elastic.smtp_notification, "enabled", "no") == "yes" ? 1 : 0
+  performanceSetup       = lookup(var.ElasticSettings.elastic.performance_settings, "enabled", "no") == "yes" ? 1 : 0
   esValues               = var.ElasticSettings.elastic
   version                = var.Settings.clusters[var.Cluster][var.Color].elasticsearch.cluster[local.esValues.esName]
   monUrl                 = var.Settings.MonElasticFQDN

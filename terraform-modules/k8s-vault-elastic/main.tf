@@ -9,7 +9,8 @@ resource "helm_release" "elasticsearch" {
   values = [
     yamlencode(local.esValues),
     yamlencode(local.oidcConfig),
-    yamlencode(local.notificationConfig)
+    yamlencode(local.notificationConfig),
+    yamlencode(local.performanceConfig)
   ]
   set {
     name  = "appVersion"

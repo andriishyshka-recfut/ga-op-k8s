@@ -4,10 +4,7 @@
       {
         "$$hashKey": "object:7",
         "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
+        "datasource" : "logstash",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -34,10 +31,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "elasticsearch",
-        "uid": "QGRDmuzVz"
-      },
+      "datasource" : "logstash",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -92,10 +86,7 @@
               "type": "date_histogram"
             }
           ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "QGRDmuzVz"
-          },
+          "datasource" : "logstash",
           "metrics": [
             {
               "id": "1",
@@ -148,10 +139,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "elasticsearch",
-        "uid": "QGRDmuzVz"
-      },
+      "datasource" : "logstash",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -206,10 +194,7 @@
               "type": "date_histogram"
             }
           ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "QGRDmuzVz"
-          },
+          "datasource" : "logstash",
           "metrics": [
             {
               "id": "1",
@@ -262,10 +247,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "elasticsearch",
-        "uid": "QGRDmuzVz"
-      },
+      "datasource" : "logstash",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -320,10 +302,7 @@
               "type": "date_histogram"
             }
           ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "QGRDmuzVz"
-          },
+          "datasource" : "logstash",
           "metrics": [
             {
               "id": "1",
@@ -376,10 +355,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "elasticsearch",
-        "uid": "000000112"
-      },
+      "datasource" : "logstash",
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -449,10 +425,7 @@
               "type": "date_histogram"
             }
           ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "000000112"
-          },
+          "datasource" : "logstash",
           "metrics": [
             {
               "$$hashKey": "object:108",

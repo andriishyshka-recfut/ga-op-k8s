@@ -16,11 +16,11 @@ resource "grafana_folder" "dome" {
   title    = "#dome"
 }
 
-resource "grafana_dashboard" "dome" {
-  provider    = grafana.elastic
-  folder      = grafana_folder.dome.id
-  config_json = file("${path.module}/dashboards/dome.json")
-}
+# resource "grafana_dashboard" "dome" {
+#   provider    = grafana.elastic
+#   folder      = grafana_folder.dome.id
+#   config_json = file("${path.module}/dashboards/dome.json")
+# }
 resource "grafana_dashboard" "parsing_progress" {
   provider    = grafana.elastic
   folder      = grafana_folder.dome.id
@@ -33,11 +33,11 @@ resource "grafana_folder" "minion" {
   title    = "#minion"
 }
 
-resource "grafana_dashboard" "minion" {
-  provider    = grafana.elastic
-  folder      = grafana_folder.minion.id
-  config_json = file("${path.module}/dashboards/minion.json")
-}
+# resource "grafana_dashboard" "minion" {
+#   provider    = grafana.elastic
+#   folder      = grafana_folder.minion.id
+#   config_json = file("${path.module}/dashboards/minion.json")
+# }
 resource "grafana_dashboard" "minion-sold" {
   provider    = grafana.elastic
   folder      = grafana_folder.minion.id
@@ -68,3 +68,4 @@ resource "grafana_dashboard" "general" {
   folder      = grafana_folder.general.id
   config_json = file("${path.module}/dashboards/umbrella-dashboard.json")
 }
+

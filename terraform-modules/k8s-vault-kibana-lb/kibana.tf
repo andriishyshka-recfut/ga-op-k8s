@@ -7,19 +7,12 @@ resource "helm_release" "kibana" {
   atomic    = true
   values = [
     yamlencode(local.kibanaValues)
+    yamlencode(local.xpackConfig)
   ]
   set {
     name  = "kibanaVersion"
     value = local.version
   }
-  # set {
-  #   name  = "xpack.security.cookieName"
-  #   value = local.kibanaValues.name
-  # }
-  # set {
-  #   name  = "saml_provider.istio_gateway_fqdn"
-  #   value = "saml_provider.istio_gateway_fqdn"
-  # }
 }
 
 
