@@ -1,6 +1,6 @@
 resource "random_string" "dome" {
   length = 1
-  lower  = false
+  lower  = true
 }
 
 resource "grafana_library_panel" "dome_graph" {
