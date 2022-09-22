@@ -24,6 +24,7 @@ data "vault_kv_secrets_list_v2" "tls-projects" {
 
 locals {
   projects             = nonsensitive(toset(data.vault_kv_secrets_list_v2.tls-projects.names))
+  project_setup_pki = {for project, tmp in local.projects : project => data.vault_generic_secret.clients[project].data if lookup(data.vault_generic_secret.clients[project].data, "pki_installed", false)}
   projects_setup_csr   = { for project, tmp in local.projects : project => data.vault_generic_secret.clients[project].data if lookup(data.vault_generic_secret.clients[project].data, "crt_installed", false) }
   project_data         = { for project, tmp in local.projects : project => data.vault_generic_secret.clients[project].data }
   project_data_enabled = { for project, tmp in local.projects : project => data.vault_generic_secret.clients[project].data if lookup(data.vault_generic_secret.clients[project].data, "enabled", false) }

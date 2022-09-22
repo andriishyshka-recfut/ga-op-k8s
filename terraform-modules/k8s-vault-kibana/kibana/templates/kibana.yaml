@@ -7,7 +7,6 @@ metadata:
 spec:
   version: {{ .Values.kibanaVersion }}
   count: 1
-
   elasticsearchRef:
     name: "{{ .Values.esName }}"
   http:
@@ -35,17 +34,14 @@ spec:
         order: 1
         realm: {{ .Values.oidc_provider.realm }}
       basic.basic1:
-        order: 2
+        order: 2       
 {{- end }}
-#{{- if eq .Values.saml_provider.enabled "yes"  | default "no"}}
-#      saml.gsuite:
-#        order: 0
-#        realm: {{ .Values.saml_provider.realm }}
-    # server.publicBaseUrl: https://{{ .Values.saml_provider.istio_gateway_fqdn }}
-    server.publicBaseUrl: "https://k.regemini.com/"
-#    server.xsrf.allowlist: [/api/security/saml/callback]
-    server.ssl.supportedProtocols: ["TLSv1.2","TLSv1.3"]
-#{{- end }}
+{{- if eq .Values.saml_provider.enabled "yes" | default "no" }}
+      saml.gsuite:
+        order: 0
+        realm: {{ .Values.saml_provider.realm }}
+    server.xsrf.allowlist: [/api/security/saml/callback]
+{{- end }} 
 {{- if eq .Values.xpack_reporting_index_re.enabled "yes" | default "no"}}
     xpack.reporting.index: ".reporting-re"
 {{- end }}

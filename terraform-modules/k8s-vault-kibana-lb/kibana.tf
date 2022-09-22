@@ -6,7 +6,7 @@ resource "helm_release" "kibana" {
   wait      = true
   atomic    = true
   values = [
-    yamlencode(local.kibanaValues)
+    yamlencode(local.kibanaValues),
     yamlencode(local.xpackConfig)
   ]
   set {

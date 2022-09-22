@@ -15,7 +15,7 @@ module "elastic-elastic" {
   MinioAddress                 = var.Settings.clusters[var.Cluster].MinioAddress
   BackupBucketName             = "es7"
   BackupBucketBasePath         = "7"
-  OidcRedirectUri              = "kk.regemini.io"
+  OidcRedirectUri              = "k.regemini.io"
 }
 
 
@@ -29,10 +29,10 @@ module "elastic-elastic" {
 #   # depends_on          = [module.restore-service-indexes]
 # }
 
-# module "elastic-beats" {
-#   source   = "../../terraform-modules/k8s-vault-elastic-beats"
-#   Cluster  = var.Cluster
-#   Color    = var.Color
-#   Settings = var.Settings
-#   # depends_on = [module.elastic-kibana]
-# }
+module "elastic-beats" {
+  source   = "../../terraform-modules/k8s-vault-elastic-beats"
+  Cluster  = var.Cluster
+  Color    = var.Color
+  Settings = var.Settings
+  depends_on = [module.elastic-elastic]
+}

@@ -151,11 +151,9 @@ elastic_settings:
     kibanaVersion: "7.17.4"
     oidc_provider:
       enabled: "yes"
-      realm: "google"
+      oidc_realm_name: "google"
       istio_gateway_fqdn: "kk.regemini.io"
-    saml_provider:
-      enabled: "yes"
-      realm: "gsuite"
-      istio_gateway_fqdn: "kk.regemini.io"
-    xpack_reporting_index_re:
-      enabled: "yes"
+    # saml_provider:
+    #   enabled: "no"
+    #   realm: "gsuite"
+    #   istio_gateway_fqdn: "kk.regemini.io"
