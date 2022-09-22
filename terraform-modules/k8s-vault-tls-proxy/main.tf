@@ -1,5 +1,5 @@
 resource "null_resource" "pki_enable" {
-  for_each = nonsensitive(local.projects_setup_csr)
+  for_each = nonsensitive(local.project_setup_pki)
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -9,7 +9,7 @@ resource "null_resource" "pki_enable" {
 }
 
 resource "null_resource" "pki_init_settings" {
-  for_each = nonsensitive(local.projects_setup_csr)
+  for_each = nonsensitive(local.project_setup_pki)
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -22,7 +22,7 @@ resource "null_resource" "pki_init_settings" {
 }
 
 resource "null_resource" "pki_generate_root" {
-  for_each = nonsensitive(local.projects_setup_csr)
+  for_each = nonsensitive(local.project_setup_pki)
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -39,7 +39,7 @@ resource "null_resource" "pki_generate_root" {
 }
 
 resource "null_resource" "pki_setup_role" {
-  for_each = nonsensitive(local.projects_setup_csr)
+  for_each = nonsensitive(local.project_setup_pki)
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -55,9 +55,22 @@ resource "null_resource" "pki_setup_role" {
   ]
 }
 
-data "kubernetes_service_account" "vault_sa" {
+resource "null_resource" "pki_installed" {
+  for_each = nonsensitive(local.project_setup_pki)
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    command = "vault kv patch secret/${var.SecretPath}/projects/${each.key} pki_installed=true"
+  }
+  depends_on = [
+    null_resource.pki_setup_role
+  ]
+}
+
+data "kubernetes_service_account" "cm_sa" {
   metadata {
-    name      = "vault"
+    name      = "cert-manager"
     namespace = "kube-system"
   }
 }
@@ -74,11 +87,11 @@ resource "kubernetes_manifest" "vault_certmanager" {
       "vault" = {
         "auth" = {
           "kubernetes" = {
-            "mountPath" = "/v1/auth/default-issuer-${var.Cluster}-${var.Color}"
-            "role"      = "cert-manager-${var.Cluster}-${var.Color}"
+            "mountPath" = "/v1/auth/k8s-${var.Cluster}-${var.Color}"
+            "role"      = "cert-manager"
             "secretRef" = {
               "key"  = "token"
-              "name" = data.kubernetes_service_account.vault_sa.default_secret_name
+              "name" = data.kubernetes_service_account.cm_sa.default_secret_name
             }
           }
         }
@@ -117,7 +130,7 @@ resource "vault_pki_secret_backend_sign" "clients" {
   csr         = tls_cert_request.clients_csr[each.key].cert_request_pem
   common_name = each.key
   depends_on = [
-    tls_cert_request.clients_csr, null_resource.pki_setup_role
+    tls_cert_request.clients_csr
   ]
 }
 

@@ -78,8 +78,8 @@ elastic_settings:
       enabled: "yes"
       realm: "google"
       istio_gateway_fqdn: "logs.t.regemini.io"      
-    saml_provider:
-      enabled: "no"
+    # saml_provider:
+    #   enabled: "no"
     xpack_security:
       enabled: "no"
       vault_path: "secret/red/kibana"

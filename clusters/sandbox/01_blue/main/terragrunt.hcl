@@ -7,7 +7,8 @@ terraform {
       "plan",
       "import",
       "push",
-      "refresh"
+      "refresh",
+      "destroy"
     ]
 
     required_var_files = ["${get_parent_terragrunt_dir()}/../../../../${get_env("CONF_PATH")}"]

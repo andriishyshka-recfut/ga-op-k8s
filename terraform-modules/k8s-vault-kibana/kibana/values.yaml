@@ -7,6 +7,6 @@ namespace: "test"
 kibanaVersion: "7.17.4"
 oidc_provider:
   enabled: "no"
-  realm: "google"
+  oidc_realm_name: "google"
 xpack_reporting_index_re:
   enabled: "no"

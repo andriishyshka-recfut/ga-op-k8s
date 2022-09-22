@@ -13,27 +13,35 @@ spec:
     name: {{ .Values.dashboards.kibana }}
 {{- end }}
   config:
-{{ indent 4 .Values.filebeat.config }}
+    filebeat.inputs:
+    - type: container
+      paths:
+      - /var/log/containers/*.log  
+# {{ indent 4 .Values.filebeat.config }}
   daemonSet:
     podTemplate:
       spec:
-        tolerations:
-          - key: "workloadsType"
-            operator: "Exists"
-            effect: "NoSchedule"
-        serviceAccountName: filebeat
-        automountServiceAccountToken: true
-        terminationGracePeriodSeconds: 30
         dnsPolicy: ClusterFirstWithHostNet
         hostNetwork: true
         securityContext:
-          runAsUser: 0
+          runAsUser: 0      
+        # tolerations:
+        #   - key: "workloadsType"
+        #     operator: "Exists"
+        #     effect: "NoSchedule"
+        # serviceAccountName: filebeat
+        # automountServiceAccountToken: true
+        # terminationGracePeriodSeconds: 30
+        # dnsPolicy: ClusterFirstWithHostNet
+        # hostNetwork: true
+        # securityContext:
+        #   runAsUser: 0
         containers:
         - name: filebeat
-          resources:
-            requests:
-              cpu: 10m
-              memory: 10Mi
+        #   resources:
+        #     requests:
+        #       cpu: 10m
+        #       memory: 10Mi
           volumeMounts:
           - name: varlogcontainers
             mountPath: /var/log/containers
