@@ -127,5 +127,4 @@ spec:
       - creditone-sftp.regemini.com:2222
       - dscvr-sftp.regemini.com:2222
       - fiserv-sftp.regemini.com:2222
-      - max-sftp.regemini.com:2222
       - s3-sftp.regemini.com:2222
