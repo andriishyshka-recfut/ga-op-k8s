@@ -21,12 +21,24 @@ module "elastic7-elastic" {
 
 module "elastic7-kibana" {
   source                       = "../../terraform-modules/k8s-vault-kibana"
-  ElasticSettings              = local.dataEs.elastic_settings
+  ElasticSettings              = local.dataEs.kibana1_settings
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
   Color                        = var.Color
   Settings                     = var.Settings
-  depends_on = [
-    module.es7-restore
-  ]
+  # depends_on = [
+  #   module.es7-restore
+  # ]
+}
+
+module "elastic7-kibana-2" {
+  source                       = "../../terraform-modules/k8s-vault-kibana"
+  ElasticSettings              = local.dataEs.kibana2_settings
+  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+  Cluster                      = var.Cluster
+  Color                        = var.Color
+  Settings                     = var.Settings
+  # depends_on = [
+  #   module.es7-restore
+  # ]
 }

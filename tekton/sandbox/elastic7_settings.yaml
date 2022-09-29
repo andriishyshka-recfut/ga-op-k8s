@@ -142,6 +142,7 @@ elastic_settings:
               secret:
                 secretName: remote-certs
 
+kibana1_settings:
   kibana:
     enabled: true
     # cert_ttl: "143h"
@@ -152,11 +153,31 @@ elastic_settings:
     oidc_provider:
       enabled: "yes"
       realm: "google"
-      istio_gateway_fqdn: "k.t.regemini.io"
+    istio_gateway_fqdn: "k.t.regemini.io"
     # saml_provider:
     #   enabled: "no"
     xpack_security:
-      enabled: "no"
-    xpack_reporting_index_re:
-      enabled: "no"
+      enabled: "yes"
+      vault_path: "secret/es-creds-es7/kibana"
+      secret_name: "xpack-security"     
     gcs_enable: "no"       
+
+kibana2_settings:
+  kibana:
+    enabled: true
+    # cert_ttl: "143h"
+    name: kibana2
+    esName: "elastic7"
+    namespace: "elastic7"
+    kibanaVersion: "7.17.5"
+    oidc_provider:
+      enabled: "yes"
+      realm: "google"
+    istio_gateway_fqdn: "k.t.regemini.io"
+    # saml_provider:
+    #   enabled: "no"
+    xpack_security:
+      enabled: "yes"
+      vault_path: "secret/es-creds-es7/kibana"
+      secret_name: "xpack-security"     
+    gcs_enable: "no"          

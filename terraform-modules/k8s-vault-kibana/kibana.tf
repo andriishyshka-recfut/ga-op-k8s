@@ -1,12 +1,13 @@
 
 resource "helm_release" "kibana" {
   name      = local.kibanaValues.name
-  namespace = local.esValues.namespace
+  namespace = local.kibanaValues.namespace
   chart     = "${path.module}/kibana"
   wait      = true
   atomic    = true
   values = [
-    yamlencode(local.kibanaValues)
+    yamlencode(local.kibanaValues),
+    yamlencode(local.xpackConfig)
   ]
   set {
     name  = "kibanaVersion"

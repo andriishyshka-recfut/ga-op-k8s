@@ -28,20 +28,4 @@ spec:
             memory: 1Gi
             cpu: 1
   config:
-{{- if eq .Values.oidc_provider.enabled "yes" }}
-    xpack.security.authc.providers:
-      oidc.Google:
-        order: 1
-        realm: {{ .Values.oidc_provider.realm }}
-      basic.basic1:
-        order: 2       
-{{- end }}
-{{- if eq .Values.saml_provider.enabled "yes" | default "no" }}
-      saml.gsuite:
-        order: 0
-        realm: {{ .Values.saml_provider.realm }}
-    server.xsrf.allowlist: [/api/security/saml/callback]
-{{- end }} 
-{{- if eq .Values.xpack_reporting_index_re.enabled "yes" | default "no"}}
-    xpack.reporting.index: ".reporting-re"
-{{- end }}
+{{ indent 6 $.Values.xpack_config }}  
