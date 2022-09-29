@@ -25,7 +25,6 @@ elasticsearch.requestTimeout: "10h"
 savedObjects.maxImportPayloadBytes: "52428800"
 savedObjects.maxImportExportSize: "100000"
 server.ssl.supportedProtocols: ["TLSv1.2","TLSv1.3"]
-# server.publicBaseUrl: "https://k.regemini.com"
 server.publicBaseUrl: "https://${local.kibanaValues.istio_gateway_fqdn}"
 xpack.reporting.roles.enabled: false
 xpack.reporting.index: ".reporting-re"
