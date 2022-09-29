@@ -121,9 +121,10 @@ spec:
       labels:
         module: ssh_banner
       static:
-      - bmo.regemini.com:2222
-      - chainalysis.regemini.com:2222
-      - creditone.regemini.com:2222
-      - max.regemini.com:2222
-      - bka.regemini.com:2222
-      - fd.regemini.com:2222
+      - bka-sftp.regemini.com:2222
+      - bmo-sftp.regemini.com:2222
+      - chainalysis-sftp.regemini.com:2222
+      - creditone-sftp.regemini.com:2222
+      - dscvr-sftp.regemini.com:2222
+      - fiserv-sftp.regemini.com:2222
+      - s3-sftp.regemini.com:2222
