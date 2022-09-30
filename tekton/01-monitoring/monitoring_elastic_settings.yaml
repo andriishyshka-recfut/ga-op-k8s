@@ -77,13 +77,11 @@ elastic_settings:
     oidc_provider:
       enabled: "yes"
       realm: "google"
-      istio_gateway_fqdn: "logs.t.regemini.io"      
+    istio_gateway_fqdn: "logs.t.regemini.io"      
     # saml_provider:
     #   enabled: "no"
     xpack_security:
-      enabled: "no"
+      enabled: "yes"
       vault_path: "secret/red/kibana"
       secret_name: "xpack-security"      
-    xpack_reporting_index_re:
-      enabled: "no"
     gcs_enable: "no"      
