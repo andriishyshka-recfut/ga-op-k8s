@@ -57,12 +57,12 @@ elastic_settings:
           xpack.security.transport.ssl.certificate_authorities:
           - /usr/share/elasticsearch/config/other/remote.ca.crt
         storageSize: "30Gi"
-        ES_JAVA_OPTS: -Xms13g -Xmx13g
+        ES_JAVA_OPTS: -Xms15g -Xmx15g
         nodesCount: 3
         workloadsType: mstr
-        memoryRequests: "14Gi"
+        memoryRequests: "17Gi"
         cpuRequests: "7"
-        memoryLimit: 14Gi
+        memoryLimit: 17Gi
         cpuLimit: "7"
         podTemplate:
           spec:
@@ -124,12 +124,12 @@ elastic_settings:
           xpack.security.transport.ssl.certificate_authorities:
           - /usr/share/elasticsearch/config/other/remote.ca.crt
         storageSize: "30Gi"
-        ES_JAVA_OPTS: -Xms13g -Xmx13g
+        ES_JAVA_OPTS: -Xms15g -Xmx15g
         nodesCount: 3
         workloadsType: coor
-        memoryRequests: "14Gi"
+        memoryRequests: "17Gi"
         cpuRequests: "7"
-        memoryLimit: 14Gi
+        memoryLimit: 17Gi
         cpuLimit: "7"
         podTemplate:
           spec:
