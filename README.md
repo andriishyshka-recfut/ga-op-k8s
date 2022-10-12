@@ -52,24 +52,24 @@ Directory tree :
 
 ```
 
-ansible - contains ansible playbooks and all needed for it's execution. playbooks executed from terraform configs and modules.
-docs - contain howtos and other documentation that cover this projects
-terraform-base - base terraform configs for provisioning VPC, Bastion host, storage , service account, etc...
-clusters - directory contain configs for all k8s clusters
-  sandbox - sandbox clusters related terraform configs
-    blue - terraform configs to spinup GKE blue environment
-    green - terraform configs to spinup GKE green environment
-    persistent-resources - terraform configs for shared resources (buckets,keys,etc.)
-terraform-modules - umbrella directory for all modules
-  cluster-persistent-resources - provision buckets for vault and elasticsearch
-  dns - module to configure internal dns zone
-  gke-setup - terraform module to create GKE cluster  in secure way(at least from network perspective).
-  k8s-elasticsearch - terraform module for elasticsearch provisioning within k8s cluster
-  k8s-istio - module for istio provisioning within k8s
-  k8s-misc - miscelenious k8s operators
-  k8s-monitoring-agents - module to spin up and configure monitoring agents within k8s cluster
-  k8s-vault - module to spin up and configure Vault
-  k8s-post-install-verification - module to run post install verification playbook
+* ansible - contains ansible playbooks and all needed for it's execution. playbooks executed from terraform configs and modules.
+* docs - contain howtos and other documentation that cover this projects
+* terraform-base - base terraform configs for provisioning VPC, Bastion host, storage , service account, etc...
+* clusters - directory contain configs for all k8s clusters
+  * sandbox - sandbox clusters related terraform configs
+  * blue - terraform configs to spinup GKE blue environment
+  * green - terraform configs to spinup GKE green environment
+  * persistent-resources - terraform configs for shared resources (buckets,keys,etc.)
+* terraform-modules - umbrella directory for all modules
+  * cluster-persistent-resources - provision buckets for vault and elasticsearch
+  * dns - module to configure internal dns zone
+  * gke-setup - terraform module to create GKE cluster  in secure way(at least from network perspective).
+  * k8s-elasticsearch - terraform module for elasticsearch provisioning within k8s cluster
+  * k8s-istio - module for istio provisioning within k8s
+  * k8s-misc - miscelenious k8s operators
+  * k8s-monitoring-agents - module to spin up and configure monitoring agents within k8s cluster
+  * k8s-vault - module to spin up and configure Vault
+  * k8s-post-install-verification - module to run post install verification playbook
 
 
 ### Authorization reference
@@ -93,6 +93,7 @@ variables must be defined in `.env` file and alias `tf` should be used to run de
 
 ### Ansible SSH authorization
 Currently terraform creates one-time ssh-key and put it into `ssh-agent`. `ssh-agent` should be running and session environment variables should be set to terraform process.
+
 Terraform will wipe out all keys stored in `ssh-agent` and create only one to use. Then this key will be authorized to perform logins on behalf of terraform's service account( which key specified in GOOGLE_CREDENTIALS) to login to instances for 30 minutes. after terraform execution completion key still be accessible in running `ssh-agent` instance.
 
 ### K8S authorization
@@ -100,6 +101,7 @@ All post-deployment activities currently done with same service account which ru
 
 ### Bucket to store terraform state
 Terraform may store it's state locally or in remote object storage(S3,GCP Storage, etc ). [More info](https://www.terraform.io/docs/backends/types/gcs.html).
+
 Currently it is require to provision sample bucket and create access to Service Account who will be run terraform. Exact `gcloud` commands mentioned in terraform-base README file.
 
 
