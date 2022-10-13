@@ -44,7 +44,6 @@ data "google_container_cluster" "red_cluster" {
 data "google_client_config" "default" {
 }
 
-
 locals {
   activeCluster   = var.Color
   inActiveCluster = var.Color == "blue" ? "green" : "blue"
@@ -69,6 +68,13 @@ locals {
     ANSIBLE_STDOUT_CALLBACK = "debug"
     BASTION_DNS             = var.Settings.bastion_dns
   })
-  load_balancer_ip = var.Settings.clusters[var.Cluster].load_balancer_ip
-  VaultAddress     = element(split("/", var.VaultAddress), length(split("/", var.VaultAddress)) - 1)
+  load_balancer_ip  = var.Settings.clusters[var.Cluster].load_balancer_ip
+  VaultAddress      = element(split("/", var.VaultAddress), length(split("/", var.VaultAddress)) - 1)
+  ports             = var.Settings.clusters[var.Cluster][var.Color].istio.lb
+  delete_lb_service = <<COMMAND
+      kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     delete svc istio-ingressgateway-lb -n istio-ingress 
+  COMMAND
 }
