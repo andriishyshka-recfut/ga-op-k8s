@@ -72,6 +72,41 @@ resource "helm_release" "istio_ingress" {
     name  = "autoscaling.minReplicas"
     value = 2
   }
+  dynamic "set" {
+    for_each = local.ports
+    content {
+      name  = "service.ports[${set.key}].name"
+      value = set.value["name"]
+    }
+  }
+  dynamic "set" {
+    for_each = local.ports
+    content {
+      name  = "service.ports[${set.key}].protocol"
+      value = set.value["protocol"]
+    }
+  }
+  dynamic "set" {
+    for_each = local.ports
+    content {
+      name  = "service.ports[${set.key}].port"
+      value = set.value["port"]
+    }
+  }
+  dynamic "set" {
+    for_each = local.ports
+    content {
+      name  = "service.ports[${set.key}].targetPort"
+      value = set.value["port"]
+    }
+  }
+  dynamic "set" {
+    for_each = local.ports
+    content {
+      name  = "service.ports[${set.key}].nodePort"
+      value = set.value["nodePort"]
+    }
+  }
   depends_on = [
     kubernetes_namespace.istio_ingress
   ]
