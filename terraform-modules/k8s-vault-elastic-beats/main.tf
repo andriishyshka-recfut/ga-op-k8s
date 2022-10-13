@@ -9,18 +9,10 @@ locals {
   version = var.Settings.clusters[var.Cluster][var.Color].elasticsearch.cluster.elastic
 }
 
-resource "helm_release" "beat" {
-  name      = "beats"
-  chart     = "${path.module}/beats"
-  wait      = true
-  atomic    = true
-  namespace = "elastic"
-  values = [
-    yamlencode(local.beatsValues)
-  ]
-  set {
-    name  = "beatsVersion"
-    value = local.version
+data "kubernetes_secret" "es_pass" {
+  metadata {
+    name      = "elastic-es-elastic-user"
+    namespace = "elastic"
   }
-
 }
+
