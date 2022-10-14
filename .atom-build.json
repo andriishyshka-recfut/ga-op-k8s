@@ -1,6 +1,0 @@
-{
-    "cmd": "kubectl",
-    "args": ["create","-f","{FILE_ACTIVE}"],
-    "sh": false,
-    "cwd": "{FILE_ACTIVE_PATH}"
-}

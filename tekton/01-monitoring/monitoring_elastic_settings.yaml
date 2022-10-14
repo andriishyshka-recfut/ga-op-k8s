@@ -73,7 +73,7 @@ elastic_settings:
     name: kibana
     esName: "monitoring"
     namespace: "monitoring"
-    kibanaVersion: "7.14.1"
+    kibanaVersion: "7.17.6"
     oidc_provider:
       enabled: "yes"
       realm: "google"
@@ -82,6 +82,6 @@ elastic_settings:
     #   enabled: "no"
     xpack_security:
       enabled: "yes"
-      vault_path: "secret/red/kibana"
+      vault_path: "secret/es-creds-compose-prod/kibana"
       secret_name: "xpack-security"      
     gcs_enable: "no"      

@@ -37,6 +37,8 @@ elastic_settings:
       enabled: "no"
     performance_settings:
       enabled: "no"
+    gcs_enable: "yes"
+    transport_cert: "no"
     elasticNodeSets:
       - name: coor
         config: |
@@ -158,7 +160,7 @@ kibana1_settings:
     #   enabled: "no"
     xpack_security:
       enabled: "yes"
-      vault_path: "secret/es-creds-es7/kibana"
+      vault_path: "secret/es-creds-compose-prod/kibana"
       secret_name: "xpack-security"     
     gcs_enable: "no"       
 
@@ -178,6 +180,6 @@ kibana2_settings:
     #   enabled: "no"
     xpack_security:
       enabled: "yes"
-      vault_path: "secret/es-creds-es7/kibana"
+      vault_path: "secret/es-creds-compose-prod/kibana"
       secret_name: "xpack-security"     
     gcs_enable: "no"          
