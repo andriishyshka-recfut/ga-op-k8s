@@ -4,6 +4,26 @@ locals {
 }
 
 
+data "vault_generic_secret" "elastic7_transport_ca" {
+  path = "secret/elasticsearch-admin/replication"
+}
+
+resource "kubernetes_secret" "elastic7_transport_ca" {
+  metadata {
+    name      = "transport-es-ca"
+    namespace = "elastic7"
+  }
+  type = "kubernetes.io/tls"
+  data = {
+    "ca.crt" = data.vault_generic_secret.elastic7_transport_ca.data.ca_crt
+    "ca.key" = data.vault_generic_secret.elastic7_transport_ca.data.ca_key
+  }
+  depends_on = [
+    data.vault_generic_secret.elastic7_transport_ca
+  ]
+}
+
+
 module "elastic7-elastic" {
   source                       = "../../terraform-modules/k8s-vault-elastic"
   ElasticSettings              = local.dataEs.elastic_settings
@@ -26,9 +46,9 @@ module "elastic7-kibana" {
   Cluster                      = var.Cluster
   Color                        = var.Color
   Settings                     = var.Settings
-  # depends_on = [
-  #   module.es7-restore
-  # ]
+  depends_on = [
+    module.es7-restore
+  ]
 }
 
 module "elastic7-kibana-2" {
@@ -38,7 +58,7 @@ module "elastic7-kibana-2" {
   Cluster                      = var.Cluster
   Color                        = var.Color
   Settings                     = var.Settings
-  # depends_on = [
-  #   module.es7-restore
-  # ]
+  depends_on = [
+    module.es7-restore
+  ]
 }

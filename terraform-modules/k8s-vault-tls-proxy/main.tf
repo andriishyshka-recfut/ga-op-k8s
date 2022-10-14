@@ -70,7 +70,7 @@ resource "null_resource" "pki_installed" {
 
 data "kubernetes_service_account" "cm_sa" {
   metadata {
-    name      = "cert-manager"
+    name      = "${var.Cluster}-cert-manager"
     namespace = "kube-system"
   }
 }
@@ -370,35 +370,35 @@ resource "kubernetes_manifest" "ip_whitelist" {
   }
 }
 
-resource "kubernetes_manifest" "ip_whitelist_our_networks" {
-  manifest = {
-    "apiVersion" = "security.istio.io/v1beta1"
-    "kind"       = "AuthorizationPolicy"
-    "metadata" = {
-      "name"      = "our-networks-ip-whitelist"
-      "namespace" = "istio-ingress"
-    }
-    "spec" = {
-      "action" = "ALLOW"
-      "rules" = [
-        {
-          "from" = [
-            {
-              "source" = {
-                "ipBlocks" = local.ourIps
-              }
-            },
-          ]
-        },
-      ]
-      "selector" = {
-        "matchLabels" = {
-          "istio" = "ingressgateway-lb"
-        }
-      }
-    }
-  }
-}
+# resource "kubernetes_manifest" "ip_whitelist_our_networks" {
+#   manifest = {
+#     "apiVersion" = "security.istio.io/v1beta1"
+#     "kind"       = "AuthorizationPolicy"
+#     "metadata" = {
+#       "name"      = "our-networks-ip-whitelist"
+#       "namespace" = "istio-ingress"
+#     }
+#     "spec" = {
+#       "action" = "ALLOW"
+#       "rules" = [
+#         {
+#           "from" = [
+#             {
+#               "source" = {
+#                 "ipBlocks" = local.ourIps
+#               }
+#             },
+#           ]
+#         },
+#       ]
+#       "selector" = {
+#         "matchLabels" = {
+#           "istio" = "ingressgateway-lb"
+#         }
+#       }
+#     }
+#   }
+# }
 
 
 resource "kubernetes_config_map" "haproxy_configmap" {

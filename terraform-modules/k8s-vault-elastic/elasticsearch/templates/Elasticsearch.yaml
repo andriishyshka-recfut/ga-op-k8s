@@ -21,6 +21,17 @@ spec:
   {{- if eq .Values.gcs_enable "yes" }}
   - secretName: gcs-es-credentional
   {{- end }}
+  {{- if .Values.transport_cert }}
+  {{- if eq .Values.transport_cert "yes" }}
+  - secretName: transport-es-ca
+  transport:
+    tls:
+      certificate:
+        secretName: transport-es-ca
+      subjectAltNames:
+      - dns: elastic7-sandbox
+  {{- end }}
+  {{- end }}
   http:
     tls:
 {{- if eq .Values.nativeTLS.enabled "yes" }}

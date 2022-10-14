@@ -17,6 +17,7 @@
 resource "helm_release" "psmdb_operator" {
   name       = "psmdb-operator"
   namespace  = var.MongoNs
+  version = "1.12.1"
   chart      = "psmdb-operator"
   repository = "https://percona.github.io/percona-helm-charts/"
   wait       = true

@@ -44,11 +44,16 @@ data "google_container_cluster" "red_cluster" {
 data "google_client_config" "default" {
 }
 
+data "vault_generic_secret" "k8s_auth_inactive" {
+  path = local.inactiveClusterVaultPath
+}
+
 locals {
   activeCluster   = var.Color
   inActiveCluster = var.Color == "blue" ? "green" : "blue"
   harbor          = var.Harbor ? 1 : 0
   isProduction    = var.Cluster == "production" ? 1 : 0
+  inactiveClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.inActiveCluster}"
 
   inActiveGkeEndpoint = "https://${data.google_container_cluster.inactive_cluster.endpoint}"
   gkeClusterConnectionSettings = {

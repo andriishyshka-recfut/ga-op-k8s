@@ -24,9 +24,9 @@ frontend auth
   default_backend elastic
 backend elastic
   mode  tcp
-  server srv0 elastic-es-master-0.elastic-es-master:9200 ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt check
-  server srv1 elastic-es-master-1.elastic-es-master:9200 ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt check
-  server srv2 elastic-es-master-2.elastic-es-master:9200 ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt check
+  server srv0 ${each.value}-es-master-0.${each.value}-es-master:9200 ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt check
+  server srv1 ${each.value}-es-master-1.${each.value}-es-master:9200 ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt check
+  server srv2 ${each.value}-es-master-2.${each.value}-es-master:9200 ssl verify required ca-file /usr/local/etc/haproxy/ssl/ca.crt check
 EOF
   }
 }
@@ -34,10 +34,10 @@ EOF
 resource "kubernetes_deployment" "elastic_internal_proxy" {
   for_each = var.ElasticProxyNS
   metadata {
-    name      = "elstic-internal-proxy"
+    name      = "elastic-internal-proxy"
     namespace = each.key
     labels = {
-      app = "elstic-internal-proxy"
+      app = "elastic-internal-proxy"
     }
   }
   spec {
