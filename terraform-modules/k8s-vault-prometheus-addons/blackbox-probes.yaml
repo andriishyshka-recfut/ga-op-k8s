@@ -22,7 +22,6 @@ spec:
       - https://k.regemini.com/status
       - https://kiali.p.regemini.io/ping
       - https://kowl.p.regemini.io/ping
-      - https://nabancard.regemini.com/status
       - https://starling.regemini.com/status
 ---
 apiVersion: monitoring.coreos.com/v1

@@ -1,5 +1,5 @@
 
-beatsVersion: "7.17.5"
+beatsVersion: "7.17.6"
 namespace: "elastic"
 esName: "elastic"
 auditbeat:
@@ -11,24 +11,3 @@ dashboards:
   kibana: "kibana-lb-1"
 filebeat:
   name: "filebeat"
-  # config: |
-  #   logging.json: true
-  #   filebeat.autodiscover:
-  #     providers:
-  #       - type: kubernetes
-  #         host: ${HOSTNAME}
-  #         templates:
-  #           - condition.equals:
-  #               kubernetes.namespace: kube-system
-  #             config:
-  #             - type: container
-  #               paths:
-  #                 - /var/log/containers/*${data.kubernetes.container.id}.log
-  #               exclude_lines: ['^{']  # drop json lines
-  #           - condition.contains:
-  #               kubernetes.container.image: elasticsearch
-  #             config:
-  #             - type: container
-  #               json.add_error_key: true              
-  #               paths:
-  #                 - /var/log/containers/*${data.kubernetes.container.id}.log
