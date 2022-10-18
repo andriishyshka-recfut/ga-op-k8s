@@ -5,7 +5,7 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "elastic"
     namespace: "elastic"
-    appVersion: "7.17.4"
+    appVersion: "7.17.6"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
     apm:
@@ -57,12 +57,12 @@ elastic_settings:
           xpack.security.transport.ssl.certificate_authorities:
           - /usr/share/elasticsearch/config/other/remote.ca.crt
         storageSize: "30Gi"
-        ES_JAVA_OPTS: -Xms15g -Xmx15g
+        ES_JAVA_OPTS: -Xms12g -Xmx12g
         nodesCount: 3
         workloadsType: mstr
-        memoryRequests: "17Gi"
+        memoryRequests: "24Gi"
         cpuRequests: "7"
-        memoryLimit: 17Gi
+        memoryLimit: 24Gi
         cpuLimit: "7"
         podTemplate:
           spec:
@@ -91,11 +91,11 @@ elastic_settings:
           xpack.security.transport.ssl.certificate_authorities:
           - /usr/share/elasticsearch/config/other/remote.ca.crt
         storageSize: "750Gi"
-        ES_JAVA_OPTS: -Xms30g -Xmx30g
+        ES_JAVA_OPTS: -Xms26g -Xmx26g
         nodesCount: 13
-        memoryRequests: "33Gi"
+        memoryRequests: "52Gi"
         cpuRequests: "15"
-        memoryLimit: "33Gi"
+        memoryLimit: "52Gi"
         cpuLimit: "15"
         podTemplate:
           spec:
@@ -124,12 +124,12 @@ elastic_settings:
           xpack.security.transport.ssl.certificate_authorities:
           - /usr/share/elasticsearch/config/other/remote.ca.crt
         storageSize: "30Gi"
-        ES_JAVA_OPTS: -Xms15g -Xmx15g
+        ES_JAVA_OPTS: -Xms12g -Xmx12g
         nodesCount: 3
         workloadsType: coor
-        memoryRequests: "17Gi"
+        memoryRequests: "24Gi"
         cpuRequests: "7"
-        memoryLimit: 17Gi
+        memoryLimit: 24Gi
         cpuLimit: "7"
         podTemplate:
           spec:
@@ -142,18 +142,3 @@ elastic_settings:
             - name: remote-certs
               secret:
                 secretName: remote-certs
-  kibana:
-    enabled: true
-    # cert_ttl: "143h"
-    name: kibana
-    esName: "elastic"
-    namespace: "elastic"
-    kibanaVersion: "7.17.4"
-    oidc_provider:
-      enabled: "yes"
-      oidc_realm_name: "google"
-      istio_gateway_fqdn: "kk.regemini.io"
-    # saml_provider:
-    #   enabled: "no"
-    #   realm: "gsuite"
-    #   istio_gateway_fqdn: "kk.regemini.io"

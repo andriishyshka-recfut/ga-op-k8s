@@ -1,6 +1,7 @@
 
 locals {
-  dataEs = yamldecode(file("elastic_settings.yaml"))
+  dataEs     = yamldecode(file("elastic_settings.yaml"))
+  dataKibana = yamldecode(file("kibanas_settings.yaml"))
 }
 
 
@@ -18,21 +19,37 @@ module "elastic-elastic" {
   OidcRedirectUri              = "k.regemini.com"
 }
 
+module "kibana-1" {
+  source                       = "../../terraform-modules/k8s-vault-kibana-lb"
+  ElasticSettings              = local.dataKibana.kibana1_settings
+  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+  Cluster                      = var.Cluster
+  Color                        = var.Color
+  Settings                     = var.Settings
+}
 
-# module "elastic-kibana" {
-#   source                       = "../../terraform-modules/k8s-vault-kibana"
-#   ElasticSettings              = local.dataEs.elastic_settings
-#   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
-#   Cluster                      = var.Cluster
-#   Color                        = var.Color
-#   Settings                     = var.Settings
-#   # depends_on          = [module.restore-service-indexes]
-# }
+module "kibana-2" {
+  source                       = "../../terraform-modules/k8s-vault-kibana-lb"
+  ElasticSettings              = local.dataKibana.kibana2_settings
+  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+  Cluster                      = var.Cluster
+  Color                        = var.Color
+  Settings                     = var.Settings
+}
+
+module "kibana-3" {
+  source                       = "../../terraform-modules/k8s-vault-kibana-lb"
+  ElasticSettings              = local.dataKibana.kibana3_settings
+  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+  Cluster                      = var.Cluster
+  Color                        = var.Color
+  Settings                     = var.Settings
+}
 
 module "elastic-beats" {
   source   = "../../terraform-modules/k8s-vault-elastic-beats"
   Cluster  = var.Cluster
   Color    = var.Color
   Settings = var.Settings
-  depends_on = [module.elastic-elastic]
+  # depends_on = [module.elastic-elastic]
 }
