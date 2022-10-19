@@ -13,4 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/03-ingress"
     - name: branch
-      value: "\\#200-DR-180822"
+      value: "master"
