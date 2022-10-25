@@ -45,7 +45,7 @@ elastic_settings:
         config: |
           node.master: true
           node.data: false
-          node.ingest: true
+          node.ingest: false
           node.ml: true
           node.store.allow_mmap: false
           index.store.type: niofs
@@ -61,9 +61,8 @@ elastic_settings:
         nodesCount: 3
         workloadsType: mstr
         memoryRequests: "24Gi"
-        cpuRequests: "7"
+        cpuRequests: "1"
         memoryLimit: 24Gi
-        cpuLimit: "7"
         podTemplate:
           spec:
             containers:
@@ -94,9 +93,8 @@ elastic_settings:
         ES_JAVA_OPTS: -Xms26g -Xmx26g
         nodesCount: 13
         memoryRequests: "52Gi"
-        cpuRequests: "15"
+        cpuRequests: "1"
         memoryLimit: "52Gi"
-        cpuLimit: "15"
         podTemplate:
           spec:
             containers:
@@ -112,7 +110,7 @@ elastic_settings:
         config: |
           node.master: false
           node.data: false
-          node.ingest: false
+          node.ingest: true
           node.ml: false
           node.store.allow_mmap: false
           index.store.type: niofs
@@ -128,9 +126,8 @@ elastic_settings:
         nodesCount: 3
         workloadsType: coor
         memoryRequests: "24Gi"
-        cpuRequests: "7"
+        cpuRequests: "1"
         memoryLimit: 24Gi
-        cpuLimit: "7"
         podTemplate:
           spec:
             containers:
