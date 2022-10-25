@@ -1,0 +1,35 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: metricbeat-st
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources:
+  - namespaces
+  - pods
+  - nodes
+  verbs:
+  - get
+  - watch
+  - list
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metricbeat-st
+  namespace: {{.Values.namespace | default "default" }}  
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: metricbeat-st
+subjects:
+- kind: ServiceAccount
+  name: metricbeat-st
+  namespace: {{.Values.namespace | default "default" }}  
+roleRef:
+  kind: ClusterRole
+  name: metricbeat-st
+  apiGroup: rbac.authorization.k8s.io
+---

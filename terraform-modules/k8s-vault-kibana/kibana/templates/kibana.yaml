@@ -17,6 +17,9 @@ spec:
     metadata:
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        co.elastic.logs/enabled: "true"
+      labels:
+        scrape: kb
     spec:
       containers:
       - name: kibana
