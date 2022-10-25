@@ -28,9 +28,6 @@ spec:
     - add_cloud_metadata: {}
     - add_host_metadata: {}
     logging.json: true
-    # output:
-    #   elasticsearch:
-    #     bulk_max_size: 10    
   daemonSet:
     podTemplate:
       spec:

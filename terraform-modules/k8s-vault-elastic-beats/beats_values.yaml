@@ -2,12 +2,13 @@
 beatsVersion: "7.17.6"
 namespace: "elastic"
 esName: "elastic"
-auditbeat:
-  name: "auditbeat"
 metricbeat:
   name: "metricbeat"
-dashboards:
-  enabled: "yes"
-  kibana: "kibana-lb-1"
+auditbeat:
+  name: "auditbeat"
 filebeat:
   name: "filebeat"
+dashboards:
+  # Only "yes" take effect
+  enabled: "yes"
+  kibana: "kibana-lb-1"
