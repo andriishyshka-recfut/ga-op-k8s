@@ -77,6 +77,9 @@ spec:
 {{- end}}
           traffic.sidecar.istio.io/excludeOutboundPorts: "9300"
           traffic.sidecar.istio.io/excludeInboundPorts: "9300"
+          co.elastic.logs/enabled: "true"
+        labels:
+          scrape: es
       spec:
         nodeSelector:
           workloadsType: {{ .workloadsType | default "data"}}

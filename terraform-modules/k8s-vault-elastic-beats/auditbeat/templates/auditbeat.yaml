@@ -55,7 +55,7 @@ spec:
                 - key: workloadsType
                   operator: NotIn
                   values:
-                  - delete     
+                  - delete
         tolerations:
           - key: "workloadsType"  
             operator: "Exists"

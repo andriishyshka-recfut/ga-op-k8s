@@ -11,7 +11,7 @@ xpack.security.authc.providers:
     realm: google
   basic.basic1:
     order: 2
-xpack.reporting.capture.browser.chromium.disableSandbox: true
+xpack.reporting.capture.browser.chromium.disableSandbox: "true"
 xpack.security.audit.enabled: "true"
 xpack.security.encryptionKey: "${data.vault_generic_secret.xpackSecurity.0.data.securityEncryptionKey}"
 xpack.reporting.encryptionKey: "${data.vault_generic_secret.xpackSecurity.0.data.reportingEncryptionKey}"
@@ -29,6 +29,8 @@ server.publicBaseUrl: "https://${local.kibanaValues.istio_gateway_fqdn}"
 xpack.reporting.roles.enabled: false
 xpack.reporting.index: ".reporting-re"
 xpack.task_manager.index: ".kibana_task_manager-re"
+monitoring.kibana.collection.enabled: "false"
+monitoring.ui.container.elasticsearch.enabled: "true"
 EOF
   xpackConfig = local.xpackSecurity == 1 ? { "xpack_config" = local.configXpack } : { "xpack_config" = "" }
 }
