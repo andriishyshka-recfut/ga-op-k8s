@@ -6,7 +6,12 @@ resource "helm_release" "logstash" {
   wait         = true
   atomic       = true
   reset_values = true
-  values     = [
+  values     = [ file("${path.module}/logstash-values.yaml") ]
+  set {
+    name  = "extraEnvs"
+    value = "{ \"USERNAME\": \"elastic\", \"PASSWORD\": \"test\" }"
+  }
+/*
     <<EOT
 fullnameOverride: ${each.key}
 extraEnvs:
@@ -50,7 +55,8 @@ logstashConfig:
     xpack.management.elasticsearch.hosts: ["${local.es_host}"]
     xpack.management.pipeline.id: ["${local.pipeline_id}"]
 EOT
-  ]
+*/
+
   depends_on = [kubernetes_secret.elastic_credentials]
 }
 
@@ -70,5 +76,9 @@ resource "kubernetes_secret" "elastic_credentials" {
     "ca.crt"  = data.vault_generic_secret.elastic_credentials[each.key].data.ca_cert,
     password   = data.vault_generic_secret.elastic_credentials[each.key].data.password
   }
-
 }
+
+
+
+#elastic7-es-http-certs-internal
+#elastic7-es-elastic-user
