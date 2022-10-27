@@ -125,7 +125,7 @@ elastic_settings:
           xpack.security.transport.ssl.certificate_authorities:
           - /usr/share/elasticsearch/config/other/remote.ca.crt
           xpack.security.transport.ssl.client_authentication: optional
-        storageSize: "100Gi"
+        storageSize: "150Gi"
         ES_JAVA_OPTS: -Xms6g -Xmx6g
         nodesCount: 2
         memoryRequests: "6Gi"

@@ -22,8 +22,8 @@ resource "kubernetes_manifest" "ingress_letsencrypt_cert" {
   }
 }
 
-resource "kubernetes_manifest" "ingress_gateway" {
-  for_each = local.ingressSettings
+resource "kubernetes_manifest" "ingress_gateway_tls" {
+  for_each = local.ingressTls
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "Gateway"
@@ -36,19 +36,48 @@ resource "kubernetes_manifest" "ingress_gateway" {
         "istio" = lookup(each.value, "ingressgateway", "ingressgateway")
       }
       "servers" = [
-        # {
-        #   "hosts" = [
-        #     each.value.domain
-        #   ]
-        #   "port" = {
-        #     "name"     = "http"
-        #     "number"   = 80
-        #     "protocol" = "HTTP"
-        #   }
-        #   "tls" = {
-        #     "httpsRedirect" = "true"
-        #   }
-        # },
+        {
+          "hosts" = each.value.domain
+          "port" = {
+            "name"     = "http"
+            "number"   = 80
+            "protocol" = "HTTP"
+          }
+          "tls" = {
+            "httpsRedirect" = "true"
+          }
+        },
+        {
+          "hosts" = each.value.domain
+          "port" = {
+            "name"     = "https"
+            "number"   = 443
+            "protocol" = "HTTPS"
+          }
+          "tls" = {
+            "credentialName" = lookup(each.value, "cert-name", "${each.key}-cert")
+            "mode"           = "SIMPLE"
+          }
+        }
+      ]
+    }
+  }
+}
+
+resource "kubernetes_manifest" "ingress_gateway_wo_tls" {
+  for_each = local.ingressWoTls
+  manifest = {
+    "apiVersion" = "networking.istio.io/v1beta1"
+    "kind"       = "Gateway"
+    "metadata" = {
+      "name"      = lookup(each.value, "ingressgateway", false) != false ? "${each.key}-${split("-", each.value.ingressgateway)[1]}-gateway" : "${each.key}-wg-gateway"
+      "namespace" = "istio-ingress"
+    }
+    "spec" = {
+      "selector" = {
+        "istio" = lookup(each.value, "ingressgateway", "ingressgateway")
+      }
+      "servers" = [
         {
           "hosts" = each.value.domain
           "port" = {
