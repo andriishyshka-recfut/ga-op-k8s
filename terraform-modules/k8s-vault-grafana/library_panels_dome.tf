@@ -8,6 +8,9 @@ resource "grafana_library_panel" "dome_graph" {
   count     = length(local.index_dome)
   name      = "dome-${element(local.index_dome, count.index)}-${random_string.dome.id}"
   folder_id = grafana_folder.dome.id
+  depends_on = [
+    grafana_data_source.dome
+  ]      
   model_json = jsonencode({
     "aliasColors" : {},
     "version" : 1,
@@ -124,6 +127,9 @@ resource "grafana_library_panel" "dome_table_old" {
   count     = length(local.index_dome)
   name      = "dome-table-${element(local.index_dome, count.index)}-${random_string.dome.id}"
   folder_id = grafana_folder.dome.id
+  depends_on = [
+    grafana_data_source.dome
+  ]      
   model_json = jsonencode({
     "columns" : [],
     "datasource" : "dome-${element(local.index_dome, count.index)}",
@@ -246,6 +252,9 @@ locals {
 resource "grafana_dashboard" "dome_library_panel" {
   provider = grafana.elastic
   folder   = grafana_folder.dome.id
+  depends_on = [
+    grafana_library_panel.minion_graph
+  ]      
   config_json = jsonencode({
     "panels" : concat(local.grafana_library_dome_graph, local.grafana_library_table)
     "annotations" : {
@@ -283,7 +292,7 @@ resource "grafana_dashboard" "dome_library_panel" {
     "version" : 1
     "refresh" : ""
     "time" : {
-      "from" : "now-7d",
+      "from" : "now-2d",
       "to" : "now"
     },
     "timepicker" : {

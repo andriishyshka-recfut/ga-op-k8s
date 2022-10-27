@@ -35,6 +35,7 @@ crdpro
 crimemarket
 crimenetwork
 cybercarders
+cweb
 dark2web
 darkmarket
 darkmoney
