@@ -1,13 +1,13 @@
-resource "helm_release" "kowl" {
-  name       = "kowl"
-  chart      = "kowl"
-  repository = "https://raw.githubusercontent.com/cloudhut/charts/master/archives"
+resource "helm_release" "red_panda_console" {
+  name       = "rp-console"
+  chart      = "console"
+  repository = "https://packages.vectorized.io/public/console/helm/charts/"
   wait       = true
   atomic     = true
   namespace  = local.kafkaNs
   timeout    = 900
   set {
-    name  = "kowl.config.kafka.brokers[0]"
+    name  = "console.config.kafka.brokers[0]"
     value = "kafka-cluster-kafka-bootstrap:9092"
   }
   depends_on = [
