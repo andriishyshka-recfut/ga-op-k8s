@@ -25,7 +25,7 @@ EOT
 resource "kubernetes_secret" "mongoshake_config" {
   metadata {
     name      = "mongoshake-config"
-    namespace = "mongo"
+    namespace = "mongo-test-migration"
   }
   data = {
     config = templatefile("${path.root}/mongoshake-conf.tftpl", {
@@ -42,7 +42,7 @@ resource "kubernetes_secret" "mongoshake_config" {
 resource "kubernetes_service" "mongo_nodeport" {
   metadata {
     name      = "rs0-mongo-nodeport"
-    namespace = "mongo"
+    namespace = "mongo-test-migration"
   }
   provider = kubernetes.kubernetes-inactive
   spec {
@@ -68,7 +68,7 @@ resource "kubernetes_service" "mongo_nodeport" {
 resource "kubernetes_deployment" "mongoshake" {
   metadata {
     name      = "mongoshake"
-    namespace = "mongo"
+    namespace = "mongo-test-migration"
   }
   spec {
     replicas = 1
