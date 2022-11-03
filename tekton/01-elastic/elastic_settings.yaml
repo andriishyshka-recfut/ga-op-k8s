@@ -91,7 +91,7 @@ elastic_settings:
           - /usr/share/elasticsearch/config/other/remote.ca.crt
         storageSize: "750Gi"
         ES_JAVA_OPTS: -Xms26g -Xmx26g
-        nodesCount: 13
+        nodesCount: 14
         memoryRequests: "52Gi"
         cpuRequests: "1"
         memoryLimit: "52Gi"
