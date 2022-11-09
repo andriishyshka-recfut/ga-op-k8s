@@ -1,4 +1,4 @@
-/*
+
 data "kubernetes_secret" "apm_token" {
   count = local.apmCredsToggle
   metadata {
@@ -7,7 +7,7 @@ data "kubernetes_secret" "apm_token" {
   }
   depends_on = [null_resource.ansible_validate_resources]
 }
-
+/*
 resource "kubernetes_secret" "apm_token" {
   for_each = local.injectApmCreds
   metadata {
