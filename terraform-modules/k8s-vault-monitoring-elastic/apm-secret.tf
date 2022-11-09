@@ -1,4 +1,4 @@
-
+/*
 data "kubernetes_secret" "apm_token" {
   count = local.apmCredsToggle
   metadata {
@@ -18,3 +18,4 @@ resource "kubernetes_secret" "apm_token" {
   data = { "secret-token" = lookup(data.kubernetes_secret.apm_token[0].data, "secret-token") }
 
 }
+*/
