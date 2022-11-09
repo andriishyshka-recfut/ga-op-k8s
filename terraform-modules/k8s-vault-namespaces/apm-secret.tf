@@ -1,6 +1,5 @@
 data "vault_generic_secret" "apm_token" {
-  for_each = local.injectApmSecrets
-  path = "secret/apm/${each.key}-${var.Color}"
+  path = "secret/apm/monitoring-${var.Color}"
 }
 
 resource "kubernetes_secret" "apm_token_secrets" {
@@ -11,7 +10,7 @@ resource "kubernetes_secret" "apm_token_secrets" {
   }
 
   data = {
-    secret-token = data.vault_generic_secret.apm_token[each.key].data.token
+    secret-token = data.vault_generic_secret.apm_token.data.token
   }
 
   depends_on = [
