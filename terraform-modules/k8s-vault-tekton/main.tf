@@ -1,4 +1,26 @@
+resource "null_resource" "deploy_tekton" {
 
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<COMMAND
+    set -x
+    kubectl apply --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     -f https://storage.googleapis.com/tekton-releases/operator/latest/release.yaml && sleep 30 && \
+     delete configmap cluster-settings || true \
+     kubectl --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     --namespace=${local.tektonNs}  \
+     create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
+     --from-literal=vaultAddr=${var.VaultAddress}
+COMMAND
+  }
+
+}
+
+/*
 resource "null_resource" "deploy_tekton" {
 
   provisioner "local-exec" {
@@ -40,6 +62,7 @@ COMMAND
   }
 
 }
+*/
 
 
 resource "null_resource" "harbor_creds" {
