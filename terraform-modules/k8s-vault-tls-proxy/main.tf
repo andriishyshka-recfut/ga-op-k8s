@@ -113,7 +113,7 @@ resource "tls_cert_request" "clients_csr" {
   private_key_pem = tls_private_key.clients_rsa_key[each.key].private_key_pem
 
   subject {
-    common_name  = each.key
+    common_name  = each.value.domain
     organization = "Gemini Advisory"
   }
   depends_on = [
@@ -128,7 +128,7 @@ resource "vault_pki_secret_backend_sign" "clients" {
   name        = each.key
   ttl         = 31522440
   csr         = tls_cert_request.clients_csr[each.key].cert_request_pem
-  common_name = each.key
+  common_name = each.value.domain
   depends_on = [
     tls_cert_request.clients_csr
   ]
