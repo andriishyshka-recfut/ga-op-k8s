@@ -9,6 +9,8 @@ variable "OidcSecretVaultPath" {
 
 locals {
   helmVersion          = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus, "helm_version", "17.0.0")
+  thanosSidecarVersion = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus.thanos, "sidecar_version", "0.28.1")
+  thanosBucket         = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus.thanos, "storage_bucket", "minio-prometheus-thanos-ardent-rarity-239115")
   prometheusNs         = "monitoring"
   grafanaRole          = var.Cluster == "production" ? "Viewer" : "Editor"
   prometheusExtUrl     = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus, "prometheusExtUrl", "http://localhost:9090")

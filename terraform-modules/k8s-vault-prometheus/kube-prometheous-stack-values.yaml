@@ -94,10 +94,10 @@ prometheus:
               storage: 50Gi
     thanos:
       baseImage: quay.io/thanos/thanos
-      version: v0.28.0
       objectStorageConfig:
         key: thanos.yaml
         name: thanos-objstore-config
+
 
   thanosService:
     enabled: true
