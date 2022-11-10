@@ -31,51 +31,51 @@ resource "kubernetes_secret" "minio_credentials" {
   }
 }
 
-# resource "kubernetes_job" "minio_snapshot_storage" {
-#   metadata {
-#     name      = "${local.esValues.esName}-minio-snapshot-storage"
-#     namespace = local.esValues.namespace
-#   }
-#   spec {
-#     template {
-#       metadata {
+resource "kubernetes_job" "minio_snapshot_storage" {
+  metadata {
+    name      = "${local.esValues.esName}-minio-snapshot-storage"
+    namespace = local.esValues.namespace
+  }
+  spec {
+    template {
+      metadata {
 
-#         annotations = {
-#           "sidecar.istio.io/inject" = "false"
-#         }
-#       }
-#       spec {
-#         container {
-#           name    = "curl"
-#           image   = "curlimages/curl"
-#           command = ["sh", "-c", local.minioIntegrationCommand]
-#           env {
-#             name = "ES_PASSWORD"
-#             value_from {
-#               secret_key_ref {
-#                 name = "${local.esValues.esName}-es-elastic-user"
-#                 key  = "elastic"
-#               }
-#             }
-#           }
-#           resources {
-#             requests = {
-#               cpu    = "10m"
-#               memory = "10M"
-#             }
-#           }
-#         }
-#         restart_policy = "Never"
-#       }
-#     }
-#     backoff_limit = 4
-#   }
-#   wait_for_completion = true
-#   depends_on = [
-#     null_resource.ansible_validate_resources
-#   ]
-#   timeouts {
-#     create = "5m"
-#     update = "5m"
-#   }
-# }
+        annotations = {
+          "sidecar.istio.io/inject" = "false"
+        }
+      }
+      spec {
+        container {
+          name    = "curl"
+          image   = "curlimages/curl"
+          command = ["sh", "-c", local.minioIntegrationCommand]
+          env {
+            name = "ES_PASSWORD"
+            value_from {
+              secret_key_ref {
+                name = "${local.esValues.esName}-es-elastic-user"
+                key  = "elastic"
+              }
+            }
+          }
+          resources {
+            requests = {
+              cpu    = "10m"
+              memory = "10M"
+            }
+          }
+        }
+        restart_policy = "Never"
+      }
+    }
+    backoff_limit = 4
+  }
+  wait_for_completion = true
+  depends_on = [
+    null_resource.ansible_validate_resources
+  ]
+  timeouts {
+    create = "5m"
+    update = "5m"
+  }
+}
