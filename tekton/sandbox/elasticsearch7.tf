@@ -3,21 +3,20 @@ locals {
   dataEs = yamldecode(file("elastic7_settings.yaml"))
 }
 
-/*
+
 data "vault_generic_secret" "elastic7_transport_ca" {
   path = "secret/elasticsearch-admin/replication"
 }
-*/
+
 
 resource "kubernetes_secret" "elastic7_transport_ca" {
   metadata {
-    name      = "transport-es-ca"
+    name      = "remote-certs"
     namespace = "elastic7"
   }
-  type = "kubernetes.io/tls"
   data = {
-    "ca.crt" = data.vault_generic_secret.elastic7_transport_ca.data.ca_crt
-    "ca.key" = data.vault_generic_secret.elastic7_transport_ca.data.ca_key
+    "remote.ca.crt"  = data.vault_generic_secret.elastic7_transport_ca.data.remote_ca_crt
+    "remote2.ca.crt" = data.vault_generic_secret.elastic7_transport_ca.data.remote2_ca_crt
   }
   depends_on = [
     data.vault_generic_secret.elastic7_transport_ca
