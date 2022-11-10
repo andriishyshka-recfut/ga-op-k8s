@@ -14,7 +14,7 @@
 #   depends_on = [
 #     module.elastic7-elastic
 #   ]
-}
+# }
 
 module "es7-restore" {
   source               = "../../terraform-modules/k8s-es-curator"
