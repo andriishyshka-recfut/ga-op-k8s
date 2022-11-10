@@ -3,10 +3,11 @@ locals {
   dataEs = yamldecode(file("elastic7_settings.yaml"))
 }
 
-
+/*
 data "vault_generic_secret" "elastic7_transport_ca" {
   path = "secret/elasticsearch-admin/replication"
 }
+*/
 
 resource "kubernetes_secret" "elastic7_transport_ca" {
   metadata {
@@ -62,7 +63,7 @@ module "elastic7-kibana" {
 #     module.es7-restore
 #   ]
 # }
-/*
+
 module "elastic-beats" {
   source   = "../../terraform-modules/k8s-vault-elastic-beats"
   Cluster  = var.Cluster
@@ -70,4 +71,3 @@ module "elastic-beats" {
   Settings = var.Settings
   # depends_on = [module.elastic-elastic]
 }
-*/
