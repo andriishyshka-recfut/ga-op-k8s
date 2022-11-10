@@ -20,13 +20,13 @@ resource "vault_generic_secret" "es_admin_creds" {
 EOT
 }
 
-resource "vault_generic_secret" "apm_creds" {
-  count = local.apmCredsToggle
-  path  = "secret/apm/${local.esValues.esName}-${var.Color}"
+# resource "vault_generic_secret" "apm_creds" {
+#   count = local.apmCredsToggle
+#   path  = "secret/apm/${local.esValues.esName}-${var.Color}"
 
-  data_json = <<EOT
-  {
-    "token": "${lookup(data.kubernetes_secret.apm_token[0].data, "secret-token")}"
-  }
-EOT
-}
+#   data_json = <<EOT
+#   {
+#     "token": "${lookup(data.kubernetes_secret.apm_token[0].data, "secret-token")}"
+#   }
+# EOT
+# }

@@ -73,52 +73,52 @@ EOF
 }
 
 
-resource "kubernetes_job" "post_install" {
-  count = local.oidcSetup
-  metadata {
-    name      = "${local.esValues.esName}-post-install"
-    namespace = local.esValues.namespace
-  }
-  spec {
-    template {
-      metadata {
+# resource "kubernetes_job" "post_install" {
+#   count = local.oidcSetup
+#   metadata {
+#     name      = "${local.esValues.esName}-post-install"
+#     namespace = local.esValues.namespace
+#   }
+#   spec {
+#     template {
+#       metadata {
 
-        annotations = {
-          "sidecar.istio.io/inject" = "false"
-        }
-      }
-      spec {
-        container {
-          name    = "post-install"
-          image   = "curlimages/curl"
-          command = ["sh", "-c", local.postInstallSteps]
-          env {
-            name = "ES_PASSWORD"
-            value_from {
-              secret_key_ref {
-                name = "${local.esValues.esName}-es-elastic-user"
-                key  = "elastic"
-              }
-            }
-          }
-          resources {
-            requests = {
-              cpu    = "100m"
-              memory = "100M"
-            }
-          }
-        }
-        restart_policy = "Never"
-      }
-    }
-    backoff_limit = 4
-  }
-  wait_for_completion = true
-  depends_on = [
-    null_resource.ansible_validate_resources
-  ]
-  timeouts {
-    create = "5m"
-    update = "5m"
-  }
-}
+#         annotations = {
+#           "sidecar.istio.io/inject" = "false"
+#         }
+#       }
+#       spec {
+#         container {
+#           name    = "post-install"
+#           image   = "curlimages/curl"
+#           command = ["sh", "-c", local.postInstallSteps]
+#           env {
+#             name = "ES_PASSWORD"
+#             value_from {
+#               secret_key_ref {
+#                 name = "${local.esValues.esName}-es-elastic-user"
+#                 key  = "elastic"
+#               }
+#             }
+#           }
+#           resources {
+#             requests = {
+#               cpu    = "100m"
+#               memory = "100M"
+#             }
+#           }
+#         }
+#         restart_policy = "Never"
+#       }
+#     }
+#     backoff_limit = 4
+#   }
+#   wait_for_completion = true
+#   depends_on = [
+#     null_resource.ansible_validate_resources
+#   ]
+#   timeouts {
+#     create = "5m"
+#     update = "5m"
+#   }
+# }
