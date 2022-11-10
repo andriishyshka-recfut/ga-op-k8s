@@ -46,9 +46,9 @@ module "elastic7-kibana" {
   Cluster                      = var.Cluster
   Color                        = var.Color
   Settings                     = var.Settings
-  # depends_on = [
-  #   module.es7-restore
-  # ]
+  depends_on = [
+    module.es7-restore
+  ]
 }
 
 # module "elastic7-kibana-2" {
@@ -63,6 +63,7 @@ module "elastic7-kibana" {
 #   ]
 # }
 
+/*
 module "elastic-beats" {
   source   = "../../terraform-modules/k8s-vault-elastic-beats"
   Cluster  = var.Cluster
@@ -70,3 +71,4 @@ module "elastic-beats" {
   Settings = var.Settings
   # depends_on = [module.elastic-elastic]
 }
+*/
