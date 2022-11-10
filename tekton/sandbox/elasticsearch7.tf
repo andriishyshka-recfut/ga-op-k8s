@@ -62,7 +62,7 @@ module "elastic7-kibana" {
 #     module.es7-restore
 #   ]
 # }
-
+/*
 module "elastic-beats" {
   source   = "../../terraform-modules/k8s-vault-elastic-beats"
   Cluster  = var.Cluster
@@ -70,3 +70,4 @@ module "elastic-beats" {
   Settings = var.Settings
   # depends_on = [module.elastic-elastic]
 }
+*/
