@@ -6,7 +6,7 @@ actions:
     options:
       repository: "gcs"
       # name: monitoring-dr-%Y%m%d
-      indices: ".*"
+      indices: [".*"]
       wait_for_completion: False
       include_global_state: False
       # wait_interval: 20
@@ -22,7 +22,7 @@ actions:
     options:
       repository: "gcs"
       # name: monitoring-dr-%Y%m%d
-      indices: "*,-.*"
+      indices: ["*","-.*"]
       wait_for_completion: False
       include_global_state: False
       # wait_interval: 20
