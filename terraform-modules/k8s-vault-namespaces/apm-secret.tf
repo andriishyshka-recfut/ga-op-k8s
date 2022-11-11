@@ -10,7 +10,7 @@ resource "kubernetes_secret" "apm_token_secrets" {
   }
 
   data = {
-    apm-token = data.vault_generic_secret.apm_token.data.token
+    secret-token = data.vault_generic_secret.apm_token.data.token
   }
 
   depends_on = [

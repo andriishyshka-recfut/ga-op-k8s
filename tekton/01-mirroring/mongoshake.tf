@@ -14,10 +14,10 @@ locals {
   mongoshakeCommand = <<EOT
   set -e;
   apt-get update -q && apt-get install wget python3 python3-pymongo -yq ;
-  wget https://github.com/alibaba/MongoShake/releases/download/release-v2.4.22-20210319/mongo-shake-v2.4.22.tar.gz -O mongoshake.tar.gz ;
-  tar zxvf mongoshake.tar.gz ;
-  cd mongo-shake-v2.4.22;
-  ./collector.linux -conf=/etc/mongoshake/config -verbose
+  wget https://github.com/alibaba/MongoShake/releases/download/release-v2.8.1-20220922/mongo-shake-v2.8.1.tgz -O mongoshake.tgz ;
+  tar zxvf mongoshake.tgz ;
+  cd mongo-shake-v2.8.1;
+  ./collector.linux -conf=/etc/mongoshake/config -verbose 1
 
 EOT
 }
@@ -25,7 +25,7 @@ EOT
 resource "kubernetes_secret" "mongoshake_config" {
   metadata {
     name      = "mongoshake-config"
-    namespace = "mongo-test-migration"
+    namespace = "mongo"
   }
   data = {
     config = templatefile("${path.root}/mongoshake-conf.tftpl", {
@@ -42,7 +42,7 @@ resource "kubernetes_secret" "mongoshake_config" {
 resource "kubernetes_service" "mongo_nodeport" {
   metadata {
     name      = "rs0-mongo-nodeport"
-    namespace = "mongo-test-migration"
+    namespace = "mongo"
   }
   provider = kubernetes.kubernetes-inactive
   spec {
@@ -68,7 +68,7 @@ resource "kubernetes_service" "mongo_nodeport" {
 resource "kubernetes_deployment" "mongoshake" {
   metadata {
     name      = "mongoshake"
-    namespace = "mongo-test-migration"
+    namespace = "mongo"
   }
   spec {
     replicas = 1

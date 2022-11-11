@@ -4,24 +4,24 @@ locals {
 }
 
 
-data "vault_generic_secret" "elastic7_transport_ca" {
-  path = "secret/elasticsearch-admin/replication"
-}
+# data "vault_generic_secret" "elastic7_transport_ca" {
+#   path = "secret/elasticsearch-admin/replication"
+# }
 
-resource "kubernetes_secret" "elastic7_transport_ca" {
-  metadata {
-    name      = "transport-es-ca"
-    namespace = "elastic7"
-  }
-  type = "kubernetes.io/tls"
-  data = {
-    "ca.crt" = data.vault_generic_secret.elastic7_transport_ca.data.ca_crt
-    "ca.key" = data.vault_generic_secret.elastic7_transport_ca.data.ca_key
-  }
-  depends_on = [
-    data.vault_generic_secret.elastic7_transport_ca
-  ]
-}
+
+# resource "kubernetes_secret" "elastic7_transport_ca" {
+#   metadata {
+#     name      = "remote-certs"
+#     namespace = "elastic7"
+#   }
+#   data = {
+#     "remote.ca.crt"  = data.vault_generic_secret.elastic7_transport_ca.data.remote_ca_crt
+#     "remote2.ca.crt" = data.vault_generic_secret.elastic7_transport_ca.data.remote2_ca_crt
+#   }
+#   depends_on = [
+#     data.vault_generic_secret.elastic7_transport_ca
+#   ]
+# }
 
 
 module "elastic7-elastic" {
@@ -46,9 +46,9 @@ module "elastic7-kibana" {
   Cluster                      = var.Cluster
   Color                        = var.Color
   Settings                     = var.Settings
-  # depends_on = [
-  #   module.es7-restore
-  # ]
+  depends_on = [
+    module.es7-restore
+  ]
 }
 
 # module "elastic7-kibana-2" {
@@ -63,6 +63,7 @@ module "elastic7-kibana" {
 #   ]
 # }
 
+/*
 module "elastic-beats" {
   source   = "../../terraform-modules/k8s-vault-elastic-beats"
   Cluster  = var.Cluster
@@ -70,3 +71,4 @@ module "elastic-beats" {
   Settings = var.Settings
   # depends_on = [module.elastic-elastic]
 }
+*/

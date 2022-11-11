@@ -1,3 +1,4 @@
+/*
 module "tarantool" {
   source                       = "../../terraform-modules/k8s-tarantool"
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
@@ -5,3 +6,4 @@ module "tarantool" {
   Cluster                      = var.Cluster
   Color                        = var.Color
 }
+*/
