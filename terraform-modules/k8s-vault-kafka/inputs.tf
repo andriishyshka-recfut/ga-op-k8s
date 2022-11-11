@@ -8,7 +8,7 @@ locals {
   ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
     ANSIBLE_STDOUT_CALLBACK = "debug"
   })
-  diskSize = var.Cluster == "production" ? "700Gi" : "60Gi"
+  diskSize = var.Cluster == "production" ? "700Gi" : "100Gi"
   limit    = var.Cluster == "production" ? { "memory" : "4G", "cpu" : "3" } : { "memory" : "2G", "cpu" : "1" }
   request  = var.Cluster == "production" ? { "memory" : "3G", "cpu" : "1" } : { "memory" : "1G", "cpu" : "0.25" }
 }
