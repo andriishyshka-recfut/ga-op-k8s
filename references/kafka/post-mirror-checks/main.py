@@ -13,7 +13,8 @@ from kafka import KafkaAdminClient
 
 UNKNOWN_GROUP = "<not associated>"
 
-EXCLUDED_TOPICS = ["__consumer_offsets"]
+EXCLUDED_TOPICS = ["__consumer_offsets", "mirrormaker2-cluster-offsets", "mirrormaker2-cluster-status",
+                   "mirrormaker2-cluster-configs"]
 
 
 def print_state_comparison(src, tgt):
@@ -21,6 +22,7 @@ def print_state_comparison(src, tgt):
     header = ['Topic', 'Group', 'Partition', 'Low', 'High', 'Size', 'Lag']
     changed_items = [header]
 
+    offset_fix = []
     src_only_topics = set(src.keys()).difference(set(tgt.keys()))
     tgt_only_topics = set(tgt.keys()).difference(set(src.keys()))
     skip_topics = set()
@@ -32,6 +34,7 @@ def print_state_comparison(src, tgt):
         print("Topics only in Target:", tgt_only_topics)
         skip_topics.update(tgt_only_topics)
 
+    epl_file = open("epl_diff.txt", "w")
     for rec in src.items():
         topic, topic_data = rec
 
@@ -46,6 +49,7 @@ def print_state_comparison(src, tgt):
                         tgt_values = tgt.get(topic).get(group).get(part_id)
 
                         lag, high, low, size = "", "", "", ""
+                        new_offset = 0
                         has_changed = False
                         if src_values.get("low") != tgt_values.get("low"):
                             has_changed = True
@@ -56,17 +60,32 @@ def print_state_comparison(src, tgt):
                         if src_values.get("lag") != tgt_values.get("lag"):
                             has_changed = True
                             lag = "{} -> {}".format(src_values.get("lag"), tgt_values.get("lag"))
+                            new_offset = int(tgt_values.get("high")) - int(src_values.get("lag"))
                         if src_values.get("size") != tgt_values.get("size"):
                             has_changed = True
                             size = "{} -> {}".format(src_values.get("size"), tgt_values.get("size"))
 
                         if has_changed:
                             changed_items.append([topic, group, part_id, low, high, size, lag])
+                            epl_file.write("Topic: {} Group: {} Partition: {} L-Offset: {} H-Offset: {} "
+                                           "Size: {} Lag: {}\n".format(topic, group, part_id, low, high, size, lag))
+
+                            if new_offset != 0:
+                                offset_fix.append(
+                                    "./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets "
+                                    "--group {} --topic {}:{} --to-offset {} --execute".format(
+                                        group, topic, part_id, new_offset))
+
 
                     except Exception as e:
                         print("failed to compare data for", topic, e)
 
+    epl_file.close()
+
     print(tabulate(changed_items, headers='firstrow', tablefmt='fancy_grid'))
+    print("\n\nProposed offset fixes:")
+    print("\n".join(str(x) for x in offset_fix))
+    print("\n\n")
 
 
 def get_partition_size(topic_name: str, partition_key: int, consumer):
