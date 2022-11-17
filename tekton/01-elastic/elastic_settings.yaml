@@ -5,11 +5,11 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "elastic"
     namespace: "elastic"
-    appVersion: "7.17.6"
+    appVersion: "7.17.7"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
     apm:
-      enabled: "yes"
+      enabled: "no"
     labels:
       elastic: elastic
     annotations:
@@ -91,7 +91,7 @@ elastic_settings:
           - /usr/share/elasticsearch/config/other/remote.ca.crt
         storageSize: "750Gi"
         ES_JAVA_OPTS: -Xms26g -Xmx26g
-        nodesCount: 14
+        nodesCount: 15
         memoryRequests: "52Gi"
         cpuRequests: "1"
         memoryLimit: "52Gi"

@@ -14,13 +14,15 @@ from kafka import KafkaAdminClient
 UNKNOWN_GROUP = "<not associated>"
 
 EXCLUDED_TOPICS = ["__consumer_offsets", "mirrormaker2-cluster-offsets", "mirrormaker2-cluster-status",
-                   "mirrormaker2-cluster-configs"]
+                   "mirrormaker2-cluster-configs", "mm2-offset-syncs.target.internal"]
 
 
 def print_state_comparison(src, tgt):
     print("\n\nData changes:")
     header = ['Topic', 'Group', 'Partition', 'Low', 'High', 'Size', 'Lag']
     changed_items = [header]
+    suspicious_items = [header]
+    global show_all
 
     offset_fix = []
     src_only_topics = set(src.keys()).difference(set(tgt.keys()))
@@ -51,24 +53,34 @@ def print_state_comparison(src, tgt):
                         lag, high, low, size = "", "", "", ""
                         new_offset = 0
                         has_changed = False
+                        lag_or_size_mismatch = False
                         if src_values.get("low") != tgt_values.get("low"):
                             has_changed = True
-                            lag = "{} -> {}".format(src_values.get("low"), tgt_values.get("low"))
+                            low = "{} -> {}".format(src_values.get("low"), tgt_values.get("low"))
                         if src_values.get("high") != tgt_values.get("high"):
                             has_changed = True
                             high = "{} -> {}".format(src_values.get("high"), tgt_values.get("high"))
                         if src_values.get("lag") != tgt_values.get("lag"):
                             has_changed = True
+                            lag_or_size_mismatch = True
                             lag = "{} -> {}".format(src_values.get("lag"), tgt_values.get("lag"))
                             new_offset = int(tgt_values.get("high")) - int(src_values.get("lag"))
+                            if new_offset < 0:
+                                new_offset = 0
                         if src_values.get("size") != tgt_values.get("size"):
                             has_changed = True
+                            lag_or_size_mismatch = True
                             size = "{} -> {}".format(src_values.get("size"), tgt_values.get("size"))
+
+                        if lag_or_size_mismatch:
+                            suspicious_items.append([topic, group, part_id, low, high, size, lag])
+                            epl_file.write("Topic: {} Group: {} Partition: {} L-Offset: {} H-Offset: {} "
+                                           "Size: {} Lag: {}\n".format(topic, group, part_id, low, high, size, lag))
 
                         if has_changed:
                             changed_items.append([topic, group, part_id, low, high, size, lag])
-                            epl_file.write("Topic: {} Group: {} Partition: {} L-Offset: {} H-Offset: {} "
-                                           "Size: {} Lag: {}\n".format(topic, group, part_id, low, high, size, lag))
+                            # epl_file.write("Topic: {} Group: {} Partition: {} L-Offset: {} H-Offset: {} "
+                            #                "Size: {} Lag: {}\n".format(topic, group, part_id, low, high, size, lag))
 
                             if new_offset != 0:
                                 offset_fix.append(
@@ -82,7 +94,14 @@ def print_state_comparison(src, tgt):
 
     epl_file.close()
 
-    print(tabulate(changed_items, headers='firstrow', tablefmt='fancy_grid'))
+    if show_all:
+        print("All changes in topics:")
+        print(tabulate(changed_items, headers='firstrow', tablefmt='fancy_grid'))
+    else:
+        print("Topics with lag/size inconsistency:")
+        print(tabulate(suspicious_items, headers='firstrow', tablefmt='fancy_grid'))
+
+
     print("\n\nProposed offset fixes:")
     print("\n".join(str(x) for x in offset_fix))
     print("\n\n")
@@ -209,11 +228,13 @@ def analyze_cluster(cluster_name, bootstrap_server):
 
 def parse_args(argv):
     source_broker, target_broker = '', ''
+    global show_all
 
     try:
-        opts, args = getopt.getopt(argv, "hs:t:", ["src=", "target="])
+        opts, args = getopt.getopt(argv, "ahs:t:", ["src=", "target="])
     except getopt.GetoptError:
-        print('main.py -s <source broker host:port> -t <target broker host:port>')
+        print('main.py -s <source broker host:port> -t <target broker host:port> [-a]')
+        print('\t-a - show all changes (by default only topics with lag/size mismatch are shown)')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
@@ -223,6 +244,8 @@ def parse_args(argv):
             source_broker = arg
         elif opt in ("-t", "--target"):
             target_broker = arg
+        elif opt in ("-a", "--all"):
+            show_all = True
 
     return source_broker, target_broker
 
@@ -232,6 +255,7 @@ def parse_args(argv):
 #########################################
 
 source_broker, target_broker = parse_args(sys.argv[1:])
+show_all = False
 
 source_server_state = analyze_cluster("source", source_broker)
 target_server_state = analyze_cluster("target", target_broker)
@@ -242,9 +266,9 @@ filename = "differences.json"
 
 print_state_comparison(source_server_state, target_server_state)
 
-print("Saving differences analysis to", filename)
-json_file = open(filename, "w")
-json_file.write(json.dumps(diff.to_dict(), sort_keys=True, indent=4))
-json_file.close()
+# print("Saving differences analysis to", filename)
+# json_file = open(filename, "w")
+# json_file.write(json.dumps(diff.to_dict(), sort_keys=True, indent=4))
+# json_file.close()
 
 print("All done")

@@ -47,9 +47,9 @@ module "kibana-3" {
 }
 
 module "elastic-beats" {
-  source   = "../../terraform-modules/k8s-vault-elastic-beats"
-  Cluster  = var.Cluster
-  Color    = var.Color
-  Settings = var.Settings
-  # depends_on = [module.elastic-elastic]
+  source     = "../../terraform-modules/k8s-vault-elastic-beats"
+  Cluster    = var.Cluster
+  Color      = var.Color
+  Settings   = var.Settings
+  depends_on = [module.elastic-elastic, module.kibana-1, module.kibana-2, module.kibana-3]
 }
