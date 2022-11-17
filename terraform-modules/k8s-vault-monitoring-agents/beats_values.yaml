@@ -185,9 +185,9 @@ filebeat:
                 json.add_error_key: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
-            # Kafka
+            # Pi
             - condition.contains:
-                kubernetes.namespace: kafka
+                kubernetes.namespace: pi
               config:
               - type: container
                 json.add_error_key: true
