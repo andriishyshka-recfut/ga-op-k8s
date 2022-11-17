@@ -64,14 +64,17 @@ resource "helm_release" "gitlab-runner" {
   set {
     name  = "gitlabUrl"
     value = "https://gitlab.regemini.com/"
+    type  = "string"
   }
   set {
     name  = "runnerRegistrationToken"
     value = data.kubernetes_secret.gitlab-runner-registration.data["runner-registration-token"]
+    type  = "string"
   }
   set {
     name  = "rbac.create"
-    value = "true"
+    value = true
+    type  = "string"
   }
 }
 
