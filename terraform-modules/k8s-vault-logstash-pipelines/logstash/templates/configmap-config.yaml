@@ -1,4 +1,3 @@
-{{- if .Values.logstashConfig }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -10,8 +9,11 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 data:
-{{- range $path, $config := .Values.logstashConfig }}
-  {{ $path }}: |
-{{ tpl $config $ | indent 4 -}}
-{{- end -}}
-{{- end -}}
+  logstash.yml: |
+    http.host: 0.0.0.0
+    xpack.management.enabled: true
+    xpack.management.logstash.poll_interval: {{ .Values.elastic.pollInterval }}
+    xpack.management.elasticsearch.username: ${ES_USER}
+    xpack.management.elasticsearch.password: ${ES_PASSWORD}
+    xpack.management.elasticsearch.hosts: [{{ .Values.elastic.host }}]
+    xpack.management.pipeline.id: [{{ .Values.elastic.pipelineID | replace " " ","}}]

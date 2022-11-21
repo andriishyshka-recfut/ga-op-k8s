@@ -1,15 +1,21 @@
 ---
 replicas: 1
 
+command: "/usr/local/bin/docker-entrypoint"
 
-command: "/usr/share/logstash/bin/logstash-plugin install logstash-codec-csv && /usr/local/bin/docker-entrypoint"
+minio:
+  user: backup
 
-# Allows you to add any config files in /usr/share/logstash/config/
-# such as logstash.yml and log4j2.properties
-#
-# Note that when overriding logstash.yml, `http.host: 0.0.0.0` should always be included
-# to make default probes work.
-logstashConfig: {}
+elastic:
+  namespace: elastic
+  host: elastic
+  pipelineID: "testing red green"
+  pollInterval: 5s
+
+mountCaCert:
+  enabled: true
+  volumeName: elastic-credentials-cert
+  mountPath: /ssl-es
 
 extraEnvs: {}
 
@@ -45,11 +51,11 @@ hostAliases: []
 #  - "foo.local"
 #  - "bar.local"
 
-image: "docker.elastic.co/logstash/logstash"
+image: "harbor.t.regemini.io/sandbox/logstash-pipelines"
 imageTag: "8.4.3"
 imagePullPolicy: "IfNotPresent"
-imagePullSecrets: []
-
+imagePullSecrets:
+  - name: harbor
 httpPort: 9600
 
 podAnnotations: {}
@@ -67,15 +73,15 @@ resources:
     cpu: "1000m"
     memory: "1536Mi"
 
+persistence:
+  enabled: true
+  annotations: {}
+
 volumeClaimTemplate:
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:
       storage: 1Gi
-
-persistence:
-  enabled: true
-  annotations: {}
 
 
 extraContainers:
@@ -106,16 +112,20 @@ updateStrategy: RollingUpdate
 maxUnavailable: 1
 
 podSecurityContext:
-  fsGroup: 1000
+  runAsGroup: 1000
   runAsUser: 1000
+  fsGroup: 1000
+  runAsNonRoot: true
 
 securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
   capabilities:
     drop:
       - ALL
   # readOnlyRootFilesystem: true
-  runAsNonRoot: true
-  runAsUser: 1000
+
 
 # How long to wait for logstash to stop gracefully
 terminationGracePeriod: 180
@@ -132,6 +142,3 @@ lifecycle:
   postStart:
     exec:
       command: ["/bin/sh", "-c", "/opt/logstash/jdk/bin/keytool -import -noprompt -trustcacerts -alias CA_ES -file /ssl-es/ca.crt -keystore /opt/logstash/jdk/lib/security/cacerts -storepass changeit"]
-  # preStop:
-  #   exec:
-  #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
