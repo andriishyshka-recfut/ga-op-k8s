@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "logstash.fullname" . }}
+  name: logstash-{{ template "logstash.fullname" . }}
   labels:
     app: "{{ template "logstash.fullname" . }}"
     chart: "{{ .Chart.Name }}"
@@ -61,16 +61,24 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriod }}
       volumes:
+        {{- if .Values.mountCaCert.enabled }}
+        - name: {{ .Values.mountCaCert.volumeName }}
+          secret:
+            defaultMode: 420
+            items:
+              - key: ca.crt
+                path: ca.crt
+            secretName: {{ .Values.elastic.namespace }}-logstash-es-http-internal-certs
+        {{- end }}
         {{- range .Values.secretMounts }}
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
         {{- end }}
-        {{- if .Values.logstashConfig }}
         - name: logstashconfig
           configMap:
+            defaultMode: 420
             name: {{ template "logstash.fullname" . }}-config
-        {{- end }}
       {{- if .Values.extraVolumes }}
       {{- if eq "string" (printf "%T" .Values.extraVolumes) }}
 {{ tpl .Values.extraVolumes . | indent 8 }}
@@ -105,6 +113,28 @@ spec:
         env:
           - name: LS_JAVA_OPTS
             value: "{{ .Values.logstashJavaOpts }}"
+          - name: 'ES_HOST'
+            value: {{ .Values.elastic.host }}
+          - name: 'ES_USER'
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.elastic.namespace }}-logstash-es-creds
+                key: username
+          - name: 'ES_PASSWORD'
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.elastic.namespace }}-logstash-es-creds
+                key: password
+          - name: MINIO_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.minio.user }}-logstash-minio-creds
+                key: access_key
+          - name: MINIO_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.minio.user }}-logstash-minio-creds
+                key: secret_key
 {{- if .Values.extraEnvs }}
 {{ toYaml .Values.extraEnvs | indent 10 }}
 {{- end }}
@@ -113,6 +143,10 @@ spec:
 {{ toYaml .Values.envFrom | indent 10 }}
 {{- end }}
         volumeMounts:
+          {{- if .Values.mountCaCert.enabled }}
+          - name: {{ .Values.mountCaCert.volumeName }}
+            mountPath: {{ .Values.mountCaCert.mountPath}}
+          {{- end }}
           {{- if .Values.persistence.enabled }}
           - name: "{{ template "logstash.fullname" . }}"
             mountPath: /usr/share/logstash/data
@@ -124,11 +158,9 @@ spec:
             subPath: {{ .subPath }}
             {{- end }}
           {{- end }}
-          {{- range $path, $config := .Values.logstashConfig }}
           - name: logstashconfig
-            mountPath: /usr/share/logstash/config/{{ $path }}
-            subPath: {{ $path }}
-          {{- end -}}
+            mountPath: /usr/share/logstash/config/logstash.yml
+            subPath: logstash.yml
         {{- if .Values.extraVolumeMounts }}
         {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
 {{ tpl .Values.extraVolumeMounts . | indent 10 }}

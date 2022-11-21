@@ -1,84 +1,91 @@
 resource "helm_release" "logstash" {
-  for_each   = var.logstash_list
-  name       = "logstash"
-  namespace  = try(each.value.namespace, local.namespace)
-  chart      = "${path.module}/logstash"
+  for_each     = var.logstash_list
+  name         = each.key
+  namespace    = try(each.value.namespace, local.namespace)
+  chart        = "${path.module}/logstash"
   wait         = true
   atomic       = true
   reset_values = true
-  values     = [ file("${path.module}/logstash-values.yaml") ]
+  values = [
+    file("${path.module}/logstash/values.yaml")
+  ]
   set {
-    name  = "extraEnvs"
-    value = "{ \"USERNAME\": \"elastic\", \"PASSWORD\": \"test\" }"
+    name  = "fullnameOverride"
+    value = each.key
   }
-/*
-    <<EOT
-fullnameOverride: ${each.key}
-extraEnvs:
-  - name: 'ES_USER'
-    value: '${local.es_user}'
-  - name: 'ES_HOST'
-    value: '${local.es_host}'
-  - name: 'ES_PASSWORD'
-    valueFrom:
-      secretKeyRef:
-        name: elastic-credentials-${each.key}
-        key: password
-  - name: MINIO_ACCESS_KEY
-    valueFrom:
-      secretKeyRef:
-        name: minio-credentials
-        key: accesskey
-  - name: MINIO_SECRET_ACCESS_KEY
-    valueFrom:
-      secretKeyRef:
-        name: minio-credentials
-        key: secretkey
-extraVolumes:
-  - name: elastic-credentials-${each.key}
-    secret:
-      defaultMode: 420
-      items:
-        - key: ca.crt
-          path: ca.crt
-      secretName: elastic-credentials-${each.key}
-extraVolumeMounts:
-  - name: elastic-credentials-${each.key}
-    mountPath: /ssl-es/
-logstashConfig:
-  logstash.yml: |
-    http.host: 0.0.0.0
-    xpack.management.enabled: true
-    xpack.management.logstash.poll_interval: ${local.poll_interval}
-    xpack.management.elasticsearch.username: '${local.es_user}'
-    xpack.management.elasticsearch.password: '$${ES_PASSWORD}'
-    xpack.management.elasticsearch.hosts: ["${local.es_host}"]
-    xpack.management.pipeline.id: ["${local.pipeline_id}"]
-EOT
-*/
+  set {
+    name  = "elastic.namespace"
+    value = try(each.value.namespace, local.namespace)
+  }
+  set {
+    name  = "elastic.host"
+    value = try(each.value.es_host, local.es_host)
+  }
+  set {
+    name  = "elastic.pipelineID"
+    value = try(each.value.pipeline_id, local.pipeline_id)
+  }
+  set {
+    name  = "elastic.pollInterval"
+    value = try(each.value.poll_interval, local.poll_interval)
+  }
+  set {
+    name  = "minio.user"
+    value = try(each.value.minio_user, local.minio_user)
+  }
 
-  depends_on = [kubernetes_secret.elastic_credentials]
+  depends_on = [kubernetes_secret.logstash_elastic_ca,kubernetes_secret.logstash_es_creds,kubernetes_secret.minio_creds]
 }
 
-data "vault_generic_secret" "elastic_credentials" {
-  for_each = var.logstash_list
-  path     = "secret/logstash/${each.key}"
-}
 
-resource "kubernetes_secret" "elastic_credentials" {
-  for_each = var.logstash_list
+data "kubernetes_secret" "logstash_elastic_ca" {
+  for_each = local.namespaces
   metadata {
-    name       = "elastic-credentials-${each.key}"
-    namespace  = try(each.value.namespace, local.namespace)
+    name      = "${each.key}-es-http-certs-internal"
+    namespace = each.key
+  }
+}
+
+resource "kubernetes_secret" "logstash_elastic_ca" {
+  for_each = local.namespaces
+  metadata {
+    name      = "${each.key}-logstash-es-http-internal-certs"
+    namespace = each.key
+  }
+  data = data.kubernetes_secret.logstash_elastic_ca[each.key].data
+}
+
+
+data "vault_generic_secret" "minio_creds" {
+  path         = "secret/minio/users"
+}
+
+resource "kubernetes_secret" "minio_creds" {
+  for_each = local.minio_users
+  metadata {
+    name      = "${each.key}-logstash-minio-creds"
+    namespace = each.value[0]
+  }
+  data = {
+    access_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.key]).accessKey,
+    secret_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.key]).secretKey
+  }
+}
+
+
+data "vault_generic_secret" "logstash_es_creds" {
+  path      = "secret/logstash/red"
+}
+
+resource "kubernetes_secret" "logstash_es_creds" {
+  for_each = local.namespaces
+  metadata {
+    name       = "${each.key}-logstash-es-creds"
+    namespace  = each.key
   }
 
   data = {
-    "ca.crt"  = data.vault_generic_secret.elastic_credentials[each.key].data.ca_cert,
-    password   = data.vault_generic_secret.elastic_credentials[each.key].data.password
+    password   = data.vault_generic_secret.logstash_es_creds.data.password,
+    username   = data.vault_generic_secret.logstash_es_creds.data.username
   }
 }
-
-
-
-#elastic7-es-http-certs-internal
-#elastic7-es-elastic-user
