@@ -17,6 +17,7 @@ locals {
   prometheusConfigFile = var.Color == "red" ? "red-kube-prometheous-stack-values.yaml" : "kube-prometheous-stack-values.yaml"
   grafanaSecretpath    = var.Color == "red" ? "secret/red/grafana" : "secret/grafana"
   slackSecretPath      = var.Color == "red" ? "secret/red/slack/prometheus" : "secret/slack/prometheus"
+  thanosMinioUser      = "thanos"
 }
 
 terraform {
