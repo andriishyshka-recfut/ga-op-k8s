@@ -3,7 +3,7 @@ variable "logstash_list" {
 }
 
 locals {
-  namespace     = "elastic7"
+  namespace     = "elastic"
   minio_user    = "backup"
   es_host       = "https://${local.namespace}-es-http.${local.namespace}.svc:9200"
   pipeline_id   = "testing"
