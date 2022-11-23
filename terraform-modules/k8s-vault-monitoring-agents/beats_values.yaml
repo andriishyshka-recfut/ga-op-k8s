@@ -193,3 +193,11 @@ filebeat:
                 json.add_error_key: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
+            # Auth-ui
+            - condition.contains:
+                kubernetes.namespace: auth-ui
+              config:
+              - type: container
+                json.add_error_key: true
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
