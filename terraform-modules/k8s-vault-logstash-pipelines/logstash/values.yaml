@@ -52,7 +52,7 @@ hostAliases: []
 #  - "bar.local"
 
 image: "harbor.t.regemini.io/sandbox/logstash-pipelines"
-imageTag: "8.4.3"
+imageTag: "7.17.7"
 imagePullPolicy: "IfNotPresent"
 imagePullSecrets:
   - name: harbor
