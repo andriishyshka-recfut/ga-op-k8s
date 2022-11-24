@@ -13,7 +13,8 @@ data:
     http.host: 0.0.0.0
     xpack.management.enabled: true
     xpack.management.logstash.poll_interval: {{ .Values.elastic.pollInterval }}
-    xpack.management.elasticsearch.username: ${ES_USER}
-    xpack.management.elasticsearch.password: ${ES_PASSWORD}
+    xpack.management.elasticsearch.username: ${ELASTICSEARCH_USER}
+    xpack.management.elasticsearch.password: ${ELASTICSEARCH_PASSWORD}
     xpack.management.elasticsearch.hosts: [{{ .Values.elastic.host }}]
+    xpack.monitoring.elasticsearch.ssl.certificate_authority: {{ .Values.mountCaCert.mountPath}}/ca.crt
     xpack.management.pipeline.id: [{{ .Values.elastic.pipelineID | replace " " ","}}]

@@ -113,14 +113,14 @@ spec:
         env:
           - name: LS_JAVA_OPTS
             value: "{{ .Values.logstashJavaOpts }}"
-          - name: 'ES_HOST'
+          - name: 'ELASTICSEARCH_HOSTS'
             value: {{ .Values.elastic.host }}
-          - name: 'ES_USER'
+          - name: 'ELASTICSEARCH_USER'
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.elastic.namespace }}-logstash-es-creds
                 key: username
-          - name: 'ES_PASSWORD'
+          - name: 'ELASTICSEARCH_PASSWORD'
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.elastic.namespace }}-logstash-es-creds
