@@ -17,7 +17,7 @@ spec:
       static:
       - https://bka.regemini.com/status
       - https://cluster-info.t.regemini.io/ping
-      - https://epl.regemini.io/ping
+      - https://epl.regemini.io
       - https://geminiadvisory.io
       - https://k.regemini.com/status
       - https://kiali.p.regemini.io/ping
