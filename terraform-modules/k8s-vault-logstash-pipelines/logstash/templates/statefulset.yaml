@@ -125,6 +125,10 @@ spec:
               secretKeyRef:
                 name: {{ .Values.elastic.namespace }}-logstash-es-creds
                 key: password
+          - name: 'MINIO_ENDPOINT'
+            value: {{ .Values.minio.endpoint }}
+          - name: 'MINIO_BUCKET'
+            value: {{ .Values.minio.bucket }}
           - name: MINIO_ACCESS_KEY
             valueFrom:
               secretKeyRef:

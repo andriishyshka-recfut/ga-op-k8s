@@ -33,6 +33,14 @@ resource "helm_release" "logstash" {
     name  = "minio.user"
     value = try(each.value.minio_user, local.minio_user)
   }
+  set {
+    name = "minio.endpoint"
+    value = local.minio_endpoint
+  }
+  set {
+    name = "minio.bucket"
+    value = local.minio_bucket
+  }
 
   depends_on = [kubernetes_secret.logstash_elastic_ca,kubernetes_secret.logstash_es_creds,kubernetes_secret.minio_creds]
 }
