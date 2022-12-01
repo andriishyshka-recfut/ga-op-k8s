@@ -161,3 +161,4 @@ resource "kubernetes_manifest" "ingress_virtualservice" {
       ]
     }
   }
+}
