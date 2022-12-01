@@ -6,6 +6,8 @@ locals {
   certManager     = { for ingress, data in local.ingressSettings : ingress => data if lookup(data, "cert-manager", false) }
   ingressTls      = { for ingress, data in local.ingressSettings : ingress => data if lookup(data, "tlsRedirect", false) }
   ingressWoTls    = { for ingress, data in local.ingressSettings : ingress => data if !lookup(data, "tlsRedirect", false) }
+  virtualService = { for ingress, data in local.ingressSettings : ingress => data if lookup(data, "redirect_url", false) == false }
+  virtualServiceRedirect = { for ingress, data in local.ingressSettings : ingress => data if lookup(data, "redirect_url", false) != false }
 }
 
 
