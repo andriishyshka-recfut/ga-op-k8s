@@ -159,11 +159,9 @@ resource "kubernetes_manifest" "ingress_virtualservice_redirect" {
           ]
           "redirect" = {
             "authority" = each.value.redirect_url
-            "port" = lookup(each.value, "port", 443)
-            "scheme" = lookup(each.value, "port", 443) == 443 ? "https" : "http"
-              }
-            },
-          ]
+            "port"      = lookup(each.value, "port", 443)
+            "scheme"    = lookup(each.value, "port", 443) == 443 ? "https" : "http"
+          }
         },
       ]
     }
