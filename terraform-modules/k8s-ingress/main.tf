@@ -96,8 +96,8 @@ resource "kubernetes_manifest" "ingress_gateway_wo_tls" {
 }
 
 resource "kubernetes_manifest" "ingress_virtualservice" {
-  for_each = local.ingressSettings
-  manifest = lookup(each.value, "redirect_url", false) == false ? {
+  for_each = local.virtualService
+  manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
     "metadata"   = {
@@ -131,7 +131,12 @@ resource "kubernetes_manifest" "ingress_virtualservice" {
         },
       ]
     }
-  } : {
+  }
+}
+
+resource "kubernetes_manifest" "ingress_virtualservice_redirect" {
+  for_each = local.virtualServiceRedirect
+  manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
     "metadata"   = {
@@ -154,10 +159,11 @@ resource "kubernetes_manifest" "ingress_virtualservice" {
           ]
           "redirect" = {
             "authority" = each.value.redirect_url
-            "port" = lookup(each.value, "port", 443)
-            "scheme" = lookup(each.value, "port", 443) == 443 ? "https" : "http"
-            }
+            "port"      = lookup(each.value, "port", 443)
+            "scheme"    = lookup(each.value, "port", 443) == 443 ? "https" : "http"
+          }
         },
       ]
     }
   }
+}
