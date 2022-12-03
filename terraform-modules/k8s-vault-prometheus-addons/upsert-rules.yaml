@@ -18,10 +18,10 @@ spec:
     - alert: upsertTreshold
       annotations:
         description: |
-          no crypto wallet added in the last 6 hours.
-        summary: no crypto wallet added in the last 6 hours.
+          no crypto wallet added in the last 12 hours.
+        summary: no crypto wallet added in the last 12 hours.
       expr: |
-        increase(worker_upsert_preps_total{record_type="POST"}[6h]) == 0
+        increase(worker_upsert_preps_total{record_type="POST"}[12h]) == 0
       for: 5m
       labels:
         cluster: ${cluster_label}
