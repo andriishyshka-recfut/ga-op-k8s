@@ -134,7 +134,7 @@ spec:
               secretKeyRef:
                 name: {{ .Values.minio.user }}-logstash-minio-creds
                 key: access_key
-          - name: MINIO_SECRET_ACCESS_KEY
+          - name: MINIO_SECRET_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.minio.user }}-logstash-minio-creds
