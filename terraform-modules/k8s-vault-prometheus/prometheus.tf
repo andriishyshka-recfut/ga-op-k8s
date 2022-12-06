@@ -10,6 +10,30 @@ data "vault_generic_secret" "prometheus" {
   path = "secret/slack/prometheus"
 }
 
+data "vault_generic_secret" "minio" {
+  path = "secret/minio/users"
+}
+
+resource "kubernetes_secret" "thanos-objstore-config" {
+  metadata {
+    name      = "thanos-objstore-config"
+    namespace = local.prometheusNs
+  }
+
+  data = { "thanos.yaml" = <<EOF
+type: s3
+config:
+  bucket: ${local.thanosBucket}
+  endpoint: minio.minio:9000
+  insecure: true
+  access_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).accessKey}
+  secret_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).secretKey}
+EOF
+  
+   }
+
+}
+
 resource "helm_release" "prometheus" {
   name              = "prometheus"
   repository        = "https://prometheus-community.github.io/helm-charts"
@@ -65,5 +89,9 @@ resource "helm_release" "prometheus" {
   set {
     name  = "defaultRules.rules.kubeProxy"
     value = false
+  }
+  set {
+    name  = "prometheus.prometheusSpec.thanos.version"
+    value = local.thanosSidecarVersion
   }
 }
