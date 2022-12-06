@@ -3,15 +3,24 @@ import json
 import sys
 import timeit
 from concurrent.futures import ThreadPoolExecutor
+from confluent_kafka.cimpl import RESOURCE_TOPIC
 from tabulate import tabulate
 
 from confluent_kafka import Consumer, TopicPartition, OFFSET_INVALID
-from confluent_kafka.admin import (AdminClient)
+from confluent_kafka.admin import (AdminClient, ConfigResource)
 from deepdiff import DeepDiff
 
 from kafka import KafkaAdminClient
 
+FIELD_RETENTION_MS = 'retention_ms'
+FIELD_LOW = 'low'
+FIELD_HIGH = 'high'
+FIELD_LAG = 'lag'
+FIELD_SIZE = 'size'
+
+
 UNKNOWN_GROUP = "<not associated>"
+SPECIAL_FIELDS = [FIELD_RETENTION_MS]
 
 EXCLUDED_TOPICS = ["__consumer_offsets", "mirrormaker2-cluster-offsets", "mirrormaker2-cluster-status",
                    "mirrormaker2-cluster-configs", "mm2-offset-syncs.target.internal"]
@@ -25,6 +34,7 @@ def print_state_comparison(src, tgt):
     global show_all
 
     offset_fix = []
+    retention_mismatch = dict()
     src_only_topics = set(src.keys()).difference(set(tgt.keys()))
     tgt_only_topics = set(tgt.keys()).difference(set(src.keys()))
     skip_topics = set()
@@ -41,8 +51,16 @@ def print_state_comparison(src, tgt):
         topic, topic_data = rec
 
         if topic not in skip_topics:
+
+            if src.get(topic).get(FIELD_RETENTION_MS) != tgt.get(topic).get(FIELD_RETENTION_MS):
+                print("Retention mismatch in topic {}: {} -> {}", topic, src.get(topic).get(FIELD_RETENTION_MS), tgt.get(topic).get(FIELD_RETENTION_MS))
+                retention_mismatch.update([topic, src.get(topic).get(FIELD_RETENTION_MS)])
+
             for grp_rec in topic_data.items():
                 group, partitions = grp_rec
+
+                if group in SPECIAL_FIELDS:
+                    continue
 
                 for p_rec in partitions.items():
                     part_id, src_values = p_rec
@@ -54,23 +72,23 @@ def print_state_comparison(src, tgt):
                         new_offset = 0
                         has_changed = False
                         lag_or_size_mismatch = False
-                        if src_values.get("low") != tgt_values.get("low"):
+                        if src_values.get(FIELD_LOW) != tgt_values.get(FIELD_LOW):
                             has_changed = True
-                            low = "{} -> {}".format(src_values.get("low"), tgt_values.get("low"))
-                        if src_values.get("high") != tgt_values.get("high"):
+                            low = "{} -> {}".format(src_values.get(FIELD_LOW), tgt_values.get(FIELD_LOW))
+                        if src_values.get(FIELD_HIGH) != tgt_values.get(FIELD_HIGH):
                             has_changed = True
-                            high = "{} -> {}".format(src_values.get("high"), tgt_values.get("high"))
-                        if src_values.get("lag") != tgt_values.get("lag"):
+                            high = "{} -> {}".format(src_values.get(FIELD_HIGH), tgt_values.get(FIELD_HIGH))
+                        if src_values.get(FIELD_LAG) != tgt_values.get(FIELD_LAG):
                             has_changed = True
                             lag_or_size_mismatch = True
-                            lag = "{} -> {}".format(src_values.get("lag"), tgt_values.get("lag"))
-                            new_offset = int(tgt_values.get("high")) - int(src_values.get("lag"))
+                            lag = "{} -> {}".format(src_values.get(FIELD_LAG), tgt_values.get(FIELD_LAG))
+                            new_offset = int(tgt_values.get(FIELD_HIGH)) - int(src_values.get(FIELD_LAG))
                             if new_offset < 0:
                                 new_offset = 0
-                        if src_values.get("size") != tgt_values.get("size"):
+                        if src_values.get(FIELD_SIZE) != tgt_values.get(FIELD_SIZE):
                             has_changed = True
                             lag_or_size_mismatch = True
-                            size = "{} -> {}".format(src_values.get("size"), tgt_values.get("size"))
+                            size = "{} -> {}".format(src_values.get(FIELD_SIZE), tgt_values.get(FIELD_SIZE))
 
                         if lag_or_size_mismatch:
                             suspicious_items.append([topic, group, part_id, low, high, size, lag])
@@ -88,6 +106,13 @@ def print_state_comparison(src, tgt):
                                     "--group {} --topic {}:{} --to-offset {} --execute".format(
                                         group, topic, part_id, new_offset))
 
+                        if src_values.get(FIELD_HIGH) == src_values.get(FIELD_LOW) \
+                                or tgt_values.get(FIELD_LAG) > tgt_values.get(FIELD_SIZE) \
+                                or tgt_values.get(FIELD_LAG) < 0:
+                            offset_fix.append(
+                                "./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets "
+                                "--group {} --topic {}:{} --to-earliest --execute".format(
+                                    group, topic, part_id, new_offset))
 
                     except Exception as e:
                         print("failed to compare data for", topic, e)
@@ -101,9 +126,15 @@ def print_state_comparison(src, tgt):
         print("Topics with lag/size inconsistency:")
         print(tabulate(suspicious_items, headers='firstrow', tablefmt='fancy_grid'))
 
-
     print("\n\nProposed offset fixes:")
     print("\n".join(str(x) for x in offset_fix))
+    print("\n\n")
+
+    print("\n\nProposed retention fixes:")
+    for topic, retention in retention_mismatch.items():
+        print("./kafka-configs.sh --bootstrap-server localhost:9092 --entity-type topics"
+              " --entity-name {} --alter --add-config retention.ms={}"
+              .format(topic, retention))
     print("\n\n")
 
 
@@ -115,13 +146,13 @@ def get_partition_size(topic_name: str, partition_key: int, consumer):
     committed = consumer.committed([topic_partition], timeout=10)
     partition_size = high_offset - low_offset
 
-    partition_data.get(partition_key)["low"] = low_offset
-    partition_data.get(partition_key)["high"] = high_offset
-    partition_data.get(partition_key)["size"] = partition_size
+    partition_data.get(partition_key)[FIELD_LOW] = low_offset
+    partition_data.get(partition_key)[FIELD_HIGH] = high_offset
+    partition_data.get(partition_key)[FIELD_SIZE] = partition_size
 
     if committed[0].offset != OFFSET_INVALID:
         lag = "%d" % (high_offset - committed[0].offset)
-        partition_data.get(partition_key)["lag"] = lag
+        partition_data.get(partition_key)[FIELD_LAG] = lag
 
     return partition_data
 
@@ -133,6 +164,8 @@ def get_topic_size(topic, bootstrap_server):
 
     for group_data in topic[1].items():
         group_name = group_data[0]
+        if group_name in SPECIAL_FIELDS:
+            continue
         partitions = group_data[1]
         topic_data.get(topic_name)[group_name] = dict()
         workers, max_workers = [], len(partitions) or 1
@@ -202,6 +235,17 @@ def analyze_cluster(cluster_name, bootstrap_server):
     all_topics_data = get_topic_group_map(topics, groups, bootstrap_server)
 
     cluster_state = dict()
+
+    print("\t\tFetching topics retention policy")
+
+    topics_config_resource = []
+    for topic in all_topics_data.items():
+        topic_name = topic[0]
+        topics_config_resource.append(ConfigResource(name=topic_name, restype=RESOURCE_TOPIC))
+    topics_config = a.describe_configs(topics_config_resource)
+
+    for t_config in topics_config.items():
+        all_topics_data.get(t_config[0].name)[FIELD_RETENTION_MS] = t_config[1].result()['retention.ms'].value
 
     workers = []
     print("\t\tFetching lag, offsets and size of topics")
