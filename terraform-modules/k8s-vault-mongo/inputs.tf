@@ -10,6 +10,8 @@ variable "BackupSettings" {}
 variable "Cluster" {}
 variable "Color" {}
 variable "GkeClusterConnectionSettings" {}
+variable "ImageTag" {}
+variable "Repository" {}
 
 locals {
   ansibleEnvs = merge(var.GkeClusterConnectionSettings, {

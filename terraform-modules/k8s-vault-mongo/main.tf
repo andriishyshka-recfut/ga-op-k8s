@@ -48,12 +48,29 @@ resource "helm_release" "mongo_cluster" {
   namespace = var.MongoNs
   wait      = true
   atomic    = true
+
+  values = [
+    "${file("${path.module}/values.yaml")}"
+  ]
+
   set {
-    name  = "BackupBucket"
+    name = "fullnameOverride"
+    value = var.Color
+  }
+  set {
+    name  = "image.tag"
+    value = var.ImageTag
+  }
+  set {
+    name  = "image.repository"
+    value = var.Repository
+  }
+  set {
+    name  = "backup.storages.minio.s3.bucket"
     value = var.BackupBucket
   }
   set {
-    name  = "volumeSize"
+    name  = "replsets[0].volumeSpec.pvc.resources.requests.storage"
     value = var.VolumeSize
   }
   set {
@@ -65,19 +82,19 @@ resource "helm_release" "mongo_cluster" {
     value = var.Color
   }
   set {
-    name  = "cpuReuest"
+    name  = "replsets[0].resources.requests.cpu"
     value = local.request.cpu
   }
   set {
-    name  = "memReuest"
+    name  = "replsets[0].resources.requests.memory"
     value = local.request.memory
   }
   set {
-    name  = "memLimit"
+    name  = "replsets[0].resources.limits.memory"
     value = local.limit.memory
   }
   set {
-    name  = "cpuLimit"
+    name  = "replsets[0].resources.limits.cpu"
     value = local.limit.cpu
   }
   depends_on = [
@@ -104,7 +121,7 @@ COMMAND
       name           = "${var.Color}"
       kind           = "PerconaServerMongoDB"
       namespace      = var.MongoNs
-      apiVersion     = "psmdb.percona.com/v1-4-0"
+      apiVersion     = "psmdb.percona.com/v1"
       statusPath     = "state"
       requiredStatus = "ready"
     })
