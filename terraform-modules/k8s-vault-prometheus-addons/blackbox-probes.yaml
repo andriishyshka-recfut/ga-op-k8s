@@ -18,7 +18,7 @@ spec:
       - https://bka.regemini.com/status
       - https://cluster-info.t.regemini.io/ping
       - https://epl.regemini.io
-      - https://geminiadvisory.io
+      - https://geminiadvisory.io/wp-content/themes/gemini/img/gear.svg
       - https://k.regemini.com/status
       - https://kiali.p.regemini.io/ping
       - https://kowl.p.regemini.io/ping
