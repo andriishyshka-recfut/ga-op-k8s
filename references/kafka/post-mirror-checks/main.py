@@ -34,7 +34,7 @@ def print_state_comparison(src, tgt):
     global show_all
 
     offset_fix = []
-    retention_mismatch = []
+    retention_mismatch = dict()
     src_only_topics = set(src.keys()).difference(set(tgt.keys()))
     tgt_only_topics = set(tgt.keys()).difference(set(src.keys()))
     skip_topics = set()
@@ -53,7 +53,8 @@ def print_state_comparison(src, tgt):
         if topic not in skip_topics:
 
             if src.get(topic).get(FIELD_RETENTION_MS) != tgt.get(topic).get(FIELD_RETENTION_MS):
-                retention_mismatch.append("{}: {} -> {}", topic, src.get(topic).get(FIELD_RETENTION_MS), tgt.get(topic).get(FIELD_RETENTION_MS))
+                print("Retention mismatch in topic {}: {} -> {}", topic, src.get(topic).get(FIELD_RETENTION_MS), tgt.get(topic).get(FIELD_RETENTION_MS))
+                retention_mismatch.update([topic, src.get(topic).get(FIELD_RETENTION_MS)])
 
             for grp_rec in topic_data.items():
                 group, partitions = grp_rec
@@ -127,6 +128,13 @@ def print_state_comparison(src, tgt):
 
     print("\n\nProposed offset fixes:")
     print("\n".join(str(x) for x in offset_fix))
+    print("\n\n")
+
+    print("\n\nProposed retention fixes:")
+    for topic, retention in retention_mismatch.items():
+        print("./kafka-configs.sh --bootstrap-server localhost:9092 --entity-type topics"
+              " --entity-name {} --alter --add-config retention.ms={}"
+              .format(topic, retention))
     print("\n\n")
 
 
