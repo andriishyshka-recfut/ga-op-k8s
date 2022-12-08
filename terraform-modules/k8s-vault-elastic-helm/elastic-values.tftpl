@@ -54,26 +54,15 @@ extraInitContainers:
         #!/usr/bin/env bash
         set -euo pipefail
         elasticsearch-certutil cert \
-          --name $NODE_NAME \
+          --pem \
+          --name transportcert \
           --days 1000 \
           --ip $POD_IP \
           --dns $NODE_NAME,$POD_SERVICE_NAME,$POD_SERVICE_NAME_HEADLESS,$NODE_NAME.$POD_SERVICE_NAME,$NODE_NAME.$POD_SERVICE_NAME_HEADLESS \
           --ca-cert /usr/share/elasticsearch/config/transport-ca/tls.crt \
           --ca-key /usr/share/elasticsearch/config/transport-ca/tls.key  \
-          --ca-pass "" \
-          --pass "" \
-          --out /usr/share/elasticsearch/config/transport-certs/keystore.p12
-%{ if length(remotecerts) > 0 ~}
-%{ for cert in remotecerts ~}
-        /usr/share/elasticsearch/jdk/bin/keytool \
-          -importcert \
-          -trustcacerts 
-          -noprompt \
-          -keystore /usr/share/elasticsearch/config/transport-certs/keystore.p12 \
-          -storepass "" \
-          -file /usr/share/elasticsearch/config/remote-certs/${cert}
-%{ endfor }
-%{ endif ~}
+          --out /usr/share/elasticsearch/config/transport-certs/certs.zip
+          unzip /usr/share/elasticsearch/config/transport-certs/certs.zip -d /usr/share/elasticsearch/config/transport-certs 
     env:
       - name: NODE_NAME
         valueFrom:
@@ -92,8 +81,6 @@ extraInitContainers:
       mountPath: /usr/share/elasticsearch/config/transport-certs
     - name: elastic-transport-ca
       mountPath: /usr/share/elasticsearch/config/transport-ca
-    - name: elastic-remote-certs
-      mountPath: /usr/share/elasticsearch/config/remote-certs
 extraEnvs:
   - name: ELASTIC_PASSWORD
     valueFrom:
@@ -151,8 +138,15 @@ esConfig:
     xpack.security.enabled: true
     xpack.security.transport.ssl.enabled: true
     xpack.security.transport.ssl.verification_mode : certificate
-    xpack.security.transport.ssl.keystore.path: /usr/share/elasticsearch/config/transport-certs/keystore.p12
-    xpack.security.transport.ssl.truststore.path: /usr/share/elasticsearch/config/transport-certs/keystore.p12
+    xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/transport-certs/transportcert/transportcert.key
+    xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/transport-certs/transportcert/transportcert.crt
+    xpack.security.transport.ssl.certificate_authorities:
+      - /usr/share/elasticsearch/config/ca/ca.crt
+%{ if length(remotecerts) > 0 ~}
+%{ for cert in remotecerts ~}
+      - /usr/share/elasticsearch/config/remote-certs/${cert}
+%{ endfor ~}
+%{ endif ~}
     xpack.security.http.ssl.enabled: true
     xpack.security.http.ssl.key: /usr/share/elasticsearch/config/https-certs/tls.key
     xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/https-certs/tls.crt
