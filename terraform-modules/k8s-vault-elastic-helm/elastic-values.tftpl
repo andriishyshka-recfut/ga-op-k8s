@@ -1,0 +1,168 @@
+replicas: ${replicas}
+esJavaOpts: ${esJavaOpts}
+roles:
+  master: "${ lookup(roles, "master","false")}"
+  ingest: "false"
+  data: "${ lookup(roles, "data","false")}"
+  remote_cluster_client: "false"
+  ml: "false"
+nodeSelector:
+  workloadsType: "${workloadsType}"
+tolerations:
+  - key: workloadsType
+    operator: Exists
+    effect: NoSchedule
+  - key: node.kubernetes.io/not-ready
+    operator: Exists
+    effect: NoExecute
+  - key: node.kubernetes.io/unreachable
+    operator: Exists
+    effect: NoExecute
+podAnnotations:
+  "sidecar.istio.io/inject": "false"
+extraVolumes:
+  - name: elastic-plugins-local
+    emptyDir: {}
+  - name: elastic-transport-certificates
+    emptyDir: {}
+extraVolumeMounts:
+  - name: elastic-plugins-local
+    mountPath: /usr/share/elasticsearch/plugins
+  - name: elastic-transport-certificates
+    mountPath: /usr/share/elasticsearch/config/transport-certs
+%{ if length(plugins) > 0 ~}
+extraInitContainers:
+  - name: install-plugins
+    image: docker.elastic.co/elasticsearch/elasticsearch:${imageTag}
+    command:
+      - sh
+      - '-c'
+      - >
+%{ for plugin in distinct(plugins) ~}
+        bin/elasticsearch-plugin install --batch ${plugin} %{ if index(plugins, plugin) +1 < length(distinct(plugins))  } && %{ endif }
+%{ endfor ~}
+    volumeMounts:
+      - name: elastic-plugins-local
+        mountPath: /usr/share/elasticsearch/plugins
+%{ endif ~}
+  - name: setup-tls-cert
+    image: "docker.elastic.co/elasticsearch/elasticsearch:${imageTag}"
+    command:
+      - sh
+      - -c
+      - |
+        #!/usr/bin/env bash
+        set -euo pipefail
+        elasticsearch-certutil cert \
+          --name $NODE_NAME \
+          --days 1000 \
+          --ip $POD_IP \
+          --dns $NODE_NAME,$POD_SERVICE_NAME,$POD_SERVICE_NAME_HEADLESS,$NODE_NAME.$POD_SERVICE_NAME,$NODE_NAME.$POD_SERVICE_NAME_HEADLESS \
+          --ca-cert /usr/share/elasticsearch/config/transport-ca/tls.crt \
+          --ca-key /usr/share/elasticsearch/config/transport-ca/tls.key  \
+          --ca-pass "" \
+          --pass "" \
+          --out /usr/share/elasticsearch/config/transport-certs/keystore.p12
+%{ if length(remotecerts) > 0 ~}
+%{ for cert in remotecerts ~}
+        /usr/share/elasticsearch/jdk/bin/keytool \
+          -importcert \
+          -trustcacerts 
+          -noprompt \
+          -keystore /usr/share/elasticsearch/config/transport-certs/keystore.p12 \
+          -storepass "" \
+          -file /usr/share/elasticsearch/config/remote-certs/${cert}
+%{ endfor }
+%{ endif ~}
+    env:
+      - name: NODE_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.name
+      - name: POD_IP
+        valueFrom:
+          fieldRef:
+            fieldPath: status.podIP
+      - name: POD_SERVICE_NAME
+        value: "${nodePool}"
+      - name: POD_SERVICE_NAME_HEADLESS
+        value: "${nodePool}-headless"
+    volumeMounts:
+    - name: elastic-transport-certificates
+      mountPath: /usr/share/elasticsearch/config/transport-certs
+    - name: elastic-transport-ca
+      mountPath: /usr/share/elasticsearch/config/transport-ca
+    - name: elastic-remote-certs
+      mountPath: /usr/share/elasticsearch/config/remote-certs
+extraEnvs:
+  - name: ELASTIC_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: elastic-credentials
+        key: elastic
+secretMounts: 
+  - name: elastic-transport-ca
+    secretName: elastic-transport-certs
+    path: /usr/share/elasticsearch/config/ca
+    defaultMode: 0755
+  - name: elastic-https-certs
+    secretName: elastic-https-certs
+    path: /usr/share/elasticsearch/config/https-certs
+    defaultMode: 0755
+%{ if length(remotecerts) > 0 ~}
+  - name: elastic-remote-certs
+    secretName: elastic-remote-certs
+    path: /usr/share/elasticsearch/config/remote-certs
+    defaultMode: 0755
+%{ endif ~}
+%{ if lookup(addons, "authorizations", 0) != 0 ~}
+%{ for auth in addons.authorizations ~}
+%{ if auth.type == "saml" ~}
+  - name: elastic-${ auth.secret_name }
+    secretName: ${ auth.secret_name }
+    path: /usr/share/elasticsearch/config/saml/${ auth.secret_name }
+    defaultMode: 0755
+%{ endif ~}
+%{ endfor ~}
+%{ endif ~}
+keystore: %{ if length(plugins) == 0 } [] %{ endif }
+%{ if contains(plugins, "repository-s3") ~}
+  - secretName: minio-credentials
+%{ endif ~}
+%{ if contains(plugins, "repository-gcs") ~}
+  - secretName: gcs-credentials
+%{ endif ~}
+%{ if lookup(addons.notifications, "slack", 0) != 0 ~}
+  - secretName: slack-notification
+%{ endif ~}
+%{ if lookup(addons.notifications, "email", 0) != 0 ~}
+  - secretName: email-notification
+%{ endif ~}
+%{ if lookup(addons, "authorizations", 0) != 0 ~}
+%{ for auth in addons.authorizations ~}
+%{ if auth.type == "oidc" ~}
+  - secretName: ${ auth.secret_name }
+%{ endif ~}
+%{ endfor ~}
+%{ endif ~}
+protocol: https
+esConfig:
+  elasticsearch.yml: |
+    xpack.security.enabled: true
+    xpack.security.transport.ssl.enabled: true
+    xpack.security.transport.ssl.verification_mode : certificate
+    xpack.security.transport.ssl.keystore.path: /usr/share/elasticsearch/config/transport-certs/keystore.p12
+    xpack.security.transport.ssl.truststore.path: /usr/share/elasticsearch/config/transport-certs/keystore.p12
+    xpack.security.http.ssl.enabled: true
+    xpack.security.http.ssl.key: /usr/share/elasticsearch/config/https-certs/tls.key
+    xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/https-certs/tls.crt
+    xpack.security.http.ssl.certificate_authorities: /usr/share/elasticsearch/config/https-certs/ca.crt
+%{ if lookup(addons.notifications, "slack", 0) != 0 ~}
+${ slackNotification }
+%{ endif ~}
+%{ if lookup(addons.notifications, "email", 0) != 0 ~}
+${ emailNotification }
+%{ endif ~}
+%{ if lookup(addons, "authorizations", 0) != 0 ~}
+${ configAuth }
+%{ endif ~}

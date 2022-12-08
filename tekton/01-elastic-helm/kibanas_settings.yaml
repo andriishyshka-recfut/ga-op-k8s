@@ -1,0 +1,58 @@
+
+kibana1_settings:
+  kibana:
+    enabled: true
+    # cert_ttl: "143h"
+    name: kibana-lb-1
+    esName: "elastic"
+    namespace: "elastic"
+    kibanaVersion: "7.17.6"
+    oidc_provider:
+      enabled: "no"
+      oidc_realm_name: "google"
+    saml_provider:
+      enabled: "no"
+    xpack_security:
+      enabled: "yes"
+      vault_path: "secret/red/kibana"
+      secret_name: "xpack-security"      
+    gcs_enable: "no"
+    istio_gateway_fqdn: "k1.regemini.com"
+
+kibana2_settings:
+  kibana:
+    enabled: true
+    # cert_ttl: "143h"
+    name: kibana-lb-2
+    esName: "elastic"
+    namespace: "elastic"
+    kibanaVersion: "7.17.6"
+    oidc_provider:
+      enabled: "no"
+      oidc_realm_name: "google"
+    saml_provider:
+      enabled: "no"
+    xpack_security:
+      enabled: "yes"   
+      vault_path: "secret/red/kibana"         
+    gcs_enable: "no"
+    istio_gateway_fqdn: "k2.regemini.com"
+
+kibana3_settings:
+  kibana:
+    enabled: true
+    # cert_ttl: "143h"
+    name: kibana-lb-3
+    esName: "elastic"
+    namespace: "elastic"
+    kibanaVersion: "7.17.6"
+    oidc_provider:
+      enabled: "no"
+      oidc_realm_name: "google"
+    saml_provider:
+      enabled: "no"
+    xpack_security:
+      enabled: "yes"
+      vault_path: "secret/red/kibana"          
+    gcs_enable: "no"
+    istio_gateway_fqdn: "k3.regemini.com"
