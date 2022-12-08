@@ -1,0 +1,12 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: ${TOPIC_RFC_1123_NAME}
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3
+  topicName: ${TOPIC_NAME}
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 31540000000
