@@ -4,7 +4,7 @@ locals {
       namespace   = "elastic-helm",
       imageTag    = "7.17.7",
       clusterName = "elasticsearch",
-      remotecerts = [],
+      remotecerts = ["remote.ca.crt", "remote2.ca.crt"],
       plugins     = ["repository-s3"]
       addons = {
         notifications = {
