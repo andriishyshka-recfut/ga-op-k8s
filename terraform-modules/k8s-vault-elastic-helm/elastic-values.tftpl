@@ -1,5 +1,18 @@
 replicas: ${replicas}
+minimumMasterNodes: 1
+resources:
+  requests:
+    cpu: ${ resources.cpuReq }
+    memory: ${ resources.memReq }
+  limits:
+    cpu: ${ resources.cpuLimit }
+    memory: ${ resources.memLimit }
 esJavaOpts: ${esJavaOpts}
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: ${storage}
 roles:
   master: "${ lookup(roles, "master","false")}"
   ingest: "false"
@@ -20,6 +33,12 @@ tolerations:
     effect: NoExecute
 podAnnotations:
   "sidecar.istio.io/inject": "false"
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 200
+  periodSeconds: 10
+  successThreshold: 3
+  timeoutSeconds: 5
 extraVolumes:
   - name: elastic-plugins-local
     emptyDir: {}

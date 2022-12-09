@@ -25,17 +25,16 @@ locals {
 
 
 module "elastic7-elastic" {
-  source                       = "../../terraform-modules/k8s-vault-elastic"
-  ElasticSettings              = local.dataEs.elastic_settings
-  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
-  Cluster                      = var.Cluster
-  Color                        = var.Color
-  Settings                     = var.Settings
-  StoreEsPasswordInVault       = true
-  MinioAddress                 = var.Settings.clusters[var.Cluster].MinioAddress
-  BackupBucketName             = "es7"
-  BackupBucketBasePath         = "7"
-  OidcRedirectUri              = "k.t.regemini.io"
+  source                 = "../../terraform-modules/k8s-vault-elastic-helm"
+  ElasticSettings        = local.elasticSettings
+  Cluster                = var.Cluster
+  Color                  = var.Color
+  Settings               = var.Settings
+  StoreEsPasswordInVault = true
+  MinioAddress           = var.Settings.clusters[var.Cluster].MinioAddress
+  BackupBucketName       = "es7"
+  BackupBucketBasePath   = "7"
+  OidcRedirectUri        = "k.t.regemini.io"
 }
 
 

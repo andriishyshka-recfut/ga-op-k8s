@@ -3,8 +3,8 @@ locals {
 
   minioIntegrationCommand = <<EOT
   set -e
-  curl -k -X DELETE "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio"
-  curl -X PUT "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
+  curl -k -X DELETE "https://elastic:$ES_PASSWORD@${var.EsService}:9200/_snapshot/minio"
+  curl -X PUT "https://elastic:$ES_PASSWORD@${var.EsService}:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
 {
      "type": "s3",
       "settings": {
@@ -16,7 +16,7 @@ locals {
       }
   }
   '
-  curl -k -X GET "https://elastic:$ES_PASSWORD@${var.ElasticName}-es-http:9200/_cat/snapshots/minio"
+  curl -k -X GET "https://elastic:$ES_PASSWORD@${var.EsService}:9200/_cat/snapshots/minio"
 EOT
 }
 
@@ -44,7 +44,7 @@ resource "kubernetes_job" "minio_snapshot_storage" {
             name = "ES_PASSWORD"
             value_from {
               secret_key_ref {
-                name = "${var.ElasticName}-es-elastic-user"
+                name = var.EsCreds
                 key  = "elastic"
               }
             }

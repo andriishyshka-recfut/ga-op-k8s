@@ -59,14 +59,14 @@ resource "kubernetes_job" "es_restore" {
             name = "ES_PASSWORD"
             value_from {
               secret_key_ref {
-                name = "${var.ElasticName}-es-elastic-user"
+                name = var.EsCreds
                 key  = "elastic"
               }
             }
           }
           env {
             name  = "ES_HOST"
-            value = "${var.ElasticName}-es-http"
+            value = var.EsService
           }
         }
         restart_policy = "Never"
@@ -80,7 +80,7 @@ resource "kubernetes_job" "es_restore" {
     create = "70m"
     update = "70m"
   }
-  # depends_on = [
-  #   kubernetes_job.minio_snapshot_storage
-  # ]
+  depends_on = [
+    kubernetes_job.minio_snapshot_storage
+  ]
 }

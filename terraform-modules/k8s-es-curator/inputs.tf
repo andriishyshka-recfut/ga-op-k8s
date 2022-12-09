@@ -22,6 +22,10 @@ variable "BackupBucketName" {}
 
 variable "BackupBucketBasePath" {}
 
+variable "EsService" {}
+
+variable "EsCreds" {}
+
 locals {
   currentProject = var.Settings.gcpProject
 }
