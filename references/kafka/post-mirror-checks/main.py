@@ -18,12 +18,11 @@ FIELD_HIGH = 'high'
 FIELD_LAG = 'lag'
 FIELD_SIZE = 'size'
 
-
 UNKNOWN_GROUP = "<not associated>"
 SPECIAL_FIELDS = [FIELD_RETENTION_MS]
 
 EXCLUDED_TOPICS = ["__consumer_offsets", "mirrormaker2-cluster-offsets", "mirrormaker2-cluster-status",
-                   "mirrormaker2-cluster-configs", "mm2-offset-syncs.target.internal"]
+                   "mirrormaker2-cluster-configs", "mm2-offset-syncs.target.internal", "__strimzi_store_topic"]
 
 
 def print_state_comparison(src, tgt):
@@ -53,7 +52,8 @@ def print_state_comparison(src, tgt):
         if topic not in skip_topics:
 
             if src.get(topic).get(FIELD_RETENTION_MS) != tgt.get(topic).get(FIELD_RETENTION_MS):
-                print("Retention mismatch in topic {}: {} -> {}", topic, src.get(topic).get(FIELD_RETENTION_MS), tgt.get(topic).get(FIELD_RETENTION_MS))
+                print("Retention mismatch in topic {}: {} -> {}", topic, src.get(topic).get(FIELD_RETENTION_MS),
+                      tgt.get(topic).get(FIELD_RETENTION_MS))
                 retention_mismatch.update([topic, src.get(topic).get(FIELD_RETENTION_MS)])
 
             for grp_rec in topic_data.items():
@@ -105,14 +105,14 @@ def print_state_comparison(src, tgt):
                                     "./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets "
                                     "--group {} --topic {}:{} --to-offset {} --execute".format(
                                         group, topic, part_id, new_offset))
-
-                        if src_values.get(FIELD_HIGH) == src_values.get(FIELD_LOW) \
-                                or tgt_values.get(FIELD_LAG) > tgt_values.get(FIELD_SIZE) \
-                                or tgt_values.get(FIELD_LAG) < 0:
-                            offset_fix.append(
-                                "./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets "
-                                "--group {} --topic {}:{} --to-earliest --execute".format(
-                                    group, topic, part_id, new_offset))
+                        if group != UNKNOWN_GROUP:
+                            if src_values.get(FIELD_HIGH) == src_values.get(FIELD_LOW) \
+                                    or (tgt_values.get(FIELD_LAG) is not None and tgt_values.get(FIELD_LAG) > tgt_values.get(FIELD_SIZE) )\
+                                    or (tgt_values.get(FIELD_LAG) is not None and tgt_values.get(FIELD_LAG) < 0):
+                                offset_fix.append(
+                                    "./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets "
+                                    "--group {} --topic {}:{} --to-earliest --execute".format(
+                                        group, topic, part_id, new_offset))
 
                     except Exception as e:
                         print("failed to compare data for", topic, e)
@@ -151,7 +151,7 @@ def get_partition_size(topic_name: str, partition_key: int, consumer):
     partition_data.get(partition_key)[FIELD_SIZE] = partition_size
 
     if committed[0].offset != OFFSET_INVALID:
-        lag = "%d" % (high_offset - committed[0].offset)
+        lag = high_offset - committed[0].offset
         partition_data.get(partition_key)[FIELD_LAG] = lag
 
     return partition_data

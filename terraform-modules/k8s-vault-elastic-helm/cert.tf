@@ -3,14 +3,14 @@ resource "kubernetes_manifest" "certificate_elastic_es_cert" {
     "apiVersion" = "cert-manager.io/v1"
     "kind"       = "Certificate"
     "metadata" = {
-      "name"      = "${local.globalSettings.clusterName}-es-cert"
+      "name"      = "${local.globalSettings.clusterName}-coor"
       "namespace" = local.globalSettings.namespace
     }
     "spec" = {
-      "commonName" = "${local.globalSettings.clusterName}-es-http"
+      "commonName" = "${local.globalSettings.clusterName}-coor"
       "dnsNames" = [
-        "${local.globalSettings.clusterName}-es-http",
-        "${local.globalSettings.clusterName}-es-http.${local.globalSettings.namespace}.svc",
+        "${local.globalSettings.clusterName}-coor",
+        "${local.globalSettings.clusterName}-coor.${local.globalSettings.namespace}.svc",
       ]
       "issuerRef" = {
         "kind" = "ClusterIssuer"

@@ -13,7 +13,7 @@
 #     - name: path
 #       value: "k8s/tekton/03-logs-restore"
 #     - name: branch
-#       value: "\\#231-prod-dr-11-11-2022"
+#       value: "\\#240-sandbox-dr-08-12-22"
 #   timeout: 3h
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -34,7 +34,7 @@ spec:
         - name: path
           value: "k8s/tekton/03-logs-restore"
         - name: branch
-          value: "\\#231-prod-dr-11-11-2022"
+          value: "\\#240-sandbox-dr-08-12-22"
       timeout: 3h
 ---
 apiVersion: tekton.dev/v1beta1
