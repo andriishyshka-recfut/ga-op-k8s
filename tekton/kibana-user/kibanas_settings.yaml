@@ -6,7 +6,7 @@ kibana1_settings:
     name: kibana-lb-1
     esName: "elastic"
     namespace: "elastic"
-    kibanaVersion: "7.17.4"
+    kibanaVersion: "7.17.8"
     oidc_provider:
       enabled: "no"
       oidc_realm_name: "google"
@@ -26,7 +26,7 @@ kibana2_settings:
     name: kibana-lb-2
     esName: "elastic"
     namespace: "elastic"
-    kibanaVersion: "7.17.4"
+    kibanaVersion: "7.17.8"
     oidc_provider:
       enabled: "no"
       oidc_realm_name: "google"
@@ -45,7 +45,7 @@ kibana3_settings:
     name: kibana-lb-3
     esName: "elastic"
     namespace: "elastic"
-    kibanaVersion: "7.17.4"
+    kibanaVersion: "7.17.8"
     oidc_provider:
       enabled: "no"
       oidc_realm_name: "google"
