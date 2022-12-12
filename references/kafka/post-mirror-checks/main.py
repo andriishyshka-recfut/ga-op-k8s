@@ -95,6 +95,7 @@ def print_state_comparison(src, tgt):
                             epl_file.write("Topic: {} Group: {} Partition: {} L-Offset: {} H-Offset: {} "
                                            "Size: {} Lag: {}\n".format(topic, group, part_id, low, high, size, lag))
 
+                        new_offset_defined = False
                         if has_changed:
                             changed_items.append([topic, group, part_id, low, high, size, lag])
                             # epl_file.write("Topic: {} Group: {} Partition: {} L-Offset: {} H-Offset: {} "
@@ -105,10 +106,11 @@ def print_state_comparison(src, tgt):
                                     "./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets "
                                     "--group {} --topic {}:{} --to-offset {} --execute".format(
                                         group, topic, part_id, new_offset))
+                                new_offset_defined = True
                         if group != UNKNOWN_GROUP:
                             if src_values.get(FIELD_HIGH) == src_values.get(FIELD_LOW) \
-                                    or (tgt_values.get(FIELD_LAG) is not None and tgt_values.get(FIELD_LAG) > tgt_values.get(FIELD_SIZE) )\
-                                    or (tgt_values.get(FIELD_LAG) is not None and tgt_values.get(FIELD_LAG) < 0):
+                                    or (tgt_values.get(FIELD_LAG) is not None and tgt_values.get(FIELD_LAG) > tgt_values.get(FIELD_SIZE) and not new_offset_defined )\
+                                    or (tgt_values.get(FIELD_LAG) is not None and tgt_values.get(FIELD_LAG) < 0 and not new_offset_defined):
                                 offset_fix.append(
                                     "./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets "
                                     "--group {} --topic {}:{} --to-earliest --execute".format(
@@ -122,9 +124,16 @@ def print_state_comparison(src, tgt):
     if show_all:
         print("All changes in topics:")
         print(tabulate(changed_items, headers='firstrow', tablefmt='fancy_grid'))
+        tsv_content = tabulate(suspicious_items, tablefmt="tsv")
     else:
         print("Topics with lag/size inconsistency:")
         print(tabulate(suspicious_items, headers='firstrow', tablefmt='fancy_grid'))
+
+        tsv_content = tabulate(suspicious_items, tablefmt="tsv")
+
+    tsv_file = open("topics_stats.csv", "w")
+    tsv_file.write(tsv_content)
+    tsv_file.close()
 
     print("\n\nProposed offset fixes:")
     print("\n".join(str(x) for x in offset_fix))
