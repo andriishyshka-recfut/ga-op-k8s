@@ -4,6 +4,8 @@ replicas: 1
 command: "/usr/local/bin/docker-entrypoint"
 
 minio:
+  endpoint: https://minio.p.regemini.io
+  bucket: minio-logstash-pipelines-orbital-wording-233917
   user: backup
 
 elastic:
@@ -52,7 +54,7 @@ hostAliases: []
 #  - "bar.local"
 
 image: "harbor.t.regemini.io/sandbox/logstash-pipelines"
-imageTag: "8.4.3"
+imageTag: "7.17.7"
 imagePullPolicy: "IfNotPresent"
 imagePullSecrets:
   - name: harbor
@@ -68,10 +70,10 @@ logstashJavaOpts: "-Xmx1g -Xms1g"
 resources:
   requests:
     cpu: "100m"
-    memory: "1536Mi"
+    memory: "1200Mi"
   limits:
-    cpu: "1000m"
-    memory: "1536Mi"
+    cpu: "2000m"
+    memory: "2400Mi"
 
 persistence:
   enabled: true
