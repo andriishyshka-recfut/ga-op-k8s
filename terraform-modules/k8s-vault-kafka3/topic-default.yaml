@@ -2,7 +2,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: ${TOPIC_RFC_1123_NAME}
-  namespace: kafka
+  namespace: kafka3
   labels:
     strimzi.io/cluster: kafka3
   topicName: ${TOPIC_NAME}

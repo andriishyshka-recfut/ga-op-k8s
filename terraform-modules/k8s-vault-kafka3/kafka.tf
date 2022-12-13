@@ -15,7 +15,7 @@ resource "helm_release" "kafka3_cluster" {
   name      = "kafka3-cluster"
   chart     = "${path.module}/kafka"
   namespace = local.kafkaNs
-  wait      = true
+  wait      = true 
   atomic    = true
   set {
     name = "subdomain"
@@ -64,7 +64,7 @@ COMMAND
       kind           = "kafka"
       namespace      = local.kafkaNs
       apiVersion     = "kafka.strimzi.io/v1beta2"
-      statusPath     = "conditions[1].type"
+      statusPath     = "conditions[2].type"
       requiredStatus = "Ready"
     })
   }

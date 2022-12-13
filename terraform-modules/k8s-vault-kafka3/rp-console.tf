@@ -8,7 +8,7 @@ resource "helm_release" "red_panda_console" {
   timeout    = 900
   set {
     name  = "console.config.kafka.brokers[0]"
-    value = "kafka-cluster-kafka-bootstrap:9092"
+    value = "kafka3-cluster-kafka-bootstrap:9092"
   }
   depends_on = [
     helm_release.kafka3_cluster,
