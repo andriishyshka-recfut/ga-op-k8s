@@ -5,7 +5,7 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "elastic"
     namespace: "elastic"
-    appVersion: "7.17.7"
+    appVersion: "7.17.8"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
     apm:

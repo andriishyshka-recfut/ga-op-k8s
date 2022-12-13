@@ -20,7 +20,7 @@ spec:
           type: kubernetes
       modules:
       - module: system
-        period: 10s
+        period: 30s
         metricsets:
         - cpu
         - load
@@ -47,7 +47,7 @@ spec:
       #             filesystem:
       #               mount_point: ^/(sys|cgroup|proc|dev|etc|host|lib)($|/)
       - module: kubernetes
-        period: 10s
+        period: 30s
         node: ${NODE_NAME}
         hosts:
         - https://${NODE_NAME}:10250

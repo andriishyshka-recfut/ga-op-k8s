@@ -73,7 +73,7 @@ elastic_settings:
     name: kibana
     esName: "monitoring"
     namespace: "monitoring"
-    kibanaVersion: "7.17.6"
+    kibanaVersion: "7.17.8"
     oidc_provider:
       enabled: "yes"
       realm: "google"

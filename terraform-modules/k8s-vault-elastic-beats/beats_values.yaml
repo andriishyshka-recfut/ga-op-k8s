@@ -1,5 +1,5 @@
 
-beatsVersion: "7.17.6"
+beatsVersion: "7.17.8"
 namespace: "elastic"
 esName: "elastic"
 metricbeat:
