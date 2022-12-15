@@ -9,6 +9,7 @@ bitcointalk
 blackbiz
 blackbones
 blackhacker
+blackhatprotools
 blackhatworld
 blasthack
 breached
@@ -56,6 +57,7 @@ fssquad
 fuckav
 gerki
 hackingfather
+hackflag
 hackforums
 hacklife
 hadar
@@ -81,6 +83,7 @@ mpgh
 navigator
 nulled
 nulledbb
+nohide
 offensivecommunity
 ogusers
 omerta
