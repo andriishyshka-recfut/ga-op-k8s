@@ -1,5 +1,5 @@
 locals {
-  elasticSettings = {
+  ElasticSettings = {
     globalSettings = {
       namespace   = "elastic",
       imageTag    = "7.17.8",
@@ -25,7 +25,7 @@ locals {
     },
     nodePools = {
       master = {
-        replicas      = 1,
+        replicas      = 3,
         workloadsType = "data",
         roles         = { master = "true" },
         resources     = { cpuReq = "3", memReq = "4Gi", cpuLimit = "4", memLimit = "5Gi" },
@@ -41,7 +41,7 @@ locals {
         esJavaOpts    = "-Xms4g -Xmx4g"
       },
       coor = {
-        replicas      = 1,
+        replicas      = 2,
         workloadsType = "data",
         roles         = {},
         resources     = { cpuReq = "1", memReq = "4Gi", cpuLimit = "4", memLimit = "5Gi" },

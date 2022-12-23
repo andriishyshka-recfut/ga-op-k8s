@@ -1,9 +1,4 @@
 
-locals {
-  dataEs = yamldecode(file("elastic7_settings.yaml"))
-}
-
-
 # data "vault_generic_secret" "elastic7_transport_ca" {
 #   path = "secret/elasticsearch-admin/replication"
 # }
@@ -24,9 +19,9 @@ locals {
 # }
 
 
-module "elastic7-elastic" {
+module "elastic" {
   source                 = "../../terraform-modules/k8s-vault-elastic-helm"
-  ElasticSettings        = local.elasticSettings
+  ElasticSettings        = local.ElasticSettings
   Cluster                = var.Cluster
   Color                  = var.Color
   Settings               = var.Settings
@@ -38,36 +33,23 @@ module "elastic7-elastic" {
 }
 
 
-module "elastic7-kibana" {
-  source                       = "../../terraform-modules/k8s-vault-kibana"
-  ElasticSettings              = local.dataEs.kibana1_settings
-  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
-  Cluster                      = var.Cluster
-  Color                        = var.Color
-  Settings                     = var.Settings
+module "kibana" {
+  source          = "../../terraform-modules/k8s-vault-kibana-helm"
+  ElasticSettings = local.ElasticSettings
+  KibanaSettings  = local.KibanaSettings
+  Cluster         = var.Cluster
+  Color           = var.Color
+  Settings        = var.Settings
   depends_on = [
     module.es7-restore
   ]
 }
 
-# module "elastic7-kibana-2" {
-#   source                       = "../../terraform-modules/k8s-vault-kibana"
-#   ElasticSettings              = local.dataEs.kibana2_settings
-#   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
-#   Cluster                      = var.Cluster
-#   Color                        = var.Color
-#   Settings                     = var.Settings
-#   depends_on = [
-#     module.es7-restore
-#   ]
-# }
-
-/*
 module "elastic-beats" {
-  source   = "../../terraform-modules/k8s-vault-elastic-beats"
-  Cluster  = var.Cluster
-  Color    = var.Color
-  Settings = var.Settings
-  # depends_on = [module.elastic-elastic]
+  source     = "../../terraform-modules/k8s-vault-elastic-beats"
+  Cluster    = var.Cluster
+  Color      = var.Color
+  Settings   = var.Settings
+  depends_on = [module.kibana]
 }
-*/
+
