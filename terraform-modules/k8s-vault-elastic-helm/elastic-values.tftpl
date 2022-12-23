@@ -179,3 +179,5 @@ ${ emailNotification }
 %{ if lookup(addons, "authorizations", 0) != 0 ~}
 ${ configAuth }
 %{ endif ~}
+    xpack.security.audit.enabled: true
+    xpack.security.audit.logfile.events.include: "access_denied, access_granted, anonymous_access_denied, authentication_success, authentication_failed"

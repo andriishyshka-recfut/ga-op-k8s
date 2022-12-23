@@ -36,10 +36,11 @@ locals {
   saml_list  = { for name, value in local.auth_list : name => value if value.type == "saml" }
   configAuth = <<EOF
     xpack.security.authc.token.enabled: true
+    xpack.security.authc.realms.native.basic1.order: 1
 %{for auth_key, auth in local.auth_list~}
 %{if auth.type == "oidc"~}
     xpack.security.authc.realms.oidc.${auth.oidc_realm_name}:
-      order: ${index(keys(local.auth_list), auth_key) + 3}
+      order: ${index(keys(local.auth_list), auth_key) + 2}
       rp.response_type: code
       rp.redirect_uri: https://${var.OidcRedirectUri}/api/security/oidc/callback
       op.issuer: https://accounts.google.com
@@ -53,8 +54,8 @@ locals {
         - profile
       rp.client_id: ${data.vault_generic_secret.oidc[auth].data.oidc_client_id}
 %{else~}
-    xpack.security.authc.realms.saml.gsuite:
-      order: ${index(keys(local.auth_list), auth_key) + 3}
+    xpack.security.authc.realms.saml.${auth.saml_realm_name}:
+      order: ${index(keys(local.auth_list), auth_key) + 2}
       attributes.groups: groups
       attributes.principal: nameid
       idp.entity_id: https://accounts.google.com/o/saml2?idpid=C04a7ynfq

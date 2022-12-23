@@ -1,8 +1,8 @@
 locals {
   elasticSettings = {
     globalSettings = {
-      namespace   = "elastic-helm",
-      imageTag    = "7.17.7",
+      namespace   = "elastic",
+      imageTag    = "7.17.8",
       clusterName = "elasticsearch",
       remotecerts = ["remote.ca.crt", "remote2.ca.crt"],
       plugins     = ["repository-s3"]

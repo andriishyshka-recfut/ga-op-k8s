@@ -1,0 +1,79 @@
+imageTag: ${imageTag}
+elasticsearchHosts: "https://elasticsearch-coor.elastic.svc:9200"
+protocol: http
+secretMounts: 
+  - name: elastic-https-certs
+    secretName: elastic-https-certs
+    path: /usr/share/kibana/config/https-certs
+    defaultMode: 0555
+podAnnotations:
+  "sidecar.istio.io/inject": "true"
+envFrom:
+  - secretRef:
+      name: kibana-credentials
+extraEnvs:
+  - name: "SERVER_NAME"
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+replicas: ${replicas}
+fullnameOverride: kb-${kibana_name}
+kibanaConfig:
+  kibana.yml: |
+    elasticsearch:
+      requestTimeout: 10h
+      ssl:
+        certificateAuthorities: /usr/share/kibana/config/https-certs/ca.crt
+        verificationMode: certificate
+      username: kibana_system
+      password: '$${KIBANA_PASSWORD}'
+    monitoring:
+      kibana:
+        collection:
+          enabled: "false"
+      ui:
+        container:
+          elasticsearch:
+            enabled: "true"
+    xpack:
+      license_management:
+        ui:
+          enabled: false
+      reporting:
+        capture:
+          browser:
+            chromium:
+              disableSandbox: "true"
+        encryptionKey: ${reporting_encryptionkey}
+        index: .reporting-re
+        roles:
+          enabled: false
+      encryptedSavedObjects:
+        encryptionKey: ${encryptedsavedobjects_encryptionkey}
+      security:
+        encryptionKey: ${security_encryptionkey}
+        session:
+          idleTimeout: "1d"
+          lifespan: "30d"
+        audit:
+          enabled: "true"
+        authc:
+          providers:
+            basic:
+              basic1:
+                order: 1
+%{ if length(authorizations) > 0 ~}
+%{ for auth_key, auth in authorizations ~}
+            ${auth.type}:
+              ${auth_key}:
+                order: ${index(keys(authorizations), auth_key) + 2}
+                realm: ${auth.realm}
+%{ endfor ~}
+%{ endif ~}
+    server:
+      host: "0.0.0.0"
+      publicBaseUrl: ${publicBaseUrl}
+      ssl:
+        supportedProtocols:
+        - TLSv1.2
+        - TLSv1.3

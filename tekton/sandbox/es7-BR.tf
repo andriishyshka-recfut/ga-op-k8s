@@ -14,7 +14,7 @@ module "es7-backup" {
     kubernetes = kubernetes.kubernetes-inactive
   }
   depends_on = [
-    module.elastic7-elastic
+    module.elastic
   ]
 }
 
