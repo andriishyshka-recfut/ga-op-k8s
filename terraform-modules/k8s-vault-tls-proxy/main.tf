@@ -105,7 +105,7 @@ resource "kubernetes_manifest" "vault_certmanager" {
 resource "tls_private_key" "clients_rsa_key" {
   for_each  = nonsensitive(local.projects_setup_csr)
   algorithm = "RSA"
-  rsa_bits  = 4096
+  rsa_bits  = lookup(each.value, "rsa_length", 4096)
 }
 
 resource "tls_cert_request" "clients_csr" {

@@ -6,7 +6,7 @@ maintainers:
     name: Elastic
 name: elasticsearch
 version: 7.17.3
-appVersion: 7.17.3
+appVersion: 7.17.8
 sources:
   - https://github.com/elastic/elasticsearch
 icon: https://helm.elastic.co/icons/elasticsearch.png
