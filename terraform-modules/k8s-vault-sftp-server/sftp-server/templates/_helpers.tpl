@@ -49,14 +49,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "sftp-server.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "sftp-server.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "sftp-server.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
