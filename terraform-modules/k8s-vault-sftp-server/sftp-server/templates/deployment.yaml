@@ -1,0 +1,85 @@
+{{- $fullName := include "sftp-server.fullname" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $fullName | quote }}
+  labels:
+    app: {{ $fullName | quote }}
+    {{- include "sftp-server.labels" . | nindent 4 }}
+spec:
+  progressDeadlineSeconds: {{ .Values.progressDeadlineSeconds }}
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      app: {{ $fullName | quote }}
+      {{- include "sftp-server.selectorLabels" . | nindent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: {{ .Values.istioInjection | quote }}
+      labels:
+        app: {{ $fullName | quote }}
+        {{- include "sftp-server.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: {{ $fullName | quote }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+          volumeMounts:
+            - mountPath: /etc/sftp/users.conf
+              name: sftp-users
+              readOnly: true
+              subPath: users_conf
+            - mountPath: /etc/ssh/sshd_config
+              name: sftp-sshd
+              readOnly: true
+              subPath: sshd_config
+          {{- range $key, $value := .Values.keys }}
+          {{ $parts := split ":" ($value | replace "\"" "") }}
+            - mountPath: /home/{{ $parts._0 }}/.ssh/keys/
+              name: sftp-{{ $parts._0 }}-key
+              readOnly: true
+          {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: {{ $fullName }}-sshd-config
+          name: sftp-sshd
+        - name: sftp-users
+          secret:
+            defaultMode: 420
+            items:
+              - key: users_conf
+                path: users_conf
+            secretName: {{ $fullName }}-users-secret
+      {{- range $key, $value := .Values.keys }}
+      {{ $parts := split ":" ($value | replace "\"" "") }}
+        - name: sftp-{{ $parts._0 }}-key
+          secret:
+            defaultMode: 420
+            items:
+              - key: {{ $parts._0 }}
+                path: {{ $parts._0 }}
+            secretName: {{ $fullName }}-keys-secret
+      {{- end }}

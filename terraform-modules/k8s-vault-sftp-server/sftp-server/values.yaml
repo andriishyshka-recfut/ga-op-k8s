@@ -1,0 +1,48 @@
+# Default values for sftp-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+keys: {}
+users: {}
+
+replicaCount: 1
+
+labels: {}
+
+image:
+  repository: atmoz/sftp
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+nameOverride:
+fullnameOverride:
+
+rollingUpdate:
+  maxSurge: 25%
+  maxUnavailable: 25%
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 22
+  targetPort: 22
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 400m
+    memory: 512Mi
+
+progressDeadlineSeconds: 600
+revisionHistoryLimit: 5
+istioInjection: false
