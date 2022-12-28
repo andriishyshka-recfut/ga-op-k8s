@@ -29,7 +29,6 @@ echo
 foxtrot
 gemini
 golf
-hadar
 hidatsa
 juliet
 kentaurus

@@ -1,17 +1,18 @@
+
 terraform {
   required_providers {
     kubectl = {
       source  = "registry.terraform.io/gavinbunney/kubectl"
-      version = ">= 1.10.0"
+      version = ">= 1.14.0"
     }
     grafana = {
       source  = "registry.terraform.io/grafana/grafana"
-      version = ">= 1.25.0"
+      version = ">= 1.32.0"
     }
   }
 }
 
-provider "grafana" {
+provider "grafana" {  
   alias                  = "base"
   url                    = local.url
   auth                   = "${local.grafanaUsername}:${local.grafanaPassword}"
@@ -26,7 +27,7 @@ resource "grafana_organization" "elastic" {
   viewers  = local.grafanaViewers
 }
 
-provider "grafana" {
+provider "grafana" { 
   alias                  = "elastic"
   url                    = local.url
   auth                   = "${local.grafanaUsername}:${local.grafanaPassword}"

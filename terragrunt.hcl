@@ -85,7 +85,7 @@ terraform {
   required_providers {
     kubectl = {
       source  = "registry.terraform.io/gavinbunney/kubectl"
-      version = ">= 1.10.0"
+      version = ">= 1.14.0"
     }
     flux = {
       source  = "registry.terraform.io/fluxcd/flux"
@@ -93,7 +93,7 @@ terraform {
     }
     grafana = {
       source  = "grafana/grafana"
-      version = ">= 1.24.0"
+      version = ">= 1.32.0"
     }
   }
 }

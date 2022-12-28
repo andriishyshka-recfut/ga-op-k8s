@@ -1,4 +1,4 @@
-module "grafana-clients" {
+module "grafana" {
   source   = "../../terraform-modules/k8s-vault-grafana"
   Settings = var.Settings
   Cluster  = var.Cluster

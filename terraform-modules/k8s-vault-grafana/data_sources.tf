@@ -15,15 +15,15 @@ resource "grafana_data_source" "dome" {
   access_mode         = "proxy"
   database_name       = "dome-${element(local.index_dome, count.index)}*"
   is_default          = false
-  json_data {
-    time_field                    = "@timestamp"
-    es_version                    = "7.17.0"
-    max_concurrent_shard_requests = "256"
-    time_interval                 = "10s"
-  }
-  secure_json_data {
-    basic_auth_password = local.elasticPassword
-  }
+  json_data_encoded = jsonencode({
+    timeField      = "@timestamp"
+    esVersion      = "7.17.0"
+    maxConcurrentShardRequests = 256
+    timeInterval   = "10s"
+  })
+  secure_json_data_encoded = jsonencode({
+    basicAuthPassword = local.elasticPassword
+  })
 }
 
 resource "grafana_data_source" "minion" {
@@ -37,15 +37,15 @@ resource "grafana_data_source" "minion" {
   access_mode         = "proxy"
   database_name       = "${element(local.index_minion, count.index)}*"
   is_default          = false
-  json_data {
-    time_field                    = "timeStampLastSeen"
-    es_version                    = "7.17.0"
-    max_concurrent_shard_requests = "256"
-    time_interval                 = "10s"
-  }
-  secure_json_data {
-    basic_auth_password = local.elasticPassword
-  }
+  json_data_encoded = jsonencode({
+    timeField      = "timeStampLastSeen"
+    esVersion      = "7.17.0"
+    maxConcurrentShardRequests = 256
+    timeInterval   = "10s"
+  })
+  secure_json_data_encoded = jsonencode({
+    basicAuthPassword = local.elasticPassword
+  })
 }
 
 resource "grafana_data_source" "artifact" {
@@ -59,15 +59,15 @@ resource "grafana_data_source" "artifact" {
   access_mode         = "proxy"
   database_name       = "${element(local.index_artifact, count.index)}*"
   is_default          = false
-  json_data {
-    time_field                    = "@timestamp"
-    es_version                    = "7.17.0"
-    max_concurrent_shard_requests = "256"
-    time_interval                 = "10s"
-  }
-  secure_json_data {
-    basic_auth_password = local.elasticPassword
-  }
+  json_data_encoded = jsonencode({
+    timeField      = "@timestamp"
+    esVersion      = "7.17.0"
+    maxConcurrentShardRequests = 256
+    timeInterval   = "10s"
+  })
+  secure_json_data_encoded = jsonencode({
+    basicAuthPassword = local.elasticPassword
+  })
 }
 
 resource "grafana_data_source" "logstash" {
@@ -80,14 +80,13 @@ resource "grafana_data_source" "logstash" {
   access_mode         = "proxy"
   database_name       = "logstash"
   is_default          = false
-  json_data {
-    time_field = "@timestamp"
-    # interval                      = "Daily"
-    es_version                    = "7.17.0"
-    max_concurrent_shard_requests = "256"
-    time_interval                 = "10s"
-  }
-  secure_json_data {
-    basic_auth_password = local.elasticPassword
-  }
+  json_data_encoded = jsonencode({
+    timeField      = "@timestamp"
+    esVersion      = "7.17.0"
+    maxConcurrentShardRequests = 256
+    timeInterval   = "10s"
+  })
+  secure_json_data_encoded = jsonencode({
+    basicAuthPassword = local.elasticPassword
+  })
 }
