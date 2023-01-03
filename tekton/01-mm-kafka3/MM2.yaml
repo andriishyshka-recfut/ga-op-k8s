@@ -57,7 +57,7 @@ spec:
       config:
         producer.enable.idempotence: true
         producer.max.in.flight.requests.per.connection: 1
-        producr.acks: all
+        producer.acks: all
         producer.retries: 2147483647
         offset-syncs.topic.replication.factor: 2
         offset-syncs.topic.location: "target"
