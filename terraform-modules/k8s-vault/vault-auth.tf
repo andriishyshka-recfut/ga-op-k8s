@@ -40,7 +40,7 @@ resource "vault_kubernetes_auth_backend_role" "role_tekton" {
   backend                          = "k8s-${var.Cluster}-${var.Color}"
   role_name                        = "tekton"
   bound_service_account_names      = ["default"]
-  bound_service_account_namespaces = ["tekton-pipelines"]
+  bound_service_account_namespaces = ["tekton-pipelines", "tekton-tasks"]
   token_ttl                        = 0
   token_policies                   = ["tekton"]
   depends_on = [

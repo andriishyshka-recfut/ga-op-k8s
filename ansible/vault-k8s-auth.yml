@@ -117,7 +117,7 @@
         name: "tekton"
         policies: ["tekton"]
         bound_service_account_names: ["default"]
-        bound_service_account_namespaces: ["tekton-pipelines"]
+        bound_service_account_namespaces: ["tekton-pipelines", "tekton-tasks"]
         mount_point: "k8s-{{ cluster_name }}-{{ cluster_color }}"
 
     - name: Set k8s creds
