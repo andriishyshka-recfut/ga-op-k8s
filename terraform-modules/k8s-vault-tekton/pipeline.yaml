@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: 01-workloads
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   workspaces:
   - name: ws
@@ -170,7 +170,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: 02-data-migration
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   workspaces:
   - name: ws
@@ -204,7 +204,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: 03-post-switching
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   workspaces:
   - name: ws
@@ -284,7 +284,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: 04-op
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   workspaces:
   - name: ws

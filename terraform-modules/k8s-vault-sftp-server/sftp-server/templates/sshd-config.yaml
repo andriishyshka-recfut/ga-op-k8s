@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "sftp-server.fullname" . }}-sshd-config
+data:
+  sshd_config: |
+    Protocol 2
+    HostKey /etc/ssh/ssh_host_ed25519_key
+    HostKey /etc/ssh/ssh_host_rsa_key
+    UseDNS no
+    PermitRootLogin no
+    X11Forwarding no
+    AllowTcpForwarding no
+    Subsystem sftp internal-sftp
+    ForceCommand internal-sftp
+    ChrootDirectory %h
+    {{- $user_list := join "," .Values.users | replace "\"" "" }}
+    {{- range $user, $pass := split "," $user_list }}
+    {{- $auth_pass := split ":" $pass }}
+    Match User {{ $auth_pass._0 }}
+    {{- if $auth_pass._1 }}
+      AuthenticationMethods publickey,password
+    {{- else }}
+      AuthenticationMethods publickey
+    {{- end }} 
+    {{- end }}
