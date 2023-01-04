@@ -4,6 +4,10 @@ resource "null_resource" "deploy_tekton" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<COMMAND
     set -x
+    kubectl --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+    create namespace ${local.tektonNs} && \
     kubectl apply --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \

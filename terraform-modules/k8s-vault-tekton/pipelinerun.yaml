@@ -3,7 +3,7 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   name: workloads
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   # timeouts:
   #   pipeline: "24h0m0s"
