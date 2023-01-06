@@ -11,9 +11,10 @@ data "kubernetes_secret" "elastic_pass" {
 }
 
 resource "kubernetes_secret" "kibana_creds" {
+  for_each = local.kibanaSettings
   metadata {
     name      = "kibana-credentials"
-    namespace = local.kibanaSettings.namespace
+    namespace = each.value.namespace
   }
   data = {
     "KIBANA_PASSWORD" = random_password.kibana_password.result
@@ -21,9 +22,10 @@ resource "kubernetes_secret" "kibana_creds" {
 }
 
 resource "kubernetes_secret" "kibana_elastic_user" {
+  for_each = local.kibanaSettings
   metadata {
     name      = "kibana-elastic-probe"
-    namespace = local.kibanaSettings.namespace
+    namespace = each.value.namespace
   }
 
   data = {
