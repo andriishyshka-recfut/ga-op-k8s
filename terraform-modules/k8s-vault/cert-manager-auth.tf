@@ -76,6 +76,20 @@ data "kubernetes_service_account" "cert_manager" {
     name      = "${var.Cluster}-cert-manager"
     namespace = "kube-system"
   }
+  depends_on = [
+    kubernetes_secret_v1.cert_manager
+  ]
+}
+
+resource "kubernetes_secret_v1" "cert_manager" {
+  metadata {
+    namespace = "kube-system"
+    name = "sa-${var.Cluster}-cert-manager"
+    annotations = {
+      "kubernetes.io/service-account.name" = "${var.Cluster}-cert-manager"
+    }
+  }
+  type = "kubernetes.io/service-account-token"
 }
 
 resource "helm_release" "vault_certmanager" {
@@ -90,7 +104,7 @@ resource "helm_release" "vault_certmanager" {
   }
   set {
     name  = "secretName"
-    value = data.kubernetes_service_account.cert_manager.default_secret_name
+    value = "sa-${var.Cluster}-cert-manager"
   }
   set {
     name  = "vaultAddress"

@@ -1,5 +1,5 @@
-resource "kubernetes_service_account" "k8s_cluster_admin" {
 
+resource "kubernetes_service_account" "k8s_cluster_admin" {
   metadata {
     name      = "k8s-admin"
     namespace = "kube-system"
@@ -22,12 +22,29 @@ resource "kubernetes_cluster_role_binding" "cluster_admin_role_binding" {
   }
 }
 
+resource "kubernetes_secret_v1" "cluster_admin_creds" {
+  metadata {
+    namespace = "kube-system"
+    name = "sa-k8s-admin"
+    annotations = {
+      "kubernetes.io/service-account.name" = "k8s-admin"
+    }
+  }
+  type = "kubernetes.io/service-account-token"
+}
+
+
 data "kubernetes_secret" "cluster_admin_creds" {
   metadata {
-    name      = kubernetes_service_account.k8s_cluster_admin.default_secret_name
+    name      = "sa-k8s-admin"
     namespace = "kube-system"
   }
+  depends_on = [
+    kubernetes_secret_v1.cluster_admin_creds
+  ]
+
 }
+
 
 resource "kubernetes_service_account" "vault" {
   metadata {
@@ -36,13 +53,25 @@ resource "kubernetes_service_account" "vault" {
   }
 }
 
+resource "kubernetes_secret_v1" "vault" {
+  metadata {
+    namespace = "kube-system"
+    name = "sa-vault"
+    annotations = {
+      "kubernetes.io/service-account.name" = "vault"
+    }
+  }
+  type = "kubernetes.io/service-account-token"
+}
+
 data "kubernetes_secret" "vault" {
   metadata {
-    name      = kubernetes_service_account.vault.default_secret_name
+    name      = "sa-vault"
     namespace = "kube-system"
   }
   depends_on = [
-    kubernetes_service_account.vault
+    kubernetes_service_account.vault,
+    kubernetes_secret_v1.vault
   ]
 }
 
@@ -71,6 +100,7 @@ data "kubernetes_service_account" "vault" {
     namespace = "kube-system"
   }
   depends_on = [
-    kubernetes_service_account.vault
+    kubernetes_service_account.vault,
+    kubernetes_secret_v1.vault
   ]
 }

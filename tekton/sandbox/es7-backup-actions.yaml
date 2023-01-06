@@ -13,7 +13,7 @@ actions:
           # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
         name: elastic7-dr-%Y%m%d
         ignore_unavailable: False
-        include_global_state: False
+        include_global_state: True
         partial: False
         wait_for_completion: True
         skip_repo_fs_check: False

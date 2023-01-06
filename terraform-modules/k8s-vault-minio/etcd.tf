@@ -2,10 +2,12 @@
 resource "helm_release" "etcd" {
   name              = "etcd"
   chart             = "etcd"
-  repository        = "https://charts.bitnami.com/bitnami"
+  repository        = "https://harbor.t.regemini.io/chartrepo/op"
   version           = "6.10.8"
   namespace         = local.minioNs
   dependency_update = "true"
+  repository_username = data.vault_generic_secret.harbor_token.data.user
+  repository_password = data.vault_generic_secret.harbor_token.data.password
 
   set {
     name  = "persistence.size"
@@ -35,4 +37,11 @@ resource "helm_release" "etcd" {
     name  = "podAnnotations.sidecar\\.istio\\.io/inject"
     value = " false"
   }
+  depends_on = [
+    data.vault_generic_secret.harbor_token
+  ]
+}
+
+data "vault_generic_secret" "harbor_token" {
+  path = "secret/goharbor/docker_login"
 }

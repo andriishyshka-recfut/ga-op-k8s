@@ -12,7 +12,6 @@ resource "null_resource" "deploy_tekton" {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      -f https://storage.googleapis.com/tekton-releases/operator/latest/release.yaml && sleep 30 && \
-     delete configmap cluster-settings || true \
      kubectl --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
@@ -136,3 +135,4 @@ COMMAND
     null_resource.harbor_creds
   ]
 }
+

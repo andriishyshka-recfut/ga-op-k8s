@@ -1,3 +1,4 @@
+/*
 resource "kubernetes_config_map" "haproxy_elastic_configmap" {
   for_each = var.ElasticProxyNS
   metadata {
@@ -106,7 +107,7 @@ resource "kubernetes_deployment" "elastic_internal_proxy" {
     }
   }
 }
-
+/*
 resource "kubernetes_service" "elastic_internal_proxy" {
   for_each = var.ElasticProxyNS
   metadata {
@@ -123,3 +124,4 @@ resource "kubernetes_service" "elastic_internal_proxy" {
     }
   }
 }
+*/
