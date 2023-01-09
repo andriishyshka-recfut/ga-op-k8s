@@ -8,9 +8,9 @@ actions:
       ignore_empty_list: True
       disable_action: False
     filters:
-    - filtertype: pattern
-      kind: prefix
-      value: .kiabana
+      - filtertype: pattern
+        kind: regex
+        value: '^\..*'
   2:
     action: restore
     description: "Restore all indices in the most recent snapshot with state SUCCESS"
@@ -18,7 +18,8 @@ actions:
       repository: "minio"
       name:
       indices:
-      - .kibana_7.*
+      - .*
+      - -.monitoring*
       wait_for_completion: False
       include_global_state: True
       # wait_interval: 20

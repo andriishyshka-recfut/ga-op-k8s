@@ -5,7 +5,9 @@ resources:
     cpu: ${ resources.cpuReq }
     memory: ${ resources.memReq }
   limits:
+%{ if lookup(resources,"cpuLimit", false) != false ~}
     cpu: ${ resources.cpuLimit }
+%{ endif ~}
     memory: ${ resources.memLimit }
 esJavaOpts: ${esJavaOpts}
 volumeClaimTemplate:

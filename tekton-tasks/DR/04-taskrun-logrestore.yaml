@@ -2,7 +2,7 @@
 # kind: TaskRun
 # metadata:
 #   generateName: es-log-restore-
-#   namespace: tekton-pipelines
+#   namespace: tekton-tasks
 # spec:
 #   taskRef:
 #     name: tg-run
@@ -19,7 +19,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: 4-logs-br
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   workspaces:
   - name: ws
@@ -34,14 +34,14 @@ spec:
         - name: path
           value: "k8s/tekton/03-logs-restore"
         - name: branch
-          value: "master"
+          value: "\\#254-prod-dr-06-01-2023"
       timeout: 3h
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   name: monitorings-logs-br
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   timeouts:
     pipeline: "6h0m0s"
