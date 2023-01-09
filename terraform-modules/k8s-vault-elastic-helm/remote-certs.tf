@@ -1,10 +1,10 @@
 data "vault_generic_secret" "remote-certs" {
-  count = lookup(local.globalSettings, "license", 0) != 0 ? 1 : 0
+  count = length(local.globalSettings.remotecerts) > 0 ? 1 : 0
   path  = "secret/elasticsearch-admin/remote-certs"
 }
 
 resource "kubernetes_secret" "remote-certs" {
-  count = lookup(local.globalSettings, "license", 0) != 0 ? 1 : 0
+  count = length(local.globalSettings.remotecerts) > 0 ? 1 : 0
   metadata {
     name      = "elastic-remote-certs"
     namespace = local.globalSettings.namespace

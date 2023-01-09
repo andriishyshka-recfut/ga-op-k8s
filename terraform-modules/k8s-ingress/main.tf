@@ -100,7 +100,7 @@ resource "kubernetes_manifest" "ingress_virtualservice" {
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
-    "metadata"   = {
+    "metadata" = {
       "name"      = "${each.key}-virtualservice"
       "namespace" = each.value.namespace
     }
@@ -109,7 +109,7 @@ resource "kubernetes_manifest" "ingress_virtualservice" {
         lookup(each.value, "ingressgateway", false) != false ? "istio-ingress/${each.key}-${split("-", each.value.ingressgateway)[1]}-gateway" : "istio-ingress/${each.key}-wg-gateway",
       ]
       "hosts" = each.value.domain
-      "http"  = [
+      "http" = [
         {
           "match" = [
             {
@@ -139,7 +139,7 @@ resource "kubernetes_manifest" "ingress_virtualservice_redirect" {
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
-    "metadata"   = {
+    "metadata" = {
       "name"      = "${each.key}-virtualservice"
       "namespace" = each.value.namespace
     }
@@ -148,7 +148,7 @@ resource "kubernetes_manifest" "ingress_virtualservice_redirect" {
         lookup(each.value, "ingressgateway", false) != false ? "istio-ingress/${each.key}-${split("-", each.value.ingressgateway)[1]}-gateway" : "istio-ingress/${each.key}-wg-gateway",
       ]
       "hosts" = each.value.domain
-      "http"  = [
+      "http" = [
         {
           "match" = [
             {
