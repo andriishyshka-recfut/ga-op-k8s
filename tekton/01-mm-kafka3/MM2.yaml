@@ -49,8 +49,7 @@ spec:
   mirrors:
   - sourceCluster: "source"
     targetCluster: "target"
-    topicsPattern: "artifact|checker.*|crypto.*|mage.*|maid.*|dome.*|minion.*|syncmage.*|telegram.*|testcart.*|urlscan.*|upsert.*|whirl.*"
-    topicsBlacklistPattern: "dome[.]+.*[.]+.*|minion[.]+.*[.]+.*"
+    topicsPattern: "artifact|checker.*|crypto.*|mage.*|maid.*|dome.*|minion.*|syncmage.*|telegram.*|testcart.*|upsertmage.*|urlscan.*|upsert.*|whirl.*"
     groupsPattern: ".*"
     sourceConnector:
       tasksMax: 40
