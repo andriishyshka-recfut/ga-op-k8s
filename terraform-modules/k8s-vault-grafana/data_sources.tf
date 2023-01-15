@@ -9,7 +9,7 @@ resource "grafana_data_source" "dome" {
   count               = length(local.index_dome)
   type                = "elasticsearch"
   name                = "dome-${element(local.index_dome, count.index)}"
-  url                 = "http://elasticsearch-coor.elastic.svc:9200"
+  url                 = "http://red-coor.elastic.svc:9200"
   basic_auth_enabled  = "true"
   basic_auth_username = local.elasticUsername
   access_mode         = "proxy"
@@ -31,7 +31,7 @@ resource "grafana_data_source" "minion" {
   count               = length(local.index_minion)
   type                = "elasticsearch"
   name                = "minion-${element(local.index_minion, count.index)}"
-  url                 = "http://elasticsearch-coor.elastic.svc:9200"
+  url                 = "http://red-coor.elastic.svc:9200"
   basic_auth_enabled  = "true"
   basic_auth_username = local.elasticUsername
   access_mode         = "proxy"
@@ -53,7 +53,7 @@ resource "grafana_data_source" "artifact" {
   count               = length(local.index_artifact)
   type                = "elasticsearch"
   name                = "artifact-${element(local.index_artifact, count.index)}"
-  url                 = "http://elasticsearch-coor.elastic.svc:9200"
+  url                 = "http://red-coor.elastic.svc:9200"
   basic_auth_enabled  = "true"
   basic_auth_username = local.elasticUsername
   access_mode         = "proxy"
@@ -74,7 +74,7 @@ resource "grafana_data_source" "logstash" {
   provider            = grafana.elastic
   type                = "elasticsearch"
   name                = "logstash"
-  url                 = "http://elasticsearch-coor.elastic.svc:9200"
+  url                 = "http://red-coor.elastic.svc:9200"
   basic_auth_enabled  = "true"
   basic_auth_username = local.elasticUsername
   access_mode         = "proxy"
