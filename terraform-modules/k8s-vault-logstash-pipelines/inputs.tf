@@ -7,7 +7,7 @@ locals {
   minio_user     = "backup"
   minio_endpoint = "https://minio.p.regemini.io"
   minio_bucket   = "minio-logstash-pipelines-orbital-wording-233917"
-  es_host        = "https://${local.namespace}-es-http.${local.namespace}.svc:9200"
+  es_host        = "https://red-coor.${local.namespace}.svc:9200"
   pipeline_id    = "testing"
   poll_interval  = "5s"
 
