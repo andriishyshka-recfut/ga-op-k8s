@@ -59,9 +59,7 @@ spec:
         producer.acks: all
         producer.retries: 2147483647
         offset-syncs.topic.replication.factor: 2
-        offset-syncs.topic.location: "target"
         sync.topic.acls.enabled: "false"
-        sync.group.offsets.enabled: "true"
         replication.policy.separator: ""
         replication.policy.class: "io.strimzi.kafka.connect.mirror.IdentityReplicationPolicy"
     heartbeatConnector:
