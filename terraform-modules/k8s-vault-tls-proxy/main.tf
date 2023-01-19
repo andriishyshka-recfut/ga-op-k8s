@@ -68,12 +68,6 @@ resource "null_resource" "pki_installed" {
   ]
 }
 
-data "kubernetes_service_account" "cm_sa" {
-  metadata {
-    name      = "${var.Cluster}-cert-manager"
-    namespace = "kube-system"
-  }
-}
 
 resource "kubernetes_manifest" "vault_certmanager" {
   for_each = local.projects
@@ -91,7 +85,7 @@ resource "kubernetes_manifest" "vault_certmanager" {
             "role"      = "cert-manager"
             "secretRef" = {
               "key"  = "token"
-              "name" = data.kubernetes_service_account.cm_sa.default_secret_name
+              "name" = "sa-${var.Cluster}-cert-manager"
             }
           }
         }
