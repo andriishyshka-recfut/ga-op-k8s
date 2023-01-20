@@ -11,7 +11,7 @@ elasticsearch:
     [query_urlscan_public]
     QueryJson = {"size": 0,"query":{"bool": {"filter":[{"bool":{"filter":[{"bool":{"should":[{"match_phrase":{"kubernetes.container.name":"urlscan-public"}}],"minimum_should_match":1}},{"bool":{"should":[{"match":{"json.action":"PREP"}}],"minimum_should_match":1}}]}},{"range":{"@timestamp":{"gte":"now-24h"}}}]}}}
     [query_urlscan_private]
-    QueryJson = {"size": 0,"query":{"bool":{"filter":[{"bool":{"filter":[{"bool":{"should":[{"match_phrase":{"kubernetes.container.name":"urlscan-private"}}],"minimum_should_match":1}},{"bool":{"should":[{"match":{"json.action":"PREP"}}],"minimum_should_match":1}}]}},{"range":{"@timestamp":{"gte":"now-24h"}}}]}}}
+    QueryJson = {"size": 0,"query":{"bool":{"filter":[{"bool":{"filter":[{"bool":{"should":[{"match_phrase":{"kubernetes.container.name":"urlscan-private"}}],"minimum_should_match":1}},{"bool":{"should":[{"match":{"json.action":"PREP"}}],"minimum_should_match":1}}]}},{"range":{"@timestamp":{"gte":"now-48h"}}}]}}}
     [query_syncmage_attacker_url]
     QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"syncmage-attacker-url"}},{"term":{"json.action":"UPDATE"}},{"exists":{"field":"json.inserted"}},{"range":{"@timestamp":{"gte":"now-12h"}}}]}}}
     [query_syncmage_attacker_script]
