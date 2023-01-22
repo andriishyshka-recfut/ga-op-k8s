@@ -60,7 +60,6 @@ spec:
       labels:
         module: elastic
       static:
-      - https://tls12.regemini.io
       - https://tls13.regemini.io
 ---
 apiVersion: monitoring.coreos.com/v1
