@@ -30,8 +30,8 @@ spec:
     - alert: UrlscanPrivateNoPreps
       annotations:
         description: |
-          No PREPs logged by urlscan-private for last 24h
-        summary: No PREPs logged by urlscan-private for last 24h
+          No PREPs logged by urlscan-private for last 48h
+        summary: No PREPs logged by urlscan-private for last 48h
       expr: |
         sum_over_time ( urlscan_private_hits[10m] ) == 0
       for: 30m
