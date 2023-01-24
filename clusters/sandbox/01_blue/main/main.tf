@@ -14,19 +14,15 @@ locals {
 
 
 module "k8s-istio" {
-  source = "../../../../terraform-modules/k8s-istio"
-  # GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
-  GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
-  Settings                     = var.Settings
-  Cluster                      = "sandbox"
-  Color                        = "blue"
-  # depends_on                   = [module.gke-setup-green]
+  source   = "../../../../terraform-modules/k8s-istio"
+  Settings = var.Settings
+  Cluster  = "sandbox"
+  Color    = "blue"
 }
 
 
 module "k8s-misc-operators" {
-  source = "../../../../terraform-modules/k8s-misc"
-  # GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  source                       = "../../../../terraform-modules/k8s-misc"
   GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Settings                     = var.Settings
   Cluster                      = "sandbox"
@@ -35,8 +31,7 @@ module "k8s-misc-operators" {
 }
 
 module "k8s-vault" {
-  source = "../../../../terraform-modules/k8s-vault"
-  # GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  source                       = "../../../../terraform-modules/k8s-vault"
   GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Settings                     = var.Settings
   Cluster                      = "sandbox"
@@ -49,8 +44,7 @@ module "k8s-vault" {
 }
 
 module "k8s-vault-tekton" {
-  source = "../../../../terraform-modules/k8s-vault-tekton"
-  # GkeClusterConnectionSettings = module.gke-setup-green.GkeClusterConnectionSettings
+  source                       = "../../../../terraform-modules/k8s-vault-tekton"
   GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Cluster                      = "sandbox"
   Color                        = "blue"

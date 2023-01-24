@@ -108,6 +108,6 @@ resource "helm_release" "istio_ingress" {
     }
   }
   depends_on = [
-    kubernetes_namespace.istio_ingress
+    helm_release.istiod
   ]
 }
