@@ -49,10 +49,10 @@ data "vault_generic_secret" "k8s_auth_inactive" {
 }
 
 locals {
-  activeCluster   = var.Color
-  inActiveCluster = var.Color == "blue" ? "green" : "blue"
-  harbor          = var.Harbor ? 1 : 0
-  isProduction    = var.Cluster == "production" ? 1 : 0
+  activeCluster            = var.Color
+  inActiveCluster          = var.Color == "blue" ? "green" : "blue"
+  harbor                   = var.Harbor ? 1 : 0
+  isProduction             = var.Cluster == "production" ? 1 : 0
   inactiveClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.inActiveCluster}"
 
   inActiveGkeEndpoint = "https://${data.google_container_cluster.inactive_cluster.endpoint}"
@@ -73,13 +73,15 @@ locals {
     ANSIBLE_STDOUT_CALLBACK = "debug"
     BASTION_DNS             = var.Settings.bastion_dns
   })
-  load_balancer_ip  = var.Settings.clusters[var.Cluster].load_balancer_ip
-  VaultAddress      = element(split("/", var.VaultAddress), length(split("/", var.VaultAddress)) - 1)
-  ports             = var.Settings.clusters[var.Cluster][var.Color].istio.lb
+  load_balancer_ip = var.Settings.clusters[var.Cluster].load_balancer_ip
+  VaultAddress     = element(split("/", var.VaultAddress), length(split("/", var.VaultAddress)) - 1)
+  # ports            = var.Settings.clusters[var.Cluster][var.Color].istio.lb
+
+  old_ingresses     = join(" ", [for ingress, ingress_data in var.Settings.clusters[var.Cluster][inActiveCluster].istio : "istio-ingressgateway-${ingress}" if lookup(ingress_data, "external_ip", false) != false])
   delete_lb_service = <<COMMAND
       kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
-     delete svc istio-ingressgateway-lb -n istio-ingress 
+     delete svc ${local.old_ingresses} -n istio-ingress 
   COMMAND
 }

@@ -1,0 +1,16 @@
+service:
+  type: "${lookup(settings, "type", "NodePort")}"
+  externalTrafficPolicy: "Local"
+%{ if lookup(settings, "external_ip", false) != false ~}
+  loadBalancerIP: "${ lookup (settings, "external_ip", false) }"
+%{ endif ~}
+  ports:
+%{ for port in settings.ports ~}
+    - name: ${ port.name }
+      protocol: ${ port.protocol }
+      port: ${ port.port }
+      targetPort: ${ port.port }
+      nodePort: ${ port.nodePort }
+%{ endfor ~}
+autoscaling:
+  minReplicas: ${settings.minReplicas}
