@@ -5,6 +5,7 @@ variable "Color" {}
 
 locals {
   clusterName = "${var.Cluster}-${var.Color}"
+  minioBucket = "${var.Settings.clusters[var.Cluster].kubescapeReportsBucket}"
 }
 
 terraform {
