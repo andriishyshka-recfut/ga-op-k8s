@@ -91,7 +91,7 @@ alertmanager:
     - name: "null"
     - name: "slack-notifications"
       slack_configs:
-      - channel: '#prometheus-red'
+      - channel: '#prometheus-critical'
         send_resolved: true
         text: '{{ template "slack.custom.text" . }}'
     route:
@@ -112,9 +112,9 @@ alertmanager:
         - match_re:
             alertname: ".*"
           receiver: "slack-notifications"
-
     templates:
       - /etc/alertmanager/config/*.tmpl
+
   templateFiles:
     slack-my.tmpl: |-
       {{ define "slack.custom.text"}}
@@ -124,7 +124,7 @@ alertmanager:
       {{ end }}
       *Alert details*:
       {{ range .Alerts }}
-      *Alert:* {{ .Annotations.summary }}
+      *Alert:* [RED CLUSTER] {{ .Annotations.summary }}
       *Description:* {{ .Annotations.description }}
       *Details:*
         {{ range .Labels.SortedPairs -}} • *{{ .Name }}:* `{{ .Value }}`
