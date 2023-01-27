@@ -3,7 +3,7 @@ resource "vault_policy" "shout" {
 
   policy = <<EOT
 path "secret/data/shout/*" {
-  capabilities = ["read","list"]
+  capabilities = ["read","list","update"]
 }
 path "secret/data/elasticsearch-admin/*" {
   capabilities = ["read","list"]
