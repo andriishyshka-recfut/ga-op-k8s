@@ -144,3 +144,6 @@ defaultRules:
     kubeScheduler: false
     kubernetesResources: false
     kubeApiserver: false
+
+kubeScheduler:
+  enabled: false
