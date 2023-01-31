@@ -67,7 +67,6 @@ prometheus:
     # externalUrl: "https://prometheus.t.regemini.io"
     # externalUrl: "http://localhost:9090"
     # listenLocal: true
-    hostNetwork: false
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
