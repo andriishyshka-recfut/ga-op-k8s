@@ -3,8 +3,8 @@ module "es7-backup" {
   Namespace            = "elastic"
   ElasticName          = "elastic"
   NamePrefix           = "xbackup"
-  BackupBucketName     = "xbackup"
-  BackupBucketBasePath = "es-backup/es7"
+  BackupBucketName     = "es7"
+  BackupBucketBasePath = "7"
   EsService            = "elasticsearch-coor"
   EsCreds              = "elastic-credentials"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
@@ -23,8 +23,8 @@ module "es7-restore" {
   Namespace            = "elastic"
   ElasticName          = "elastic"
   NamePrefix           = "restore-logs"
-  BackupBucketName     = "xbackup"
-  BackupBucketBasePath = "es-backup/es7"
+  BackupBucketName     = "es7"
+  BackupBucketBasePath = "7"
   EsService            = "elasticsearch-coor"
   EsCreds              = "elastic-credentials"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
