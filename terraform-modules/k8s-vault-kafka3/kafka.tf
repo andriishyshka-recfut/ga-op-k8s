@@ -1,13 +1,12 @@
-
-
-
 resource "helm_release" "kafka_operator" {
   name       = "kafka-operator"
-  chart      = "${path.module}/strimzi-kafka-operator"
+  chart      = "strimzi-kafka-operator"
+  repository = "https://strimzi.io/charts/"
   wait       = true
   atomic     = true
   namespace  = local.kafkaNs
   timeout    = 900
+  version    = "0.32.0"
 }
 
 
