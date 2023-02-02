@@ -18,7 +18,7 @@ image:
   name: operator
   tag: ""
 logVolume: co-config-volume
-logConfigMap: kafka3-strimzi-cluster-operator
+logConfigMap: kafka-strimzi-cluster-operator
 logConfiguration: ""
 logLevel: ${env:STRIMZI_LOG_LEVEL:-INFO}
 fullReconciliationIntervalMs: 120000

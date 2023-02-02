@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: kafka3-strimzi-cluster-operator
+  name: kafka-strimzi-cluster-operator
   labels:
     app: {{ template "strimzi.name" . }}
     chart: {{ template "strimzi.chart" . }}
@@ -11,10 +11,10 @@ metadata:
     heritage: {{ .Release.Service }}
 subjects:
   - kind: ServiceAccount
-    name: kafka3-strimzi-cluster-operator
+    name: kafka-strimzi-cluster-operator
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: kafka3-strimzi-cluster-operator-global
+  name: kafka-strimzi-cluster-operator-global
   apiGroup: rbac.authorization.k8s.io
 {{- end -}}

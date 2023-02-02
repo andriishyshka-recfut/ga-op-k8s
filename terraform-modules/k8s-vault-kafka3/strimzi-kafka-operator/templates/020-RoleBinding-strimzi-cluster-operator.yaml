@@ -9,9 +9,9 @@ kind: RoleBinding
 {{- end }}
 metadata:
   {{- if $root.Values.watchAnyNamespace }}
-  name: kafka3-strimzi-cluster-operator-namespaced
+  name: kafka-strimzi-cluster-operator-namespaced
   {{- else }}
-  name: kafka3-strimzi-cluster-operator
+  name: kafka-strimzi-cluster-operator
   {{- end }}
   namespace: {{ . }}
   labels:
@@ -22,10 +22,10 @@ metadata:
     heritage: {{ $root.Release.Service }}
 subjects:
   - kind: ServiceAccount
-    name: kafka3-strimzi-cluster-operator
+    name: kafka-strimzi-cluster-operator
     namespace: {{ $root.Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: kafka3-strimzi-cluster-operator-namespaced
+  name: kafka-strimzi-cluster-operator-namespaced
   apiGroup: rbac.authorization.k8s.io
 {{- end }}

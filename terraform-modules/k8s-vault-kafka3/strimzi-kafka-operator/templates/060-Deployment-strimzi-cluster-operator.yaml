@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka3-strimzi-cluster-operator
+  name: kafka-strimzi-cluster-operator
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "strimzi.name" . }}
@@ -13,12 +13,12 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      name: kafka3-strimzi-cluster-operator
+      name: kafka-strimzi-cluster-operator
       strimzi.io/kind: cluster-operator
   template:
     metadata:
       labels:
-        name: kafka3-strimzi-cluster-operator
+        name: kafka-strimzi-cluster-operator
         strimzi.io/kind: cluster-operator
         {{- with .Values.labels }}
         {{- toYaml . | nindent 8 }}
@@ -28,7 +28,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      serviceAccountName: kafka3-strimzi-cluster-operator
+      serviceAccountName: kafka-strimzi-cluster-operator
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.image.imagePullSecrets }}
@@ -135,7 +135,7 @@ spec:
             - name: STRIMZI_LEADER_ELECTION_ENABLED
               value: "true"
             - name: STRIMZI_LEADER_ELECTION_LEASE_NAME
-              value: "kafka3-strimzi-cluster-operator"
+              value: "kafka-strimzi-cluster-operator"
             - name: STRIMZI_LEADER_ELECTION_LEASE_NAMESPACE
               valueFrom:
                 fieldRef:

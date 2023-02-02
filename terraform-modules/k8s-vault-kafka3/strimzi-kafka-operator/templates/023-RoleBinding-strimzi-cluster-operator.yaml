@@ -22,7 +22,7 @@ metadata:
     heritage: {{ $root.Release.Service }}
 subjects:
   - kind: ServiceAccount
-    name: kafka3-strimzi-cluster-operator
+    name: kafka-strimzi-cluster-operator
     namespace: {{ $root.Release.Namespace }}
 roleRef:
   kind: ClusterRole

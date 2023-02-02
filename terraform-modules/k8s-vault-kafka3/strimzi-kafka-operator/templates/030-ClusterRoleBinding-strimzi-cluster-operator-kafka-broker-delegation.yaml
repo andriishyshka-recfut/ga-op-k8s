@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: kafka3-strimzi-cluster-operator-kafka-broker-delegation
+  name: kafka-strimzi-cluster-operator-kafka-broker-delegation
   labels:
     app: {{ template "strimzi.name" . }}
     chart: {{ template "strimzi.chart" . }}
@@ -13,11 +13,11 @@ metadata:
 # This must be done to avoid escalating privileges which would be blocked by Kubernetes.
 subjects:
   - kind: ServiceAccount
-    name: kafka3-strimzi-cluster-operator
+    name: kafka-strimzi-cluster-operator
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: kafka3-strimzi-kafka-broker
+  name: kafka-strimzi-kafka-broker
   apiGroup: rbac.authorization.k8s.io
 
 {{- end -}}

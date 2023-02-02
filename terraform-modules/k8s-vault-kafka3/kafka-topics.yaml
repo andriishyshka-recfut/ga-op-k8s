@@ -4,7 +4,7 @@ metadata:
   name: maid.upsert
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -18,7 +18,7 @@ metadata:
   name: mage.task.scanned
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -33,7 +33,7 @@ metadata:
   name: mage.task.target
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -49,7 +49,7 @@ metadata:
   name: urlscan.task.scanned
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -65,7 +65,7 @@ metadata:
   name: urlscan.task.target
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -81,7 +81,7 @@ metadata:
   name: magecart
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -96,7 +96,7 @@ metadata:
   name: magecart.upsert
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -111,7 +111,7 @@ metadata:
   name: magecart.sanitizer
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -127,7 +127,7 @@ metadata:
   name: mage.scan
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -142,7 +142,7 @@ metadata:
   name: mage.scan.upsert
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -157,7 +157,7 @@ metadata:
   name: mage.analysis.upsert
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -172,7 +172,7 @@ metadata:
   name: mage.task.target.priority
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -187,7 +187,7 @@ metadata:
   name: union.mage.analysis
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -202,7 +202,7 @@ metadata:
   name: union.mage.analysis.upsert
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -217,7 +217,7 @@ metadata:
   name: union.magecart.upsert
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -232,7 +232,7 @@ metadata:
   name: mage.analysis
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -247,7 +247,7 @@ metadata:
   name: mage.task.target.2
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -263,7 +263,7 @@ metadata:
   name: mage.task.target.3
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -279,7 +279,7 @@ metadata:
   name: testcart
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -295,7 +295,7 @@ metadata:
   name: testcart.upsert
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
@@ -310,7 +310,7 @@ metadata:
   name: syncmage.events.attacker.url
   namespace: kafka
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
 spec:
   partitions: 1
   replicas: 2
