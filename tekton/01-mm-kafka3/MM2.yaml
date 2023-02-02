@@ -1,8 +1,8 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaMirrorMaker2
 metadata:
-  name: mm2-kafka3
-  namespace: kafka3
+  name: mm2
+  namespace: kafka
 spec:
   version: 3.3.1
   replicas: 1
@@ -39,7 +39,7 @@ spec:
   - alias: "source"
     bootstrapServers: CHANGEME:32100
   - alias: "target"
-    bootstrapServers: kafka3-cluster-kafka-bootstrap:9092
+    bootstrapServers: kafka-cluster-kafka-bootstrap:9092
     config:
       producer.max.request.size: 52428800
       producer.compression.type: gzip
