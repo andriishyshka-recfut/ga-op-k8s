@@ -1,0 +1,319 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: maid.upsert
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 592000000
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: mage.task.scanned
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: mage.task.target
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: urlscan.task.scanned
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: urlscan.task.target
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: magecart
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: magecart.upsert
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: magecart.sanitizer
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: mage.scan
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: mage.scan.upsert
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: mage.analysis.upsert
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: mage.task.target.priority
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: union.mage.analysis
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: union.mage.analysis.upsert
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: union.magecart.upsert
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: mage.analysis
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: mage.task.target.2
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    max.message.bytes: 1048576
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: mage.task.target.3
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    max.message.bytes: 1048576
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: testcart
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    max.message.bytes: 1048576
+    retention.ms: 2592000000
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: testcart.upsert
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    max.message.bytes: 1048576
+    retention.ms: 2592000000
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: syncmage.events.attacker.url
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka3-cluster
+spec:
+  partitions: 1
+  replicas: 2
+  config:
+    max.message.bytes: 1048576
+    retention.ms: 2592000000
