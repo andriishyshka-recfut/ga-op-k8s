@@ -287,6 +287,6 @@ resource "kubectl_manifest" "default_setting_topics" {
     "TOPIC_RFC_1123_NAME" = each.key
   })
   depends_on = [
-    helm_release.kafka3_cluster
+    helm_release.kafka_cluster
   ]
 }

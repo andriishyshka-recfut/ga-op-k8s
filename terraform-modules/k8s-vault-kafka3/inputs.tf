@@ -4,7 +4,7 @@ variable "Settings" {}
 
 
 locals {
-  kafkaNs = "kafka3"
+  kafkaNs = "kafka"
   ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
     ANSIBLE_STDOUT_CALLBACK = "debug"
   })

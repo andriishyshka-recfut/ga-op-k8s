@@ -1,8 +1,8 @@
 
 
 
-resource "helm_release" "kafka3_operator" {
-  name       = "kafka3-operator"
+resource "helm_release" "kafka_operator" {
+  name       = "kafka-operator"
   chart      = "${path.module}/strimzi-kafka-operator"
   wait       = true
   atomic     = true
@@ -11,8 +11,8 @@ resource "helm_release" "kafka3_operator" {
 }
 
 
-resource "helm_release" "kafka3_cluster" {
-  name      = "kafka3-cluster"
+resource "helm_release" "kafka_cluster" {
+  name      = "kafka-cluster"
   chart     = "${path.module}/kafka"
   namespace = local.kafkaNs
   wait      = true 
@@ -42,7 +42,7 @@ resource "helm_release" "kafka3_cluster" {
     value = local.limit.cpu
   }
   depends_on = [
-    helm_release.kafka3_operator,
+    helm_release.kafka_operator,
   ]
 }
 
@@ -50,8 +50,8 @@ resource "null_resource" "ansible_wait_for_kafka" {
 
   triggers = {
     playbook_contents = md5(file("${path.module}/../../ansible/k8s-wait-for.yml"))
-    kafka_id          = helm_release.kafka3_cluster.id
-    kafka_operator_id = helm_release.kafka3_operator.id
+    kafka_id          = helm_release.kafka_cluster.id
+    kafka_operator_id = helm_release.kafka_operator.id
   }
   provisioner "local-exec" {
     command = <<COMMAND
@@ -60,7 +60,7 @@ resource "null_resource" "ansible_wait_for_kafka" {
 
 COMMAND
     environment = merge(local.ansibleEnvs, {
-      name           = "kafka3-cluster"
+      name           = "kafka-cluster"
       kind           = "kafka"
       namespace      = local.kafkaNs
       apiVersion     = "kafka.strimzi.io/v1beta2"
@@ -69,6 +69,6 @@ COMMAND
     })
   }
   depends_on = [
-    helm_release.kafka3_cluster
+    helm_release.kafka_cluster
   ]
 }

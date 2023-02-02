@@ -2,9 +2,9 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   labels:
-    strimzi.io/cluster: kafka3-cluster
+    strimzi.io/cluster: kafka-cluster
   name: ${TOPIC_RFC_1123_NAME}
-  namespace: kafka3
+  namespace: kafka
 spec:
   partitions: 1
   replicas: 2
