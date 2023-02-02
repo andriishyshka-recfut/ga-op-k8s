@@ -132,6 +132,11 @@ alertmanager:
       resolve_timeout: 5m
     receivers:
     - name: "null"
+    - name: "slack-critical"
+      slack_configs:
+        - channel: '#prometheus-critical'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
     - name: "slack-notifications"
       # slack_configs:
       # - channel: '#prometheus'
@@ -153,11 +158,6 @@ alertmanager:
         - channel: '#prometheus'
           send_resolved: false
           text: '{{ template "slack.custom.text" . }}'
-    - name: "slack-critical"
-      slack_configs:
-        - channel: '#prometheus-critical'
-          text: '{{ template "slack.custom.text" . }}'
-          send_resolved: true
     route:
       group_by:
         - alertname

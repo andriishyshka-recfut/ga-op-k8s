@@ -71,7 +71,7 @@ resource "helm_release" "prometheus" {
     value = data.vault_generic_secret.prometheus.data.url
   }
   set {
-    name  = "alertmanager.config.receivers[4].slack_configs[0].api_url"
+    name  = "alertmanager.config.receivers[1].slack_configs[0].api_url"
     value = data.vault_generic_secret.prometheus.data.url_critical
   }
   set {
