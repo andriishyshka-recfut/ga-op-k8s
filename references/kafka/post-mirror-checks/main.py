@@ -66,6 +66,10 @@ def print_state_comparison(src, tgt):
                     part_id, src_values = p_rec
 
                     try:
+                        if tgt.get(topic).get(group) is None:
+                            print("Failed to compare topic {} / {} because consumer group not found in target".format(topic, group))
+                            continue
+
                         tgt_values = tgt.get(topic).get(group).get(part_id)
 
                         lag, high, low, size = "", "", "", ""

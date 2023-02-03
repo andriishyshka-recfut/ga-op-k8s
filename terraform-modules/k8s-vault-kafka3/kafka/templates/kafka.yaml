@@ -1,0 +1,106 @@
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: kafka-cluster
+spec:
+  kafka:
+    template:
+      pod:
+        tolerations:
+          - key: "workloadsType"
+            operator: "Exists"
+            effect: "NoSchedule"
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                  - key: workloadsType
+                    operator: In
+                    values:
+                      - data
+
+    version: 3.3.1
+    replicas: 3
+    resources:
+      limits:
+        cpu: {{ .Values.cpuLimit }}
+        memory: {{ .Values.memLimit }}
+      requests:
+        cpu: {{ .Values.cpuReuest }}
+        memory: {{ .Values.memReuest }}
+    listeners:
+    - name: plain
+      port: 9092
+      type: internal
+      tls: false
+    - name: external
+      port: 9094
+      tls: false
+      type: nodeport
+      configuration:
+        bootstrap:
+          nodePort: 32100
+        brokers:
+        - broker: 0
+          advertisedHost: broker-0.{{ .Values.subdomain}}
+          nodePort: 32200
+        - broker: 1
+          advertisedHost: broker-1.{{ .Values.subdomain}}
+          nodePort: 32201
+        - broker: 2
+          advertisedHost: broker-2.{{ .Values.subdomain}}
+          nodePort: 32202
+    config:
+      default.replication.factor: 2
+      offsets.topic.replication.factor: 1
+      transaction.state.log.replication.factor: 1
+      transaction.state.log.min.isr: 1
+      log.message.format.version: "2.5"
+      message.max.bytes: 5000000
+      replica.fetch.max.bytes: 5500000
+      retention.ms: 2592000000
+    storage:
+      type: jbod
+      volumes:
+      - id: 0
+        type: persistent-claim
+        size: {{ .Values.diskSize }}
+        deleteClaim: false
+
+  zookeeper:
+    replicas: 3
+    template:
+      pod:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: False
+
+        tolerations:
+          - key: "workloadsType"
+            operator: "Exists"
+            effect: "NoSchedule"
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: workloadsType
+                  operator: In
+                  values:
+                  - data
+    resources:
+      limits:
+        cpu: 1
+        memory: 2G
+      requests:
+        cpu: 0.1
+        memory: 100M
+    storage:
+      type: persistent-claim
+      size: 10Gi
+      deleteClaim: false
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}

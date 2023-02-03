@@ -10,7 +10,7 @@ variable "Color" {}
 
 locals {
 
-  ports = var.Settings.clusters[var.Cluster][var.Color].istio.bastion
+  ports = var.Settings.clusters[var.Cluster][var.Color].istio.bastion.ports
   # ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
   #   CLUSTER_SETTINGS        = jsonencode(var.Settings)
   #   CLUSTER                 = var.Cluster
