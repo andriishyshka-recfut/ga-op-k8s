@@ -41,17 +41,17 @@ spec:
       type: nodeport
       configuration:
         bootstrap:
-          nodePort: 32380
+          nodePort: 32100
         brokers:
         - broker: 0
           advertisedHost: broker-0.{{ .Values.subdomain}}
-          nodePort: 32390
+          nodePort: 32200
         - broker: 1
           advertisedHost: broker-1.{{ .Values.subdomain}}
-          nodePort: 32391
+          nodePort: 32201
         - broker: 2
           advertisedHost: broker-2.{{ .Values.subdomain}}
-          nodePort: 32392
+          nodePort: 32202
     config:
       default.replication.factor: 2
       offsets.topic.replication.factor: 1
