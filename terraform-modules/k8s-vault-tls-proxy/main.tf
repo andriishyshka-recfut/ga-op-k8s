@@ -200,7 +200,7 @@ resource "kubernetes_manifest" "tls_proxy_gateway" {
     }
     "spec" = {
       "selector" = {
-        "istio" = "ingressgateway-lb"
+        "istio" = lookup(each.value, "ingress", "ingressgateway-lb")
       }
       "servers" = [
         {
@@ -236,56 +236,8 @@ resource "kubernetes_manifest" "tls_proxy_gateway" {
   }
 }
 
-resource "kubernetes_manifest" "tls_proxy_virtualservice_haproxy" {
-  for_each = nonsensitive(local.projects_haproxy)
-  manifest = {
-    "apiVersion" = "networking.istio.io/v1beta1"
-    "kind"       = "VirtualService"
-    "metadata" = {
-      "name"      = "${each.key}-virtualservice"
-      "namespace" = each.value.namespace
-    }
-    "spec" = {
-      "gateways" = [
-        "istio-ingress/${each.key}-gateway",
-      ]
-      "hosts" = [
-        each.value.domain
-      ]
-      "http" = [
-        {
-          "match" = [
-            {
-              "uri" = {
-                "prefix" = "/"
-              }
-            },
-          ]
-          "route" = [
-            {
-              "destination" = {
-                "host" = "${each.key}-basic-auth-proxy"
-                "port" = {
-                  "number" = 8080
-                }
-              }
-              "headers" = {
-                "response" = {
-                  "set" = {
-                    "Strict-Transport-Security" = "max-age=31536000; includeSubDomains"
-                  }
-                }
-              }
-            },
-          ]
-        },
-      ]
-    }
-  }
-}
-
-resource "kubernetes_manifest" "tls_proxy_virtualservice_wo_haproxy" {
-  for_each = nonsensitive(local.projects_wo_haproxy)
+resource "kubernetes_manifest" "tls_proxy_virtualservice" {
+  for_each = nonsensitive(local.project_data_enabled)
   manifest = {
     "apiVersion" = "networking.istio.io/v1beta1"
     "kind"       = "VirtualService"
@@ -395,113 +347,42 @@ resource "kubernetes_manifest" "ip_whitelist" {
 # }
 
 
-resource "kubernetes_config_map" "haproxy_configmap" {
-  for_each = nonsensitive(local.projects_haproxy)
-  metadata {
-    name      = "${each.key}-haproxy-config"
-    namespace = each.value.namespace
-  }
-  data = {
-    "haproxy.cfg" = <<EOF
-userlist  clients
-  ${local.auth_user_list[each.key]}
-frontend auth
-  mode  http
-  bind  :8080
-  http-request auth unless { http_auth(clients) }
-  default_backend service
-backend service
-  mode  http
-  http-request add-header Client-ID ${each.key}
-  server srv1 ${each.value.destination_service}:${each.value.destination_port}
-EOF
-  }
-}
-
-resource "kubernetes_deployment" "basic_auth_proxy" {
-  for_each = nonsensitive(local.projects_haproxy)
-  metadata {
-    name      = "${each.key}-basic-auth-proxy"
-    namespace = each.value.namespace
-    labels = {
-      app = "${each.key}-basic-auth-proxy"
+resource "kubernetes_manifest" "tls_proxy_basic_auth" {
+  for_each = nonsensitive(local.projects_basic_auth)
+  manifest = {
+    "apiVersion" = "extensions.istio.io/v1alpha1"
+    "kind"       = "WasmPlugin"
+    "metadata" = {
+      "name"      = "${each.key}-basic-auth"
+      "namespace" = "istio-ingress"
     }
-  }
-  spec {
-    replicas = 1
-
-    selector {
-      match_labels = {
-        app = "${each.key}-basic-auth-proxy"
+    "spec" = {
+      "phase" = "AUTHN"
+      "pluginConfig" = {
+        "basic_auth_rules" = [
+          {
+            "credentials" = local.auth_user_list[each.key]
+            "prefix"      = "/"
+            "request_methods" = [
+              "GET",
+              "POST",
+              "HEAD",
+              "PUT",
+              "DELETE",
+              "CONNECT",
+              "OPTIONS",
+              "TRACE",
+              "PATCH"
+            ]
+          },
+        ]
       }
-    }
-
-    template {
-      metadata {
-        labels = {
-          app = "${each.key}-basic-auth-proxy"
-        }
-        annotations = {
-          "sidecar.istio.io/inject" = "true"
+      "selector" = {
+        "matchLabels" = {
+          "istio" = lookup(each.value, "ingress", "ingressgateway-lb")
         }
       }
-
-      spec {
-        volume {
-          name = "haproxy-config"
-          config_map {
-            name = "${each.key}-haproxy-config"
-          }
-        }
-        container {
-          image = "haproxy:bullseye"
-          name  = "${each.key}-basic-auth-proxy"
-          volume_mount {
-            name       = "haproxy-config"
-            mount_path = "/usr/local/etc/haproxy"
-            read_only  = true
-          }
-          resources {
-            limits = {
-              cpu    = "0.5"
-              memory = "512Mi"
-            }
-            requests = {
-              cpu    = "250m"
-              memory = "50Mi"
-            }
-          }
-          port {
-            protocol       = "TCP"
-            container_port = 8080
-          }
-          env {
-            name  = "SERVICE_HOST"
-            value = each.value.destination_service
-          }
-          env {
-            name  = "SERVICE_PORT"
-            value = each.value.destination_port
-          }
-        }
-      }
-    }
-  }
-}
-
-resource "kubernetes_service" "basic_auth_proxy" {
-  for_each = nonsensitive(local.projects_haproxy)
-  metadata {
-    name      = "${each.key}-basic-auth-proxy"
-    namespace = each.value.namespace
-  }
-  spec {
-    selector = {
-      app = "${each.key}-basic-auth-proxy"
-    }
-    port {
-      port        = 8080
-      target_port = 8080
+      "url" = "oci://ghcr.io/istio-ecosystem/wasm-extensions/basic_auth:1.12.0"
     }
   }
 }
