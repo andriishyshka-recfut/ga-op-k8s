@@ -1,0 +1,110 @@
+Topic                        	Group         	Partition	Low	High                  	Size                	Lag
+dome.leakforums.post_vip     	leakforums    	0        	   	4591 -> 4592          	4591 -> 4592        	3740 -> 3741
+dome.leakforums.post         	leakforums    	0        	   	                      	                    	601 -> 600
+dome.leakforums.profile      	leakforums    	0        	   	                      	                    	135948 -> 135947
+dome.veryleaks.profile       	veryleaks     	0        	   	                      	                    	599799 -> 599798
+minion.seen                  	seenMinion    	0        	   	101113884 -> 101114568	96816667 -> 96817351	55550407 -> 55535091
+minion.seen                  	seenpans      	0        	   	101113884 -> 101114568	96816667 -> 96817351
+minion.biden.cnp             	biden         	0        	   	3649 -> 3652          	3649 -> 3652
+minion.blackpass.account     	blackpass     	0        	   	5959 -> 5968          	5959 -> 5968
+minion.fernando.cnp          	fernando      	0        	   	981800 -> 981805      	981800 -> 981805
+telegram.upsert              	upsertTelegram	0        	   	2223 -> 2226          	2223 -> 2226
+dome.cardingmafia.post       	cardingmafia  	0        	   	                      	                    	47 -> 45
+dome.cardingmafia.profile    	cardingmafia  	0        	   	                      	                    	19 -> 16
+dome.rstforums.post          	rstforums     	0        	   	                      	                    	41 -> 40
+whirl.pans.source            	whirl         	0        	   	                      	                    	46440 -> 44440
+whirl.telegram.source        	whirl         	0        	   	158601 -> 158604      	158601 -> 158604    	5752 -> 5755
+dome.bitcointalk.post_new    	bitcointalk   	0        	   	359724 -> 359729      	359724 -> 359729
+dome.bitcointalk.post        	bitcointalk   	0        	   	81763 -> 81764        	81763 -> 81764      	11707 -> 11706
+dome.bitcointalk.profile     	bitcointalk   	0        	   	                      	                    	3459517 -> 3459516
+dome.rutor.post              	rutor         	0        	   	100204 -> 100205      	100204 -> 100205
+dome.prologic.post           	prologic      	0        	   	726 -> 755            	726 -> 755          	72 -> 95
+dome.prologic.profile        	prologic      	0        	   	18165 -> 18166        	18165 -> 18166      	25 -> 21
+dome.nulledbb.profile        	nulledbb      	0        	   	                      	                    	3 -> 2
+dome.club2crd.post           	club2crd      	0        	   	414 -> 463            	0 -> 49             	0 -> 45
+dome.codeby.profile          	codeby        	0        	   	                      	                    	33297 -> 33295
+mage.task.target.5           	magescanner   	0        	   	                      	                    	113 -> 103
+mage.task.target.3           	magescanner   	0        	   	                      	                    	9 -> 0
+mage.scan                    	magescanner   	0        	   	3712608 -> 3712643    	3638837 -> 3638872
+mage.scan                    	beat          	0        	   	3712609 -> 3712643    	3638838 -> 3638872  	1213 -> 1247
+minion.yalelodge.cnp         	yalelodge     	0        	   	7671 -> 7673          	7671 -> 7673        	109 -> 111
+dome.piratebuhta.post        	piratebuhta   	0        	   	303 -> 307            	45 -> 49            	41 -> 42
+dome.piratebuhta.profile     	piratebuhta   	0        	   	                      	                    	11 -> 10
+dome.blasthack.post          	blasthack     	0        	   	                      	                    	204 -> 202
+dome.antichat.profile        	antichat      	0        	   	                      	                    	708381 -> 708379
+minion.bvcc.cnp              	bvcc          	0        	   	                      	                    	5624 -> 5622
+dome.procrd.profile          	procrd        	0        	   	3604 -> 3606          	137 -> 139          	1 -> 2
+dome.blackhacker.profile     	blackhacker   	0        	   	304 -> 305            	79 -> 80
+dome.fssquad.profile         	fssquad       	0        	   	                      	                    	596503 -> 596502
+dome.fssquad.post            	fssquad       	0        	   	                      	                    	93 -> 86
+minion.briansclub.cnp        	briansclub    	0        	   	                      	                    	3591 -> 3577
+minion.vortex                	vortex        	0        	   	1900195 -> 1900864    	1900195 -> 1900864  	28655 -> 29324
+dome.dublikat.profile        	dublikat      	0        	   	                      	                    	9967 -> 9961
+dome.dublikat.post           	dublikat      	0        	   	3446 -> 3469          	1246 -> 1269        	773 -> 786
+minion.pp24.cp               	pp24          	0        	   	                      	                    	6785 -> 6781
+minion.ronda.cnp_vip         	ronda         	0        	   	4913 -> 5120          	2053 -> 2260        	1992 -> 2196
+minion.jshop.cnp             	jshop         	0        	   	                      	                    	1270 -> 1258
+dome.skynetzone.profile      	skynetzone    	0        	   	                      	                    	2847 -> 2845
+minion.rescator.cp           	rescator      	0        	   	                      	                    	17524 -> 17507
+minion.rescator.cnp          	rescator      	0        	   	                      	                    	766 -> 764
+dome.crdpro.post             	crdpro        	0        	   	                      	                    	100 -> 99
+dome.crdpro.profile          	crdpro        	0        	   	                      	                    	4780 -> 4779
+dome.crdpro.post_vip         	crdpro        	0        	   	1958 -> 1978          	1958 -> 1978        	44 -> 63
+dome.crimemarket.profile     	crimemarket   	0        	   	131062 -> 131063      	131062 -> 131063
+dome.blackbiz.post           	blackbiz      	0        	   	                      	                    	40 -> 38
+dome.blackbiz.profile        	blackbiz      	0        	   	                      	                    	285880 -> 285878
+mage.task.scanned            	magetasker    	0        	   	4296565 -> 4296615    	4296565 -> 4296615  	-1 -> 0
+minion.cvvshop.cnp           	cvvshop       	0        	   	                      	                    	627 -> 619
+dome.nulled.profile          	nulled        	0        	   	                      	                    	5564597 -> 5564596
+dome.nulled.post             	nulled        	0        	   	1559814 -> 1559825    	1559814 -> 1559825  	2460 -> 2471
+dome.mmgp.profile            	mmgp          	0        	   	100432 -> 100526      	100432 -> 100526    	1 -> 94
+dome.moon.profile            	moon          	0        	   	106160 -> 106161      	106160 -> 106161
+dome.moon.post               	moon          	0        	   	                      	                    	307 -> 306
+maid.whistle                 	whistle       	0        	   	17072 -> 18447        	17072 -> 18447      	0 -> 691
+dome.cardingleaks.profile    	cardingleaks  	0        	   	                      	                    	5 -> 4
+dome.omerta.post             	omerta        	0        	   	                      	                    	15 -> 10
+dome.altenen.post            	altenen       	0        	   	1082 -> 1083          	1082 -> 1083        	488 -> 487
+dome.youhack.post            	youhack       	0        	   	                      	                    	265 -> 264
+dome.youhack.profile         	youhack       	0        	   	                      	                    	63213 -> 63209
+dome.migalki.profile         	migalki       	0        	   	                      	                    	1497 -> 1496
+minion.privatecards.cnp      	privatecards  	0        	   	                      	                    	491 -> 484
+magecart                     	beat          	0        	   	106035 -> 106046      	106035 -> 106046    	11 -> 22
+testcart                     	beat          	0        	   	3659867 -> 3659909    	1618753 -> 1618795  	1124 -> 1166
+dome                         	beat          	0        	   	9675438 -> 9676723    	9521633 -> 9522918  	11389 -> 12674
+mage.analysis                	beat          	0        	   	3920917 -> 3920958    	3920917 -> 3920958  	1308 -> 1349
+minion                       	beat          	0        	   	93729303 -> 93732810  	93450279 -> 93453786	48157 -> 51664
+dome.cardingworld.post       	cardingworld  	0        	   	147736 -> 147737      	147736 -> 147737
+dome.cardingworld.profile    	cardingworld  	0        	   	                      	                    	1924 -> 1923
+dome.blackbones.post         	blackbones    	0        	   	232 -> 233            	28 -> 29
+dome.cebulka.post            	cebulka       	0        	   	                      	                    	30 -> 29
+dome.cebulka.profile         	cebulka       	0        	   	                      	                    	3407 -> 3406
+minion.approved.cnp_new      	approved      	0        	   	                      	                    	303703 -> 303702
+minion.approved.cnp          	approved      	0        	   	12824 -> 12827        	12824 -> 12827      	579 -> 581
+dome.enclave.profile         	enclave       	0        	   	                      	                    	14 -> 10
+dome.elhacker.profile        	elhacker      	0        	   	                      	                    	522321 -> 522320
+dome.elhacker.post           	elhacker      	0        	   	                      	                    	1087 -> 1086
+dome.demonforums.post        	demonforums   	0        	   	                      	                    	5 -> 4
+minion.cvvunion.cnp          	cvvunion      	0        	   	                      	                    	4913 -> 4907
+minion.vought.cnp            	vought        	0        	   	                      	                    	2409 -> 2408
+dome.ascarding.post          	ascarding     	0        	   	175827 -> 175828      	175827 -> 175828
+dome.crimenetwork.post       	crimenetwork  	0        	   	150 -> 161            	66 -> 77            	46 -> 57
+dome.imthack.profile         	imthack       	0        	   	                      	                    	255 -> 254
+dome.cybercarders.post       	cybercarders  	0        	   	114523 -> 114525      	114523 -> 114525
+dome.dark2web.post           	dark2web      	0        	   	425 -> 427            	151 -> 153
+dome.dark2web.profile        	dark2web      	0        	   	                      	                    	15 -> 14
+dome.freehack.profile        	freehack      	0        	   	                      	                    	101 -> 100
+dome.hpc.profile             	hpc           	0        	   	                      	                    	440495 -> 440494
+dome.darkmoney.profile       	darkmoney     	0        	   	                      	                    	41 -> 34
+dome.cracked.post            	cracked       	0        	   	384225 -> 384226      	384225 -> 384226
+dome.cracked.profile         	cracked       	0        	   	                      	                    	19 -> 18
+dome.crackingitaly.profile   	crackingitaly 	0        	   	                      	                    	2083673 -> 2083672
+dome.crackingitaly.post_prime	crackingitaly 	0        	   	                      	                    	891 -> 890
+dome.breached.post           	breached      	0        	   	30422 -> 30423        	30422 -> 30423
+dome.0x00sec.profile         	0x00sec       	0        	   	3979 -> 4030          	3979 -> 4030        	51 -> 101
+dome.0x00sec.post            	0x00sec       	0        	   	                      	                    	146 -> 145
+dome.sinisterly.profile      	sinisterly    	0        	   	                      	                    	243 -> 241
+dome.crackx.post             	crackx        	0        	   	                      	                    	4031 -> 4030
+dome.ufolabs.profile         	ufolabs       	0        	   	                      	                    	95057 -> 95056
+dome.shadowcarders.profile   	shadowcarders 	0        	   	                      	                    	91009 -> 91008
+dome.navigator.profile       	navigator     	0        	   	                      	                    	3 -> 2
+dome.navigator.post          	navigator     	0        	   	376 -> 377            	376 -> 377

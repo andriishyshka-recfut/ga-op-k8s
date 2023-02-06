@@ -55,6 +55,7 @@ resource "helm_release" "gitlab-runner" {
   wait       = true
   atomic     = true
   namespace  = "gitlab"
+  version    = "0.49.1"
   values = [
     file("${path.module}/runner-values.yaml")
   ]
