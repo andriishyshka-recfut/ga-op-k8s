@@ -103,8 +103,6 @@ prometheus:
   thanosServiceMonitor:
     enabled: false
     
-
-# Fix for used with istio
 alertmanager:
   alertmanagerSpec:
     podMetadata:
@@ -116,11 +114,16 @@ alertmanager:
       resolve_timeout: 5m
     receivers:
     - name: "null"
-    - name: "slack-notifications"
+    - name: "slack-critical"
       slack_configs:
-      - channel: '#prometheus-critical'
-        send_resolved: true
-        text: '{{ template "slack.custom.text" . }}'
+        - channel: '#prometheus-critical'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
+    - name: "slack-notifications"
+      # slack_configs:
+      # - channel: '#prometheus'
+      #   send_resolved: true
+      #   text: '{{ template "slack.custom.text" . }}'
     route:
       group_by:
         - alertname
@@ -139,9 +142,13 @@ alertmanager:
         - match_re:
             alertname: ".*"
           receiver: "slack-notifications"
+          routes:
+            - match:
+                severity: critical
+                cluster: production
+              receiver: slack-critical
     templates:
       - /etc/alertmanager/config/*.tmpl
-
   templateFiles:
     slack-my.tmpl: |-
       {{ define "slack.custom.text"}}
