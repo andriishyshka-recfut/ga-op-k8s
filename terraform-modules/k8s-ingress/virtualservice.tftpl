@@ -1,0 +1,43 @@
+
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name:  "${name}"
+  namespace: ${service.namespace}
+spec:
+  gateways:
+    - istio-ingress/${lookup(settings, "ingressgateway", false) != false ? "${ingress}-${split("-", settings.ingressgateway)[1]}" : "${ingress}-wg"}
+  hosts:
+%{ if lookup(service,"domain",false) != false ~}
+%{ for domain in service.domain ~}
+    - ${ domain }
+%{ endfor ~}
+%{ else ~}
+%{ for domain in settings.domain ~}
+    - ${ domain }
+%{ endfor ~}
+%{ endif ~}
+  http:
+    - match:
+        - uri:
+            prefix: /
+%{ if lookup(service,"redirect_uri",false) != false ~}
+      rewrite:
+        uri: ${lookup(service,"redirect_uri",false)}
+%{ endif ~}
+%{ if lookup(service,"redirect_url",false) != false ~}
+      redirect:
+        authority: ${lookup(service,"redirect_url",false)}
+        port: 443
+        scheme: https
+%{ else ~}
+      route:
+        - destination:
+            host: ${service.service}
+            port:
+              number: ${service.port}
+          headers:
+            response:
+              set:
+                Strict-Transport-Security: max-age=31536000; includeSubDomains
+%{ endif ~}

@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: ${lookup(settings, "ingressgateway", false) != false ? "${name}-${split("-", settings.ingressgateway)[1]}" : "${name}-wg"}
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: ${lookup(settings, "ingressgateway", "ingressgateway")}
+  servers:
+    - hosts:
+%{ for domain in settings.domain ~}
+        - ${ domain }
+%{ endfor ~}
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+      tls:
+        httpsRedirect: true
+    - hosts:
+%{ for domain in settings.domain ~}
+        - ${ domain }
+%{ endfor }
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        credentialName: ${lookup(settings, "cert-name", "${name}-cert")}
+        mode: SIMPLE
