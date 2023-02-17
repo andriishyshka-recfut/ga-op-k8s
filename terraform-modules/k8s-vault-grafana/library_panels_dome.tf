@@ -88,7 +88,53 @@ resource "grafana_library_panel" "dome_graph" {
         "queryType" : "randomWalk",
         "refId" : "A",
         "timeField" : "@timestamp"
-      }
+      },
+          {
+            "alias": "POST added",
+            "bucketAggs": [
+              {
+                "field": "timeStampAdded",
+                "id": "2",
+                "settings": {
+                  "interval": "auto"
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "hide": false,
+            "metrics": [
+              {
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "",
+            "refId": "B",
+            "timeField": "@timestamp"
+          },
+          {
+            "alias": "PROFILE lastSeen",
+            "bucketAggs": [
+              {
+                "field": "timeStampLastSeen",
+                "id": "2",
+                "settings": {
+                  "interval": "auto"
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "hide": false,
+            "metrics": [
+              {
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "",
+            "refId": "C",
+            "timeField": "@timestamp"
+          }              
     ],
     "thresholds" : [],
     "timeRegions" : [],

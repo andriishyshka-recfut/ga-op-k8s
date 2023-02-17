@@ -13,5 +13,5 @@ locals {
   grafanaSecretpath = var.Color == "red" ? "secret/red/grafanaElastic" : "secret/grafana"
   grafanaAdmins     = ["anton.moliavko@geminiadvisory.io", "dc@geminiadvisory.io", "dmytro.kubov@geminiadvisory.io"]
   grafanaEditors    = ["anton@geminiadvisory.io"]
-  grafanaViewers    = ["artem.kiazimov@geminiadvisory.io", "mk@geminiadvisory.io", "serhii.hutsaliuk@geminiadvisory.io", "vakhtang.mosidze@geminiadvisory.io"]
+  grafanaViewers    = ["artem.kiazimov@geminiadvisory.io", "mk@geminiadvisory.io", "serhii.hutsaliuk@geminiadvisory.io", "vakhtang.mosidze@geminiadvisory.io", "volodymyr.kononov@geminiadvisory.io"]
 }
