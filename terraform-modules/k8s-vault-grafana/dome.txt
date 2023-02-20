@@ -60,6 +60,7 @@ hacklife
 hadar
 hashkiller
 hpc
+hydramarket
 ifud
 imthack
 instanthack
