@@ -90,6 +90,36 @@ spec:
         - name: branch
           value: "\\#279-prod-dr-2023-02-03"
 
+
+    - name: tarantool
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/01-tarantool"
+        - name: branch
+          value: "\\#279-prod-dr-2023-02-03"
+
+
+    - name: kubescape
+      taskRef:
+        name: tg-run
+      runAfter:
+      - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/01-kubescape"
+        - name: branch
+          value: "\\#279-prod-dr-2023-02-03"
+
     - name: monitoring-elastic
       taskRef:
         name: tg-run
