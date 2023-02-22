@@ -12,7 +12,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 1m
+  - interval: 30m
     name: Cluster resources monitoring
     rules:
     - alert: PodCpuConsumption
@@ -22,7 +22,7 @@ spec:
         summary: Hight CPU consumption on {{ $labels.container }}
       expr: |
         (sum (rate (container_cpu_usage_seconds_total [5m])) by (namespace , pod, container )) / sum((kube_pod_container_resource_limits {resource="cpu"} >0)) by (namespace, pod , container ) > 0.9
-      for: 1m
+      for: 10m
       labels:
         cluster: ${cluster_label}
         color: ${cluster_color}
@@ -35,7 +35,7 @@ spec:
         summary: Hight Mem consumption on {{ $labels.container }}
       expr: |
         (sum (rate (container_memory_working_set_bytes [5m])) by (namespace , pod, container )) /  sum((kube_pod_container_resource_limits {resource="memory"} >0)) by (namespace, pod , container ) > 0.9
-      for: 1m
+      for: 10m
       labels:
         cluster: ${cluster_label}
         color: ${cluster_color}
