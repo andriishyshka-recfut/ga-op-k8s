@@ -201,3 +201,19 @@ filebeat:
                 json.add_error_key: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log
+            # Ka
+            - condition.contains:
+                kubernetes.namespace: ka
+              config:
+              - type: container
+                json.add_error_key: true
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log
+            # Whirl
+            - condition.contains:
+                kubernetes.namespace: whirl
+              config:
+              - type: container
+                json.add_error_key: true
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log                           
