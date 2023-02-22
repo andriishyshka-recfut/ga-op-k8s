@@ -7,7 +7,8 @@ resource "kubernetes_manifest" "ingress_letsencrypt_cert" {
       "name"      = "${each.key}-cert"
       "namespace" = "istio-ingress"
       "annotations" = {
-        "kubernetes.io/ingress.class" = "istio"
+        "kubernetes.io/ingress.class"                 = "istio"
+        "cert-manager.io/issue-temporary-certificate" = "${each.value.cert-manager}"
       }
     }
     "spec" = {
