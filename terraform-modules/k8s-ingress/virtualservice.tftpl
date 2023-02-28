@@ -17,6 +17,7 @@ spec:
     - ${ domain }
 %{ endfor ~}
 %{ endif ~}
+%{ if lookup(settings, "protocol","http") == "http" ~}
   http:
     - match:
         - uri:
@@ -40,4 +41,14 @@ spec:
             response:
               set:
                 Strict-Transport-Security: max-age=31536000; includeSubDomains
+%{ endif ~}
+%{ else ~}
+  tcp:
+    - match:
+        - port: ${lookup(settings,"port", false) }
+      route:
+        - destination:
+            host: ${service.service}
+            port:
+              number: ${service.port}
 %{ endif ~}
