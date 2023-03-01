@@ -12,15 +12,16 @@ spec:
         - ${ domain }
 %{ endfor ~}
       port:
-        name: http
-        number: 80
-        protocol: HTTP
+        name: ${lookup(settings,"port", 80) != 80 ? name : "http"}   
+        number: ${lookup(settings,"port", 80) != 80 ? settings.port : 80 } 
+        protocol: ${lookup(settings,"protocol", "HTTP") != "HTTP" ? settings.protocol : "HTTP"}  
+%{ if lookup(settings, "port",false) == false ~}
       tls:
         httpsRedirect: true
     - hosts:
 %{ for domain in settings.domain ~}
         - ${ domain }
-%{ endfor }
+%{ endfor ~}
       port:
         name: https
         number: 443
@@ -28,3 +29,4 @@ spec:
       tls:
         credentialName: ${lookup(settings, "cert-name", "${name}-cert")}
         mode: SIMPLE
+%{ endif ~}

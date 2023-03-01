@@ -286,7 +286,7 @@ resource "kubernetes_stateful_set" "tarantool_stateful_set" {
 
         resources {
           requests = {
-            storage = "20Gi"
+            storage = var.Settings.clusters[var.Cluster].tarantool.pvc_opt_size
           }
         }
       }
@@ -304,7 +304,7 @@ resource "kubernetes_stateful_set" "tarantool_stateful_set" {
 
         resources {
           requests = {
-            storage = "20Gi"
+            storage = var.Settings.clusters[var.Cluster].tarantool.pvc_data_size
           }
         }
       }
