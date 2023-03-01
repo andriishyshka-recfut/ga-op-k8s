@@ -299,7 +299,7 @@ resource "grafana_dashboard" "dome_library_panel" {
   provider = grafana.elastic
   folder   = grafana_folder.dome.id
   depends_on = [
-    grafana_library_panel.minion_graph
+    grafana_library_panel.dome_graph
   ]      
   config_json = jsonencode({
     "panels" : concat(local.grafana_library_dome_graph, local.grafana_library_table)
