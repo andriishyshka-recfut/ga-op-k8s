@@ -1,0 +1,272 @@
+name: ansible
+namespace: sftp-jobs
+command:
+  #- /bin/sh
+  #- -c
+  #- sleep 3600
+  - ansible-playbook
+  - -vvv
+  - playbook.yml
+
+jobConfigMapName: sftp-job-config #ConfigMap name, specified in chart set in tf module
+
+config:
+  batchFile: ~/batchfile
+  bucketUrl: https://minio.p.regemini.io
+  bucketName: minio-logstash-pipelines-orbital-wording-233917
+  minioUser: rf-dome-something
+  pipelineName: rf-dome-something
+  backupFolder: sent
+  pipelineFileExt: csv
+  localDestination: /home/ansible/data
+  remoteDestination: share/received-data
+  useGssApiAuthOption: false
+  deliveryMethod: # sftp email s3
+  makeArchive: # zip gz
+  clientNotify: # email
+  createChecksum: false
+  rescueNotify: false
+  gpgEncrypt: false
+  GPGKeyPath: /home/ansible/.gpg #Path to mount gpg key
+  GPGKeyName: gpg.key #() Default key name in container
+
+awsS3:
+  bucket: # Required if deliveryMethod == s3
+
+emailConfig:
+  host: smtp.gmail.com #(Hardcoded here) Gmail smtp server host
+  port: 587 #(Hardcoded here) Gmail smtp server port
+  username: support@geminiadvisory.io #(Hardcoded here) Gmail smtp server username
+  # Password for Gmail smtp server is taken from global-creds secret in VAULT
+  addresses: user@mail-service.com #(If deliveryMethod == 'email') Destination addresses to send files to
+  cc: threat@geminiadvisory.io #(If deliveryMethod == 'email')
+  bcc: threat@geminiadvisory.io #(If deliveryMethod == 'email')
+  subject: default-subject #(If deliveryMethod == 'email')
+
+# It's Used when clientNotify == email
+# email_notify_dest_addresses and email_notify_cc_addresses must be specified in respective secret in VAULT
+emailNotify:
+  subject: some-subject
+
+# It's Used when rescueNotify == true
+# rescue_email_dest_addresses and rescue_email_cc_addresses must be specified in respective secret in VAULT
+rescueNotify:
+  emailSubject: "Files sending was failed"
+
+
+jobCredsSecretName: sftp-job-creds #Secret name, specified in chart set in tf module
+
+sshConfig:
+  host: sftp-server # Hostname in ssh config 'alias'
+  hostName: sftp-server-main # Hostname of sftp server
+  user: user #(REQUIRED) Sftp user will be taken from tfvars as pipeline name
+  port: 22 #(Optional if client uses own sftp-server ) Default port 22 specified in input.tf can be overridden in tfvars
+  privateKeyPath: /home/ansible/.ssh #(Not) Default key path in container
+  privateKeyName: key.pem #() Default key name in container
+  strictHostKeyChecking: "no" # Check host keys: yes or no
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 400m
+    memory: 512Mi
+
+failedJobsHistoryLimit: 2
+concurrencyPolicy: Forbid
+successJobHistoryLimit: 3
+startDeadlineSec: 180
+backoffLimit: 1
+completions: 1
+parallelism: 1
+istioInjection: false
+automountSAT: false
+serviceAccount:
+  create: false
+
+##################### VOLUMES ###################
+envs:
+  - varName: SFTP_HOST
+    envType: configMap
+    key: SFTP_HOST
+    optional: false
+  - varName: SFTP_PORT
+    envType: configMap
+    key: SFTP_PORT
+    optional: false
+  - varName: SSH_PASS
+    envType: secret
+    key: ssh_password
+    optional: false
+  - varName: SFTP_BATCH_FILE
+    envType: configMap
+    key: SFTP_BATCH_FILE
+    optional: false
+  - varName: SFTP_REMOTE_DEST
+    envType: configMap
+    key: SFTP_REMOTE_DEST
+    optional: false
+  - varName: USE_GSSAPIAUTH_OPTION
+    envType: configMap
+    key: USE_GSSAPIAUTH_OPTION
+    optional: false
+  - varName: MINIO_URL
+    envType: configMap
+    key: MINIO_URL
+    optional: false
+  - varName: MINIO_BUCKET_NAME
+    envType: configMap
+    key: MINIO_BUCKET_NAME
+    optional: false
+  - varName: PIPELINE_NAME
+    envType: configMap
+    key: PIPELINE_NAME
+    optional: false
+  - varName: LOCAL_DEST
+    envType: configMap
+    key: LOCAL_DEST
+    optional: false
+  - varName: MINIO_BACKUP_FOLDER
+    envType: configMap
+    key: MINIO_BACKUP_FOLDER
+    optional: false
+  - varName: DELIVERY_METHOD
+    envType: configMap
+    key: DELIVERY_METHOD
+    optional: false
+  - varName: MAKE_ARCHIVE
+    envType: configMap
+    key: MAKE_ARCHIVE
+    optional: false
+  - varName: PIPELINE_FILE_EXTENSION
+    envType: configMap
+    key: PIPELINE_FILE_EXTENSION
+    optional: false
+  - varName: EMAIL_HOST
+    envType: configMap
+    key: EMAIL_HOST
+    optional: false
+  - varName: EMAIL_PORT
+    envType: configMap
+    key: EMAIL_PORT
+    optional: false
+  - varName: EMAIL_SUBJECT
+    envType: configMap
+    key: EMAIL_SUBJECT
+    optional: false
+  - varName: EMAIL_NOTIFY_SUBJECT
+    envType: configMap
+    key: EMAIL_NOTIFY_SUBJECT
+    optional: false
+  - varName: RESCUE_EMAIL_SUBJECT
+    envType: configMap
+    key: RESCUE_EMAIL_SUBJECT
+    optional: false
+  - varName: AWS_S3_ACCESS_KEY
+    envType: secret
+    key: aws_s3_access_key
+    optional: false
+  - varName: AWS_S3_SECRET_KEY
+    envType: secret
+    key: aws_s3_secret_key
+    optional: false
+  - varName: AWS_S3_BUCKET
+    envType: configMap
+    key: AWS_S3_BUCKET
+    optional: false
+  - varName: RESCUE_NOTIFY
+    envType: configMap
+    key: RESCUE_NOTIFY
+    optional: false
+  - varName: CREATE_CHECKSUM
+    envType: configMap
+    key: CREATE_CHECKSUM
+    optional: false
+
+volumeMounts:
+  - name: job-config # Mount playbook
+    mountPath: /home/ansible/playbook.yml
+    subPath: playbook.yml
+    readOnly: false
+  - name: ssh-config # Mount ssh config
+    mountPath: /home/ansible/.ssh/config
+    subPath: config
+    readOnly: false
+
+
+volumes:
+  - volumeName: job-config # Creates volume to mount playbook
+    type: configMap
+    items:
+    - key: playbook.yml
+      path: playbook.yml
+    name: sftp-job-config # Default ConfigMap with configuration
+    defaultMode: 384
+  - volumeName: ssh-config # Create volume to mount ssh config in home dir
+    type: configMap
+    items:
+    - key: config
+      path: config
+    defaultMode: 384
+    name: sftp-job-config # Default ConfigMap with configuration
+
+image: harbor.t.regemini.io/sandbox/ansible-job:2 # Custom image in our harbor
+
+imagePullSecrets:
+  - name: harbor
+cronSchedule: "0 1 * * *"
+
+securityContext:
+  runAsGroup: 1005
+  runAsUser: 1005
+  fsGroup: 1005
+  runAsNonRoot: true
+  #capabilities:
+  #  drop:
+  #    - ALL
+
+additionalEnvs: []
+# example
+
+# For env from secret
+#  - varName: MINIOff
+#    envType: secret
+#    key: secretkey
+#    name: minio-credentials
+#    optional: false
+
+# For env from configMap
+#  - varName: SFTP_HOST
+#    envType: configMap
+#    key: SFTP_HOST
+#    name: job-config
+#    optional: false
+
+additionalVolumeMounts: []
+# example
+#  - name: ssh-config
+#    mountPath: /root/.ssh/config
+#    subPath: config
+#    readOnly: false
+additionalVolumes: []
+# example
+
+# For secret volume
+#  - volumeName: creds
+#    type: secret
+#    items:
+#      - key: local.pem
+#        path: local.pem
+#    name: creds
+#    defaultMode: 384
+
+# For configMap volume
+#  - volumeName: job-config
+#    type: configMap
+#    items:
+#      - key: playbook.yml
+#        path: playbook.yml
+#    name: job-config
+#    defaultMode: 384
+
