@@ -1,0 +1,324 @@
+apiVersion: v1
+data:
+  playbook.yml: |
+  {{` ---
+    - name: Logstash pipeline output delivery
+      hosts: localhost
+      vars:
+        delivery_method: "{{ lookup('env','DELIVERY_METHOD') }}"
+        archive: "{{ lookup('env','MAKE_ARCHIVE') }}"
+        client_notify: "{{ lookup('env','CLIENT_NOTIFY') }}"
+        sftp_host: "{{ lookup('env','SFTP_HOST') }}"
+        sftp_port: "{{ lookup('env','SFTP_PORT') }}"
+        sftp_batch_file: "{{ lookup('env','SFTP_BATCH_FILE') }}"
+        sftp_remote_dest: "{{ lookup('env','SFTP_REMOTE_DEST') }}"
+        ssh_pass: "{{ lookup('env','SSH_PASS') }}"
+        use_gssapiauth_option: "{{ lookup('env','USE_GSSAPIAUTH_OPTION') }}"
+        minio_url: "{{ lookup('env','MINIO_URL') }}"
+        minio_bucket_name: "{{ lookup('env','MINIO_BUCKET_NAME') }}"
+        local_dest: "{{ lookup('env','LOCAL_DEST') }}"
+        backup_folder: "{{ lookup('env','MINIO_BACKUP_FOLDER') }}"
+        pipeline_name: "{{ lookup('env','PIPELINE_NAME') }}"
+        file_extension: "{{ lookup('env','PIPELINE_FILE_EXTENSION') }}"
+        email_host: "{{ lookup('env','EMAIL_HOST') }}"
+        email_port: "{{ lookup('env','EMAIL_PORT') }}"
+        email_username: "{{ lookup('env','EMAIL_USERNAME') }}"
+        email_password: "{{ lookup('env','EMAIL_PASSWORD') }}"
+        email_dest_addresses: "{{ lookup('env','EMAIL_DEST_ADDRESSES') }}"
+        email_cc_addresses: "{{ lookup('env','EMAIL_CC_ADDRESSES') }}"
+        email_bcc_addresses: "{{ lookup('env','EMAIL_BCC_ADDRESSES') }}"
+        email_subject: "{{ lookup('env','EMAIL_SUBJECT') }}"
+        slack_token: "{{ lookup('env','SLACK_TOKEN') }}"
+        hostname: "{{ lookup('env','HOSTNAME') }}"
+        email_notify_dest_addresses: "{{ lookup('env','EMAIL_NOTIFY_DEST_ADDRESSES') }}"
+        email_notify_cc_addresses: "{{ lookup('env','EMAIL_NOTIFY_CC_ADDRESSES') }}"
+        email_notify_subject: "{{ lookup('env','EMAIL_NOTIFY_SUBJECT') }}"
+        aws_access_key: "{{ lookup('env','AWS_S3_ACCESS_KEY') }}"
+        aws_secret_key: "{{ lookup('env','AWS_S3_SECRET_KEY') }}"
+        s3_bucket: "{{ lookup('env','AWS_S3_BUCKET') }}"
+        rescue_email_dest_addresses: "{{ lookup('env','RESCUE_EMAIL_DEST_ADDRESSES') }}"
+        rescue_email_cc_addresses: "{{ lookup('env','RESCUE_EMAIL_CC_ADDRESSES') }}"
+        rescue_email_subject: "{{ lookup('env','RESCUE_EMAIL_SUBJECT') }}"
+        rescue_notify: "{{ lookup('env','RESCUE_NOTIFY') }}"
+        create_checksum: "{{ lookup('env','CREATE_CHECKSUM') }}"
+        gpg_encrypt: "{{ lookup('env','GPG_ENCRYPT') }}"
+
+      tasks:
+        - name: Playbook block
+          block:
+            - name: Get random number for delay
+              shell: echo $(( ( RANDOM % 360 ) + 900 ))
+              register: random_delay
+
+            - set_fact:
+                delivery: "{{ delivery_method }}"
+                archive: "{{ archive }}"
+                client_notify: "{{ client_notify }}"
+                rescue_notify: "{{ rescue_notify }}"
+                random_delay: "{{ random_delay.stdout }}"
+                #random_delay: "5"
+                create_checksum: "{{ create_checksum }}"
+                gpg_encrypt: "{{ gpg_encrypt }}"
+
+            - name: Initial delay for playbook
+              ansible.builtin.wait_for:
+                timeout: "{{ random_delay }}"
+
+            - name: Get files from minio
+              shell: aws --endpoint-url {{ minio_url }} s3 cp s3://{{ minio_bucket_name }}/{{ pipeline_name }}/ {{ local_dest }} --recursive --exclude "*{{ backup_folder }}*"
+              delay: "{{ random_delay }}"
+              retries: 3
+              tags: get_files
+
+            - name: debug
+              debug:
+                msg: "rescue value: {{ rescue_notify }}"
+
+            - name: Rename downloaded files
+              shell: |
+                set -e
+                for DIR in $( ls -ld {{ local_dest }}/* | awk '{ print $9 }' );do
+                FILE_NAMES="$(ls -l $DIR | awk '{ print $9 }' | tail -n+2)"
+                if [ $( echo $FILE_NAMES | wc -w ) != 1 ];then { echo "there are more then one file in logstash output directory"; exit 1; };fi
+                for FILE in $FILE_NAMES;do
+                mv $DIR/$FILE $DIR.{{ file_extension }}
+                done
+                rm -rf $DIR
+                done
+              tags: files_renaming
+
+            - name: Create dir on sftp
+              shell: |
+                set -e
+                #[ $(ls {{ local_dest }} | wc -l) -eq 0 ] && echo "No new files in corresponding bucket";exit 1 || echo "File(s) exist in bucket"
+                echo "mkdir {{ sftp_remote_dest }}" > {{ sftp_batch_file }}
+                sshpass -p '{{ ssh_pass }}' sftp -oBatchMode=no $([[ {{ use_gssapiauth_option }} == 'true' ]] && echo "-oGSSAPIAuthentication=no") -b {{ sftp_batch_file }} {{ sftp_host }} || true
+              tags: create_dir_sftp
+              when: delivery == "sftp"
+
+            - name: Encrypt file(s) with gpg key
+              shell: |
+                set -e
+                gpg --import /home/ansible/.gpg/gpg.key
+                export RECEIVER=$(gpg --list-keys | grep uid | awk '{ print $4 }' | tr -d '><')
+                gpg --yes --trust-model always -e -u bohdan -r ${RECEIVER} {{ local_dest }}/*
+                rm {{ local_dest }}/*.{{ file_extension }}
+              tags: gpg_encrypt
+              when: gpg_encrypt == true
+
+            - name: Archive files GZ
+              community.general.archive:
+                dest: "{{ item }}.gz"
+                format: gz
+                mode: '0644'
+                path: "{{ item }}"
+                remove: true
+              tags: archive_gz
+              with_fileglob: "{{ local_dest }}/*"
+              when: archive == "gz"
+
+            - name: Archive files ZIP
+              community.general.archive:
+                path: "{{ item }}"
+                dest: "{{ item }}.zip"
+                remove: true
+              tags: archive_zip
+              with_fileglob: "{{ local_dest }}/*"
+              when: archive == "zip"
+
+            - name: Get checksum of files
+              find:
+                path: '{{ local_dest }}'
+                patterns: '*'
+                get_checksum: yes
+              register: files_checksum
+              tags: get_checksum
+              when: create_checksum == true
+
+            - name: create sha1 file
+              lineinfile:
+                create: yes
+                path: "{{ local_dest }}/{{ item.path | basename }}.sha1"
+                line: "{{ item.checksum }}"
+                owner: '1000'
+                group: '1001'
+                mode: '0644'
+              with_items: "{{ files_checksum.files }}"
+              when: create_checksum == true
+
+            - name: Send downloaded files to sftp
+              shell: |
+                set -e
+                echo "put {{ item }} {{ sftp_remote_dest }}" > {{ sftp_batch_file }}
+                sshpass -p '{{ ssh_pass }}' sftp -oBatchMode=no $([[ {{ use_gssapiauth_option }} == 'true' ]] && echo "-oGSSAPIAuthentication=no") -b {{ sftp_batch_file }} {{ sftp_host }}
+              tags: sftp_delivery
+              register: shell_result
+              retries: 5
+              delay: "{{ random_delay }}"
+              until: shell_result.rc == 0
+              with_fileglob: "{{ local_dest }}/*"
+              when: delivery == "sftp"
+
+            - name: Send downloaded files to S3
+              amazon.aws.aws_s3:
+                aws_access_key: "{{ aws_access_key }}"
+                aws_secret_key: "{{ aws_secret_key }}"
+                bucket: "{{ aws_s3_bucket }}"
+                object: "{{ item | basename }}"
+                src: "{{ item }}"
+                mode: put
+              retries: 5
+              delay: "{{ random_delay }}"
+              tags: aws_s3_delivery
+              with_fileglob: "{{ local_dest }}/*"
+              when: delivery == "s3"
+
+            - set_fact:
+                files: "{{ lookup('fileglob','{{ local_dest }}/*',wantlist=true) | reject('search','.sha1') | list }}"
+
+            - name: debug
+              debug:
+                msg: "{{ files }}"
+
+            - name: Send downloaded files and sha to email
+              mail:
+                host: "{{ email_host }}"
+                port: "{{ email_port }}"
+                username: "{{ email_username }}"
+                password: "{{ email_password }}"
+                to: "{{ email_dest_addresses }}"
+                cc: "{{ email_cc_addresses }}"
+                bcc: "{{ email_bcc_addresses }}"
+                subject: "{{ email_subject }}"
+                attach:
+                  - "{{ item }}"
+                  - "{{ item }}.sha1"
+              tags: email_delivery_with_sha
+              retries: 5
+              delay: "{{ random_delay }}"
+              with_items: "{{ files }}"
+              loop_control:
+                pause: "{{ vars['random_delay'] if delivery == 'email' and create_checksum == true else '1' }}"
+              when: delivery == "email" and create_checksum == true
+
+            - name: Send downloaded files to email
+              mail:
+                host: "{{ email_host }}"
+                port: "{{ email_port }}"
+                username: "{{ email_username }}"
+                password: "{{ email_password }}"
+                to: "{{ email_dest_addresses }}"
+                cc: "{{ email_cc_addresses }}"
+                bcc: "{{ email_bcc_addresses }}"
+                subject: "{{ email_subject }}"
+                attach:
+                  - "{{ item }}"
+              tags: email_delivery
+              retries: 5
+              delay: "{{ random_delay }}"
+              with_fileglob: "{{ local_dest }}/*"
+              loop_control:
+                pause: "{{ vars['random_delay'] if delivery == 'email' and create_checksum != true else '1' }}"
+              when: delivery == "email" and create_checksum != true
+
+            - name: Client email notify with sha
+              community.general.notification.mail:
+                host: "{{ email_host }}"
+                port: "{{ email_port }}"
+                username: "{{ email_username }}"
+                password: "{{ email_password }}"
+                to: "{{ email_notify_dest_addresses }}"
+                cc: "{{ email_notify_cc_addresses }}"
+                subject: "{{ email_notify_subject }}"
+                body:
+                  - "{{ item }}"
+              tags: email_notify_with_sha
+              retries: 5
+              delay: "{{ random_delay }}"
+              loop_control:
+                pause: "{{ vars['random_delay'] if client_notify == 'email' and create_checksum == true else '1' }}"
+              with_items: "{{ files }}"
+              when: client_notify == "email" and create_checksum == true
+
+            - name: Client email notify
+              community.general.notification.mail:
+                host: "{{ email_host }}"
+                port: "{{ email_port }}"
+                username: "{{ email_username }}"
+                password: "{{ email_password }}"
+                to: "{{ email_notify_dest_addresses }}"
+                cc: "{{ email_notify_cc_addresses }}"
+                subject: "{{ email_notify_subject }}"
+                body:
+                  - "{{ item }}"
+              tags: email_notify
+              retries: 5
+              delay: "{{ random_delay }}"
+              loop_control:
+                pause: "{{ vars['random_delay'] if client_notify == 'email' and create_checksum != true else '1' }}"
+              with_items: "{{ files }}"
+              when: client_notify == "email" and create_checksum != true
+
+            - name: Backup sent files on bucket
+              shell: |
+                aws --endpoint-url {{ minio_url }} s3 mv s3://{{ minio_bucket_name }}/{{ pipeline_name }}/ s3://{{ minio_bucket_name }}/{{ pipeline_name }}/{{ backup_folder }}/  --recursive --exclude "*{{ backup_folder }}*"
+                aws --endpoint-url {{ minio_url }} s3 rm s3://{{ minio_bucket_name }}/{{ pipeline_name }}/  --recursive --exclude "*{{ backup_folder }}*"
+              tags: minio_backup_files
+
+          rescue:
+            #- name: OP Slack notify
+            #  community.general.slack:
+            #    token: "{{ slack_token }}"
+            #    msg: " _*Cronjob Alert*_ :rotating_light:\n>_Task was failed_ :slightly_frowning_face:\n>To see details, check job logs\n*Details:*\n>Ansible Task:\n> - {{ ansible_failed_task.name }}\n>Logstash pipeline_id:\n> - {{ pipeline_name }}\n>Job_name:\n> - {{ hostname }}\n"
+            #    channel: '#prometheus-critical'
+
+            - name: Client email notify
+              community.general.notification.mail:
+                host: "{{ email_host }}"
+                port: "{{ email_port }}"
+                username: "{{ email_username }}"
+                password: "{{ email_password }}"
+                to: "{{ rescue_email_dest_addresses }}"
+                cc: "{{ rescue_email_cc_addresses }}"
+                subject: "{{ rescue_email_subject }}"
+                body: "Sending report for {{ pipeline_name }} was failed! Operations already are in progress to fix it"
+              tags: email_rescue_notify
+              retries: 5
+              delay: "{{ random_delay }}"
+              when: rescue_notify == true `}}
+  config: | 
+    Host {{ .Values.sshConfig.host }}
+        HostName {{ .Values.sshConfig.hostName }}
+        User {{ .Values.sshConfig.user }}
+        Port {{ .Values.sshConfig.port }}
+        StrictHostKeyChecking {{ .Values.sshConfig.strictHostKeyChecking }}
+        IdentityFile {{ .Values.sshConfig.privateKeyPath }}/{{ .Values.sshConfig.privateKeyName }}
+
+  SFTP_HOST: {{ .Values.sshConfig.host | quote }}
+  SFTP_PORT: {{ .Values.sshConfig.port | quote }}
+  SFTP_BATCH_FILE: {{ .Values.config.batchFile | quote }}
+  SFTP_REMOTE_DEST: {{ .Values.config.remoteDestination | quote }}
+  SSH_PRIVATE_KEY: "{{ .Values.sshConfig.privateKeyPath }}/{{ .Values.sshConfig.privateKeyName }}"
+  USE_GSSAPIAUTH_OPTION: {{ .Values.config.useGssApiAuthOption | quote }}
+  PIPELINE_NAME: {{ .Values.config.pipelineName | quote }}
+  PIPELINE_FILE_EXTENSION: {{ .Values.config.FileExt | quote }}
+  MINIO_URL: {{ .Values.config.bucketUrl | quote }}
+  MINIO_BUCKET_NAME: {{ .Values.config.bucketName | quote }}
+  MINIO_BACKUP_FOLDER: {{ .Values.config.backupFolder | quote }}
+  LOCAL_DEST: {{ .Values.config.localDestination | quote }}
+  DELIVERY_METHOD: {{ .Values.config.deliveryMethod | quote }}
+  EMAIL_HOST: {{ .Values.emailConfig.host | quote }}
+  EMAIL_PORT: {{ .Values.emailConfig.port | quote }}
+  EMAIL_SUBJECT: {{ .Values.emailConfig.subject | quote }}
+  EMAIL_NOTIFY_SUBJECT: {{ .Values.emailNotify.subject | quote }}
+  AWS_S3_BUCKET: {{ .Values.awsS3.bucket | quote }}
+  MAKE_ARCHIVE: {{ .Values.config.makeArchive | quote }}
+  CLIENT_NOTIFY: {{ .Values.config.clientNotify | quote }}
+  RESCUE_NOTIFY: {{ .Values.config.rescueNotify | quote }}
+  RESCUE_EMAIL_SUBJECT: {{ .Values.rescueNotify.emailSubject | quote }}
+  CREATE_CHECKSUM: {{ .Values.config.createChecksum | quote }}
+  GPG_ENCRYPT: {{ .Values.config.gpgEncrypt | quote }}
+kind: ConfigMap
+metadata:
+  name: {{ .Values.jobConfigMapName }}
+  namespace: {{ .Values.namespace }}
