@@ -9,6 +9,16 @@ replicaCount: 1
 
 labels: {}
 
+persistence:
+  enabled: true
+  annotations: {}
+
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
+
 image:
   repository: atmoz/sftp
   pullPolicy: IfNotPresent
@@ -19,7 +29,6 @@ nameOverride:
 fullnameOverride:
 
 rollingUpdate:
-  maxSurge: 25%
   maxUnavailable: 25%
 
 securityContext: {}
