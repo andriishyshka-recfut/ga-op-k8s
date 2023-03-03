@@ -22,14 +22,15 @@ spec:
     type: RollingUpdate
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
-    - metadata:
-        name: "{{ $fullName }}-pvc"
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Gi
-      {{- end }}
+  - metadata:
+      name: "{{ $fullName }}-pvc"
+      {{- with .Values.persistence.annotations  }}
+      annotations:
+{{ toYaml . | indent 8 }}
+  {{- end }}
+    spec:
+{{ toYaml .Values.volumeClaimTemplate | indent 6 }}
+  {{- end }}
   template:
     metadata:
       annotations:
