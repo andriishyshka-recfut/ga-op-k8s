@@ -8,11 +8,26 @@ minio:
   bucket: minio-logstash-pipelines-orbital-wording-233917
   user: backup
 
+logstash:
+  auth: basic
+  user: logstash
+  password:
+
 elastic:
   namespace: elastic
   host: elastic
   pipelineID: "testing red green"
   pollInterval: 5s
+
+
+service:
+  annotations: {}
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9600
+      protocol: TCP
+      targetPort: 9600
 
 mountCaCert:
   enabled: true

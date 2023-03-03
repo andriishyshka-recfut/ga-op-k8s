@@ -6,6 +6,8 @@ resource "helm_release" "logstash" {
   wait         = true
   atomic       = true
   reset_values = true
+  force_update = true
+  replace      = true
   values = [
     file("${path.module}/logstash/values.yaml")
   ]
@@ -35,11 +37,11 @@ resource "helm_release" "logstash" {
   }
   set {
     name = "minio.endpoint"
-    value = local.minio_endpoint
+    value = try(each.value.minio_endpoint, local.minio_endpoint)
   }
   set {
     name = "minio.bucket"
-    value = local.minio_bucket
+    value = try(each.value.minio_bucket, local.minio_bucket)
   }
 
   depends_on = [kubernetes_secret.logstash_elastic_ca,kubernetes_secret.logstash_es_creds,kubernetes_secret.minio_creds]
@@ -49,7 +51,7 @@ resource "helm_release" "logstash" {
 data "kubernetes_secret" "logstash_elastic_ca" {
   for_each = local.namespaces
   metadata {
-    name      = "${each.key}-es-http-certs-internal"
+    name      = "${each.key}-https-certs"
     namespace = each.key
   }
 }
@@ -57,7 +59,7 @@ data "kubernetes_secret" "logstash_elastic_ca" {
 resource "kubernetes_secret" "logstash_elastic_ca" {
   for_each = local.namespaces
   metadata {
-    name      = "${each.key}-logstash-es-http-internal-certs"
+    name      = "${each.key}-logstash-https-certs"
     namespace = each.key
   }
   data = data.kubernetes_secret.logstash_elastic_ca[each.key].data
@@ -85,6 +87,12 @@ data "vault_generic_secret" "logstash_es_creds" {
   path      = "secret/logstash/red"
 }
 
+resource "random_password" "password" {
+  length           = 16
+  special          = true
+  override_special = "!#"
+}
+
 resource "kubernetes_secret" "logstash_es_creds" {
   for_each = local.namespaces
   metadata {
@@ -94,6 +102,7 @@ resource "kubernetes_secret" "logstash_es_creds" {
 
   data = {
     password   = data.vault_generic_secret.logstash_es_creds.data.password,
-    username   = data.vault_generic_secret.logstash_es_creds.data.username
+    username   = data.vault_generic_secret.logstash_es_creds.data.username,
+    logstash_password   = random_password.password.result
   }
 }

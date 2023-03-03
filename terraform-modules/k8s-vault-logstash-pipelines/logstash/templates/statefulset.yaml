@@ -68,7 +68,7 @@ spec:
             items:
               - key: ca.crt
                 path: ca.crt
-            secretName: {{ .Values.elastic.namespace }}-logstash-es-http-internal-certs
+            secretName: {{ .Values.elastic.namespace }}-logstash-https-certs
         {{- end }}
         {{- range .Values.secretMounts }}
         - name: {{ .name }}
@@ -89,7 +89,7 @@ spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
-      {{- end}}
+      {{- end }}
       {{- if .Values.hostAliases }}
       hostAliases: {{ toYaml .Values.hostAliases | nindent 6 }}
       {{- end }}
@@ -125,6 +125,11 @@ spec:
               secretKeyRef:
                 name: {{ .Values.elastic.namespace }}-logstash-es-creds
                 key: password
+          - name: 'LOGSTASH_PASSWORD'
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.elastic.namespace }}-logstash-es-creds
+                key: logstash_password
           - name: 'MINIO_ENDPOINT'
             value: {{ .Values.minio.endpoint }}
           - name: 'MINIO_BUCKET'
