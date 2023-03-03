@@ -52,6 +52,5 @@ resources:
     cpu: 400m
     memory: 512Mi
 
-progressDeadlineSeconds: 600
 revisionHistoryLimit: 5
 istioInjection: false
