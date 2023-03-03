@@ -16,17 +16,17 @@ locals {
   aws_s3_bucket          = "" # s3 bucket name
   file_ext               = "" # csv json
   #SFTP values
-  sftp_host              = "sftp-server-main"
+  sftp_host              = "sftp-server-main" # clusterIP service name
   sftp_user              = "user"
-  sftp_port              = "22"
-  sftp_use_gss_api_auth  = "false"
-  sftp_destination = "share/received-data"
+  sftp_port              = "22" #default for clusterIP service
+  sftp_use_gss_api_auth  = "false" #should be true for sftp-servers on windows
+  sftp_destination       = "in/"
   #Email values
   email_cc               = "threat@geminiadvisory.io"
   email_subject          = "FEED-NG"
   #EmailNotify values
-  email_notify_cc        = ""
-  email_notify_subject   = ""
+  email_notify_cc        = "" #some@mail to override default
+  email_notify_subject   = "" #some subject to override default
   #RescueEmailNotify values
   rescue_email_subject   = "Failed job"
 

@@ -215,6 +215,7 @@ image: harbor.t.regemini.io/sandbox/ansible-job:2 # Custom image in our harbor
 
 imagePullSecrets:
   - name: harbor
+
 cronSchedule: "0 1 * * *"
 
 securityContext:
