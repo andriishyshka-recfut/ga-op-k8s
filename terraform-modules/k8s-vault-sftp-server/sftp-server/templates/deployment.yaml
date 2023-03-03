@@ -1,30 +1,42 @@
 {{- $fullName := include "sftp-server.fullname" . -}}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ $fullName | quote }}
   labels:
     app: {{ $fullName | quote }}
+    release: {{ $fullName | quote }}
     {{- include "sftp-server.labels" . | nindent 4 }}
 spec:
-  progressDeadlineSeconds: {{ .Values.progressDeadlineSeconds }}
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  serviceName: {{ $fullName | quote }}
   selector:
     matchLabels:
       app: {{ $fullName | quote }}
+      release: {{ $fullName | quote }}
       {{- include "sftp-server.selectorLabels" . | nindent 6 }}
-  strategy:
+  updateStrategy:
     rollingUpdate:
-      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
       maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: "{{ $fullName }}-pvc"
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+      {{- end }}
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: {{ .Values.istioInjection | quote }}
       labels:
         app: {{ $fullName | quote }}
+        release: {{ $fullName | quote }}
         {{- include "sftp-server.selectorLabels" . | nindent 8 }}
     spec:
       containers:
@@ -42,6 +54,17 @@ spec:
               cpu: {{ .Values.resources.requests.cpu }}
               memory: {{ .Values.resources.requests.memory }}
           volumeMounts:
+            - mountPath: /home/
+              name: "{{ $fullName }}-pvc"
+              readOnly: false
+            - mountPath: /etc/ssh/ssh_host_ed25519_key
+              name: ssh-host-keys
+              readOnly: true
+              subPath: ssh_host_ed25519_key
+            - mountPath: /etc/ssh/ssh_host_rsa_key
+              name: ssh-host-keys
+              readOnly: true
+              subPath: ssh_host_rsa_key
             - mountPath: /etc/sftp/users.conf
               name: sftp-users
               readOnly: true
@@ -66,6 +89,16 @@ spec:
             defaultMode: 420
             name: {{ $fullName }}-sshd-config
           name: sftp-sshd
+        - name: ssh-host-keys
+          secret:
+            defaultMode: 384
+            items:
+              - key: ssh_host_rsa_key
+                path: ssh_host_rsa_key
+              - key: ssh_host_ed25519_key
+                path: ssh_host_ed25519_key
+            secretName: {{ $fullName }}-ssh-host-keys
+          name: ssh-host-keys
         - name: sftp-users
           secret:
             defaultMode: 420

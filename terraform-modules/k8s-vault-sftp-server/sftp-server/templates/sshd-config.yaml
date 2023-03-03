@@ -23,5 +23,6 @@ data:
       AuthenticationMethods publickey,password
     {{- else }}
       AuthenticationMethods publickey
+      PasswordAuthentication no
     {{- end }} 
     {{- end }}
