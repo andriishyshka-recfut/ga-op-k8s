@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/01-tarantool"
+      value: "k8s/tekton/03-tarantool"
     - name: branch
-      value: "master"
+      value: "\\#291-sandbox-dr-2023-03-02"

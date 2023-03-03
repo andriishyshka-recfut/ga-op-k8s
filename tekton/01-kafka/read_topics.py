@@ -1,6 +1,6 @@
 import json
 import kafka
-brokers = ['broker-0.p.regemini.io:32200', 'broker-0.p.regemini.io:32200', 'broker-0.p.regemini.io:32200']
+brokers = ['broker-0.p.regemini.io:32200', 'broker-0.p.regemini.io:32201', 'broker-0.p.regemini.io:32202']
 admin_client = kafka.KafkaAdminClient(bootstrap_servers=brokers)
 topics = ['artifact', 'checker', 'crypto', "dome", 'mage', 'magecart', 'maid', 'minion', 'syncmage', 'telegram', 'upsertmage', 'whirl']
 work_topics = {}

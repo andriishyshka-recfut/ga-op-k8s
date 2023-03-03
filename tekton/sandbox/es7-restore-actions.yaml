@@ -7,7 +7,7 @@ actions:
       repository: "minio"
       # name: monitoring-dr-%Y%m%d
       indices:
-      - '.*'
+        - '.*'
       wait_for_completion: False
       include_global_state: True
       # wait_interval: 20
@@ -20,14 +20,13 @@ actions:
   2:
     action: restore
     description: "Restore other"
-    options:2
+    options:
       repository: "minio"
       include_aliases: True
       # name: monitoring-dr-%Y%m%d
       indices:
       - '*'
       - '-.*'
-      include_aliases: True
       wait_for_completion: False
       include_global_state: False
       # wait_interval: 20
