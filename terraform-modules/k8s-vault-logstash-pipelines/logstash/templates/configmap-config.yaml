@@ -16,5 +16,9 @@ data:
     xpack.management.elasticsearch.username: ${ELASTICSEARCH_USER}
     xpack.management.elasticsearch.password: ${ELASTICSEARCH_PASSWORD}
     xpack.management.elasticsearch.hosts: [{{ .Values.elastic.host }}]
-    xpack.monitoring.elasticsearch.ssl.certificate_authority: {{ .Values.mountCaCert.mountPath}}/ca.crt
+    xpack.management.elasticsearch.ssl.certificate_authority: {{ .Values.mountCaCert.mountPath}}/ca.crt
     xpack.management.pipeline.id: [{{ .Values.elastic.pipelineID | replace " " ","}}]
+    xpack.monitoring.enabled: false
+    api.auth.type: {{ .Values.logstash.auth }}
+    api.auth.basic.username: {{ .Values.logstash.user }}
+    api.auth.basic.password: ${LOGSTASH_PASSWORD}
