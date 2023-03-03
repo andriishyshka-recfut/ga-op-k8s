@@ -70,10 +70,6 @@ data:
               retries: 3
               tags: get_files
 
-            - name: debug
-              debug:
-                msg: "rescue value: {{ rescue_notify }}"
-
             - name: Rename downloaded files
               shell: |
                 set -e
@@ -87,14 +83,12 @@ data:
                 done
               tags: files_renaming
 
-            - name: Create dir on sftp
+            - name: Check if last pipeline created data file
               shell: |
                 set -e
-                #[ $(ls {{ local_dest }} | wc -l) -eq 0 ] && echo "No new files in corresponding bucket";exit 1 || echo "File(s) exist in bucket"
-                echo "mkdir {{ sftp_remote_dest }}" > {{ sftp_batch_file }}
-                sshpass -p '{{ ssh_pass }}' sftp -oBatchMode=no $([[ {{ use_gssapiauth_option }} == 'true' ]] && echo "-oGSSAPIAuthentication=no") -b {{ sftp_batch_file }} {{ sftp_host }} || true
-              tags: create_dir_sftp
-              when: delivery == "sftp"
+                [ $(ls {{ local_dest }} | wc -l) -eq 0 ] && echo "No new files in corresponding bucket";exit 1 || echo "File(s) exist in bucket"
+              tags: check_file_in_bucket
+              register: bucket_empty
 
             - name: Encrypt file(s) with gpg key
               shell: |
@@ -271,6 +265,14 @@ data:
                 token: "{{ slack_token }}"
                 msg: " _*Cronjob Alert*_ :rotating_light:\n>_Task was failed_ :slightly_frowning_face:\n>To see details, check job logs\n*Details:*\n>Ansible Task:\n> - {{ ansible_failed_task.name }}\n>Logstash pipeline_id:\n> - {{ pipeline_name }}\n>Job_name:\n> - {{ hostname }}\n"
                 channel: '#prometheus-critical'
+              when: bucket_empty.rc == 0
+
+            - name: OP Slack notify
+              community.general.slack:
+                token: "{{ slack_token }}"
+                msg: " _*Cronjob Alert*_ :information_source:\n>_Task was finished_ \n>Not found new data in bucket for this pipeline \n*Details:*\n>Ansible Task:\n> - {{ ansible_failed_task.name }}\n>Logstash pipeline_id:\n> - {{ pipeline_name }}\n>Job_name:\n> - {{ hostname }}\n"
+                channel: '#sftp-jobs'
+              when: bucket_empty.rc != 0
 
             - name: Client email notify
               community.general.notification.mail:
@@ -285,7 +287,7 @@ data:
               tags: email_rescue_notify
               retries: 5
               delay: "{{ random_delay }}"
-              when: rescue_notify == true `}}
+              when: rescue_notify == true and bucket_empty.rc == 0 `}}
   config: | 
     Host {{ .Values.sshConfig.host }}
         HostName {{ .Values.sshConfig.hostName }}

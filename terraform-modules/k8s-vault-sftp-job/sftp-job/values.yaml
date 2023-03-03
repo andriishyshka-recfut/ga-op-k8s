@@ -5,7 +5,7 @@ command:
   #- -c
   #- sleep 3600
   - ansible-playbook
-  - -vvv
+  - -v
   - playbook.yml
 
 jobConfigMapName: sftp-job-config #ConfigMap name, specified in chart set in tf module
@@ -215,6 +215,7 @@ image: harbor.t.regemini.io/sandbox/ansible-job:2 # Custom image in our harbor
 
 imagePullSecrets:
   - name: harbor
+
 cronSchedule: "0 1 * * *"
 
 securityContext:
