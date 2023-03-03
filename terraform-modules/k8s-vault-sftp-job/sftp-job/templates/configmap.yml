@@ -266,11 +266,11 @@ data:
               tags: minio_backup_files
 
           rescue:
-            #- name: OP Slack notify
-            #  community.general.slack:
-            #    token: "{{ slack_token }}"
-            #    msg: " _*Cronjob Alert*_ :rotating_light:\n>_Task was failed_ :slightly_frowning_face:\n>To see details, check job logs\n*Details:*\n>Ansible Task:\n> - {{ ansible_failed_task.name }}\n>Logstash pipeline_id:\n> - {{ pipeline_name }}\n>Job_name:\n> - {{ hostname }}\n"
-            #    channel: '#prometheus-critical'
+            - name: OP Slack notify
+              community.general.slack:
+                token: "{{ slack_token }}"
+                msg: " _*Cronjob Alert*_ :rotating_light:\n>_Task was failed_ :slightly_frowning_face:\n>To see details, check job logs\n*Details:*\n>Ansible Task:\n> - {{ ansible_failed_task.name }}\n>Logstash pipeline_id:\n> - {{ pipeline_name }}\n>Job_name:\n> - {{ hostname }}\n"
+                channel: '#prometheus-critical'
 
             - name: Client email notify
               community.general.notification.mail:
