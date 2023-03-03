@@ -5,7 +5,7 @@ command:
   #- -c
   #- sleep 3600
   - ansible-playbook
-  - -vvv
+  - -v
   - playbook.yml
 
 jobConfigMapName: sftp-job-config #ConfigMap name, specified in chart set in tf module
