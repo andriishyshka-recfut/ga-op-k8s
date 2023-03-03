@@ -17,7 +17,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-namespaces"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
 
     - name: minio
       taskRef:
@@ -31,7 +31,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-minio"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
 
     - name: mongo
       taskRef:
@@ -46,7 +46,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-mongo"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
 
     - name: kafka
       taskRef:
@@ -60,7 +60,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-kafka"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
 
     - name: redis
       taskRef:
@@ -74,7 +74,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-redis"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
 
     - name: camel-k
       taskRef:
@@ -88,22 +88,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-camel-k"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
-
-
-    - name: tarantool
-      taskRef:
-        name: tg-run
-      runAfter:
-      - namespaces
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/01-tarantool"
-        - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
 
 
     - name: kubescape
@@ -118,7 +103,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-kubescape"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
 
     - name: monitoring-elastic
       taskRef:
@@ -133,7 +118,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-monitoring-elastic"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
     - name: monitoring-elastic-backup-restore
       taskRef:
         name: tg-run
@@ -148,7 +133,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-monitoring-backup-restore"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
     - name: monitoring
       taskRef:
         name: tg-run
@@ -163,7 +148,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-monitoring"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
     - name: external-secrets
       taskRef:
         name: tg-run
@@ -177,7 +162,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-external-secrets"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
 
     - name: mirroring
       taskRef:
@@ -194,7 +179,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-mirroring"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -215,7 +200,7 @@ spec:
         - name: path
           value: "k8s/tekton/02-stop-apps"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
     - name: data-migration
       taskRef:
         name: tg-run
@@ -228,7 +213,7 @@ spec:
         - name: path
           value: "k8s/tekton/02-data-migration"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -249,7 +234,7 @@ spec:
         - name: path
           value: "k8s/tekton/03-stop-mirrorings"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
     - name: fluxcd
       taskRef:
         name: tg-run
@@ -262,7 +247,7 @@ spec:
         - name: path
           value: "k8s/tekton/03-fluxcd"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
     - name: ingress
       taskRef:
         name: tg-run
@@ -273,7 +258,7 @@ spec:
         - name: path
           value: "k8s/tekton/03-ingress"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
     - name: minio-buckets
       taskRef:
         name: tg-run
@@ -284,7 +269,7 @@ spec:
         - name: path
           value: "k8s/tekton/03-post-minio"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
     - name: tls-proxy
       taskRef:
         name: tg-run
@@ -297,7 +282,7 @@ spec:
         - name: path
           value: "k8s/tekton/03-tls-proxy"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
     - name: kiali
       taskRef:
         name: tg-run
@@ -308,7 +293,18 @@ spec:
         - name: path
           value: "k8s/tekton/03-kiali"
         - name: branch
-          value: "\\#279-prod-dr-2023-02-03"
+          value: "\\#291-sandbox-dr-2023-03-02"
+    - name: tarantool
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/03-tarantool"
+        - name: branch
+          value: "\\#291-sandbox-dr-2023-03-02"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
