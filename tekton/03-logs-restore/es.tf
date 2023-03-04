@@ -1,20 +1,20 @@
 
-# module "backup" {
-#   source               = "../../terraform-modules/k8s-es-curator"
-#   Namespace            = "monitoring"
-#   ElasticName          = "monitoring"
-#   NamePrefix           = "backup"
-#   BackupBucketName     = "xbackup"
-#   BackupBucketBasePath = "es-backup/monitoring"
-#   EsService            = "monitoring-es-http"
-#   EsCreds              = "monitoring-es-elastic-user"
-#   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
-#   Actions              = file("${path.root}/es-backup-actions.yaml")
-#   Settings             = var.Settings
-#   providers = {
-#     kubernetes = kubernetes.kubernetes-inactive
-#   }
-# }
+module "backup" {
+  source               = "../../terraform-modules/k8s-es-curator"
+  Namespace            = "monitoring"
+  ElasticName          = "monitoring"
+  NamePrefix           = "backup"
+  BackupBucketName     = "xbackup"
+  BackupBucketBasePath = "es-backup/monitoring"
+  EsService            = "monitoring-es-http"
+  EsCreds              = "monitoring-es-elastic-user"
+  MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
+  Actions              = file("${path.root}/es-backup-actions.yaml")
+  Settings             = var.Settings
+  providers = {
+    kubernetes = kubernetes.kubernetes-inactive
+  }
+}
 
 
 module "restore" {
@@ -29,5 +29,5 @@ module "restore" {
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/es-restore-actions.yaml")
   Settings             = var.Settings
-  # depends_on           = [module.backup]
+  depends_on           = [module.backup]
 }
