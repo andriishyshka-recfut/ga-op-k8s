@@ -13,7 +13,7 @@ locals {
   tarantoolUser = jsondecode(data.vault_generic_secret.tarantool_credentials.data.credentials).username
   tarantoolPass = jsondecode(data.vault_generic_secret.tarantool_credentials.data.credentials).password
 
-  affinity = var.Cluster == "production" ? ["vortex-tmp"] : [""]
+  affinity = var.Cluster == "production" ? ["tarantool"] : [""]
 }
 
 
@@ -78,7 +78,19 @@ resource "kubernetes_stateful_set" "tarantool_stateful_set" {
       }
 
       spec {
-
+        affinity {
+          node_affinity {
+            required_during_scheduling_ignored_during_execution {
+              node_selector_term {
+                match_expressions {
+                  key      = "workloadsType"
+                  operator = "In"
+                  values   = local.affinity
+                }
+              }
+            }
+          }
+        }
         toleration {
           key      = "workloadsType"
           operator = "Exists"
