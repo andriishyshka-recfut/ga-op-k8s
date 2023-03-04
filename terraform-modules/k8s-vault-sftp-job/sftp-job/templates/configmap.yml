@@ -102,23 +102,14 @@ data:
 
             - name: Archive files GZ
               community.general.archive:
-                dest: "{{ item }}.gz"
-                format: gz
+                dest: "{{ item }}.{{ archive }}"
+                format: "{{ archive }}"
                 mode: '0644'
                 path: "{{ item }}"
                 remove: true
-              tags: archive_gz
+              tags: archive
               with_fileglob: "{{ local_dest }}/*"
-              when: archive == "gz"
-
-            - name: Archive files ZIP
-              community.general.archive:
-                path: "{{ item }}"
-                dest: "{{ item }}.zip"
-                remove: true
-              tags: archive_zip
-              with_fileglob: "{{ local_dest }}/*"
-              when: archive == "zip"
+              when: archive == "gz" or archive == "zip"
 
             - name: Get checksum of files
               find:
