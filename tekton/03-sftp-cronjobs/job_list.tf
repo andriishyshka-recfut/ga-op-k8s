@@ -35,7 +35,7 @@ locals {
       "delivery_method": "sftp",
       "sftp_user": "creditone",
       "sftp_port": "22",
-      "sftp_destination": "in/pans",
+      "sftp_destination": "in/pan",
       "file_ext": "csv",
       "archive": "zip"
     }

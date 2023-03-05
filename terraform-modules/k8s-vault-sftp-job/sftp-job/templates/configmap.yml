@@ -86,7 +86,7 @@ data:
             - name: Check if last pipeline created data file
               shell: |
                 set -e
-                [ $(ls {{ local_dest }} | wc -l) -eq 0 ] && echo "No new files in corresponding bucket";exit 1 || echo "File(s) exist in bucket"
+                [[ $(ls {{ local_dest }} | wc -l) -eq 0 ]] && echo "No new files in corresponding bucket";exit 1 || echo "File(s) exist in bucket"
               tags: check_file_in_bucket
               register: bucket_empty
 
