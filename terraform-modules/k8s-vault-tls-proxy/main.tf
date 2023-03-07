@@ -14,7 +14,7 @@ resource "null_resource" "pki_init_settings" {
     always_run = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "vault secrets tune -max-lease-ttl=31708800 pki-${each.key}"
+    command = "vault secrets tune -max-lease-ttl=158544000 pki-${each.key}"
   }
   depends_on = [
     null_resource.pki_enable
