@@ -40,7 +40,7 @@ locals {
       "archive" : "zip"
     },
     "minion-dscvr-added-bihourly" : {
-      "cron" : "0 */2 * * *",
+      "cron" : "15 */2 * * *",
       "minio_user" : "logstash-red",
       "delivery_method" : "sftp",
       "sftp_user" : "fd",
@@ -50,7 +50,7 @@ locals {
       "gpg_encrypt" : true
     },
     "minion-dscvr-pans-daily" : {
-      "cron" : "0 0 * * *",
+      "cron" : "15 0 * * *",
       "minio_user" : "logstash-red",
       "delivery_method" : "sftp",
       "sftp_user" : "fd",
