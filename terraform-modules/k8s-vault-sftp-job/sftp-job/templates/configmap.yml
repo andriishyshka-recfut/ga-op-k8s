@@ -73,24 +73,16 @@ data:
 
             - name: Rename downloaded files
               shell: |
-                set -e
-                for DIR in $(ls -1d {{ local_dest }}) ; do cd $DIR ; cat * > ../$DIR.{{ file_extension }} ; cd .. ; rm -rf $DIR ; done
-                #for DIR in $( ls -ld {{ local_dest }}/* | awk '{ print $9 }' );do
-                #FILE_NAMES="$(ls -l $DIR | awk '{ print $9 }' | tail -n+2)"
-                #if [ $( echo $FILE_NAMES | wc -w ) != 1 ];then { echo "there are more then one file in logstash output directory"; exit 1; };fi
-                #for FILE in $FILE_NAMES;do
-                #mv $DIR/$FILE $DIR.{{ file_extension }}
-                #done
-                #rm -rf $DIR
-                #done
+                set -x
+                for DIR in $(ls -1 data); do cat {{ local_dest}}/${DIR}/* > {{ local_dest}}/$DIR.csv && rm -rf {{ local_dest}}/$DIR ; done
               tags: files_renaming
 
             - name: Encrypt file(s) with gpg key
               shell: |
                 set -e
                 gpg --import /home/ansible/.gpg/gpg.key
-                export RECEIVER=$(gpg --list-keys | grep uid | awk '{ print $4 }' | tr -d '><')
-                gpg --yes --trust-model always -e -u bohdan -r ${RECEIVER} {{ local_dest }}/*
+                export RECEIVER=$(gpg --list-keys | grep uid | awk '{ print $NF }' | tr -d '><')
+                gpg --yes --trust-model always -e -u support@geminiadvisory.io -r ${RECEIVER} {{ local_dest }}/*
                 rm {{ local_dest }}/*.{{ file_extension }}
               tags: gpg_encrypt
               when: gpg_encrypt == true
