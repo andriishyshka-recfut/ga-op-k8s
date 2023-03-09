@@ -55,8 +55,9 @@ data:
                 archive: "{{ archive }}"
                 client_notify: "{{ client_notify }}"
                 rescue_notify: "{{ rescue_notify }}"
-                random_delay: "{{ random_delay.stdout }}"
-                #random_delay: "5"
+                #random_delay: "{{ random_delay.stdout }}"
+                op_notify: "false"
+                random_delay: "5"
                 create_checksum: "{{ create_checksum }}"
                 gpg_encrypt: "{{ gpg_encrypt }}"
 
@@ -72,30 +73,16 @@ data:
 
             - name: Rename downloaded files
               shell: |
-                set -e
-                for DIR in $( ls -ld {{ local_dest }}/* | awk '{ print $9 }' );do
-                FILE_NAMES="$(ls -l $DIR | awk '{ print $9 }' | tail -n+2)"
-                if [ $( echo $FILE_NAMES | wc -w ) != 1 ];then { echo "there are more then one file in logstash output directory"; exit 1; };fi
-                for FILE in $FILE_NAMES;do
-                mv $DIR/$FILE $DIR.{{ file_extension }}
-                done
-                rm -rf $DIR
-                done
+                set -x
+                for DIR in $(ls -1 data); do cat {{ local_dest}}/${DIR}/* > {{ local_dest}}/$DIR.csv && rm -rf {{ local_dest}}/$DIR ; done
               tags: files_renaming
-
-            - name: Check if new file exists on bucket
-              shell: |
-                set -e
-                [[ -d <directory> ]] && exit 1
-              tags: check_file_in_bucket
-              register: bucket_empty
 
             - name: Encrypt file(s) with gpg key
               shell: |
                 set -e
                 gpg --import /home/ansible/.gpg/gpg.key
-                export RECEIVER=$(gpg --list-keys | grep uid | awk '{ print $4 }' | tr -d '><')
-                gpg --yes --trust-model always -e -u bohdan -r ${RECEIVER} {{ local_dest }}/*
+                export RECEIVER=$(gpg --list-keys | grep uid | awk '{ print $NF }' | tr -d '><')
+                gpg --yes --trust-model always -e -u support@geminiadvisory.io -r ${RECEIVER} {{ local_dest }}/*
                 rm {{ local_dest }}/*.{{ file_extension }}
               tags: gpg_encrypt
               when: gpg_encrypt == true
@@ -256,13 +243,7 @@ data:
                 token: "{{ slack_token }}"
                 msg: " _*Cronjob Alert*_ :rotating_light:\n>_Task was failed_ :slightly_frowning_face:\n>To see details, check job logs\n*Details:*\n>Ansible Task:\n> - {{ ansible_failed_task.name }}\n>Logstash pipeline_id:\n> - {{ pipeline_name }}\n>Job_name:\n> - {{ hostname }}\n"
                 channel: '#prometheus-critical'
-
-            - name: OP Slack notify
-              community.general.slack:
-                token: "{{ slack_token }}"
-                msg: " _*Cronjob Alert*_ :information_source:\n>_Task was finished_ \n>Not found new data in bucket for this pipeline \n*Details:*\n>Ansible Task:\n> - {{ ansible_failed_task.name }}\n>Logstash pipeline_id:\n> - {{ pipeline_name }}\n>Job_name:\n> - {{ hostname }}\n"
-                channel: '#prometheus-critical'
-              when: bucket_empty.rc != 0
+              when: op_notify == "true"
 
             - name: Client email notify
               community.general.notification.mail:

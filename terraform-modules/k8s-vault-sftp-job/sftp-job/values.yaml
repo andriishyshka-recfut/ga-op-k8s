@@ -183,6 +183,14 @@ envs:
     envType: configMap
     key: CREATE_CHECKSUM
     optional: false
+  - varName: CLIENT_NOTIFY
+    envType: configMap
+    key: CLIENT_NOTIFY
+    optional: false
+  - varName: GPG_ENCRYPT
+    envType: configMap
+    key: GPG_ENCRYPT
+    optional: false
 
 volumeMounts:
   - name: job-config # Mount playbook
