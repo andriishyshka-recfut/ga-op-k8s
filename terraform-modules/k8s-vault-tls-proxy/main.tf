@@ -28,7 +28,7 @@ resource "null_resource" "pki_generate_root" {
   }
   provisioner "local-exec" {
     command = <<-EOT
-      vault write pki-${each.key}/root/generate/internal common_name=regemini.com ttl=31708800 \
+      vault write pki-${each.key}/root/generate/internal common_name=regemini.com ttl=158544000 \
       ou=IT organization="Gemini Advisory LLC" \
       country=US locality=Miami province=FL
     EOT

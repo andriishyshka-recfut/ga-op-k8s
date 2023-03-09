@@ -217,3 +217,10 @@ filebeat:
                 json.add_error_key: true
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log                           
+            # SFTP
+            - condition.contains:
+                kubernetes.namespace: sftp-jobs
+              config:
+              - type: container
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log 
