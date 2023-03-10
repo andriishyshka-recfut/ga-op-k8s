@@ -71,6 +71,10 @@ data:
               retries: 3
               tags: get_files
 
+            - name: 'sed (substitute [@metadata][_id])'
+              shell: for DIR in $(ls -1 data); do sed --in-place 's/\[\@metadata\]\[_id\]/_id/' {{ local_dest}}/${DIR}/* ; done
+              tags: sed_sub
+
             - name: Rename downloaded files
               shell: |
                 set -x
