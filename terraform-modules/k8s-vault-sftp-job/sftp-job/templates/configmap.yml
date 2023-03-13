@@ -86,7 +86,7 @@ data:
                 set -e
                 gpg --import /home/ansible/.gpg/gpg.key
                 export RECEIVER=$(gpg --list-keys | grep uid | awk '{ print $NF }' | tr -d '><')
-                gpg --yes --trust-model always -e -u support@geminiadvisory.io -r ${RECEIVER} {{ local_dest }}/*
+                for file in $(ls -1 {{ local_dest }}); do gpg --yes --trust-model always -e -u support@geminiadvisory.io -r ${RECEIVER} {{ local_dest }}/$file; done
                 rm {{ local_dest }}/*.{{ file_extension }}
               tags: gpg_encrypt
               when: gpg_encrypt == true
