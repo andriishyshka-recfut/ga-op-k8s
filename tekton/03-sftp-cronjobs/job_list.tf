@@ -16,7 +16,7 @@ locals {
       "sftp_destination" : "in/account",
       "file_ext" : "csv",
       "archive" : "zip",
-      "include_headers" : true
+      "include_headers": true
     },
     "minion-creditone-added-daily" : {
       "minio_user" : "logstash-red",
@@ -26,7 +26,7 @@ locals {
       "sftp_destination" : "in/",
       "file_ext" : "csv",
       "archive" : "zip",
-      "include_headers" : true
+      "include_headers": true
     },
     "minion-creditone-pans-daily" : {
       "minio_user" : "logstash-red",
@@ -65,14 +65,14 @@ locals {
       "sftp_destination" : "in/",
       "file_ext" : "csv",
       "email" : true,
-      "email_subject" : "[FEED] - TEST'PANS"
+      "email_subject": "[FEED] - TEST'PANS"
 
     },
     "minion-s3-added-daily" : {
       "minio_user" : "logstash-red",
       "sftp" : true,
       "email" : true,
-      "email_subject" : "[FEED] - S3'ADDED",
+      "email_subject": "[FEED] - S3'ADDED",
       "sftp_user" : "s3",
       "sftp_port" : "22",
       "sftp_destination" : "in/",
@@ -87,14 +87,14 @@ locals {
       "sftp_destination" : "in/",
       "file_ext" : "json",
       "archive" : "gz",
-      "create_checksum" : true
+      "create_checksum": true
     },
     "minion-bmo-pans-daily" : {
       "minio_user" : "logstash-red",
       "email" : true,
-      "email_subject" : "[FEED] - BMO'PANS"
+      "email_subject": "[FEED] - BMO'PANS"
       "archive" : "zip",
-      "file_ext" : "CSV",
+      "file_ext" : "CSV"
     }
   }
 }

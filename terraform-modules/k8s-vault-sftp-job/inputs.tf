@@ -5,6 +5,7 @@ variable "job_list" {
 locals {
   namespace              = "sftp-jobs"
   bucket                 = "minio-logstash-pipelines-orbital-wording-233917"
+  minio_url              = "https://minio.p.regemini.io"
   minio_user             = "logstash-user"
   cron                   = "0 0 * * *"
   archive                = "" # zip or gz
