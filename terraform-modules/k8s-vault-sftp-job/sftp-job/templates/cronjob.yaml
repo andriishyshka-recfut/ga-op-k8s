@@ -42,21 +42,6 @@ spec:
                       key: slack_token
                       name: sftp-job-global-creds
                       optional: false
-                {{- if eq .Values.config.rescueNotify true }}
-                - name: RESCUE_EMAIL_DEST_ADDRESSES
-                  valueFrom:
-                    secretKeyRef:
-                      key: rescue_email_dest_addresses
-                      name: sftp-job-global-creds
-                      optional: false
-                - name: RESCUE_EMAIL_CC_ADDRESSES
-                  valueFrom:
-                    secretKeyRef:
-                      key: rescue_email_cc_addresses
-                      name: sftp-job-global-creds
-                      optional: false
-                {{- end }}
-                {{- if or (eq .Values.config.deliveryMethod "email") (eq .Values.config.notifyClient "email") }}
                 - name: EMAIL_PASSWORD
                   valueFrom:
                     secretKeyRef:
@@ -69,37 +54,6 @@ spec:
                       key: email_username
                       name: sftp-job-global-creds
                       optional: false
-                - name: EMAIL_DEST_ADDRESSES
-                  valueFrom:
-                    secretKeyRef:
-                      key: email_dest_addresses
-                      name: sftp-job-creds-{{ .Values.config.pipelineName }}
-                      optional: false
-                - name: EMAIL_CC_ADDRESSES
-                  valueFrom:
-                    secretKeyRef:
-                      key: email_cc_addresses
-                      name: sftp-job-creds-{{ .Values.config.pipelineName }}
-                      optional: false
-                - name: EMAIL_BCC_ADDRESSES
-                  valueFrom:
-                    secretKeyRef:
-                      key: email_bcc_addresses
-                      name: sftp-job-creds-{{ .Values.config.pipelineName }}
-                      optional: false
-                - name: EMAIL_NOTIFY_DEST_ADDRESSES
-                  valueFrom:
-                    secretKeyRef:
-                      key: email_notify_dest_addresses
-                      name: sftp-job-creds-{{ .Values.config.pipelineName }}
-                      optional: false
-                - name: EMAIL_NOTIFY_CC_ADDRESSES
-                  valueFrom:
-                    secretKeyRef:
-                      key: email_notify_cc_addresses
-                      name: sftp-job-creds-{{ .Values.config.pipelineName }}
-                      optional: false
-                {{- end }}
               {{- range .Values.envs }}
                 - name: {{ .varName }}
                   valueFrom:

@@ -4,7 +4,7 @@ replicas: 1
 command: "/usr/local/bin/docker-entrypoint"
 
 minio:
-  endpoint: https://minio.p.regemini.io
+  endpoint: https://minio.regemini.io
   bucket: minio-logstash-pipelines-orbital-wording-233917
   user: backup
 
