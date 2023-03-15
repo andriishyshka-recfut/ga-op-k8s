@@ -79,6 +79,10 @@ locals {
       "sftp_destination" : "in/",
       "file_ext" : "csv",
       "archive" : "zip"
+    },
+    "minion-bmo-pans-daily" : {
+      "cron" : "15 0 * * *",
+      "minio_user" : "logstash-red",
     }
   }
 }
