@@ -11,6 +11,9 @@ command:
 jobConfigMapName: sftp-job-config #ConfigMap name, specified in chart set in tf module
 
 config:
+  sftp: false
+  s3: false
+  email: false
   batchFile: ~/batchfile
   bucketUrl: https://minio.p.regemini.io
   bucketName: minio-logstash-pipelines-orbital-wording-233917
@@ -21,32 +24,27 @@ config:
   localDestination: /home/ansible/data
   remoteDestination: share/received-data
   useGssApiAuthOption: false
-  deliveryMethod: # sftp email s3
   makeArchive: # zip gz
-  clientNotify: # email
   createChecksum: false
   rescueNotify: false
   gpgEncrypt: false
   GPGKeyPath: /home/ansible/.gpg #Path to mount gpg key
   GPGKeyName: gpg.key #() Default key name in container
+  includeHeaders: false #Include headers to csv file
+  opNotify: false #turn on/off rescue slack notify
 
 awsS3:
-  bucket: # Required if deliveryMethod == s3
+  bucket: # Required if s3 == true
 
 emailConfig:
   host: smtp.gmail.com #(Hardcoded here) Gmail smtp server host
   port: 587 #(Hardcoded here) Gmail smtp server port
   username: support@geminiadvisory.io #(Hardcoded here) Gmail smtp server username
   # Password for Gmail smtp server is taken from global-creds secret in VAULT
-  addresses: user@mail-service.com #(If deliveryMethod == 'email') Destination addresses to send files to
-  cc: threat@geminiadvisory.io #(If deliveryMethod == 'email')
-  bcc: threat@geminiadvisory.io #(If deliveryMethod == 'email')
-  subject: default-subject #(If deliveryMethod == 'email')
-
-# It's Used when clientNotify == email
-# email_notify_dest_addresses and email_notify_cc_addresses must be specified in respective secret in VAULT
-emailNotify:
-  subject: some-subject
+  addresses: user@mail-service.com #(If email == true) Destination addresses to send files to
+  cc: threat@geminiadvisory.io #(If email == true)
+  bcc: threat@geminiadvisory.io #(If email == true)
+  subject: default-subject #(If email == true)
 
 # It's Used when rescueNotify == true
 # rescue_email_dest_addresses and rescue_email_cc_addresses must be specified in respective secret in VAULT
@@ -67,8 +65,8 @@ sshConfig:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 128Mi
   limits:
     cpu: 400m
     memory: 512Mi
@@ -131,10 +129,6 @@ envs:
     envType: configMap
     key: MINIO_BACKUP_FOLDER
     optional: false
-  - varName: DELIVERY_METHOD
-    envType: configMap
-    key: DELIVERY_METHOD
-    optional: false
   - varName: MAKE_ARCHIVE
     envType: configMap
     key: MAKE_ARCHIVE
@@ -154,10 +148,6 @@ envs:
   - varName: EMAIL_SUBJECT
     envType: configMap
     key: EMAIL_SUBJECT
-    optional: false
-  - varName: EMAIL_NOTIFY_SUBJECT
-    envType: configMap
-    key: EMAIL_NOTIFY_SUBJECT
     optional: false
   - varName: RESCUE_EMAIL_SUBJECT
     envType: configMap
@@ -183,14 +173,47 @@ envs:
     envType: configMap
     key: CREATE_CHECKSUM
     optional: false
-  - varName: CLIENT_NOTIFY
-    envType: configMap
-    key: CLIENT_NOTIFY
-    optional: false
   - varName: GPG_ENCRYPT
     envType: configMap
     key: GPG_ENCRYPT
     optional: false
+  - varName: INCLUDE_HEADERS
+    envType: configMap
+    key: INCLUDE_HEADERS
+    optional: false
+  - varName: OP_NOTIFY
+    envType: configMap
+    key: OP_NOTIFY
+    optional: false
+  - varName: EMAIL
+    envType: configMap
+    key: EMAIL
+    optional: false
+  - varName: RESCUE_EMAIL_DEST_ADDRESSES
+    envType: secret
+    key: rescue_email_dest_addresses
+    optional: false
+  - varName: RESCUE_EMAIL_CC_ADDRESSES
+    envType: secret
+    key: rescue_email_cc_addresses
+    optional: false
+  - varName: EMAIL_DEST_ADDRESSES
+    envType: secret
+    key: email_dest_addresses
+    optional: false
+  - varName: EMAIL_CC_ADDRESSES
+    envType: secret
+    key: email_cc_addresses
+    optional: false
+  - varName: EMAIL_BCC_ADDRESSES
+    envType: secret
+    key: email_bcc_addresses
+    optional: false
+  - varName: HEADERS
+    envType: secret
+    key: headers
+    optional: false
+
 
 volumeMounts:
   - name: job-config # Mount playbook

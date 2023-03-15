@@ -39,8 +39,16 @@ resource "helm_release" "sftp-job" {
     value      = try(each.value.minio_user, local.minio_user)
   }
   set {
-    name       = "config.deliveryMethod"
-    value      = try(each.value.delivery_method, local.delivery_method)
+    name       = "config.sftp"
+    value      = try(each.value.sftp, local.sftp)
+  }
+  set {
+    name       = "config.s3"
+    value      = try(each.value.s3, local.s3)
+  }
+  set {
+    name       = "config.email"
+    value      = try(each.value.email, local.email)
   }
   set {
     name       = "sshConfig.hostName"
@@ -67,10 +75,6 @@ resource "helm_release" "sftp-job" {
     value      = try(each.value.email_subject, local.email_subject)
   }
   set {
-    name       = "emailNotify.subject"
-    value      = try(each.value.email_notify_subject, local.email_notify_subject)
-  }
-  set {
     name       = "rescueNotify.emailSubject"
     value      = try(each.value.rescue_email_subject, local.rescue_email_subject)
   }
@@ -81,10 +85,6 @@ resource "helm_release" "sftp-job" {
   set {
     name       = "config.makeArchive"
     value      = try(each.value.archive, local.archive)
-  }
-  set {
-    name       = "config.clientNotify"
-    value      = try(each.value.client_notify, local.client_notify)
   }
   set {
     name       = "config.rescueNotify"
@@ -101,6 +101,14 @@ resource "helm_release" "sftp-job" {
   set {
     name       = "config.FileExt"
     value      = try(each.value.file_ext, local.file_ext)
+  }
+  set {
+    name       = "config.includeHeaders"
+    value      = try(each.value.include_headers, local.include_headers)
+  }
+  set {
+    name       = "config.opNotify"
+    value      = try(each.value.op_notify, local.op_notify)
   }
   set {
     name       = "jobConfigMapName"
@@ -130,11 +138,12 @@ resource "kubernetes_secret" "creds_secret" {
     "gpg.key"                      = try(data.vault_generic_secret.creds_secret[each.key].data.gpg_key, "")
     "aws_s3_access_key"            = try(data.vault_generic_secret.creds_secret[each.key].data.aws_s3_access_key, "")
     "aws_s3_secret_key"            = try(data.vault_generic_secret.creds_secret[each.key].data.aws_s3_secret_key, "")
-    "email_dest_addresses"         = try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_dest_addresses, " ", ", "), "")
-    "email_cc_addresses"           = try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_cc_addresses, " ", ", "), local.email_cc)
-    "email_bcc_addresses"          = try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_bcc_addresses, " ", ", "), "")
-    "email_notify_dest_addresses"  = try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_notify_dest_addresses, " ", ", "), "")
-    "email_notify_cc_addresses"    = try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_notify_cc_addresses, " ", ", "), local.email_notify_cc)
+    "email_dest_addresses"         = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_dest_addresses, " ", ","), ""))
+    "email_cc_addresses"           = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_cc_addresses, " ", ","), local.email_cc))
+    "email_bcc_addresses"          = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_bcc_addresses, " ", ","), ""))
+    "rescue_email_dest_addresses"  = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.rescue_email_dest_addresses, " ", ","), ""))
+    "rescue_email_cc_addresses"    = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.rescue_email_cc_addresses, " ", ","), ""))
+    "headers"    = try(replace(data.vault_generic_secret.creds_secret[each.key].data.headers, " ", ", "), local.headers)
   }
 }
 
@@ -169,8 +178,6 @@ resource "kubernetes_secret" "global_creds" {
     "slack_token"                 = data.vault_generic_secret.global_creds.data.slack_token
     "email_password"              = data.vault_generic_secret.global_creds.data.gmail_account_smtp_password
     "email_username"              = data.vault_generic_secret.global_creds.data.gmail_account_smtp_user
-    "rescue_email_dest_addresses" = data.vault_generic_secret.global_creds.data.rescue_email_dest_addresses
-    "rescue_email_cc_addresses"   = data.vault_generic_secret.global_creds.data.rescue_email_cc_addresses
   }
 
 }
