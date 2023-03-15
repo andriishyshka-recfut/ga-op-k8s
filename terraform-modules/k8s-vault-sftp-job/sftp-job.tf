@@ -35,6 +35,10 @@ resource "helm_release" "sftp-job" {
     value      = try(each.value.bucket, local.bucket)
   }
   set {
+    name  = "config.bucketUrl"
+    value = try(each.value.minio_url, local.minio_url)
+  }
+  set {
     name       = "config.minioUser"
     value      = try(each.value.minio_user, local.minio_user)
   }

@@ -189,6 +189,10 @@ envs:
     envType: configMap
     key: EMAIL
     optional: false
+  - varName: SFTP
+    envType: configMap
+    key: SFTP
+    optional: false
   - varName: RESCUE_EMAIL_DEST_ADDRESSES
     envType: secret
     key: rescue_email_dest_addresses
