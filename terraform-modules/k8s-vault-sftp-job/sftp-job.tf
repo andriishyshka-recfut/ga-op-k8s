@@ -35,8 +35,8 @@ resource "helm_release" "sftp-job" {
     value      = try(each.value.bucket, local.bucket)
   }
   set {
-    name  = "config.bucketUrl"
-    value = try(each.value.minio_url, local.minio_url)
+    name       = "config.bucketUrl"
+    value      = try(each.value.minio_url, local.minio_url)
   }
   set {
     name       = "config.minioUser"
@@ -147,7 +147,7 @@ resource "kubernetes_secret" "creds_secret" {
     "email_bcc_addresses"          = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_bcc_addresses, " ", ","), ""))
     "rescue_email_dest_addresses"  = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.rescue_email_dest_addresses, " ", ","), ""))
     "rescue_email_cc_addresses"    = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.rescue_email_cc_addresses, " ", ","), ""))
-    "headers"    = try(replace(data.vault_generic_secret.creds_secret[each.key].data.headers, " ", ", "), local.headers)
+    "headers"                      = try(data.vault_generic_secret.creds_secret[each.key].data.headers, local.headers)
   }
 }
 

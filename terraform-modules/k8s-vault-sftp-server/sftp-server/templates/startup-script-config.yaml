@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "sftp-server.fullname" . }}-startup-script-config
+data:
+  startup_script: |
+    for user in $(ls -1 /home); do chown -R $user:users /home/$user/ ; chown root:root /home/$user; done
