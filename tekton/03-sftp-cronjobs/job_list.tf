@@ -95,6 +95,13 @@ locals {
       "email_subject": "[FEED] - BMO'PANS"
       "archive" : "zip",
       "file_ext" : "CSV"
+    },
+    "minion-golomt-pans-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - GOLOMT'PANS"
+      "archive" : "zip",
+      "file_ext" : "CSV"
     }
   }
 }

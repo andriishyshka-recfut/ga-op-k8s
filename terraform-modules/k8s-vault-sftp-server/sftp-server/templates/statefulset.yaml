@@ -74,6 +74,10 @@ spec:
               name: sftp-sshd
               readOnly: true
               subPath: sshd_config
+            - mountPath: /etc/sftp.d/startup_script.sh
+              name: startup-script
+              readOnly: true
+              subPath: startup_script
           {{- range $key, $value := .Values.keys }}
           {{ $parts := split ":" ($value | replace "\"" "") }}
             - mountPath: /home/{{ $parts._0 }}/.ssh/keys/
@@ -90,6 +94,10 @@ spec:
             defaultMode: 420
             name: {{ $fullName }}-sshd-config
           name: sftp-sshd
+        - configMap:
+            defaultMode: 502
+            name: {{ $fullName }}-startup-script-config
+          name: startup-script
         - name: ssh-host-keys
           secret:
             defaultMode: 384

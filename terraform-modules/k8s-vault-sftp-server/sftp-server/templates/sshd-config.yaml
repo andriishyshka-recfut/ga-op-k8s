@@ -4,8 +4,11 @@ kind: ConfigMap
 metadata:
   name: {{ include "sftp-server.fullname" . }}-sshd-config
 data:
+  startup_script: |
+    for user in $(ls -1 /home); do chown -R $user:users /home/$user/ ; chown root:root /home/$user; done
   sshd_config: |
     Protocol 2
+    #LogLevel DEBUG1
     HostKey /etc/ssh/ssh_host_ed25519_key
     HostKey /etc/ssh/ssh_host_rsa_key
     UseDNS no
