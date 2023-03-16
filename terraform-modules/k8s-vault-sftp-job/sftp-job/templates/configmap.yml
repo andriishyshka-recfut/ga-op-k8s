@@ -91,7 +91,7 @@ data:
               when: file_extension == "csv"
 
             - name: 'sed (substitute [@metadata][_id])'
-              shell: for file in $(ls -1 {{ local_dest }}); do sed --in-place 's/\[\@metadata\]\[_id\]/_id/' {{ local_dest }}/$file ; done
+              shell: for file in $(ls -1 {{ local_dest }}); do sed -i "s/\[\@metadata\]\[_id\]/_id/" {{ local_dest }}/$file ; done
               tags: sed_sub
               when: file_extension == "csv"
 
@@ -220,7 +220,7 @@ data:
                 token: "{{ slack_token }}"
                 msg: " _*Cronjob Alert*_ :rotating_light:\n>_Task was failed_ :slightly_frowning_face:\n>To see details, check job logs\n*Details:*\n>Ansible Task:\n> - {{ ansible_failed_task.name }}\n>Logstash pipeline_id:\n> - {{ pipeline_name }}\n>Job_name:\n> - {{ hostname }}\n"
                 channel: '#prometheus-critical'
-              when: op_notify == "true"
+              when: op_notify == true
 
             - name: Client email notify
               community.general.notification.mail:
