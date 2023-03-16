@@ -1,4 +1,5 @@
 locals {
+  jobs = var.Cluster == "production" ? local.sftpJobList : local.sftpJobListSandbox
   sftpJobList = {
     "crypto-chainalysis" : {
       "minio_user" : "logstash-red",
