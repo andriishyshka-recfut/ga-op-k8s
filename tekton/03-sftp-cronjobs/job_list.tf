@@ -92,6 +92,8 @@ locals {
     "minion-fiserv-added-daily" : {
       "minio_user" : "logstash-red",
       "sftp" : true,
+      "email": true,
+      "email_subject": "[FEED] - FISERV'ADDED",
       "sftp_user" : "fiserv",
       "sftp_port" : "22",
       "sftp_destination" : "in/",
