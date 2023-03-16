@@ -89,15 +89,14 @@ locals {
       "archive" : "gz",
       "create_checksum": true
     },
-    "fiserv-added-daily" : {
+    "minion-fiserv-added-daily" : {
       "minio_user" : "logstash-red",
       "sftp" : true,
       "sftp_user" : "fiserv",
       "sftp_port" : "22",
       "sftp_destination" : "in/",
       "file_ext" : "csv",
-      "archive" : "gz",
-      "create_checksum": true
+      "archive" : "gz"
     },
     "minion-bmo-pans-daily" : {
       "minio_user" : "logstash-red",
