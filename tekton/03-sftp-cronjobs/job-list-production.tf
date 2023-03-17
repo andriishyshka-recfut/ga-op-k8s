@@ -142,6 +142,20 @@ locals {
       "email_subject": "[FEED] - TJX'PANS"
       "archive" : "zip",
       "file_ext" : "CSV"
+    },
+    "minion-sainsburys-added-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - SAINSBURYS'ADDED"
+      "archive" : "zip",
+      "file_ext" : "CSV"
+    },
+    "minion-sainsburys-pans-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - SAINSBURYS'PANS"
+      "archive" : "zip",
+      "file_ext" : "CSV"
     }
   }
 }
