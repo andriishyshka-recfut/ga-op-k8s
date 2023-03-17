@@ -128,6 +128,20 @@ locals {
       "email_subject": "[FEED] - BNP'PANS"
       "archive" : "zip",
       "file_ext" : "CSV"
+    },
+    "minion-tjx-added-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - TJX'ADDED"
+      "archive" : "zip",
+      "file_ext" : "CSV"
+    },
+    "minion-tjx-pans-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - TJX'PANS"
+      "archive" : "zip",
+      "file_ext" : "CSV"
     }
   }
 }
