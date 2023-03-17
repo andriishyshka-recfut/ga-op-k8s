@@ -7,7 +7,7 @@ locals {
   bucket                 = "minio-logstash-pipelines-orbital-wording-233917"
   minio_url              = "https://minio.p.regemini.io"
   minio_user             = "logstash-user"
-  cron                   = "0 0 * * *"
+  cron                   = "10 0 * * *"
   archive                = "" # zip or gz
   create_checksum        = false
   gpg_encrypt            = false

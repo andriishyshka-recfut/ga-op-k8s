@@ -179,7 +179,8 @@ resource "kubernetes_secret" "global_creds" {
   }
 
   data = {
-    "slack_token"                 = data.vault_generic_secret.global_creds.data.slack_token
+    "prometheus_slack_token"      = data.vault_generic_secret.global_creds.data.prometheus_slack_token
+    "sftp_jobs_slack_token"       = data.vault_generic_secret.global_creds.data.sftp_jobs_slack_token
     "email_password"              = data.vault_generic_secret.global_creds.data.gmail_account_smtp_password
     "email_username"              = data.vault_generic_secret.global_creds.data.gmail_account_smtp_user
   }

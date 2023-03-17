@@ -29,7 +29,8 @@ data:
         email_cc_addresses: "{{ lookup('env','EMAIL_CC_ADDRESSES') }}"
         email_bcc_addresses: "{{ lookup('env','EMAIL_BCC_ADDRESSES') }}"
         email_subject: "{{ lookup('env','EMAIL_SUBJECT') }}"
-        slack_token: "{{ lookup('env','SLACK_TOKEN') }}"
+        prometheus_slack_token: "{{ lookup('env','PROMETHEUS_SLACK_TOKEN') }}"
+        sftp_jobs_slack_token: "{{ lookup('env','SFTP_JOBS_SLACK_TOKEN') }}"
         hostname: "{{ lookup('env','HOSTNAME') }}"
         aws_access_key: "{{ lookup('env','AWS_S3_ACCESS_KEY') }}"
         aws_secret_key: "{{ lookup('env','AWS_S3_SECRET_KEY') }}"
@@ -48,7 +49,7 @@ data:
         - name: Playbook block
           block:
             - name: Get random number for delay
-              shell: echo $(( ( RANDOM % 360 ) + 900 ))
+              shell: echo $(( ( RANDOM % 360 ) + 600 ))
               register: random_delay
 
             - set_fact:
@@ -57,9 +58,9 @@ data:
                 archive: "{{ archive }}"
                 email: "{{ email }}"
                 rescue_notify: "{{ rescue_notify }}"
-                #random_delay: "{{ random_delay.stdout }}"
+                random_delay: "{{ random_delay.stdout }}"
                 op_notify: "{{ op_notify }}"
-                random_delay: "5"
+                #random_delay: "5"
                 create_checksum: "{{ create_checksum }}"
                 gpg_encrypt: "{{ gpg_encrypt }}"
                 include_headers: "{{ include_headers }}"
@@ -68,6 +69,13 @@ data:
             - name: Initial delay for playbook
               ansible.builtin.wait_for:
                 timeout: "{{ random_delay }}"
+
+            - name: Check new data on bucket
+              shell: | 
+                [[ $(aws s3 ls --endpoint-url {{ minio_url }} s3://{{ minio_bucket_name }}/{{ pipeline_name }}/ | grep -v 'sent' | wc -l) -eq 0 ]] && echo "WARN - no new data on bucket!";exit 1 || echo "new data exist on bucket"
+              retries: 3
+              register: data_on_bucket
+              tags: check_files_on_bucket
 
             - name: Get files from minio
               shell: aws --endpoint-url {{ minio_url }} s3 cp s3://{{ minio_bucket_name }}/{{ pipeline_name }}/ {{ local_dest }} --recursive --exclude "*{{ backup_folder }}*"
@@ -217,10 +225,17 @@ data:
           rescue:
             - name: OP Slack notify
               community.general.slack:
-                token: "{{ slack_token }}"
+                token: "{{ prometheus_slack_token }}"
                 msg: " _*Cronjob Alert*_ :rotating_light:\n>_Task was failed_ :slightly_frowning_face:\n>To see details, check job logs\n*Details:*\n>Ansible Task:\n> - {{ ansible_failed_task.name }}\n>Logstash pipeline_id:\n> - {{ pipeline_name }}\n>Job_name:\n> - {{ hostname }}\n"
                 channel: '#prometheus-critical'
-              when: op_notify == true
+              when: op_notify == true and data_on_bucket.rc != 1
+
+            - name: Notify that no data
+              community.general.slack:
+                token: "{{ sftp_jobs_slack_token }}"
+                msg: " _*Cronjob Notice*_ \n>_Task report_ :information_source:\n>There is no new data on bucket\n*Details:*\n>Ansible Task:\n> - {{ ansible_failed_task.name }}\n>Logstash pipeline_id:\n> - {{ pipeline_name }}\n>Job_name:\n> - {{ hostname }}\n"
+                channel: '#sftp-jobs'
+              when: data_on_bucket.rc == 1
 
             - name: Client email notify
               community.general.notification.mail:
