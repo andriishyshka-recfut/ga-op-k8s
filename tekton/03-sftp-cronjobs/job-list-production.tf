@@ -114,6 +114,20 @@ locals {
       "email_subject": "[FEED] - GOLOMT'PANS"
       "archive" : "zip",
       "file_ext" : "CSV"
+    },
+    "minion-bnp-added-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - BNP'ADDED"
+      "archive" : "zip",
+      "file_ext" : "CSV"
+    },
+    "minion-bnp-pans-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - BNP'PANS"
+      "archive" : "zip",
+      "file_ext" : "CSV"
     }
   }
 }
