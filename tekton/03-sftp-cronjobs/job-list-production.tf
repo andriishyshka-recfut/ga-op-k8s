@@ -58,7 +58,6 @@ locals {
       "gpg_encrypt" : true
     },
     "minion-test-pans-daily" : {
-      "cron" : "0 */1 * * *",
       "minio_user" : "logstash-red",
       "sftp" : true,
       "sftp_user" : "alexus",
