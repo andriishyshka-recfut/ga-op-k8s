@@ -72,7 +72,7 @@ data:
 
             - name: Check new data on bucket
               shell: | 
-                [[ $(aws s3 ls --endpoint-url {{ minio_url }} s3://{{ minio_bucket_name }}/{{ pipeline_name }}/ | grep -v 'sent' | wc -l) -eq 0 ]] && echo "WARN - no new data on bucket!";exit 1 || echo "new data exist on bucket"
+                [[ $(aws s3 ls --endpoint-url {{ minio_url }} s3://{{ minio_bucket_name }}/{{ pipeline_name }}/ | egrep -v "sent" | wc -l) -eq 0 ]] && exit 1 || echo "new data exist on bucket"
               retries: 3
               register: data_on_bucket
               tags: check_files_on_bucket
