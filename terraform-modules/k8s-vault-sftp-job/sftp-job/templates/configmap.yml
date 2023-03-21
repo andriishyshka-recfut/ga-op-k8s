@@ -101,7 +101,7 @@ data:
             - name: 'sed (substitute [@metadata][_id])'
               shell: for file in $(ls -1 {{ local_dest }}); do sed -i "s/\[\@metadata\]\[_id\]/_id/" {{ local_dest }}/$file ; done
               tags: sed_sub
-              when: file_extension == "csv"
+              when: file_extension == "csv" or file_extension == "CSV"
 
             - name: Encrypt file(s) with gpg key
               shell: |
