@@ -96,7 +96,7 @@ data:
                 line: "{{ headers }}"
               tags: lineinfile
               with_fileglob: "{{ local_dest }}/*"
-              when: file_extension == "csv"
+              when: file_extension == "csv" or file_extension == "CSV"
 
             - name: 'sed (substitute [@metadata][_id])'
               shell: for file in $(ls -1 {{ local_dest }}); do sed -i "s/\[\@metadata\]\[_id\]/_id/" {{ local_dest }}/$file ; done
