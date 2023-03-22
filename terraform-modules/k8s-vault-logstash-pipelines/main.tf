@@ -1,6 +1,6 @@
 resource "helm_release" "logstash" {
   for_each     = var.logstash_list
-  name         = each.key
+  name         = "logstash-${each.key}"
   namespace    = try(each.value.namespace, local.namespace)
   chart        = "${path.module}/logstash"
   wait         = true
