@@ -155,6 +155,13 @@ locals {
       "email_subject": "[FEED] - SAINSBURYS'PANS"
       "archive" : "zip",
       "file_ext" : "CSV"
-    }
+    },
+    "minion-synchrony-pans-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - SYNCHRONY'PANS"
+      "archive" : "zip",
+      "file_ext" : "csv"
+    }    
   }
 }
