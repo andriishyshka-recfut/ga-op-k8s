@@ -55,7 +55,8 @@ data:
             - set_fact:
                 sftp: "{{ sftp }}"
                 s3: "{{ s3 }}"
-                archive: "{{ archive }}"
+                archive_task: "{{ archive | lower}}"
+                rename_task: "{{ file_extension | lower }}"
                 email: "{{ email }}"
                 rescue_notify: "{{ rescue_notify }}"
                 random_delay: "{{ random_delay.stdout }}"
@@ -96,12 +97,12 @@ data:
                 line: "{{ headers }}"
               tags: lineinfile
               with_fileglob: "{{ local_dest }}/*"
-              when: file_extension == "csv" or file_extension == "CSV"
+              when: rename_task == "csv"
 
             - name: 'sed (substitute [@metadata][_id])'
               shell: for file in $(ls -1 {{ local_dest }}); do sed -i "s/\[\@metadata\]\[_id\]/_id/" {{ local_dest }}/$file ; done
               tags: sed_sub
-              when: file_extension == "csv" or file_extension == "CSV"
+              when: rename_task == "csv"
 
             - name: Encrypt file(s) with gpg key
               shell: |
@@ -116,13 +117,13 @@ data:
             - name: Archive files GZ
               community.general.archive:
                 dest: "{{ item }}.{{ archive }}"
-                format: "{{ archive }}"
+                format: "{{ archive | lower }}"
                 mode: '0644'
                 path: "{{ item }}"
                 remove: true
               tags: archive
               with_fileglob: "{{ local_dest }}/*"
-              when: archive == "gz" or archive == "zip"
+              when: archive_task == "gz" or archive_task == "zip"
 
             - name: Get checksum of files
               find:
