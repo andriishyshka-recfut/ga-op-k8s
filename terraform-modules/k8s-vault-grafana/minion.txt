@@ -67,6 +67,7 @@ scuti
 shaula
 shoshone
 sierra
+sigmacc
 siktor
 sioux
 sirius
