@@ -179,6 +179,13 @@ locals {
       "file_ext" : "json",
       "archive" : "ZIP",
       "create_checksum": true
+    },
+    "minion-eml-eu-added-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - EML'ADDED"
+      "archive" : "zip",
+      "file_ext" : "CSV"
     }
   }
 }
