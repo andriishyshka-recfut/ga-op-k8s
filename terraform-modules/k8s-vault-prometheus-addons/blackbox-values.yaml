@@ -39,6 +39,21 @@ config:
         query_response:
         - expect: "^SSH-2.0-"
         - send: "SSH-2.0-blackbox-ssh-check"
+    vortex:
+      prober: http
+      timeout: 5s
+      http:
+        valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+        follow_redirects: true
+        preferred_ip_protocol: "ip4"
+        method: GET
+        basic_auth:
+          username: test
+          password_file: "/etc/basic-auth/vortex/vortex"
+        tls_config:
+          ca_file: "/etc/certs/vortex/ca"
+          cert_file: "/etc/certs/vortex/cert"
+          key_file: "/etc/certs/vortex/key"
 
 extraSecretMounts:
   - name: es-secret
@@ -46,7 +61,18 @@ extraSecretMounts:
     secretName: es-secret
     readOnly: true
     defaultMode: 420
-
+  - name: vortex-cert
+    mountPath: /etc/certs/vortex
+    secretName: vortex-cert
+    readOnly: true
+    defaultMode: 420
+  - name: vortex-auth
+    mountPath: /etc/basic-auth/vortex
+    secretName: vortex-auth
+    readOnly: true
+    defaultMode: 420
+    
+    
 prometheusRule:
   enabled: true
   additionalLabels:
