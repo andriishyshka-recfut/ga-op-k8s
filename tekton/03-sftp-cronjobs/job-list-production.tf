@@ -176,7 +176,7 @@ locals {
       "sftp_user" : "eml",
       "sftp_port" : "22",
       "sftp_destination" : "in/",
-      "file_ext" : "json",
+      "file_ext" : "JSON",
       "archive" : "ZIP",
       "create_checksum": true
     },

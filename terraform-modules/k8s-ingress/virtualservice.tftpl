@@ -20,8 +20,15 @@ spec:
 %{ if lookup(settings, "protocol","http") == "http" ~}
   http:
     - match:
+%{ if lookup(service, "sub_uri",false) != false ~}
+%{ for path in lookup(service, "sub_uri","") }
+        - uri:
+            prefix: ${ path }
+%{ endfor ~}
+%{ else ~}
         - uri:
             prefix: /
+%{ endif ~}
 %{ if lookup(service,"redirect_uri",false) != false ~}
       rewrite:
         uri: ${lookup(service,"redirect_uri",false)}
