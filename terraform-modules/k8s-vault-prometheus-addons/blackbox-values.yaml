@@ -48,12 +48,12 @@ config:
         preferred_ip_protocol: "ip4"
         method: GET
         basic_auth:
-          username: test
+          username: probe
           password_file: "/etc/basic-auth/vortex/vortex"
         tls_config:
-          ca_file: "/etc/certs/vortex/ca"
-          cert_file: "/etc/certs/vortex/cert"
-          key_file: "/etc/certs/vortex/key"
+          ca_file: "/etc/certs/vortex/ca.crt"
+          cert_file: "/etc/certs/vortex/tls.crt"
+          key_file: "/etc/certs/vortex/tls.key"
 
 extraSecretMounts:
   - name: es-secret
