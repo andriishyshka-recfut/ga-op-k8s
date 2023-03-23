@@ -55,12 +55,12 @@ resource "kubernetes_secret" "es_creds" {
 resource "kubernetes_secret" "vortex_basic_auth_creds" {
   count = local.vortex
   metadata {
-    name      = "vortex"
+    name      = "vortex-auth"
     namespace = local.prometheusNs
   }
 
   data = {
-    "vortex" = data.vault_generic_secret.es_access[0].data.probe
+    "vortex" = data.vault_generic_secret.vortex_basic_auth[0].data.probe
   }
 
 }
@@ -112,6 +112,7 @@ resource "helm_release" "blackbox_exporter" {
     name  = "prometheusRule.rules[4].labels.cluster"
     value = var.Cluster
   }
+  depends_on = [kubernetes_secret.vortex_basic_auth_creds]
 }
 
 
