@@ -10,6 +10,33 @@ data "vault_generic_secret" "es_access" {
   path = "secret/es-creds-compose-prod/prometheus"
 }
 
+data "vault_generic_secret" "vortex_basic_auth" {
+  count = local.vortex
+  path  = "secret/tls-proxy/basic-auth/vortex"
+}
+
+resource "kubernetes_manifest" "vortex_cert" {
+  count = local.vortex
+  manifest = {
+    "apiVersion" = "cert-manager.io/v1"
+    "kind"       = "Certificate"
+    "metadata" = {
+      "name"      = "vortex-cert"
+      "namespace" = "monitoring"
+    }
+    "spec" = {
+      "commonName" = "vortex.regemini.com"
+      "dnsNames" = [
+        "vortex.regemini.com"
+      ]
+      "issuerRef" = {
+        "kind" = "ClusterIssuer"
+        "name" = "vault-vortex-issuer"
+      }
+      "secretName" = "vortex-cert"
+    }
+  }
+}
 
 resource "kubernetes_secret" "es_creds" {
   metadata {
@@ -21,6 +48,19 @@ resource "kubernetes_secret" "es_creds" {
     "ca_crt"     = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CA_CRT
     "client_crt" = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CLIENT_CRT
     "client_key" = data.vault_generic_secret.es_access.data.ELASTICSEARCH_CLIENT_KEY
+  }
+
+}
+
+resource "kubernetes_secret" "vortex_basic_auth_creds" {
+  count = local.vortex
+  metadata {
+    name      = "vortex"
+    namespace = local.prometheusNs
+  }
+
+  data = {
+    "vortex" = data.vault_generic_secret.es_access[0].data.probe
   }
 
 }
@@ -80,7 +120,7 @@ data "kubectl_file_documents" "blackbox_probes" {
 }
 
 resource "kubectl_manifest" "blackbox_probes" {
-  count              = 4
+  count              = 5
   yaml_body          = element(data.kubectl_file_documents.blackbox_probes.documents, count.index)
   override_namespace = local.prometheusNs
   depends_on = [

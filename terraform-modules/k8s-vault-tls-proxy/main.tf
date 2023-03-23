@@ -180,6 +180,9 @@ resource "kubernetes_manifest" "tls_proxy_cert" {
     }
     "spec" = {
       "commonName" = each.value.domain
+      "dnsNames" = [
+        each.value.domain
+      ]
       "issuerRef" = {
         "kind" = "ClusterIssuer"
         "name" = lookup(each.value, "cluster_issuer", "vault-${each.key}-issuer")

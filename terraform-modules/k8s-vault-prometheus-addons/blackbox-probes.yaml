@@ -86,3 +86,22 @@ spec:
       - dscvr-sftp.regemini.com:2222
       - fiserv-sftp.regemini.com:2222
       # - s3-sftp.regemini.com:2222
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: vortex
+  labels:
+    release: prometheus
+spec:
+  module: vortex
+  prober:
+    url: blackbox-exporter-prometheus-blackbox-exporter:9115
+    scheme: http
+    path: /probe
+  targets:
+    staticConfig:
+      labels:
+        module: vortex
+      static:
+      - https://vortex.regemini.com
