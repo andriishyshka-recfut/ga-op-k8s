@@ -1,4 +1,78 @@
+resource "kubernetes_persistent_volume" "kafka_data_pv" {
+  count = local.pv_disk_count
+  metadata {
+    name = "kafka-data-${count.index}-pv"
+    labels = {
+      target = "kafka-data"
+    }
+  }
+  spec {
+    capacity = {
+      storage = local.diskSize
+    }
+    access_modes = ["ReadWriteOnce"]
+    claim_ref {
+      namespace = local.kafkaNs
+      name = "data-0-kafka-cluster-kafka-${count.index}"
+    }
+    persistent_volume_source{
+      csi {
+        driver = "pd.csi.storage.gke.io"
+        volume_handle = "projects/${var.Settings.gcpProject}/regions/${var.Settings.clusters[var.Cluster].region}/disks/kafka-data-${count.index}"
+      }
+    }
+  node_affinity {
+      required {
+        node_selector_term {
+          match_expressions {
+            key = "topology.gke.io/zone"
+            operator = "In"
+            values = [ "us-east4-a", "us-east4-b"]            
+          }
+        }
+      }
+    }
+  }
+}
 
+
+
+resource "kubernetes_persistent_volume" "kafka_zookeeper_pv" {
+  count = local.pv_disk_count
+  metadata {
+    name = "kafka-zookeeper-${count.index}-pv"
+    labels = {
+      target = "kafka-zookeeper"
+    }
+  }
+  spec {
+    capacity = {
+      storage = local.diskSize
+    }
+    access_modes = ["ReadWriteOnce"]
+    claim_ref {
+      namespace = local.kafkaNs
+      name = "data-kafka-cluster-zookeeper-${count.index}"
+    }
+    persistent_volume_source{
+      csi {
+        driver = "pd.csi.storage.gke.io"
+        volume_handle = "projects/${var.Settings.gcpProject}/regions/${var.Settings.clusters[var.Cluster].region}/disks/kafka-zookeeper-${count.index}"
+      }
+    }
+  node_affinity {
+      required {
+        node_selector_term {
+          match_expressions {
+            key = "topology.gke.io/zone"
+            operator = "In"
+            values = [ "us-east4-a", "us-east4-b"]            
+          }
+        }
+      }
+    }
+  }
+}
 
 
 resource "helm_release" "kafka_operator" {
@@ -26,6 +100,10 @@ resource "helm_release" "kafka_cluster" {
   set {
     name = "diskSize"
     value = local.diskSize
+  }
+  set {
+    name = "usePV"
+    value = local.use_pv
   }
   set {
     name = "cpuReuest"

@@ -7,6 +7,8 @@ spec:
   kafka:
     template:
       pod:
+        securityContext:
+          runAsUser: 0
         tolerations:
           - key: "workloadsType"
             operator: "Exists"
@@ -67,7 +69,14 @@ spec:
       - id: 0
         type: persistent-claim
         size: {{ .Values.diskSize }}
+        {{- if .Values.usePV }}
+        selector:
+          target: kafka-data
+        deleteClaim: true
+        class: ""
+        {{- else }}
         deleteClaim: false
+        {{- end }}
 
   zookeeper:
     replicas: 3
@@ -100,7 +109,14 @@ spec:
     storage:
       type: persistent-claim
       size: 10Gi
+      {{- if .Values.usePV }}
+      selector:
+        target: kafka-zookeeper
+      deleteClaim: true
+      class: ""
+      {{- else }}
       deleteClaim: false
+      {{- end }}
   entityOperator:
     topicOperator: {}
     userOperator: {}

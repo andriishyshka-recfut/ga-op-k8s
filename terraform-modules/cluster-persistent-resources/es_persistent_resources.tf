@@ -1,33 +1,3 @@
-
-#Create the storage bucket
-resource "google_storage_bucket" "elastic_snapshots" {
-  name          = local.esBackupBucket
-  project       = data.google_project.current.project_id
-  force_destroy = true
-  storage_class = "MULTI_REGIONAL"
-
-  # bucket_policy_only = true
-  uniform_bucket_level_access = true
-
-  versioning {
-    enabled = true
-  }
-
-  lifecycle_rule {
-    action {
-      type = "Delete"
-    }
-
-    condition {
-      num_newer_versions = 1
-    }
-  }
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-
 resource "google_service_account" "es_server" {
   account_id   = "elastic-backup"
   display_name = "ES Server"

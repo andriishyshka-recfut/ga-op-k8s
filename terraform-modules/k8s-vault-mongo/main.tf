@@ -42,6 +42,44 @@ resource "kubernetes_secret" "mongo_backup" {
 
 }
 
+
+resource "kubernetes_persistent_volume" "mongo_data_pv" {
+  count = local.pv_disk_count
+  metadata {
+    name = "mongo-data-${count.index}-pv"
+    labels = {
+      target = "mongo-data"
+    }
+  }
+  spec {
+    capacity = {
+      storage = var.VolumeSize
+    }
+    access_modes = ["ReadWriteOnce"]
+    claim_ref {
+      namespace = var.MongoNs
+      name = "mongod-data-${var.Color}-rs0-${count.index}"
+    }
+    persistent_volume_source{
+      csi {
+        driver = "pd.csi.storage.gke.io"
+        volume_handle = "projects/${var.Settings.gcpProject}/regions/${var.Settings.clusters[var.Cluster].region}/disks/mongo-data-${count.index}"
+      }
+    }
+  node_affinity {
+      required {
+        node_selector_term {
+          match_expressions {
+            key = "topology.gke.io/zone"
+            operator = "In"
+            values = [ "us-east4-a", "us-east4-b"]            
+          }
+        }
+      }
+    }
+  }
+}
+
 resource "helm_release" "mongo_cluster" {
   name      = "mongo-cluster"
   chart     = "${path.module}/mongo"
@@ -73,6 +111,16 @@ resource "helm_release" "mongo_cluster" {
     name  = "replsets[0].volumeSpec.pvc.resources.requests.storage"
     value = var.VolumeSize
   }
+  
+  #Clever hack with "IF". Remove before May's DR
+  dynamic "set" {
+    for_each = var.Cluster == "sandbox" ? [var.Cluster] : []
+    content {
+      name = "replset.volumeSpec.pvc"
+      value = yamlencode(local.pvc_config)
+    }
+  }
+
   set {
     name  = "replicas"
     value = var.Replicas
