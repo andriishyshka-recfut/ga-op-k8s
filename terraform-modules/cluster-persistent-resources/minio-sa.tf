@@ -13,5 +13,6 @@ resource "google_project_iam_member" "minio_service_account_member" {
   lifecycle {
     prevent_destroy = true
   }
+  project = data.google_project.current.id
 
 }

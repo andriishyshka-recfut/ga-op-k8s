@@ -12,11 +12,21 @@ variable "Color" {}
 variable "GkeClusterConnectionSettings" {}
 variable "ImageTag" {}
 variable "Repository" {}
+variable "Settings" {}
 
 locals {
   ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
     ANSIBLE_STDOUT_CALLBACK = "debug"
   })
-   limit = var.Cluster == "production" ? {"memory": "4G", "cpu": "3"} : {"memory": "2G", "cpu": "1"}
-   request = var.Cluster == "production" ? {"memory": "3G", "cpu": "1"} : {"memory": "1G", "cpu": "0.25"}
+  limit         = var.Cluster == "production" ? { "memory" : "4G", "cpu" : "3" } : { "memory" : "2G", "cpu" : "1" }
+  request       = var.Cluster == "production" ? { "memory" : "3G", "cpu" : "1" } : { "memory" : "1G", "cpu" : "0.25" }
+  pv_disk_count = var.Cluster == "production" ? 0 : 3
+  pvc_config = {
+    type = "persistent-claim"
+    selector = {
+      target = "mongo-data"
+    }
+    deleteClaim = true
+    class       = ""
+  }
 }

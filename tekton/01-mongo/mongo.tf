@@ -9,6 +9,7 @@ module "mongo" {
   Replicas       = each.value.replicas
   Cluster        = var.Cluster
   Color          = var.Color
+  Settings       = var.Settings
   ImageTag       = each.value.imageTag
   Repository     = each.value.repository
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
