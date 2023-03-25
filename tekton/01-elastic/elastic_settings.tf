@@ -2,7 +2,7 @@ locals {
   ElasticSettings = {
     globalSettings = {
       namespace   = "elastic",
-      imageTag    = "7.17.8",
+      imageTag    = "7.17.9",
       clusterName = "elasticsearch",
       remotecerts = [],
       plugins     = ["repository-s3"]
