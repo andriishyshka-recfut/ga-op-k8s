@@ -3,13 +3,14 @@ variable "logstash_list" {
 }
 
 locals {
-  namespace      = "elastic"
-  minio_user     = "logstash-red"
-  minio_endpoint = "https://minio.regemini.io"
-  minio_bucket   = "minio-logstash-pipelines-orbital-wording-233917"
-  es_host        = "https://red-coor.${local.namespace}.svc:9200"
-  pipeline_id    = "testing"
-  poll_interval  = "5s"
+  namespace        = "elastic"
+  logstash_version = "8.6.2"
+  minio_user       = "logstash-red"
+  minio_endpoint   = "https://minio.regemini.io"
+  minio_bucket     = "minio-logstash-pipelines-orbital-wording-233917"
+  es_host          = "https://red-coor.${local.namespace}.svc:9200"
+  pipeline_id      = "testing"
+  poll_interval    = "5s"
 
   minio_users = { for k, v in { for k, v in var.logstash_list : lookup(v, "minio_user", local.minio_user) => lookup(v, "namespace", local.namespace)... } : k => distinct(v) }
   namespaces  = toset(distinct([for k, v in var.logstash_list : lookup(v, "namespace", local.namespace)]))

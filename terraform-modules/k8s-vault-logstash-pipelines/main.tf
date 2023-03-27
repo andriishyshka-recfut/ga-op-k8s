@@ -20,6 +20,10 @@ resource "helm_release" "logstash" {
     value = try(each.value.namespace, local.namespace)
   }
   set {
+    name  = "imageTag"
+    value = try(each.value.logstash_version, local.logstash_version)
+  }
+  set {
     name  = "elastic.host"
     value = try(each.value.es_host, local.es_host)
   }
