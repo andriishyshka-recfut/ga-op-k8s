@@ -70,7 +70,7 @@ hostAliases: []
 
 image: "harbor.t.regemini.io/op/logstash"
 imageTag: "7.17.9"
-imagePullPolicy: "IfNotPresent"
+imagePullPolicy: "Always"
 imagePullSecrets:
   - name: harbor
 httpPort: 9600
