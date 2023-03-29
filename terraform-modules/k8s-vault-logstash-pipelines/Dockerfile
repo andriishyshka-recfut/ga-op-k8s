@@ -1,4 +1,4 @@
-FROM docker.elastic.co/logstash/logstash:8.4.3
+FROM --platform=linux/amd64 docker.elastic.co/logstash/logstash:7.17.9
 
 RUN /usr/share/logstash/bin/logstash-plugin install logstash-codec-csv
 
