@@ -68,8 +68,8 @@ hostAliases: []
 #  - "foo.local"
 #  - "bar.local"
 
-image: "harbor.t.regemini.io/sandbox/logstash-pipelines"
-imageTag: "7.17.7"
+image: "harbor.t.regemini.io/op/logstash"
+imageTag: "7.17.9"
 imagePullPolicy: "IfNotPresent"
 imagePullSecrets:
   - name: harbor

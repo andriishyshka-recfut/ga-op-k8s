@@ -4,7 +4,7 @@ variable "logstash_list" {
 
 locals {
   namespace        = "elastic"
-  logstash_version = "8.6.2"
+  logstash_version = "7.17.9"
   minio_user       = "logstash-red"
   minio_endpoint   = "https://minio.regemini.io"
   minio_bucket     = "minio-logstash-pipelines-orbital-wording-233917"
