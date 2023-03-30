@@ -16,8 +16,6 @@ spec:
         number: ${lookup(settings,"port", 80) != 80 ? settings.port : 80 } 
         protocol: ${lookup(settings,"protocol", "HTTP") != "HTTP" ? settings.protocol : "HTTP"}  
 %{ if lookup(settings, "port",false) == false ~}
-      tls:
-        httpsRedirect: true
     - hosts:
 %{ for domain in settings.domain ~}
         - ${ domain }

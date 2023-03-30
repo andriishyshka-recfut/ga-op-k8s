@@ -19,6 +19,15 @@ spec:
 %{ endif ~}
 %{ if lookup(settings, "protocol","http") == "http" ~}
   http:
+%{ if lookup(settings,"cert-manager",false) ~}
+    - match:
+        - withoutHeaders:
+            :path:
+              prefix: /.well-known/acme-challenge/
+          port: 80
+      redirect:
+        scheme: https
+%{ endif ~}
     - match:
 %{ if lookup(service, "sub_uri",false) != false ~}
 %{ for path in lookup(service, "sub_uri","") }
