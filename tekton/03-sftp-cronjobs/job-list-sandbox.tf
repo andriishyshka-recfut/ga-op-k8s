@@ -20,8 +20,9 @@ locals {
       "sftp" : true,
       "sftp_user" : "CAT-NAGW-TVBRR001",
       "sftp_host": "test-gw-na.firstdataclients.com",
+      "sftp_options" : "-oGSSAPIAuthentication=no -oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
       "sftp_port" : "6522",
-      "sftp_destination" : "in/",
+      "sftp_destination" : "/",
       "archive": "gz",
       "gpg_encrypt" : true,
       "file_ext" : "csv"
