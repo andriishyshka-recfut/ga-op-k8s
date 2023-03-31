@@ -20,7 +20,7 @@ locals {
       "sftp" : true,
       "sftp_user" : "CAT-NAGW-TVBRR001",
       "sftp_host": "test-gw-na.firstdataclients.com",
-      "sftp_options" : "-oGSSAPIAuthentication=no -oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
+      "sftp_options" : "-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
       "sftp_port" : "6522",
       "sftp_destination" : "/",
       "archive": "gz",
