@@ -13,4 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/sandbox"
     - name: branch
-      value: "\\#291-sandbox-dr-2023-03-02"
+      value: "\\#311-sandbox-dr-2023-03-29"

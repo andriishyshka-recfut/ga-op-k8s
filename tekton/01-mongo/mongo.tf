@@ -7,6 +7,7 @@ module "mongo" {
   BackupBucket   = each.value.backupBucket
   VolumeSize     = each.value.volumeSize
   Replicas       = each.value.replicas
+  PvcPrefix      = each.value.pvcPrefix
   Cluster        = var.Cluster
   Color          = var.Color
   Settings       = var.Settings

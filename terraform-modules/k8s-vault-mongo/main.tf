@@ -46,9 +46,9 @@ resource "kubernetes_secret" "mongo_backup" {
 resource "kubernetes_persistent_volume" "mongo_data_pv" {
   count = local.pv_disk_count
   metadata {
-    name = "mongo-data-${count.index}-pv"
+    name = "${var.PvcPrefix}-${count.index}-pv"
     labels = {
-      target = "mongo-data"
+      target = var.PvcPrefix
     }
   }
   spec {
@@ -63,7 +63,7 @@ resource "kubernetes_persistent_volume" "mongo_data_pv" {
     persistent_volume_source{
       csi {
         driver = "pd.csi.storage.gke.io"
-        volume_handle = "projects/${var.Settings.gcpProject}/regions/${var.Settings.clusters[var.Cluster].region}/disks/mongo-data-${count.index}"
+        volume_handle = "projects/${var.Settings.gcpProject}/regions/${var.Settings.clusters[var.Cluster].region}/disks/${var.PvcPrefix}-${count.index}"
       }
     }
   node_affinity {
