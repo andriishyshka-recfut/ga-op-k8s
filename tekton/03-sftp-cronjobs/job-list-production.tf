@@ -92,9 +92,11 @@ locals {
     "minion-fiserv-added-daily" : {
       "minio_user" : "logstash-red",
       "sftp" : true,
-      "sftp_user" : "fiserv",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/",
+      "sftp_host" : "test-gw-na.firstdataclients.com",
+      "sftp_user" : "CAT-NAGW-TVBRR001",
+      "sftp_port" : "6522",
+      "sftp_options" : "-oGSSAPIAuthentication=no -oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
+      "sftp_destination" : "/",
       "file_ext" : "csv",
       "archive" : "gz"
     },
