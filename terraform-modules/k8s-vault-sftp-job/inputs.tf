@@ -24,7 +24,7 @@ locals {
   sftp_host              = "sftp-server-main" # clusterIP service name
   sftp_user              = "user"
   sftp_port              = "22" #default for clusterIP service
-  sftp_use_gss_api_auth  = "false" #should be true for sftp-servers on windows
+  sftp_options           = "" #Provide options to sftp send command, example "-oBatchMode=no -oGSSAPIAuthentication=no"
   sftp_destination       = "in/"
   #Email values
   email                  = false

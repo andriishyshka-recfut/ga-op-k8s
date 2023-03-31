@@ -14,7 +14,7 @@ data:
         sftp_batch_file: "{{ lookup('env','SFTP_BATCH_FILE') }}"
         sftp_remote_dest: "{{ lookup('env','SFTP_REMOTE_DEST') }}"
         ssh_pass: "{{ lookup('env','SSH_PASS') }}"
-        use_gssapiauth_option: "{{ lookup('env','USE_GSSAPIAUTH_OPTION') }}"
+        sftp_options: "{{ lookup('env','SFTP_OPTIONS') }}"
         minio_url: "{{ lookup('env','MINIO_URL') }}"
         minio_bucket_name: "{{ lookup('env','MINIO_BUCKET_NAME') }}"
         local_dest: "{{ lookup('env','LOCAL_DEST') }}"
@@ -146,7 +146,7 @@ data:
               shell: |
                 set -e
                 echo "put {{ item }} {{ sftp_remote_dest }}" > {{ sftp_batch_file }}
-                sshpass -p '{{ ssh_pass }}' sftp -oBatchMode=no $([[ {{ use_gssapiauth_option }} == 'true' ]] && echo "-oGSSAPIAuthentication=no") -b {{ sftp_batch_file }} {{ sftp_host }}
+                sshpass -p '{{ ssh_pass }}' sftp -oBatchMode=no $([[ -z {{ sftp_options }} ]] && echo {{ sftp_options }} ) -b {{ sftp_batch_file }} {{ sftp_host }}
               tags: sftp_delivery
               register: shell_result
               retries: 5
@@ -265,7 +265,7 @@ data:
   SFTP_BATCH_FILE: {{ .Values.config.batchFile | quote }}
   SFTP_REMOTE_DEST: {{ .Values.config.remoteDestination | quote }}
   SSH_PRIVATE_KEY: "{{ .Values.sshConfig.privateKeyPath }}/{{ .Values.sshConfig.privateKeyName }}"
-  USE_GSSAPIAUTH_OPTION: {{ .Values.config.useGssApiAuthOption | quote }}
+  SFTP_OPTIONS: {{ .Values.sshConfig.sftpOptions | quote }}
   PIPELINE_NAME: {{ .Values.config.pipelineName | quote }}
   PIPELINE_FILE_EXTENSION: {{ .Values.config.FileExt | quote }}
   MINIO_URL: {{ .Values.config.bucketUrl | quote }}

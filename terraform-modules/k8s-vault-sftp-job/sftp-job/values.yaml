@@ -23,7 +23,6 @@ config:
   pipelineFileExt: csv
   localDestination: /home/ansible/data
   remoteDestination: share/received-data
-  useGssApiAuthOption: false
   makeArchive: # zip gz
   createChecksum: false
   rescueNotify: false
@@ -62,6 +61,7 @@ sshConfig:
   privateKeyPath: /home/ansible/.ssh #(Not) Default key path in container
   privateKeyName: key.pem #() Default key name in container
   strictHostKeyChecking: "no" # Check host keys: yes or no
+  sftpOptions: #Provide options to sftp send command
 
 resources:
   requests:
@@ -105,9 +105,9 @@ envs:
     envType: configMap
     key: SFTP_REMOTE_DEST
     optional: false
-  - varName: USE_GSSAPIAUTH_OPTION
+  - varName: SFTP_OPTIONS
     envType: configMap
-    key: USE_GSSAPIAUTH_OPTION
+    key: SFTP_OPTIONS
     optional: false
   - varName: MINIO_URL
     envType: configMap
