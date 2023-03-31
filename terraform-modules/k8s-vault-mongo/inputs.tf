@@ -13,6 +13,7 @@ variable "GkeClusterConnectionSettings" {}
 variable "ImageTag" {}
 variable "Repository" {}
 variable "Settings" {}
+variable "PvcPrefix" {}
 
 locals {
   ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
@@ -24,7 +25,7 @@ locals {
   pvc_config = {
     type = "persistent-claim"
     selector = {
-      target = "mongo-data"
+      target = var.PvcPrefix
     }
     deleteClaim = true
     class       = ""
