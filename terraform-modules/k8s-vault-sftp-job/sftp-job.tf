@@ -71,7 +71,7 @@ resource "helm_release" "sftp-job" {
     value      = try(each.value.sftp_destination, local.sftp_destination)
   }
   set {
-    name       = "sftpOptions"
+    name       = "sshConfig.sftpOptions"
     value      = try(each.value.sftp_options, local.sftp_options)
   }
   set {
