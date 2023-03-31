@@ -184,6 +184,20 @@ locals {
       "email_subject": "[FEED] - EML'ADDED"
       "archive" : "zip",
       "file_ext" : "CSV"
-    }
+    },
+    "minion-banner-added-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - BANNER'ADDED"
+      "archive" : "zip",
+      "file_ext" : "CSV"
+    },
+    "minion-banner-pans-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - BANNER'PANS"
+      "archive" : "zip",
+      "file_ext" : "CSV"
+    }, 
   }
 }
