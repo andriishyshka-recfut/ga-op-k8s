@@ -61,7 +61,7 @@ sshConfig:
   privateKeyPath: /home/ansible/.ssh #(Not) Default key path in container
   privateKeyName: key.pem #() Default key name in container
   strictHostKeyChecking: "no" # Check host keys: yes or no
-  sftpOptions: #Provide options to sftp send command
+  sftpOptions: ""#Provide options to sftp send command
 
 resources:
   requests:
