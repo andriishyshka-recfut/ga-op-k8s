@@ -71,8 +71,8 @@ resource "helm_release" "sftp-job" {
     value      = try(each.value.sftp_destination, local.sftp_destination)
   }
   set {
-    name       = "useGssApiAuthOption"
-    value      = try(each.value.sftp_use_gss_api_auth, local.sftp_use_gss_api_auth)
+    name       = "sftpOptions"
+    value      = try(each.value.sftp_options, local.sftp_options)
   }
   set {
     name       = "emailConfig.subject"
