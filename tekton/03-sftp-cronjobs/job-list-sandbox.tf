@@ -22,7 +22,7 @@ locals {
       "sftp_host": "test-gw-na.firstdataclients.com",
       "sftp_options" : "-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
       "sftp_port" : "6522",
-      "sftp_destination" : "/",
+      "sftp_destination" : "Inbox/",
       "archive": "gz",
       "gpg_encrypt" : true,
       "file_ext" : "csv"
