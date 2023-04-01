@@ -122,7 +122,7 @@ def print_state_comparison(src, tgt):
                                     or (tgt_values.get(FIELD_LAG) is not None and tgt_values.get(FIELD_LAG) < 0 and not new_offset_defined):
                                 offset_fix.append(
                                     "./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets "
-                                    "--group {} --topic {}:{} --to-earliest --execute".format(
+                                    "--group {} --topic {}:{} --to-latest --execute".format(
                                         group, topic, part_id, new_offset))
 
                     except Exception as e:
