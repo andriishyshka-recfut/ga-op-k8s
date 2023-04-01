@@ -1,3 +1,5 @@
+import os
+import datetime
 import getopt
 import json
 import sys
@@ -24,6 +26,8 @@ SPECIAL_FIELDS = [FIELD_RETENTION_MS]
 EXCLUDED_TOPICS = ["__consumer_offsets", "mirrormaker2-cluster-offsets", "mirrormaker2-cluster-status",
                    "mirrormaker2-cluster-configs", "mm2-offset-syncs.target.internal", "__strimzi_store_topic"]
 
+now = datetime.datetime.now().strftime('%y-%m-%d_%H%M')
+results_folder = ""
 
 def print_state_comparison(src, tgt):
     print("\n\nData changes:")
@@ -38,6 +42,7 @@ def print_state_comparison(src, tgt):
     tgt_only_topics = set(tgt.keys()).difference(set(src.keys()))
     skip_topics = set()
 
+
     if len(src_only_topics) > 0:
         print("Topics only in Source:", src_only_topics)
         skip_topics.update(src_only_topics)
@@ -45,7 +50,7 @@ def print_state_comparison(src, tgt):
         print("Topics only in Target:", tgt_only_topics)
         skip_topics.update(tgt_only_topics)
 
-    epl_file = open("epl_diff.txt", "w")
+    epl_file = open(results_folder + "/epl_diff.txt", "w")
     for rec in src.items():
         topic, topic_data = rec
 
@@ -135,7 +140,7 @@ def print_state_comparison(src, tgt):
 
         tsv_content = tabulate(suspicious_items, tablefmt="tsv")
 
-    tsv_file = open("topics_stats.csv", "w")
+    tsv_file = open(results_folder + "/topics_stats.csv", "w")
     tsv_file.write(tsv_content)
     tsv_file.close()
 
@@ -273,7 +278,7 @@ def analyze_cluster(cluster_name, bootstrap_server):
     stop = timeit.default_timer()
 
     # print(json.dumps(cluster_status, sort_keys=True, indent=4))
-    filename = cluster_name + '.json'
+    filename = "{}/{}.json".format(results_folder , cluster_name,)
     print("\t\tSaving data to", filename)
     json_file = open(filename, "w")
     json_file.write(json.dumps(cluster_state, sort_keys=True, indent=4))
@@ -284,11 +289,11 @@ def analyze_cluster(cluster_name, bootstrap_server):
 
 
 def parse_args(argv):
-    source_broker, target_broker = '', ''
+    source_broker, target_broker, run_prefix = '', '', 'logs'
     global show_all
 
     try:
-        opts, args = getopt.getopt(argv, "ahs:t:", ["src=", "target="])
+        opts, args = getopt.getopt(argv, "ahs:t:p:", ["src=", "target=", "prefix="])
     except getopt.GetoptError:
         print('main.py -s <source broker host:port> -t <target broker host:port> [-a]')
         print('\t-a - show all changes (by default only topics with lag/size mismatch are shown)')
@@ -301,25 +306,29 @@ def parse_args(argv):
             source_broker = arg
         elif opt in ("-t", "--target"):
             target_broker = arg
+        elif opt in ("-p", "--prefix"):
+            run_prefix = arg
         elif opt in ("-a", "--all"):
             show_all = True
 
-    return source_broker, target_broker
+    return source_broker, target_broker, run_prefix
 
 
 #########################################
 #   Main body
 #########################################
 
-source_broker, target_broker = parse_args(sys.argv[1:])
+source_broker, target_broker, run_prefix = parse_args(sys.argv[1:])
 show_all = False
 
+results_folder = f'{run_prefix}_{now}'
+os.mkdir(results_folder)
 source_server_state = analyze_cluster("source", source_broker)
 target_server_state = analyze_cluster("target", target_broker)
 
 diff = DeepDiff(source_server_state, target_server_state, ignore_order=True)
 
-filename = "differences.json"
+filename = results_folder + "/differences.json"
 
 print_state_comparison(source_server_state, target_server_state)
 
