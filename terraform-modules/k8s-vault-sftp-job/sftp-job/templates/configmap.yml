@@ -146,7 +146,7 @@ data:
               shell: |
                 set -e
                 echo "put {{ item }} {{ sftp_remote_dest }}" > {{ sftp_batch_file }}
-                sshpass -p '{{ ssh_pass }}' sftp -oBatchMode=no $([[ -z {{ sftp_options }} ]] && echo {{ sftp_options }} ) -b {{ sftp_batch_file }} {{ sftp_host }}
+                sshpass -p '{{ ssh_pass }}' sftp -oBatchMode=no -oStrictHostKeyChecking=no {{ sftp_options }} -b {{ sftp_batch_file }} {{ sftp_host }}
               tags: sftp_delivery
               register: shell_result
               retries: 5
