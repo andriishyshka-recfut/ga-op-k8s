@@ -144,7 +144,7 @@ resource "kubernetes_secret" "creds_secret" {
     "aws_s3_secret_key"            = try(data.vault_generic_secret.creds_secret[each.key].data.aws_s3_secret_key, "")
     "email_dest_addresses"         = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_dest_addresses, " ", ","), ""))
     "email_cc_addresses"           = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_cc_addresses, " ", ","), local.email_cc))
-    "email_bcc_addresses"          = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_bcc_addresses, " ", ","), ""))
+    "email_bcc_addresses"          = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_bcc_addresses, " ", ","), local.email_bcc))
     "rescue_email_dest_addresses"  = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.rescue_email_dest_addresses, " ", ","), ""))
     "rescue_email_cc_addresses"    = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.rescue_email_cc_addresses, " ", ","), ""))
     "headers"                      = try(data.vault_generic_secret.creds_secret[each.key].data.headers, local.headers)
