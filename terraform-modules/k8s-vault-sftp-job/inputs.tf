@@ -29,6 +29,7 @@ locals {
   #Email values
   email                  = false
   email_cc               = "threat@geminiadvisory.io"
+  email_bcc              = "bohdan.havrysh@geminiadvisory.io"
   email_subject          = "FEED-NG"
   #RescueEmailNotify values
   rescue_email_subject   = "Failed job"
