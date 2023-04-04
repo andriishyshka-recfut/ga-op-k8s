@@ -31,9 +31,9 @@ provider "vault" {
 }
 
 locals {
-  gkeClusterEndpoint   = module.gke-setup-green.GkeClusterConnectionSettings.HOST
-  gkeBearerToken       = module.gke-setup-green.GkeClusterConnectionSettings.API_KEY
-  clusterCaCertificate = module.gke-setup-green.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
+  gkeClusterEndpoint   = module.gke-setup-blue.GkeClusterConnectionSettings.HOST
+  gkeBearerToken       = module.gke-setup-blue.GkeClusterConnectionSettings.API_KEY
+  clusterCaCertificate = module.gke-setup-blue.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
 
 }
 
