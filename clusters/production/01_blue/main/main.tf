@@ -19,7 +19,6 @@ module "k8s-istio" {
   Color    = "blue"
 }
 
-
 module "k8s-misc-operators" {
   source                       = "../../../../terraform-modules/k8s-misc"
   GkeClusterConnectionSettings = local.GkeClusterConnectionSettings

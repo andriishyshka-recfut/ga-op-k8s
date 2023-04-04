@@ -1,0 +1,72 @@
+Topic                                                  	Group           	Partition	Low                  	High                 	Size                	Lag
+minion.seen                                            	seenMinion      	0        	438476057 -> 1526162 	444206548 -> 5730491 	5730491 -> 4204329
+minion.seen                                            	seenpans        	0        	438476057 -> 1526162 	444206548 -> 5730491 	5730491 -> 4204329
+minion.geo.deferred                                    	geo             	0        	110229 -> 1291       	288308 -> 178079     	178079 -> 176788
+minion.geo                                             	geo             	0        	4578655 -> 234293    	9743781 -> 5165126   	5165126 -> 4930833
+whirl.post.source                                      	whirl           	0        	2472804 -> 45292     	4844669 -> 2371865   	2371865 -> 2326573
+mage.task.target.5                                     	magescanner     	0        	608403 -> 0          	1713437 -> 1244011   	1105034 -> 1244011
+mage.scan                                              	magescanner     	0        	3299636 -> 97577     	9364370 -> 6064734   	6064734 -> 5967157
+mage.scan                                              	beat            	0        	3299636 -> 97577     	9364370 -> 6064734   	6064734 -> 5967157
+dome.upsert                                            	upsertDome      	0        	30542915 -> 298494   	40472522 -> 9929607  	9929607 -> 9631113
+minion.beat.victor                                     	beat            	0        	160708582 -> 22573067	258081615 -> 97373033	97373033 -> 74799966
+dome.beat.cweb                                         	beat            	0        	43413 -> 508         	53052 -> 9639        	9639 -> 9131
+dome.beat.rstforums                                    	beat            	0        	76263 -> 1483        	98260 -> 21997       	21997 -> 20514
+minion.beat.acrux                                      	beat            	0        	90975 -> 3763        	325612 -> 234637     	234637 -> 230874
+testcart                                               	beat            	0        	2912316 -> 1650353   	9073065 -> 6160749   	6160749 -> 4510396
+dome.beat.skynetzone                                   	beat            	0        	364051 -> 3590       	472271 -> 108220     	108220 -> 104630
+minion.beat.mike                                       	beat            	0        	6867502 -> 379219    	9211158 -> 2343656   	2343656 -> 1964437
+minion.beat.sagittarius                                	beat            	0        	5550691 -> 3066      	7758463 -> 2207772   	2207772 -> 2204706
+dome.beat.crackingitaly                                	beat            	0        	429599 -> 10697      	666128 -> 236529     	236529 -> 225832
+minion.beat.regulus                                    	beat            	0        	2408384 -> 8953      	3645881 -> 1237497   	1237497 -> 1228544
+minion.beat.pollux                                     	beat            	0        	3029802 -> 154466    	4602873 -> 1573071   	1573071 -> 1418605
+dome.beat.crimenetwork                                 	beat            	0        	116501 -> 1983       	145646 -> 29145      	29145 -> 27162
+dome.beat.youhack                                      	beat            	0        	365756 -> 3998       	505383 -> 139627     	139627 -> 135629
+dome.beat.vlmi                                         	beat            	0        	76964 -> 173         	112162 -> 35198      	35198 -> 35025
+dome.beat.centerclub                                   	beat            	0        	344056 -> 1987       	466710 -> 122654     	122654 -> 120667
+dome                                                   	beat            	0        	28628626 -> 1349160  	41428301 -> 12799675 	12799675 -> 11450515
+dome.beat.piratebuhta                                  	beat            	0        	177636 -> 1703       	253764 -> 76128      	76128 -> 74425
+minion.beat.apus                                       	beat            	0        	566108 -> 214745     	1338637 -> 772529    	772529 -> 557784
+dome.beat.crimemarket                                  	beat            	0        	20033 -> 1076        	26164 -> 6131        	6131 -> 5055
+dome.beat.leakzone                                     	beat            	0        	62747 -> 2993        	88938 -> 26191       	26191 -> 23198
+minion.beat.becrux                                     	beat            	0        	1343153 -> 1370      	1981547 -> 638394    	638394 -> 637024
+dome.beat.elhacker                                     	beat            	0        	307535 -> 683        	396373 -> 88838      	88838 -> 88155
+dome.beat.blackhatworld                                	beat            	0        	670504 -> 967        	971288 -> 300784     	300784 -> 299817
+minion.beat.antlia                                     	beat            	0        	7928426 -> 89175     	12015752 -> 4087326  	4087326 -> 3998151
+dome.beat.freehack                                     	beat            	0        	49866 -> 1921        	107212 -> 57346      	57346 -> 55425
+dome.beat.prologic                                     	beat            	0        	261665 -> 543        	360567 -> 98902      	98902 -> 98359
+minion                                                 	beat            	0        	326992706 -> 262960  	408936855 -> 81944149	81944149 -> 81681189
+dome.beat.cardvilla                                    	beat            	0        	54400 -> 6140        	180068 -> 125668     	125668 -> 119528
+minion.beat.altair                                     	beat            	0        	1469364 -> 6780      	1933340 -> 463976    	463976 -> 457196
+dome.beat.breached                                     	beat            	0        	318932 -> 1104       	400200 -> 81268      	81268 -> 80164
+minion.beat.carinae                                    	beat            	0        	1353060 -> 181044    	2296091 -> 943031    	943031 -> 761987
+dome.beat.crackingpro                                  	beat            	0        	222571 -> 3037       	325991 -> 103420     	103420 -> 100383
+minion.beat.majoris                                    	beat            	0        	950210 -> 9008       	1442880 -> 492670    	492670 -> 483662
+dome.beat.leakbase                                     	beat            	0        	46144 -> 4876        	64927 -> 18783       	18783 -> 13907
+minion.beat.caelum                                     	beat            	0        	1254276 -> 656707    	4372055 -> 3117779   	3117779 -> 2461072
+minion.beat.bravo                                      	beat            	0        	9947018 -> 9230      	14893606 -> 4946588  	4946588 -> 4937358
+minion.beat.recnac                                     	beat            	0        	4064672 -> 10302     	4821766 -> 757094    	757094 -> 746792
+minion.beat.cayuse                                     	beat            	0        	191482 -> 1017       	296121 -> 104639     	104639 -> 103622
+minion.beat.canis                                      	beat            	0        	1135236 -> 227657    	1694846 -> 559610    	559610 -> 331953
+dome.beat.cracking                                     	beat            	0        	72398 -> 9002        	142992 -> 70594      	70594 -> 61592
+minion.beat.sirius                                     	beat            	0        	1598268 -> 345       	1805491 -> 207223    	207223 -> 206878
+dome.beat.nulled                                       	beat            	0        	5442086 -> 201993    	7765291 -> 2323205   	2323205 -> 2121212
+dome.beat.cardingleaks                                 	beat            	0        	28874 -> 614         	51396 -> 22522       	22522 -> 21908
+minion.beat.achernar                                   	beat            	0        	42713989 -> 11416    	49124425 -> 6410436  	6410436 -> 6399020
+minion.beat.cephei                                     	beat            	0        	7246886 -> 113267    	9090691 -> 1843805   	1843805 -> 1730538
+dome.beat.probiv                                       	beat            	0        	217719 -> 2168       	259996 -> 42277      	42277 -> 40109
+dome.beat.bitcointalk                                  	beat            	0        	4768594 -> 15598     	6556462 -> 1787868   	1787868 -> 1772270
+minion.beat.centauri                                   	beat            	0        	1350946 -> 21393     	1731716 -> 380770    	380770 -> 359377
+minion.popeyetools.cnp                                 	popeyetools     	0        	40 -> 0              	43 -> 3              	                    	3 -> 0
+crypto.rf.upsert                                       	live            	0        	8158 -> 2978         	15641 -> 10460       	7483 -> 7482
+crypto.paste.source                                    	live            	0        	965168 -> 8666       	1220614 -> 255446    	255446 -> 246780
+mage.scan.upsert                                       	upsertMage      	0        	3443727 -> 9775      	9417690 -> 5973963   	5973963 -> 5964188
+mage.analysis.upsert                                   	upsertMage      	0        	3511149 -> 276500    	9923326 -> 6412177   	6412177 -> 6135677
+testcart.upsert                                        	upsertMage      	0        	2374084 -> 1868428   	6821477 -> 4447393   	4447393 -> 2578965
+dome.crackingitaly.post_prime                          	crackingitaly   	0        	3847 -> 386          	5867 -> 2020         	2020 -> 1634
+upsertmage.events.firstinfection                       	kamel           	0        	57 -> 22             	159 -> 102           	102 -> 80
+dome.crackx.post_vip                                   	crackx          	0        	6214 -> 0            	6215 -> 1            	                    	1 -> 0
+heartbeats                                             	<not associated>	0        	                     	591295 -> 637504     	591295 -> 637504
+maid.upsert                                            	<not associated>	0        	                     	3701584 -> 0         	3701584 -> 0
+upsertmage.events.newinfection                         	<not associated>	0        	664 -> 202           	2127 -> 1660         	1463 -> 1458
+source.checkpoints.internal                            	<not associated>	0        	                     	81947 -> 70948       	81947 -> 70948
+__strimzi-topic-operator-kstreams-topic-store-changelog	<not associated>	0        	                     	971 -> 967           	971 -> 967

@@ -33,7 +33,8 @@ resource "vault_kubernetes_auth_backend_config" "auth_kubernetes" {
   disable_local_ca_jwt   = "true"
   disable_iss_validation = "true"
   depends_on = [
-    vault_auth_backend.auth_kubernetes
+    vault_auth_backend.auth_kubernetes,
+    vault_generic_secret.cluster_token
   ]
 }
 resource "vault_kubernetes_auth_backend_role" "role_tekton" {
