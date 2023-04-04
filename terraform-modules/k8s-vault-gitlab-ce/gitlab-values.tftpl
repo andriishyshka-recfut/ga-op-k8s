@@ -1,0 +1,202 @@
+global:
+  gitlabVersion: ${global.gitlabVersion}
+  edition: ${global.edition}
+  shell:
+    port: ${global.shell.port}
+    hostKeys:
+      secret: ${global.shell.hostKeys.secret}
+  pod:
+    labels:
+      node-pool: ${global.pod.labels.node-pool}
+  antiAffinity: ${global.antiAffinity}
+  affinity:
+    podAntiAffinity:
+      node-pool: ${global.affinity.podAntiAffinity.node-pool}
+  email:
+    display_name: ${global.email.display_name}
+    from: ${global.email.from}
+    reply_to: ${global.email.reply_to}
+    #subject_suffix:
+  smtp:
+    address: ${global.smtp.address}
+    authentication: ${global.smtp.authentication}
+    domain: ${global.smtp.domain}
+    enabled: ${global.smtp.enabled}
+    openssl_verify_mode: ${global.smtp.openssl_verify_mode}
+    password:
+      secret: ${global.smtp.password.secret}
+      key: ${global.smtp.password.key}
+    port: ${global.smtp.port}
+    starttls_auto: ${global.smtp.starttls_auto}
+    #tls:
+    user_name: ${global.smtp.user_name}
+    pool: ${global.smtp.pool}
+  hosts:
+    domain: ${global.hosts.domain}
+    hostSuffix: ${global.hosts.hostSuffix}
+    https: ${global.hosts.https}
+    gitlab:
+      name: ${global.hosts.gitlab.name}
+      https: ${global.hosts.gitlab.https}
+    ssh: ${global.hosts.ssh}
+  ingress:
+    enabled: ${global.ingress.enabled}
+    configureCertmanager: ${global.ingress.configureCertmanager}
+  minio:
+    enabled: ${global.minio.enabled}
+  kas:
+    enabled: ${global.kas.enabled}
+  appConfig:
+    omniauth:
+      enabled: ${global.appConfig.omniauth.enabled}
+      autoSignInWithProvider:${global.appConfig.omniauth.autoSignInWithProvider}
+      syncProfileFromProvider: ${global.appConfig.omniauth.syncProfileFromProvider}
+      syncProfileAttributes: ${global.appConfig.omniauth.syncProfileAttributes}
+      allowSingleSignOn: ${global.appConfig.omniauth.allowSingleSignOn}
+      blockAutoCreatedUsers: ${global.appConfig.omniauth.blockAutoCreatedUsers}
+      autoLinkLdapUser: ${global.appConfig.omniauth.autoLinkLdapUser}
+      autoLinkSamlUser: ${global.appConfig.omniauth.autoLinkSamlUser}
+      autoLinkUser: ${global.appConfig.omniauth.autoLinkUser}
+      externalProviders: ${global.appConfig.omniauth.externalProviders}
+      allowBypassTwoFactor: ${global.appConfig.omniauth.allowBypassTwoFactor}
+      providers: ${global.appConfig.omniauth.providers}
+    backups:
+      bucket: ${global.appConfig.backups.bucket}
+      tmpBucket: ${global.appConfig.backups.tmpBucket}
+    object_store:
+      enabled: ${global.appConfig.object_store.enabled}
+      connection:
+        secret: ${global.appConfig.object_store.connection.secret}
+        key: ${global.appConfig.object_store.connection.key}
+    lfs:
+      bucket: ${global.appConfig.lfs.bucket}
+      connection: {}
+    artifacts:
+      bucket: ${global.appConfig.artifacts.bucket}
+      connection: {}
+    uploads:
+      bucket: ${global.appConfig.uploads.bucket}
+      connection: {}
+    packages:
+      bucket: ${global.appConfig.packages.bucket}
+      connection: {}
+    externalDiffs:
+      bucket: ${global.appConfig.externalDiffs.bucket}
+      connection: {}
+    dependencyProxy:
+      enabled: ${global.appConfig.dependencyProxy.enabled}
+      bucket: ${global.appConfig.dependencyProxy.bucket}
+      connection: {}
+    terraformState:
+      enabled: ${global.appConfig.terraformState.enabled}
+      bucket: ${global.appConfig.terraformState.bucket}
+      connection: {}
+    ciSecureFiles:
+      enabled: ${global.appConfig.ciSecureFiles.enabled}
+      bucket: ${global.appConfig.ciSecureFiles.bucket}
+      connection: {}
+
+certmanager:
+  install: ${certmanager.install}
+nginx-ingress:
+  enabled: ${nginx-ingress.enabled}
+registry:
+  enabled: ${registry.enabled}
+gitlab:
+  webservice:
+    minReplicas: ${gitlab.webservice.minReplicas}
+    resources:
+      limits:
+        cpu: ${gitlab.webservice.resources.limits.cpu}
+        memory: ${gitlab.webservice.resources.limits.memory}
+      requests:
+        cpu: ${gitlab.webservice.resources.requests.cpu}
+        memory: ${gitlab.webservice.resources.requests.memory}
+  workhorse:
+    resources:
+      limits:
+        cpu: ${gitlab.workhorse.resources.limits.cpu}
+        memory: ${gitlab.workhorse.resources.limits.memory}
+      requests:
+        cpu: ${gitlab.workhorse.resources.requests.cpu}
+        memory: ${gitlab.workhorse.resources.requests.memory}
+  pages:
+    enabled: ${gitlab.pages.enabled}
+  sidekiq:
+    enabled: ${gitlab.sidekiq.enabled}
+    minReplicas: ${gitlab.sidekiq.minReplicas}
+    resources:
+      limits:
+        cpu: ${gitlab.sidekiq.resources.limits.cpu}
+        memory: ${gitlab.sidekiq.resources.limits.memory}
+      requests:
+        cpu: ${gitlab.sidekiq.resources.requests.cpu}
+        memory: ${gitlab.sidekiq.resources.requests.memory}
+  gitlab-grafana:
+    enabled: ${gitlab.gitlab-grafana.enabled}
+  praefect:
+    enabled: ${gitlab.praefect.enabled}
+  gitlab-shell:
+    minReplicas: ${gitlab.gitlab-shell.minReplicas}
+    service:
+      internalPort: ${gitlab.gitlab-shell.service.internalPort}
+  toolbox:
+    persistence:
+      enabled: ${gitlab.toolbox.persistence.enabled}
+      size: ${gitlab.toolbox.persistence.size}
+    backups:
+      bucket: ${gitlab.toolbox.backups.bucket}
+      tmpBucket: ${gitlab.toolbox.backups.tmpBucket}
+      objectStorage:
+        backend: ${gitlab.toolbox.backups.objectStorage.backend}
+        config:
+          gcpProject: ${gitlab.toolbox.backups.objectStorage.config.gcpProject}
+          secret: ${gitlab.toolbox.backups.objectStorage.config.secret}
+          key: ${gitlab.toolbox.backups.objectStorage.config.key}
+      cron:
+        enabled: ${gitlab.toolbox.backups.cron.enabled}
+        schedule: ${gitlab.toolbox.backups.cron.schedule}
+        extraArgs: ${gitlab.toolbox.backups.cron.extraArgs}
+        persistence:
+          enabled: ${gitlab.toolbox.backups.cron.persistence.enabled}
+          accessMode: ${gitlab.toolbox.backups.cron.persistence.accessMode}
+          size: ${gitlab.toolbox.backups.cron.persistence.size}
+
+redis:
+  resources:
+    requests:
+      cpu: ${redis.resources.requests.cpu}
+      memory: ${redis.resources.requests.memory}
+prometheus:
+  install: ${prometheus.install}
+gitlab-runner:
+  install: ${gitlab-runner.install}
+  gitlabUrl: http://${global.hosts.gitlab.name}/
+  pullSecrets: ${gitlab-runner.pull_secrets}
+  rbac:
+    create: ${gitlab-runner.rbac.create}
+  runners:
+    config: |
+      concurrent = ${gitlab-runner.concurrent}
+      check_interval = ${gitlab-runner.check_interval}
+      [session_server]
+      session_timeout = ${gitlab-runner.session_timeout}
+      [[runners]]
+      name = "${gitlab-name}-runner"
+      url = "${global.hosts.gitlab.name}"
+      [runners.kubernetes]
+      image = "${gitlab-runner.image}"
+      image_pull_secrets = ["${gitlab-name}-${gitlab-runner.pull_secrets}"]
+        [runners.cache]
+          Type = "s3"
+          Path = "${gitlab-runner.cache.path}"
+          Shared = ${gitlab-runner.cache.shared}
+          [runners.cache.s3]
+            ServerAddress = "${gitlab-runner.cache.minio_url}"
+            AuthenticationType = "access-key"
+            BucketName = "${gitlab-runner.cache.bucket}"
+    cache:
+      secretName: ${gitlab-name}-${gitlab-runner.cache.secret_name}
+
+extraEnv:
+  PLANTUML_ENCODING: deflate
