@@ -1,0 +1,91 @@
+image:
+  repository: plantuml/plantuml-server
+  # Overrides the image tag whose default is jetty-v{{ .Chart.AppVersion }}
+  tag: ""
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+imagePullSecrets: []
+
+nameOverride: ${plantuml-name}
+fullnameOverride: plantuml-${plantuml-name}
+
+commonLabels: {}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  automountToken: false
+
+podLabels: {}
+
+podAnnotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 999
+  runAsGroup: 999
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+
+priorityClassName: ""
+
+terminationGracePeriodSeconds:
+
+livenessProbe:
+  httpGet:
+    path: /png
+    port: http
+
+readinessProbe:
+  httpGet:
+    path: /png
+    port: http
+
+service:
+  type: ClusterIP
+  annotations: {}
+  port: 80
+
+
+
+resources:
+   requests:
+     cpu: ${cpu_request}
+     memory: ${memory_request}
+   limits:
+     cpu: ${cpu_limit}
+     memory: ${memory_limit}
+
+replicaCount: 1
+maxUnavailable: 0
+autoscaling:
+  enabled: ${autoscaling_enabled}
+  minReplicas: ${autoscaling_min_replicas}
+  maxReplicas: ${autoscaling_max_replicas}
+  targetCPUUtilizationPercentage: ${target_cpu_utilazation}
+  targetMemoryUtilizationPercentage: ${target_memory_utilization}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+caCerts:
+  enabled: false
+  secret:
+
+env: []
+#   - name: VARIABLE
+#     value: my-value
+
+args: []
+#   - --module=http-forwarded
