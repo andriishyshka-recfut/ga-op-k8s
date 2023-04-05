@@ -105,6 +105,15 @@ locals {
       "archive" : "zip",
       "file_ext" : "CSV"
     },
+    "minion-bmo-added-daily" : {
+      "minio_user" : "logstash-red",
+      "sftp" : true,
+      "sftp_user" : "bmo",
+      "sftp_port" : "22"
+      "sftp_destination" : "in/",
+      "gpg_encrypt" : true,
+      "file_ext" : "CSV"
+    },
     "minion-golomt-pans-daily" : {
       "minio_user" : "logstash-red",
       "email" : true,
