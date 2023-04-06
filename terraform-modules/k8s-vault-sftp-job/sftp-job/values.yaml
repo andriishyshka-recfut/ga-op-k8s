@@ -246,7 +246,7 @@ volumes:
     defaultMode: 384
     name: sftp-job-config # Default ConfigMap with configuration
 
-image: harbor.t.regemini.io/sandbox/ansible-job:2 # Custom image in our harbor
+image: harbor.t.regemini.io/sandbox/ansible-job:4 # Custom image in our harbor
 
 imagePullSecrets:
   - name: harbor
