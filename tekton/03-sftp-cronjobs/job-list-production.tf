@@ -112,7 +112,7 @@ locals {
       "sftp_port" : "22"
       "sftp_destination" : "in/",
       "gpg_encrypt" : true,
-      "file_ext" : "CSV"
+      "file_ext" : "csv"
     },
     "minion-golomt-pans-daily" : {
       "minio_user" : "logstash-red",
