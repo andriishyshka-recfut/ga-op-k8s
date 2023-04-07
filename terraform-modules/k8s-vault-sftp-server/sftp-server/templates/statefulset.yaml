@@ -78,12 +78,11 @@ spec:
               name: startup-script
               readOnly: true
               subPath: startup_script
-          {{- range $key, $value := .Values.keys }}
-          {{ $parts := split ":" ($value | replace "\"" "") }}
-            - mountPath: /home/{{ $parts._0 }}/.ssh/keys/
-              name: sftp-{{ $parts._0 }}-key
+            {{- range $key, $value := .Values.keys }}
+            - mountPath: /home/{{ $value | replace "\"" "" | replace ":" "" }}/.ssh/keys/
+              name: sftp-{{ $value | replace "\"" "" | replace ":" "" }}-key
               readOnly: true
-          {{- end }}
+            {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -106,22 +105,20 @@ spec:
                 path: ssh_host_rsa_key
               - key: ssh_host_ed25519_key
                 path: ssh_host_ed25519_key
-            secretName: {{ $fullName }}-ssh-host-keys
-          name: ssh-host-keys
+            secretName: "{{ $fullName }}-ssh-host-keys"
         - name: sftp-users
           secret:
             defaultMode: 420
             items:
               - key: users_conf
                 path: users_conf
-            secretName: {{ $fullName }}-users-secret
-      {{- range $key, $value := .Values.keys }}
-      {{ $parts := split ":" ($value | replace "\"" "") }}
-        - name: sftp-{{ $parts._0 }}-key
+            secretName: "{{ $fullName }}-users"
+        {{- range $key, $value := .Values.keys }}
+        - name: sftp-{{ $value | replace "\"" "" | replace ":" "" }}-key
           secret:
             defaultMode: 420
             items:
-              - key: {{ $parts._0 }}
-                path: {{ $parts._0 }}
-            secretName: {{ $fullName }}-keys-secret
-      {{- end }}
+              - key: {{ $value | replace "\"" "" | replace ":" "" }}
+                path: {{ $value | replace "\"" "" | replace ":" "" }}
+            secretName: {{ $fullName }}-keys
+        {{- end }}
