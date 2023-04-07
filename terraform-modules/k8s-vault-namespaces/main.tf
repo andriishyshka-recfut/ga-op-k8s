@@ -54,6 +54,7 @@ resource "kubernetes_role_binding" "developers_admins" {
 }
 
 resource "kubernetes_cluster_role" "developers_access_role" {
+  count = local.devAccessAllowed
   metadata {
     name = "developers-access"
   }
@@ -77,6 +78,7 @@ resource "kubernetes_cluster_role" "developers_access_role" {
 }
 
 resource "kubernetes_cluster_role" "list_ns_role" {
+  count = local.devAccessAllowed
   metadata {
     name = "list-ns"
   }
@@ -89,6 +91,7 @@ resource "kubernetes_cluster_role" "list_ns_role" {
   }
 }
 resource "kubernetes_cluster_role_binding" "developers_groups_binding" {
+  count = local.devAccessAllowed
   metadata {
     name      = "developers-list-ns"
   }

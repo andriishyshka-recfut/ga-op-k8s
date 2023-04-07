@@ -55,4 +55,6 @@ locals {
     if can(namespace.minioCreds)
   }
   vaultUsersCredentialsPath = "${var.Settings.clusters[var.Cluster][var.Color].minio.vault_users_config_path}/users"
+
+  devAccessAllowed = var.Cluster == "production" ? 0 : 1
 }
