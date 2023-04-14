@@ -1,6 +1,6 @@
 runners:
   config: |
-    concurrent = 4
+    concurrent = 12
     check_interval = 0
     [session_server]
       session_timeout = 1800
