@@ -24,8 +24,5 @@ resource "kubernetes_secret" "harbor_image_pull_secrets" {
   }
 
   type = "kubernetes.io/dockerconfigjson"
-  depends_on = [
-    kubernetes_namespace.gitlab
-  ]
 
 }

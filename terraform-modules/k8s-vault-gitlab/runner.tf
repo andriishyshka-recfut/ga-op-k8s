@@ -1,14 +1,5 @@
-resource "kubernetes_namespace" "gitlab" {
-  metadata {
-    name = "gitlab"
-  }
-}
-
 data "vault_generic_secret" "gitlab" {
   path = "secret/gitlab"
-  depends_on = [
-    kubernetes_namespace.gitlab
-  ]
 }
 
 resource "kubernetes_secret" "gitlab-runner-registration" {
