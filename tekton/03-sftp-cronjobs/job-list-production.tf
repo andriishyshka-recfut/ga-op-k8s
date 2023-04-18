@@ -209,5 +209,12 @@ locals {
       "archive" : "zip",
       "file_ext" : "CSV"
     }, 
+    "minion-desjardins-pans-daily" : {
+      "minio_user" : "logstash-red",
+      "email" : true,
+      "email_subject": "[FEED] - COLLABRIA'PANS"
+      "archive" : "ZIP",
+      "file_ext" : "CSV"
+    },     
   }
 }
