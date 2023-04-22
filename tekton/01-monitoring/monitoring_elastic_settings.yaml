@@ -5,7 +5,7 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "monitoring"
     namespace: "monitoring"
-    appVersion: "7.14.1"
+    appVersion: "7.17.9"
     apmToken: "apm-token"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
@@ -73,7 +73,7 @@ elastic_settings:
     name: kibana
     esName: "monitoring"
     namespace: "monitoring"
-    kibanaVersion: "7.17.8"
+    kibanaVersion: "7.17.9"
     oidc_provider:
       enabled: "yes"
       realm: "google"
