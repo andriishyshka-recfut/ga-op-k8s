@@ -165,7 +165,6 @@ locals {
     },
     "minion-synchrony-pans-daily" : {
       "minio_user" : "logstash-red",
-      "cron" : "0 0 * * *",
       "email" : true,
       "email_subject": "[FEED] - SYNCHRONY'PANS"
       "archive" : "zip",
