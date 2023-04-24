@@ -198,6 +198,11 @@ locals {
       "minio_user" : "logstash-red",
       "email" : true,
       "email_subject": "[FEED] - BANNER'ADDED"
+      "sftp" : true,
+      "sftp_server" : "64.255.194.80",
+      "sftp_user" : "RecordedFuture",
+      "sftp_port" : "22",
+      "sftp_destination" : "\\Incoming\\Complete",
       "archive" : "zip",
       "file_ext" : "CSV"
     },
