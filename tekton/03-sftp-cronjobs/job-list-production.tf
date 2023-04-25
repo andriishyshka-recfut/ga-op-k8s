@@ -165,6 +165,7 @@ locals {
     },
     "minion-synchrony-pans-daily" : {
       "minio_user" : "logstash-red",
+      "cron" : "0 18 * * 5",
       "email" : true,
       "email_subject": "[FEED] - SYNCHRONY'PANS"
       "archive" : "zip",
@@ -202,7 +203,7 @@ locals {
       "sftp_server" : "64.255.194.80",
       "sftp_user" : "RecordedFuture",
       "sftp_port" : "22",
-      "sftp_destination" : "\\Incoming\\Complete",
+      "sftp_destination" : "Inbox/",
       "archive" : "zip",
       "file_ext" : "CSV"
     },
