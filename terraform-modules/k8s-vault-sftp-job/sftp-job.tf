@@ -186,7 +186,7 @@ resource "kubernetes_manifest" "externalsecret_global_creds" {
       "dataFrom" = [
         {
           "extract" = {
-            "key" = "secret/data/sftp-jobs-global-creds"
+            "key" = "secret/data/sftp-job-global-creds"
           }
         }
       ]
@@ -196,7 +196,7 @@ resource "kubernetes_manifest" "externalsecret_global_creds" {
         "name" = "vault-backend"
       }
       "target" = {
-        "name" = "sftp-jobs-global-creds"
+        "name" = "sftp-job-global-creds"
       }
     }
   }
