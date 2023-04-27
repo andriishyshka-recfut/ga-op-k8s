@@ -183,7 +183,7 @@ data:
                 username: "{{ email_username }}"
                 password: "{{ email_password }}"
                 to: "{{ email_dest_addresses }}"
-                cc: "{{ email_cc_addresses }}"
+                cc: "{{ email_cc_addresses | default('threat@geminiadvisory.io')}}"
                 bcc: "{{ email_bcc_addresses }}"
                 subject: "{{ email_subject }}"
                 attach:
@@ -204,7 +204,7 @@ data:
                 username: "{{ email_username }}"
                 password: "{{ email_password }}"
                 to: "{{ email_dest_addresses }}"
-                cc: "{{ email_cc_addresses }}"
+                cc: "{{ email_cc_addresses | default('threat@geminiadvisory.io')}}"
                 bcc: "{{ email_bcc_addresses }}"
                 subject: "{{ email_subject }}"
                 attach:
@@ -245,7 +245,7 @@ data:
                 username: "{{ email_username }}"
                 password: "{{ email_password }}"
                 to: "{{ rescue_email_dest_addresses }}"
-                cc: "{{ rescue_email_cc_addresses }}"
+                cc: "{{ rescue_email_cc_addresses | default('threat@geminiadvisory.io')}}"
                 subject: "{{ rescue_email_subject }}"
                 body: "Sending report for {{ pipeline_name }} was failed! Operations already are in progress to fix it"
               tags: email_rescue_notify
