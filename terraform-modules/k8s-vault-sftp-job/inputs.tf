@@ -36,4 +36,7 @@ locals {
 
   namespaces             = toset(distinct([for k, v in var.job_list: lookup(v, "namespace", local.namespace )]))
   minio_users            = {for k,v in { for k, v in var.job_list: lookup(v, "minio_user", local.minio_user) => lookup(v, "namespace", local.namespace)... }: k => distinct(v)}
+
+  #Get names of secrets in vault
+  clients                = nonsensitive(toset(data.vault_kv_secrets_list_v2.sftp_job_list.names))
 }
