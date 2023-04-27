@@ -124,55 +124,6 @@ resource "helm_release" "sftp-job" {
   }
 }
 
-
-
-/*
-data "vault_generic_secret" "creds_secret" {
-  for_each     = var.job_list
-  path         = "secret/sftp-jobs/${each.key}"
-}
-
-resource "kubernetes_secret" "creds_secret" {
-  for_each = var.job_list
-  metadata {
-    name       = "sftp-job-creds-${each.key}"
-    namespace  = try(each.value.namespace, local.namespace)
-  }
-
-  data = {
-    "key.pem"                      = try(data.vault_generic_secret.creds_secret[each.key].data.ssh_key, "")
-    "ssh_password"                 = try(data.vault_generic_secret.creds_secret[each.key].data.ssh_password, "")
-    "gpg.key"                      = try(data.vault_generic_secret.creds_secret[each.key].data.gpg_key, "")
-    "aws_s3_access_key"            = try(data.vault_generic_secret.creds_secret[each.key].data.aws_s3_access_key, "")
-    "aws_s3_secret_key"            = try(data.vault_generic_secret.creds_secret[each.key].data.aws_s3_secret_key, "")
-    "email_dest_addresses"         = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_dest_addresses, " ", ","), ""))
-    "email_cc_addresses"           = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_cc_addresses, " ", ","), local.email_cc))
-    "email_bcc_addresses"          = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.email_bcc_addresses, " ", ","), local.email_bcc))
-    "rescue_email_dest_addresses"  = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.rescue_email_dest_addresses, " ", ","), ""))
-    "rescue_email_cc_addresses"    = lower(try(replace(data.vault_generic_secret.creds_secret[each.key].data.rescue_email_cc_addresses, " ", ","), ""))
-    "headers"                      = try(data.vault_generic_secret.creds_secret[each.key].data.headers, local.headers)
-  }
-}
-*/
-
-/*
-resource "kubernetes_secret" "global_creds" {
-  for_each     = local.namespaces
-  metadata {
-    name       = "sftp-job-global-creds"
-    namespace  = each.key
-  }
-
-  data = {
-    "prometheus_slack_token"      = data.vault_generic_secret.global_creds.data.prometheus_slack_token
-    "sftp_jobs_slack_token"       = data.vault_generic_secret.global_creds.data.sftp_jobs_slack_token
-    "email_password"              = data.vault_generic_secret.global_creds.data.gmail_account_smtp_password
-    "email_username"              = data.vault_generic_secret.global_creds.data.gmail_account_smtp_user
-  }
-
-}
-*/
-
 data "vault_generic_secret" "minio_creds" {
   path         = "secret/minio/users"
 }
@@ -188,7 +139,6 @@ resource "kubernetes_secret" "minio_creds" {
     secret_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.key]).secretKey
   }
 }
-
 
 data "vault_kv_secrets_list_v2" "sftp_job_list" {
   mount = "secret"
@@ -251,9 +201,6 @@ resource "kubernetes_manifest" "externalsecret_global_creds" {
     }
   }
 }
-
-
-
 
 /*
 resource "kubernetes_service_account_v1" "sa" {
