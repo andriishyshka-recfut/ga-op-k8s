@@ -111,10 +111,10 @@ spec:
               volumeMounts:
                 - mountPath: {{ .Values.sshConfig.privateKeyPath }}/{{ .Values.sshConfig.privateKeyName }}
                   name: creds
-                  subPath: {{ .Values.sshConfig.privateKeyName }}
+                  subPath: ssh_key #{{ .Values.sshConfig.privateKeyName }}
                 - mountPath: {{ .Values.config.GPGKeyPath }}/{{ .Values.config.GPGKeyName }}
                   name: gpg-creds
-                  subPath: {{ .Values.config.GPGKeyName }}
+                  subPath: gpg_key #{{ .Values.config.GPGKeyName }}
               {{- range .Values.volumeMounts }}
                 - name: {{ .name }}
                   mountPath: {{ .mountPath }}
@@ -147,15 +147,15 @@ spec:
           - name: creds
             secret:
               items:
-                - key: {{ .Values.sshConfig.privateKeyName }}
-                  path: {{ .Values.sshConfig.privateKeyName }}
+                - key: ssh_key #{{ .Values.sshConfig.privateKeyName }}
+                  path: ssh_key #{{ .Values.sshConfig.privateKeyName }}
               defaultMode: 384
               secretName: {{ .Values.jobCredsSecretName }}
           - name: gpg-creds
             secret:
               items:
-                - key: {{ .Values.config.GPGKeyName }}
-                  path: {{ .Values.config.GPGKeyName }}
+                - key: gpg_key #{{ .Values.config.GPGKeyName }}
+                  path: gpg_key #{{ .Values.config.GPGKeyName }}
               defaultMode: 384
               secretName: {{ .Values.jobCredsSecretName }}
           {{- range .Values.volumes }}

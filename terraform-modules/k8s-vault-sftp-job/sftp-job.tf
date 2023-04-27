@@ -124,6 +124,9 @@ resource "helm_release" "sftp-job" {
   }
 }
 
+
+
+/*
 data "vault_generic_secret" "creds_secret" {
   for_each     = var.job_list
   path         = "secret/sftp-jobs/${each.key}"
@@ -150,6 +153,25 @@ resource "kubernetes_secret" "creds_secret" {
     "headers"                      = try(data.vault_generic_secret.creds_secret[each.key].data.headers, local.headers)
   }
 }
+*/
+
+/*
+resource "kubernetes_secret" "global_creds" {
+  for_each     = local.namespaces
+  metadata {
+    name       = "sftp-job-global-creds"
+    namespace  = each.key
+  }
+
+  data = {
+    "prometheus_slack_token"      = data.vault_generic_secret.global_creds.data.prometheus_slack_token
+    "sftp_jobs_slack_token"       = data.vault_generic_secret.global_creds.data.sftp_jobs_slack_token
+    "email_password"              = data.vault_generic_secret.global_creds.data.gmail_account_smtp_password
+    "email_username"              = data.vault_generic_secret.global_creds.data.gmail_account_smtp_user
+  }
+
+}
+*/
 
 data "vault_generic_secret" "minio_creds" {
   path         = "secret/minio/users"
@@ -167,25 +189,71 @@ resource "kubernetes_secret" "minio_creds" {
   }
 }
 
-data "vault_generic_secret" "global_creds" {
-  path         = "secret/sftp-jobs/global-creds"
+
+data "vault_kv_secrets_list_v2" "sftp_job_list" {
+  mount = "secret"
+  name  = "sftp-jobs"
 }
 
-resource "kubernetes_secret" "global_creds" {
-  for_each     = local.namespaces
-  metadata {
-    name       = "sftp-job-global-creds"
-    namespace  = each.key
+resource "kubernetes_manifest" "externalsecret_sftp_jobs_client_secrets" {
+  for_each = local.clients
+  manifest = {
+    "apiVersion" = "external-secrets.io/v1beta1"
+    "kind"       = "ExternalSecret"
+    "metadata" = {
+      "name" = "sftp-job-creds-${each.key}"
+      "namespace" : local.namespace
+    }
+    "spec" = {
+      "dataFrom" = [
+        {
+          "extract" = {
+            "key" = "secret/data/sftp-jobs/${each.key}"
+          }
+        }
+      ]
+      "refreshInterval" = "1m"
+      "secretStoreRef" = {
+        "kind" = "SecretStore"
+        "name" = "vault-backend"
+      }
+      "target" = {
+        "name" = "sftp-job-creds-${each.key}"
+      }
+    }
   }
-
-  data = {
-    "prometheus_slack_token"      = data.vault_generic_secret.global_creds.data.prometheus_slack_token
-    "sftp_jobs_slack_token"       = data.vault_generic_secret.global_creds.data.sftp_jobs_slack_token
-    "email_password"              = data.vault_generic_secret.global_creds.data.gmail_account_smtp_password
-    "email_username"              = data.vault_generic_secret.global_creds.data.gmail_account_smtp_user
-  }
-
 }
+
+resource "kubernetes_manifest" "externalsecret_global_creds" {
+  manifest = {
+    "apiVersion" = "external-secrets.io/v1beta1"
+    "kind"       = "ExternalSecret"
+    "metadata" = {
+      "name" = "sftp-job-global-creds"
+      "namespace" : local.namespace
+    }
+    "spec" = {
+      "dataFrom" = [
+        {
+          "extract" = {
+            "key" = "secret/data/sftp-jobs-global-creds"
+          }
+        }
+      ]
+      "refreshInterval" = "1m"
+      "secretStoreRef" = {
+        "kind" = "SecretStore"
+        "name" = "vault-backend"
+      }
+      "target" = {
+        "name" = "sftp-jobs-global-creds"
+      }
+    }
+  }
+}
+
+
+
 
 /*
 resource "kubernetes_service_account_v1" "sa" {
