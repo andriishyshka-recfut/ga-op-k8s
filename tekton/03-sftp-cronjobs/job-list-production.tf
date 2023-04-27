@@ -98,6 +98,17 @@ locals {
       "file_ext" : "csv",
       "archive" : "gz"
     },
+    #"minion-fiserv-pans-daily" : {
+    #  "minio_user": "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "PROD-NAGW-TVBRR001",
+    #  "sftp_host": "prod-gw-na.firstdataclients.com",
+    #  "sftp_port" : "6522",
+    #  "sftp_options" : "-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
+    #  "sftp_destination" : "",
+    #  "gpg_encrypt" : true,
+    #  "file_ext" : "csv"
+    #},
     "minion-bmo-pans-daily" : {
       "minio_user" : "logstash-red",
       "email" : true,
@@ -200,10 +211,11 @@ locals {
       "email" : true,
       "email_subject": "[FEED] - BANNER'ADDED"
       "sftp" : true,
-      "sftp_server" : "64.255.194.80",
+      "sftp_host" : "64.255.194.80",
+      "sftp_options" : "-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
       "sftp_user" : "RecordedFuture",
       "sftp_port" : "22",
-      "sftp_destination" : "Inbox/",
+      "sftp_destination" : "",
       "archive" : "zip",
       "file_ext" : "CSV"
     },
