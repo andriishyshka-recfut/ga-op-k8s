@@ -33,7 +33,7 @@ provider "kubernetes" {
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-lb-switch/state-9"
+    prefix = "tf-lb-switch/state-10"
   }
 
 }
