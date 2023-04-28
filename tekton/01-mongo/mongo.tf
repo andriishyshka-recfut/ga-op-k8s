@@ -8,6 +8,7 @@ module "mongo" {
   VolumeSize     = each.value.volumeSize
   Replicas       = each.value.replicas
   PvcPrefix      = each.value.pvcPrefix
+  InstanceName   = each.key
   Cluster        = var.Cluster
   Color          = var.Color
   Settings       = var.Settings

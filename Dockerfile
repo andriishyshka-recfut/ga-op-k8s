@@ -10,7 +10,7 @@ RUN cd / && python3 -m venv ansible && \
     bash -c "source /ansible/bin/activate && pip install --upgrade pip && pip install ansible pyyaml docker-compose jmespath kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl kafka-python"
 
 
-FROM openjdk:18-jdk-alpine as java
+FROM --platform=linux/amd64 openjdk:18-jdk-alpine as java
 
 FROM alpine:latest
 

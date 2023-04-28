@@ -21,7 +21,7 @@ resource "random_id" "rand" {
   byte_length = 8
 }
 
-resource "kubernetes_cron_job" "mongo_backup" {
+resource "kubernetes_cron_job_v1" "mongo_backup" {
   metadata {
     name      = "mongo-backup"
     namespace = var.MongoNs
@@ -101,7 +101,7 @@ EOT
               }
               env {
                 name  = "MONGODB_URL"
-                value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@${var.Color}-rs0:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
+                value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@${local.full_name}-rs0:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
               }
             }
           }
