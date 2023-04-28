@@ -184,7 +184,7 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: 02-data-migration
+  name: 02-stop-apps
   namespace: tekton-tasks
 spec:
   workspaces:
@@ -201,11 +201,19 @@ spec:
           value: "k8s/tekton/02-stop-apps"
         - name: branch
           value: "\\#329-sandbox-dr-2023-04-27"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 03-data-migration
+  namespace: tekton-tasks
+spec:
+  workspaces:
+  - name: ws
+  tasks:
     - name: data-migration
       taskRef:
         name: tg-run
-      runAfter:
-      - stop-apps
       workspaces:
         - name: ws
           workspace: ws
@@ -218,7 +226,7 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: 03-post-switching
+  name: 04-post-switching
   namespace: tekton-tasks
 spec:
   workspaces:
@@ -309,7 +317,7 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: 04-op
+  name: 05-op
   namespace: tekton-tasks
 spec:
   workspaces:
