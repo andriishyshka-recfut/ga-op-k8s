@@ -10,7 +10,7 @@ locals {
   sonarqube_count = 1
   # mongoDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
-  restoreDate = "2023-03-30"
+  restoreDate = "2023-04-27"
 }
 
 

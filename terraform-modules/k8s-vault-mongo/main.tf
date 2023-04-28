@@ -1,7 +1,7 @@
 resource "helm_release" "psmdb_operator" {
   name       = "psmdb-operator"
   namespace  = var.MongoNs
-  version    = "1.12.1"
+  version    = "1.13.0"
   chart      = "psmdb-operator"
   repository = "https://percona.github.io/percona-helm-charts/"
   wait       = true
@@ -46,9 +46,9 @@ resource "kubernetes_secret" "mongo_backup" {
 resource "kubernetes_persistent_volume" "mongo_data_pv" {
   count = local.pv_disk_count
   metadata {
-    name = "${var.PvcPrefix}-${count.index}-pv"
+    name = "${local.target_label}-${count.index}-pv"
     labels = {
-      target = var.PvcPrefix
+      target = local.target_label
     }
   }
   spec {
@@ -58,12 +58,12 @@ resource "kubernetes_persistent_volume" "mongo_data_pv" {
     access_modes = ["ReadWriteOnce"]
     claim_ref {
       namespace = var.MongoNs
-      name = "mongod-data-${var.Color}-rs0-${count.index}"
+      name = "${local.claim_prefix}-rs0-${count.index}"
     }
     persistent_volume_source{
       csi {
         driver = "pd.csi.storage.gke.io"
-        volume_handle = "projects/${var.Settings.gcpProject}/regions/${var.Settings.clusters[var.Cluster].region}/disks/${var.PvcPrefix}-${count.index}"
+        volume_handle = "projects/${var.Settings.gcpProject}/regions/${var.Settings.clusters[var.Cluster].region}/disks/${local.target_label}-${count.index}"
       }
     }
   node_affinity {
@@ -93,7 +93,7 @@ resource "helm_release" "mongo_cluster" {
 
   set {
     name = "fullnameOverride"
-    value = var.Color
+    value = local.full_name
   }
   set {
     name  = "image.tag"
@@ -166,7 +166,7 @@ resource "null_resource" "ansible_wait_for_mongo" {
 
 COMMAND
     environment = merge(local.ansibleEnvs, {
-      name           = "${var.Color}"
+      name           = local.full_name
       kind           = "PerconaServerMongoDB"
       namespace      = var.MongoNs
       apiVersion     = "psmdb.percona.com/v1"
@@ -186,8 +186,8 @@ resource "helm_release" "mongo_express" {
   wait      = true
   atomic    = true
   set {
-    name  = "color"
-    value = var.Color
+    name  = "fullName"
+    value = local.full_name
   }
   depends_on = [
     null_resource.ansible_wait_for_mongo
