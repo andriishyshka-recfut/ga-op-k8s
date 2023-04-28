@@ -144,7 +144,7 @@ COMMAND
       kind           = "kafka"
       namespace      = local.kafkaNs
       apiVersion     = "kafka.strimzi.io/v1beta2"
-      statusPath     = "conditions[1].type"
+      statusPath     = "conditions[2].type"
       requiredStatus = "Ready"
     })
   }
