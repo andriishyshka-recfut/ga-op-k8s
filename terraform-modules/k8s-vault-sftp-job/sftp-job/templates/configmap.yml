@@ -26,8 +26,8 @@ data:
         email_username: "{{ lookup('env','EMAIL_USERNAME') }}"
         email_password: "{{ lookup('env','EMAIL_PASSWORD') }}"
         email_dest_addresses: "{{ lookup('env','EMAIL_DEST_ADDRESSES') }}"
-        email_cc_addresses: "{{ lookup('env','EMAIL_CC_ADDRESSES') }}"
-        email_bcc_addresses: "{{ lookup('env','EMAIL_BCC_ADDRESSES') }}"
+        email_cc_addresses: "{{ lookup('env','EMAIL_CC_ADDRESSES') if lookup('env','EMAIL_CC_ADDRESSES') != '' else 'threat@geminiadvisory.io' }}"
+        email_bcc_addresses: "{{ lookup('env','EMAIL_BCC_ADDRESSES') if lookup('env','EMAIL_BCC_ADDRESSES') != '' else 'bohdan.havrysh@geminiadvisory.io' }}"
         email_subject: "{{ lookup('env','EMAIL_SUBJECT') }}"
         prometheus_slack_token: "{{ lookup('env','PROMETHEUS_SLACK_TOKEN') }}"
         sftp_jobs_slack_token: "{{ lookup('env','SFTP_JOBS_SLACK_TOKEN') }}"
@@ -183,7 +183,7 @@ data:
                 username: "{{ email_username }}"
                 password: "{{ email_password }}"
                 to: "{{ email_dest_addresses }}"
-                cc: "{{ email_cc_addresses | default('threat@geminiadvisory.io')}}"
+                cc: "{{ email_cc_addresses }}"
                 bcc: "{{ email_bcc_addresses }}"
                 subject: "{{ email_subject }}"
                 attach:
@@ -204,7 +204,7 @@ data:
                 username: "{{ email_username }}"
                 password: "{{ email_password }}"
                 to: "{{ email_dest_addresses }}"
-                cc: "{{ email_cc_addresses | default('threat@geminiadvisory.io')}}"
+                cc: "{{ email_cc_addresses }}"
                 bcc: "{{ email_bcc_addresses }}"
                 subject: "{{ email_subject }}"
                 attach:
