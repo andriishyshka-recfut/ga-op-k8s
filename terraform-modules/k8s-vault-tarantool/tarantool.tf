@@ -185,6 +185,8 @@ resource "kubernetes_stateful_set" "tarantool_stateful_set" {
             "mirror",
             "--watch",
             "--overwrite",
+            "--exclude",
+            "*.inprogress",
             "--remove",
             "/home/tarantool/data",
             "minio/${var.Settings.clusters[var.Cluster].tarantool.backupBucket}",

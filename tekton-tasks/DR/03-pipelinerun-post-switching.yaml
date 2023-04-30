@@ -8,7 +8,7 @@ spec:
   #   pipeline: "24h0m0s"
   #   tasks: "20h0m0s"
   pipelineRef:
-    name: 03-post-switching
+    name: 04-post-switching
   workspaces:
     - name: ws
       emptyDir: {}
