@@ -38,7 +38,7 @@ resource "helm_release" "kamel" {
   namespace  = local.camelNs
   wait       = true
   atomic     = true
-  version    = "0.10.3"
+  version    = "0.11.4"
   values = [
     file("${path.module}/camel-k-values.yaml")
   ]
