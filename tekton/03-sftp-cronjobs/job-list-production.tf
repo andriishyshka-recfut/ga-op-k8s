@@ -210,7 +210,8 @@ locals {
       "minio_user" : "logstash-red",
       "email" : true,
       "email_subject": "[FEED] - BANNER'ADDED"
-      "sftp" : true,
+      "sftp" : false,
+      "gpg_encrypt" : false,
       "sftp_host" : "64.255.194.80",
       "sftp_options" : "-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
       "sftp_user" : "RecordedFuture",
