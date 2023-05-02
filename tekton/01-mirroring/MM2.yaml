@@ -4,7 +4,7 @@ metadata:
   name: mm2
   namespace: kafka
 spec:
-  version: 2.7.0
+  version: 3.2.3
   replicas: 1
   connectCluster: "target"
   template:
