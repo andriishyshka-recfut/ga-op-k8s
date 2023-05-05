@@ -98,17 +98,17 @@ locals {
       "file_ext" : "csv",
       "archive" : "gz"
     },
-    #"minion-fiserv-pans-daily" : {
-    #  "minio_user": "logstash-red",
-    #  "sftp" : true,
-    #  "sftp_user" : "PROD-NAGW-TVBRR001",
-    #  "sftp_host": "prod-gw-na.firstdataclients.com",
-    #  "sftp_port" : "6522",
-    #  "sftp_options" : "-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
-    #  "sftp_destination" : "",
-    #  "gpg_encrypt" : true,
-    #  "file_ext" : "csv"
-    #},
+    "minion-fiserv-pans-daily" : {
+      "minio_user": "logstash-red",
+      "sftp" : true,
+      "sftp_user" : "PROD-NAGW-TVBRR001",
+      "sftp_host": "prod-gw-na.firstdataclients.com",
+      "sftp_port" : "6522",
+      "sftp_options" : "-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
+      "sftp_destination" : "",
+      "gpg_encrypt" : true,
+      "file_ext" : "csv"
+    },
     "minion-bmo-pans-daily" : {
       "minio_user" : "logstash-red",
       "email" : true,
