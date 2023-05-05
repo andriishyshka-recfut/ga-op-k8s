@@ -7,7 +7,7 @@ resource "helm_release" "gitlab" {
   timeout   = 300
   wait      = true
   atomic    = true
-  version   = "6.11.1"
+  version   = "6.11.2"
   values = [
     templatefile("${path.module}/gitlab-values.tftpl", merge(local.gitlab_values, {gitlab-name = each.key}))
   ]
