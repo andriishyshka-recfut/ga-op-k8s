@@ -174,7 +174,7 @@ locals {
       "archive" : "zip",
       "file_ext" : "CSV"
     },
-    "minion-synchrony-pans-daily" : {
+    "minion-synchrony-pans-weekly" : {
       "minio_user" : "logstash-red",
       "cron" : "0 0 * * 5",
       "email" : true,
