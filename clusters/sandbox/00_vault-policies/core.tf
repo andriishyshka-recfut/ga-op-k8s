@@ -41,5 +41,8 @@ path "secret/data/ching/*" {
 path "secret/data/oidc_google_test" {
   capabilities = ["read","list"]
 }
+path "secret/data/core/auth/*" {
+  capabilities = ["read","list","create","update"]
+}
 EOT
 }
