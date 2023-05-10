@@ -224,3 +224,10 @@ filebeat:
               - type: container
                 paths:
                   - /var/log/containers/*${data.kubernetes.container.id}.log 
+            # Twirl
+            - condition.contains:
+                kubernetes.namespace: twirl
+              config:
+              - type: container
+                paths:
+                  - /var/log/containers/*${data.kubernetes.container.id}.log 
