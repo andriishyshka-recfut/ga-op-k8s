@@ -8,3 +8,5 @@ path "secret/data/gs2es/*" {
 path "secret/data/elasticsearch-admin/*" {
   capabilities = ["read","list"]
 }
+EOT
+}
