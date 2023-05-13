@@ -57,17 +57,16 @@ locals {
       "file_ext" : "csv",
       "gpg_encrypt" : true
     },
-    "minion-test-pans-daily" : {
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "sftp_user" : "alexus",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/",
-      "file_ext" : "csv",
-      "email" : true,
-      "email_subject": "[FEED] - TEST'PANS"
-
-    },
+    #"minion-test-pans-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "alexus",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "in/",
+    #  "file_ext" : "csv",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - TEST'PANS"
+    #},
     "minion-s3-added-daily" : {
       "minio_user" : "logstash-red",
       "sftp" : true,
