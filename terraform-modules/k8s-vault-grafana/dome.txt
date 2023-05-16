@@ -3,6 +3,7 @@ altenen
 antichat
 antimigalki
 ascarding
+atlantis
 bdf
 bestcardingworld
 bhf
@@ -77,6 +78,7 @@ mmgp
 moon
 mpgh
 navigator
+niflheim
 nulled
 nulledbb
 nohide
