@@ -13,8 +13,8 @@ runners:
         Path = "/cache/"
         Shared = true
         [runners.cache.s3]
-          ServerAddress = "minio.t.regemini.io:443"
+          ServerAddress = "minio.p.regemini.io:443"
           AuthenticationType = "access-key"
-          BucketName = "ardent-rarity-239115-gitlab-tmp"
+          BucketName = "gitlab-tmp-orbital-wording"
   cache:
     secretName: minio
