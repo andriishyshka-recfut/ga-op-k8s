@@ -24,7 +24,7 @@ resource "kubernetes_deployment" "deployment_trac" {
       spec {
         container {
           name  = "trac"
-          image = "harbor.t.regemini.io/trac/trac:1.4.3"
+          image = "harbor.regemini.io/trac/trac:1.4.3"
           port {
             container_port = "8123"
           }
