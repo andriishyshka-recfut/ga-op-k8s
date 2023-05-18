@@ -8,7 +8,7 @@ locals {
   mongo_auth_prefix = local.settings.mongo.auth.pvcPrefix
   tarantool_count = 1
   sonarqube_count = 1
-  sftp_name = "sftp-server-${local.settings.sftp-server}"
+  sftp = local.settings.sftp-server
   # mongoDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
   restoreDate = "2023-04-27"
@@ -51,7 +51,7 @@ data "google_compute_snapshot" "mongo_auth_snapshot" {
 }
 
 data "google_compute_snapshot" "sftp_snapshot" {
-  for_each = local.sftp_name
+  for_each = local.sftp
   name        = "${each.key}-config-dr-${local.restoreDate}"
   most_recent = true
 }
@@ -160,14 +160,14 @@ resource "google_compute_region_disk" "sonarqube_postgres_pv" {
 }
 
 resource "google_compute_region_disk" "sftp_pv" {
-  for_each = local.sftp_name
-  name     = "${local.sftp_name}-config"
+  for_each = local.sftp
+  name     = "sftp-server-${each.key}-config"
   type     = "pd-balanced"
   size     = 10
   snapshot = data.google_compute_snapshot.sftp_snapshot.name
   labels = {
-    target = "${local.sftp_name}-config"
-    id     = "${local.sftp_name}-config"
+    target = "sftp-server-${each.key}-config"
+    id     = "sftp-server-${each.key}-config"
   }
 
   region        = "us-east4"
