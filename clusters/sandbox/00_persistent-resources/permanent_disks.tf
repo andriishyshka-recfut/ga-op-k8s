@@ -162,7 +162,6 @@ resource "google_compute_region_disk" "sonarqube_postgres_pv" {
 resource "google_compute_region_disk" "sftp_pv" {
   for_each = local.sftp_name
   name     = "${local.sftp_name}-config"
-  count    = 1
   type     = "pd-balanced"
   size     = 10
   snapshot = data.google_compute_snapshot.sftp_snapshot.name
