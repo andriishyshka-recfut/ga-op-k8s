@@ -164,7 +164,7 @@ resource "google_compute_region_disk" "sftp_pv" {
   name     = "sftp-server-${each.key}-config"
   type     = "pd-balanced"
   size     = 10
-  snapshot = data.google_compute_snapshot.sftp_snapshot.name
+  snapshot = data.google_compute_snapshot.sftp_snapshot[each.key].name
   labels = {
     target = "sftp-server-${each.key}-config"
     id     = "sftp-server-${each.key}-config"
