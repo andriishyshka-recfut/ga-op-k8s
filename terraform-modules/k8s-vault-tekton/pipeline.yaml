@@ -313,6 +313,17 @@ spec:
           value: "k8s/tekton/03-tarantool"
         - name: branch
           value: "\\#330-prod-dr-2023-04-28"
+    - name: etl-operator
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/03-etl-operator"
+        - name: branch
+          value: "\\#330-prod-dr-2023-04-28"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
