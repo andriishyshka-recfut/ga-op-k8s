@@ -17,7 +17,7 @@ spec:
     mountPath: /workspace
   steps:
     - name: tg-apply
-      image: harbor.t.regemini.io/op/tf:latest
+      image: harbor.regemini.io/op/tf:latest
       env:
         - name: TF_VAR_Color
           valueFrom:
