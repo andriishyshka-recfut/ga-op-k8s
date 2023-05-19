@@ -2,7 +2,7 @@
 resource "helm_release" "etcd" {
   name              = "etcd"
   chart             = "etcd"
-  repository        = "https://harbor.regemini.io/chartrepo/op"
+  repository        = "https://harbor.t.regemini.io/chartrepo/op"
   version           = "6.10.8"
   namespace         = local.minioNs
   dependency_update = "true"
