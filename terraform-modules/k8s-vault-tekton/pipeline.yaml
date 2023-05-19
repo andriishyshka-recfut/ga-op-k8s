@@ -201,6 +201,29 @@ spec:
           value: "k8s/tekton/02-stop-apps"
         - name: branch
           value: "\\#330-prod-dr-2023-04-28"
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 00-stop-sandbox-data-services
+  namespace: tekton-tasks
+spec:
+  workspaces:
+  - name: ws
+  tasks:
+    - name: stop-apps
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/00-stop-data-services"
+        - name: branch
+          value: "\\#330-prod-dr-2023-04-28"
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline

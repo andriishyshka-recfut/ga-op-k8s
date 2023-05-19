@@ -20,9 +20,7 @@ resource "kubernetes_secret" "mongo" {
     name      = "mongo"
     namespace = var.MongoNs
   }
-
   data = data.vault_generic_secret.mongo_creds.data
-
 }
 
 data "vault_generic_secret" "minio_backup_user" {
@@ -34,13 +32,32 @@ resource "kubernetes_secret" "mongo_backup" {
     name      = "mongo-backup"
     namespace = var.MongoNs
   }
-
   data = {
     AWS_ACCESS_KEY_ID     = data.vault_generic_secret.minio_backup_user.data.accessKey
     AWS_SECRET_ACCESS_KEY = data.vault_generic_secret.minio_backup_user.data.secretKey
   }
-
 }
+
+
+data "vault_generic_secret" "mongo_encryption_key" {
+  count = encryption_keys_count
+  path = "secret/mongo/encryption-${var.InstanceName}"
+}
+
+
+resource "kubernetes_secret" "mongo_encryption_key" {
+  count = encryption_keys_count
+  metadata {
+    name      = "mongo-${var.InstanceName}-mongodb-encryption-key"
+    namespace = var.MongoNs
+  }
+  data = {
+    encryption-key = data.vault_generic_secret.mongo_encryption_key.data.key
+  }
+}
+
+
+
 
 
 resource "kubernetes_persistent_volume" "mongo_data_pv" {
