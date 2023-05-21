@@ -40,19 +40,19 @@ resource "kubernetes_secret" "mongo_backup" {
 
 
 data "vault_generic_secret" "mongo_encryption_key" {
-  count = encryption_keys_count
+  count = local.encryption_keys_count
   path = "secret/mongo/encryption-${var.InstanceName}"
 }
 
 
 resource "kubernetes_secret" "mongo_encryption_key" {
-  count = encryption_keys_count
+  count = local.encryption_keys_count
   metadata {
     name      = "mongo-${var.InstanceName}-mongodb-encryption-key"
     namespace = var.MongoNs
   }
   data = {
-    encryption-key = data.vault_generic_secret.mongo_encryption_key.data.key
+    encryption-key = data.vault_generic_secret.mongo_encryption_key[count.index].data.key
   }
 }
 
