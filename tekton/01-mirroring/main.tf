@@ -21,7 +21,7 @@ locals {
 
 
 resource "null_resource" "chek_kafka_connect" {
-
+  count = local.prod_runs
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<COMMAND
@@ -36,6 +36,7 @@ COMMAND
 
 
 resource "kubectl_manifest" "mm2" {
+  count = local.prod_runs
   yaml_body = local.yaml
   depends_on = [
     null_resource.chek_kafka_connect
