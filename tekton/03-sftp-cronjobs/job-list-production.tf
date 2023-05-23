@@ -205,27 +205,27 @@ locals {
       "archive" : "zip",
       "file_ext" : "CSV"
     },
-    "minion-banner-added-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - BANNER'ADDED"
-      "sftp" : false,
-      "gpg_encrypt" : false,
-      "sftp_host" : "64.255.194.80",
-      "sftp_options" : "-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
-      "sftp_user" : "RecordedFuture",
-      "sftp_port" : "22",
-      "sftp_destination" : "",
-      "archive" : "zip",
-      "file_ext" : "CSV"
-    },
-    "minion-banner-pans-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - BANNER'PANS"
-      "archive" : "zip",
-      "file_ext" : "CSV"
-    }, 
+    #"minion-banner-added-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - BANNER'ADDED"
+    #  "sftp" : false,
+    #  "gpg_encrypt" : false,
+    #  "sftp_host" : "64.255.194.80",
+    #  "sftp_options" : "-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa",
+    #  "sftp_user" : "RecordedFuture",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "",
+    #  "archive" : "zip",
+    #  "file_ext" : "CSV"
+    #},
+    #"minion-banner-pans-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - BANNER'PANS"
+    #  "archive" : "zip",
+    #  "file_ext" : "CSV"
+    #}, 
     "minion-desjardins-pans-daily" : {
       "minio_user" : "logstash-red",
       "email" : true,
