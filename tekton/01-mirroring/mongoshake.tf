@@ -23,6 +23,7 @@ EOT
 }
 
 resource "kubernetes_secret" "mongoshake_config" {
+  count = local.prod_runs
   metadata {
     name      = "mongoshake-config"
     namespace = "mongo"
@@ -40,6 +41,7 @@ resource "kubernetes_secret" "mongoshake_config" {
 
 
 resource "kubernetes_service" "mongo_nodeport" {
+  count = local.prod_runs
   metadata {
     name      = "rs0-mongo-nodeport"
     namespace = "mongo"
@@ -66,6 +68,7 @@ resource "kubernetes_service" "mongo_nodeport" {
 
 
 resource "kubernetes_deployment" "mongoshake" {
+  count = local.prod_runs
   metadata {
     name      = "mongoshake"
     namespace = "mongo"

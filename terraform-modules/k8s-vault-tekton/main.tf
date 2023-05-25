@@ -78,7 +78,7 @@ resource "null_resource" "harbor_creds" {
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     create secret docker-registry harbor --docker-server=harbor.t.regemini.io \
+     create secret docker-registry harbor --docker-server=harbor.regemini.io \
       --docker-username=$(vault kv get -field=user secret/goharbor/docker_login) \
       --docker-password=$(vault kv get -field=password secret/goharbor/docker_login) \
     --namespace=${local.tektonNs} && sleep 30 && \

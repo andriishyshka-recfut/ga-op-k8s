@@ -5,6 +5,8 @@ metadata:
   namespace: flux-system
 spec:
   interval: 30s
-  url: https://harbor.t.regemini.io/chartrepo/op
+  # url: https://harbor.t.regemini.io/chartrepo/op
+  type: oci  
+  url: oci://harbor.regemini.io/helm  
   secretRef:
     name: helm-credentials
