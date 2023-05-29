@@ -193,7 +193,7 @@ locals {
       toolbox = {
         persistence = {
           enabled = true
-          size = "10Gi"
+          size = "15Gi"
         }
         backups = {
           bucket = "gitlab-backup-orbital-wording"
