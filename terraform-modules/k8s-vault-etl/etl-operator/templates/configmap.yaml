@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: etl-tags
+  namespace: {{ .Values.namespace }}
+data:
+  ansible-git-tag: {{ .Values.ansibleGit.tag }}
+  camino-tag: {{ .Values.camino.tag }}

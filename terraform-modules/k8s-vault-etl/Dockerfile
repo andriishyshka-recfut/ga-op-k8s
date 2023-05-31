@@ -16,6 +16,6 @@ ENV OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 WORKDIR /opt/etl
 
-COPY etl-operator.py job_template.yaml /opt/etl
+COPY etl-operator.py etl_job_template.yaml camino_job_template.yaml /opt/etl
 
 CMD ["kopf", "run", "etl-operator.py"]

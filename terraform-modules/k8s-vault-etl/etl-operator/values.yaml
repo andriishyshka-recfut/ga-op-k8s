@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   pullPolicy: Always
-  repository: harbor.t.regemini.io/op/etl-operator
+  repository: harbor.regemini.io/op/etl-operator
 
 
 imagePullSecrets: 

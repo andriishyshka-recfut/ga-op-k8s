@@ -42,6 +42,20 @@ spec:
           env:
           - name: NAMESPACE
             value: {{ .Values.monitoredNamespace }}
+          - name: MINIO_BUCKET
+            value: {{ .Values.minioBucket }}
+          - name: VAULT_PATH
+            value: {{ .Values.vaultPath }}
+          - name: ANSIBLE_GIT_TAG
+            valueFrom:
+              configMapKeyRef:
+                name: etl-tags
+                key: ansible-git-tag
+          - name: CAMINO_TAG
+            valueFrom:
+              configMapKeyRef:
+                name: etl-tags
+                key: camino-tag
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

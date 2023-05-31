@@ -1,0 +1,89 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app: etl-scheduler
+  name: etl-scheduler
+  namespace: etl
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+          labels:
+            app: etl-scheduler
+            app.kubernetes.io/name: etl-scheduler
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          imagePullSecrets:
+          - name: harbor
+          containers:
+          - name: etl-scheduler
+            image: harbor.regemini.io/op/ansible-git:{TAG}
+            imagePullPolicy: Always
+            command: [ "/bin/sh", "-c" ]
+            args:
+              - set +x;
+                set -e;
+                git clone --single-branch --branch ${GIT_TAG} https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/dc/etl.git;
+                cd etl;
+                mkdir files;
+                ansible-playbook etl.yml --vault-password-file /home/ansible/secrets/pass --extra-vars @/home/ansible/secrets/credentials --extra-vars "file=/home/ansible/secrets/etl-settings" --skip-tags ${SKIP_TAGS};
+            volumeMounts:
+            - name: etl-secrets
+              mountPath: /home/ansible/secrets
+              readOnly: true
+            - name: ssh-known-hosts
+              readOnly: false
+              mountPath: "/root/.ssh"
+            env:
+            - name: ANSIBLE_STDOUT_CALLBACK
+              value: skippy
+            - name: slackchannel
+              value: "#etl"
+            - name: SKIP_TAGS
+              value: "debug,pause,logstash"
+            - name: GIT_TAG
+              value: main
+            - name: GIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-creds
+                  key: username
+            - name: GIT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-creds
+                  key: token
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                    secretKeyRef:
+                      name: minio-credentials
+                      key:  accesskey
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                    secretKeyRef:
+                      name: minio-credentials
+                      key: secretkey
+            - name: MC_HOST_minio
+              value: "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
+          volumes:
+          - name: etl-secrets
+            projected:
+              sources:
+              - secret:
+                  name: etl-clients-config
+              - secret:
+                  name: email-creds
+              - secret:
+                  name: slack
+          - name: ssh-known-hosts
+            secret:
+              secretName: ssh-known-hosts
+  schedule: 0 2 * * *
