@@ -4,9 +4,18 @@ resource "helm_release" "etl_operator" {
   namespace = local.namespace
   wait      = true
   atomic    = true
+  recreate_pods = true
   set {
     name  = "image.tag"
-    value = "1.9"
+    value = "1.10"
+  }
+  set {
+    name  = "ansibleGit.tag"
+    value = "v1.5"
+  }
+  set {
+    name  = "camino.tag"
+    value = "v5.0.3"
   }
   set {
     name  = "vaultPath"
@@ -113,6 +122,6 @@ resource "kubernetes_secret" "slack_creds" {
   }
 
   data = {
-    "slack-token" = data.vault_generic_secret.slack_creds.data.token
+    "slacktoken" = data.vault_generic_secret.slack_creds.data.token
   }
 }
