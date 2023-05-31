@@ -124,13 +124,13 @@ locals {
       "gpg_encrypt" : true,
       "file_ext" : "csv"
     },
-    "minion-golomt-pans-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - GOLOMT'PANS"
-      "archive" : "zip",
-      "file_ext" : "CSV"
-    },
+    #"minion-golomt-pans-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - GOLOMT'PANS"
+    #  "archive" : "zip",
+    #  "file_ext" : "CSV"
+    #},
     "minion-bnp-added-daily" : {
       "minio_user" : "logstash-red",
       "email" : true,
