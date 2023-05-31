@@ -18,4 +18,5 @@ locals {
   #   ANSIBLE_STDOUT_CALLBACK = "debug"
   #   BASTION_DNS             = var.Settings.bastion_dns
   # })
+  notRed = var.Color == "red" ? 0 : 1
 }

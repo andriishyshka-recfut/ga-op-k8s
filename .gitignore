@@ -12,7 +12,6 @@ ssh-key*
 
 kubeconfig
 
-istio-*
 tmp/
 tmp-*/
 

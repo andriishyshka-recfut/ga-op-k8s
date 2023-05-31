@@ -21,6 +21,7 @@ resource "kubernetes_namespace" "istio_system" {
 }
 
 resource "kubernetes_namespace" "istio_ingress" {
+  count = local.notRed
   metadata {
     name = "istio-ingress"
     labels = {
