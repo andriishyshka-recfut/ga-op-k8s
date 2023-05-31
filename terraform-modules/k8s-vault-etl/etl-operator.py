@@ -25,6 +25,7 @@ SECRET_PLACEHOLDER = "etl-clients-config"
 ANSIBLE_GIT_TAG = 'ANSIBLE_GIT_TAG'
 CAMINO_TAG = 'CAMINO_TAG'
 VAULT_PATH = 'VAULT_PATH'
+ELASTIC_SECRETS_PATH = 'ELASTIC_SECRETS_PATH'
 
 @kopf.on.startup()
 async def cleanup_old_jobs(logger, **kwargs):
@@ -161,6 +162,8 @@ def modify_camino_cronjob(secret_name, etl_settings, namespace, logger):
         job_cfg["metadata"]["name"] = job_name
         job_cfg["metadata"]["namespace"] = namespace
         job_cfg["spec"]["jobTemplate"]["spec"]["template"]["metadata"]["annotations"]["vault.hashicorp.com/auth-path"] = f"auth/{os.environ.get(VAULT_PATH)}"
+        if ELASTIC_SECRETS_PATH in os.environ.keys():
+            job_cfg["spec"]["jobTemplate"]["spec"]["template"]["metadata"]["annotations"]["elasticsearchSecretPath"] = os.environ.get(ELASTIC_SECRETS_PATH)
         camino_schedule = etl_settings["cron"]
         job_cfg["spec"]["schedule"] = camino_schedule
 

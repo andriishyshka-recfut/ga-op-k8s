@@ -29,6 +29,10 @@ resource "helm_release" "etl_operator" {
     name  = "monitoredNamespace"
     value = local.namespace
   }
+  set {
+    name  = "elasticSecretsPath"
+    value = local.elasticSecretsPath
+  }
 }
 
 
