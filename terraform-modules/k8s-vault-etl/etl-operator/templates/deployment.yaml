@@ -42,10 +42,10 @@ spec:
           env:
           - name: NAMESPACE
             value: {{ .Values.monitoredNamespace }}
-          - name: MINIO_BUCKET
-            value: {{ .Values.minioBucket }}
           - name: VAULT_PATH
             value: {{ .Values.vaultPath }}
+          - name: ELASTIC_SECRETS_PATH
+            value: {{ .Values.elasticSecretsPath }}
           - name: ANSIBLE_GIT_TAG
             valueFrom:
               configMapKeyRef:

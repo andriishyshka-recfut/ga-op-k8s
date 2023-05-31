@@ -19,5 +19,6 @@ data "vault_kv_secrets_list_v2" "etl_clients_list" {
 locals {
   clients   = nonsensitive(toset(data.vault_kv_secrets_list_v2.etl_clients_list.names))
   namespace = "etl"
+  elasticSecretsPath = var.Cluster == "production" ? "/secret/data/es-creds-compose-prod/metaCamino" : "/secret/data/elasticsearch-admin/elastic7-v2"
 }
 

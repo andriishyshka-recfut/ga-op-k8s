@@ -31,7 +31,7 @@ spec:
             args:
               - set +x;
                 set -e;
-                git clone --single-branch --branch ${GIT_TAG} https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/dc/etl.git;
+                git clone -c advice.detachedHead=false --single-branch --branch ${GIT_TAG} https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/dc/etl.git;
                 cd etl;
                 mkdir files;
                 ansible-playbook etl.yml --vault-password-file /home/ansible/secrets/pass --extra-vars @/home/ansible/secrets/credentials --extra-vars "file=/home/ansible/secrets/etl-settings" --skip-tags ${SKIP_TAGS};
@@ -50,7 +50,7 @@ spec:
             - name: SKIP_TAGS
               value: "debug,pause,logstash"
             - name: GIT_TAG
-              value: main
+              value: rc1
             - name: GIT_USER
               valueFrom:
                 secretKeyRef:
