@@ -1,43 +1,43 @@
 locals {
   jobs = var.Cluster == "production" ? local.sftpJobList : local.sftpJobListSandbox
   sftpJobList = {
-    "crypto-chainalysis" : {
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "sftp_user" : "chainalysis",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/",
-      "file_ext" : "json"
-    },
-    "minion-creditone-account-daily" : {
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "sftp_user" : "creditone",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/account",
-      "file_ext" : "csv",
-      "archive" : "zip",
-      "include_headers": true
-    },
-    "minion-creditone-added-daily" : {
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "sftp_user" : "creditone",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/",
-      "file_ext" : "csv",
-      "archive" : "zip",
-      "include_headers": true
-    },
-    "minion-creditone-pans-daily" : {
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "sftp_user" : "creditone",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/pan",
-      "file_ext" : "csv",
-      "archive" : "zip"
-    },
+    #"crypto-chainalysis" : {
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "chainalysis",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "in/",
+    #  "file_ext" : "json"
+    #},
+    #"minion-creditone-account-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "creditone",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "in/account",
+    #  "file_ext" : "csv",
+    #  "archive" : "zip",
+    #  "include_headers": true
+    #},
+    #"minion-creditone-added-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "creditone",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "in/",
+    #  "file_ext" : "csv",
+    #  "archive" : "zip",
+    #  "include_headers": true
+    #},
+    #"minion-creditone-pans-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "creditone",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "in/pan",
+    #  "file_ext" : "csv",
+    #  "archive" : "zip"
+    #},
     "minion-dscvr-added-bihourly" : {
       "cron" : "15 */2 * * *",
       "minio_user" : "logstash-red",
