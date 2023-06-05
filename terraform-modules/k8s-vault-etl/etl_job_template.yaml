@@ -34,7 +34,7 @@ spec:
                 git clone -c advice.detachedHead=false --single-branch --branch ${GIT_TAG} https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/dc/etl.git;
                 cd etl;
                 mkdir files;
-                ansible-playbook etl.yml --vault-password-file /home/ansible/secrets/pass --extra-vars @/home/ansible/secrets/credentials --extra-vars "file=/home/ansible/secrets/etl-settings" --skip-tags ${SKIP_TAGS};
+                ansible-playbook etl.yml --vault-password-file /home/ansible/secrets/pass --extra-vars @/home/ansible/secrets/credentials --extra-vars slacktoken=$slacktoken --extra-vars slackchannel=$slackchannel --extra-vars "file=/home/ansible/secrets/etl-settings" --skip-tags ${SKIP_TAGS};
             volumeMounts:
             - name: etl-secrets
               mountPath: /home/ansible/secrets
@@ -47,6 +47,11 @@ spec:
               value: skippy
             - name: slackchannel
               value: "#etl"
+            - name: slacktoken
+              valueFrom:
+                secretKeyRef:
+                  name: slack
+                  key: slacktoken
             - name: SKIP_TAGS
               value: "debug,pause,logstash"
             - name: GIT_TAG
@@ -81,8 +86,6 @@ spec:
                   name: etl-clients-config
               - secret:
                   name: email-creds
-              - secret:
-                  name: slack
           - name: ssh-known-hosts
             secret:
               secretName: ssh-known-hosts
