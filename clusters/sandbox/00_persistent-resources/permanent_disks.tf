@@ -11,7 +11,7 @@ locals {
   sftp = local.settings.sftp-server
   # mongoDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
-  restoreDate = "2023-04-27"
+  restoreDate = "2023-06-05"
 
 }
 
@@ -27,7 +27,7 @@ data "google_compute_snapshot" "tarantool_snapshot" {
 }
 
 data "google_compute_snapshot" "kafka_snapshot" {
-  name        = "kafka-data-${count.index}-dr-${local.restoreDate}"
+  name        = "kafka-data-${count.index}-maintenance-${local.restoreDate}"
   most_recent = true
   count = local.kafka_count
 }
@@ -100,7 +100,7 @@ resource "google_compute_region_disk" "kafka_pv" {
   name     = "kafka-data-${count.index}"
   count    = local.kafka_count
   type     = "pd-balanced"
-  size     = 450
+  size     = data.google_compute_snapshot.kafka_snapshot[count.index].disk_size_gb
   snapshot = data.google_compute_snapshot.kafka_snapshot[count.index].name
   labels = {
     target = "kafka-data"
