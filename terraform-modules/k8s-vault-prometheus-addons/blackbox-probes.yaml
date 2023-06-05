@@ -40,26 +40,7 @@ spec:
       labels:
         module: harbor
       static:
-      - https://harbor.t.regemini.io/chartrepo/op/index.yaml
----
-apiVersion: monitoring.coreos.com/v1
-kind: Probe
-metadata:
-  name: elastic
-  labels:
-    release: prometheus
-spec:
-  module: elastic
-  prober:
-    url: blackbox-exporter-prometheus-blackbox-exporter:9115
-    scheme: http
-    path: /probe
-  targets:
-    staticConfig:
-      labels:
-        module: elastic
-      static:
-      - https://tls13.regemini.io
+      - https://harbor.regemini.io/api/v2.0/health
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe

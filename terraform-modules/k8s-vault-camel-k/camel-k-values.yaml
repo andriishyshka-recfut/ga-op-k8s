@@ -11,7 +11,7 @@ platform:
     maven:
       settings: {}
     registry:
-      address: harbor.t.regemini.io/op
+      address: harbor.regemini.io/camel-k
       secret: camel-k-registry-secret
   kamelet: {}
   resources: {}

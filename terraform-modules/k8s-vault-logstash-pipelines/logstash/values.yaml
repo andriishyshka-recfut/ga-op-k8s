@@ -68,8 +68,8 @@ hostAliases: []
 #  - "foo.local"
 #  - "bar.local"
 
-image: "harbor.t.regemini.io/op/logstash-custom"
-imageTag: "7.17.9"
+image: "harbor.regemini.io/op/logstash-custom"
+imageTag: "7.17.10"
 imagePullPolicy: "Always"
 imagePullSecrets:
   - name: harbor
