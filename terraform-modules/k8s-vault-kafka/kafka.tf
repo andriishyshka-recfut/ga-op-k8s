@@ -47,7 +47,7 @@ resource "kubernetes_persistent_volume" "kafka_zookeeper_pv" {
   }
   spec {
     capacity = {
-      storage = local.diskSize
+      storage = "10Gi"
     }
     access_modes = ["ReadWriteOnce"]
     claim_ref {
