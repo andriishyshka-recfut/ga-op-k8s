@@ -15,11 +15,15 @@ SECRETS_PREFIX = os.environ.get('SECRETS_PREFIX') if os.environ.get('SECRETS_PRE
 MAIN_KEY = "etl-settings"
 
 
+ES_QUERY_FIELD = "es_query"
+JOB_SUSPENDED_FIELD = "suspended"
+KAFKA_TOPIC_FIELD = "kafka_topic"
 MINIO_BUCKET_FIELD = 'miniobucket'
 SCHEDULE_FIELD = "cron"
-JOB_SUSPENDED_FIELD = "suspended"
-TAG_FIELD = "etl_gitlab_tag"
 SKIP_TAGS_FIELD = "skip-tags"
+TAG_FIELD = "single-branch"
+
+
 SECRET_PLACEHOLDER = "etl-clients-config"
 
 ANSIBLE_GIT_TAG = 'ANSIBLE_GIT_TAG'
@@ -140,16 +144,20 @@ def modify_etl_cronjob(secret_name, etl_settings, namespace, logger):
 
 
 def modify_camino_cronjob(secret_name, etl_settings, namespace, logger):
+    if (ES_QUERY_FIELD not in etl_settings.keys()) and (KAFKA_TOPIC_FIELD not in etl_settings.keys()):
+        logger.warn(f"Can't create Camino job without either '{ES_QUERY_FIELD}' or '{KAFKA_TOPIC_FIELD}' specified in {secret_name}")
+        return
+
     if MINIO_BUCKET_FIELD not in etl_settings.keys():
-        logger.error(f"Can't create Camino job without '{MINIO_BUCKET_FIELD}' specified in {secret_name}")
+        logger.warn(f"Can't create Camino job without '{MINIO_BUCKET_FIELD}' specified in {secret_name}")
         return
 
     if CAMINO_TAG not in os.environ.keys():
-        logger.error("Can't create Camino job without 'camino-tag' specified in etl-tags configmap")
+        logger.warn("Can't create Camino job without 'camino-tag' specified in etl-tags configmap")
         return
 
     if VAULT_PATH not in os.environ.keys():
-        logger.error(f"Can't create Camino job without '{VAULT_PATH}' env specified")
+        logger.warnse(f"Can't create Camino job without '{VAULT_PATH}' env specified")
         return
 
     job_name = secret_name.replace(SECRETS_PREFIX, CAMINO_JOB_NAME_PREFIX)
