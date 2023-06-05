@@ -34,7 +34,7 @@ spec:
         - name: path
           value: "k8s/tekton/03-logs-restore"
         - name: branch
-          value: "#342-sandbox-dr-2023-05-19"
+          value: "\\#347-DR-prod-26.05.23"
       timeout: 3h
 ---
 apiVersion: tekton.dev/v1beta1
