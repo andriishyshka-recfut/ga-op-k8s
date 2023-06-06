@@ -187,24 +187,24 @@ locals {
       "email_subject": "[FEED] - GREENDOT'ADDED"
       "archive" : "zip",
       "file_ext" : "csv"
-    },
-    "minion-eml-added-daily" : {
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "sftp_user" : "eml",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/",
-      "file_ext" : "JSON",
-      "archive" : "ZIP",
-      "create_checksum": true
-    },
-    "minion-eml-eu-added-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - EML'ADDED"
-      "archive" : "zip",
-      "file_ext" : "CSV"
-    },
+    }#,
+    #"minion-eml-added-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "eml",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "in/",
+    #  "file_ext" : "JSON",
+    #  "archive" : "ZIP",
+    #  "create_checksum": true
+    #},
+    #"minion-eml-eu-added-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - EML'ADDED"
+    #  "archive" : "zip",
+    #  "file_ext" : "CSV"
+    #},
     #"minion-banner-added-daily" : {
     #  "minio_user" : "logstash-red",
     #  "email" : true,
@@ -226,12 +226,12 @@ locals {
     #  "archive" : "zip",
     #  "file_ext" : "CSV"
     #}, 
-    "minion-desjardins-pans-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - COLLABRIA'PANS"
-      "archive" : "ZIP",
-      "file_ext" : "CSV"
-    },     
+    #"minion-desjardins-pans-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - COLLABRIA'PANS"
+    #  "archive" : "ZIP",
+    #  "file_ext" : "CSV"
+    #},     
   }
 }
