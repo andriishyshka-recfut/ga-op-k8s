@@ -108,22 +108,22 @@ locals {
     #  "gpg_encrypt" : true,
     #  "file_ext" : "csv"
     #},
-    "minion-bmo-pans-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - BMO'PANS"
-      "archive" : "zip",
-      "file_ext" : "CSV"
-    },
-    "minion-bmo-added-daily" : {
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "sftp_user" : "bmo",
-      "sftp_port" : "22"
-      "sftp_destination" : "in/",
-      "gpg_encrypt" : true,
-      "file_ext" : "csv"
-    },
+    #"minion-bmo-pans-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - BMO'PANS"
+    #  "archive" : "zip",
+    #  "file_ext" : "CSV"
+    #},
+    #"minion-bmo-added-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "bmo",
+    #  "sftp_port" : "22"
+    #  "sftp_destination" : "in/",
+    #  "gpg_encrypt" : true,
+    #  "file_ext" : "csv"
+    #},
     #"minion-golomt-pans-daily" : {
     #  "minio_user" : "logstash-red",
     #  "email" : true,
