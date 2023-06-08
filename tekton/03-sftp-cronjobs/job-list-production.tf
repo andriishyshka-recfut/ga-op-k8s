@@ -180,14 +180,14 @@ locals {
       "email_subject": "[FEED] - SYNCHRONY'PANS"
       "archive" : "zip",
       "file_ext" : "csv"
-    },
-    "minion-greendot-added-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - GREENDOT'ADDED"
-      "archive" : "zip",
-      "file_ext" : "csv"
     }#,
+    #"minion-greendot-added-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - GREENDOT'ADDED"
+    #  "archive" : "zip",
+    #  "file_ext" : "csv"
+    #},
     #"minion-eml-added-daily" : {
     #  "minio_user" : "logstash-red",
     #  "sftp" : true,
