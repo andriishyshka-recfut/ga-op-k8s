@@ -80,15 +80,15 @@ podAnnotations: {}
 # additionals labels
 labels: {}
 
-logstashJavaOpts: "-Xmx1g -Xms1g"
+logstashJavaOpts: "-Xmx4g -Xms4g"
 
 resources:
   requests:
-    cpu: "100m"
-    memory: "1200Mi"
+    cpu: "500m"
+    memory: "4400Mi"
   limits:
     cpu: "2000m"
-    memory: "2400Mi"
+    memory: "8800Mi"
 
 persistence:
   enabled: true
