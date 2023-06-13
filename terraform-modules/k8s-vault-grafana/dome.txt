@@ -50,6 +50,7 @@ elhacker
 enclave
 eternia
 exploit.in
+exposed
 forumteam
 freehack
 fssquad
