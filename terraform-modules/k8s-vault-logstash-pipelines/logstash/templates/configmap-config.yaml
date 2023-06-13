@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "logstash.fullname" . }}-config
+  name: "logstash-{{ template "logstash.fullname" . }}-config"
   labels:
     app: "{{ template "logstash.fullname" . }}"
     chart: "{{ .Chart.Name }}"
@@ -19,8 +19,8 @@ data:
     xpack.management.elasticsearch.ssl.certificate_authority: {{ .Values.mountCaCert.mountPath}}/ca.crt
     xpack.management.pipeline.id: [{{ .Values.elastic.pipelineID | replace " " ","}}]
     xpack.monitoring.enabled: false
-    api.auth.type: {{ .Values.logstash.auth }}
-    api.auth.basic.username: {{ .Values.logstash.user }}
-    api.auth.basic.password: ${LOGSTASH_PASSWORD}
+    #api.auth.type: {{ .Values.logstash.auth }}
+    #api.auth.basic.username: {{ .Values.logstash.user }}
+    #api.auth.basic.password: ${LOGSTASH_PASSWORD}
     #log.level: debug
     #path.logs: /var/log/logstash
