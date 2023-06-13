@@ -25,7 +25,7 @@ spec:
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
-      name: {{ template "elasticsearch.uname" . }}
+      name: {{ template "elasticsearch.uname" . }}    
     {{- if .Values.persistence.labels.enabled }}
       labels:
         release: {{ .Release.Name | quote }}

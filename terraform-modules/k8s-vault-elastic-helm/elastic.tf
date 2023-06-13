@@ -18,14 +18,14 @@ resource "kubernetes_secret" "elastic_secret" {
 
 resource "helm_release" "elastic" {
   depends_on = [
-    kubernetes_secret.elastic_secret
+    kubernetes_secret.elastic_secret, kubernetes_persistent_volume_claim.elsticsearch
   ]
   for_each  = local.nodePools
   name      = each.key
   chart     = "${path.module}/charts/elasticsearch"
   wait      = true
-  atomic    = true
-  timeout   = 7200
+  atomic    = false
+  timeout   = 14400
   namespace = local.globalSettings.namespace
   values = [
     templatefile("${path.module}/elastic-values.tftpl", merge(each.value, local.globalSettings, local.combineSettings, { nodePool = each.key }))

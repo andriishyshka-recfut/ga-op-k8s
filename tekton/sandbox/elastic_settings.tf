@@ -1,11 +1,20 @@
 locals {
   ElasticSettings = {
     globalSettings = {
-      namespace   = "elastic",
-      imageTag    = "7.17.8",
-      clusterName = "elasticsearch",
-      remotecerts = ["remote.ca.crt", "remote2.ca.crt"],
-      plugins     = ["repository-s3", "repository-gcs"]
+      namespace            = "elastic",
+      imageTag             = "7.17.8",
+      clusterName          = "elasticsearch",
+      remotecerts          = ["remote.ca.crt", "remote2.ca.crt"],
+      remoteCertsVaultPath = "secret/elasticsearch-admin/remote-certs",
+      plugins              = ["repository-s3", "repository-gcs"]
+      gcsVaultPath         = "secret/sa/prod-transfer"
+      volumeExt            = false
+      podAnnotations = {
+        "co.elastic.logs/enabled" : "true",
+        "co.elastic.logs/module" : "elasticsearch",
+        "sidecar.istio.io/inject" : "false",
+        "co.elastic.logs/exclude_lines" : "^.*\"event.type\":\"transport\""
+      }
       addons = {
         notifications = {},
         authorizations = {
@@ -21,7 +30,8 @@ locals {
       license = {
         vault_path = "secret/elasticsearch-admin/license"
         name       = "recorded-future-ab-non_production-c5c46fd1-a8b4-41d7-8e47-4cde5a71013a-v5.json"
-      }
+      },
+      clusterHealthCheckParams = "wait_for_status=green&timeout=1s"
     },
     nodePools = {
       master = {
@@ -44,6 +54,14 @@ locals {
         replicas      = 2,
         workloadsType = "data",
         roles         = {},
+        resources     = { cpuReq = "1", memReq = "4Gi", cpuLimit = "4", memLimit = "5Gi" },
+        storage       = "100Gi",
+        esJavaOpts    = "-Xms4g -Xmx4g"
+      },
+      ingest = {
+        replicas      = 1,
+        workloadsType = "data",
+        roles         = { ingest = "true" },
         resources     = { cpuReq = "1", memReq = "4Gi", cpuLimit = "4", memLimit = "5Gi" },
         storage       = "100Gi",
         esJavaOpts    = "-Xms4g -Xmx4g"

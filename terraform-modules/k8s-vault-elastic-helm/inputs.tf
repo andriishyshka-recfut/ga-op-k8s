@@ -18,4 +18,5 @@ locals {
     emailNotification = local.emailNotification,
     configAuth        = local.configAuth
   }
+  persistentVolumes = local.globalSettings.volumeExt ? [for node, data in local.nodePools : { for index in range(data.replicas) : "${local.globalSettings.clusterName}-${node}-${index}" => data.storage }] : []
 }
