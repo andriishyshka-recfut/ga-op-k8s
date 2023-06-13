@@ -34,7 +34,7 @@ config:
           key_file: "/etc/secrets/client_key"
     ssh_banner:
       prober: tcp
-      timeout: 5s
+      timeout: 15m
       tcp:
         query_response:
         - expect: "^SSH-2.0-"

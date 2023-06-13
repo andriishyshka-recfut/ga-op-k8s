@@ -1,5 +1,15 @@
 replicas: ${replicas}
 minimumMasterNodes: 1
+clusterName: ${clusterName}
+clusterHealthCheckParams: ${clusterHealthCheckParams}
+nodeGroup: ${nodePool}
+labels:
+  metricbeat: true
+podAnnotations: %{ if length(podAnnotations) == 0 ~} {} %{ else }
+%{ for annotation,annotationValue in podAnnotations ~}
+  ${annotation}: ${annotationValue}
+%{ endfor ~}
+%{ endif ~}
 resources:
   requests:
     cpu: ${ resources.cpuReq }
@@ -10,16 +20,21 @@ resources:
 %{ endif ~}
     memory: ${ resources.memLimit }
 esJavaOpts: ${esJavaOpts}
+%{ if  volumeExt ~}
+persistence:
+  enabled: false
+%{ else ~}
 volumeClaimTemplate:
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:
       storage: ${storage}
+%{ endif ~}
 roles:
   master: "${ lookup(roles, "master","false")}"
-  ingest: "false"
+  ingest: "${ lookup(roles, "ingest","false")}"
   data: "${ lookup(roles, "data","false")}"
-  remote_cluster_client: "false"
+  remote_cluster_client: "${ lookup(roles, "remote_cluster_client","false")}"
   ml: "false"
 nodeSelector:
   workloadsType: "${workloadsType}"
@@ -33,8 +48,6 @@ tolerations:
   - key: node.kubernetes.io/unreachable
     operator: Exists
     effect: NoExecute
-podAnnotations:
-  "sidecar.istio.io/inject": "false"
 readinessProbe:
   failureThreshold: 3
   initialDelaySeconds: 200
@@ -42,6 +55,11 @@ readinessProbe:
   successThreshold: 3
   timeoutSeconds: 5
 extraVolumes:
+%{ if  volumeExt ~}
+  - name: ${clusterName}-${nodePool}
+    persistentVolumeClaim:
+      claimName: ${clusterName}-${nodePool}
+%{ endif ~}
   - name: elastic-plugins-local
     emptyDir: {}
   - name: elastic-transport-certificates

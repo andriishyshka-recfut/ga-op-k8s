@@ -7,5 +7,5 @@ variable "Settings" {}
 locals {
   globalSettings = var.ElasticSettings.globalSettings
   kibanaSettings = var.KibanaSettings
-  httpServive    = "elasticsearch-coor"
+  httpServive    = "${local.globalSettings.clusterName}-coor"
 }

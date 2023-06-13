@@ -1,0 +1,89 @@
+imageTag: ${globalSettings.imageTag}
+fullnameOverride: metricbeat
+extraEnvs:
+  - name: METRICBEAT_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: metricbeat-credentials
+        key: password
+secretMounts: 
+  - name: elastic-https-certs
+    secretName: elastic-https-certs
+    path: /usr/share/elasticsearch/config/https-certs
+    defaultMode: 0755
+daemonset:
+  enabled: false
+deployment:
+  metricbeatConfig:
+    metricbeat.yml: |
+      metricbeat.autodiscover:
+        providers:
+          - type: kubernetes
+            scope: cluster
+            hints.enabled: false
+            templates:
+              - condition:
+                  contains:
+                    kubernetes.labels.chart: "elasticsearch"
+                config:
+                  - module: logstash
+                    metricsets: ["node", "node_stats"]
+                    enabled: true
+                    period: 10s
+                    hosts: ["logstash-red:9600"]
+                  - module: elasticsearch
+                    period: 10s
+                    metricsets:
+                      - ccr
+                      - cluster_stats
+                      - enrich
+                      - index
+                      - index_recovery
+                      - index_summary
+                      - ml_job
+                      - node_stats
+                      - shard
+                    hosts: 
+%{ for nodepool,nodepooldata in nodePools ~}
+%{ for counter in range(nodepooldata.replicas) ~}
+%{ if nodepool == "master" ~}
+                      - https://${globalSettings.clusterName}-${nodepool}-${counter}.${globalSettings.clusterName}-${nodepool}-headless.${globalSettings.namespace}.svc:9200
+%{ endif ~}
+%{ endfor ~}
+%{ endfor ~}
+                    username: metricbeat_user
+                    password: $${METRICBEAT_PASSWORD}
+                    # WARNING: disables TLS as the default certificate is not valid for the pod FQDN
+                    # TODO: switch this to "certificate" when available: https://github.com/elastic/beats/issues/8164
+                    #ssl.certificate_authorities: [ "/usr/share/elasticsearch/config/https-certs/ca.crt" ]
+                    #protocol: https
+                    ssl.verification_mode: "none"
+                    scope: node
+                    xpack.enabled: true
+              - condition:
+                  contains:
+                    kubernetes.labels.release: "kibana-ga"
+                config:
+                  - module: kibana
+                    metricsets:
+                      - stats
+                    period: 10s
+                    hosts: "${kibana}:5601"                    
+                    username: metricbeat_user
+                    password: $${METRICBEAT_PASSWORD}
+                    # WARNING: disables TLS as the default certificate is not valid for the pod FQDN
+                    # TODO: switch this to "certificate" when available: https://github.com/elastic/beats/issues/8164
+                    ssl.verification_mode: "none"
+                    xpack.enabled: true
+      output.elasticsearch:
+        hosts: "${elastic}:9200"
+        username: metricbeat_user
+        password: $${METRICBEAT_PASSWORD}
+        protocol: https
+        ssl:
+          certificate_authorities: [ "/usr/share/elasticsearch/config/https-certs/ca.crt" ]
+      setup:
+        kibana.host: 'http://${kibana}:5601'
+        dashboards.enabled: true
+      logging:
+        json: true
