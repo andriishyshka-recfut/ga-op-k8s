@@ -78,7 +78,7 @@ spec:
         - name: logstashconfig
           configMap:
             defaultMode: 420
-            name: {{ template "logstash.fullname" . }}-config
+            name: "logstash-{{ template "logstash.fullname" . }}-config"
       {{- if .Values.extraVolumes }}
       {{- if eq "string" (printf "%T" .Values.extraVolumes) }}
 {{ tpl .Values.extraVolumes . | indent 8 }}

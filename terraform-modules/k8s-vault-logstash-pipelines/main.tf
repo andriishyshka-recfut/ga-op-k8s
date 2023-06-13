@@ -40,19 +40,15 @@ resource "helm_release" "logstash" {
     value = try(each.value.minio_user, local.minio_user)
   }
   set {
-    name  = "minio.endpoint"
-    value = local.minio_endpoint
     name = "minio.endpoint"
     value = try(each.value.minio_endpoint, local.minio_endpoint)
   }
   set {
-    name  = "minio.bucket"
-    value = local.minio_bucket
     name = "minio.bucket"
     value = try(each.value.minio_bucket, local.minio_bucket)
   }
 
-  depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds]
+  depends_on = [kubernetes_secret.logstash_elastic_ca,kubernetes_secret.logstash_es_creds,kubernetes_secret.minio_creds]
 }
 
 
@@ -109,8 +105,6 @@ resource "kubernetes_secret" "logstash_es_creds" {
   }
 
   data = {
-    password = data.vault_generic_secret.logstash_es_creds.data.password,
-    username = data.vault_generic_secret.logstash_es_creds.data.username
     password   = data.vault_generic_secret.logstash_es_creds.data.password,
     username   = data.vault_generic_secret.logstash_es_creds.data.username,
     logstash_password   = random_password.password.result
