@@ -26,6 +26,11 @@ deployment:
                   contains:
                     kubernetes.labels.chart: "elasticsearch"
                 config:
+                  - module: logstash
+                    metricsets: ["node", "node_stats"]
+                    enabled: true
+                    period: 10s
+                    hosts: ["logstash-red:9600"]
                   - module: elasticsearch
                     period: 10s
                     metricsets:
