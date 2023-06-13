@@ -1,11 +1,19 @@
 locals {
   ElasticSettings = {
     globalSettings = {
-      namespace   = "elastic",
-      imageTag    = "7.17.9",
-      clusterName = "elasticsearch",
-      remotecerts = [],
-      plugins     = ["repository-s3"]
+      namespace            = "elastic",
+      imageTag             = "7.17.10",
+      clusterName          = "red",
+      remotecerts          = ["remote.ca.crt"],
+      remoteCertsVaultPath = "secret/red/elasticsearch-admin/remote-certs",
+      plugins              = ["repository-s3", "repository-gcs"]
+      volumeExt            = false
+      podAnnotations = {
+        "co.elastic.logs/enabled" : "true",
+        "co.elastic.logs/module" : "elasticsearch",
+        "sidecar.istio.io/inject" : "false",
+        "co.elastic.logs/exclude_lines" : "^.*\"event.type\":\"transport\",^.*metricbeat_user,^.*filebeat_user"
+      }
       addons = {
         notifications = {
           slack = {
@@ -28,7 +36,8 @@ locals {
       license = {
         vault_path = "secret/red/elasticsearch-admin/license"
         name       = "recorded-future-ab-production-83be3fc4-05e3-4804-ae89-2182fa5367d4-v5.json"
-      }
+      },
+      clusterHealthCheckParams = "wait_for_status=green&timeout=1s"
     },
     nodePools = {
       master = {
@@ -48,9 +57,17 @@ locals {
         esJavaOpts    = "-Xms26g -Xmx26g"
       },
       coor = {
+        replicas      = 4,
+        workloadsType = "coor",
+        roles         = { remote_cluster_client = true },
+        resources     = { cpuReq = "7", cpuLimit = "7", memReq = "24Gi", memLimit = "24Gi" },
+        storage       = "30Gi",
+        esJavaOpts    = "-Xms12g -Xmx12g"
+      },
+      ingest = {
         replicas      = 3,
         workloadsType = "coor",
-        roles         = {},
+        roles         = { ingest = true },
         resources     = { cpuReq = "7", cpuLimit = "7", memReq = "24Gi", memLimit = "24Gi" },
         storage       = "30Gi",
         esJavaOpts    = "-Xms12g -Xmx12g"

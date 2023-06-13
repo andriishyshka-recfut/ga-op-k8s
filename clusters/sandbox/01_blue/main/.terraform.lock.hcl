@@ -52,6 +52,7 @@ provider "registry.terraform.io/hashicorp/google-beta" {
     "zh:d55fe5c8edf27483d124ab1a3a8a689e433497856b2ed7ad32e1ff914836f1c3",
     "zh:e05347a2db0bcc95bb3564d487a24dfd51d5edb5ab63ee8d40b9e67453d0b2b4",
     "zh:f569b65999264a9416862bca5cd2a6177d94ccb0424f3a4ef424428912b9cb3c",
+    "zh:fe818cfe3ab69e15178b4c4e8915eda0fd0e33e5fd49408aa2541c2c1a46a8bf",
   ]
 }
 

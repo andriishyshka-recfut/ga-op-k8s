@@ -28,6 +28,10 @@ resource "helm_release" "kibana" {
   values = [
     templatefile("${path.module}/kibana-values.tftpl", merge(local.globalSettings, each.value, { kibana_name = each.key, security_encryptionkey = random_password.security_encryptionkey[each.key].result, reporting_encryptionkey = random_password.reporting_encryptionkey[each.key].result, encryptedsavedobjects_encryptionkey = random_password.encryptedsavedobjects_encryptionkey[each.key].result }))
   ]
+  set {
+    name  = "elasticsearchHosts"
+    value = "https://${local.httpServive}.${local.globalSettings.namespace}.svc:9200"
+  }
   depends_on = [
     kubernetes_job.kibana_user,
     kubernetes_secret.kibana_elastic_user

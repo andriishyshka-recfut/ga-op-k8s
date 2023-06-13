@@ -1,0 +1,50 @@
+imageTag: ${imageTag}
+fullnameOverride: filebeat
+extraEnvs:
+  - name: FILEBEAT_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: filebeat-credentials
+        key: password
+secretMounts: 
+  - name: elastic-https-certs
+    secretName: elastic-https-certs
+    path: /usr/share/elasticsearch/config/https-certs
+    defaultMode: 0755
+daemonset:
+  tolerations:
+    - key: workloadsType
+      operator: Exists
+      effect: NoSchedule
+filebeatConfig:
+  filebeat.yml: |
+    filebeat.autodiscover.providers:
+      - host: $${HOSTNAME}
+        type: kubernetes
+        node: $${NODE_NAME}
+        hints.enabled: true
+        hints.default_config.enabled: false
+        hints.default_config:
+          type: container
+          paths:
+            - /var/log/containers/*$${data.kubernetes.container.id}.log
+    setup:
+      kibana.host: 'http://${kibana}:5601'
+      dashboards.enabled: true
+      template.enabled: true
+      username: filebeat_user
+      password: $${FILEBEAT_PASSWORD}
+    logging:
+      json: true
+    processors:
+    - add_cloud_metadata: null
+    - add_host_metadata: null
+    output.elasticsearch:
+      ssl:
+        certificate_authorities: /usr/share/elasticsearch/config/https-certs/ca.crt
+      host: '$${NODE_NAME}'
+      hosts: '${elastic}:9200'
+      protocol: https
+      username: filebeat_user
+      password: $${FILEBEAT_PASSWORD}
+  

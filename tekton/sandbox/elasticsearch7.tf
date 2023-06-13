@@ -44,12 +44,12 @@ module "kibana" {
     module.es7-restore
   ]
 }
-/*
+
 module "elastic-beats" {
-  source     = "../../terraform-modules/k8s-vault-elastic-beats"
-  Cluster    = var.Cluster
-  Color      = var.Color
-  Settings   = var.Settings
-  depends_on = [module.kibana]
+  source             = "../../terraform-modules/k8s-vault-elastic-beats-helm"
+  ElasticSettings    = local.ElasticSettings
+  BeatKibanaService  = "kb-ga"
+  BeatElasticService = "elasticsearch-coor.elastic.svc"
+  # depends_on         = [module.kibana]
 }
-*/
+

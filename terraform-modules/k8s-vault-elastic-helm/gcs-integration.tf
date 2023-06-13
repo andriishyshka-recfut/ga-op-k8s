@@ -15,14 +15,13 @@ EOT
 }
 
 data "vault_generic_secret" "elastic_sa" {
-  path = "secret/sa/elastic"
+  path = lookup(local.globalSettings, "gcsVaultPath", "secret/sa/elastic")
 }
 
 resource "kubernetes_secret" "gcs_es_credentional" {
   count = contains(local.globalSettings.plugins, "repository-gcs") ? 1 : 0
   metadata {
-    name = "gcs-credentials"
-    //after test change to variable
+    name      = "gcs-credentials"
     namespace = local.globalSettings.namespace
   }
   data = {

@@ -1,6 +1,6 @@
 data "vault_generic_secret" "remote-certs" {
   count = length(local.globalSettings.remotecerts) > 0 ? 1 : 0
-  path  = "secret/elasticsearch-admin/remote-certs"
+  path  = local.globalSettings.remoteCertsVaultPath
 }
 
 resource "kubernetes_secret" "remote-certs" {

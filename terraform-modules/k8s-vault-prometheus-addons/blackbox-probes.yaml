@@ -59,13 +59,8 @@ spec:
       labels:
         module: ssh_banner
       static:
-      - bka-sftp.regemini.com:2222
-      - bmo-sftp.regemini.com:2222
-      - chainalysis-sftp.regemini.com:2222
-      - creditone-sftp.regemini.com:2222
-      - dscvr-sftp.regemini.com:2222
+      - sftp-server-main.sftp-jobs:22
       - fiserv-sftp.regemini.com:2222
-      # - s3-sftp.regemini.com:2222
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
