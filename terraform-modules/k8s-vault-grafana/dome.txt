@@ -60,6 +60,7 @@ hackflag
 hackforums
 hacklife
 hadar
+hak5
 hashkiller
 hpc
 hydramarket
