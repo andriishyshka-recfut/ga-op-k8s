@@ -67,17 +67,17 @@ locals {
     #  "email" : true,
     #  "email_subject": "[FEED] - TEST'PANS"
     #},
-    "minion-s3-added-daily" : {
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "email" : true,
-      "email_subject": "[FEED] - S3'ADDED",
-      "sftp_user" : "s3",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/",
-      "file_ext" : "csv",
-      "archive" : "zip"
-    },
+    #"minion-s3-added-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "email" : true,
+    #  "email_subject": "[FEED] - S3'ADDED",
+    #  "sftp_user" : "s3",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "in/",
+    #  "file_ext" : "csv",
+    #  "archive" : "zip"
+    #},
     "dome-bka-added-daily" : {
       "minio_user" : "logstash-red",
       "sftp" : true,
@@ -145,42 +145,42 @@ locals {
     #  "archive" : "zip",
     #  "file_ext" : "CSV"
     #},
-    "minion-tjx-added-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - TJX'ADDED"
-      "archive" : "zip",
-      "file_ext" : "CSV"
-    },
-    "minion-tjx-pans-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - TJX'PANS"
-      "archive" : "zip",
-      "file_ext" : "CSV"
-    },
-    "minion-sainsburys-added-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - SAINSBURYS'ADDED"
-      "archive" : "zip",
-      "file_ext" : "CSV"
-    },
-    "minion-sainsburys-pans-daily" : {
-      "minio_user" : "logstash-red",
-      "email" : true,
-      "email_subject": "[FEED] - SAINSBURYS'PANS"
-      "archive" : "zip",
-      "file_ext" : "CSV"
-    },
-    "minion-synchrony-pans-weekly" : {
-      "minio_user" : "logstash-red",
-      "cron" : "0 0 * * 5",
-      "email" : true,
-      "email_subject": "[FEED] - SYNCHRONY'PANS"
-      "archive" : "zip",
-      "file_ext" : "csv"
-    }#,
+    #"minion-tjx-added-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - TJX'ADDED"
+    #  "archive" : "zip",
+    #  "file_ext" : "CSV"
+    #},
+    #"minion-tjx-pans-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - TJX'PANS"
+    #  "archive" : "zip",
+    #  "file_ext" : "CSV"
+    #},
+    #"minion-sainsburys-added-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - SAINSBURYS'ADDED"
+    #  "archive" : "zip",
+    #  "file_ext" : "CSV"
+    #},
+    #"minion-sainsburys-pans-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - SAINSBURYS'PANS"
+    #  "archive" : "zip",
+    #  "file_ext" : "CSV"
+    #},
+    #"minion-synchrony-pans-weekly" : {
+    #  "minio_user" : "logstash-red",
+    #  "cron" : "0 0 * * 5",
+    #  "email" : true,
+    #  "email_subject": "[FEED] - SYNCHRONY'PANS"
+    #  "archive" : "zip",
+    #  "file_ext" : "csv"
+    #},
     #"minion-greendot-added-daily" : {
     #  "minio_user" : "logstash-red",
     #  "email" : true,
