@@ -75,7 +75,8 @@ imagePullSecrets:
   - name: harbor
 httpPort: 9600
 
-podAnnotations: {}
+podAnnotations:
+  co.elastic.logs/enabled: "true"
 
 # additionals labels
 labels: {}
