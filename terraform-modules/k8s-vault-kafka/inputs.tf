@@ -9,7 +9,7 @@ locals {
     ANSIBLE_STDOUT_CALLBACK = "debug"
   })
   diskSize = var.Cluster == "production" ? "700Gi" : "200Gi"
-  limit    = var.Cluster == "production" ? { "memory" : "6G", "cpu" : "4" } : { "memory" : "2G", "cpu" : "1" }
+  limit    = var.Cluster == "production" ? { "memory" : "9G", "cpu" : "5" } : { "memory" : "2G", "cpu" : "1" }
   request  = var.Cluster == "production" ? { "memory" : "3G", "cpu" : "1" } : { "memory" : "1G", "cpu" : "0.25" }
   pv_disk_count = var.Cluster == "production" ? 0 : 3
   use_pv = var.Cluster == "production" ? false : true
