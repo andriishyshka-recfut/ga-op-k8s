@@ -1,9 +1,9 @@
 resource "helm_release" "etl_operator" {
-  name      = "etl-operator"
-  chart     = "${path.module}/etl-operator"
-  namespace = local.namespace
-  wait      = true
-  atomic    = true
+  name          = "etl-operator"
+  chart         = "${path.module}/etl-operator"
+  namespace     = local.namespace
+  wait          = true
+  atomic        = true
   recreate_pods = true
   set {
     name  = "image.tag"
@@ -160,4 +160,35 @@ resource "kubernetes_secret" "slack_creds" {
   data = {
     "slacktoken" = data.vault_generic_secret.slack_creds.data.token
   }
+}
+
+
+resource "kubernetes_manifest" "externalsecret_ssh" {
+  manifest = {
+    "apiVersion" = "external-secrets.io/v1beta1"
+    "kind"       = "ExternalSecret"
+    "metadata" = {
+      "name" = "ssh"
+      "namespace" : local.namespace
+    }
+    "spec" = {
+      "target" = {
+        "name" = "ssh"
+      }
+      "dataFrom" = [
+        {
+          "extract" = {
+            "key" = "secret/data/etl/ssh"
+          }
+        },
+      ]
+      "refreshInterval" = "1m"
+      "secretStoreRef" = {
+        "kind" = "SecretStore"
+        "name" = "vault-backend"
+      }
+    }
+  }
+  depends_on = [helm_release.etl_operator]
+
 }
