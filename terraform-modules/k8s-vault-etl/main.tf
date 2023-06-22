@@ -7,7 +7,7 @@ resource "helm_release" "etl_operator" {
   recreate_pods = true
   set {
     name  = "image.tag"
-    value = "1.10"
+    value = "1.11"
   }
   set {
     name  = "ansibleGit.tag"

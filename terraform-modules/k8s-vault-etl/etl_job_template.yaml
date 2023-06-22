@@ -31,6 +31,7 @@ spec:
             args:
               - set +x;
                 set -e;
+                cp /root/.ssh/tmp/* /root/.ssh/;
                 git clone -c advice.detachedHead=false --single-branch --branch ${GIT_TAG} https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/dc/etl.git;
                 cd etl;
                 mkdir files;
@@ -39,9 +40,9 @@ spec:
             - name: etl-secrets
               mountPath: /home/ansible/secrets
               readOnly: true
-            - name: ssh-known-hosts
+            - name: ssh-secrets
               readOnly: false
-              mountPath: "/root/.ssh"
+              mountPath: "/root/.ssh/tmp"
             env:
             - name: ANSIBLE_STDOUT_CALLBACK
               value: skippy
@@ -86,7 +87,18 @@ spec:
                   name: etl-clients-config
               - secret:
                   name: email-creds
-          - name: ssh-known-hosts
-            secret:
-              secretName: ssh-known-hosts
+          - name: ssh-secrets
+            projected:
+              sources:
+              - secret:
+                  name: ssh
+                  items:
+                    - key: id_rsa
+                      path: id_rsa
+                      mode: 0600
+                    - key: id_rsa.pub
+                      path: id_rsa.pub
+                      mode: 0600
+                    - key: known_hosts
+                      path: known_hosts
   schedule: 0 2 * * *
