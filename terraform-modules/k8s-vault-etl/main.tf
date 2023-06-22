@@ -82,38 +82,6 @@ resource "kubernetes_manifest" "externalsecret_etl_creds" {
 }
 
 
-resource "kubernetes_manifest" "externalsecret_known_hosts" {
-  manifest = {
-    "apiVersion" = "external-secrets.io/v1beta1"
-    "kind"       = "ExternalSecret"
-    "metadata" = {
-      "name" = "ssh-known-hosts"
-      "namespace" : local.namespace
-    }
-    "spec" = {
-      "data" = [
-        {
-          "secretKey" = "known_hosts"
-          "remoteRef" = {
-            "key"      = "secret/data/etl/known_hosts"
-            "property" = "fingerprints"
-          }
-        },
-      ]
-      "refreshInterval" = "1m"
-      "secretStoreRef" = {
-        "kind" = "SecretStore"
-        "name" = "vault-backend"
-      }
-    }
-  }
-  depends_on = [helm_release.etl_operator]
-
-}
-
-
-
-
 data "vault_generic_secret" "gitlab_token" {
   path = "secret/gitlab"
 }
