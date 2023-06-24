@@ -2,9 +2,9 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
-    app: etl-scheduler
-  name: etl-scheduler
-  namespace: sftp-jobs
+    app: camino-scheduler
+  name: camino-scheduler
+  namespace: etl
 spec:
   concurrencyPolicy: Allow
   failedJobsHistoryLimit: 1
@@ -13,77 +13,66 @@ spec:
       backoffLimit: 0
       template:
         metadata:
+          labels:
+            app: camino
+            use-elastic: "true"
+            use-kafka: "true"
+            zero: "true"
+            podMonitor: go
           annotations:
             sidecar.istio.io/inject: "false"
-          labels:
-            app: etl-scheduler
-            app.kubernetes.io/name: etl-scheduler
+            co.elastic.logs/enabled: 'true'
+            co.elastic.logs/json.add_error_key: 'true'
+            elasticsearchSecretPath: "/secret/data/elasticsearch-admin/elastic7-v2"
+            minioSecretPath: "/secret/data/etl/minio"
+            vault.hashicorp.com/auth-path: auth/k8s-sandbox-blue
+            vault.hashicorp.com/role: "etl"
+            vault.hashicorp.com/agent-requests-cpu: 10m
+            vaultAddr: "http://vault-active.vault:8200"
         spec:
-          automountServiceAccountToken: false
           restartPolicy: Never
-          imagePullSecrets:
-          - name: harbor
           containers:
-          - name: etl-scheduler
-            image: harbor.regemini.io/op/ansible-git:1.4
-            imagePullPolicy: Always
-            command: [ "/bin/sh", "-c" ]
-            args:
-              - set +x;
-                set -e;
-                git clone --single-branch --branch ${GIT_TAG} https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/dc/etl.git;
-                cd etl;
-                mkdir files;
-                ansible-playbook etl.yml --vault-password-file /home/ansible/secrets/pass --extra-vars @/home/ansible/secrets/credentials --extra-vars "file=/home/ansible/secrets/etl-settings" --skip-tags ${SKIP_TAGS};
-            volumeMounts:
-            - name: etl-secrets
-              mountPath: /home/ansible/secrets
-              readOnly: true
-            - name: ssh-known-hosts
-              readOnly: false
-              mountPath: "/root/.ssh"
-            env:
-            - name: ANSIBLE_STDOUT_CALLBACK
-              value: skippy
-            - name: slackchannel
-              value: "#etl"
-            - name: SKIP_TAGS
-              value: "debug,pause,logstash"
-            - name: GIT_TAG
-              value: main
-            - name: GIT_USER
-              valueFrom:
-                secretKeyRef:
-                  name: gitlab-creds
-                  key: username
-            - name: GIT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: gitlab-creds
-                  key: token
-            - name: MINIO_ACCESS_KEY
-              valueFrom:
+            - name: camino
+              image: harbor.regemini.io/dev/camino:{TAG}
+              command: [ "sh" ]
+              args: [ "-c", "/opt/app/camino" ]
+              env:
+                - name: VAULT_ADDR
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['vaultAddr']
+                - name: VAULT_ROLE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['vault.hashicorp.com/role']
+                - name: VAULT_AUTH_PATH
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['vault.hashicorp.com/auth-path']
+                - name: ELASTICSEARCH_SECRET_PATH
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['elasticsearchSecretPath']
+                - name: MINIO_SECRET_PATH
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['minioSecretPath']
+                - name: CONFIG_SECRET_PATH
+                  value: /secret/data/camino/jsonTest
+                - name: KAFKA_BROKERS
+                  value: kafka-cluster-kafka-brokers.kafka:9092
+                - name: LOG_LEVEL
+                  value: "INFO"
+                - name: MINIO_BUCKET
+                  value: "minio-logstash-pipelines-xxxxxxx"
+                - name: ELASTIC_APM_SERVER_URL
+                  value: http://apm-monitoring-apm-http.monitoring:8200
+                - name: ELASTIC_APM_SECRET_TOKEN
+                  valueFrom:
                     secretKeyRef:
-                      name: minio-credentials
-                      key:  accesskey
-            - name: MINIO_SECRET_KEY
-              valueFrom:
-                    secretKeyRef:
-                      name: minio-credentials
-                      key: secretkey
-            - name: MC_HOST_minio
-              value: "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
-          volumes:
-          - name: etl-secrets
-            projected:
-              sources:
-              - secret:
-                  name: etl-clients-config
-              - secret:
-                  name: email-creds
-              - secret:
-                  name: slack
-          - name: ssh-known-hosts
-            secret:
-              secretName: ssh-known-hosts
-  schedule: 0 2 * * *
+                      name: apm-token
+                      key: secret-token
+                - name: KAFKA_WAIT
+                  value: "30s"
+          imagePullSecrets:
+            - name: harbor

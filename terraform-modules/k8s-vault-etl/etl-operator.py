@@ -157,7 +157,7 @@ def modify_camino_cronjob(secret_name, etl_settings, namespace, logger):
         return
 
     if VAULT_PATH not in os.environ.keys():
-        logger.warnse(f"Can't create Camino job without '{VAULT_PATH}' env specified")
+        logger.warn(f"Can't create Camino job without '{VAULT_PATH}' env specified")
         return
 
     job_name = secret_name.replace(SECRETS_PREFIX, CAMINO_JOB_NAME_PREFIX)
