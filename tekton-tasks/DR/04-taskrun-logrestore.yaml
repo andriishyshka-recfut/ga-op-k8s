@@ -34,8 +34,8 @@ spec:
         - name: path
           value: "k8s/tekton/03-logs-restore"
         - name: branch
-          value: "\\#356-sandbox-dr-16-06-23"
-      timeout: 3h
+          value: "master"
+      timeout: 7h
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun

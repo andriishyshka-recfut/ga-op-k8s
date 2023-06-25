@@ -49,7 +49,7 @@ resource "kubernetes_job" "es_restore" {
         }
         container {
           name    = "curator"
-          image   = "bitnami/elasticsearch-curator"
+          image   = "bitnami/elasticsearch-curator-archived"
           command = ["bash", "-c", local.backupCommand]
           volume_mount {
             name       = "curator"
