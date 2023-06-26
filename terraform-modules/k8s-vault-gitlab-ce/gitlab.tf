@@ -1,21 +1,21 @@
 resource "helm_release" "gitlab" {
-  for_each = var.gitlab_list
+  for_each   = var.gitlab_list
   repository = "https://charts.gitlab.io/"
-  chart = "gitlab"
-  name  = each.key
-  namespace = lookup(each.value, "namespace", local.namespace)
-  timeout   = 300
-  wait      = true
-  atomic    = true
-  version   = "7.0.5"
+  chart      = "gitlab"
+  name       = each.key
+  namespace  = lookup(each.value, "namespace", local.namespace)
+  timeout    = 300
+  wait       = true
+  atomic     = true
+  version    = "7.1.0"
   values = [
-    templatefile("${path.module}/gitlab-values.tftpl", merge(local.gitlab_values, {gitlab-name = each.key}))
+    templatefile("${path.module}/gitlab-values.tftpl", merge(local.gitlab_values, { gitlab-name = each.key }))
   ]
-  depends_on = [kubernetes_secret.rails_gcs,kubernetes_secret.smtp,kubernetes_secret.ssh_host_keys,kubernetes_secret.storage_config]
+  depends_on = [kubernetes_secret.rails_gcs, kubernetes_secret.smtp, kubernetes_secret.ssh_host_keys, kubernetes_secret.storage_config]
 }
 
 data "vault_generic_secret" "ssh_host_keys" {
-  path         = "secret/gitlab/ssh-host-keys"
+  path = "secret/gitlab/ssh-host-keys"
 }
 
 resource "kubernetes_secret" "ssh_host_keys" {
@@ -28,7 +28,7 @@ resource "kubernetes_secret" "ssh_host_keys" {
 }
 
 data "vault_generic_secret" "rails_gcs" {
-  path         = "secret/gitlab/rails-gcs"
+  path = "secret/gitlab/rails-gcs"
 }
 
 resource "kubernetes_secret" "rails_gcs" {
@@ -43,7 +43,7 @@ resource "kubernetes_secret" "rails_gcs" {
 }
 
 data "vault_generic_secret" "storage_config" {
-  path         = "secret/gitlab/storage-config"
+  path = "secret/gitlab/storage-config"
 }
 
 resource "kubernetes_secret" "storage_config" {
@@ -58,7 +58,7 @@ resource "kubernetes_secret" "storage_config" {
 }
 
 data "vault_generic_secret" "smtp" {
-  path         = "secret/gitlab/smtp"
+  path = "secret/gitlab/smtp"
 }
 
 resource "kubernetes_secret" "smtp" {
@@ -74,7 +74,7 @@ resource "kubernetes_secret" "smtp" {
 
 ### Runner secrets
 data "vault_generic_secret" "gitlab_runner" {
-  path         = "secret/gitlab/runner"
+  path = "secret/gitlab/runner"
 }
 
 resource "kubernetes_secret" "minio" {
