@@ -15,7 +15,7 @@ resource "helm_release" "etl_operator" {
   }
   set {
     name  = "camino.tag"
-    value = "v5.0.5"
+    value = "v5.0.6"
   }
   set {
     name  = "vaultPath"
