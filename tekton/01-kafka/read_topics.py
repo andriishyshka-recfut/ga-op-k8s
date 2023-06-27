@@ -2,7 +2,7 @@ import json
 import kafka
 brokers = ['broker-0.p.regemini.io:32200', 'broker-0.p.regemini.io:32201', 'broker-0.p.regemini.io:32202']
 admin_client = kafka.KafkaAdminClient(bootstrap_servers=brokers)
-topics = ['artifact', 'checker', 'crypto', "dome", 'mage', 'magecart', 'maid', 'minion', 'os', 'os3t', 'syncmage', 'telegram', 'twirl', 'upsertmage', 'whirl']
+topics = ['artifact', 'checker', 'crypto', "dome", 'mage', 'magecart', 'maid', 'minion', 'os', 'os3t', 'paste', 'syncmage', 'telegram', 'twirl', 'upsertmage', 'whirl']
 work_topics = {}
 print_topic = []
 for topic in admin_client.list_topics():

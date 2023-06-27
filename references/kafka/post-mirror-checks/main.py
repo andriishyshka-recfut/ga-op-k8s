@@ -24,7 +24,7 @@ UNKNOWN_GROUP = "<not associated>"
 SPECIAL_FIELDS = [FIELD_RETENTION_MS]
 
 EXCLUDED_TOPICS = ["__consumer_offsets", "mirrormaker2-cluster-offsets", "mirrormaker2-cluster-status",
-                   "mirrormaker2-cluster-configs", "mm2-offset-syncs.target.internal", "__strimzi_store_topic"]
+                   "mirrormaker2-cluster-configs", "mm2-offset-syncstargetinternal", "mm2-offset-syncs.target.internal", "__strimzi_store_topic"]
 
 now = datetime.datetime.now().strftime('%y-%m-%d_%H%M')
 results_folder = ""

@@ -15,7 +15,7 @@ resource "kubernetes_secret" "harbor_image_pull_secrets" {
     ".dockerconfigjson" = <<DOCKER
 {
   "auths": {
-    "harbor.t.regemini.io": {
+    "harbor.regemini.io": {
       "username": "${data.vault_generic_secret.harbor_token.data.user}",
       "password": "${data.vault_generic_secret.harbor_token.data.password}"
      }

@@ -121,6 +121,10 @@ resource "helm_release" "kafka_cluster" {
     name = "cpuLimit"
     value = local.limit.cpu
   }
+  set {
+    name = "replicas"
+    value = local.replicas
+  }
   depends_on = [
     helm_release.kafka_operator,
   ]
