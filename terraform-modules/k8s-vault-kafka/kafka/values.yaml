@@ -1,1 +1,2 @@
 subdomain: t.regemini.io
+replicas: 3

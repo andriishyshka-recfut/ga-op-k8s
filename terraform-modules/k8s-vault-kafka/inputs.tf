@@ -13,6 +13,7 @@ locals {
   request  = var.Cluster == "production" ? { "memory" : "3G", "cpu" : "1" } : { "memory" : "1G", "cpu" : "0.25" }
   pv_disk_count = var.Cluster == "production" ? 0 : 3
   use_pv = var.Cluster == "production" ? false : true
+  replicas = var.Cluster == "production" ? 5 : 3
 }
 
 terraform {

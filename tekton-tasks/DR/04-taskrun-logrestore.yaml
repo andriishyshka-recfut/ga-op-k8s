@@ -14,7 +14,7 @@
 #       value: "k8s/tekton/03-logs-restore"
 #     - name: branch
 #       value: "\\#311-sandbox-dr-2023-03-29"
-#   timeout: 3h
+#   timeout: 8h
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
@@ -36,6 +36,7 @@ spec:
         - name: branch
           value: "master"
       timeout: 7h
+        tekton-tasks/DR/04-taskrun-logrestore.yaml
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
@@ -44,8 +45,8 @@ metadata:
   namespace: tekton-tasks
 spec:
   timeouts:
-    pipeline: "6h0m0s"
-    tasks: "6h0m0s"
+    pipeline: 12h
+    tasks: 8h
   pipelineRef:
     name: 4-logs-br
   workspaces:

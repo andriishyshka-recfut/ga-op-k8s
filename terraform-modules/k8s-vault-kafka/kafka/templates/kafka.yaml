@@ -24,7 +24,7 @@ spec:
                       - data
 
     version: 3.2.3
-    replicas: 3
+    replicas: {{ .Values.replicas }}
     resources:
       limits:
         cpu: {{ .Values.cpuLimit }}
@@ -45,15 +45,11 @@ spec:
         bootstrap:
           nodePort: 32100
         brokers:
-        - broker: 0
-          advertisedHost: broker-0.{{ .Values.subdomain}}
-          nodePort: 32200
-        - broker: 1
-          advertisedHost: broker-1.{{ .Values.subdomain}}
-          nodePort: 32201
-        - broker: 2
-          advertisedHost: broker-2.{{ .Values.subdomain}}
-          nodePort: 32202
+{{- range untilStep 0 (int .Values.replicas ) 1 }}
+        - broker: {{ . }}
+          advertisedHost: broker-{{ .}}.{{ $.Values.subdomain }}
+          nodePort: 322{{ printf "%02d" . }}
+{{- end }}
     config:
       default.replication.factor: 2
       offsets.topic.replication.factor: 1
@@ -79,7 +75,7 @@ spec:
         {{- end }}
 
   zookeeper:
-    replicas: 3
+    replicas: {{ .Values.replicas }}
     template:
       pod:
         metadata:
