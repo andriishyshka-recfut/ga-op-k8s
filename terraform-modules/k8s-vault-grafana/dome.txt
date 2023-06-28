@@ -67,6 +67,7 @@ hydramarket
 ifud
 imthack
 instanthack
+infectedzone
 korovka
 lcp
 leakbase

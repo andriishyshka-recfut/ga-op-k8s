@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: bots.rules
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+    - interval: 1m
+      name: Bots Alerts
+      rules:
+        - alert: CamelTaskRunFailed
+          annotations:
+            description: |
+              Tekton Taskrun was failed
+            summary: Tekton Taskrun was failed
+          expr: |
+            sum(increase(application_camel_route_exchanges_failed_total[1m])) > 0
+            avg by (source_id,mode) (scraper_run_request_errors / scraper_run_requests_total) > .9 or sum by (topic) (max_over_time(queue_reader_active_workers[12h])) == 0 or sum by (container,record_type) (rate(upsert_run_preps_total[12h])) == 0            
+          labels:
+            cluster: ${cluster_label}          
+            severity: warning
+            not_resolve: "yes"
