@@ -1,17 +1,17 @@
 locals {
-  domain       = "gitlab.regemini.com"
-  namespace    = "gitlab"
+  domain    = "gitlab.regemini.com"
+  namespace = "gitlab"
   gitlab_values = {
     global = {
-      gitlabVersion = "16.0.5",
-      edition = "ce"
+      gitlabVersion = "16.1.1",
+      edition       = "ce"
       shell = {
         port = 2224
         hostKeys = {
           secret = "gitlab-ssh-host-keys"
         }
       },
-      pod= {
+      pod = {
         labels = {
           node-pool = "gitlab"
         }
@@ -24,37 +24,37 @@ locals {
       },
       email = {
         display_name = "GitLab",
-        from = "gitlab@geminiadvisory.io",
-        reply_to = "noreply@gitlab.regemini.com"
+        from         = "gitlab@geminiadvisory.io",
+        reply_to     = "noreply@gitlab.regemini.com"
         #subject_suffix = ""
       },
       smtp = {
-        address = "smtp.gmail.com",
-        authentication = "login",
-        domain = "smtp.gmail.com",
-        enabled = true,
+        address             = "smtp.gmail.com",
+        authentication      = "login",
+        domain              = "smtp.gmail.com",
+        enabled             = true,
         openssl_verify_mode = "peer",
-        port = 587,
-        starttls_auto = true
-        pool = false
-        user_name = "gitlab@geminiadvisory.io"
+        port                = 587,
+        starttls_auto       = true
+        pool                = false
+        user_name           = "gitlab@geminiadvisory.io"
         password = {
           secret = "gitlab-smtp-password"
-          key = "password"
+          key    = "password"
         }
       },
       hosts = {
-        domain = "regemini.com"
+        domain     = "regemini.com"
         hostSuffix = "gitlab"
-        https = true
+        https      = true
         gitlab = {
-          name = "gitlab.regemini.com"
+          name  = "gitlab.regemini.com"
           https = true
         }
         ssh = "gitlab.regemini.com"
       },
       ingress = {
-        enabled = false
+        enabled              = false
         configureCertmanager = false
       },
       minio = {
@@ -65,63 +65,63 @@ locals {
       },
       appConfig = {
         omniauth = {
-          enabled = false
-          autoSignInWithProvider = ""
+          enabled                 = false
+          autoSignInWithProvider  = ""
           syncProfileFromProvider = "[]"
-          syncProfileAttributes = "['email']"
-          allowSingleSignOn = "['saml']"
-          blockAutoCreatedUsers = true
-          autoLinkLdapUser = false
-          autoLinkSamlUser = false
-          autoLinkUser = "['saml']"
-          externalProviders = "[]"
-          allowBypassTwoFactor = "[]"
-          providers = "[]"
+          syncProfileAttributes   = "['email']"
+          allowSingleSignOn       = "['saml']"
+          blockAutoCreatedUsers   = true
+          autoLinkLdapUser        = false
+          autoLinkSamlUser        = false
+          autoLinkUser            = "['saml']"
+          externalProviders       = "[]"
+          allowBypassTwoFactor    = "[]"
+          providers               = "[]"
         }
         backups = {
-          bucket = "gitlab-backup-orbital-wording"
+          bucket    = "gitlab-backup-orbital-wording"
           tmpBucket = "gitlab-tmp-orbital-wording"
         }
         object_store = {
           enabled = true
           connection = {
             secret = "gitlab-object-storage"
-            key = "connection"
+            key    = "connection"
           }
         }
         lfs = {
-          bucket = "gitlab-lfs-orbital-wording"
+          bucket     = "gitlab-lfs-orbital-wording"
           connection = {}
         }
         artifacts = {
-          bucket = "gitlab-artifacts-orbital-wording"
+          bucket     = "gitlab-artifacts-orbital-wording"
           connection = {}
         }
         uploads = {
-          bucket = "gitlab-uploads-orbital-wording"
+          bucket     = "gitlab-uploads-orbital-wording"
           connection = {}
         }
         packages = {
-          bucket = "gitlab-packages-orbital-wording"
+          bucket     = "gitlab-packages-orbital-wording"
           connection = {}
         }
         externalDiffs = {
-          bucket = "gitlab-external-diffs-orbital-wording"
+          bucket     = "gitlab-external-diffs-orbital-wording"
           connection = {}
         }
         dependencyProxy = {
-          enabled = true
-          bucket = "gitlab-dependency-proxy-orbital-wording"
+          enabled    = true
+          bucket     = "gitlab-dependency-proxy-orbital-wording"
           connection = {}
         }
         terraformState = {
-          enabled = false
-          bucket = "gitlab-terraform-state-orbital-wording"
+          enabled    = false
+          bucket     = "gitlab-terraform-state-orbital-wording"
           connection = {}
         }
         ciSecureFiles = {
-          enabled = true
-          bucket = "gitlab-ci-secure-files-orbital-wording"
+          enabled    = true
+          bucket     = "gitlab-ci-secure-files-orbital-wording"
           connection = {}
         }
       }
@@ -140,11 +140,11 @@ locals {
         minReplicas = 1
         resources = {
           limits = {
-            cpu = "4"
+            cpu    = "4"
             memory = "6G"
           }
           requests = {
-            cpu = "500m"
+            cpu    = "500m"
             memory = "900M"
           }
         }
@@ -152,11 +152,11 @@ locals {
       workhorse = {
         resources = {
           limits = {
-            cpu = "3"
+            cpu    = "3"
             memory = "4G"
           }
           requests = {
-            cpu = "400m"
+            cpu    = "400m"
             memory = "500M"
           }
         }
@@ -165,15 +165,15 @@ locals {
         enabled = false
       }
       sidekiq = {
-        enabled = true
+        enabled     = true
         minReplicas = 1
         resources = {
           limits = {
-            cpu = "3"
+            cpu    = "3"
             memory = "2.5G"
           }
           requests = {
-            cpu = "200m"
+            cpu    = "200m"
             memory = "600M"
           }
         }
@@ -193,27 +193,27 @@ locals {
       toolbox = {
         persistence = {
           enabled = true
-          size = "15Gi"
+          size    = "15Gi"
         }
         backups = {
-          bucket = "gitlab-backup-orbital-wording"
+          bucket    = "gitlab-backup-orbital-wording"
           tmpBucket = "gitlab-tmp-orbital-wording"
           objectStorage = {
             backend = "gcs"
             config = {
               gcpProject = "orbital-wording-233917"
-              secret = "gitlab-backup-storage-config"
-              key = "config"
+              secret     = "gitlab-backup-storage-config"
+              key        = "config"
             }
           }
           cron = {
-            enabled = true
-            schedule = "0 0 * * *"
+            enabled   = true
+            schedule  = "0 0 * * *"
             extraArgs = "--skip uploads,artifacts,lfs"
             persistence = {
-              enabled = false
+              enabled    = false
               accessMode = "ReadWriteOnce"
-              size = "10Gi"
+              size       = "10Gi"
             }
           }
         }
@@ -222,7 +222,7 @@ locals {
     redis = {
       resources = {
         requests = {
-          cpu = "20m"
+          cpu    = "20m"
           memory = "64Mi"
         }
       }
@@ -231,21 +231,21 @@ locals {
       install = false
     },
     gitlab-runner = {
-      install = false
-      name = "gitlab-red-runner"
+      install      = false
+      name         = "gitlab-red-runner"
       pull_secrets = "harbor"
       rbac = {
         create = true
       }
-      concurrent = 4
-      check_interval = 0
+      concurrent      = 4
+      check_interval  = 0
       session_timeout = 1800
-      image = "alpine:3.16.1"
+      image           = "alpine:3.16.1"
       cache = {
-        minio_url = "minio.t.regemini.io:443"
-        bucket = "ardent-rarity-239115-gitlab-tmp"
-        path = "/cache/"
-        shared = true
+        minio_url   = "minio.t.regemini.io:443"
+        bucket      = "ardent-rarity-239115-gitlab-tmp"
+        path        = "/cache/"
+        shared      = true
         secret_name = "minio"
       }
     }
