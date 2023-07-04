@@ -1,0 +1,33 @@
+{
+  "admins": [
+    {
+      "created_at": 1684442788231,
+      "filters": {
+        "preferences": {},
+        "totp_config": {
+          "secret": {}
+        }
+      },
+      "id": 1,
+      "last_login": 1684442788237,
+      "password": "${PASSWORD}",
+      "permissions": [
+        "*"
+      ],
+      "status": 1,
+      "updated_at": 1684442788231,
+      "username": "admin"
+    }
+  ],
+  "api_keys": [],
+  "configs": {},
+  "event_actions": [],
+  "event_rules": [],
+  "folders": [],
+  "groups": [],
+  "ip_lists": [],
+  "roles": [],
+  "shares": [],
+  "users": [],
+  "version": 16
+}
