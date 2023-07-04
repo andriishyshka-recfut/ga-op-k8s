@@ -5,10 +5,15 @@ variable "Color" {}
 
 locals {
   # [ "maid","magescanner", "crypto", ... ]
-  namespaceNames = toset(flatten([
-    for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name]
+  # namespaceNames = toset(flatten([
+  #   for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name]
+  #   if can(namespace.skipNsCreation) == false
+  # ]))
+
+  namespaceNames = {
+    for namespace in var.Settings.clusters[var.Cluster].namespaces : namespace.name => namespace
     if can(namespace.skipNsCreation) == false
-  ]))
+  }
 
   #  {  crypto  = [[ "andrei.lavrenyuk@geminiadvisory.io",     ],] }
   namespaceAdmins = {
@@ -57,6 +62,6 @@ locals {
   }
   vaultUsersCredentialsPath = "${var.Settings.clusters[var.Cluster][var.Color].minio.vault_users_config_path}/users"
 
-  devAccessAllowed = var.Cluster == "production" ? 0 : 1
+  devAccessAllowed      = var.Cluster == "production" ? 0 : 1
   appSpecificVaultRoles = var.Color == "red" ? 0 : 1
 }

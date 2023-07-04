@@ -1,9 +1,9 @@
 resource "kubernetes_namespace" "ns" {
   for_each = local.namespaceNames
   metadata {
-    name = each.value
+    name = each.key
     labels = {
-      istio-injection = "enabled"
+      istio-injection = lookup(each.value, "istio", "enabled")
     }
   }
 }
@@ -12,7 +12,7 @@ resource "kubernetes_limit_range" "limit" {
   for_each = local.namespaceNames
   metadata {
     name      = "default-limit-range"
-    namespace = each.value
+    namespace = each.key
   }
   spec {
     limit {
@@ -61,8 +61,8 @@ resource "kubernetes_cluster_role" "developers_access_role" {
 
   rule {
     api_groups = [""]
-    resources  = ["services", "pods","secrets","pods/log"]
-    verbs      = ["get", "list", "watch","delete"]
+    resources  = ["services", "pods", "secrets", "pods/log"]
+    verbs      = ["get", "list", "watch", "delete"]
   }
   rule {
     api_groups = [""]
@@ -93,7 +93,7 @@ resource "kubernetes_cluster_role" "list_ns_role" {
 resource "kubernetes_cluster_role_binding" "developers_groups_binding" {
   count = local.devAccessAllowed
   metadata {
-    name      = "developers-list-ns"
+    name = "developers-list-ns"
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
