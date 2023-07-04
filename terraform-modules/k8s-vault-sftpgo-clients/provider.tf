@@ -12,7 +12,7 @@ data "vault_generic_secret" "sftp_admin" {
 }
 
 provider "sftpgo" {
-  host     = local.sftp_url
+  host     = var.sftp_url
   username = data.vault_generic_secret.sftp_admin.data["login"]
   password = data.vault_generic_secret.sftp_admin.data["password"]
 }
