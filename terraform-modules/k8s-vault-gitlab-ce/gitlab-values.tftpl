@@ -94,7 +94,9 @@ global:
     ciSecureFiles:
       enabled: ${global.appConfig.ciSecureFiles.enabled}
       bucket: ${global.appConfig.ciSecureFiles.bucket}
-      connection: {}
+      connection:
+        secret: ${global.appConfig.object_store.connection.secret}
+        key: ${global.appConfig.object_store.connection.key}
 
 certmanager:
   install: ${certmanager.install}
