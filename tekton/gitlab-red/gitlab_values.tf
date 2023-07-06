@@ -122,7 +122,10 @@ locals {
         ciSecureFiles = {
           enabled    = true
           bucket     = "gitlab-ci-secure-files-orbital-wording"
-          connection = {}
+          connection = {
+            secret = "gitlab-object-storage"
+            key    = "connection"
+          }
         }
       }
     },
