@@ -53,7 +53,7 @@ locals {
         workloadsType = "data",
         roles         = { data = "true" },
         resources     = { cpuReq = "15", cpuLimit = "15", memReq = "52Gi", memLimit = "52Gi" },
-        storage       = "750Gi",
+        storage       = "800Gi",
         esJavaOpts    = "-Xms26g -Xmx26g"
       },
       coor = {
