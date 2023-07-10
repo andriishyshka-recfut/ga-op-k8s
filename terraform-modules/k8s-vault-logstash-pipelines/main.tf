@@ -75,10 +75,10 @@ data "vault_generic_secret" "minio_creds" {
 }
 
 resource "kubernetes_secret" "minio_creds" {
-  for_each = local.minio_users
+  for_each     = local.minio_users
   metadata {
-    name      = "${each.key}-logstash-minio-creds"
-    namespace = each.value[0]
+    name       = "${each.key}-logstash-minio-creds"
+    namespace  = each.value[0]
   }
   data = {
     access_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.key]).accessKey,
@@ -88,25 +88,19 @@ resource "kubernetes_secret" "minio_creds" {
 
 
 data "vault_generic_secret" "logstash_es_creds" {
-  path      = "secret/logstash/red"
-}
-
-resource "random_password" "password" {
-  length           = 16
-  special          = true
-  override_special = "!#"
+  path        = "secret/logstash/red"
 }
 
 resource "kubernetes_secret" "logstash_es_creds" {
-  for_each = local.namespaces
+  for_each.   = local.namespaces
   metadata {
     name      = "${each.key}-logstash-es-creds"
     namespace = each.key
   }
 
   data = {
-    password   = data.vault_generic_secret.logstash_es_creds.data.password,
-    username   = data.vault_generic_secret.logstash_es_creds.data.username,
-    logstash_password   = random_password.password.result
+    password            = data.vault_generic_secret.logstash_es_creds.data.password,
+    username            = data.vault_generic_secret.logstash_es_creds.data.username,
+    logstash_password   = data.vault_generic_secret.logstash_es_creds.data.logstash_password 
   }
 }
