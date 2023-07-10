@@ -3,7 +3,7 @@ locals {
   namespace = "gitlab"
   gitlab_values = {
     global = {
-      gitlabVersion = "16.1.1",
+      gitlabVersion = "16.1.2",
       edition       = "ce"
       shell = {
         port = 2224
@@ -122,7 +122,10 @@ locals {
         ciSecureFiles = {
           enabled    = true
           bucket     = "gitlab-ci-secure-files-orbital-wording"
-          connection = {}
+          connection = {
+            secret = "gitlab-object-storage"
+            key    = "connection"
+          }
         }
       }
     },

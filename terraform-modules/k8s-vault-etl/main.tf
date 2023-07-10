@@ -1,21 +1,28 @@
+data "vault_generic_secret" "harbor_token" {
+  path = "secret/goharbor/docker_login"
+}
+
 resource "helm_release" "etl_operator" {
   name          = "etl-operator"
-  chart         = "${path.module}/etl-operator"
+  chart         = "oci://harbor.regemini.io/helm/etl-operator"
+  version       = "0.1.0"
   namespace     = local.namespace
   wait          = true
   atomic        = true
   recreate_pods = true
+  repository_username = data.vault_generic_secret.harbor_token.data.user
+  repository_password = data.vault_generic_secret.harbor_token.data.password
   set {
     name  = "image.tag"
-    value = "1.11"
+    value = "v2.1-rc4"
   }
   set {
     name  = "ansibleGit.tag"
-    value = "v1.5"
+    value = "v2023070601"
   }
   set {
     name  = "camino.tag"
-    value = "v5.0.10"
+    value = "v5.0.11"
   }
   set {
     name  = "vaultPath"

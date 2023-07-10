@@ -40,7 +40,7 @@ spec:
           Something wrong with minion topic
         summary: Something wrong with minion topic. Probably upsertminion or beat-minion stuck.
       expr: |
-        kafka_consumergroup_lag{consumergroup="beat",topic="minion"} > 1000000
+        sum(kafka_consumergroup_lag{consumergroup="beat",topic=~"minion.beat.*"}) > 1000000
       labels:
         cluster: ${cluster_label}
         severity: critical
@@ -50,7 +50,7 @@ spec:
           Something wrong with minion topic
         summary: Something wrong with minion topic. Probably upsertdome or beat-dome stuck.
       expr: |
-        kafka_consumergroup_lag{consumergroup="beat",topic="dome"} > 100000
+        sum(kafka_consumergroup_lag{consumergroup="beat",topic=~"dome.beat.*"}) > 100000
       labels:
         cluster: ${cluster_label}
         severity: critical
