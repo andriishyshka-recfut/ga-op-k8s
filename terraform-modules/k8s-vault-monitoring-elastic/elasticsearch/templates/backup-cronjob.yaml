@@ -19,7 +19,7 @@ spec:
               name: curator-config-{{ .Values.esName }}
           containers:
           - name: curator
-            image: bitnami/elasticsearch-curator
+            image: bitnami/elasticsearch-curator-archived
             imagePullPolicy: IfNotPresent
             env:
             - name: ES_PASSWORD
