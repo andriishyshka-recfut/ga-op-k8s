@@ -59,7 +59,7 @@ spec:
       labels:
         module: ssh_banner
       static:
-      - sftp-server-main.sftp-jobs:22
+      - sftp-server-main.sftp-jobs.svc:22
       - fiserv-sftp.regemini.com:2222
 ---
 apiVersion: monitoring.coreos.com/v1
