@@ -1,6 +1,7 @@
 variable "ElasticSettings" {}
 variable "BeatKibanaService" {}
 variable "BeatElasticService" {}
+variable "logstash_pipelines" {}
 
 locals {
   elasticSettings = var.ElasticSettings

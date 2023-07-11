@@ -88,7 +88,8 @@ resource "kubernetes_secret" "minio_creds" {
 
 
 data "vault_generic_secret" "logstash_es_creds" {
-  path        = "secret/logstash/red"
+  count     = var.logstash_pipelines == true ? 1 : 0
+  path      = "secret/logstash/${local.elasticSettings.globalSettings.clusterName}"
 }
 
 resource "kubernetes_secret" "logstash_es_creds" {
