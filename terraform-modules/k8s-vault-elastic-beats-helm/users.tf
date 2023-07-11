@@ -15,6 +15,10 @@ data "kubernetes_secret" "elastic_pass" {
   }
 }
 
+data "vault_generic_secret" "logstash_es_creds" {
+  path      = "secret/logstash/red"
+}
+
 resource "kubernetes_secret" "filebeat_creds" {
   metadata {
     name      = "filebeat-credentials"

@@ -31,6 +31,8 @@ deployment:
                     enabled: true
                     period: 10s
                     hosts: ["logstash-red:9600"]
+                    username: logstash
+                    password: ${logstash_password}
                     xpack.enabled: true
                   - module: elasticsearch
                     period: 10s
