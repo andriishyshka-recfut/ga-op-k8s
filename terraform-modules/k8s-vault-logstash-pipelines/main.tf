@@ -92,7 +92,7 @@ resource "kubernetes_secret" "minio_creds" {
 
 
 data "vault_generic_secret" "logstash_es_creds" {
-  for_each  = logstash_list
+  for_each  = var.logstash_list
   path      = "secret/logstash/${each.key}"
 }
 
