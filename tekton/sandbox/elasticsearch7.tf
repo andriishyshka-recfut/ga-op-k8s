@@ -50,7 +50,7 @@ module "elastic-beats" {
   ElasticSettings    = local.ElasticSettings
   BeatKibanaService  = "kb-ga"
   BeatElasticService = "elasticsearch-coor.elastic.svc"
-  logstash_pipelines = true
+  logstash_pipelines = false
   # depends_on         = [module.kibana]
 }
 
