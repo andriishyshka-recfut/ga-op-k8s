@@ -92,7 +92,7 @@ data "vault_generic_secret" "logstash_es_creds" {
 }
 
 resource "kubernetes_secret" "logstash_es_creds" {
-  for_each.   = local.namespaces
+  for_each    = local.namespaces
   metadata {
     name      = "${each.key}-logstash-es-creds"
     namespace = each.key
