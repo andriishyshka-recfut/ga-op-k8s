@@ -36,6 +36,10 @@ resource "helm_release" "logstash" {
     value = try(each.value.poll_interval, local.poll_interval)
   }
   set {
+    name  = "elastic.cluster_uuid"
+    value = try(each.value.cluster_uuid, local.cluster_uuid)
+  }
+  set {
     name  = "minio.user"
     value = try(each.value.minio_user, local.minio_user)
   }
@@ -88,8 +92,8 @@ resource "kubernetes_secret" "minio_creds" {
 
 
 data "vault_generic_secret" "logstash_es_creds" {
-  count     = var.logstash_pipelines == true ? 1 : 0
-  path      = "secret/logstash/${local.elasticSettings.globalSettings.clusterName}"
+  for_each  = logstash_list
+  path      = "secret/logstash/${each.key}"
 }
 
 resource "kubernetes_secret" "logstash_es_creds" {
@@ -100,8 +104,8 @@ resource "kubernetes_secret" "logstash_es_creds" {
   }
 
   data = {
-    password            = data.vault_generic_secret.logstash_es_creds.data.password,
-    username            = data.vault_generic_secret.logstash_es_creds.data.username,
-    logstash_password   = data.vault_generic_secret.logstash_es_creds.data.logstash_password 
+    password            = data.vault_generic_secret.logstash_es_creds[each.key].data.password,
+    username            = data.vault_generic_secret.logstash_es_creds[each.key].data.username,
+    logstash_password   = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_password 
   }
 }

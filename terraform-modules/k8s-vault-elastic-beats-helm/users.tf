@@ -16,7 +16,7 @@ data "kubernetes_secret" "elastic_pass" {
 }
 
 data "vault_generic_secret" "logstash_es_creds" {
-  count     = var.logstash_pipelines == true ? 1 : 0
+  for_each  = var.logstash_pipelines
   path      = "secret/logstash/${local.elasticSettings.globalSettings.clusterName}"
 }
 

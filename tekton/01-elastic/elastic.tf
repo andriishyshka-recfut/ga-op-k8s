@@ -26,5 +26,5 @@ module "beats" {
   ElasticSettings    = local.ElasticSettings
   BeatKibanaService  = "kb-ga"
   BeatElasticService = "red-coor.elastic.svc"
-  logstash_pipelines = true
+  logstash_pipelines = try(var.Settings.clusters[var.Cluster].logstash, var.Settings.clusters[var.Cluster][var.Color].logstash)
 }
