@@ -5,5 +5,5 @@ variable "logstash_pipelines" {}
 
 locals {
   elasticSettings = var.ElasticSettings
-  logstash_password = vault_generic_secret.logstash_es_creds.data.logstash_password
+  logstash_password = { for k, v in var.logstash_pipelines : k => data.vault_generic_secret.logstash_es_creds[k].data.logstash_password }
 }
