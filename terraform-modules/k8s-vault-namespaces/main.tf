@@ -4,6 +4,7 @@ resource "kubernetes_namespace" "ns" {
     name = each.key
     labels = {
       istio-injection = lookup(each.value, "istio", "enabled")
+      # "pod-security.kubernetes.io/enforce" = lookup(each.value, "podSecurityPolicy", "baseline")
     }
   }
 }
