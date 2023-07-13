@@ -35,7 +35,7 @@ locals {
       },
       license = {
         vault_path = "secret/red/elasticsearch-admin/license"
-        name       = "recorded-future-ab-production-83be3fc4-05e3-4804-ae89-2182fa5367d4-v5.json"
+        name       = "recorded-future-ab-production-47f9d58a-60b7-42e6-8f23-254345a83cc6-v5.json"
       },
       clusterHealthCheckParams = "wait_for_status=green&timeout=1s"
     },

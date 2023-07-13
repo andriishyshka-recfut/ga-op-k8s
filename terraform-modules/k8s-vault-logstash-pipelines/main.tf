@@ -36,6 +36,10 @@ resource "helm_release" "logstash" {
     value = try(each.value.poll_interval, local.poll_interval)
   }
   set {
+    name  = "elastic.cluster_uuid"
+    value = try(each.value.cluster_uuid, local.cluster_uuid)
+  }
+  set {
     name  = "minio.user"
     value = try(each.value.minio_user, local.minio_user)
   }
@@ -75,10 +79,10 @@ data "vault_generic_secret" "minio_creds" {
 }
 
 resource "kubernetes_secret" "minio_creds" {
-  for_each = local.minio_users
+  for_each     = local.minio_users
   metadata {
-    name      = "${each.key}-logstash-minio-creds"
-    namespace = each.value[0]
+    name       = "${each.key}-logstash-minio-creds"
+    namespace  = each.value[0]
   }
   data = {
     access_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.key]).accessKey,
@@ -88,25 +92,20 @@ resource "kubernetes_secret" "minio_creds" {
 
 
 data "vault_generic_secret" "logstash_es_creds" {
-  path      = "secret/logstash/red"
-}
-
-resource "random_password" "password" {
-  length           = 16
-  special          = true
-  override_special = "!#"
+  for_each  = var.logstash_list
+  path      = "secret/logstash/${each.key}"
 }
 
 resource "kubernetes_secret" "logstash_es_creds" {
-  for_each = local.namespaces
+  for_each    = var.logstash_list
   metadata {
     name      = "${each.key}-logstash-es-creds"
-    namespace = each.key
+    namespace = each.value.namespace
   }
 
   data = {
-    password   = data.vault_generic_secret.logstash_es_creds.data.password,
-    username   = data.vault_generic_secret.logstash_es_creds.data.username,
-    logstash_password   = random_password.password.result
+    password            = data.vault_generic_secret.logstash_es_creds[each.key].data.es_password,
+    username            = data.vault_generic_secret.logstash_es_creds[each.key].data.es_username,
+    logstash_password   = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_api_password 
   }
 }

@@ -18,6 +18,7 @@ elastic:
   host: elastic
   pipelineID: "testing red green"
   pollInterval: 5s
+  cluster_uuid:
 
 
 service:
