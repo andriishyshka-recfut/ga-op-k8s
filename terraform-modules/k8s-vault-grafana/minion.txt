@@ -27,11 +27,13 @@ crd2life
 cygni
 deneb
 echo
+eurodollars
 foxtrot
 gemini
 golf
 hidatsa
 juliet
+jwstore
 kentaurus
 kichai
 kilo

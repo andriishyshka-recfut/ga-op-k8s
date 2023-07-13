@@ -5,7 +5,6 @@ antimigalki
 ascarding
 atlantis
 bdf
-bestcardingworld
 bhf
 bitcointalk
 blackbiz
@@ -14,8 +13,8 @@ blackhacker
 blackhatprotools
 blackhatworld
 blasthack
-breached
 carderone
+carder
 carders
 cardingleaks
 cardingmafia

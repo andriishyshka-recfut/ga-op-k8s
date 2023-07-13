@@ -25,7 +25,7 @@ resource "helm_release" "grafana-clients" {
     "${file("${path.module}/values.yaml")}"
   ]
   set {
-    name  = "grafana-clients.adminPassword"
+    name  = "adminPassword"
     value = data.vault_generic_secret.grafana.data.password
   }
   set {
