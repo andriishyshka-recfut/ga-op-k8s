@@ -118,17 +118,17 @@ spec:
           - name: 'ELASTICSEARCH_USER'
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.elastic.namespace }}-logstash-es-creds
+                name: {{ template "logstash.fullname" . }}-logstash-es-creds
                 key: username
           - name: 'ELASTICSEARCH_PASSWORD'
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.elastic.namespace }}-logstash-es-creds
+                name: {{ template "logstash.fullname" . }}-logstash-es-creds
                 key: password
           - name: 'LOGSTASH_PASSWORD'
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.elastic.namespace }}-logstash-es-creds
+                name: {{ template "logstash.fullname" . }}-logstash-es-creds
                 key: logstash_password
           - name: 'MINIO_ENDPOINT'
             value: {{ .Values.minio.endpoint }}
