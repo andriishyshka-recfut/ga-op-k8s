@@ -97,15 +97,15 @@ data "vault_generic_secret" "logstash_es_creds" {
 }
 
 resource "kubernetes_secret" "logstash_es_creds" {
-  for_each    = local.namespaces
+  for_each    = var.logstash_list
   metadata {
     name      = "${each.key}-logstash-es-creds"
-    namespace = each.key
+    namespace = each.value.namespace
   }
 
   data = {
-    password            = data.vault_generic_secret.logstash_es_creds[each.key].data.password,
-    username            = data.vault_generic_secret.logstash_es_creds[each.key].data.username,
-    logstash_password   = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_password 
+    password            = data.vault_generic_secret.logstash_es_creds[each.key].data.es_password,
+    username            = data.vault_generic_secret.logstash_es_creds[each.key].data.es_username,
+    logstash_password   = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_api_password 
   }
 }
