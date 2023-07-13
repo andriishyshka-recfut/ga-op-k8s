@@ -47,7 +47,6 @@ resource "kubernetes_job" "es_restore" {
           name    = "curator"
           image   = "bitnami/elasticsearch-curator-archived"
           command = ["bash", "-c", local.backupCommand]
-        terraform-modules/k8s-es-curator/main.tf
           volume_mount {
             name       = "curator"
             mount_path = "/.curator/config.yml"
