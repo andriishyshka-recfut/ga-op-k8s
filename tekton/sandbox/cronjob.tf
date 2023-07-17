@@ -1,12 +1,10 @@
 
 module "sftp-cronjob" {
   source         = "../../terraform-modules/k8s-vault-sftp-job"
-  job_list       = var.Settings.clusters[var.Cluster].sftp-cronjob == {} ? local.jobs : {}
+  job_list       = local.sftpJobListSandbox
 }
 
 locals {
-  jobs = var.Cluster == "production" ? local.sftpJobList : local.sftpJobListSandbox
-  sftpJobList = {}
   sftpJobListSandbox = {
     "minion-desjardins-added-daily" : {
       "bucket":"minio-logstash-pipelines-ardent-rarity-239115",
