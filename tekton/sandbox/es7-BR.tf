@@ -1,3 +1,5 @@
+
+/*
 module "es7-backup" {
   source               = "../../terraform-modules/k8s-es-curator"
   Namespace            = "elastic"
@@ -32,3 +34,4 @@ module "es7-restore" {
   Settings             = var.Settings
   depends_on           = [module.es7-backup]
 }
+*/
