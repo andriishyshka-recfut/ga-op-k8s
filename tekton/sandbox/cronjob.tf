@@ -6,6 +6,7 @@ module "sftp-cronjob" {
 
 locals {
   jobs = var.Cluster == "production" ? local.sftpJobList : local.sftpJobListSandbox
+  sftpJobList = {}
   sftpJobListSandbox = {
     "minion-desjardins-added-daily" : {
       "bucket":"minio-logstash-pipelines-ardent-rarity-239115",
