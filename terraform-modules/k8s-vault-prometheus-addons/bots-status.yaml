@@ -1,0 +1,61 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: bots.scraper-run-requests
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 30m
+    name: Bots scraper_run_requests
+    rules:
+    - alert: BotsHealthchekScraperRunRequests
+      annotations:
+        description: |
+          Something wrong with bots scraper_run_requests
+        summary: Something wrong with bot container {{ $labels.container }} with mode {{ $labels.mode }}
+      expr: |
+        scraper_run_request_errors / scraper_run_requests_total > .9
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: warning
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: bots.queue-reader-active-workers
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 30m
+    name: Bots queue_reader_active_workers
+    rules:
+    - alert: BotsHealthchekQueueReaderActiveWorkers
+      annotations:
+        description: |
+          Something wrong with bots queue_reader_active_workers
+        summary: Something wrong with container {{ $labels.container }} with topic {{ $labels.topic }}
+      expr: |
+        max_over_time(queue_reader_active_workers[12h]) == 0 
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: warning
