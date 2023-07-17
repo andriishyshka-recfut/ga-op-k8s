@@ -76,9 +76,6 @@ resource "helm_release" "blackbox_exporter" {
     values = [
     templatefile("${path.module}/blackbox-values.yaml.tftpl", { vortex = local.vortex == 1 ? true : false })
   ]
-  values = [
-    file("")
-  ]
   set {
     name  = "config.modules.harbor.http.basic_auth.username"
     value = data.vault_generic_secret.harbor_token.data.user
