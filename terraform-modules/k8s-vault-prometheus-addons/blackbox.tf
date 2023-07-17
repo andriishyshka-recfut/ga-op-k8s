@@ -73,8 +73,11 @@ resource "helm_release" "blackbox_exporter" {
   atomic            = true
   namespace         = local.prometheusNs
   dependency_update = true
+    values = [
+    templatefile("${path.module}/blackbox-values.yaml.tftpl", { vortex = local.vortex == 1 ? true : false })
+  ]
   values = [
-    file("${path.module}/blackbox-values.yaml")
+    file("")
   ]
   set {
     name  = "config.modules.harbor.http.basic_auth.username"
@@ -117,7 +120,7 @@ resource "helm_release" "blackbox_exporter" {
 
 
 data "kubectl_file_documents" "blackbox_probes" {
-  content = file("${path.module}/blackbox-probes.yaml")
+  content = templatefile("${path.module}/blackbox-probes.yaml.tftpl", { vortex = local.vortex == 1 ? true : false })
 }
 
 resource "kubectl_manifest" "blackbox_probes" {
