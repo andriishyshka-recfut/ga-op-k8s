@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -x
 set -e
 set +o history
 # Extract input params
