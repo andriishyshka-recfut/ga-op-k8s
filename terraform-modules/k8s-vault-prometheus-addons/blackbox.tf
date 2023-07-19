@@ -112,6 +112,10 @@ resource "helm_release" "blackbox_exporter" {
     name  = "prometheusRule.rules[4].labels.cluster"
     value = var.Cluster
   }
+  set {
+    name  = "pod.labels[0].sidecar.istio.io/inject"
+    value = "false"
+  }
   depends_on = [kubernetes_secret.vortex_basic_auth_creds]
 }
 
