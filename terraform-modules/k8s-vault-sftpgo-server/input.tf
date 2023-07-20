@@ -3,6 +3,7 @@ variable "server_list" {
 }
 variable "gcpProject" {}
 variable "region" {}
+variable "sftpgo_version" {}
 locals {
   namespace = "sftpgo"
   minio_user = "sftpgo"
