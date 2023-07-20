@@ -7,7 +7,7 @@ eval "$(jq -r '@sh "CLIENT_KEY=\(.clientKey) CLIENT_CRT=\(.clientCrt) CA_CRT=\(.
 
 
 # Generate keystore
-echo "${CLIENT_KEY}${CLIENT_CRT}" | openssl pkcs12 -export -name client -out /tmp/client.p12 -password pass:${KEYSTORE_PASS} -in -
+openssl pkcs12 -export -name client -out /tmp/client.p12 -password pass:${KEYSTORE_PASS} -inkey <(echo "${CLIENT_KEY}") -in <(echo "${CLIENT_CRT}")
 
 /opt/openjdk-18/bin/keytool -importkeystore \
                             -srckeystore /tmp/client.p12 \

@@ -100,7 +100,7 @@ resource "google_compute_region_disk" "kafka_pv" {
   name     = "kafka-data-${count.index}"
   count    = local.kafka_count
   type     = "pd-balanced"
-  size     = 220
+  size     = 230
   snapshot = data.google_compute_snapshot.kafka_snapshot[count.index].name
   labels = {
     target = "kafka-data"

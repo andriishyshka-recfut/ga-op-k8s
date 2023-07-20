@@ -26,16 +26,12 @@ resource "helm_release" "vault" {
   #chart = "${path.module}/umbrella-vault"
   chart      = "vault"
   repository = "https://helm.releases.hashicorp.com"
-  #version           = "0.1.0"
+  version           = local.vaultVersion
   namespace         = "vault"
   dependency_update = "true"
   values = [
     file("${path.module}/values-vault.yaml")
   ]
-  set {
-    name  = "server.image.tag"
-    value = local.vaultVersion
-  }
   set {
     name  = "server.extraEnvironmentVars.GOOGLE_PROJECT"
     value = local.currentProject

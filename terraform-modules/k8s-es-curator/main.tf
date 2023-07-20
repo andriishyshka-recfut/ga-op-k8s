@@ -7,7 +7,11 @@ resource "random_id" "rand" {
 locals {
   cm            = "config-curator-${lower(random_id.rand.hex)}"
   job           = "${var.NamePrefix}-${lower(random_id.rand.hex)}"
-  backupCommand = ["--config", "/.curator/config.yml", "/.curator/actionfile.yml"]
+  backupCommand = <<EOT
+set -e;
+sleep 30;
+curator --config /curator/config.yml /curator/actions.yml ;
+EOT
 }
 
 resource "kubernetes_config_map" "curator" {
@@ -18,7 +22,7 @@ resource "kubernetes_config_map" "curator" {
 
   data = {
     "config.yml"  = "${file("${path.module}/config.yaml")}"
-    "actionfile.yml" = var.Actions
+    "actions.yml" = var.Actions
   }
 }
 
@@ -49,13 +53,8 @@ resource "kubernetes_job" "es_restore" {
           command = ["bash", "-c", local.backupCommand]
           volume_mount {
             name       = "curator"
-            mount_path = "/.curator/config.yml"
-            sub_path = "config.yml"
-          }
-          volume_mount {
-            name       = "curator"
-            mount_path = "/.curator/actionfile.yml"
-            sub_path = "actionfile.yml"
+            mount_path = "/curator"
+
           }
           env {
             name = "ES_PASSWORD"

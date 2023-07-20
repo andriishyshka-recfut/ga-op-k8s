@@ -29,7 +29,7 @@ locals {
       },
       license = {
         vault_path = "secret/elasticsearch-admin/license"
-        name       = "recorded-future-ab-non_production-c5c46fd1-a8b4-41d7-8e47-4cde5a71013a-v5.json"
+        name       = "recorded-future-ab-non_production-200efd96-e649-42ae-989d-859bcb15e9e3-v5.json"
       },
       clusterHealthCheckParams = "wait_for_status=green&timeout=1s"
     },
@@ -47,7 +47,7 @@ locals {
         workloadsType = "data",
         roles         = { data = "true" },
         resources     = { cpuReq = "1", memReq = "4Gi", cpuLimit = "4", memLimit = "5Gi" },
-        storage       = "100Gi",
+        storage       = "150Gi",
         esJavaOpts    = "-Xms4g -Xmx4g"
       },
       coor = {

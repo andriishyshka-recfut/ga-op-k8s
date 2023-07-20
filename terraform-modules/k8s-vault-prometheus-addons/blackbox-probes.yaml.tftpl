@@ -61,6 +61,7 @@ spec:
       static:
       - sftp-server-main.sftp-jobs.svc:22
       - fiserv-sftp.regemini.com:2222
+%{if vortex == true ~}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
@@ -80,3 +81,4 @@ spec:
         module: vortex
       static:
       - https://vortex.regemini.com
+%{ endif ~}

@@ -39,6 +39,7 @@ config:
         query_response:
         - expect: "^SSH-2.0-"
         - send: "SSH-2.0-blackbox-ssh-check"
+%{if vortex == true ~}
     vortex:
       prober: http
       timeout: 5s
@@ -54,6 +55,7 @@ config:
           ca_file: "/etc/certs/vortex/ca.crt"
           cert_file: "/etc/certs/vortex/tls.crt"
           key_file: "/etc/certs/vortex/tls.key"
+%{ endif ~}
 
 extraSecretMounts:
   - name: es-secret
@@ -61,6 +63,7 @@ extraSecretMounts:
     secretName: es-secret
     readOnly: true
     defaultMode: 420
+%{if vortex == true ~}
   - name: vortex-cert
     mountPath: /etc/certs/vortex
     secretName: vortex-cert
@@ -71,7 +74,7 @@ extraSecretMounts:
     secretName: vortex-auth
     readOnly: true
     defaultMode: 420
-    
+%{ endif ~}   
     
 prometheusRule:
   enabled: true
