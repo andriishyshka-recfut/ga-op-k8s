@@ -6,7 +6,7 @@ resource "helm_release" "sftp-server" {
   wait         = true
   atomic       = true
   namespace    = try(each.value.namespace, local.namespace)
-  version      = "0.15.0"
+  version      = var.sftpgo_version
   reset_values = true
   set {
     name  = "fullnameOverride"

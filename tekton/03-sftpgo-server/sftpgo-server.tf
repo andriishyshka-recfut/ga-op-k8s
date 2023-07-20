@@ -5,4 +5,5 @@ module "sftpgo-server" {
   gcpProject     = var.Settings.gcpProject
   region         = var.Settings.clusters[var.Cluster].region
   sftpgo_values  = local.sftpgo_values
+  sftpgo_version = var.Settings.clusters[var.Cluster][var.Color].sftpgo-server.version
 }
