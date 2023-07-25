@@ -1,0 +1,26 @@
+Topic: dome.demonforums.post_prime Group: demonforums Partition: 0 L-Offset: 341 -> 0 H-Offset: 6611 -> 6301 Size: 6270 -> 6301 (diff -31) Lag: 
+Topic: dome.ascarding.post Group: ascarding Partition: 0 L-Offset: 48080 -> 0 H-Offset: 48081 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.dark2web.post_prime Group: dark2web Partition: 0 L-Offset: 6349 -> 1 H-Offset: 51883 -> 45534 Size: 45534 -> 45533 (diff 1) Lag: 
+Topic: minion.cvv.cp_new Group: cvv Partition: 0 L-Offset: 2 -> 0 H-Offset: 3 -> 1 Size:  Lag: 1 -> 0
+Topic: minion.cvv.cp Group: cvv Partition: 0 L-Offset: 2 -> 0 H-Offset: 3 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.hydramarket.chat Group: hydramarket Partition: 0 L-Offset: 23 -> 0 H-Offset: 24 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.exploit.post_new Group: exploit Partition: 0 L-Offset: 1018 -> 0 H-Offset: 1019 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.darknet.post Group: darknet Partition: 0 L-Offset: 7267 -> 0 H-Offset: 7268 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.darknet.post_new Group: darknet Partition: 0 L-Offset: 2 -> 0 H-Offset: 3 -> 1 Size:  Lag: 1 -> 0
+Topic: crypto.posts.source Group: live Partition: 0 L-Offset:  H-Offset: 21522761 -> 21522776 Size: 21522761 -> 21522776 (diff -15) Lag: 
+Topic: testcart Group: beat Partition: 0 L-Offset: 7354809 -> 73825 H-Offset: 15466660 -> 8111851 Size: 8111851 -> 8038026 (diff 73825) Lag: 
+Topic: dome Group: beat Partition: 0 L-Offset: 15762857 -> 343762 H-Offset: 20171889 -> 4409032 Size: 4409032 -> 4065270 (diff 343762) Lag: 
+Topic: minion Group: beat Partition: 0 L-Offset: 522759898 -> 1097905 H-Offset: 677710520 -> 154950622 Size: 154950622 -> 153852717 (diff 1097905) Lag: 
+Topic: maid Group: beatMaid Partition: 0 L-Offset:  H-Offset: 95369191 -> 96765633 Size: 95369191 -> 96765633 (diff -1396442) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 0 L-Offset: 199052 -> 15448 H-Offset: 237639 -> 55601 Size: 38587 -> 40153 (diff -1566) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 1 L-Offset: 197224 -> 15536 H-Offset: 239285 -> 55443 Size: 42061 -> 39907 (diff 2154) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 2 L-Offset: 198191 -> 11597 H-Offset: 240498 -> 53248 Size: 42307 -> 41651 (diff 656) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 3 L-Offset: 192859 -> 6909 H-Offset: 235244 -> 49215 Size: 42385 -> 42306 (diff 79) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 4 L-Offset: 198727 -> 9570 H-Offset: 238507 -> 49110 Size: 39780 -> 39540 (diff 240) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 5 L-Offset: 196355 -> 14373 H-Offset: 235997 -> 55947 Size: 39642 -> 41574 (diff -1932) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 6 L-Offset: 196531 -> 14616 H-Offset: 235284 -> 54199 Size: 38753 -> 39583 (diff -830) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 7 L-Offset: 198536 -> 9601 H-Offset: 237291 -> 48138 Size: 38755 -> 38537 (diff 218) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 8 L-Offset: 198396 -> 9477 H-Offset: 240708 -> 51709 Size: 42312 -> 42232 (diff 80) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 9 L-Offset: 197073 -> 12147 H-Offset: 238165 -> 51188 Size: 41092 -> 39041 (diff 2051) Lag: 
+Topic: dome.darktime.post Group: darktime Partition: 0 L-Offset: 48 -> 0 H-Offset: 49 -> 1 Size:  Lag: 1 -> 0
+Topic: heartbeats Group: <not associated> Partition: 0 L-Offset:  H-Offset: 66750 -> 78122 Size: 66750 -> 78122 (diff -11372) Lag: 

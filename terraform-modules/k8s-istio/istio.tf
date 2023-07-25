@@ -53,6 +53,10 @@ resource "helm_release" "istiod" {
   wait       = true
   atomic     = true
   namespace  = "istio-system"
+  set {
+    name  = "global.logAsJson"
+    value = true
+  }
   depends_on = [
     helm_release.istio_base
   ]

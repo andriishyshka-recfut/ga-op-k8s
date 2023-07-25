@@ -2,7 +2,7 @@ locals {
   ElasticSettings = {
     globalSettings = {
       namespace            = "elastic",
-      imageTag             = "7.17.10",
+      imageTag             = "7.17.11",
       clusterName          = "red",
       remotecerts          = ["remote.ca.crt"],
       remoteCertsVaultPath = "secret/red/elasticsearch-admin/remote-certs",
@@ -53,7 +53,7 @@ locals {
         workloadsType = "data",
         roles         = { data = "true" },
         resources     = { cpuReq = "15", cpuLimit = "15", memReq = "52Gi", memLimit = "52Gi" },
-        storage       = "800Gi",
+        storage       = "750Gi",
         esJavaOpts    = "-Xms26g -Xmx26g"
       },
       coor = {

@@ -1,0 +1,73 @@
+Topic                      	Group           	Partition	Low                 	High                  	Size                                 	Lag
+dome.demonforums.post_prime	demonforums     	0        	341 -> 0            	6611 -> 6301          	6270 -> 6301 (diff -31)
+dome.ascarding.post_vip    	ascarding       	0        	217 -> 0            	223 -> 6              	                                     	0 -> -217
+dome.ascarding.post        	ascarding       	0        	48080 -> 0          	48081 -> 1            	                                     	1 -> -48079
+dome.thebotnet.post        	thebotnet       	0        	969 -> 0            	1430 -> 461           	                                     	1 -> -968
+dome.dark2web.post_prime   	dark2web        	0        	6349 -> 1           	51883 -> 45534        	45534 -> 45533 (diff 1)
+dome.piratebuhta.post      	piratebuhta     	0        	69053 -> 0          	69127 -> 74           	                                     	0 -> -69053
+dome.bdf.post_prime        	bdf             	0        	41 -> 0             	4093 -> 4052          	                                     	0 -> -41
+dome.vlmi.profile          	vlmi            	0        	180288 -> 0         	361293 -> 181005      	                                     	156414 -> -23874
+minion.cvv.cp_new          	cvv             	0        	2 -> 0              	3 -> 1                	                                     	1 -> -1
+minion.cvv.cp              	cvv             	0        	2 -> 0              	3 -> 1                	                                     	1 -> -1
+minion.rescator.cp         	rescator        	0        	305292 -> 0         	356117 -> 50825       	                                     	2260 -> -303032
+minion.rescator.cnp        	rescator        	0        	150364 -> 0         	274441 -> 124077      	                                     	70456 -> -79908
+minion.privatecards.cnp    	privatecards    	0        	160772 -> 0         	160777 -> 5           	                                     	1 -> -160771
+dome.bitcointalk.post_new  	bitcointalk     	0        	25045 -> 0          	26234 -> 1189         	                                     	0 -> -25045
+minion.vclub.cnp           	vclub           	0        	62745 -> 0          	90177 -> 27432        	                                     	6759 -> -55986
+dome.hydramarket.chat      	hydramarket     	0        	23 -> 0             	24 -> 1               	                                     	1 -> -22
+minion.pp24.cp             	pp24            	0        	90000 -> 0          	100000 -> 10000       	                                     	480 -> -89520
+minion.pp24.cnp_new        	pp24            	0        	8297 -> 0           	8338 -> 41            	                                     	0 -> -8297
+minion.yesbro.cnp          	yesbro          	0        	46809 -> 0          	105426 -> 58617       	                                     	24109 -> -22700
+dome.instanthack.profile   	instanthack     	0        	1002214 -> 0        	1195985 -> 193771     	                                     	179941 -> -822273
+dome.migalki.post          	migalki         	0        	5996 -> 0           	6049 -> 53            	                                     	0 -> -5996
+dome.hak5.profile          	hak5            	0        	9496 -> 0           	20300 -> 10804        	                                     	23 -> -9473
+minion.bestvalid.cnp       	bestvalid       	0        	116336 -> 0         	133062 -> 16726       	                                     	7634 -> -108702
+dome.crackingpro.profile   	crackingpro     	0        	323615 -> 0         	669047 -> 345432      	                                     	331240 -> 7625
+dome.navigator.post        	navigator       	0        	73630 -> 0          	73880 -> 250          	                                     	40 -> -73590
+dome.slivup.profile        	slivup          	0        	42861 -> 0          	95284 -> 52423        	                                     	12 -> -42849
+dome.hackingfather.profile 	hackingfather   	0        	14318 -> 0          	22395 -> 8077         	                                     	5926 -> -8392
+dome.dublikat.profile      	dublikat        	0        	167533 -> 0         	315053 -> 147520      	                                     	14 -> -167519
+dome.mpgh.post             	mpgh            	0        	13286 -> 0          	13501 -> 215          	                                     	2 -> -13284
+dome.skynetzone.post       	skynetzone      	0        	20547 -> 0          	20665 -> 118          	                                     	1 -> -20546
+dome.probiv.post           	probiv          	0        	6441 -> 0           	6559 -> 118           	                                     	54 -> -6387
+dome.freehack.profile      	freehack        	0        	33020 -> 0          	47412 -> 14392        	                                     	23 -> -32997
+minion.siktor.cnp          	siktor          	0        	410820 -> 0         	436044 -> 25224       	                                     	10137 -> -400683
+minion.prozone.cnp         	prozone         	0        	463839 -> 0         	463875 -> 36          	                                     	1 -> -463838
+dome.carderone.profile     	carderone       	0        	3735 -> 0           	3845 -> 110           	                                     	0 -> -3735
+dome.blasthack.post        	blasthack       	0        	61281 -> 0          	63654 -> 2373         	                                     	2 -> -61279
+dome.omerta.profile        	omerta          	0        	6395 -> 0           	6586 -> 191           	                                     	0 -> -6395
+dome.darktime.post         	darktime        	0        	48 -> 0             	49 -> 1               	                                     	1 -> -47
+dome.cweb.post             	cweb            	0        	11879 -> 0          	11896 -> 17           	                                     	3 -> -11876
+minion.vought.cnp          	vought          	0        	35593 -> 0          	36620 -> 1027         	                                     	11 -> -35582
+dome.veryleaks.post        	veryleaks       	0        	15623 -> 0          	15631 -> 8            	                                     	1 -> -15622
+dome.hackforums.profile    	hackforums      	0        	14781 -> 0          	14902 -> 121          	                                     	1 -> -14780
+crypto.posts.source        	live            	0        	                    	21522761 -> 21522776  	21522761 -> 21522776 (diff -15)
+testcart                   	beat            	0        	7354809 -> 73825    	15466660 -> 8111851   	8111851 -> 8038026 (diff 73825)
+dome                       	beat            	0        	15762857 -> 343762  	20171889 -> 4409032   	4409032 -> 4065270 (diff 343762)
+minion                     	beat            	0        	522759898 -> 1097905	677710520 -> 154950622	154950622 -> 153852717 (diff 1097905)
+dome.antimigalki.post      	antimigalki     	0        	5821 -> 0           	5937 -> 116           	                                     	57 -> -5764
+maid                       	beatMaid        	0        	                    	95369191 -> 96765633  	95369191 -> 96765633 (diff -1396442)
+os3t.attachment            	os3             	0        	199052 -> 15448     	237639 -> 55601       	38587 -> 40153 (diff -1566)
+os3t.attachment            	os3             	1        	197224 -> 15536     	239285 -> 55443       	42061 -> 39907 (diff 2154)
+os3t.attachment            	os3             	2        	198191 -> 11597     	240498 -> 53248       	42307 -> 41651 (diff 656)
+os3t.attachment            	os3             	3        	192859 -> 6909      	235244 -> 49215       	42385 -> 42306 (diff 79)
+os3t.attachment            	os3             	4        	198727 -> 9570      	238507 -> 49110       	39780 -> 39540 (diff 240)
+os3t.attachment            	os3             	5        	196355 -> 14373     	235997 -> 55947       	39642 -> 41574 (diff -1932)
+os3t.attachment            	os3             	6        	196531 -> 14616     	235284 -> 54199       	38753 -> 39583 (diff -830)
+os3t.attachment            	os3             	7        	198536 -> 9601      	237291 -> 48138       	38755 -> 38537 (diff 218)
+os3t.attachment            	os3             	8        	198396 -> 9477      	240708 -> 51709       	42312 -> 42232 (diff 80)
+os3t.attachment            	os3             	9        	197073 -> 12147     	238165 -> 51188       	41092 -> 39041 (diff 2051)
+dome.dread.post            	dread           	0        	226740 -> 0         	227083 -> 343         	                                     	1 -> -226739
+minion.100live.cnp         	100live         	0        	42436 -> 0          	47875 -> 5439         	                                     	3331 -> -39105
+dome.blackbiz.profile      	blackbiz        	0        	314696 -> 0         	615958 -> 301262      	                                     	283625 -> -31071
+dome.exploit.post_new      	exploit         	0        	1018 -> 0           	1019 -> 1             	                                     	1 -> -1017
+dome.cybercarders.post_new 	cybercarders    	0        	29399 -> 0          	44923 -> 15524        	                                     	815 -> -28584
+dome.cybercarders.profile  	cybercarders    	0        	321557 -> 0         	507902 -> 186345      	                                     	168252 -> -153305
+minion.wixxx.cnp           	wixxx           	0        	736766 -> 0         	796946 -> 60180       	                                     	27414 -> -709352
+dome.carders.post          	carders         	0        	20813 -> 0          	28138 -> 7325         	                                     	235 -> -20578
+dome.darknet.post          	darknet         	0        	7267 -> 0           	7268 -> 1             	                                     	1 -> -7266
+dome.darknet.post_new      	darknet         	0        	2 -> 0              	3 -> 1                	                                     	1 -> -1
+minion.briansclub.cnp_vip  	briansclub      	0        	30225 -> 0          	40310 -> 10085        	                                     	3030 -> -27195
+minion.briansclub.cp_vip   	briansclub      	0        	40008 -> 0          	50008 -> 10000        	                                     	7864 -> -32144
+dome.wwhclub.post          	wwhclub         	0        	79857 -> 0          	80049 -> 192          	                                     	112 -> -79745
+heartbeats                 	<not associated>	0        	                    	66750 -> 78122        	66750 -> 78122 (diff -11372)

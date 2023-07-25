@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
   generateName: elastic-update
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   taskRef:
     name: tg-run
@@ -13,5 +13,5 @@ spec:
     - name: path
       value: "k8s/tekton/01-elastic"
     - name: branch
-      value: "\\#252-beats"
+      value: "\\#365-prod-dr-2023-07-21"
   timeout: 6h

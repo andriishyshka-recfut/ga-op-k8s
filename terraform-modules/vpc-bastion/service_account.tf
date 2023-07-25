@@ -50,6 +50,7 @@ resource "google_service_account" "terraform" {
 }
 
 resource "google_project_iam_member" "service_account" {
+  project = var.Settings.gcpProject
   count  = length(local.serviceAccountIamRoles)
   role   = element(local.serviceAccountIamRoles, count.index)
   member = format("serviceAccount:%s", google_service_account.terraform.email)
