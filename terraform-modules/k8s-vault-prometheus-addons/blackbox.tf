@@ -73,7 +73,7 @@ resource "helm_release" "blackbox_exporter" {
   atomic            = true
   namespace         = local.prometheusNs
   dependency_update = true
-    values = [
+  values = [
     templatefile("${path.module}/blackbox-values.yaml.tftpl", { vortex = local.vortex == 1 ? true : false })
   ]
   set {
@@ -113,8 +113,9 @@ resource "helm_release" "blackbox_exporter" {
     value = var.Cluster
   }
   set {
-    name  = "pod.labels[0].sidecar.istio.io/inject"
+    name  = "pod.labels.sidecar\\.istio\\.io/inject"
     value = "false"
+    type  = "string"
   }
   depends_on = [kubernetes_secret.vortex_basic_auth_creds]
 }

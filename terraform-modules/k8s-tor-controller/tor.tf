@@ -5,6 +5,6 @@ resource "helm_release" "tor-controller" {
   wait       = true
   atomic     = true
   namespace  = "tor-controller"
-  # version    = "0.1.11"
+  version    = "0.1.11"
   timeout    = 900
 }

@@ -94,12 +94,24 @@ resource "google_compute_firewall" "bastion_ssh_https" {
     "34.86.87.120/32",   // bastion test account
     "34.86.176.12/32",   // bastion test account
     "34.86.175.17/32",   //test account nat ip
+    "78.26.204.32/32",
+    "34.86.42.141",
+    "34.145.147.71",    // new prod NATs
+    "34.85.227.14",
+    "35.245.99.252",
+    "35.236.209.180",
+    "34.86.23.117",
+    "34.150.198.192",
+    "35.245.167.217",
+    "34.86.207.58",
+    "35.186.173.184",
+    "35.245.232.185",
     "${google_compute_address.envoy.address}/32",
   "${google_compute_address.wireguard.address}/32"]
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "443","32200-32202"]
+    ports    = ["22", "443","32200-32204"]
   }
 
   target_tags = ["dmz"]

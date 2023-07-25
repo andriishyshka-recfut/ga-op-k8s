@@ -24,7 +24,8 @@ UNKNOWN_GROUP = "<not associated>"
 SPECIAL_FIELDS = [FIELD_RETENTION_MS]
 
 EXCLUDED_TOPICS = ["__consumer_offsets", "mirrormaker2-cluster-offsets", "mirrormaker2-cluster-status",
-                   "mirrormaker2-cluster-configs", "mm2-offset-syncstargetinternal", "mm2-offset-syncs.target.internal", "__strimzi_store_topic"]
+                   "mirrormaker2-cluster-configs", "mm2-offset-syncstargetinternal", "mm2-offset-syncs.target.internal",
+                   "__strimzi_store_topic", "__strimzi-topic-operator-kstreams-topic-store-changelog", "sourcecheckpointsinternal" ]
 
 now = datetime.datetime.now().strftime('%y-%m-%d_%H%M')
 results_folder = ""
@@ -97,7 +98,7 @@ def print_state_comparison(src, tgt):
                         if src_values.get(FIELD_SIZE) != tgt_values.get(FIELD_SIZE):
                             has_changed = True
                             lag_or_size_mismatch = True
-                            size = "{} -> {}".format(src_values.get(FIELD_SIZE), tgt_values.get(FIELD_SIZE))
+                            size = "{} -> {} (diff {})".format(src_values.get(FIELD_SIZE), tgt_values.get(FIELD_SIZE), src_values.get(FIELD_SIZE) - tgt_values.get(FIELD_SIZE))
 
                         if lag_or_size_mismatch:
                             suspicious_items.append([topic, group, part_id, low, high, size, lag])
