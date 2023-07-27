@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter
+  namespace: jupyter
+spec:
+  selector:
+    matchLabels:
+      app: jupyter
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jupyter
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      nodeSelector:
+        workloadsType: jupyter
+      tolerations:
+        - key: "workloadsType"
+          operator: "Exists"
+          effect: "NoSchedule"
+      containers:
+        - name: jupyter
+          image: jupyter/all-spark-notebook
+          volumeMounts:
+            - name: users
+              mountPath: "/home/jovyan/.jupyter"
+              readOnly: true
+            - name: works
+              mountPath: "/home/jovyan/work"
+          env:
+            - name: DOCKER_STACKS_JUPYTER_CMD
+              value: notebook
+          ports:
+            - containerPort: 8888
+              name: "http"
+      volumes:
+        - name: users
+          secret:
+            secretName: users
+        - name: works
+          persistentVolumeClaim:
+            claimName: jupiter-pvc
+      imagePullSecrets:
+        - name: harbor
