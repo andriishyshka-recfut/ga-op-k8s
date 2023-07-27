@@ -38,7 +38,7 @@ spec:
               value: notebook
           ports:
             - containerPort: 8888
-              name: "http"
+            - containerPort: 4040
       volumes:
         - name: users
           secret:
