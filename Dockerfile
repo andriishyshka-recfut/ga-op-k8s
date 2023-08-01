@@ -7,7 +7,7 @@ RUN curl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O-
 FROM alpine:latest as ansible
 RUN apk add python3 py3-pip unzip py3-virtualenv bash python3-dev libffi-dev build-base rust rustup cargo openssl-dev musl-dev
 RUN cd / && python3 -m venv ansible && \
-    bash -c "source /ansible/bin/activate && pip install --upgrade pip && pip install ansible pyyaml docker-compose jmespath kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl kafka-python"
+    bash -c "source /ansible/bin/activate && pip install --upgrade pip && pip install ansible pyyaml==5.3.1 docker-compose jmespath kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl kafka-python"
 
 
 FROM --platform=linux/amd64 openjdk:18-jdk-alpine as java
