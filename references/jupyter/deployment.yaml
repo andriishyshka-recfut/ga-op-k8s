@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jupyter
+  name: jupyter-svc
   namespace: jupyter
 spec:
   selector:
@@ -18,6 +18,7 @@ spec:
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
+        fsGroup: 1000
       nodeSelector:
         workloadsType: jupyter
       tolerations:
@@ -26,13 +27,13 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: jupyter
-          image: jupyter/all-spark-notebook
+          image: jupyter/all-spark-notebook:x86_64-notebook-6.5.4
           volumeMounts:
             - name: users
-              mountPath: "/home/jovyan/.jupyter"
-              readOnly: true
+              mountPath: "/home/jovyan/.jupyter/jupyter_server_config.py"
+              subPath: "jupyter_server_config.py"
             - name: works
-              mountPath: "/home/jovyan/work"
+              mountPath: "/home/jovyan"
           env:
             - name: DOCKER_STACKS_JUPYTER_CMD
               value: notebook

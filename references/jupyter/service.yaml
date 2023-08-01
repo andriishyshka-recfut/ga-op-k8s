@@ -5,9 +5,13 @@ metadata:
   namespace: jupyter
 spec:
   ports:
-  - name: http
+  - name: http-first
     port: 8888
     protocol: TCP
     targetPort: 8888
+  - name: http-second
+    port: 4040
+    protocol: TCP
+    targetPort: 4040
   selector:
     app: jupyter
