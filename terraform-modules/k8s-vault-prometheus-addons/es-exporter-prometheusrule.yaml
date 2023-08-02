@@ -118,7 +118,7 @@ spec:
         summary: No tasks completed by shout  within  24h.
       expr: |
         sum_over_time ( shout_hits[10m] ) == 0
-      for: 30m
+      for: 1d
       labels:
         cluster: ${cluster_label}
         component: stream-processor
