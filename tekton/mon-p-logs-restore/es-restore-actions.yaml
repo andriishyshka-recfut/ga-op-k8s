@@ -7,7 +7,7 @@ actions:
       repository: "minio"
       indices:
       - \.*
-      wait_for_completion: True
+      wait_for_completion: False
       include_global_state: True
       # wait_interval: 20
     filters:
