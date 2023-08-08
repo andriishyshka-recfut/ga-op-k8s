@@ -1,0 +1,34 @@
+---
+actions:
+  1:
+    action: restore
+    description: "Restore system indices in the most recent snapshot with state SUCCESS"
+    options:
+      repository: "minio"
+      indices:
+      - .*
+      wait_for_completion: True
+      include_global_state: True
+      # wait_interval: 20
+    filters:
+      - filtertype: state
+        state: SUCCESS
+      - filtertype: pattern
+        kind: prefix
+        value: monitoring-adhoc
+  2:
+    action: restore
+    description: "Restore filebeat indices in the most recent snapshot with state SUCCESS"
+    options:
+      repository: "minio"
+      indices:
+      - filebeat-*
+      wait_for_completion: False
+      include_global_state: False
+      # wait_interval: 20
+    filters:
+      - filtertype: state
+        state: SUCCESS
+      - filtertype: pattern
+        kind: prefix
+        value: monitoring-adhoc
