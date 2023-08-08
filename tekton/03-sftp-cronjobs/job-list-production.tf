@@ -78,16 +78,16 @@ locals {
     #  "file_ext" : "csv",
     #  "archive" : "zip"
     #},
-    "dome-bka-added-daily" : {
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "sftp_user" : "bka",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/",
-      "file_ext" : "json",
-      "archive" : "gz",
-      "create_checksum": true
-    },
+    #"dome-bka-added-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "bka",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "in/",
+    #  "file_ext" : "json",
+    #  "archive" : "gz",
+    #  "create_checksum": true
+    #},
     #"minion-fiserv-added-daily" : {
     #  "minio_user" : "logstash-red",
     #  "sftp" : true,
