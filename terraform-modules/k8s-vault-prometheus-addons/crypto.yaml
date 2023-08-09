@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: crypto.upsert
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 30m
+    name: Crypto Upsert Preps
+    rules:
+    - alert: CryptoUpsertPreps
+      annotations:
+        description: |
+          Crypto preps not added last 24h
+        summary: Crypto preps not added last 24h
+      expr: |
+        rate(worker_upsert_preps_total[1d]) == 0 
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
+   
