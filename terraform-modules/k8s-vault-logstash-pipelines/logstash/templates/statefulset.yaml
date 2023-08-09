@@ -68,7 +68,7 @@ spec:
             items:
               - key: ca.crt
                 path: ca.crt
-            secretName: {{ .Values.elastic.namespace }}-logstash-https-certs
+            secretName: {{ template "logstash.fullname" . }}-logstash-https-certs
         {{- end }}
         {{- range .Values.secretMounts }}
         - name: {{ .name }}
@@ -137,12 +137,12 @@ spec:
           - name: MINIO_ACCESS_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.minio.user }}-logstash-minio-creds
+                name: {{ template "logstash.fullname" . }}-logstash-minio-creds
                 key: access_key
           - name: MINIO_SECRET_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.minio.user }}-logstash-minio-creds
+                name: {{ template "logstash.fullname" . }}-logstash-minio-creds
                 key: secret_key
 {{- if .Values.extraEnvs }}
 {{ toYaml .Values.extraEnvs | indent 10 }}

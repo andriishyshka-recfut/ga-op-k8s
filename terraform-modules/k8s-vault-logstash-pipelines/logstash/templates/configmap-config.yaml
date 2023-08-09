@@ -23,5 +23,5 @@ data:
     api.auth.type: {{ .Values.logstash.auth }}
     api.auth.basic.username: {{ .Values.logstash.user }}
     api.auth.basic.password: ${LOGSTASH_PASSWORD}
-    #log.level: debug
+    log.level: {{ .Values.log_level| default "info" }}
     #path.logs: /var/log/logstash

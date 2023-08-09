@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: logstash.pvc
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 30m
+    name: Logstash Pipelines
+    rules:
+    - alert: LogstashPipeleines
+      annotations:
+        description: |
+          Logstash pipelines volume size
+        summary: Logstash pipelines has unsended task 
+      expr: |
+        kubelet_volume_stats_used_bytes{persistentvolumeclaim="tmp-logstash-sandbox"} > 10000
+      for: 30m
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
+   
