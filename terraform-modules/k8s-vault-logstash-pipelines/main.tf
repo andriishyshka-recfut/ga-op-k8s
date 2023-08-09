@@ -44,33 +44,54 @@ resource "helm_release" "logstash" {
     value = try(each.value.minio_user, local.minio_user)
   }
   set {
-    name = "minio.endpoint"
+    name  = "minio.endpoint"
     value = try(each.value.minio_endpoint, local.minio_endpoint)
   }
   set {
-    name = "minio.bucket"
+    name  = "minio.bucket"
     value = try(each.value.minio_bucket, local.minio_bucket)
   }
+  set {
+    name  = "mountCaCert.volumeName"
+    value = "${each.key}-logstash-https-certs"
+  }
+  set {
+    name  = "extraVolumes[0].name"
+    value = "tmp-logstash-${each.key}"
+  }
+  set {
+    name  = "extraVolumes[0].persistentVolumeClaim.claimName"
+    value = "tmp-logstash-${each.key}"
+  }
+  set {
+    name  = "extraVolumeMounts[0].name"
+    value = "tmp-logstash-${each.key}"
+  }
+  set {
+    name  = "log_level"
+    value = try(each.value.log_level, local.log_level)
+  }
 
-  depends_on = [kubernetes_secret.logstash_elastic_ca,kubernetes_secret.logstash_es_creds,kubernetes_secret.minio_creds]
+  depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds, kubernetes_manifest.tmp_logstash]
 }
 
-
+# Stuck point, if you want run logstash on another namespace than elastic
 data "kubernetes_secret" "logstash_elastic_ca" {
-  for_each = local.namespaces
+  for_each = var.logstash_list
   metadata {
-    name      = "${each.key}-https-certs"
-    namespace = each.key
+    name      = each.value.elastic_cert_secretname
+    namespace = each.value.elastic_namespace
   }
 }
 
 resource "kubernetes_secret" "logstash_elastic_ca" {
-  for_each = local.namespaces
+  for_each = var.logstash_list
   metadata {
     name      = "${each.key}-logstash-https-certs"
-    namespace = each.key
+    namespace = each.value.namespace
   }
-  data = data.kubernetes_secret.logstash_elastic_ca[each.key].data
+  data       = data.kubernetes_secret.logstash_elastic_ca[each.key].data
+  depends_on = [data.kubernetes_secret.logstash_elastic_ca]
 }
 
 
@@ -79,33 +100,35 @@ data "vault_generic_secret" "minio_creds" {
 }
 
 resource "kubernetes_secret" "minio_creds" {
-  for_each     = local.minio_users
+  for_each = var.logstash_list
   metadata {
-    name       = "${each.key}-logstash-minio-creds"
-    namespace  = each.value[0]
+    name      = "${each.key}-logstash-minio-creds"
+    namespace = each.value.namespace
   }
   data = {
-    access_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.key]).accessKey,
-    secret_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.key]).secretKey
+    access_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.value.minio_user]).accessKey,
+    secret_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.value.minio_user]).secretKey
   }
+  depends_on = [data.vault_generic_secret.minio_creds]
 }
 
 
 data "vault_generic_secret" "logstash_es_creds" {
-  for_each  = var.logstash_list
-  path      = "secret/logstash/${each.key}"
+  for_each = var.logstash_list
+  path     = "secret/logstash/${each.key}"
 }
 
 resource "kubernetes_secret" "logstash_es_creds" {
-  for_each    = var.logstash_list
+  for_each = var.logstash_list
   metadata {
     name      = "${each.key}-logstash-es-creds"
     namespace = each.value.namespace
   }
 
   data = {
-    password            = data.vault_generic_secret.logstash_es_creds[each.key].data.es_password,
-    username            = data.vault_generic_secret.logstash_es_creds[each.key].data.es_username,
-    logstash_password   = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_api_password 
+    password          = data.vault_generic_secret.logstash_es_creds[each.key].data.es_password,
+    username          = data.vault_generic_secret.logstash_es_creds[each.key].data.es_username,
+    logstash_password = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_api_password
   }
+  depends_on = [data.vault_generic_secret.logstash_es_creds]
 }

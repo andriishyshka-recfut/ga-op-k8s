@@ -161,3 +161,10 @@ lifecycle:
   postStart:
     exec:
       command: ["/bin/sh", "-c", "/opt/logstash/jdk/bin/keytool -import -noprompt -trustcacerts -alias CA_ES -file /ssl-es/ca.crt -keystore /opt/logstash/jdk/lib/security/cacerts -storepass changeit"]
+extraVolumes:
+  - name: tmp-logstash
+    persistentVolumeClaim: 
+      claimName: tmp-logstash
+extraVolumeMounts:
+  - name: tmp-logstash
+    mountPath: /tmp/logstash
