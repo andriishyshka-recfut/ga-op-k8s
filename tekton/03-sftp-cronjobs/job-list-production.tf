@@ -38,25 +38,25 @@ locals {
     #  "file_ext" : "csv",
     #  "archive" : "zip"
     #},
-    "minion-dscvr-added-bihourly" : {
-      "cron" : "15 */2 * * *",
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "sftp_user" : "dscvr",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/",
-      "file_ext" : "csv",
-      "gpg_encrypt" : true
-    },
-    "minion-dscvr-pans-daily" : {
-      "minio_user" : "logstash-red",
-      "sftp" : true,
-      "sftp_user" : "dscvr",
-      "sftp_port" : "22",
-      "sftp_destination" : "in/",
-      "file_ext" : "csv",
-      "gpg_encrypt" : true
-    },
+    #"minion-dscvr-added-bihourly" : {
+    #  "cron" : "15 */2 * * *",
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "dscvr",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "in/",
+    #  "file_ext" : "csv",
+    #  "gpg_encrypt" : true
+    #},
+    #"minion-dscvr-pans-daily" : {
+    #  "minio_user" : "logstash-red",
+    #  "sftp" : true,
+    #  "sftp_user" : "dscvr",
+    #  "sftp_port" : "22",
+    #  "sftp_destination" : "in/",
+    #  "file_ext" : "csv",
+    #  "gpg_encrypt" : true
+    #},
     #"minion-test-pans-daily" : {
     #  "minio_user" : "logstash-red",
     #  "sftp" : true,
