@@ -21,7 +21,7 @@ spec:
           Logstash pipelines volume size
         summary: Logstash pipelines has unsended task 
       expr: |
-        kubelet_volume_stats_used_bytes{persistentvolumeclaim="tmp-logstash-red"} > 10000
+        kubelet_volume_stats_used_bytes{persistentvolumeclaim="tmp-logstash-red"} > 100000
       for: 30m
       labels:
         cluster: ${cluster_label}
