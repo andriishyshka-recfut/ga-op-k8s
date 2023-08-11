@@ -1,4 +1,4 @@
-/*
+
 resource "null_resource" "patch_mm2_topic_blacklist" {
   count = local.prod_runs
   provisioner "local-exec" {
@@ -12,4 +12,3 @@ resource "null_resource" "patch_mm2_topic_blacklist" {
 COMMAND
   }
 }
-*/
