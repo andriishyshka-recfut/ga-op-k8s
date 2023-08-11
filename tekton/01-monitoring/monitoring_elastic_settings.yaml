@@ -62,9 +62,9 @@ elastic_settings:
         storageSize: "1450Gi"
         ES_JAVA_OPTS: -Xms10g -Xmx10g
         nodesCount: 3
-        memoryRequests: "14Gi"
+        memoryRequests: "12Gi"
         cpuRequests: "1"
-        memoryLimit: 16Gi
+        memoryLimit: 14Gi
         cpuLimit: 4
         podTemplate:
           spec:
