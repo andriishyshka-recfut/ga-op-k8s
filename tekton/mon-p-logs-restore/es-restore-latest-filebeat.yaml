@@ -1,0 +1,18 @@
+---
+actions:
+  1:
+    action: restore
+    description: "Restore filebeat indices in the most recent snapshot with state SUCCESS"
+    options:
+      repository: "minio"
+      indices:
+      - filebeat-7.17.11-2023.08.02-000014
+      wait_for_completion: False
+      include_global_state: False
+      # wait_interval: 20
+    filters:
+      - filtertype: state
+        state: SUCCESS
+      - filtertype: pattern
+        kind: prefix
+        value: monitoring-adhoc
