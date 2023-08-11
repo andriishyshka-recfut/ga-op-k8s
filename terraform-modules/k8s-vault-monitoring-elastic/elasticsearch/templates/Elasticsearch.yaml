@@ -62,7 +62,7 @@ spec:
           traffic.sidecar.istio.io/excludeInboundPorts: "9300"
       spec:
         nodeSelector:
-          workloadsType: data
+          workloadsType: es-monitoring
         tolerations:
           - key: "workloadsType"
             operator: "Exists"
