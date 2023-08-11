@@ -18,7 +18,7 @@ resource "helm_release" "etl_operator" {
   }
   set {
     name  = "ansibleGit.tag"
-    value = "v2023070601"
+    value = "rc2"
   }
   set {
     name  = "camino.tag"
