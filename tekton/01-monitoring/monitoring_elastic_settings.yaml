@@ -69,7 +69,7 @@ elastic_settings:
         podTemplate:
           spec:
             nodeSelector:
-              workloadsType: monitoring-data
+              workloadsType: es-monitoring
 
   kibana:
     enabled: true
