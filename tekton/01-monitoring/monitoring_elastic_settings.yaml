@@ -60,16 +60,16 @@ elastic_settings:
               native1:
                 order: 1
         storageSize: "1450Gi"
-        ES_JAVA_OPTS: -Xms16g -Xmx16g
+        ES_JAVA_OPTS: -Xms10g -Xmx10g
         nodesCount: 3
-        memoryRequests: "16Gi"
+        memoryRequests: "12Gi"
         cpuRequests: "1"
-        memoryLimit: 18Gi
+        memoryLimit: 14Gi
         cpuLimit: 4
         podTemplate:
           spec:
             nodeSelector:
-              workloadsType: monitoring-data
+              workloadsType: es-monitoring
 
   kibana:
     enabled: true
