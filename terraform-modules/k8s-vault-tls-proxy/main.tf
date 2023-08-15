@@ -288,36 +288,36 @@ resource "kubernetes_manifest" "tls_proxy_virtualservice" {
 }
 
 
-resource "kubernetes_manifest" "ip_whitelist" {
-  for_each = nonsensitive(local.project_data_enabled)
-  manifest = {
-    "apiVersion" = "security.istio.io/v1beta1"
-    "kind"       = "AuthorizationPolicy"
-    "metadata" = {
-      "name"      = "${each.key}-ip-whitelist"
-      "namespace" = "istio-ingress"
-    }
-    "spec" = {
-      "action" = "ALLOW"
-      "rules" = [
-        {
-          "from" = [
-            {
-              "source" = {
-                "ipBlocks" = nonsensitive(split(",", each.value.ip_whitelist))
-              }
-            },
-          ]
-        },
-      ]
-      "selector" = {
-        "matchLabels" = {
-          "istio" = "ingressgateway-lb"
-        }
-      }
-    }
-  }
-}
+# resource "kubernetes_manifest" "ip_whitelist" {
+#   for_each = nonsensitive(local.project_data_enabled)
+#   manifest = {
+#     "apiVersion" = "security.istio.io/v1beta1"
+#     "kind"       = "AuthorizationPolicy"
+#     "metadata" = {
+#       "name"      = "${each.key}-ip-whitelist"
+#       "namespace" = "istio-ingress"
+#     }
+#     "spec" = {
+#       "action" = "ALLOW"
+#       "rules" = [
+#         {
+#           "from" = [
+#             {
+#               "source" = {
+#                 "ipBlocks" = nonsensitive(split(",", each.value.ip_whitelist))
+#               }
+#             },
+#           ]
+#         },
+#       ]
+#       "selector" = {
+#         "matchLabels" = {
+#           "istio" = "ingressgateway-lb"
+#         }
+#       }
+#     }
+#   }
+# }
 
 # resource "kubernetes_manifest" "ip_whitelist_our_networks" {
 #   manifest = {
