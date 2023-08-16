@@ -5,7 +5,7 @@ elastic_settings:
     # Declare variables to be passed into your templates.
     esName: "monitoring"
     namespace: "monitoring"
-    appVersion: "7.17.9"
+    appVersion: "7.17.12"
     apmToken: "apm-token"
     # enableTrial should be a quoted string. only yes value make changes
     enableTrial: "yes"
@@ -42,9 +42,9 @@ elastic_settings:
         storageSize: "1Gi"
         ES_JAVA_OPTS: -Xms4g -Xmx4g
         nodesCount: 3
-        memoryRequests: "4Gi"
+        memoryRequests: "6Gi"
         cpuRequests: "1"
-        memoryLimit: 5Gi
+        memoryLimit: 8Gi
         cpuLimit: 3
       - name: data
         config: |
@@ -62,9 +62,9 @@ elastic_settings:
         storageSize: "1450Gi"
         ES_JAVA_OPTS: -Xms10g -Xmx10g
         nodesCount: 3
-        memoryRequests: "12Gi"
+        memoryRequests: "10Gi"
         cpuRequests: "1"
-        memoryLimit: 14Gi
+        memoryLimit: 12Gi
         cpuLimit: 4
         podTemplate:
           spec:
@@ -77,7 +77,7 @@ elastic_settings:
     name: kibana
     esName: "monitoring"
     namespace: "monitoring"
-    kibanaVersion: "7.17.9"
+    kibanaVersion: "7.17.12"
     oidc_provider:
       enabled: "yes"
       realm: "google"
