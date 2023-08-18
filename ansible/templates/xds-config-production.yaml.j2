@@ -4,7 +4,7 @@ lds:
     range: 30000..30120
   - !lds/range
     cluster_prefix: kafka-brokers
-    range: 32200..32202
+    range: 32200..32204
 cds:
   - name: k8s-active-https
     k8s_master: {{ k8s_host_url }}
@@ -23,6 +23,6 @@ cds:
     name_prefix: "tor"
     k8s_master_url: {{ k8s_host_url }}
   - !cds/range
-    range: "32200..32202"
+    range: "32200..32204"
     name_prefix: "kafka-brokers"
     k8s_master_url: {{ k8s_host_url }}
