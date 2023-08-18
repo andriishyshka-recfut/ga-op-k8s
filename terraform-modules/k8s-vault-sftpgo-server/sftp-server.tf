@@ -132,6 +132,11 @@ resource "helm_release" "sftp-server" {
     name  = "envVars[0].valueFrom.secretKeyRef.key"
     value = "POSTGRES_PASSWORD"
   }
+  set {
+    name = "podAnnotations.co\\.elastic\\.logs/enabled"
+    value = "true"
+    type = "string"
+  }
 
   depends_on = [kubernetes_config_map.ssh_host_keys ,vault_generic_secret.admin_user_config, kubernetes_secret.db_creds]
 }
