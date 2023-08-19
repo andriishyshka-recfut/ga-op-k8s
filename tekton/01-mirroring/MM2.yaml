@@ -49,7 +49,7 @@ spec:
   mirrors:
   - sourceCluster: "source"
     targetCluster: "target"
-    topicsPattern: "artifact|checker.*|crypto.*|mage.*|maid.*|dome.*|minion.*|os3.*|os3t.*|syncmage.*|testcart.*|twirl.*|urlscan.*|upsert.*|upsertmage.*|whirl.*"
+    topicsPattern: "artifact|checker.*|crypto.*|mage.*|maid.*|dome.*|minion.*|os3.*|os3t.*|syncmage.*|testcart.*|twirl.*|urlscan.*|upsert.*|upsertmage.*|whirl.*|telegram|telegram.*|paste.*"
     topicsBlacklistPattern: "dome[.]+.*[.]+.*|minion[.]+.*[.]+.*"
     groupsPattern: ".*"
     sourceConnector:
