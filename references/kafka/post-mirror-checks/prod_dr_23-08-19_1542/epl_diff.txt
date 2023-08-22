@@ -1,0 +1,228 @@
+Topic: dome.thebotnet.profile Group: thebotnet Partition: 0 L-Offset: 0 -> 1316 H-Offset:  Size: 1833 -> 517 (diff 1316) Lag: 
+Topic: dome.hackflag.profile Group: hackflag Partition: 0 L-Offset: 0 -> 2705 H-Offset:  Size: 2790 -> 85 (diff 2705) Lag: 90 -> 0
+Topic: dome.imthack.post Group: imthack Partition: 0 L-Offset: 3953 -> 751 H-Offset: 4749 -> 796 Size: 796 -> 45 (diff 751) Lag: 
+Topic: dome.dark2web.profile Group: dark2web Partition: 0 L-Offset: 0 -> 28198 H-Offset:  Size: 28271 -> 73 (diff 28198) Lag: 
+Topic: dome.gerki.post Group: gerki Partition: 0 L-Offset: 35471 -> 0 H-Offset: 35472 -> 1 Size:  Lag: 1 -> 0
+Topic: checker.out Group: camino-checker-creditone-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-standard-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-boa-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-banner-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-fiserv-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-sainsburys-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-max-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-wsecu-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-usbank-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-synchrony-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-greendot-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-fnbo-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-amex-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-posteit-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-bmo-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-regions-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-desjardins-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-eml-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: checker.out Group: camino-checker-koho-added Partition: 0 L-Offset: 0 -> 2160 H-Offset:  Size: 2458 -> 298 (diff 2160) Lag: 
+Topic: dome.bdf.post_prime Group: bdf Partition: 0 L-Offset: 41 -> 1 H-Offset: 4115 -> 4074 Size: 4074 -> 4073 (diff 1) Lag: 
+Topic: minion.blackpass.account Group: blackpass Partition: 0 L-Offset: 0 -> 310825 H-Offset:  Size: 317230 -> 6405 (diff 310825) Lag: 
+Topic: dome.crackx.post_vip Group: crackx Partition: 0 L-Offset: 0 -> 218 H-Offset:  Size: 333 -> 115 (diff 218) Lag: 
+Topic: dome.cardingmafia.profile Group: cardingmafia Partition: 0 L-Offset: 0 -> 38065 H-Offset:  Size: 48847 -> 10782 (diff 38065) Lag: 
+Topic: dome.hpc.post Group: hpc Partition: 0 L-Offset: 0 -> 498 H-Offset:  Size: 542 -> 44 (diff 498) Lag: 152 -> 0
+Topic: dome.xss.post Group: xss Partition: 0 L-Offset: 8808 -> 0 H-Offset: 8809 -> 1 Size:  Lag: 1 -> 0
+Topic: minion.approved.cnp_new Group: approved Partition: 0 L-Offset: 0 -> 1 H-Offset:  Size: 1 -> 0 (diff 1) Lag: 
+Topic: minion.geo Group: geo Partition: 0 L-Offset: 44308857 -> 644615 H-Offset: 55716251 -> 11407394 Size: 11407394 -> 10762779 (diff 644615) Lag: 
+Topic: minion.ching Group: camino-minion-mastercard-sold Partition: 0 L-Offset: 5978658 -> 457552 H-Offset: 7307187 -> 1328529 Size: 1328529 -> 870977 (diff 457552) Lag: 
+Topic: minion.ching Group: camino-minion-dscvr-sold Partition: 0 L-Offset: 5978658 -> 457552 H-Offset: 7307187 -> 1328529 Size: 1328529 -> 870977 (diff 457552) Lag: 
+Topic: minion.ching Group: camino-minion-fiserv-sold Partition: 0 L-Offset: 5978658 -> 457552 H-Offset: 7307187 -> 1328529 Size: 1328529 -> 870977 (diff 457552) Lag: 
+Topic: minion.ching Group: camino-minion-bmo-sold Partition: 0 L-Offset: 5978658 -> 457552 H-Offset: 7307187 -> 1328529 Size: 1328529 -> 870977 (diff 457552) Lag: 
+Topic: minion.ching Group: camino-minion-bofa-sold Partition: 0 L-Offset: 5978658 -> 457552 H-Offset: 7307187 -> 1328529 Size: 1328529 -> 870977 (diff 457552) Lag: 
+Topic: minion.ching Group: camino-minion-rbc-sold Partition: 0 L-Offset: 5978658 -> 457552 H-Offset: 7307187 -> 1328529 Size: 1328529 -> 870977 (diff 457552) Lag: 
+Topic: minion.ching Group: camino-minion-swed-sold Partition: 0 L-Offset: 5978658 -> 457552 H-Offset: 7307187 -> 1328529 Size: 1328529 -> 870977 (diff 457552) Lag: 
+Topic: minion.ching Group: camino-minion-capitaloneca-sold Partition: 0 L-Offset: 5978658 -> 457552 H-Offset: 7307187 -> 1328529 Size: 1328529 -> 870977 (diff 457552) Lag: 
+Topic: whirl.telegram.source Group: whirl Partition: 0 L-Offset: 5522174 -> 413260 H-Offset: 5951532 -> 1108685 Size: 429358 -> 695425 (diff -266067) Lag: 
+Topic: dome.crax.profile Group: crax Partition: 0 L-Offset: 0 -> 181798 H-Offset:  Size: 183317 -> 1519 (diff 181798) Lag: 
+Topic: dome.nulledbb.post_vip Group: nulledbb Partition: 0 L-Offset: 140 -> 0 H-Offset: 141 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.nohide.post Group: nohide Partition: 0 L-Offset: 0 -> 69 H-Offset:  Size: 88 -> 19 (diff 69) Lag: 
+Topic: dome.nulled.profile_banned Group: nulled Partition: 0 L-Offset: 0 -> 26261 H-Offset:  Size: 27865 -> 1604 (diff 26261) Lag: 
+Topic: dome.nulled.profile Group: nulled Partition: 0 L-Offset: 0 -> 5570749 H-Offset:  Size: 5570845 -> 96 (diff 5570749) Lag: 5420712 -> 0
+Topic: dome.upsert Group: upsertDome Partition: 0 L-Offset: 33806178 -> 388731 H-Offset: 38731958 -> 4925780 Size: 4925780 -> 4537049 (diff 388731) Lag: 
+Topic: upsertmage.events.firstinfection Group: kamel Partition: 0 L-Offset: 0 -> 146 H-Offset:  Size: 161 -> 15 (diff 146) Lag: 
+Topic: upsertmage.events.firstinfection Group: camino-magecart-mastercard-identified Partition: 0 L-Offset: 0 -> 146 H-Offset:  Size: 161 -> 15 (diff 146) Lag: 
+Topic: dome.0x00sec.profile Group: 0x00sec Partition: 0 L-Offset: 0 -> 11929 H-Offset:  Size: 21417 -> 9488 (diff 11929) Lag: 12030 -> 0
+Topic: dome.hackforums.profile Group: hackforums Partition: 0 L-Offset: 0 -> 196 H-Offset:  Size: 779 -> 583 (diff 196) Lag: 
+Topic: crypto.telegram.message.source Group: live Partition: 0 L-Offset: 55761240 -> 19098 H-Offset: 57558995 -> 1797755 Size: 1797755 -> 1778657 (diff 19098) Lag: 
+Topic: crypto.posts.source Group: live Partition: 0 L-Offset: 45123006 -> 104133 H-Offset: 46002192 -> 879186 Size: 879186 -> 775053 (diff 104133) Lag: 
+Topic: crypto.posts.upsert Group: live Partition: 0 L-Offset: 586772 -> 40180 H-Offset: 674424 -> 87652 Size: 87652 -> 47472 (diff 40180) Lag: 87652 -> 0
+Topic: twirl.dome.source Group: twirl Partition: 0 L-Offset: 0 -> 781989 H-Offset:  Size: 876400 -> 94411 (diff 781989) Lag: 
+Topic: twirl.telegram.source Group: twirl Partition: 0 L-Offset:  H-Offset: 4435712 -> 4435744 Size: 4435712 -> 4435744 (diff -32) Lag: 
+Topic: minion.beat.victor Group: beat Partition: 0 L-Offset: 178780022 -> 7138596 H-Offset: 220769191 -> 41989169 Size: 41989169 -> 34850573 (diff 7138596) Lag: 
+Topic: dome.beat.darkmarket Group: beat Partition: 0 L-Offset: 174854 -> 826 H-Offset: 227934 -> 53080 Size: 53080 -> 52254 (diff 826) Lag: 
+Topic: dome.beat.antimigalki Group: beat Partition: 0 L-Offset: 21671 -> 1125 H-Offset: 29465 -> 7794 Size: 7794 -> 6669 (diff 1125) Lag: 
+Topic: dome.beat.codeby Group: beat Partition: 0 L-Offset: 77529 -> 1004 H-Offset: 102630 -> 25101 Size: 25101 -> 24097 (diff 1004) Lag: 
+Topic: dome.beat.gerki Group: beat Partition: 0 L-Offset: 119272 -> 1532 H-Offset: 136712 -> 17440 Size: 17440 -> 15908 (diff 1532) Lag: 
+Topic: dome.beat.nulledbb Group: beat Partition: 0 L-Offset: 211424 -> 283 H-Offset: 256161 -> 44737 Size: 44737 -> 44454 (diff 283) Lag: 
+Topic: dome.beat.altenen Group: beat Partition: 0 L-Offset: 2217143 -> 2666 H-Offset: 2583804 -> 366661 Size: 366661 -> 363995 (diff 2666) Lag: 
+Topic: minion.beat.mike Group: beat Partition: 0 L-Offset: 10152965 -> 7534 H-Offset: 11872270 -> 1719305 Size: 1719305 -> 1711771 (diff 7534) Lag: 
+Topic: dome.beat.hak5 Group: beat Partition: 0 L-Offset: 152056 -> 567 H-Offset: 221233 -> 69177 Size: 69177 -> 68610 (diff 567) Lag: 
+Topic: minion.beat.washoe Group: beat Partition: 0 L-Offset: 13204950 -> 743635 H-Offset: 16340340 -> 3135390 Size: 3135390 -> 2391755 (diff 743635) Lag: 
+Topic: dome.beat.xss Group: beat Partition: 0 L-Offset: 751752 -> 2413 H-Offset: 847657 -> 95905 Size: 95905 -> 93492 (diff 2413) Lag: 
+Topic: dome.beat.wwhclub Group: beat Partition: 0 L-Offset: 1099727 -> 6682 H-Offset: 1487955 -> 388228 Size: 388228 -> 381546 (diff 6682) Lag: 
+Topic: minion.beat.rigil Group: beat Partition: 0 L-Offset: 77155625 -> 2652165 H-Offset: 96055419 -> 18899794 Size: 18899794 -> 16247629 (diff 2652165) Lag: 
+Topic: minion.beat.sagittarius Group: beat Partition: 0 L-Offset: 2026367 -> 20511 H-Offset: 2406940 -> 652075 Size: 380573 -> 631564 (diff -250991) Lag: 
+Topic: dome.beat.bhf Group: beat Partition: 0 L-Offset: 409057 -> 701 H-Offset: 445214 -> 36157 Size: 36157 -> 35456 (diff 701) Lag: 
+Topic: minion.beat.pollux Group: beat Partition: 0 L-Offset: 9566062 -> 19859 H-Offset: 11326063 -> 1760001 Size: 1760001 -> 1740142 (diff 19859) Lag: 
+Topic: dome.beat.crimenetwork Group: beat Partition: 0 L-Offset: 159607 -> 647 H-Offset: 184921 -> 43547 Size: 25314 -> 42900 (diff -17586) Lag: 
+Topic: dome.beat.youhack Group: beat Partition: 0 L-Offset: 801236 -> 933 H-Offset: 951087 -> 149851 Size: 149851 -> 148918 (diff 933) Lag: 
+Topic: dome.beat.vlmi Group: beat Partition: 0 L-Offset: 105361 -> 1145 H-Offset: 138142 -> 32781 Size: 32781 -> 31636 (diff 1145) Lag: 
+Topic: dome.beat.blackhacker Group: beat Partition: 0 L-Offset: 19650 -> 3346 H-Offset: 32910 -> 13260 Size: 13260 -> 9914 (diff 3346) Lag: 
+Topic: dome Group: beat Partition: 0 L-Offset: 15342396 -> 2234798 H-Offset: 19393480 -> 7877998 Size: 4051084 -> 5643200 (diff -1592116) Lag: 
+Topic: dome.beat.exploit.in Group: beat Partition: 0 L-Offset: 777388 -> 1406 H-Offset: 932488 -> 155100 Size: 155100 -> 153694 (diff 1406) Lag: 
+Topic: dome.beat.piratebuhta Group: beat Partition: 0 L-Offset: 329084 -> 950 H-Offset: 394120 -> 65036 Size: 65036 -> 64086 (diff 950) Lag: 
+Topic: mage.scan Group: beat Partition: 0 L-Offset: 0 -> 469649 H-Offset:  Size: 20831133 -> 20361484 (diff 469649) Lag: 
+Topic: mage.scan Group: magescanner Partition: 0 L-Offset: 0 -> 469649 H-Offset:  Size: 20831133 -> 20361484 (diff 469649) Lag: 
+Topic: dome.beat.carders Group: beat Partition: 0 L-Offset: 116289 -> 1276 H-Offset: 136609 -> 20320 Size: 20320 -> 19044 (diff 1276) Lag: 
+Topic: minion.beat.apus Group: beat Partition: 0 L-Offset: 3881768 -> 123666 H-Offset: 4928548 -> 1046780 Size: 1046780 -> 923114 (diff 123666) Lag: 
+Topic: dome.beat.sinisterly Group: beat Partition: 0 L-Offset: 399028 -> 768 H-Offset: 480585 -> 81557 Size: 81557 -> 80789 (diff 768) Lag: 
+Topic: dome.beat.level23hacktools Group: beat Partition: 0 L-Offset: 55135 -> 453 H-Offset: 72379 -> 17244 Size: 17244 -> 16791 (diff 453) Lag: 
+Topic: dome.beat.cardingmafia Group: beat Partition: 0 L-Offset: 556402 -> 3884 H-Offset: 645893 -> 89491 Size: 89491 -> 85607 (diff 3884) Lag: 
+Topic: dome.beat.carder Group: beat Partition: 0 L-Offset: 116307 -> 13420 H-Offset: 199453 -> 83146 Size: 83146 -> 69726 (diff 13420) Lag: 
+Topic: dome.beat.antichat Group: beat Partition: 0 L-Offset: 320751 -> 453 H-Offset: 329511 -> 8760 Size: 8760 -> 8307 (diff 453) Lag: 
+Topic: minion.beat.uniform Group: beat Partition: 0 L-Offset: 6399294 -> 5787 H-Offset: 7714743 -> 1315449 Size: 1315449 -> 1309662 (diff 5787) Lag: 
+Topic: dome.beat.cebulka Group: beat Partition: 0 L-Offset: 32034 -> 1056 H-Offset: 35675 -> 6486 Size: 3641 -> 5430 (diff -1789) Lag: 
+Topic: dome.beat.shadowcarders Group: beat Partition: 0 L-Offset: 2240980 -> 668 H-Offset: 2621877 -> 380897 Size: 380897 -> 380229 (diff 668) Lag: 
+Topic: dome.beat.blackhatworld Group: beat Partition: 0 L-Offset: 2085108 -> 2164 H-Offset: 2468748 -> 383640 Size: 383640 -> 381476 (diff 2164) Lag: 
+Topic: dome.beat.mmgp Group: beat Partition: 0 L-Offset: 479379 -> 2215 H-Offset: 517542 -> 38163 Size: 38163 -> 35948 (diff 2215) Lag: 
+Topic: minion.beat.antlia Group: beat Partition: 0 L-Offset: 38897987 -> 917938 H-Offset: 47879158 -> 8981171 Size: 8981171 -> 8063233 (diff 917938) Lag: 
+Topic: dome.beat.blackbiz Group: beat Partition: 0 L-Offset: 62231 -> 118 H-Offset: 89134 -> 26903 Size: 26903 -> 26785 (diff 118) Lag: 
+Topic: minion Group: beat Partition: 0 L-Offset: 578585270 -> 38887838 H-Offset: 713488768 -> 175602807 Size: 134903498 -> 136714969 (diff -1811471) Lag: 
+Topic: dome.beat.cardvilla Group: beat Partition: 0 L-Offset: 521554 -> 8123 H-Offset: 613362 -> 91808 Size: 91808 -> 83685 (diff 8123) Lag: 
+Topic: dome.beat.crdpro Group: beat Partition: 0 L-Offset: 300914 -> 1852 H-Offset: 361781 -> 60867 Size: 60867 -> 59015 (diff 1852) Lag: 
+Topic: minion.beat.auriga Group: beat Partition: 0 L-Offset: 3949197 -> 28212 H-Offset: 4970779 -> 1021582 Size: 1021582 -> 993370 (diff 28212) Lag: 
+Topic: minion.beat.adhara Group: beat Partition: 0 L-Offset: 571894560 -> 8987985 H-Offset: 681821230 -> 109926670 Size: 109926670 -> 100938685 (diff 8987985) Lag: 
+Topic: dome.beat.migalki Group: beat Partition: 0 L-Offset: 7243 -> 310 H-Offset: 8645 -> 1402 Size: 1402 -> 1092 (diff 310) Lag: 
+Topic: minion.beat.carinae Group: beat Partition: 0 L-Offset: 5538340 -> 5328 H-Offset: 6977204 -> 1438864 Size: 1438864 -> 1433536 (diff 5328) Lag: 
+Topic: minion.beat.volans Group: beat Partition: 0 L-Offset: 4797138 -> 3866 H-Offset: 6666967 -> 1869829 Size: 1869829 -> 1865963 (diff 3866) Lag: 
+Topic: minion.beat.orion Group: beat Partition: 0 L-Offset: 6198177 -> 600859 H-Offset: 11317371 -> 5119194 Size: 5119194 -> 4518335 (diff 600859) Lag: 
+Topic: dome.beat.lolzteam Group: beat Partition: 0 L-Offset: 4022111 -> 81535 H-Offset: 4307614 -> 285503 Size: 285503 -> 203968 (diff 81535) Lag: 
+Topic: minion.beat.caelum Group: beat Partition: 0 L-Offset: 16242097 -> 110000 H-Offset: 19983692 -> 3741595 Size: 3741595 -> 3631595 (diff 110000) Lag: 
+Topic: minion.beat.kilo Group: beat Partition: 0 L-Offset: 3820284 -> 12132 H-Offset: 4549079 -> 728795 Size: 728795 -> 716663 (diff 12132) Lag: 
+Topic: minion.beat.bravo Group: beat Partition: 0 L-Offset: 20808881 -> 291734 H-Offset: 24960266 -> 4151385 Size: 4151385 -> 3859651 (diff 291734) Lag: 
+Topic: minion.beat.recnac Group: beat Partition: 0 L-Offset: 11222669 -> 182054 H-Offset: 15643377 -> 4420708 Size: 4420708 -> 4238654 (diff 182054) Lag: 
+Topic: dome.beat.demonforums Group: beat Partition: 0 L-Offset: 158129 -> 1978 H-Offset: 183441 -> 25312 Size: 25312 -> 23334 (diff 1978) Lag: 
+Topic: dome.beat.navigator Group: beat Partition: 0 L-Offset: 89137 -> 6148 H-Offset: 116030 -> 26893 Size: 26893 -> 20745 (diff 6148) Lag: 
+Topic: minion.beat.cayuse Group: beat Partition: 0 L-Offset: 513573 -> 1951 H-Offset: 611943 -> 98370 Size: 98370 -> 96419 (diff 1951) Lag: 
+Topic: dome.beat.ufolabs Group: beat Partition: 0 L-Offset: 182685 -> 1438 H-Offset: 211792 -> 29107 Size: 29107 -> 27669 (diff 1438) Lag: 
+Topic: dome.beat.nulled Group: beat Partition: 0 L-Offset: 2139604 -> 996 H-Offset: 2507349 -> 367745 Size: 367745 -> 366749 (diff 996) Lag: 
+Topic: minion.beat.polaris Group: beat Partition: 0 L-Offset: 2285768 -> 1294 H-Offset: 3157341 -> 1165936 Size: 871573 -> 1164642 (diff -293069) Lag: 
+Topic: dome.beat.cardingleaks Group: beat Partition: 0 L-Offset: 100942 -> 248 H-Offset: 138313 -> 37371 Size: 37371 -> 37123 (diff 248) Lag: 
+Topic: minion.beat.achernar Group: beat Partition: 0 L-Offset: 40149851 -> 496110 H-Offset: 51948012 -> 11798161 Size: 11798161 -> 11302051 (diff 496110) Lag: 
+Topic: minion.beat.cephei Group: beat Partition: 0 L-Offset: 3628568 -> 4367 H-Offset: 4018144 -> 389576 Size: 389576 -> 385209 (diff 4367) Lag: 
+Topic: dome.beat.blasthack Group: beat Partition: 0 L-Offset: 757278 -> 506 H-Offset: 885272 -> 127994 Size: 127994 -> 127488 (diff 506) Lag: 
+Topic: minion.beat.bootes Group: beat Partition: 0 L-Offset: 24144683 -> 459076 H-Offset: 28902980 -> 4758297 Size: 4758297 -> 4299221 (diff 459076) Lag: 
+Topic: minion.beat.draco Group: beat Partition: 0 L-Offset: 4264893 -> 384141 H-Offset: 6139140 -> 1874247 Size: 1874247 -> 1490106 (diff 384141) Lag: 
+Topic: dome.beat.slivup Group: beat Partition: 0 L-Offset: 339128 -> 977 H-Offset: 428506 -> 89378 Size: 89378 -> 88401 (diff 977) Lag: 
+Topic: dome.beat.dublikat Group: beat Partition: 0 L-Offset: 474991 -> 6692 H-Offset: 570502 -> 95511 Size: 95511 -> 88819 (diff 6692) Lag: 
+Topic: minion.beat.osage Group: beat Partition: 0 L-Offset: 16166018 -> 3266 H-Offset: 18218318 -> 2052300 Size: 2052300 -> 2049034 (diff 3266) Lag: 
+Topic: dome.beat.bitcointalk Group: beat Partition: 0 L-Offset: 2074098 -> 94679 H-Offset: 2720468 -> 646370 Size: 646370 -> 551691 (diff 94679) Lag: 
+Topic: dome.beat.enclave Group: beat Partition: 0 L-Offset: 137171 -> 203 H-Offset: 270922 -> 133751 Size: 133751 -> 133548 (diff 203) Lag: 
+Topic: dome.beat.cracked Group: beat Partition: 0 L-Offset: 1147195 -> 5202 H-Offset: 1336567 -> 189372 Size: 189372 -> 184170 (diff 5202) Lag: 
+Topic: minion.beat.cygni Group: beat Partition: 0 L-Offset: 364098 -> 854 H-Offset: 432160 -> 68062 Size: 68062 -> 67208 (diff 854) Lag: 
+Topic: os3.debug Group: os3 Partition: 0 L-Offset: 59620 -> 11320 H-Offset: 72804 -> 30284 Size: 13184 -> 18964 (diff -5780) Lag: 
+Topic: os3.debug Group: os3 Partition: 5 L-Offset: 58188 -> 1499 H-Offset: 74907 -> 16719 Size: 16719 -> 15220 (diff 1499) Lag: 
+Topic: os3.attachment Group: os3 Partition: 1 L-Offset: 403255 -> 73591 H-Offset: 529584 -> 126329 Size: 126329 -> 52738 (diff 73591) Lag: 123487 -> 0
+Topic: os3.attachment Group: os3 Partition: 3 L-Offset: 408097 -> 0 H-Offset: 476888 -> 71500 Size: 68791 -> 71500 (diff -2709) Lag: 
+Topic: os3.attachment Group: os3 Partition: 4 L-Offset: 514993 -> 29044 H-Offset: 557780 -> 138307 Size: 42787 -> 109263 (diff -66476) Lag: 
+Topic: os3.attachment Group: os3 Partition: 6 L-Offset: 420278 -> 0 H-Offset: 506375 -> 93126 Size: 86097 -> 93126 (diff -7029) Lag: 
+Topic: os3.attachment Group: os3 Partition: 14 L-Offset: 421884 -> 4861 H-Offset: 471080 -> 49196 Size: 49196 -> 44335 (diff 4861) Lag: 46383 -> 44335
+Topic: os3.attachment Group: os3 Partition: 16 L-Offset: 410605 -> 21423 H-Offset: 489406 -> 78801 Size: 78801 -> 57378 (diff 21423) Lag: 75900 -> 0
+Topic: os3.attachment Group: os3 Partition: 17 L-Offset: 411912 -> 13842 H-Offset: 483819 -> 71907 Size: 71907 -> 58065 (diff 13842) Lag: 69109 -> 58065
+Topic: os3.attachment Group: os3 Partition: 18 L-Offset: 421579 -> 0 H-Offset: 517881 -> 96321 Size: 96302 -> 96321 (diff -19) Lag: 
+Topic: os3.attachment Group: os3 Partition: 19 L-Offset: 431236 -> 3432 H-Offset: 480528 -> 49292 Size: 49292 -> 45860 (diff 3432) Lag: 46201 -> 45860
+Topic: os3.attachment Group: os3 Partition: 26 L-Offset: 427173 -> 0 H-Offset: 498363 -> 87899 Size: 71190 -> 87899 (diff -16709) Lag: 
+Topic: os3.attachment Group: os3 Partition: 28 L-Offset: 385868 -> 0 H-Offset: 457764 -> 74428 Size: 71896 -> 74428 (diff -2532) Lag: 
+Topic: os3.attachment Group: os3 Partition: 29 L-Offset: 426990 -> 35947 H-Offset: 510802 -> 83812 Size: 83812 -> 47865 (diff 35947) Lag: 80784 -> 47865
+Topic: os3.attachment Group: os3 Partition: 35 L-Offset: 394391 -> 21639 H-Offset: 467248 -> 72857 Size: 72857 -> 51218 (diff 21639) Lag: 69512 -> 0
+Topic: os3.attachment Group: os3 Partition: 37 L-Offset: 431092 -> 53031 H-Offset: 541405 -> 110313 Size: 110313 -> 57282 (diff 53031) Lag: 107455 -> 57282
+Topic: os3.attachment Group: os3 Partition: 39 L-Offset: 419621 -> 9927 H-Offset: 491993 -> 72372 Size: 72372 -> 62445 (diff 9927) Lag: 69599 -> 62445
+Topic: os3.attachment Group: os3 Partition: 41 L-Offset: 463609 -> 30294 H-Offset: 544974 -> 81365 Size: 81365 -> 51071 (diff 30294) Lag: 78286 -> 0
+Topic: os3.attachment Group: os3 Partition: 42 L-Offset: 405812 -> 14978 H-Offset: 484879 -> 79067 Size: 79067 -> 64089 (diff 14978) Lag: 75983 -> 64089
+Topic: os3.attachment Group: os3 Partition: 43 L-Offset: 406893 -> 20165 H-Offset: 496561 -> 89668 Size: 89668 -> 69503 (diff 20165) Lag: 86680 -> 0
+Topic: os3.attachment Group: os3 Partition: 44 L-Offset: 418497 -> 3735 H-Offset: 497994 -> 79497 Size: 79497 -> 75762 (diff 3735) Lag: 76174 -> 75762
+Topic: os3.attachment Group: os3 Partition: 45 L-Offset: 464293 -> 0 H-Offset: 536241 -> 112575 Size: 71948 -> 112575 (diff -40627) Lag: 
+Topic: os3.attachment Group: os3 Partition: 50 L-Offset: 413210 -> 0 H-Offset: 475591 -> 78679 Size: 62381 -> 78679 (diff -16298) Lag: 
+Topic: os3.attachment Group: os3 Partition: 51 L-Offset: 406681 -> 0 H-Offset: 463816 -> 57145 Size: 57135 -> 57145 (diff -10) Lag: 
+Topic: os3.attachment Group: os3 Partition: 52 L-Offset: 420350 -> 15567 H-Offset: 484895 -> 64545 Size: 64545 -> 48978 (diff 15567) Lag: 61559 -> 48978
+Topic: os3.attachment Group: os3 Partition: 53 L-Offset: 412799 -> 12217 H-Offset: 472668 -> 59869 Size: 59869 -> 47652 (diff 12217) Lag: 56972 -> 0
+Topic: os3.attachment Group: os3 Partition: 54 L-Offset: 434773 -> 44977 H-Offset: 532405 -> 97632 Size: 97632 -> 52655 (diff 44977) Lag: 96136 -> 52655
+Topic: os3.attachment Group: os3 Partition: 56 L-Offset: 486353 -> 12540 H-Offset: 551919 -> 65566 Size: 65566 -> 53026 (diff 12540) Lag: 62689 -> 0
+Topic: os3.attachment Group: os3 Partition: 57 L-Offset: 421016 -> 29054 H-Offset: 497967 -> 76951 Size: 76951 -> 47897 (diff 29054) Lag: 74184 -> 47897
+Topic: os3.attachment Group: os3 Partition: 58 L-Offset: 423450 -> 0 H-Offset: 496875 -> 82441 Size: 73425 -> 82441 (diff -9016) Lag: 
+Topic: os3.attachment Group: os3 Partition: 59 L-Offset: 406257 -> 18219 H-Offset: 502678 -> 97171 Size: 96421 -> 78952 (diff 17469) Lag: 93386 -> 78952
+Topic: dome.blackbiz.profile Group: blackbiz Partition: 0 L-Offset: 0 -> 301304 H-Offset:  Size: 301304 -> 0 (diff 301304) Lag: 268842 -> 0
+Topic: minion.uscufeed Group: uscufeed Partition: 0 L-Offset: 0 -> 670220 H-Offset:  Size: 16395135 -> 15724915 (diff 670220) Lag: 
+Topic: dome.niflheim.post_vip Group: niflheim Partition: 0 L-Offset: 0 -> 1 H-Offset:  Size: 1 -> 0 (diff 1) Lag: 1 -> 0
+Topic: dome.blackhatworld.profile_forward Group: blackhatworld Partition: 0 L-Offset: 0 -> 126897 H-Offset:  Size: 153564 -> 26667 (diff 126897) Lag: 103254 -> 0
+Topic: dome.blackhatworld.post_new Group: blackhatworld Partition: 0 L-Offset: 0 -> 30148 H-Offset:  Size: 31478 -> 1330 (diff 30148) Lag: 3673 -> 0
+Topic: dome.mmgp.post Group: mmgp Partition: 0 L-Offset: 0 -> 3356 H-Offset:  Size: 3739 -> 383 (diff 3356) Lag: 
+Topic: dome.mpgh.activity Group: mpgh Partition: 0 L-Offset: 6 -> 0 H-Offset: 7 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.mpgh.post_new Group: mpgh Partition: 0 L-Offset: 0 -> 1484 H-Offset:  Size: 1497 -> 13 (diff 1484) Lag: 
+Topic: dome.mpgh.profile Group: mpgh Partition: 0 L-Offset: 0 -> 6214017 H-Offset:  Size: 6214140 -> 123 (diff 6214017) Lag: 6080625 -> 0
+Topic: minion.easydeals.cp Group: easydeals Partition: 0 L-Offset: 286743 -> 0 H-Offset: 286744 -> 1 Size:  Lag: 1 -> 0
+Topic: minion.seen Group: seenpans Partition: 0 L-Offset: 44633143 -> 143468 H-Offset: 49194345 -> 4561202 Size: 4561202 -> 4417734 (diff 143468) Lag: 
+Topic: minion.seen Group: seenMinion Partition: 0 L-Offset: 44633143 -> 143468 H-Offset: 49194345 -> 4561202 Size: 4561202 -> 4417734 (diff 143468) Lag: 
+Topic: minion.atlantis.cnp Group: atlantis Partition: 0 L-Offset: 1761 -> 0 H-Offset: 1762 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.sinisterly.profile Group: sinisterly Partition: 0 L-Offset: 0 -> 22693 H-Offset:  Size: 22913 -> 220 (diff 22693) Lag: 21631 -> 0
+Topic: dome.altenen.profile Group: altenen Partition: 0 L-Offset: 0 -> 117444 H-Offset:  Size: 126065 -> 8621 (diff 117444) Lag: 
+Topic: dome.fssquad.post Group: fssquad Partition: 0 L-Offset: 0 -> 2170 H-Offset:  Size: 3310 -> 1140 (diff 2170) Lag: 
+Topic: minion.magbo.cnp Group: magbo Partition: 0 L-Offset: 5666 -> 0 H-Offset: 5667 -> 1 Size:  Lag: 1 -> 0
+Topic: mage.scan.upsert Group: upsertMage Partition: 0 L-Offset: 19947034 -> 108439 H-Offset: 20650406 -> 860661 Size: 703372 -> 752222 (diff -48850) Lag: 
+Topic: magecart.upsert Group: upsertMage Partition: 0 L-Offset: 295731 -> 21947 H-Offset: 304466 -> 30710 Size: 8735 -> 8763 (diff -28) Lag: 
+Topic: maid.seen.backlog Group: seenMaid Partition: 0 L-Offset: 122047968 -> 9361000 H-Offset: 242577585 -> 152134617 Size: 120529617 -> 142773617 (diff -22244000) Lag: 
+Topic: dome.forumteam.post_prime Group: forumteam Partition: 0 L-Offset: 0 -> 58880 H-Offset:  Size: 58904 -> 24 (diff 58880) Lag: 25926 -> 0
+Topic: dome.moon.post Group: moon Partition: 0 L-Offset: 0 -> 1 H-Offset:  Size: 1 -> 0 (diff 1) Lag: 1 -> 0
+Topic: dome.cracking.post_new Group: cracking Partition: 0 L-Offset: 0 -> 319737 H-Offset:  Size: 331191 -> 11454 (diff 319737) Lag: 
+Topic: dome.instanthack.post Group: instanthack Partition: 0 L-Offset: 0 -> 21133 H-Offset:  Size: 25350 -> 4217 (diff 21133) Lag: 
+Topic: dome.instanthack.post_prime Group: instanthack Partition: 0 L-Offset: 0 -> 12660 H-Offset:  Size: 13243 -> 583 (diff 12660) Lag: 
+Topic: telegram.upsert Group: upsertTelegram Partition: 0 L-Offset: 18959371 -> 2846038 H-Offset: 24750779 -> 5791408 Size: 5791408 -> 2945370 (diff 2846038) Lag: 
+Topic: minion.xtal.cnp Group: xtal Partition: 0 L-Offset: 1 -> 0 H-Offset: 2 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.crdpro.post_vip Group: crdpro Partition: 0 L-Offset: 0 -> 3491 H-Offset:  Size: 4823 -> 1332 (diff 3491) Lag: 
+Topic: dome.migalki.post Group: migalki Partition: 0 L-Offset: 5836 -> 0 H-Offset: 5837 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.leakbase.post Group: leakbase Partition: 0 L-Offset: 0 -> 10293 H-Offset:  Size: 10589 -> 296 (diff 10293) Lag: 
+Topic: dome.leakbase.post_vip Group: leakbase Partition: 0 L-Offset: 66 -> 78 H-Offset: 273 -> 207 Size: 207 -> 129 (diff 78) Lag: 
+Topic: dome.cebulka.post Group: cebulka Partition: 0 L-Offset: 0 -> 14552 H-Offset:  Size: 17310 -> 2758 (diff 14552) Lag: 
+Topic: dome.cebulka.profile Group: cebulka Partition: 0 L-Offset: 0 -> 14724 H-Offset:  Size: 14724 -> 0 (diff 14724) Lag: 3974 -> 0
+Topic: dome.navigator.profile Group: navigator Partition: 0 L-Offset: 13088 -> 0 H-Offset: 13089 -> 1 Size:  Lag: 1 -> 0
+Topic: dome.carder.post Group: carder Partition: 0 L-Offset: 0 -> 19305 H-Offset:  Size: 30065 -> 10760 (diff 19305) Lag: 
+Topic: dome.hackingfather.profile Group: hackingfather Partition: 0 L-Offset: 0 -> 8156 H-Offset:  Size: 8289 -> 133 (diff 8156) Lag: 4453 -> 0
+Topic: dome.leakzone.post_vip Group: leakzone Partition: 0 L-Offset: 987 -> 7 H-Offset: 994 -> 7 Size: 7 -> 0 (diff 7) Lag: 
+Topic: mage.task.target.4 Group: magescanner Partition: 0 L-Offset: 3347016 -> 16338 H-Offset: 3848638 -> 501622 Size: 501622 -> 485284 (diff 16338) Lag: 
+Topic: mage.task.target.manual Group: magescanner Partition: 0 L-Offset: 0 -> 50219 H-Offset:  Size: 50840 -> 621 (diff 50219) Lag: 
+Topic: minion.upsert Group: upsertMinion Partition: 0 L-Offset: 1284387732 -> 25255231 H-Offset: 1340890240 -> 74858218 Size: 56502508 -> 49602987 (diff 6899521) Lag: 
+Topic: dome.cybercarders.profile_forward Group: cybercarders Partition: 0 L-Offset: 0 -> 6031 H-Offset:  Size: 6107 -> 76 (diff 6031) Lag: 
+Topic: dome.cybercarders.post Group: cybercarders Partition: 0 L-Offset: 0 -> 67566 H-Offset:  Size: 67735 -> 169 (diff 67566) Lag: 1459 -> 0
+Topic: dome.lolzteam.profile_forward Group: lolzteam Partition: 0 L-Offset: 0 -> 878700 H-Offset:  Size: 879480 -> 780 (diff 878700) Lag: 448518 -> 0
+Topic: dome.bhf.profile Group: bhf Partition: 0 L-Offset: 0 -> 15816 H-Offset:  Size: 16783 -> 967 (diff 15816) Lag: 
+Topic: dome.cardvilla.profile Group: cardvilla Partition: 0 L-Offset: 0 -> 81698 H-Offset:  Size: 99354 -> 17656 (diff 81698) Lag: 
+Topic: minion.sanitizer_pan Group: sanitizer Partition: 0 L-Offset: 142193 -> 7379 H-Offset: 147779 -> 12976 Size: 5586 -> 5597 (diff -11) Lag: 
+Topic: dome.rstforums.profile Group: rstforums Partition: 0 L-Offset: 0 -> 64834 H-Offset:  Size: 86188 -> 21354 (diff 64834) Lag: 
+Topic: dome.darkmoney.profile Group: darkmoney Partition: 0 L-Offset: 0 -> 84686 H-Offset:  Size: 105306 -> 20620 (diff 84686) Lag: 
+Topic: dome.darknet.post Group: darknet Partition: 0 L-Offset: 0 -> 1 H-Offset:  Size: 1 -> 0 (diff 1) Lag: 
+Topic: minion.briansclub.cp_vip Group: briansclub Partition: 0 L-Offset: 10002 -> 10711 H-Offset: 20713 -> 10711 Size: 10711 -> 0 (diff 10711) Lag: 4200 -> 0
+Topic: dome.crackingitaly.post_prime Group: crackingitaly Partition: 0 L-Offset: 0 -> 5356 H-Offset:  Size: 7128 -> 1772 (diff 5356) Lag: 6670 -> 0
+Topic: dome.wwhclub.profile Group: wwhclub Partition: 0 L-Offset: 0 -> 416771 H-Offset:  Size: 416771 -> 0 (diff 416771) Lag: 281980 -> 0
+Topic: minion.approved.cnp Group: <not associated> Partition: 0 L-Offset: 0 -> 10255 H-Offset:  Size: 10255 -> 0 (diff 10255) Lag: 
+Topic: minion.cvv.pii Group: <not associated> Partition: 0 L-Offset: 0 -> 1 H-Offset:  Size: 1 -> 0 (diff 1) Lag: 
+Topic: minion.sigmacc.cnp Group: <not associated> Partition: 0 L-Offset: 0 -> 26 H-Offset:  Size: 26 -> 0 (diff 26) Lag: 
+Topic: dome.hacklife.post Group: <not associated> Partition: 0 L-Offset: 0 -> 99 H-Offset:  Size: 99 -> 0 (diff 99) Lag: 
+Topic: heartbeats Group: <not associated> Partition: 0 L-Offset:  H-Offset: 78122 -> 82252 Size: 78122 -> 82252 (diff -4130) Lag: 
+Topic: dome.level23hacktools.post_prime Group: <not associated> Partition: 0 L-Offset: 42 -> 1 H-Offset: 17369 -> 17327 Size: 17327 -> 17326 (diff 1) Lag: 
+Topic: dome.thehub.post_new Group: <not associated> Partition: 0 L-Offset: 0 -> 2887 H-Offset:  Size: 2887 -> 0 (diff 2887) Lag: 
+Topic: minion.jshop.pii Group: <not associated> Partition: 0 L-Offset: 0 -> 1 H-Offset:  Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.verified.post Group: <not associated> Partition: 0 L-Offset: 0 -> 1 H-Offset:  Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.hacklife.profile Group: <not associated> Partition: 0 L-Offset: 0 -> 40663 H-Offset:  Size: 40663 -> 0 (diff 40663) Lag: 
+Topic: dome.moon.profile Group: <not associated> Partition: 0 L-Offset: 0 -> 140903 H-Offset:  Size: 140903 -> 0 (diff 140903) Lag: 
+Topic: dome.darktime.profile Group: <not associated> Partition: 0 L-Offset: 0 -> 1 H-Offset:  Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.cardingworld.post Group: <not associated> Partition: 0 L-Offset: 0 -> 183844 H-Offset:  Size: 183844 -> 0 (diff 183844) Lag: 
+Topic: whirl.telegram.backlog Group: <not associated> Partition: 0 L-Offset: 12427843 -> 1760537 H-Offset: 16116570 -> 3688727 Size: 3688727 -> 1928190 (diff 1760537) Lag: 
+Topic: minion.cvv.cnp Group: <not associated> Partition: 0 L-Offset: 0 -> 2 H-Offset:  Size: 2 -> 0 (diff 2) Lag: 
+Topic: dome.thehub.profile Group: <not associated> Partition: 0 L-Offset: 0 -> 219000 H-Offset:  Size: 219000 -> 0 (diff 219000) Lag: 
+Topic: dome.exploit.profile Group: <not associated> Partition: 0 L-Offset: 0 -> 3957 H-Offset:  Size: 3957 -> 0 (diff 3957) Lag: 
