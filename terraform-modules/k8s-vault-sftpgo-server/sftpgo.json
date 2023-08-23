@@ -1,6 +1,6 @@
 {
     "telemetry": {
-      "bind_port": 8090,
+      "bind_port": 10000,
       "bind_address": "0.0.0.0",
       "enable_profiler": false,
       "auth_user_file": "",
