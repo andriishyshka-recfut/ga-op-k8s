@@ -1,0 +1,12 @@
+{
+    "telemetry": {
+      "bind_port": 8090,
+      "bind_address": "0.0.0.0",
+      "enable_profiler": false,
+      "auth_user_file": "",
+      "certificate_file": "",
+      "certificate_key_file": "",
+      "min_tls_version": 12,
+      "tls_cipher_suites": []
+    }
+  }
