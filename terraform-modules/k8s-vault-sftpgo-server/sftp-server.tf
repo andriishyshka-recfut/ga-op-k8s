@@ -31,7 +31,7 @@ resource "helm_release" "sftp-server" {
   set {
     name  = "volumes[1].configMap.name"
     value = "sftp-server-${each.key}-config"
-  }
+  }/*
   set {
     name  = "volumes[2].name"
     value = "sftpgo"
@@ -39,7 +39,7 @@ resource "helm_release" "sftp-server" {
   set {
     name  = "volumes[2].configMap.name"
     value = "sftpgo-${each.key}-config"
-  }
+  }*/
   set {
     name  = "volumeMounts[0].mountPath"
     value = "/var/lib/sftpgo/id_ed25519"
@@ -103,7 +103,7 @@ resource "helm_release" "sftp-server" {
   set {
     name  = "env.SFTPGO_LOADDATA_FROM"
     value = "/var/lib/sftpgo/config.json"
-  }
+  }/*
   set {
     name  = "volumeMounts[5].name"
     value = "sftpgo"
@@ -115,7 +115,7 @@ resource "helm_release" "sftp-server" {
   set {
     name  = "volumeMounts[5].subPath"
     value = "sftpgo.json"
-  }
+  }*/
   set {
     name  = "env.SFTPGO_DATA_PROVIDER__DRIVER"
     value = "postgresql"
@@ -136,10 +136,6 @@ resource "helm_release" "sftp-server" {
     name  = "env.SFTPGO_DATA_PROVIDER__USERNAME"
     value = data.vault_generic_secret.db_creds["${each.key}"].data["username"]
   }
-  #set {
-  #  name  = "env.SFTPGO_DATA_PROVIDER__PASSWORD"
-  #  value = "$POSTGRES_PASSWORD" #data.vault_generic_secret.db-creds["${each.key}"].data["password"]
-  #}
   set {
     name  = "envVars[0].name"
     value = "SFTPGO_DATA_PROVIDER__PASSWORD"
@@ -150,7 +146,7 @@ resource "helm_release" "sftp-server" {
   }
   set {
     name  = "envVars[0].valueFrom.secretKeyRef.key"
-    value = "POSTGRES_PASSWORD"
+    value = "PGPASSWORD"
   }
   set {
     name = "podAnnotations.co\\.elastic\\.logs/enabled"
@@ -158,7 +154,7 @@ resource "helm_release" "sftp-server" {
     type = "string"
   }
 
-  depends_on = [kubernetes_config_map.ssh_host_keys ,vault_generic_secret.admin_user_config, kubernetes_secret.db_creds]
+  depends_on = [kubernetes_config_map.ssh_host_keys ,kubernetes_config_map.config, kubernetes_secret.db_creds]
 }
 
 ### Postrgesql credentials
@@ -216,18 +212,6 @@ data "vault_generic_secret" "sftp_admin" {
   path         = "secret/sftp-server/admin"
 }
 
-resource "vault_generic_secret" "admin_user_config" {
-  path = "secret/sftp-server/init-admin-user"
-
-  data_json = jsonencode({"config.json":"${templatefile("${path.module}/config.json", { PASSWORD = bcrypt(data.vault_generic_secret.sftp_admin.data["password"]) })}"})
-}
-
-data "vault_generic_secret" "config" {
-  for_each = var.server_list
-  path         = "secret/sftp-server/init-admin-user"
-
-  depends_on = [vault_generic_secret.admin_user_config]
-}
 resource "kubernetes_config_map" "config" {
   for_each = var.server_list
   metadata {
@@ -235,10 +219,12 @@ resource "kubernetes_config_map" "config" {
     namespace  = try(each.value.namespace, local.namespace)
   }
 
-  data = data.vault_generic_secret.config[each.key].data
+  data = {
+    "config.json" = "${templatefile("${path.module}/config.json", { PASSWORD = bcrypt(data.vault_generic_secret.sftp_admin.data["password"]) })}"
+  }
 }
 
-
+/*
 resource "kubernetes_config_map" "sftpgo" {
   for_each = var.server_list
   metadata {
@@ -246,10 +232,12 @@ resource "kubernetes_config_map" "sftpgo" {
     namespace  = try(each.value.namespace, local.namespace)
   }
 
-  data = templatefile("${path.module}/sftpgo.json")
-}
+  data = {
+    "sftpgo.json" = file("${path.module}/sftpgo.json")
+  }
+}*/
 
-resource "kubernetes_cron_job" "database_backup" {
+resource "kubernetes_cron_job_v1" "database_backup" {
   for_each = var.server_list
   metadata {
     name = "${local.server_name}-${each.key}-db-backup-cronjob"

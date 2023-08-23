@@ -1,3 +1,0 @@
-locals {
-  sftpgo_values = {}
-}
