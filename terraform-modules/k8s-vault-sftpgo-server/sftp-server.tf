@@ -33,6 +33,14 @@ resource "helm_release" "sftp-server" {
     value = "sftp-server-${each.key}-config"
   }
   set {
+    name  = "volumes[2].name"
+    value = "sftpgo"
+  }
+  set {
+    name  = "volumes[2].configMap.name"
+    value = "sftpgo-${each.key}-config"
+  }
+  set {
     name  = "volumeMounts[0].mountPath"
     value = "/var/lib/sftpgo/id_ed25519"
   }
@@ -95,6 +103,18 @@ resource "helm_release" "sftp-server" {
   set {
     name  = "env.SFTPGO_LOADDATA_FROM"
     value = "/var/lib/sftpgo/config.json"
+  }
+  set {
+    name  = "volumeMounts[5].name"
+    value = "sftpgo"
+  }
+  set {
+    name  = "volumeMounts[5].mountPath"
+    value = "/var/lib/sftpgo/sftpgo.json"
+  }
+  set {
+    name  = "volumeMounts[5].subPath"
+    value = "sftpgo.json"
   }
   set {
     name  = "env.SFTPGO_DATA_PROVIDER__DRIVER"
@@ -218,6 +238,16 @@ resource "kubernetes_config_map" "config" {
   data = data.vault_generic_secret.config[each.key].data
 }
 
+
+resource "kubernetes_config_map" "sftpgo" {
+  for_each = var.server_list
+  metadata {
+    name       = "sftpgo-${each.key}-config"
+    namespace  = try(each.value.namespace, local.namespace)
+  }
+
+  data = templatefile("${path.module}/sftpgo.json")
+}
 
 resource "kubernetes_cron_job" "database_backup" {
   for_each = var.server_list
