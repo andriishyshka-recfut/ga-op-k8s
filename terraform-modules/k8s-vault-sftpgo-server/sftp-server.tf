@@ -31,7 +31,7 @@ resource "helm_release" "sftp-server" {
   set {
     name  = "volumes[1].configMap.name"
     value = "sftp-server-${each.key}-config"
-  }/*
+  } /*
   set {
     name  = "volumes[2].name"
     value = "sftpgo"
@@ -103,7 +103,7 @@ resource "helm_release" "sftp-server" {
   set {
     name  = "env.SFTPGO_LOADDATA_FROM"
     value = "/var/lib/sftpgo/config.json"
-  }/*
+  } /*
   set {
     name  = "volumeMounts[5].name"
     value = "sftpgo"
@@ -149,25 +149,31 @@ resource "helm_release" "sftp-server" {
     value = "PGPASSWORD"
   }
   set {
-    name = "podAnnotations.co\\.elastic\\.logs/enabled"
+    name  = "podAnnotations.co\\.elastic\\.logs/enabled"
     value = "true"
-    type = "string"
+    type  = "string"
   }
 
-  depends_on = [kubernetes_config_map.ssh_host_keys ,kubernetes_config_map.config, kubernetes_secret.db_creds]
+  set {
+    name  = "podAnnotations.co\\.elastic\\.logs/json.add_error_key"
+    value = "true"
+    type  = "string"
+  }
+
+  depends_on = [kubernetes_config_map.ssh_host_keys, kubernetes_config_map.config, kubernetes_secret.db_creds]
 }
 
 ### Postrgesql credentials
 data "vault_generic_secret" "db_creds" {
-  for_each     = var.server_list
-  path         = "secret/sftp-server/${each.key}-db-creds"
+  for_each = var.server_list
+  path     = "secret/sftp-server/${each.key}-db-creds"
 }
 
 resource "kubernetes_secret" "db_creds" {
-  for_each     = var.server_list
+  for_each = var.server_list
   metadata {
-    name       = "sftp-server-${each.key}-db-creds"
-    namespace  = try(each.value.namespace, local.namespace)
+    name      = "sftp-server-${each.key}-db-creds"
+    namespace = try(each.value.namespace, local.namespace)
   }
   data = {
     "PGPASSWORD" = data.vault_generic_secret.db_creds["${each.key}"].data["password"]
@@ -175,17 +181,17 @@ resource "kubernetes_secret" "db_creds" {
 }
 
 data "vault_generic_secret" "minio_creds" {
-  path         = "secret/minio/users"
+  path = "secret/minio/users"
 }
 
 resource "kubernetes_secret" "minio_creds" {
-  for_each     = {"${local.minio_user}":{}}
+  for_each = { "${local.minio_user}" : {} }
   metadata {
-    name       = "sftp-server-main-minio-creds"
-    namespace  = try(each.value.namespace, local.namespace)
+    name      = "sftp-server-main-minio-creds"
+    namespace = try(each.value.namespace, local.namespace)
   }
   data = {
-    AWS_ACCESS_KEY_ID = jsondecode(data.vault_generic_secret.minio_creds.data[each.key]).accessKey,
+    AWS_ACCESS_KEY_ID     = jsondecode(data.vault_generic_secret.minio_creds.data[each.key]).accessKey,
     AWS_SECRET_ACCESS_KEY = jsondecode(data.vault_generic_secret.minio_creds.data[each.key]).secretKey
   }
 }
@@ -193,14 +199,14 @@ resource "kubernetes_secret" "minio_creds" {
 ### Mount host keys
 data "vault_generic_secret" "ssh_host_keys" {
   for_each = var.server_list
-  path         = "secret/sftp-server/${each.key}-host-keys"
+  path     = "secret/sftp-server/${each.key}-host-keys"
 }
 
 resource "kubernetes_config_map" "ssh_host_keys" {
   for_each = var.server_list
   metadata {
-    name       = "sftp-server-${each.key}-host-keys"
-    namespace  = try(each.value.namespace, local.namespace)
+    name      = "sftp-server-${each.key}-host-keys"
+    namespace = try(each.value.namespace, local.namespace)
   }
 
   data = data.vault_generic_secret.ssh_host_keys[each.key].data
@@ -209,14 +215,14 @@ resource "kubernetes_config_map" "ssh_host_keys" {
 ### INIT ADMIN USER FOR SFTPGO PROVIDER CONNECTION
 
 data "vault_generic_secret" "sftp_admin" {
-  path         = "secret/sftp-server/admin"
+  path = "secret/sftp-server/admin"
 }
 
 resource "kubernetes_config_map" "config" {
   for_each = var.server_list
   metadata {
-    name       = "sftp-server-${each.key}-config"
-    namespace  = try(each.value.namespace, local.namespace)
+    name      = "sftp-server-${each.key}-config"
+    namespace = try(each.value.namespace, local.namespace)
   }
 
   data = {
@@ -240,11 +246,11 @@ resource "kubernetes_config_map" "sftpgo" {
 resource "kubernetes_cron_job_v1" "database_backup" {
   for_each = var.server_list
   metadata {
-    name = "${local.server_name}-${each.key}-db-backup-cronjob"
+    name      = "${local.server_name}-${each.key}-db-backup-cronjob"
     namespace = try(each.value.namespace, local.namespace)
   }
   spec {
-    schedule = "0 * * * *"
+    schedule                      = "0 * * * *"
     concurrency_policy            = "Replace"
     failed_jobs_history_limit     = 5
     starting_deadline_seconds     = 10
@@ -259,7 +265,7 @@ resource "kubernetes_cron_job_v1" "database_backup" {
         template {
           metadata {
             annotations = {
-              "sidecar.istio.io/inject": "false"
+              "sidecar.istio.io/inject" : "false"
             }
           }
           spec {
