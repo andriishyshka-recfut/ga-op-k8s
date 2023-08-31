@@ -3,7 +3,7 @@ locals {
   namespace = "gitlab"
   gitlab_values = {
     global = {
-      gitlabVersion = "16.2.4",
+      gitlabVersion = "16.3.0",
       edition       = "ce"
       shell = {
         port = 2224

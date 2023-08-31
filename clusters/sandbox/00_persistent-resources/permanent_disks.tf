@@ -56,12 +56,10 @@ data "google_compute_snapshot" "sftp_snapshot" {
   most_recent = true
 }
 
-
-
-
-
-
-
+data "google_compute_snapshot" "sonarqube_postgres_snapshot" {
+  name        = "sonarqube-postgres-${count.index}-adhoc"
+  most_recent = true
+  count = local.sonarqube_count
 
 
 
@@ -147,9 +145,9 @@ resource "google_compute_region_disk" "sonarqube_postgres_pv" {
   name     = "sonarqube-postgres-${count.index}"
   count    = local.sonarqube_count
   type     = "pd-balanced"
-  size     = 20
-  # size     = data.google_compute_snapshot.sonarqube_postgres_snapshot[count.index].disk_size_gb
-  # snapshot = data.google_compute_snapshot.sonarqube_postgres_snapshot[count.index].name
+  # size     = 20
+  size     = data.google_compute_snapshot.sonarqube_postgres_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.sonarqube_postgres_snapshot[count.index].name
   labels = {
     target = "sonarqube-postgres"
     id     = "sonarqube-postgres-${count.index}"
