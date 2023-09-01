@@ -12,19 +12,3 @@ module "elastic" {
   OidcRedirectUri        = "k.regemini.com"
 }
 
-module "kibana" {
-  source          = "../../terraform-modules/k8s-vault-kibana-helm"
-  ElasticSettings = local.ElasticSettings
-  KibanaSettings  = local.KibanaSettings
-  Cluster         = var.Cluster
-  Color           = var.Color
-  Settings        = var.Settings
-}
-
-module "beats" {
-  source             = "../../terraform-modules/k8s-vault-elastic-beats-helm"
-  ElasticSettings    = local.ElasticSettings
-  BeatKibanaService  = "kb-ga"
-  BeatElasticService = "red-coor.elastic.svc"
-  logstash_list = var.Settings.clusters[var.Cluster][var.Color].logstash
-}

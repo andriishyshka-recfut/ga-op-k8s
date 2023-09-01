@@ -1,0 +1,86 @@
+
+ElasticSettings:
+  globalSettings:
+    namespace: elastic
+    imageTag: "7.17.11"
+    clusterName: red
+    remotecerts:
+      - "remote.ca.crt"
+    remoteCertsVaultPath: "secret/red/elasticsearch-admin/remote-certs"
+    plugins:
+      - "repository-s3"
+      - "repository-gcs"
+    volumeExt: false
+    podAnnotations:
+      co.elastic.logs/enabled: "true"
+      co.elastic.logs/module: "elasticsearch"
+      sidecar.istio.io/inject: "false"
+      co.elastic.logs/exclude_lines: "^.*\"event.type\":\"transport\",^.*metricbeat_user,^.*filebeat_user"
+    addons:
+      notifications:
+        slack:
+          vault_path: "secret/red/elastic-notification-accounts"
+        email:
+          vault_path: "secret/red/elastic-notification-accounts"
+      authorizations:
+        ga:
+          vault_path: "secret/red/saml/geminiadvisory"
+          saml_realm_name: "geminiadvisory"
+          secret_name: "saml-geminiadvisory"
+          type: "saml"
+          domain: "k.regemini.com"
+    license:
+      vault_path: "secret/red/elasticsearch-admin/license"
+      name: "recorded-future-ab-production-47f9d58a-60b7-42e6-8f23-254345a83cc6-v5.json"
+    clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
+  nodePools:
+    master:
+      replicas: 3
+      workloadsType: mstr
+      roles: 
+        master: "true"
+      resources:
+        cpuReq: "7"
+        cpuLimit: "7"
+        memReq: "24Gi"
+        memLimit: "24Gi"
+      storage: "30Gi"
+      esJavaOpts: "-Xms12g -Xmx12g"
+    data:
+      replicas: 15
+      workloadsType: data
+      roles:
+       data: "true" 
+      resources:
+        cpuReq: "15"
+        cpuLimit: "15"
+        memReq: "52Gi"
+        memLimit: "52Gi"
+      storage: "750Gi"
+      esJavaOpts: "-Xms26g -Xmx26g"
+    coor:
+      replicas: 4
+      workloadsType: coor
+      roles:
+        remote_cluster_client: "true"
+      resources:
+        cpuReq: "7"
+        cpuLimit: "7"
+        memReq: "24Gi"
+        memLimit: "24Gi"
+      storage: "30Gi"
+      esJavaOpts: "-Xms12g -Xmx12g"
+    ingest:
+      replicas: 3
+      workloadsType: coor
+      roles: 
+        ingest: "true"
+      resources:
+        cpuReq: "7"
+        cpuLimit: "7"
+        memReq: "24Gi"
+        memLimit: "24Gi"
+      storage: "30Gi"
+      esJavaOpts: "-Xms12g -Xmx12g"
+
+
