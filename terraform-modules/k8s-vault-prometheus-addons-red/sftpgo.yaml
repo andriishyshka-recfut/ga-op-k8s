@@ -50,7 +50,7 @@ spec:
           # S3 other operations errors
           (sum(floor(increase(sftpgo_s3_copy_object_errors[30m])))) / (sum(floor(increase(sftpgo_s3_copy_object[30m])))) > 0.3
           (sum(floor(increase(sftpgo_s3_delete_object_errors[30m])))) / (sum(floor(increase(sftpgo_s3_delete_object[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_s3_list_objects_errors[1h])))) / (sum(floor(increase(sftpgo_s3_list_objects[1h])))) > 0.3
+          (sum(floor(increase(sftpgo_s3_list_objects_errors[30m])))) / (sum(floor(increase(sftpgo_s3_list_objects[30m])))) > 0.3
           # S3 download/upload errors
           (sum(floor(increase(sftpgo_s3_download_errors_total[30m])))) / (sum(floor(increase(sftpgo_s3_downloads_total[30m])))) > 0.3
           (sum(floor(increase(sftpgo_s3_upload_errors_total[30m])))) / (sum(floor(increase(sftpgo_s3_uploads_total[30m])))) > 0.3
@@ -76,7 +76,7 @@ spec:
           # S3 other operations errors
           (sum(floor(increase(sftpgo_s3_head_object_errors[1h])))) / (sum(floor(increase(sftpgo_s3_head_object[1h])))) > 0.3
           # HTTP requests errors
-          (sum(floor(increase(sftpgo_http_server_errors_total[1h]))) / (sum(floor(increase(sftpgo_http_req_total[1h])))) > 0.3
+          (sum(floor(increase(sftpgo_http_server_errors_total[30m]))) / (sum(floor(increase(sftpgo_http_req_total[30m])))) > 0.3
           (sum(floor(increase(sftpgo_http_client_errors_total[30m])))) / (sum(floor(increase(sftpgo_http_req_total[30m])))) > 0.3
           # HTTPFS download/upload errors
           (sum(floor(increase(sftpgo_httpfs_download_errors_total[30m])))) / (sum(floor(increase(sftpgo_httpfs_downloads_total[30m])))) > 0.3
