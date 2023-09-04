@@ -1,8 +1,8 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: elastic-update-
-  namespace: tekton-pipelines
+  generateName: elastic-update-addons
+  namespace: tekton-tasks
 spec:
   taskRef:
     name: tg-run
@@ -11,7 +11,7 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/01-elastic"
+      value: "k8s/tekton/01-elastic-addons"
     - name: branch
       value: "master"
-  timeout: 4h
+  timeout: 1h
