@@ -3,6 +3,7 @@ data "kubectl_file_documents" "sftpgo" {
 }
 
 resource "kubectl_manifest" "sftpgo" {
-  count     = 1
+  force_new = true
+  count     = 2
   yaml_body = element(data.kubectl_file_documents.sftpgo.documents, count.index)
 }
