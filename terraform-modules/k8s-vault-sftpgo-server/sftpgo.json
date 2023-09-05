@@ -8,5 +8,19 @@
       "certificate_key_file": "",
       "min_tls_version": 12,
       "tls_cipher_suites": []
+    },
+    "defender": {
+      "enabled": true,
+      "driver": "memory",
+      "ban_time": 15,
+      "ban_time_increment": 20,
+      "threshold": 15,
+      "score_invalid": 5,
+      "score_valid": 8,
+      "score_limit_exceeded": 3,
+      "score_no_auth": 5,
+      "observation_time": 30,
+      "entries_soft_limit": 100,
+      "entries_hard_limit": 150
     }
   }
