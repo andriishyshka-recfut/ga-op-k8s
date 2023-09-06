@@ -5,7 +5,7 @@ data "vault_generic_secret" "harbor_token" {
 resource "helm_release" "etl_operator" {
   name          = "etl-operator"
   chart         = "oci://harbor.regemini.io/helm/etl-operator"
-  version       = "0.1.0"
+  version       = "0.1.1"
   namespace     = local.namespace
   wait          = true
   atomic        = true
@@ -14,7 +14,7 @@ resource "helm_release" "etl_operator" {
   repository_password = data.vault_generic_secret.harbor_token.data.password
   set {
     name  = "image.tag"
-    value = "v2.1-rc4"
+    value = "v2.2-rc8"
   }
   set {
     name  = "ansibleGit.tag"
@@ -23,6 +23,10 @@ resource "helm_release" "etl_operator" {
   set {
     name  = "camino.tag"
     value = "v5.0.12"
+  }
+  set {
+    name  = "gs2s3.tag"
+    value = "v5.0.0"
   }
   set {
     name  = "vaultPath"
