@@ -33,57 +33,268 @@ spec:
   groups:
   - name: sftpgo_critical
     rules:
-      - alert: 
+      - alert: SftpgoDataproviderAvailability
         expr: |
-          # Postgresql database availability
           sftpgo_dataprovider_availability != 1
-          # Too many connection requests to sftp
-          sum(floor(increase(sftpgo_login_attempts_total[3m]))) > 50
-          # Errors of all login attempts
-          (sum(floor(increase(sftpgo_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_login_attempts_total[30m])))) > 0.3
-          # Errors of specific login attempts
-          (sum(floor(increase(sftpgo_keyboard_interactive_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_keyboard_interactive_login_attempts_total[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_key_and_keyboard_int_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_key_and_keyboard_int_login_attempts_total[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_keyboard_interactive_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_keyboard_interactive_login_attempts_total[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_password_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_password_login_attempts_total[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_public_key_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_public_key_login_attempts_total[30m])))) > 0.3
-          # S3 other operations errors
-          (sum(floor(increase(sftpgo_s3_copy_object_errors[30m])))) / (sum(floor(increase(sftpgo_s3_copy_object[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_s3_delete_object_errors[30m])))) / (sum(floor(increase(sftpgo_s3_delete_object[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_s3_list_objects_errors[30m])))) / (sum(floor(increase(sftpgo_s3_list_objects[30m])))) > 0.3
-          # S3 download/upload errors
-          (sum(floor(increase(sftpgo_s3_download_errors_total[30m])))) / (sum(floor(increase(sftpgo_s3_downloads_total[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_s3_upload_errors_total[30m])))) / (sum(floor(increase(sftpgo_s3_uploads_total[30m])))) > 0.3
-          # All download/upload errors
-          (sum(floor(increase(sftpgo_upload_errors_total[30m])))) / (sum(floor(increase(sftpgo_uploads_total[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_download_errors_total[30m])))) / (sum(floor(increase(sftpgo_downloads_total[30m])))) > 0.3
-          # SSH commands errors
-          (sum(floor(increase(sftpgo_ssh_commands_total[30m])))) / (sum(floor(increase(sftpgo_ssh_command_errors_total[30m])))) > 0.3
         for: 5m
         annotations:
-          message: "SFTPGO-critical"
+          description: |
+            SFTPGO postgresql database availability
+          summary: SFTPGO postgresql database is unavailable
         labels:
           cluster: ${cluster_label}
           color: ${cluster_color}
-          severity: critical
-  - name: sftpgo_warning
-    rules:
-      - alert: 
+          severity: warning
+      - alert: SftpgoTooManyLoginAttempts
         expr: |
-          # S3 download/upload size
-          (sum(increase(sftpgo_s3_upload_size[1h])) / 1000000) > 100
-          (sum(increase(sftpgo_s3_download_size[1h])) / 1000000) > 100
-          # S3 other operations errors
-          (sum(floor(increase(sftpgo_s3_head_object_errors[1h])))) / (sum(floor(increase(sftpgo_s3_head_object[1h])))) > 0.3
-          # HTTP requests errors
-          (sum(floor(increase(sftpgo_http_server_errors_total[30m]))) / (sum(floor(increase(sftpgo_http_req_total[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_http_client_errors_total[30m])))) / (sum(floor(increase(sftpgo_http_req_total[30m])))) > 0.3
-          # HTTPFS download/upload errors
-          (sum(floor(increase(sftpgo_httpfs_download_errors_total[30m])))) / (sum(floor(increase(sftpgo_httpfs_downloads_total[30m])))) > 0.3
-          (sum(floor(increase(sftpgo_httpfs_upload_errors_total[30m])))) / (sum(floor(increase(sftpgo_httpfs_uploads_total[30m])))) > 0.3
+          (sum(floor(increase(sftpgo_login_attempts_total[3m])))) > 50
         for: 5m
         annotations:
-          message: "SFTPGO-warning"
+          description: |
+            SFTPGO login attempts more than 120
+          summary: SFTPGO login attempts more than 120 for last 3 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoTooManyFailedLoginAttempts
+        expr: |
+          ((sum(floor(increase(sftpgo_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_login_attempts_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO failed login attempts more than 30 percent
+          summary: SFTPGO failed login attempts more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoTooManyFailedLoginAttemptKeyboardInteractive
+        expr: |
+          ((sum(floor(increase(sftpgo_keyboard_interactive_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_keyboard_interactive_login_attempts_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO failed login attempts (keyboard_interactive)  more than 30 percent
+          summary: SFTPGO failed login attempts (keyboard_interactive) more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoTooManyFailedLoginAttemptKeyAndKeyboardInteractive
+        expr: |
+          ((sum(floor(increase(sftpgo_key_and_keyboard_int_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_key_and_keyboard_int_login_attempts_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO failed login attempts (key_and_keyboard_interactive)  more than 30 percent
+          summary: SFTPGO failed login attempts (key_and_keyboard_interactive) more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoTooManyFailedLoginAttemptPassword
+        expr: |
+          ((sum(floor(increase(sftpgo_password_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_password_login_attempts_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO failed login attempts (password)  more than 30 percent
+          summary: SFTPGO failed login attempts (password) more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoTooManyFailedLoginAttemptPublicKey
+        expr: |
+          ((sum(floor(increase(sftpgo_public_key_login_ko_total[30m])))) / (sum(floor(increase(sftpgo_public_key_login_attempts_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO failed login attempts (public_key)  more than 30 percent
+          summary: SFTPGO failed login attempts (public_key) more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoS3CopyObjectErrors
+        expr: |
+          ((sum(floor(increase(sftpgo_s3_copy_object_errors[30m])))) / (sum(floor(increase(sftpgo_s3_copy_object[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO S3 copy object errors more than 30 percent
+          summary: SFTPGO S3 copy object errors more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoS3DeleteObjectErrors
+        expr: |
+          ((sum(floor(increase(sftpgo_s3_delete_object_errors[30m])))) / (sum(floor(increase(sftpgo_s3_delete_object[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO S3 delete object errors more than 30 percent
+          summary: SFTPGO S3 delete object errors more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoS3ListObjectErrors
+        expr: |
+          ((sum(floor(increase(sftpgo_s3_list_objects_errors[30m])))) / (sum(floor(increase(sftpgo_s3_list_objects[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO S3 list object errors more than 30 percent
+          summary: SFTPGO S3 list object errors more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoS3DownloadObjectErrors
+        expr: |
+          ((sum(floor(increase(sftpgo_s3_download_errors_total[30m])))) / (sum(floor(increase(sftpgo_s3_downloads_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO S3 download object errors more than 30 percent
+          summary: SFTPGO S3 download object errors more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoS3UploadObjectErrors
+        expr: |
+          ((sum(floor(increase(sftpgo_s3_upload_errors_total[30m])))) / (sum(floor(increase(sftpgo_s3_uploads_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO S3 upload object errors more than 30 percent
+          summary: SFTPGO S3 upload object errors more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoDownloadErrors
+        expr: |
+          ((sum(floor(increase(sftpgo_download_errors_total[30m])))) / (sum(floor(increase(sftpgo_downloads_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO download errors more than 30 percent
+          summary: SFTPGO download errors more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoUploadErrors
+        expr: |
+          ((sum(floor(increase(sftpgo_upload_errors_total[30m])))) / (sum(floor(increase(sftpgo_uploads_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO upload errors more than 30 percent
+          summary: SFTPGO upload errors more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoSshCommandErrors
+        expr: |
+          ((sum(floor(increase(sftpgo_ssh_commands_total[30m])))) / (sum(floor(increase(sftpgo_ssh_command_errors_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO SSH command errors more than 30 percent
+          summary: SFTPGO SSH command errors more than 30 percent for last 30 minutes
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+  - name: sftpgo_warning
+    rules:
+      - alert: SFTPGOS3UploadSize
+        expr: |
+          ((sum(increase(sftpgo_s3_upload_size[1h]))) / 1000000) > 100
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO S3 upload size more than 100MB for last 1 hour
+          summary: SFTPGO S3 upload size more than 100MB
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SFTPGOS3DownloadSize
+        expr: |
+          ((sum(increase(sftpgo_s3_download_size[1h]))) / 1000000) > 100
+        for: 5m
+        annotations:
+          description: |
+            SFTPGO S3 download size more than 100MB for last 1 hour
+          summary: SFTPGO S3 download size more than 100MB
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoS3HeadObjectErrors
+        expr: |
+          ((sum(floor(increase(sftpgo_s3_head_object_errors[1h])))) / (sum(floor(increase(sftpgo_s3_head_object[1h]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            Sftpgo S3 Head Object Errors for last 1 hour
+          summary: Sftpgo S3 Head Object Errors more than 30 percent
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoHttpServerErrorsTotal
+        expr: |
+          ((sum(floor(increase(sftpgo_http_server_errors_total[30m]))) / (sum(floor(increase(sftpgo_http_req_total[30m])))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            Sftpgo HTTP server errors for last 30 minutes
+          summary: Sftpgo HTTP server errors for last 30 minutes more than 30 percent
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoHttpClientErrorsTotal
+        expr: |
+          ((sum(floor(increase(sftpgo_http_client_errors_total[30m])))) / (sum(floor(increase(sftpgo_http_req_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            Sftpgo HTTP client errors for last 30 minutes
+          summary: Sftpgo HTTP server errors for last 30 minutes more than 30 percent
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoHttpfsDownloadErrorsTotal
+        expr: |
+          ((sum(floor(increase(sftpgo_httpfs_download_errors_total[30m])))) / (sum(floor(increase(sftpgo_httpfs_downloads_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            Sftpgo HTTPFS download errors for last 30 minutes
+          summary: Sftpgo HTTPFS download errors for last 30 minutes more than 30 percent
+        labels:
+          cluster: ${cluster_label}
+          color: ${cluster_color}
+          severity: warning
+      - alert: SftpgoHttpfsUploadErrorsTotal
+        expr: |
+          ((sum(floor(increase(sftpgo_httpfs_upload_errors_total[30m])))) / (sum(floor(increase(sftpgo_httpfs_uploads_total[30m]))))) > 0.3
+        for: 5m
+        annotations:
+          description: |
+            Sftpgo HTTPFS upload errors for last 30 minutes
+          summary: Sftpgo HTTPFS upload errors for last 30 minutes more than 30 percent
         labels:
           cluster: ${cluster_label}
           color: ${cluster_color}
