@@ -32,7 +32,7 @@ spec:
       - name: ws
         emptyDir: {}
       pipelineRef:
-        name: 04-op
+        name: 05-op
 ---
 apiVersion: v1
 kind: ServiceAccount
