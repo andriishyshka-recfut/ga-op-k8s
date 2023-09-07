@@ -186,8 +186,8 @@ alertmanager:
         - matchers:
           - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"        
           receiver: "slack-dome-bots"
-        - match_re:
-            alertname: "BotsMinionHealthchekScraperRunRequests|BotsMinionHealthchekQueueReaderActiveWorkers"
+        - matchers:
+          - alertname=~"BotsMinionHealthchekScraperRunRequests|BotsMinionHealthchekQueueReaderActiveWorkers"
           receiver: "slack-minion-bots" 
         - match_re:
             alertname: ".*"

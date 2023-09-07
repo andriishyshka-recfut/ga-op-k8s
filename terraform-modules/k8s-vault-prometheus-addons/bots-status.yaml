@@ -12,7 +12,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 10m
+  - interval: 30m
     name: Bots dome scraper_run_requests
     rules:
     - alert: BotsDomeHealthchekScraperRunRequests
@@ -22,7 +22,7 @@ spec:
         summary: Something wrong with dome bot container {{ $labels.container }} with mode {{ $labels.mode }}
       expr: |
         scraper_run_request_errors{project="DOME"} / scraper_run_requests_total{project="DOME"} > .9
-      for: 10m
+      for: 24h
       labels:
         cluster: ${cluster_label}
         component: stream-processor
@@ -44,7 +44,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 3m
+  - interval: 30m
     name: Bots minion scraper_run_requests
     rules:
     - alert: BotsMinionHealthchekScraperRunRequests
@@ -54,7 +54,7 @@ spec:
         summary: Something wrong with minion bot container {{ $labels.container }} with mode {{ $labels.mode }}
       expr: |
         scraper_run_request_errors{project="MINION"} / scraper_run_requests_total{project="MINION"} > .9
-      for: 3m
+      for: 24h
       labels:
         cluster: ${cluster_label}
         component: stream-processor
@@ -76,7 +76,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 10m
+  - interval: 30m
     name: Bots dome queue_reader_active_workers
     rules:
     - alert: BotsDomeHealthchekQueueReaderActiveWorkers
@@ -85,8 +85,8 @@ spec:
           Something wrong with dome bots queue_reader_active_workers
         summary: Something wrong with dome bot container {{ $labels.container }} with topic {{ $labels.topic }}
       expr: |
-        max_over_time(queue_reader_active_workers{topic=~"dome.*"}[12h]) == 0
-      for: 11m
+        max_over_time(queue_reader_active_workers{topic=~"dome.*"}[12h]) == 0 
+      for: 24h
       labels:
         cluster: ${cluster_label}
         component: stream-processor
@@ -108,7 +108,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 10m
+  - interval: 30m
     name: Bots minion queue_reader_active_workers
     rules:
     - alert: BotsMinionHealthchekQueueReaderActiveWorkers
@@ -117,8 +117,8 @@ spec:
           Something wrong with minion bots queue_reader_active_workers
         summary: Something wrong with minion bot container {{ $labels.container }} with topic {{ $labels.topic }}
       expr: |
-        max_over_time(queue_reader_active_workers{topic=~"minion.*"}[12h]) == 0
-      for: 11m
+        max_over_time(queue_reader_active_workers{topic=~"minion.*"}[12h]) == 0 
+      for: 24h
       labels:
         cluster: ${cluster_label}
         component: stream-processor
