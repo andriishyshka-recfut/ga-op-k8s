@@ -183,18 +183,12 @@ alertmanager:
         #Activate this after update prometheus version more than 0.22.2, and disable match_re
         # - matchers: [ "alertname =~ .*" ]
         #   receiver: "tekton-webhook-notifications"
-        - match:
-            alertname: "BotsDomeHealthchekScraperRunRequests"
+        - matchers:
+          - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"        
           receiver: "slack-dome-bots"
-        - match:
-            alertname: "BotsMinionHealthchekScraperRunRequests"
-          receiver: "slack-minion-bots"
-        - match:
-            alertname: "BotsDomeHealthchekQueueReaderActiveWorkers"
-          receiver: "slack-dome-bots"
-        - match:
-            alertname: "BotsMinionHealthchekQueueReaderActiveWorkers"
-          receiver: "slack-minion-bots"                         
+        - match_re:
+            alertname: "BotsMinionHealthchekScraperRunRequests|BotsMinionHealthchekQueueReaderActiveWorkers"
+          receiver: "slack-minion-bots" 
         - match_re:
             alertname: ".*"
           receiver: "tekton-webhook-notifications-and-slack"
