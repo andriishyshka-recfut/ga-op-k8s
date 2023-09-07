@@ -137,6 +137,16 @@ alertmanager:
         - channel: '#prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
+    - name: "slack-dome-bots"
+      slack_configs:
+        - channel: '#prometheus-dome'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true         
+    - name: "slack-minion-bots"
+      slack_configs:
+        - channel: '#prometheus-minion'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true              
     - name: "slack-notifications"
       # slack_configs:
       # - channel: '#prometheus'
@@ -185,6 +195,16 @@ alertmanager:
                 severity: critical
                 cluster: production
               receiver: slack-critical
+          routes:
+            - match:
+                severity: bots-dome
+                cluster: production
+              receiver: slack-dome-bots
+          routes:
+            - match:
+                severity: bots-minion
+                cluster: production
+              receiver: slack-minion-bots
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:
