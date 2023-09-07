@@ -44,7 +44,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 30m
+  - interval: 3m
     name: Bots minion scraper_run_requests
     rules:
     - alert: BotsMinionHealthchekScraperRunRequests
@@ -54,7 +54,7 @@ spec:
         summary: Something wrong with minion bot container {{ $labels.container }} with mode {{ $labels.mode }}
       expr: |
         scraper_run_request_errors{project="MINION"} / scraper_run_requests_total{project="MINION"} > .9
-      for: 10m
+      for: 3m
       labels:
         cluster: ${cluster_label}
         component: stream-processor
