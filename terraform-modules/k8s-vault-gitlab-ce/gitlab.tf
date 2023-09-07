@@ -7,9 +7,9 @@ resource "helm_release" "gitlab" {
   timeout    = 300
   wait       = true
   atomic     = true
-  version    = "7.3.1"
+  version    = var.helm_version
   values = [
-    templatefile("${path.module}/gitlab-values.tftpl", merge(local.gitlab_values, { gitlab-name = each.key }))
+    templatefile("${path.module}/gitlab-values.tftpl", merge(local.gitlab_values, { gitlab-name = each.key, gitlab-version = var.gitlab_version }))
   ]
   depends_on = [kubernetes_secret.rails_gcs, kubernetes_secret.smtp, kubernetes_secret.ssh_host_keys, kubernetes_secret.storage_config]
 }
