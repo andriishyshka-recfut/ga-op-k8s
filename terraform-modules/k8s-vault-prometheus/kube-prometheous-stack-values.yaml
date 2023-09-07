@@ -198,6 +198,7 @@ alertmanager:
             - match:
                 severity: dome
                 cluster: production
+                project: DOME
               receiver: slack-dome-bots
             - match:
                 severity: minion
