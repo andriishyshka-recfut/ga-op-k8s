@@ -177,29 +177,30 @@ alertmanager:
       receiver: "slack-notifications"
       repeat_interval: 24h
       routes:
-        - matchers:
+        - match:
             alertname: Watchdog
           receiver: "null"
         #Activate this after update prometheus version more than 0.22.2, and disable match_re
         # - matchers: [ "alertname =~ .*" ]
         #   receiver: "tekton-webhook-notifications"
-        - matchers:
+        - match_re:
             alertname: ".*"
           receiver: "tekton-webhook-notifications-and-slack"
           routes:
-            - matchers:
+            - match:
                 not_resolve: "yes"
               receiver: "tekton-and-slack-woresolve"
-            - matchers:
-                severity: "critical"
+          routes:
+            - match:
+                severity: critical
                 cluster: production
               receiver: slack-critical
-            - matchers:
-                severity: "dome"
+            - match:
+                severity: dome
                 cluster: production
               receiver: slack-dome-bots
-            - matchers:
-                severity: "minion"
+            - match:
+                severity: minion
                 cluster: production
               receiver: slack-minion-bots
     templates:
