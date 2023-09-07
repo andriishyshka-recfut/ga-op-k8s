@@ -195,6 +195,14 @@ alertmanager:
                 severity: critical
                 cluster: production
               receiver: slack-critical
+            - match:
+                severity: bots-dome
+                cluster: production
+              receiver: slack-dome-bots
+            - match:
+                severity: bots-minion
+                cluster: production
+              receiver: slack-minion-bots              
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:
