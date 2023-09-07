@@ -190,24 +190,18 @@ alertmanager:
             - match:
                 not_resolve: "yes"
               receiver: "tekton-and-slack-woresolve"
-          routes:
             - match:
                 severity: critical
                 cluster: production
-              receiver: slack-critical
+              receiver: "slack-critical"
             - match:
-                severity: dome
                 cluster: production
-                project: DOME
-              receiver: slack-dome-bots
-            - match_re:
-                cluster: production
-                project: DOME
-              receiver: slack-dome-bots              
+                project: "DOME"
+              receiver: "slack-dome-bots"              
             - match:
                 severity: minion
                 cluster: production
-              receiver: slack-minion-bots
+              receiver: "slack-minion-bots"
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:
