@@ -14,7 +14,7 @@ resource "helm_release" "etl_operator" {
   repository_password = data.vault_generic_secret.harbor_token.data.password
   set {
     name  = "image.tag"
-    value = "v2.2-rc8"
+    value = "v2.2-rc11"
   }
   set {
     name  = "ansibleGit.tag"
@@ -92,82 +92,3 @@ resource "kubernetes_manifest" "externalsecret_etl_creds" {
 
 }
 
-
-data "vault_generic_secret" "gitlab_token" {
-  path = "secret/gitlab"
-}
-
-resource "kubernetes_secret" "gitlab_token" {
-  metadata {
-    name      = "gitlab-creds"
-    namespace = local.namespace
-  }
-
-  data = {
-    "username" = data.vault_generic_secret.gitlab_token.data.username
-    "token"    = data.vault_generic_secret.gitlab_token.data.token_read_repo
-  }
-}
-
-
-data "vault_generic_secret" "email_creds" {
-  path = "secret/etl/mail"
-}
-
-resource "kubernetes_secret" "email_creds" {
-  metadata {
-    name      = "email-creds"
-    namespace = local.namespace
-  }
-
-  data = {
-    "credentials" = data.vault_generic_secret.email_creds.data.credentials
-    "pass"        = data.vault_generic_secret.email_creds.data.pass
-  }
-}
-
-data "vault_generic_secret" "slack_creds" {
-  path = "secret/etl/slack"
-}
-
-resource "kubernetes_secret" "slack_creds" {
-  metadata {
-    name      = "slack"
-    namespace = local.namespace
-  }
-
-  data = {
-    "slacktoken" = data.vault_generic_secret.slack_creds.data.token
-  }
-}
-
-
-resource "kubernetes_manifest" "externalsecret_ssh" {
-  manifest = {
-    "apiVersion" = "external-secrets.io/v1beta1"
-    "kind"       = "ExternalSecret"
-    "metadata" = {
-      "name" = "ssh"
-      "namespace" : local.namespace
-    }
-    "spec" = {
-      "target" = {
-        "name" = "ssh"
-      }
-      "dataFrom" = [
-        {
-          "extract" = {
-            "key" = "secret/data/etl/ssh"
-          }
-        },
-      ]
-      "refreshInterval" = "1m"
-      "secretStoreRef" = {
-        "kind" = "SecretStore"
-        "name" = "vault-backend"
-      }
-    }
-  }
-  depends_on = [helm_release.etl_operator]
-
-}
