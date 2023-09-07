@@ -26,7 +26,7 @@ spec:
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: bots
 
 ---
 
@@ -58,4 +58,4 @@ spec:
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: warning
+        severity: bots
