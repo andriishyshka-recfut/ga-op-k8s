@@ -200,6 +200,10 @@ alertmanager:
                 cluster: production
                 project: DOME
               receiver: slack-dome-bots
+            - match_re:
+                cluster: production
+                project: DOME
+              receiver: slack-dome-bots              
             - match:
                 severity: minion
                 cluster: production
