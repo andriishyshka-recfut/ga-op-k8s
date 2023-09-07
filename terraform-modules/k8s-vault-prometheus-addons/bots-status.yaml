@@ -26,7 +26,7 @@ spec:
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: bots-dome
+        severity: dome
 
 ---
 
@@ -58,7 +58,7 @@ spec:
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: bots-minion
+        severity: minion
 
 ---
 
@@ -90,7 +90,7 @@ spec:
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: bots-dome
+        severity: dome
 
 ---
 
@@ -122,4 +122,4 @@ spec:
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: bots-minion
+        severity: minion
