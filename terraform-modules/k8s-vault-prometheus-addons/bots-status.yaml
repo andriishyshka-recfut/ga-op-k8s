@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   namespace: monitoring
-  name: bots.scraper-run-requests
+  name: bots.dome.scraper-run-requests
   labels:
     app: prometheus
     app.kubernetes.io/instance: prometheus
@@ -13,20 +13,20 @@ metadata:
 spec:
   groups:
   - interval: 30m
-    name: Bots scraper_run_requests
+    name: Bots dome scraper_run_requests
     rules:
-    - alert: BotsHealthchekScraperRunRequests
+    - alert: BotsDomeHealthchekScraperRunRequests
       annotations:
         description: |
-          Something wrong with bots scraper_run_requests
-        summary: Something wrong with bot container {{ $labels.container }} with mode {{ $labels.mode }}
+          Something wrong with dome bots scraper_run_requests
+        summary: Something wrong with dome bot container {{ $labels.container }} with mode {{ $labels.mode }}
       expr: |
-        scraper_run_request_errors / scraper_run_requests_total > .9
+        scraper_run_request_errors{project="DOME"} / scraper_run_requests_total{project="DOME"} > .9
       for: 24h
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: bots
+        severity: bots-dome
 
 ---
 
@@ -34,7 +34,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   namespace: monitoring
-  name: bots.queue-reader-active-workers
+  name: bots.minion.scraper-run-requests
   labels:
     app: prometheus
     app.kubernetes.io/instance: prometheus
@@ -45,17 +45,81 @@ metadata:
 spec:
   groups:
   - interval: 30m
-    name: Bots queue_reader_active_workers
+    name: Bots minion scraper_run_requests
     rules:
-    - alert: BotsHealthchekQueueReaderActiveWorkers
+    - alert: BotsMinionHealthchekScraperRunRequests
       annotations:
         description: |
-          Something wrong with bots queue_reader_active_workers
-        summary: Something wrong with container {{ $labels.container }} with topic {{ $labels.topic }}
+          Something wrong with minion bots scraper_run_requests
+        summary: Something wrong with minion bot container {{ $labels.container }} with mode {{ $labels.mode }}
       expr: |
-        max_over_time(queue_reader_active_workers[12h]) == 0 
+        scraper_run_request_errors{project="MINION"} / scraper_run_requests_total{project="MINION"} > .9
       for: 24h
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: bots
+        severity: bots-minion
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: bots.dome.queue-reader-active-workers
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 30m
+    name: Bots dome queue_reader_active_workers
+    rules:
+    - alert: BotsDomeHealthchekQueueReaderActiveWorkers
+      annotations:
+        description: |
+          Something wrong with dome bots queue_reader_active_workers
+        summary: Something wrong with dome bot container {{ $labels.container }} with topic {{ $labels.topic }}
+      expr: |
+        max_over_time(queue_reader_active_workers{topic=~"dome.*"}[12h]) == 0 
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: bots-dome
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: bots.minion.queue-reader-active-workers
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 30m
+    name: Bots minion queue_reader_active_workers
+    rules:
+    - alert: BotsMinionHealthchekQueueReaderActiveWorkers
+      annotations:
+        description: |
+          Something wrong with minion bots queue_reader_active_workers
+        summary: Something wrong with minion bot container {{ $labels.container }} with topic {{ $labels.topic }}
+      expr: |
+        max_over_time(queue_reader_active_workers{topic=~"minion.*"}[12h]) == 0 
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: bots-minion
