@@ -26,7 +26,7 @@ spec:
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: dome
+        severity: warning
 
 ---
 
@@ -58,7 +58,7 @@ spec:
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: minion
+        severity: warning
 
 ---
 
@@ -90,7 +90,7 @@ spec:
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: dome
+        severity: warning
 
 ---
 
@@ -122,4 +122,4 @@ spec:
       labels:
         cluster: ${cluster_label}
         component: stream-processor
-        severity: minion
+        severity: warning
