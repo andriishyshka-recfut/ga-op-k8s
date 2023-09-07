@@ -12,7 +12,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 30m
+  - interval: 10m
     name: Bots dome scraper_run_requests
     rules:
     - alert: BotsDomeHealthchekScraperRunRequests
