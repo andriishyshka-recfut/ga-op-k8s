@@ -26,7 +26,7 @@ resource "helm_release" "etl_operator" {
   }
   set {
     name  = "gs2s3.tag"
-    value = "v5.0.0"
+    value = "v5.0.1"
   }
   set {
     name  = "vaultPath"
