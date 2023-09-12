@@ -6,16 +6,37 @@ actions:
     options:
       repository: "minio"
       # name: monitoring-dr-%Y%m%d
-      indices:
-      - filebeat-7*
-      rename_pattern: 'filebeat(.+)'
-      rename_replacement: 'filebeat-previous$1'
-      wait_for_completion: False
+      wait_for_completion: True
       include_global_state: True
       # wait_interval: 20
     filters:
       - filtertype: state
         state: SUCCESS
       - filtertype: pattern
-        kind: prefix
-        value: monitoring-dr
+        kind: regex
+        value: '^(monitoring-adhoc|filebeat-7).*$'
+      - filtertype: age
+        source: creation_date
+        direction: younger
+        unit: days
+        unit_count: 2
+  2:
+    action: restore
+    description: "Restore filebeat-7 indices in the most recent snapshot with state SUCCESS"
+    options:
+      repository: "minio"
+      # name: monitoring-dr-%Y%m%d
+      wait_for_completion: False
+      include_global_state: False
+      # wait_interval: 20
+    filters:
+      - filtertype: state
+        state: SUCCESS
+      - filtertype: pattern
+        kind: regex
+        value: '^(monitoring-adhoc|filebeat-7).*$'
+      - filtertype: age
+        source: creation_date
+        direction: older
+        unit: days
+        unit_count: 2
