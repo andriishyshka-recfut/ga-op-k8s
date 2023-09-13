@@ -21,7 +21,7 @@ spec:
           Crypto preps not added last 24h
         summary: Crypto preps not added last 24h
       expr: |
-        rate(worker_upsert_preps_total[1d]) == 0 
+        sum by (namespace) (delta(worker_upsert_preps_total[24h])) == 0
       for: 24h
       labels:
         cluster: ${cluster_label}
