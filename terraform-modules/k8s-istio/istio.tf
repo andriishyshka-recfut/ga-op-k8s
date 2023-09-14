@@ -116,3 +116,38 @@ resource "helm_release" "istio_ingress" {
     helm_release.istiod
   ]
 }
+
+
+resource "null_resource" "patch_istio_config" {
+  triggers = {
+    command = md5(local.command)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.command
+  }
+  depends_on = [helm_release.istiod]
+}
+
+resource "kubernetes_manifest" "telemetry_istio_ingress_audit_logs" {
+  manifest = {
+    "apiVersion" = "telemetry.istio.io/v1alpha1"
+    "kind"       = "Telemetry"
+    "metadata" = {
+      "name"      = "audit-logs"
+      "namespace" = "istio-ingress"
+    }
+    "spec" = {
+      "accessLogging" = [
+        {
+          "providers" = [
+            {
+              "name" = "envoy"
+            },
+          ]
+        },
+      ]
+    }
+  }
+  depends_on = [helm_release.istiod]
+}
