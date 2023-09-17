@@ -14,4 +14,4 @@ spec:
       value: "k8s/tekton/01-elastic"
     - name: branch
       value: "master"
-  timeout: 6h
+  timeout: 8h
