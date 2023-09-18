@@ -3,13 +3,13 @@ data "vault_generic_secret" "harbor_token" {
 }
 
 resource "helm_release" "etl_operator" {
-  name          = "etl-operator"
-  chart         = "oci://harbor.regemini.io/helm/etl-operator"
-  version       = "0.1.1"
-  namespace     = local.namespace
-  wait          = true
-  atomic        = true
-  recreate_pods = true
+  name                = "etl-operator"
+  chart               = "oci://harbor.regemini.io/helm/etl-operator"
+  version             = "0.1.1"
+  namespace           = local.namespace
+  wait                = true
+  atomic              = true
+  recreate_pods       = true
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
   set {
@@ -18,7 +18,7 @@ resource "helm_release" "etl_operator" {
   }
   set {
     name  = "ansibleGit.tag"
-    value = "rc2"
+    value = "rc3"
   }
   set {
     name  = "camino.tag"
