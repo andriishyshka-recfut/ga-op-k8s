@@ -7,8 +7,7 @@ export NODE_IP=$( kubectl --server $SERVER \
               --insecure-skip-tls-verify=true \
               --token $TOKEN get nodes -o wide \
                -l workloadsType=data \
-               -o 'jsonpath={.items[0].metadata.annotations.projectcalico\.org/IPv4Address }' | \
-               awk -F/ '{print $1}')
+               -o 'jsonpath={.items[0].status.addresses[0].address }'
 
 export MONGO_DNS=$( kubectl --server $SERVER \
               --insecure-skip-tls-verify=true \

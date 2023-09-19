@@ -13,10 +13,11 @@ locals {
 }
 
 module "k8s-istio" {
-  source   = "../../../../terraform-modules/k8s-istio"
-  Settings = var.Settings
-  Cluster  = "production"
-  Color    = "green"
+  source                       = "../../../../terraform-modules/k8s-istio"
+  GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
+  Settings                     = var.Settings
+  Cluster                      = "production"
+  Color                        = "green"
 }
 
 module "k8s-misc-operators" {

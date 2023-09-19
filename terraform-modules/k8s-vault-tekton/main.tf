@@ -99,7 +99,7 @@ COMMAND
 resource "null_resource" "crds" {
   triggers = {
     task        = md5(file("${path.module}/task.yaml"))
-    pipeline    = md5(file("${path.module}/pipeline.yaml"))
+    pipeline    = md5(file("${path.module}/pipeline-${var.Cluster}.yaml"))
     pipelinerun = md5(file("${path.module}/pipelinerun.yaml"))
     webhook     = md5(file("${path.module}/webhook.yaml"))
   }
@@ -115,7 +115,7 @@ resource "null_resource" "crds" {
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipeline.yaml \
+     apply -f ${path.module}/pipeline-${var.Cluster}.yaml \
     --namespace=${local.tektonNs}
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
