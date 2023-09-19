@@ -60,7 +60,7 @@ data "google_compute_snapshot" "sonarqube_postgres_snapshot" {
   name        = "sonarqube-postgres-${count.index}-adhoc"
   most_recent = true
   count = local.sonarqube_count
-
+}
 
 
 

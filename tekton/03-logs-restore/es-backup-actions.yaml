@@ -11,15 +11,20 @@ actions:
     options:
         repository: minio
           # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
-        name: monitoring-dr-%Y%m%d
+        name: monitoring-dr-ofb-%Y%m%d
         ignore_unavailable: False
-        include_global_state: True
+        include_global_state: False
         partial: False
         wait_for_completion: True
         skip_repo_fs_check: False
         disable_action: False
         allow_ilm_indices: True
     filters:
-     - filtertype: pattern
-       kind: prefix
-       value: filebeat-7
+      - filtertype: pattern
+        kind: prefix
+        value: filebeat-7
+      - filtertype: age
+        source: creation_date
+        direction: older
+        unit: days
+        unit_count: 2

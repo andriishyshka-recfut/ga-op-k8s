@@ -17,7 +17,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-namespaces"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
 
     - name: minio
       taskRef:
@@ -31,7 +31,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-minio"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
 
     - name: mongo
       taskRef:
@@ -46,7 +46,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-mongo"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
 
     - name: kafka
       taskRef:
@@ -60,7 +60,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-kafka"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
 
     - name: redis
       taskRef:
@@ -74,7 +74,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-redis"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
 
     - name: camel-k
       taskRef:
@@ -88,8 +88,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-camel-k"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
-
+          value: "\\#390-DR-15092023"
 
     - name: kubescape
       taskRef:
@@ -103,7 +102,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-kubescape"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
 
     - name: monitoring-elastic
       taskRef:
@@ -118,29 +117,29 @@ spec:
         - name: path
           value: "k8s/tekton/01-monitoring-elastic"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
-    - name: monitoring-elastic-backup-restore
-      taskRef:
-        name: tg-run
-      runAfter:
-      - namespaces
-      - minio
-      - monitoring-elastic
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/01-monitoring-backup-restore"
-        - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
+    # - name: monitoring-elastic-backup-restore
+    #   taskRef:
+    #     name: tg-run
+    #   runAfter:
+    #   - namespaces
+    #   - minio
+    #   - monitoring-elastic
+    #   workspaces:
+    #     - name: ws
+    #       workspace: ws
+    #   params:
+    #     - name: path
+    #       value: "k8s/tekton/01-monitoring-backup-restore"
+    #     - name: branch
+    #       value: "\\#390-DR-15092023"
     - name: monitoring
       taskRef:
         name: tg-run
       runAfter:
       - namespaces
       - minio
-      - monitoring-elastic-backup-restore
+      # - monitoring-elastic-backup-restore
       workspaces:
         - name: ws
           workspace: ws
@@ -148,7 +147,8 @@ spec:
         - name: path
           value: "k8s/tekton/01-monitoring"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
+
     - name: external-secrets
       taskRef:
         name: tg-run
@@ -162,7 +162,7 @@ spec:
         - name: path
           value: "k8s/tekton/01-external-secrets"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
 
     - name: mirroring
       taskRef:
@@ -179,7 +179,8 @@ spec:
         - name: path
           value: "k8s/tekton/01-mirroring"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -200,9 +201,10 @@ spec:
         - name: path
           value: "k8s/tekton/02-stop-apps"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
 
 ---
+
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
@@ -222,9 +224,10 @@ spec:
         - name: path
           value: "k8s/tekton/00-stop-data-services"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
 
 ---
+
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
@@ -244,7 +247,8 @@ spec:
         - name: path
           value: "k8s/tekton/02-data-migration"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -265,31 +269,66 @@ spec:
         - name: path
           value: "k8s/tekton/03-stop-mirrorings"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
-    - name: fluxcd
+          value: "\\#390-DR-15092023"
+
+    - name: tls-proxy
       taskRef:
         name: tg-run
       # runAfter:
-      # - stop-mirrorings
+      #   - fluxcd       
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-fluxcd"
+          value: "k8s/tekton/03-tls-proxy"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
-    - name: ingress
+          value: "\\#390-DR-15092023"
+
+    # - name: monitoring-backup-restore-main
+    #   taskRef:
+    #     name: tg-run
+    #   # runAfter:
+    #   #   - fluxcd       
+    #   workspaces:
+    #     - name: ws
+    #       workspace: ws
+    #   params:
+    #     - name: path
+    #       value: "k8s/tekton/03-monitoring-backup-restore" 
+    #     - name: branch
+    #       value: "\\#390-DR-15092023"
+
+    - name: monitoring-post
       taskRef:
         name: tg-run
+      runAfter:
+        # - tls-proxy
+        # - monitoring-backup-restore-main       
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-ingress"
+          value: "k8s/tekton/03-monitoring-post"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
+  
+    - name: monitoring-backup-restore-logs
+      taskRef:
+        name: tg-run
+      timeout: 6h
+      runAfter:
+        - monitoring-post       
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/03-logs-restore"
+        - name: branch
+          value: "\\#390-DR-15092023" 
+
     - name: istio
       taskRef:
         name: tg-run
@@ -300,10 +339,27 @@ spec:
         - name: path
           value: "k8s/tekton/03-istio"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
+
+    - name: ingress
+      taskRef:
+        name: tg-run
+      runAfter:
+        - istio
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/03-ingress"
+        - name: branch
+          value: "\\#390-DR-15092023"
+
     - name: minio-buckets
       taskRef:
         name: tg-run
+      runAfter:
+        - ingress
       workspaces:
         - name: ws
           workspace: ws
@@ -311,23 +367,27 @@ spec:
         - name: path
           value: "k8s/tekton/03-post-minio"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
-    - name: tls-proxy
+          value: "\\#390-DR-15092023"
+
+    - name: fluxcd
       taskRef:
         name: tg-run
       runAfter:
-      - fluxcd       
+        - monitoring-post
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-tls-proxy"
+          value: "k8s/tekton/03-fluxcd"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
+
     - name: kiali
       taskRef:
         name: tg-run
+      runAfter:
+        - istio
       workspaces:
         - name: ws
           workspace: ws
@@ -335,7 +395,8 @@ spec:
         - name: path
           value: "k8s/tekton/03-kiali"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
+
     - name: tarantool
       taskRef:
         name: tg-run
@@ -346,7 +407,8 @@ spec:
         - name: path
           value: "k8s/tekton/03-tarantool"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
+
     - name: etl-operator
       taskRef:
         name: tg-run
@@ -357,7 +419,8 @@ spec:
         - name: path
           value: "k8s/tekton/03-etl-operator"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"
+          value: "\\#390-DR-15092023"
+
     - name: tor-operator
       taskRef:
         name: tg-run
@@ -368,8 +431,10 @@ spec:
         - name: path
           value: "k8s/tekton/03-tor-controller"
         - name: branch
-          value: "\\#387-Sandbox-DR-20230908"          
+          value: "\\#390-DR-15092023"        
+            
 ---
+
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
