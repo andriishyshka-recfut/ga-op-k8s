@@ -4,9 +4,39 @@ metadata:
   name: jupiter-pvc
   namespace: jupyter
 spec:
-  storageClassName: kms-encrypted
+  storageClassName: ""
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 200Gi
+  volumeName: jupyter-disk 
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jupyter-disk
+spec:
+  capacity:
+    storage: 200Gi
+  csi:
+    driver: pd.csi.storage.gke.io
+    volumeHandle: projects/orbital-wording-233917/zones/us-east4-c/disks/jupyter-disk
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: topology.gke.io/zone
+          operator: In
+          values:
+          - us-east4-c
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    kind: PersistentVolumeClaim
+    namespace: jupyter
+    name: jupiter-pvc
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  volumeMode: Filesystem
