@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: etl.jobs
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 30m
+    name: ETL failed jobs more than 5
+    rules:
+    - alert: ETLJobsFailed
+      annotations:
+        description: |
+          ETL failed jobs more than 5
+        summary: ETL failed jobs is being piled up
+      expr: |
+        sum by (namespace) (kube_job_failed{job="kube-state-metrics",namespace=~"etl"}) > 5
+      for: 30m
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
