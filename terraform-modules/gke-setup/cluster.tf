@@ -163,6 +163,7 @@ resource "google_container_node_pool" "nodepool_additional" {
   name     = "${var.Cluster}-${var.Color}-${each.key}"
   location = local.gkeRegion
   cluster  = google_container_cluster.cluster.name
+  max_pods_per_node = lookup(each.value, "maxPodsPerNode", var.Settings.clusters[var.Cluster][var.Color].pods_per_node)
 
   autoscaling {
     min_node_count = each.value.minNodes
