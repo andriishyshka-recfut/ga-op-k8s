@@ -1,4 +1,5 @@
 100live
+100usd
 achernar
 acrux
 adhara
@@ -9,9 +10,11 @@ aquarius
 arcturus
 aries
 arikara
+authorize
 batmarket
 becrux
 bigcards
+blackbet
 bravo
 cancer
 canis
