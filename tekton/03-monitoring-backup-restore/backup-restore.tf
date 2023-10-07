@@ -1,7 +1,7 @@
 locals {
   monitoringEs = yamldecode(file("../01-monitoring/monitoring_elastic_settings.yaml"))
 }
-/*
+
 module "backup" {
   source               = "../../terraform-modules/k8s-es-curator"
   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
@@ -34,4 +34,3 @@ module "restore-service-indexes" {
     module.backup
   ]
 }
-*/
