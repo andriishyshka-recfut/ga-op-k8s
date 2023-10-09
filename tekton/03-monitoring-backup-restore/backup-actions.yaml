@@ -11,7 +11,7 @@ actions:
     options:
       repository: minio
           # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
-      name: monitoring-dr-system-indices-%Y%m%d
+      name: monitoring-dr-system-%Y%m%d
       ignore_unavailable: False
       include_global_state: True
       partial: False
@@ -34,7 +34,7 @@ actions:
     options:
         repository: minio
           # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
-        name: monitoring-dr-prev-%Y%m%d
+        name: monitoring-dr-lfb-%Y%m%d
         ignore_unavailable: False
         include_global_state: False
         partial: False
