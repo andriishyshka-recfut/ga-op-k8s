@@ -15,7 +15,7 @@ spec:
   - interval: 15m
     name: An expensive pi query in Elasticsearch
     rules:
-    - alert: PiQueryExpensiveEs
+    - alert: PiExpensiveESQuery
       annotations:
         description: |
           An expensive query that can be requested by any of our registered users in Elasticsearch
