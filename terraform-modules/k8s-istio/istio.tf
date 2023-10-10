@@ -129,25 +129,35 @@ resource "null_resource" "patch_istio_config" {
   depends_on = [helm_release.istiod]
 }
 
-resource "kubernetes_manifest" "telemetry_istio_ingress_audit_logs" {
-  manifest = {
-    "apiVersion" = "telemetry.istio.io/v1alpha1"
-    "kind"       = "Telemetry"
-    "metadata" = {
-      "name"      = "audit-logs"
-      "namespace" = "istio-ingress"
-    }
-    "spec" = {
-      "accessLogging" = [
-        {
-          "providers" = [
-            {
-              "name" = "envoy"
-            },
-          ]
-        },
-      ]
-    }
-  }
-  depends_on = [helm_release.istiod]
+
+resource "helm_release" "istio_telemetry" {
+  name       = "istio-telemetry"
+  chart      = "${path.module}/charts/telemetry"
+  wait       = true
+  atomic     = true
+  namespace  = "istio-ingress"
+  depends_on = [helm_release.istio_ingress]
 }
+
+# resource "kubernetes_manifest" "telemetry_istio_ingress_audit_logs" {
+#   manifest = {
+#     "apiVersion" = "telemetry.istio.io/v1alpha1"
+#     "kind"       = "Telemetry"
+#     "metadata" = {
+#       "name"      = "audit-logs"
+#       "namespace" = "istio-ingress"
+#     }
+#     "spec" = {
+#       "accessLogging" = [
+#         {
+#           "providers" = [
+#             {
+#               "name" = "envoy"
+#             },
+#           ]
+#         },
+#       ]
+#     }
+#   }
+#   depends_on = [helm_release.istiod]
+# }
