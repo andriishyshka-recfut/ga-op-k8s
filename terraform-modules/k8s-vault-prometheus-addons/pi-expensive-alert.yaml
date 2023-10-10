@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: pi_query_expensive
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+  - interval: 30m
+    name: An expensive pi query in Elasticsearch
+    rules:
+    - alert: PiQueryExpensiveEs
+      annotations:
+        description: |
+          An expensive query that can be requested by any of our registered users in Elasticsearch
+        summary: An expensive query requested by {{ $labels.username }} with query {{ $labels.query }}
+      expr: |
+        pi_query_expensive > 0
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: warning
