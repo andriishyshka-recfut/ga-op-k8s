@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   namespace: monitoring
-  name: pi_query_expensive
+  name: pi-query-expensive
   labels:
     app: prometheus
     app.kubernetes.io/instance: prometheus
