@@ -200,6 +200,9 @@ alertmanager:
         # - matchers: [ "alertname =~ .*" ]
         #   receiver: "tekton-webhook-notifications"
         - matchers:
+          - alertname=~"FailBotsScraper"
+          receiver: "tekton-fail-bots-webhook-notifications-and-slack"        
+        - matchers:
           - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"        
           receiver: "slack-dome-bots"
         - matchers:
@@ -215,18 +218,7 @@ alertmanager:
             - match:
                 severity: critical
                 cluster: production
-              receiver: "slack-critical"
-        - matchers:
-          - alertname=~"FailBotsScraper"
-          receiver: "tekton-fail-bots-webhook-notifications-and-slack"
-          # routes:
-          #   - match:
-          #       not_resolve: "yes"
-          #     receiver: "tekton-fail-bots-and-slack-woresolve"
-          #   - match:
-          #       severity: critical
-          #       cluster: production
-          #     receiver: "slack-critical"                    
+              receiver: "slack-critical"                 
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:
