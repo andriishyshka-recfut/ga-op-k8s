@@ -23,7 +23,7 @@ resource "helm_release" "kibana" {
   chart     = "${path.module}/charts/kibana"
   wait      = true
   atomic    = true
-  timeout   = 600
+  timeout   = 2000
   namespace = each.value.namespace
   values = [
     templatefile("${path.module}/kibana-values.tftpl", merge(local.globalSettings, each.value, { kibana_name = each.key, security_encryptionkey = random_password.security_encryptionkey[each.key].result, reporting_encryptionkey = random_password.reporting_encryptionkey[each.key].result, encryptedsavedobjects_encryptionkey = random_password.encryptedsavedobjects_encryptionkey[each.key].result }))
