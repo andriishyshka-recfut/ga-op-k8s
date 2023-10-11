@@ -216,9 +216,9 @@ alertmanager:
                 severity: critical
                 cluster: production
               receiver: "slack-critical"
-        # - matchers:
-        #   - alertname=~"FailBotsScraper"
-        #   receiver: "tekton-fail-bots-webhook-notifications-and-slack"
+        - matchers:
+          - alertname=~"FailBotsScraper"
+          receiver: "tekton-fail-bots-webhook-notifications-and-slack"
           # routes:
           #   - match:
           #       not_resolve: "yes"
