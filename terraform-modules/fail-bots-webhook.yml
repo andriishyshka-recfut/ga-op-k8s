@@ -1,4 +1,4 @@
-apiVersion: triggers.tekton.dev/v1alpha1
+apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
   name: fail-bots-webhook-alertmanager-listener
@@ -33,7 +33,7 @@ spec:
 
 ---
 
-apiVersion: triggers.tekton.dev/v1alpha1
+apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
   name: fail-bots-template
@@ -57,7 +57,7 @@ spec:
             - image: ubuntu
               script: |
                 #! /bin/bash
-                echo $(params.service) & sleep 1000
+                echo sleep 300
         # resources:
         #   inputs:
         #     - name: source
