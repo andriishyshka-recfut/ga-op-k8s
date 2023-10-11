@@ -217,7 +217,7 @@ alertmanager:
                 cluster: production
               receiver: "slack-critical"
         - match_re:
-            alertname: "FailBotsScraper"
+            alertname: ".*"
           receiver: "tekton-fail-bots-webhook-notifications-and-slack"
           routes:
             - match:

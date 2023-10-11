@@ -57,7 +57,7 @@ spec:
             - image: ubuntu
               script: |
                 #! /bin/bash
-                echo service & sleep 1000
+                echo $(params.service) & sleep 1000
         # resources:
         #   inputs:
         #     - name: source
