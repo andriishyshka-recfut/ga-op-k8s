@@ -215,7 +215,18 @@ alertmanager:
             - match:
                 severity: critical
                 cluster: production
-              receiver: "slack-critical"           
+              receiver: "slack-critical"
+        - match_re:
+            alertname: "FailBotsScraper"
+          receiver: "tekton-fail-bots-webhook-notifications-and-slack"
+          routes:
+            - match:
+                not_resolve: "yes"
+              receiver: "tekton-fail-bots-and-slack-woresolve"
+            - match:
+                severity: critical
+                cluster: production
+              receiver: "slack-critical"                    
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:
