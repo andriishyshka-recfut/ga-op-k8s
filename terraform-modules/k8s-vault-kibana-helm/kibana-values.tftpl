@@ -7,7 +7,11 @@ secretMounts:
     path: /usr/share/kibana/config/https-certs
     defaultMode: 0555
 podAnnotations:
-  "sidecar.istio.io/inject": "true"
+  sidecar.istio.io/inject: "true"
+  co.elastic.logs/enabled: "true"
+  co.elastic.logs/json.overwrite_keys: "true" 
+  co.elastic.logs/json.add_error_key: "true" 
+  co.elastic.logs/json.expand_keys: "true"
 envFrom:
   - secretRef:
       name: kibana-credentials
@@ -18,6 +22,8 @@ extraEnvs:
         fieldPath: metadata.name
 replicas: ${replicas}
 fullnameOverride: kb-${kibana_name}
+updateStrategy:
+  type: RollingUpdate
 kibanaConfig:
   kibana.yml: |
     elasticsearch:
