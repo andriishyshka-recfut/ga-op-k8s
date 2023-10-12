@@ -14,6 +14,9 @@ spec:
       params:
       - name: "filter"
         value: body.groupLabels.alertname == 'FailBotsScraper'
+    bindings:
+      - ref: fail-bots-binding
+        kind: TriggerBinding      
     template:
       ref: fail-bots-template
 
@@ -26,10 +29,10 @@ metadata:
   namespace: tekton-tasks  
 spec:
   params:
-    - name: service
-      value: $(container)
-    - name: service-label
-      value: $labels.container
+    - name: label
+      value: $(header)
+    - name: body
+      value: $(body)
 
 ---
 
@@ -40,8 +43,8 @@ metadata:
   namespace: tekton-tasks
 spec:
   params:
-    - name: service
-    - name: service-label
+    - name: label
+    - name: body
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: TaskRun
@@ -55,9 +58,16 @@ spec:
           #       type: cel
           steps:
             - image: ubuntu
+              env:
+                - name: PARAMS
+                  value: "$(params)"
+                # - name: BODY
+                #   value: $(params.body)                  
+                # - name: LABELS
+                #   value: $(params.label)            
               script: |
                 #! /bin/bash
-                echo sleep 300
+                echo test & sleep 300
         # resources:
         #   inputs:
         #     - name: source
@@ -66,8 +76,8 @@ spec:
         #         params:
         #           - name: service
         #             value: $(tt.params.service)
-        #           - name: service-label
-        #             value: $(tt.params.service-label)
+        #           - name: label
+        #             value: $(tt.params.label)
 
 ---
 
@@ -76,23 +86,11 @@ kind: Trigger
 metadata:
   name: fail-bots-trigger
 spec:
-  # interceptors:
-  #   - name: "verify-gitlab-payload"
-  #     ref:
-  #       name: "gitlab"
-  #       kind: ClusterInterceptor
-      # params:
-      #   - name: secretRef
-      #     value:
-      #       secretName: "gitlab-secret"
-      #       secretKey: "secretToken"
-      #   - name: eventTypes
-      #     value:
-      #       - "Push Hook"
   bindings:
     - ref: fail-bots-binding
   template:
     ref: fail-bots-template
+
 
 # apiVersion: triggers.tekton.dev/v1alpha1
 # kind: TriggerTemplate
@@ -111,41 +109,3 @@ spec:
 #         emptyDir: {}
 #       pipelineRef:
 #         name: fail-bots
-
-# ---
-
-# apiVersion: v1
-# kind: ServiceAccount
-# metadata:
-#   name: fail-bots-tekton-webhook
-#   namespace: tekton-tasks
-
-# ---
-
-# apiVersion: rbac.authorization.k8s.io/v1
-# kind: ClusterRoleBinding
-# metadata:
-#   name: fail-bots-tekton-triggers-controller-webhook
-# subjects:
-#   - kind: ServiceAccount
-#     name: fail-bots-tekton-webhook
-#     namespace: tekton-tasks
-# roleRef:
-#   kind: ClusterRole
-#   name: fail-bots-tekton-triggers-eventlistener-roles
-#   apiGroup: rbac.authorization.k8s.io
-
-# ---
-
-# apiVersion: rbac.authorization.k8s.io/v1
-# kind: ClusterRoleBinding
-# metadata:
-#   name: fail-bots-tekton-triggers-controller-cluster-webhook
-# subjects:
-#   - kind: ServiceAccount
-#     name: fail-bots-tekton-webhook
-#     namespace: tekton-tasks
-# roleRef:
-#   kind: ClusterRole
-#   name: fail-bots-tekton-triggers-eventlistener-clusterroles
-#   apiGroup: rbac.authorization.k8s.io
