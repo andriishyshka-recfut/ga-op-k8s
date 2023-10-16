@@ -2,6 +2,7 @@ resource "google_container_cluster" "cluster" {
 
   provider = google-beta
 
+  deletion_protection       = false
   name                      = "${var.Cluster}-${var.Color}"
   location                  = local.gkeRegion
   network                   = data.google_compute_network.vpc.self_link

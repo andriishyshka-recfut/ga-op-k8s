@@ -1,5 +1,5 @@
 
-/*
+
 data "external" "kafka_topics" {
   program = ["python3", "read_topics.py"]
 }
@@ -14,4 +14,3 @@ resource "kubectl_manifest" "default_setting_topics" {
     helm_release.kafka_cluster
   ]
 }
-*/

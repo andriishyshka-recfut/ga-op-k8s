@@ -149,6 +149,22 @@ spec:
           value: "k8s/tekton/01-monitoring"
         - name: branch
           value: "\\#395-sandbox-dr-2023-10-06"
+
+    - name: monitoring-addons
+      taskRef:
+        name: tg-run
+      runAfter:
+      - monitoring
+      # - monitoring-elastic-backup-restore
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/01-monitoring-addons"
+        - name: branch
+          value: "\\#395-sandbox-dr-2023-10-06"
+
     - name: external-secrets
       taskRef:
         name: tg-run
