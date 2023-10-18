@@ -13,26 +13,41 @@ spec:
         name: "cel"
       params:
       - name: "filter"
-        value: body.groupLabels.alertname == 'FailBotsScraper'
+        value: body.groupLabels.alertname == 'FailBotsScraper2'
     bindings:
       - ref: fail-bots-binding
         kind: TriggerBinding      
     template:
       ref: fail-bots-template
+      # ref: fail-bots-pipeline-template
 
 ---
+
+# apiVersion: triggers.tekton.dev/v1beta1
+# kind: TriggerBinding
+# metadata:
+#   name: fail-bots-binding
+#   namespace: tekton-tasks  
+# spec:
+#   params:
+#     - name: header
+#       value: header
+#     - name: body
+#       value: foo
 
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: fail-bots-binding
-  namespace: tekton-tasks  
+  namespace: tekton-tasks
 spec:
   params:
-    - name: label
-      value: $(header)
-    - name: body
-      value: $(body)
+  - name: alertname
+    value: $(body.commonLabels.container)
+  # - name: severity
+  #   value: $(body)
+# template:
+#   name: fail-bots-template
 
 ---
 
@@ -43,8 +58,8 @@ metadata:
   namespace: tekton-tasks
 spec:
   params:
-    - name: label
-    - name: body
+  - name: alertname
+  # - name: severity
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: TaskRun
@@ -52,22 +67,17 @@ spec:
         generateName: fail-bots-
       spec:
         taskSpec:
-          # resources:
-          #   inputs:
-          #     - name: source
-          #       type: cel
+          # params:
+          #   - name: alertname
+            # - name: severity
           steps:
-            - image: ubuntu
-              env:
-                - name: PARAMS
-                  value: "$(params)"
-                # - name: BODY
-                #   value: $(params.body)                  
-                # - name: LABELS
-                #   value: $(params.label)            
-              script: |
-                #! /bin/bash
-                echo test & sleep 300
+          - name: "bots-test"
+            image: ubuntu
+            # command: ["sh"]
+            # args: ["-c", "echo $(tt.params.alertname)"]            
+            script: |
+              #! /bin/bash
+              echo $(tt.params.alertname) & sleep 3000
         # resources:
         #   inputs:
         #     - name: source
@@ -79,17 +89,47 @@ spec:
         #           - name: label
         #             value: $(tt.params.label)
 
+# ---
+
+# apiVersion: triggers.tekton.dev/v1beta1
+# kind: TriggerTemplate
+# metadata:
+#   name: fail-bots-pipeline-template
+#   namespace: tekton-tasks
+# spec:
+#   params:
+#   - name: header
+#   - name: body  
+#   resourcetemplates:
+#   - apiVersion: tekton.dev/v1beta1
+#     kind: PipelineRun
+#     metadata:
+#       generateName: simple-pipeline-run-
+#     spec:
+#       pipelineRef:
+#         name: simple-pipeline
+#       params:
+#       - name: header
+#         value: $(tt.params.header)
+#       - name: body
+#         value: $(tt.params.body)
+#       workspaces:
+#       - name: ws
+#         emptyDir: {}
+
 ---
 
 apiVersion: triggers.tekton.dev/v1beta1
 kind: Trigger
 metadata:
   name: fail-bots-trigger
+  namespace: tekton-tasks  
 spec:
   bindings:
-    - ref: fail-bots-binding
+  - ref: fail-bots-binding
   template:
     ref: fail-bots-template
+    # ref: fail-bots-pipeline-template
 
 
 # apiVersion: triggers.tekton.dev/v1alpha1
