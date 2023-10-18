@@ -28,7 +28,7 @@ resource "helm_release" "sonarqube" {
   name              = "sonarqube"
   repository        = "https://SonarSource.github.io/helm-chart-sonarqube"
   chart             = "sonarqube"
-  version           = "10.1.0+628"
+  version           = "10.2.1+800"
   wait              = true
   atomic            = true
   namespace         = local.namespace
