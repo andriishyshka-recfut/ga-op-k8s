@@ -5,7 +5,6 @@ metadata:
   namespace: tekton-tasks
 spec:
   serviceAccountName: tekton-webhook
-  # serviceAccountName: fail-bots-tekton-webhook
   triggers:
   - name: failbotpod-filter
     interceptors:
@@ -13,27 +12,14 @@ spec:
         name: "cel"
       params:
       - name: "filter"
-        value: body.groupLabels.alertname == 'FailBotsScraper2'
+        value: body.groupLabels.alertname == 'FailBotsScraper'
     bindings:
       - ref: fail-bots-binding
         kind: TriggerBinding      
     template:
       ref: fail-bots-template
-      # ref: fail-bots-pipeline-template
 
 ---
-
-# apiVersion: triggers.tekton.dev/v1beta1
-# kind: TriggerBinding
-# metadata:
-#   name: fail-bots-binding
-#   namespace: tekton-tasks  
-# spec:
-#   params:
-#     - name: header
-#       value: header
-#     - name: body
-#       value: foo
 
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
@@ -42,12 +28,10 @@ metadata:
   namespace: tekton-tasks
 spec:
   params:
-  - name: alertname
-    value: $(body.commonLabels.container)
-  # - name: severity
-  #   value: $(body)
-# template:
-#   name: fail-bots-template
+  - name: id
+    value: $(body.alerts[0].labels.source_id)
+  - name: mode
+    value: $(body.alerts[0].labels.mode)
 
 ---
 
@@ -58,8 +42,8 @@ metadata:
   namespace: tekton-tasks
 spec:
   params:
-  - name: alertname
-  # - name: severity
+  - name: id
+  - name: mode
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: TaskRun
@@ -67,29 +51,31 @@ spec:
         generateName: fail-bots-
       spec:
         taskSpec:
-          # params:
-          #   - name: alertname
-            # - name: severity
           steps:
-          - name: "bots-test"
-            image: ubuntu
-            # command: ["sh"]
-            # args: ["-c", "echo $(tt.params.alertname)"]            
+          - name: "failbotpod"
+            image: mongo
+            env:
+            - name: mongo_uri
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-auth
+                  key: URI
+            - name: MONGODB_BACKUP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-auth
+                  key: MONGODB_BACKUP_USER
+            - name: MONGODB_BACKUP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-auth
+                  key: MONGODB_BACKUP_PASSWORD                                                   
             script: |
               #! /bin/bash
-              echo $(tt.params.alertname) & sleep 3000
-        # resources:
-        #   inputs:
-        #     - name: source
-        #       resourceSpec:
-        #         type: cel
-        #         params:
-        #           - name: service
-        #             value: $(tt.params.service)
-        #           - name: label
-        #             value: $(tt.params.label)
+              mongosh auth --authenticationDatabase="admin" --username $MONGODB_BACKUP_USER --password $MONGODB_BACKUP_PASSWORD --host mongo-auth-rs0.mongo-auth --quiet --eval 'db.run.find({source: /^$(tt.params.id)$/i, mode: /^$(tt.params.mode)$/i, "end": null}).readPref("primaryPreferred").toArray()'
 
 # ---
+              # echo $(tt.params.id) & echo $(tt.params.mode) & echo $mongo_uri
 
 # apiVersion: triggers.tekton.dev/v1beta1
 # kind: TriggerTemplate
@@ -123,29 +109,9 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: Trigger
 metadata:
   name: fail-bots-trigger
-  namespace: tekton-tasks  
+  namespace: tekton-tasks
 spec:
   bindings:
   - ref: fail-bots-binding
   template:
     ref: fail-bots-template
-    # ref: fail-bots-pipeline-template
-
-
-# apiVersion: triggers.tekton.dev/v1alpha1
-# kind: TriggerTemplate
-# metadata:
-#   name: fail-bots-template
-#   namespace: tekton-tasks
-# spec:
-#   resourcetemplates:
-#   - apiVersion: tekton.dev/v1beta1
-#     kind: PipelineRun
-#     metadata:
-#       generateName: fail-bots-pipeline-run-
-#     spec:
-#       workspaces:
-#       - name: ws
-#         emptyDir: {}
-#       pipelineRef:
-#         name: fail-bots
