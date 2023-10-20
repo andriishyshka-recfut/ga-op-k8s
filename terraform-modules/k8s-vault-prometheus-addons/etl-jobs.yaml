@@ -28,3 +28,16 @@ spec:
         color: ${cluster_color}
         component: stream-processor
         severity: critical
+    - alert: ETLMaidRFAliasesWeekend
+      annotations:
+        description: |
+          ETL job maid-rf-aliases-weekend was failed
+        summary: ETL job maid-rf-aliases-weekend was failed
+      expr: |
+        kube_job_failed{namespace="etl",job_name=~"etl-maid-rf-aliases-weekend.+"} > 0
+      for: 30m
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
