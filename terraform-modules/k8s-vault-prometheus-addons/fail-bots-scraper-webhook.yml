@@ -284,9 +284,6 @@ kind: ClusterRole
 metadata:
   name: tekton-bots-triggers-workloads-clusterroles
   namespace: tekton-tasks
-  # labels:
-  #   rbac.authorization.k8s.io/aggregate-to-admin: "true"
-  #   rbac.authorization.k8s.io/aggregate-to-edit: "true"
 rules:
 - apiGroups: [""]
   resources: ["namespaces", "deployments", "pods"]
