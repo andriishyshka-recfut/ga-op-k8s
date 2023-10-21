@@ -34,8 +34,10 @@ spec:
     value: $(body.alerts[0].labels.mode)
   - name: pod
     value: $(body.alerts[0].labels.pod)
+  - name: container
+    value: $(body.alerts[0].labels.container)
   - name: namespace
-    value: $(body.alerts[0].labels.namespace)    
+    value: $(body.alerts[0].labels.namespace)     
 
 ---
 
@@ -69,7 +71,9 @@ spec:
             key: MONGODB_BACKUP_PASSWORD                                                   
       script: |
         #! /bin/bash
-        mongosh auth --authenticationDatabase="admin" --username $MONGODB_BACKUP_USER --password $MONGODB_BACKUP_PASSWORD --host mongo-auth-rs0.mongo-auth --quiet --eval 'db.run.find({source: /^$(tt.params.id)$/i, mode: /^$(tt.params.mode)$/i, "end": null}).readPref("primaryPreferred").toArray()'
+        echo $(params.id)
+        echo $(params.mode)
+        mongosh "mongodb://$MONGODB_BACKUP_USER:$MONGODB_BACKUP_PASSWORD@mongo-auth-rs0.mongo-auth:27017/auth?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0" --quiet --eval "db.run.deleteOne({source: /^$(params.id)$/i, mode: /^$(params.mode)$/i, "end": null})"
 
 ---
 
@@ -82,6 +86,7 @@ spec:
   params:
   - name: pod
   - name: namespace
+  - name: container  
   steps:
     - name: fail-bots-restart
       image: harbor.regemini.io/op/tf:latest   
@@ -107,13 +112,11 @@ spec:
             key: vaultAddr
             name: cluster-settings      
       script: |
-        set +x
-        set -e
-        export VAULT_TOKEN=$(vault write -field=token auth/k8s-${CLUSTER}-${TF_VAR_Color}/login role=tekton jwt=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`)
-        export KUBE_TOKEN=$(vault kv get -field=k8s_sa_token secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
-        export KUBE_HOST=$(vault kv get -field=HOST secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
-        export KUBE_CLUSTER_CA_CERT_DATA=$(vault kv get -field=CLUSTER_CA_CERTIFICATE secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
-        kubectl delete pod $(tt.params.pod) -n $(tt.params.namespace)
+        #! /bin/bash
+        set -x
+        echo $(params.pod)
+        echo $(params.namespace)        
+        kubectl rollout restart deployment $(params.container) -n $(params.namespace)
 
 ---
 
@@ -128,6 +131,7 @@ spec:
   - name: mode
   - name: pod
   - name: namespace
+  - name: container   
   tasks:
   - name: fail-bots-mongo
     taskRef:
@@ -137,12 +141,20 @@ spec:
       value: $(params.id)
     - name: mode
       value: $(params.mode)
+    - name: pod
+      value: $(params.pod)
+    - name: container
+      value: $(params.container)      
+    - name: namespace
+      value: $(params.namespace)
   - name: fail-bots-restart
     taskRef:
       name: fail-bots-restart
     params:
     - name: pod
       value: $(params.pod)
+    - name: container
+      value: $(params.container)      
     - name: namespace
       value: $(params.namespace)      
     runAfter:
@@ -156,23 +168,20 @@ metadata:
   name: fail-bots-pipelinerun
   namespace: tekton-tasks
 spec:
-  params:
-  - name: id
-  - name: mode
-  - name: pod
-  - name: namespace
   serviceAccountName: tekton-bots-webhook
   pipelineRef:
     name: fail-bots-pipeline
   params:
   - name: id
-    value: $(tt.params.id)
+    value: $(params.id)
   - name: mode
-    value: $(tt.params.mode)
+    value: $(params.mode)
   - name: pod
-    value: $(tt.params.pod)
+    value: $(params.pod)
+  - name: container
+    value: $(params.container)      
   - name: namespace
-    value: $(tt.params.namespace)   
+    value: $(params.namespace)   
 
 ---
 
@@ -186,6 +195,7 @@ spec:
   - name: id
   - name: mode
   - name: pod
+  - name: container
   - name: namespace
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
@@ -203,6 +213,8 @@ spec:
           value: $(tt.params.mode)
         - name: pod
           value: $(tt.params.pod)
+        - name: container
+          value: $(tt.params.container)          
         - name: namespace
           value: $(tt.params.namespace)
 
@@ -285,6 +297,6 @@ metadata:
   name: tekton-bots-triggers-workloads-clusterroles
   namespace: tekton-tasks
 rules:
-- apiGroups: [""]
+- apiGroups: ["apps"]
   resources: ["namespaces", "deployments", "pods"]
   verbs: ["get", "list", "watch", "update", "patch", "delete"]
