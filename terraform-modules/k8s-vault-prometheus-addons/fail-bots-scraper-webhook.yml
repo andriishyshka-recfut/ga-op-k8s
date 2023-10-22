@@ -73,7 +73,7 @@ spec:
         #! /bin/bash
         echo $(params.id)
         echo $(params.mode)
-        mongosh "mongodb://$MONGODB_BACKUP_USER:$MONGODB_BACKUP_PASSWORD@green-rs0.mongo-auth:27017/auth?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0" --quiet --eval "db.run.deleteOne({source: /^$(params.id)$/i, mode: /^$(params.mode)$/i, "end": null})"
+        mongosh "mongodb://$MONGODB_BACKUP_USER:$MONGODB_BACKUP_PASSWORD@green-rs0.mongo-auth:27017/auth?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0" --quiet --eval "db.run.find({source: /^$(params.id)$/i, mode: /^$(params.mode)$/i, "end": null})"
 
 ---
 
