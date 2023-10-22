@@ -33,7 +33,7 @@ spec:
   - name: mode
     value: $(body.alerts[0].labels.mode)
   - name: pod
-    value: $(body.alerts[0].labels.pod)
+    value: $(body.alerts[*].labels.pod)
   - name: container
     value: $(body.alerts[0].labels.container)
   - name: namespace
@@ -73,7 +73,7 @@ spec:
         #! /bin/bash
         echo $(params.id)
         echo $(params.mode)
-        mongosh "mongodb://$MONGODB_BACKUP_USER:$MONGODB_BACKUP_PASSWORD@green-rs0.mongo-auth:27017/auth?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0" --quiet --eval "db.run.find({source: /^$(params.id)$/i, mode: /^$(params.mode)$/i, "end": null})"
+        mongosh "mongodb://$MONGODB_BACKUP_USER:$MONGODB_BACKUP_PASSWORD@mongo-auth-rs0.mongo-auth:27017/auth?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0" --quiet --eval "db.run.find({source: /^$(params.id)$/i, mode: /^$(params.mode)$/i, "end": null})"
 
 ---
 
@@ -115,7 +115,8 @@ spec:
         #! /bin/bash
         set -x
         echo $(params.pod)
-        echo $(params.namespace)        
+        echo $(params.namespace)
+        echo $(params.pod)         
         kubectl rollout restart deployment $(params.container) -n $(params.namespace)
 
 ---
