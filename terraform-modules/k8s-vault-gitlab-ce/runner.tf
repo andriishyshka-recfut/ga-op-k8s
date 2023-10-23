@@ -3,9 +3,10 @@ data "vault_generic_secret" "gitlab" {
 }
 
 resource "kubernetes_secret" "gitlab-runner-registration" {
+  for_each = var.gitlab_list
   metadata {
     name      = "gitlab-runner-registration"
-    namespace = "gitlab"
+    namespace = lookup(each.value, "namespace", local.namespace)
   }
   data = {
     runner-registration-token = data.vault_generic_secret.gitlab.data["runner_registration_token"]
@@ -15,24 +16,25 @@ resource "kubernetes_secret" "gitlab-runner-registration" {
   ]
 }
 
-resource "kubernetes_secret" "minio" {
-  metadata {
-    name      = "minio"
-    namespace = "gitlab"
-  }
-  data = {
-    accesskey = data.vault_generic_secret.gitlab.data["minio_cache_accesskey"]
-    secretkey = data.vault_generic_secret.gitlab.data["minio_cache_secretkey"]
-  }
-  depends_on = [
-    data.vault_generic_secret.gitlab
-  ]
-}
+# resource "kubernetes_secret" "minio" {
+#   metadata {
+#     name      = "minio"
+#     namespace = "gitlab"
+#   }
+#   data = {
+#     accesskey = data.vault_generic_secret.gitlab.data["minio_cache_accesskey"]
+#     secretkey = data.vault_generic_secret.gitlab.data["minio_cache_secretkey"]
+#   }
+#   depends_on = [
+#     data.vault_generic_secret.gitlab
+#   ]
+# }
 
 data "kubernetes_secret" "gitlab-runner-registration" {
+  for_each = var.gitlab_list
   metadata {
     name      = "gitlab-runner-registration"
-    namespace = "gitlab"
+    namespace = lookup(each.value, "namespace", local.namespace)
   }
   depends_on = [
     kubernetes_secret.gitlab-runner-registration
@@ -40,15 +42,16 @@ data "kubernetes_secret" "gitlab-runner-registration" {
 }
 
 resource "helm_release" "gitlab-runner" {
-  name       = "gitlab-runner"
+  for_each   = var.gitlab_list
+  name       = "gitlab-runner-${each.key}"
   repository = "https://charts.gitlab.io"
   chart      = "gitlab-runner"
   wait       = true
   atomic     = true
-  namespace  = "gitlab"
-  version    = "0.57.0"
+  namespace  = lookup(each.value, "namespace", local.namespace)
+  version    = each.value.runner_version
   values = [
-    file("${path.module}/runner-values.yaml")
+    templatefile("${path.module}/runner-values.yaml.tftpl", merge({ values = each.value }, { name = each.key }))
   ]
   depends_on = [
     data.kubernetes_secret.gitlab-runner-registration
@@ -60,7 +63,7 @@ resource "helm_release" "gitlab-runner" {
   }
   set {
     name  = "runnerRegistrationToken"
-    value = data.kubernetes_secret.gitlab-runner-registration.data["runner-registration-token"]
+    value = data.kubernetes_secret.gitlab-runner-registration[each.key].data["runner-registration-token"]
     type  = "string"
   }
   set {
