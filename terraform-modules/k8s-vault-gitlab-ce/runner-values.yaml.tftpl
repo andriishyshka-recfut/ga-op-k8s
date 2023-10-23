@@ -7,7 +7,7 @@ runners:
     [[runners]]
       [runners.kubernetes]
         image = "alpine:3.16.1"
-        image_pull_secrets = ["harbor"]
+        image_pull_secrets = ["${name}-harbor"]
       [runners.cache]
         Type = "s3"
         Path = "/cache/"
@@ -17,4 +17,4 @@ runners:
           AuthenticationType = "access-key"
           BucketName = "gitlab-tmp-orbital-wording"
   cache:
-    secretName: minio
+    secretName: ${name}-minio
