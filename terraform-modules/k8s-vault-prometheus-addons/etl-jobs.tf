@@ -5,5 +5,5 @@ data "kubectl_file_documents" "etl_rules" {
 
 resource "kubectl_manifest" "etl_rules" {
   count     = 1
-  yaml_body = element(data.kubectl_file_documents.logstash_rules.documents, count.index)
+  yaml_body = element(data.kubectl_file_documents.etl_rules.documents, count.index)
 }
