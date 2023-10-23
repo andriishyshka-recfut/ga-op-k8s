@@ -13,6 +13,10 @@ spec:
       params:
       - name: "filter"
         value: body.groupLabels.alertname == 'FailBotsScraper'
+      - name: "overlays"
+        value:
+        - key: extensions.podList
+          value: body.alerts.marshalJSON()        
     bindings:
       - ref: fail-bots-binding
         kind: TriggerBinding      
@@ -33,7 +37,8 @@ spec:
   - name: mode
     value: $(body.alerts[0].labels.mode)
   - name: pod
-    value: $(body.alerts[0].labels.pod)
+  - value: $(extensions.podList)
+    # value: $(body.alerts[0].labels.pod)
   - name: container
     value: $(body.alerts[0].labels.container)
   - name: namespace

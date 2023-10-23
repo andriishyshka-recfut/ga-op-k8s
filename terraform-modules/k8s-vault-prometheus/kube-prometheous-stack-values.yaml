@@ -205,7 +205,7 @@ alertmanager:
             alertname: "FailBotsScraper.*"        
           group_interval: 3m
           group_wait: 2m
-          repeat_interval: 13h
+          repeat_interval: 8m
           receiver: "tekton-fail-bots-webhook-notifications-and-slack"        
         - matchers:
           - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"        
