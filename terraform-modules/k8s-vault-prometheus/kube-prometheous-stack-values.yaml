@@ -199,13 +199,9 @@ alertmanager:
         #Activate this after update prometheus version more than 0.22.2, and disable match_re
         # - matchers: [ "alertname =~ .*" ]
         #   receiver: "tekton-webhook-notifications"
-        # - matchers:
-        #   - alertname=~"FailBotsScraper"
         - match_re:
             alertname: "FailBotsScraper.*"        
-          group_interval: 1m
-          group_wait: 10s
-          repeat_interval: 1m
+          repeat_interval: 13h
           receiver: "tekton-fail-bots-webhook-notifications-and-slack"        
         - matchers:
           - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"        

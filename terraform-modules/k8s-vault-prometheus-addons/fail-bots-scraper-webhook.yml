@@ -15,13 +15,17 @@ spec:
         value: body.groupLabels.alertname == 'FailBotsScraper'
       - name: "overlays"
         value:
-        - key: podList
-          # expression: string(body.alerts.marshalJSON())
-          expression: body.alerts.map(x, x.labels).marshalJSON()
-          # expression: "body.status"
+        - key: id
+          expression: "body.alerts.map(x, x.labels).map(y, y.source_id).join(' ')"
+        - key: mode
+          expression: "body.alerts.map(x, x.labels).map(y, y.mode).join(' ')"
+        - key: container
+          expression: "body.alerts.map(x, x.labels).map(y, y.container).join(' ')"
+        - key: namespace
+          expression: "body.alerts.map(x, x.labels).map(y, y.namespace).join(' ')"                    
     bindings:
       - ref: fail-bots-binding
-        kind: TriggerBinding      
+        kind: TriggerBinding 
     template:
       ref: fail-bots-template
 
@@ -34,17 +38,14 @@ metadata:
   namespace: tekton-tasks
 spec:
   params:
-  - name: id
-    value: $(body.alerts[0].labels.source_id)
   - name: mode
-    value: $(body.alerts[0].labels.mode)
-  - name: pod
-  - value: $(extensions.podList)
-    # value: $(body.alerts[0].labels.pod)
+    value: $(extensions.mode)
+  - name: id
+    value: $(extensions.id)
   - name: container
-    value: $(body.alerts[0].labels.container)
+    value: $(extensions.container)
   - name: namespace
-    value: $(body.alerts[0].labels.namespace)     
+    value: $(extensions.namespace)     
 
 ---
 
@@ -57,7 +58,6 @@ spec:
   params:
   - name: id
   - name: mode
-  - name: pod
   - name: container
   - name: namespace
   resourcetemplates:
@@ -74,8 +74,6 @@ spec:
           value: $(tt.params.id)
         - name: mode
           value: $(tt.params.mode)
-        - name: pod
-          value: $(tt.params.pod)
         - name: container
           value: $(tt.params.container)          
         - name: namespace
@@ -110,8 +108,6 @@ spec:
     value: $(params.id)
   - name: mode
     value: $(params.mode)
-  - name: pod
-    value: $(params.pod)
   - name: container
     value: $(params.container)      
   - name: namespace
@@ -128,7 +124,6 @@ spec:
   params:
   - name: id
   - name: mode
-  - name: pod
   - name: namespace
   - name: container   
   tasks:
@@ -140,8 +135,6 @@ spec:
       value: $(params.id)
     - name: mode
       value: $(params.mode)
-    - name: pod
-      value: $(params.pod)
     - name: container
       value: $(params.container)      
     - name: namespace
@@ -150,8 +143,6 @@ spec:
     taskRef:
       name: fail-bots-restart
     params:
-    - name: pod
-      value: $(params.pod)
     - name: container
       value: $(params.container)      
     - name: namespace
@@ -170,12 +161,11 @@ spec:
   params:
   - name: id
   - name: mode
-  - name: pod  
   steps:
     - name: fail-bots-mongo
       image: mongo
       env:
-      - name: mongo_uri
+      - name: URI
         valueFrom:
           secretKeyRef:
             name: mongo-auth
@@ -189,14 +179,19 @@ spec:
         valueFrom:
           secretKeyRef:
             name: mongo-auth
-            key: MONGODB_BACKUP_PASSWORD                                                   
+            key: MONGODB_BACKUP_PASSWORD
       script: |
         #! /bin/bash
-        echo $(params.id)
-        echo $(params.mode)
-        echo $(params.pod)        
-        mongosh "mongodb://$MONGODB_BACKUP_USER:$MONGODB_BACKUP_PASSWORD@green-rs0.mongo-auth:27017/auth?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0" --quiet --eval "db.run.deleteOne({source: /^$(params.id)$/i, mode: /^$(params.mode)$/i, "end": null})"
+        set +x
 
+        # echo $(params.id)
+        # echo $(params.mode)
+
+        IFS=' '
+        read -ra idList <<< "$(params.id)"
+        read -ra modeList <<< "$(params.mode)"
+
+        for ((i=0; i<${#idList[@]}; i++)); do id=${idList[i]} && mode=${modeList[i]} && echo $id-$mode && mongosh "mongodb://$MONGODB_BACKUP_USER:$MONGODB_BACKUP_PASSWORD@$URI" --quiet --eval "db.run.deleteOne({source: /^$id$/i, mode: /^$mode$/i, "end": null})"; done
 ---
 
 apiVersion: tekton.dev/v1beta1
@@ -206,7 +201,6 @@ metadata:
   namespace: tekton-tasks
 spec:
   params:
-  - name: pod
   - name: namespace
   - name: container  
   steps:
@@ -235,11 +229,16 @@ spec:
             name: cluster-settings      
       script: |
         #! /bin/bash
-        set -x
-        echo $(params.pod)
+        set +x
+        echo $(params.container)
         echo $(params.namespace)
-        # for i in $(params.pod); do echo $1; done
-        kubectl rollout restart deployment $(params.container) -n $(params.namespace)
+
+        IFS=' '
+
+        read -ra contList <<< "$(params.container)"
+        read -ra nsList <<< "$(params.namespace)"    
+            
+        for ((i=0; i<${#contList[@]}; i++)); do kubectl rollout restart deployment ${contList[i]} -n ${nsList[i]}; done
 
 ---
 
