@@ -17,9 +17,8 @@ spec:
         value:
         - key: podList
           # expression: string(body.alerts.marshalJSON())
-          # expression: body.alerts.map(x, x.labels).marshalJSON()
-          # expression: body.alerts.map(x, x.labels.all(n, n.source_id))
-          expression: test
+          expression: body.alerts.map(x, x.labels).marshalJSON()
+          # expression: "body.status"
     bindings:
       - ref: fail-bots-binding
         kind: TriggerBinding      
