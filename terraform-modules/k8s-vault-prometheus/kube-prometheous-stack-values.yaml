@@ -172,18 +172,10 @@ alertmanager:
       webhook_configs:
         - send_resolved: false
           url: "http://el-fail-bots-webhook-alertmanager-listener.tekton-tasks:8080"
-      # slack_configs:
-      #   - channel: '#prometheus'
-      #     send_resolved: true
-      #     text: '{{ template "slack.custom.text" . }}'
-    # - name: "tekton-fail-bots-and-slack-woresolve"
-    #   webhook_configs:
-    #     - send_resolved: false
-    #       url: "http://el-fail-bots-webhook-alertmanager-listener.tekton-tasks:8080"
-    #   slack_configs:
-    #     - channel: '#prometheus'
-    #       send_resolved: false
-    #       text: '{{ template "slack.custom.text" . }}'
+      slack_configs:
+        - channel: '#prometheus'
+          send_resolved: true
+          text: '{{ template "slack.custom.text" . }}'
     route:
       group_by:
         - alertname
