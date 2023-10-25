@@ -3,7 +3,6 @@ altenen
 antichat
 antimigalki
 ascarding
-atlantis
 bdf
 bhf
 bitcointalk
@@ -30,7 +29,7 @@ cracking
 crackingitaly
 crackingmafia
 crackingpro
-crackx
+crackingx
 crax
 crdpro
 crimemarket
@@ -41,7 +40,6 @@ cweb
 dark2web
 darkmarket
 darkmoney
-darknet
 darktime
 demonforums
 dread
@@ -60,7 +58,6 @@ hackingfather
 hackflag
 hackforums
 hacklife
-hadar
 hak5
 hashkiller
 hpc
@@ -93,14 +90,12 @@ piratebuhta
 probiv
 procrd
 prologic
-prozone
 ramp
 rstforums
 runion
 rutor
 selkis
 shadowcarders
-shelbz
 sinisterly
 skynetzone
 slivup

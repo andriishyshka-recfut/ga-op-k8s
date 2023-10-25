@@ -22,9 +22,10 @@ provider "grafana" {
 resource "grafana_organization" "elastic" {
   provider = grafana.base
   name     = "Regemini"
-  admins   = local.grafanaAdmins
-  editors  = local.grafanaEditors
-  viewers  = local.grafanaViewers
+  # org_id = 2
+  # admins   = local.grafanaAdmins
+  # editors  = local.grafanaEditors
+  # viewers  = local.grafanaViewers
 }
 
 provider "grafana" { 
