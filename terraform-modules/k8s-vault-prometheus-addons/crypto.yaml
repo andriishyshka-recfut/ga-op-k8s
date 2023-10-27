@@ -13,7 +13,7 @@ metadata:
 spec:
   groups:
   - interval: 30m
-    name: Crypto Upsert Preps
+    name: Crypto Posts Upsert Preps
     rules:
     - alert: CryptoPostsUpsert
       annotations:
@@ -29,7 +29,7 @@ spec:
         component: stream-processor
         severity: critical
   - interval: 30m
-    name: Crypto Upsert Preps
+    name: Crypto Paste Upsert Preps
     rules:
     - alert: CryptoPasteUpsert
       annotations:
@@ -45,7 +45,7 @@ spec:
         component: stream-processor
         severity: critical
   - interval: 30m
-    name: Crypto Upsert Preps
+    name: Crypto Profiles Upsert Preps
     rules:
     - alert: CryptoProfilesUpsert
       annotations:
@@ -61,7 +61,7 @@ spec:
         component: stream-processor
         severity: critical
   - interval: 30m
-    name: Crypto Upsert Preps
+    name: Crypto RF Upsert Preps
     rules:
     - alert: CryptoRFUpsert
       annotations:
@@ -77,7 +77,7 @@ spec:
         component: stream-processor
         severity: critical
   - interval: 30m
-    name: Crypto Upsert Preps
+    name: Crypto Telegram Message Upsert Preps
     rules:
     - alert: CryptoTelegramMessageUpsert
       annotations:
@@ -93,7 +93,7 @@ spec:
         component: stream-processor
         severity: critical
   - interval: 30m
-    name: Crypto Upsert Preps
+    name: Crypto Telegram Profile Upsert Preps
     rules:
     - alert: CryptoTelegramProfileUpsert
       annotations:
