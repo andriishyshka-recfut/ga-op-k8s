@@ -12,8 +12,8 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 10m
-    name: Fail bots scraper
+  - interval: 5m
+    name: FailBotsScraper
     rules:
     - alert: FailBotsScraper
       annotations:
