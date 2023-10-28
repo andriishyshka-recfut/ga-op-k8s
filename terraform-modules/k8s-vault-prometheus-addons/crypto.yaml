@@ -13,15 +13,95 @@ metadata:
 spec:
   groups:
   - interval: 30m
-    name: Crypto Upsert Preps
+    name: Crypto Posts Upsert Preps
     rules:
-    - alert: CryptoUpsertPreps
+    - alert: CryptoPostsUpsert
       annotations:
         description: |
-          Crypto preps not added last 24h
+          Crypto preps not added last 24h according to topic crypto.posts.upsert
         summary: Crypto preps not added last 24h
       expr: |
-        sum by (namespace) (delta(worker_upsert_preps_total[24h])) == 0
+        sum(rate(worker_upsert_preps_total{topic='crypto.posts.upsert'}[1d])) < sum(rate(worker_upsert_preps_total{topic='crypto.posts.upsert'}[1d] offset 7d))
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
+  - interval: 30m
+    name: Crypto Paste Upsert Preps
+    rules:
+    - alert: CryptoPasteUpsert
+      annotations:
+        description: |
+          Crypto preps not added last 24h according to topic crypto.paste.upsert
+        summary: Crypto preps not added last 24h
+      expr: |
+        sum(rate(worker_upsert_preps_total{topic='crypto.paste.upsert'}[1d])) < sum(rate(worker_upsert_preps_total{topic='crypto.paste.upsert'}[1d] offset 7d))
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
+  - interval: 30m
+    name: Crypto Profiles Upsert Preps
+    rules:
+    - alert: CryptoProfilesUpsert
+      annotations:
+        description: |
+          Crypto preps not added last 24h according to topic crypto.profiles.upsert
+        summary: Crypto preps not added last 24h
+      expr: |
+        sum(rate(worker_upsert_preps_total{topic='crypto.profiles.upsert'}[1d])) < sum(rate(worker_upsert_preps_total{topic='crypto.profiles.upsert'}[1d] offset 7d))
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
+  - interval: 30m
+    name: Crypto RF Upsert Preps
+    rules:
+    - alert: CryptoRFUpsert
+      annotations:
+        description: |
+          Crypto preps not added last 24h according to topic crypto.rf.upsert
+        summary: Crypto preps not added last 24h
+      expr: |
+        sum(rate(worker_upsert_preps_total{topic='crypto.rf.upsert'}[1d])) < sum(rate(worker_upsert_preps_total{topic='crypto.rf.upsert'}[1d] offset 7d))
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
+  - interval: 30m
+    name: Crypto Telegram Message Upsert Preps
+    rules:
+    - alert: CryptoTelegramMessageUpsert
+      annotations:
+        description: |
+          Crypto preps not added last 24h according to topic crypto.telegram.message.upsert
+        summary: Crypto preps not added last 24h
+      expr: |
+        sum(rate(worker_upsert_preps_total{topic='crypto.telegram.message.upsert'}[1d])) < sum(rate(worker_upsert_preps_total{topic='crypto.telegram.message.upsert'}[1d] offset 7d))
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
+  - interval: 30m
+    name: Crypto Telegram Profile Upsert Preps
+    rules:
+    - alert: CryptoTelegramProfileUpsert
+      annotations:
+        description: |
+          Crypto preps not added last 24h according to topic crypto.telegram.profile.upsert
+        summary: Crypto preps not added last 24h
+      expr: |
+        sum(rate(worker_upsert_preps_total{topic='crypto.telegram.profile.upsert'}[1d])) < sum(rate(worker_upsert_preps_total{topic='crypto.telegram.profile.upsert'}[1d] offset 7d))
       for: 24h
       labels:
         cluster: ${cluster_label}
