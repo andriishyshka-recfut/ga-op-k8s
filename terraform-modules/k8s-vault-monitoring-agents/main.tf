@@ -1,18 +1,101 @@
-locals {
-
-  beatsValues = yamldecode(file("${path.module}/beats_values.yaml"))
-
-}
-
-
 variable "Settings" {}
 variable "Color" {}
-variable "Cluster" { }
-locals{
+variable "Cluster" {}
+locals {
   version = var.Settings.clusters[var.Cluster][var.Color].elasticsearch.cluster.monitoring
- }
+}
 
+resource "kubernetes_secret" "python_script" {
+  metadata {
+    name      = "filebeat-script"
+    namespace = "monitoring"
+  }
+  data = {
+    "filebeat.py" = "${file("${path.module}/filebeat.py")}"
+  }
+}
 
+resource "kubernetes_job" "python_script" {
+  metadata {
+    name      = "filebeat-script"
+    namespace = "monitoring"
+  }
+  spec {
+    template {
+      metadata {
+        annotations = {
+          "sidecar.istio.io/inject" : "false"
+        }
+      }
+      spec {
+        container {
+          name    = "script"
+          image   = "harbor.regemini.io/op/tf:latest"
+          command = ["/ansible/bin/python3", "/opt/filebeat.py"]
+          # command = ["sh", "-c", "tail -f /dev/null"]
+          env {
+            name  = "TEMPLATES"
+            value = local.filebeat_groups
+          }
+          env {
+            name  = "FILEBEAT_VERSION"
+            value = local.version
+          }
+          env {
+            name  = "ELASTICSEARCH_USERNAME"
+            value = "elastic"
+          }
+          env {
+            name = "ELASTICSEARCH_PASSWORD"
+            value_from {
+              secret_key_ref {
+                name = "monitoring-es-elastic-user"
+                key  = "elastic"
+              }
+            }
+          }
+          env {
+            name  = "ELASTICSEARCH_URL"
+            value = "monitoring-es-http:9200"
+          }
+          volume_mount {
+            name       = "ca-cert"
+            mount_path = "/etc/ssl"
+            read_only  = "true"
+          }
+          volume_mount {
+            name       = "script"
+            mount_path = "/opt"
+            read_only  = "true"
+          }
+        }
+        volume {
+          name = "ca-cert"
+          secret {
+            secret_name = "monitoring-es-cert"
+            items {
+              key  = "ca.crt"
+              path = "ca.crt"
+            }
+          }
+        }
+        volume {
+          name = "script"
+          secret {
+            secret_name = "filebeat-script"
+          }
+        }
+        image_pull_secrets {
+          name = "harbor"
+        }
+        restart_policy = "Never"
+      }
+    }
+    backoff_limit = 4
+  }
+  wait_for_completion = true
+  depends_on          = [kubernetes_secret.python_script, helm_release.beat]
+}
 
 resource "helm_release" "beat" {
   name      = "beats"
@@ -21,10 +104,10 @@ resource "helm_release" "beat" {
   atomic    = true
   namespace = "monitoring"
   values = [
-    yamlencode(local.beatsValues)
+    templatefile("${path.module}/beats_values.yaml.tftpl", { filebeat_groups = local.filebeat_groups })
   ]
   set {
-    name = "beatsVersion"
+    name  = "beatsVersion"
     value = local.version
   }
 

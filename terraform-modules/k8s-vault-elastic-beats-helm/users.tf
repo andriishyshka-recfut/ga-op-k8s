@@ -16,8 +16,8 @@ data "kubernetes_secret" "elastic_pass" {
 }
 
 data "vault_generic_secret" "logstash_es_creds" {
-  for_each  = var.logstash_list
-  path      = "secret/logstash/${each.key}"
+  for_each = var.logstash_list
+  path     = "secret/logstash/${each.key}"
 }
 
 resource "kubernetes_secret" "filebeat_creds" {
