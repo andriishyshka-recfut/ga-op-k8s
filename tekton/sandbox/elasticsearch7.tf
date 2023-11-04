@@ -1,24 +1,4 @@
 
-# data "vault_generic_secret" "elastic7_transport_ca" {
-#   path = "secret/elasticsearch-admin/replication"
-# }
-
-
-# resource "kubernetes_secret" "elastic7_transport_ca" {
-#   metadata {
-#     name      = "remote-certs"
-#     namespace = "elastic7"
-#   }
-#   data = {
-#     "remote.ca.crt"  = data.vault_generic_secret.elastic7_transport_ca.data.remote_ca_crt
-#     "remote2.ca.crt" = data.vault_generic_secret.elastic7_transport_ca.data.remote2_ca_crt
-#   }
-#   depends_on = [
-#     data.vault_generic_secret.elastic7_transport_ca
-#   ]
-# }
-
-
 module "elastic" {
   source                 = "../../terraform-modules/k8s-vault-elastic-helm"
   ElasticSettings        = local.ElasticSettings

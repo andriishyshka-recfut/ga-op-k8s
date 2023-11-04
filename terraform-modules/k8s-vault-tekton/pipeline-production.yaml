@@ -302,8 +302,6 @@ spec:
     # - name: monitoring-backup-restore-main
     #   taskRef:
     #     name: tg-run
-    #   # runAfter:
-    #   #   - fluxcd       
     #   workspaces:
     #     - name: ws
     #       workspace: ws
