@@ -12,7 +12,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 35m
+  - interval: 15m
     name: FailBotsScraper
     rules:
     - alert: FailBotsScraper
@@ -21,8 +21,8 @@ spec:
           This fail bots collected and will automatically restarted by tekton.
         summary: This fail bots will automatically restarted by tekton. Project - {{ $labels.project }}. ID - {{ $labels.source_id }}. Namespace - {{ $labels.namespace }}.
       expr: |
-        min_over_time(scraper_run_waiting_for_request{project='DOME', mode!='CHAT', mode!='PROFILE_FORWARD', mode!='ACTIVITY', mode!='POST_PRIME'}[12h]) == 1 AND ON() hour() < 1
-      for: 35m
+        min_over_time(scraper_run_waiting_for_request{project='DOME', mode!='CHAT', mode!='PROFILE_FORWARD', mode!='ACTIVITY', mode!='POST_PRIME'}[12h]) == 1 AND ON() hour() >= 12 < 13
+      for: 30m
       labels:
         cluster: ${cluster_label}
         component: stream-processor
