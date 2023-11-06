@@ -191,7 +191,7 @@ spec:
         read -ra idList <<< "$(params.id)"
         read -ra modeList <<< "$(params.mode)"
 
-        for ((i=0; i<${#idList[@]}; i++)); do id=${idList[i]} && mode=${modeList[i]} && echo \{\"level\":6,\"shopId\":\"$id\",\"mode\":\"$mode\",\"msg\":\"$id - $mode\"\} && mongosh "mongodb://$MONGODB_BACKUP_USER:$MONGODB_BACKUP_PASSWORD@$URI" --quiet --eval "db.run.deleteOne({source: /^$id$/i, mode: /^$mode$/i, "end": null})"; done
+        for ((i=0; i<${#idList[@]}; i++)); do id=${idList[i]} && mode=${modeList[i]} && echo \{\"level\":6,\"sourceId\":\"$id\",\"mode\":\"$mode\",\"msg\":\"$id - $mode\"\} && mongosh "mongodb://$MONGODB_BACKUP_USER:$MONGODB_BACKUP_PASSWORD@$URI" --quiet --eval "db.run.deleteOne({source: /^$id$/i, mode: /^$mode$/i, "end": null})"; done
 ---
 
 apiVersion: tekton.dev/v1beta1
