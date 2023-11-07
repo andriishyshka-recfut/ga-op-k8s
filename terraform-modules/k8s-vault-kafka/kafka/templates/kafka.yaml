@@ -65,14 +65,10 @@ spec:
       - id: 0
         type: persistent-claim
         size: {{ .Values.diskSize }}
-        {{- if .Values.usePV }}
         selector:
           target: kafka-data
         deleteClaim: true
         class: ""
-        {{- else }}
-        deleteClaim: false
-        {{- end }}
 
   zookeeper:
     replicas: {{ .Values.replicas }}
@@ -104,15 +100,11 @@ spec:
         memory: 100M
     storage:
       type: persistent-claim
-      size: 10Gi
-      {{- if .Values.usePV }}
+      size: {{ .Values.zookeeperDiskSize }}
       selector:
         target: kafka-zookeeper
       deleteClaim: true
       class: ""
-      {{- else }}
-      deleteClaim: false
-      {{- end }}
   entityOperator:
     topicOperator: {}
     userOperator: {}

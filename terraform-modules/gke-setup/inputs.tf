@@ -25,9 +25,9 @@ variable "Color" {}
 variable "ClusterColors" {}
 
 locals {
-  isPreemptible       = lookup(var.Settings.clusters[var.Cluster][var.Color], "preemptible", true)
-  defaultMachineType  = lookup(var.Settings.clusters[var.Cluster][var.Color], "defaultMachineType", "e2-standard-4")
-  additionalNodepools = var.Settings.clusters[var.Cluster][var.Color].additionalNodepools
+  isPreemptible       = lookup(var.Settings.clusters[var.Cluster], "preemptible", true)
+  defaultMachineType  = lookup(var.Settings.clusters[var.Cluster], "defaultMachineType", "e2-standard-4")
+  additionalNodepools = var.Settings.clusters[var.Cluster].additionalNodepools
   # bluePods            = var.Settings.clusters[var.Cluster]["blue"].pods_subnet_range
   # greenPods           = var.Settings.clusters[var.Cluster]["green"].pods_subnet_range
   # redPods             = var.Settings.clusters[var.Cluster]["red"].pods_subnet_range

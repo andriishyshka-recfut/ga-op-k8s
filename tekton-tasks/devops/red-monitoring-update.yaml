@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/red-monitoring"
+      value: "k8s/tekton/red/red-monitoring"
     - name: branch
       value: "master"

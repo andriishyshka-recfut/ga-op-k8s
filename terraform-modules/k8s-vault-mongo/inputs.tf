@@ -22,12 +22,11 @@ locals {
   })
   limit         = var.Cluster == "production" ? { "memory" : "4G", "cpu" : "3" } : { "memory" : "2G", "cpu" : "1" }
   request       = var.Cluster == "production" ? { "memory" : "3G", "cpu" : "1" } : { "memory" : "1G", "cpu" : "0.25" }
-  pv_disk_count = var.Cluster == "production" ? 0 : 3
-  encryption_keys_count = var.Cluster == "production" ? 0 : 1
+  pv_disk_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.mongo.count
 
-  claim_prefix = var.Cluster == "production" ? "mongod-data-${var.Color}" : "mongod-data-mongo-${var.InstanceName}"
+  claim_prefix = "mongod-data-mongo-${var.InstanceName}"
   target_label = var.PvcPrefix
-  full_name = var.Cluster == "production" ? var.Color : "mongo-${var.InstanceName}"
+  full_name = "mongo-${var.InstanceName}"
 
   pvc_config = {
     type = "persistent-claim"
@@ -37,4 +36,6 @@ locals {
     deleteClaim = true
     class       = ""
   }
+
+  zones = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones
 }

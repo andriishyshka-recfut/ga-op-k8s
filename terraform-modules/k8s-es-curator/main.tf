@@ -28,7 +28,7 @@ resource "kubernetes_config_map" "curator" {
 
 
 
-resource "kubernetes_job" "es_restore" {
+resource "kubernetes_job" "es_backup_and_restore" {
   metadata {
     name      = local.job
     namespace = var.Namespace
@@ -74,7 +74,7 @@ resource "kubernetes_job" "es_restore" {
       }
     }
 
-    backoff_limit = 1
+    backoff_limit = 0
   }
   wait_for_completion = true
   timeouts {

@@ -1,0 +1,1969 @@
+apiVersion: v1
+items:
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: checker.out
+    namespace: kafka
+    resourceVersion: "87970"
+    uid: a1b913ef-65cf-4921-8b9b-4b518ae2bbc9
+  spec:
+    config:
+      max.message.bytes: "1048576"
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: checker.out
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:02.312874Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: checker.out
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: checker.seen
+    namespace: kafka
+    resourceVersion: "87981"
+    uid: 09b05af6-ee0c-4d75-ba79-c7679ff8edeb
+  spec:
+    config:
+      cleanup.policy: delete
+    partitions: 1
+    replicas: 2
+    topicName: checker.seen
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:02.646278Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: checker.seen
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T13:51:17Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: consumer-offsets---84e7a678d08f4bd226872e5cdd4eb527fadc1c6a
+    namespace: kafka
+    resourceVersion: "23217"
+    uid: b5b88de0-f410-4969-865b-fd61f2298a1a
+  spec:
+    config:
+      cleanup.policy: compact
+      compression.type: producer
+      segment.bytes: "104857600"
+    partitions: 50
+    replicas: 1
+    topicName: __consumer_offsets
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T13:51:17.912080Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: __consumer_offsets
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:06Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.paste.source
+    namespace: kafka
+    resourceVersion: "65643"
+    uid: ac5ca3fb-42d7-47ef-a447-838906a1672c
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: crypto.paste.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:06.649740Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.paste.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:03Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.paste.upsert
+    namespace: kafka
+    resourceVersion: "88047"
+    uid: 4cc5b6d7-261c-4384-8415-6e6439c1fd88
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: crypto.paste.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:04.692307Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: crypto.paste.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.posts.source
+    namespace: kafka
+    resourceVersion: "65578"
+    uid: 43026e4c-7258-4849-a2bb-71b8bba22e47
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: crypto.posts.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.037010Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.posts.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.posts.upsert
+    namespace: kafka
+    resourceVersion: "88019"
+    uid: 300d38a1-53d5-4a29-8c4f-4d2ae8cffbdc
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: crypto.posts.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:03.904619Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: crypto.posts.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:08Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.profiles.source
+    namespace: kafka
+    resourceVersion: "65694"
+    uid: 1d03755b-571c-46d7-ba71-3ff94fca3f29
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: crypto.profiles.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:08.335882Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.profiles.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:02Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.profiles.upsert
+    namespace: kafka
+    resourceVersion: "65432"
+    uid: 1f2deeca-573b-4bcc-8f86-cf39b454d9cd
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: crypto.profiles.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:02.442743Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.profiles.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:07Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.rf.source
+    namespace: kafka
+    resourceVersion: "65657"
+    uid: 6e7a3492-d781-4933-b562-f9907c5678e1
+  spec:
+    config:
+      delete.retention.ms: "259200000"
+      max.message.bytes: "1048576"
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: crypto.rf.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:07.248695Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.rf.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:02Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.rf.upsert
+    namespace: kafka
+    resourceVersion: "65451"
+    uid: ab585f5e-5971-4fe8-a321-b35900363ea9
+  spec:
+    config:
+      delete.retention.ms: "259200000"
+      max.message.bytes: "1048576"
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: crypto.rf.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:02.793174Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.rf.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.telegram.message.source
+    namespace: kafka
+    resourceVersion: "65547"
+    uid: b59de492-7110-4bb8-8eb1-1f0a85b9d293
+  spec:
+    config: {}
+    partitions: 1
+    replicas: 2
+    topicName: crypto.telegram.message.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.646156Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.telegram.message.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.telegram.message.upsert
+    namespace: kafka
+    resourceVersion: "65605"
+    uid: 22f28983-f1bd-4b92-852e-efae6c285c90
+  spec:
+    config: {}
+    partitions: 1
+    replicas: 2
+    topicName: crypto.telegram.message.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.702599Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.telegram.message.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.telegram.profile.source
+    namespace: kafka
+    resourceVersion: "65550"
+    uid: dede9701-e248-4b36-9a64-2fc9db37e12d
+  spec:
+    config: {}
+    partitions: 1
+    replicas: 2
+    topicName: crypto.telegram.profile.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.666491Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.telegram.profile.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:07Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.telegram.profile.upsert
+    namespace: kafka
+    resourceVersion: "65672"
+    uid: 19450603-0701-4e21-bbcf-f5773ea327bf
+  spec:
+    config: {}
+    partitions: 1
+    replicas: 2
+    topicName: crypto.telegram.profile.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:07.677166Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.telegram.profile.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.telegram.source.source
+    namespace: kafka
+    resourceVersion: "65528"
+    uid: fcba19ea-12ad-419e-97e9-66f83fbf5e84
+  spec:
+    config: {}
+    partitions: 1
+    replicas: 2
+    topicName: crypto.telegram.source.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.358461Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.telegram.source.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:08Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: crypto.telegram.source.upsert
+    namespace: kafka
+    resourceVersion: "65705"
+    uid: adb94695-4d92-4320-9a52-d88f0fd8b5f7
+  spec:
+    config: {}
+    partitions: 1
+    replicas: 2
+    topicName: crypto.telegram.source.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:08.745069Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: crypto.telegram.source.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: dome
+    namespace: kafka
+    resourceVersion: "65608"
+    uid: 5f359374-7864-4465-8323-6995788c85dd
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: dome
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.794582Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: dome
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:03Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: dome.upsert
+    namespace: kafka
+    resourceVersion: "65489"
+    uid: 587efb26-6ffa-4f9b-a8ed-3dca8ded3b01
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: dome.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:03.836940Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: dome.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:01Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: heartbeats
+    namespace: kafka
+    resourceVersion: "65418"
+    uid: ea3bc820-af72-4e5b-8c88-39f0ccb5f3a5
+  spec:
+    config:
+      cleanup.policy: compact
+    partitions: 1
+    replicas: 1
+    topicName: heartbeats
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:01.908688Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: heartbeats
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:02Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.analysis
+    namespace: kafka
+    resourceVersion: "65455"
+    uid: d89b91d6-0bad-48b5-ae58-912a79e1453b
+  spec:
+    config:
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.analysis
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:02.865592Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mage.analysis
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:03Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.analysis.upsert
+    namespace: kafka
+    resourceVersion: "65480"
+    uid: 1b9788e8-5717-4f80-94cf-5e49dfe39f32
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.analysis.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:03.679754Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mage.analysis.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 3
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.scan
+    namespace: kafka
+    resourceVersion: "88010"
+    uid: e6d6ed14-855b-4599-a5d8-03e8df7962e2
+  spec:
+    config:
+      retention.ms: "31540000000"
+    partitions: 20
+    replicas: 2
+    topicName: mage.scan
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:03.787396Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 3
+    topicName: mage.scan
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:03Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.scan.upsert
+    namespace: kafka
+    resourceVersion: "65465"
+    uid: adee204d-d99d-4125-9f78-ef1ed0f6b185
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.scan.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:03.039882Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mage.scan.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:02Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.task.scanned
+    namespace: kafka
+    resourceVersion: "65437"
+    uid: 271cef5c-3ddd-448d-ac75-3c1d12286b08
+  spec:
+    config:
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.task.scanned
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:02.511952Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mage.task.scanned
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:06Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.task.target
+    namespace: kafka
+    resourceVersion: "65626"
+    uid: 9237317e-a152-46c7-979e-a5b4acc237c9
+  spec:
+    config:
+      retention.ms: "1296000000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.task.target
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:06.375677Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mage.task.target
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.task.target.2
+    namespace: kafka
+    resourceVersion: "65602"
+    uid: 80a96d30-9b1f-4961-901e-d8e666a5a385
+  spec:
+    config:
+      delete.retention.ms: "2592000000"
+      max.message.bytes: "1048576"
+      retention.ms: "1296000000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.task.target.2
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.653871Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mage.task.target.2
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.task.target.3
+    namespace: kafka
+    resourceVersion: "65599"
+    uid: f41b92ef-06e7-45dc-aeff-e08a9629baae
+  spec:
+    config:
+      delete.retention.ms: "2592000000"
+      max.message.bytes: "1048576"
+      retention.ms: "1296000000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.task.target.3
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.597066Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mage.task.target.3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.task.target.4
+    namespace: kafka
+    resourceVersion: "88051"
+    uid: a00c981a-69ea-4ad2-952f-dcc9202a5475
+  spec:
+    config:
+      delete.retention.ms: "2592000000"
+      max.message.bytes: "1048576"
+      retention.ms: "1296000000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.task.target.4
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:04.734269Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: mage.task.target.4
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.task.target.5
+    namespace: kafka
+    resourceVersion: "87976"
+    uid: bbf97bb1-a6f2-4d25-93bd-53e04d34e3b0
+  spec:
+    config:
+      retention.ms: "1296000000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.task.target.5
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:02.488027Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: mage.task.target.5
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:03Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.task.target.manual
+    namespace: kafka
+    resourceVersion: "88045"
+    uid: b0040e7c-2e02-4c8c-aed2-4450d27aa6f8
+  spec:
+    config:
+      max.message.bytes: "1048576"
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.task.target.manual
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:04.653198Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: mage.task.target.manual
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:07Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mage.task.target.priority
+    namespace: kafka
+    resourceVersion: "65682"
+    uid: c8e16f21-0a61-4580-acd5-420730b193f1
+  spec:
+    config:
+      retention.ms: "1296000000"
+    partitions: 1
+    replicas: 2
+    topicName: mage.task.target.priority
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:07.992450Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mage.task.target.priority
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:02Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: magecart
+    namespace: kafka
+    resourceVersion: "65458"
+    uid: 4276702a-4084-4404-99e1-3a0539838688
+  spec:
+    config:
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: magecart
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:02.939838Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: magecart
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: magecart.sanitizer
+    namespace: kafka
+    resourceVersion: "65563"
+    uid: 3c772a2e-7330-4f2a-b3d7-a7cf2619ec2c
+  spec:
+    config:
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: magecart.sanitizer
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.880606Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: magecart.sanitizer
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:06Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: magecart.upsert
+    namespace: kafka
+    resourceVersion: "65647"
+    uid: bae95a7d-e9bf-41ae-8d20-b07fa86f2c9d
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: magecart.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:06.847915Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: magecart.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: maid
+    namespace: kafka
+    resourceVersion: "65523"
+    uid: a31817bf-71d9-4900-bdfc-100174a8a2ca
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: maid
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.255831Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: maid
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:03Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: maid.cracker
+    namespace: kafka
+    resourceVersion: "65482"
+    uid: 60c46262-c58a-4fd6-8360-b1b18c1bc1fe
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: maid.cracker
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:03.750395Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: maid.cracker
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: maid.seen
+    namespace: kafka
+    resourceVersion: "65519"
+    uid: deeed064-9951-4470-bd64-7cb4aaa78c8b
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: maid.seen
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.195434Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: maid.seen
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: maid.seen.backlog
+    namespace: kafka
+    resourceVersion: "65512"
+    uid: db74ee8e-778a-4740-9aa2-51f9d07cd161
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: maid.seen.backlog
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.072173Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: maid.seen.backlog
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:07Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: maid.upsert
+    namespace: kafka
+    resourceVersion: "65675"
+    uid: 2124eb62-1369-4d45-be0b-b43cb76b67f0
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: maid.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:07.798802Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: maid.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:02Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: maid.whistle
+    namespace: kafka
+    resourceVersion: "65444"
+    uid: c1229773-2385-4e42-9ec0-319c87319164
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: maid.whistle
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:02.591128Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: maid.whistle
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:02Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion
+    namespace: kafka
+    resourceVersion: "65457"
+    uid: a0d19a3f-01c0-4bca-b0d9-50c0022ec12b
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: minion
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:02.885671Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: minion
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:06Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion-pan
+    namespace: kafka
+    resourceVersion: "65616"
+    uid: bea99039-1fe5-4277-b24d-2cf57f75d052
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: minion-pan
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:06.039285Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: minion-pan
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.beat-pan---dddd7b654debbf7ea1a88542a461f666d33276fb
+    namespace: kafka
+    resourceVersion: "65576"
+    uid: 28c287cc-c545-44b8-a08e-45626f302ac5
+  spec:
+    config:
+      retention.ms: "864000000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.beat_pan
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.999631Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: minion.beat_pan
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.ching
+    namespace: kafka
+    resourceVersion: "88006"
+    uid: 61c0e1ad-e59a-4aad-a0e8-f166b7126ad9
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.ching
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:03.635599Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: minion.ching
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.geo
+    namespace: kafka
+    resourceVersion: "65611"
+    uid: 0c1aa3b8-836b-431a-b994-a7a728cc6f96
+  spec:
+    config:
+      retention.ms: "1209600000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.geo
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.944384Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: minion.geo
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.mark
+    namespace: kafka
+    resourceVersion: "87988"
+    uid: eb6cd035-f860-4e54-8b62-6a9404844bb4
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.mark
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:02.930607Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: minion.mark
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:03Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.sanitizer
+    namespace: kafka
+    resourceVersion: "87966"
+    uid: 3ec9cc53-c84e-4ef6-8010-a758ba13f865
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.sanitizer
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:02.245832Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: minion.sanitizer
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.sanitizer-pan---e99e715585f8ecd77497ec79ec38bb8108950d91
+    namespace: kafka
+    resourceVersion: "87951"
+    uid: d595d345-ff59-418b-b502-e7d75ee4f216
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.sanitizer_pan
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:01.872860Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: minion.sanitizer_pan
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:08Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.seen
+    namespace: kafka
+    resourceVersion: "65690"
+    uid: 3be6eec6-b179-402d-b26e-ee5e3130a3e4
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.seen
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:08.169675Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: minion.seen
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:06Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.upsert
+    namespace: kafka
+    resourceVersion: "88025"
+    uid: ea4e8653-2122-4edc-858d-f1e5fafd0609
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:04.042386Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: minion.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.upsert-pan---9f5726c4c04ef20bfe864b3da14daf1fa5a9c108
+    namespace: kafka
+    resourceVersion: "65590"
+    uid: 9db8bbfc-f427-464a-9949-487ba04cc54b
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.upsert_pan
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.337292Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: minion.upsert_pan
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:06Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.uscufeed
+    namespace: kafka
+    resourceVersion: "65632"
+    uid: 9cc728ee-0956-4d2d-b748-30accb063c08
+  spec:
+    config:
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.uscufeed
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:06.521547Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: minion.uscufeed
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: minion.vortex
+    namespace: kafka
+    resourceVersion: "65575"
+    uid: e456e5a8-a14f-452a-97a9-12d1a7d26b1a
+  spec:
+    config:
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: minion.vortex
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.991832Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: minion.vortex
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:23:01Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mirrormaker2-cluster-configs
+    namespace: kafka
+    resourceVersion: "63500"
+    uid: 98e73933-d9c1-48fb-9f91-8fd219013e12
+  spec:
+    config:
+      cleanup.policy: compact
+    partitions: 1
+    replicas: 2
+    topicName: mirrormaker2-cluster-configs
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:23:01.891955Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mirrormaker2-cluster-configs
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:23:00Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mirrormaker2-cluster-offsets
+    namespace: kafka
+    resourceVersion: "63464"
+    uid: 6f6e2ad8-d462-458e-ba84-6e88601742ae
+  spec:
+    config:
+      cleanup.policy: compact
+    partitions: 25
+    replicas: 2
+    topicName: mirrormaker2-cluster-offsets
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:23:00.358153Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mirrormaker2-cluster-offsets
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:23:01Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: mirrormaker2-cluster-status
+    namespace: kafka
+    resourceVersion: "63494"
+    uid: 5b193311-1b34-4836-bd06-4ad061ed66e3
+  spec:
+    config:
+      cleanup.policy: compact
+    partitions: 5
+    replicas: 2
+    topicName: mirrormaker2-cluster-status
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:23:01.610732Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: mirrormaker2-cluster-status
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 3
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: os3.attachment
+    namespace: kafka
+    resourceVersion: "87963"
+    uid: 27da2968-f49f-4ce3-9dea-6ee98667708a
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 60
+    replicas: 2
+    topicName: os3.attachment
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:02.088595Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 3
+    topicName: os3.attachment
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:02Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: os3.debug
+    namespace: kafka
+    resourceVersion: "65462"
+    uid: 13bc6ab2-a3a1-4987-b225-4f86238f40e3
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 10
+    replicas: 2
+    topicName: os3.debug
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:02.989483Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: os3.debug
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: os3t.attachment
+    namespace: kafka
+    resourceVersion: "65598"
+    uid: 67c6adc8-b35b-443e-990d-81806bc9fca5
+  spec:
+    config: {}
+    partitions: 1
+    replicas: 2
+    topicName: os3t.attachment
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.590865Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: os3t.attachment
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: paste
+    namespace: kafka
+    resourceVersion: "87954"
+    uid: db48fc0d-1c07-4a20-b56a-0d58e71aa2d8
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: paste
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:01.904351Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: paste
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:01Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: sourcecheckpointsinternal
+    namespace: kafka
+    resourceVersion: "65424"
+    uid: 70a212f9-3956-4a04-9fcc-477945846673
+  spec:
+    config:
+      cleanup.policy: compact
+    partitions: 1
+    replicas: 2
+    topicName: sourcecheckpointsinternal
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:02.025041Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: sourcecheckpointsinternal
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T13:51:17Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: strimzi-store-topic---effb8e3e057afce1ecf67c3f5d8e4e3ff177fc55
+    namespace: kafka
+    resourceVersion: "23211"
+    uid: c90e4013-c9e1-47b5-9ab0-7ba3ee40abbe
+  spec:
+    config:
+      min.insync.replicas: "2"
+    partitions: 1
+    replicas: 3
+    topicName: __strimzi_store_topic
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T13:51:17.869971Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: __strimzi_store_topic
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T13:51:17Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: strimzi-topic-operator-kstreams-topic-store-changelog---b75e702040b99be8a9263134de3507fc0cc4017b
+    namespace: kafka
+    resourceVersion: "23214"
+    uid: ed230e28-15e8-4e8a-b444-5767fd254ff2
+  spec:
+    config:
+      cleanup.policy: compact
+      message.timestamp.type: CreateTime
+      min.compaction.lag.ms: "0"
+      segment.bytes: "67108864"
+    partitions: 1
+    replicas: 2
+    topicName: __strimzi-topic-operator-kstreams-topic-store-changelog
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T13:51:17.899816Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: __strimzi-topic-operator-kstreams-topic-store-changelog
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: syncmage.events.attacker.url
+    namespace: kafka
+    resourceVersion: "87986"
+    uid: 1cf9a66e-ff02-4347-9b77-bd3b459f4d43
+  spec:
+    config:
+      max.message.bytes: "1048576"
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: syncmage.events.attacker.url
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:02.749581Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: syncmage.events.attacker.url
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:07Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: telegram
+    namespace: kafka
+    resourceVersion: "65661"
+    uid: d4e81a7a-b63c-4aa2-8ec4-43f5c257578d
+  spec:
+    config:
+      retention.ms: "604800000"
+    partitions: 1
+    replicas: 2
+    topicName: telegram
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:07.461366Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: telegram
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:02Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: telegram.upsert
+    namespace: kafka
+    resourceVersion: "65447"
+    uid: 1589757b-6910-4409-98f8-b704f9d8df6e
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: telegram.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:02.612169Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: telegram.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: testcart
+    namespace: kafka
+    resourceVersion: "65542"
+    uid: 5b8c87d9-acb3-412a-bdf1-87288e2fc30f
+  spec:
+    config:
+      delete.retention.ms: "2592000000"
+      max.message.bytes: "1048576"
+      retention.ms: "2592000000"
+    partitions: 1
+    replicas: 2
+    topicName: testcart
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.587414Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: testcart
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: testcart.upsert
+    namespace: kafka
+    resourceVersion: "65566"
+    uid: d0f6a0a2-0d9a-4854-a5e1-9a1edcb14024
+  spec:
+    config:
+      delete.retention.ms: "2592000000"
+      max.message.bytes: "1048576"
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: testcart.upsert
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.917687Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: testcart.upsert
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: twirl.dome.source
+    namespace: kafka
+    resourceVersion: "88003"
+    uid: a844acc6-520b-4632-85c3-3b2fc38d4e8f
+  spec:
+    config:
+      cleanup.policy: delete
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: twirl.dome.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:03.543903Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: twirl.dome.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:06Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: twirl.paste.source
+    namespace: kafka
+    resourceVersion: "65622"
+    uid: a3c2f38e-00f2-46e5-a28e-78498d28633f
+  spec:
+    config:
+      cleanup.policy: delete
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: twirl.paste.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:06.240484Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: twirl.paste.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: twirl.telegram.source
+    namespace: kafka
+    resourceVersion: "65587"
+    uid: 79fc243d-3eb8-4804-8f87-00ce5848ebd4
+  spec:
+    config:
+      cleanup.policy: delete
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: twirl.telegram.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.245509Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: twirl.telegram.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: upsertmage.events.firstinfection
+    namespace: kafka
+    resourceVersion: "87994"
+    uid: 8f14bfd3-5565-4475-b376-5bd504966e23
+  spec:
+    config:
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: upsertmage.events.firstinfection
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:03.157411Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: upsertmage.events.firstinfection
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: upsertmage.events.newinfection
+    namespace: kafka
+    resourceVersion: "87997"
+    uid: 42caf0c7-1084-4527-9d06-c3b72351dba3
+  spec:
+    config:
+      delete.retention.ms: "2592000000"
+      max.message.bytes: "1048576"
+      retention.ms: "31540000000"
+    partitions: 1
+    replicas: 2
+    topicName: upsertmage.events.newinfection
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:03.258560Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: upsertmage.events.newinfection
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:03Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: whirl.pans.source
+    namespace: kafka
+    resourceVersion: "65488"
+    uid: fede661c-4efc-4fd0-b7f4-4b468245f5be
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: whirl.pans.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:03.807212Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: whirl.pans.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: whirl.paste.backlog
+    namespace: kafka
+    resourceVersion: "65601"
+    uid: 8e42dff8-9e1b-4afb-84f6-74ce7ffe4e0b
+  spec:
+    config:
+      retention.ms: "1209600000"
+    partitions: 1
+    replicas: 2
+    topicName: whirl.paste.backlog
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.625080Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: whirl.paste.backlog
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:03Z"
+    generation: 2
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: whirl.paste.source
+    namespace: kafka
+    resourceVersion: "88043"
+    uid: 69e28897-bd3f-46e3-821c-8eb206164a4b
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: whirl.paste.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:44:04.628875Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 2
+    topicName: whirl.paste.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:05Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: whirl.post.backlog
+    namespace: kafka
+    resourceVersion: "65585"
+    uid: 5e652593-6b64-4599-a0ab-dc0763f274a3
+  spec:
+    config:
+      retention.ms: "1209600000"
+    partitions: 1
+    replicas: 2
+    topicName: whirl.post.backlog
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:05.185180Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: whirl.post.backlog
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:07Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: whirl.post.source
+    namespace: kafka
+    resourceVersion: "65654"
+    uid: 519eb547-a91f-4959-a569-cfff9ae947dc
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: whirl.post.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:07.130401Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: whirl.post.source
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:04Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: whirl.telegram.backlog
+    namespace: kafka
+    resourceVersion: "65515"
+    uid: 95924bde-edc5-4b28-abd6-d99a9b3ee517
+  spec:
+    config:
+      retention.ms: "1209600000"
+    partitions: 1
+    replicas: 2
+    topicName: whirl.telegram.backlog
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:04.112579Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: whirl.telegram.backlog
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    creationTimestamp: "2023-10-13T14:24:08Z"
+    generation: 1
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: whirl.telegram.source
+    namespace: kafka
+    resourceVersion: "65697"
+    uid: 52e9bd37-1917-42a7-94b0-9702965a0c21
+  spec:
+    config:
+      retention.ms: "259200000"
+    partitions: 1
+    replicas: 2
+    topicName: whirl.telegram.source
+  status:
+    conditions:
+    - lastTransitionTime: "2023-10-13T14:24:08.497858Z"
+      status: "True"
+      type: Ready
+    observedGeneration: 1
+    topicName: whirl.telegram.source
+kind: List
+metadata:
+  resourceVersion: ""

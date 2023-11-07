@@ -1,3 +1,18 @@
+data "vault_generic_secret" "mongo_creds" {
+  path = var.CredsPath
+}
+
+data "vault_generic_secret" "minio_backup_user" {
+  path = "secret/minio/root"
+}
+
+data "vault_generic_secret" "mongo_encryption_key" {
+  path = "secret/mongo/encryption-${var.InstanceName}"
+}
+
+
+
+
 resource "helm_release" "psmdb_operator" {
   name       = "psmdb-operator"
   namespace  = var.MongoNs
@@ -10,9 +25,7 @@ resource "helm_release" "psmdb_operator" {
   # depends_on = [null_resource.mongod_crd_deploy]
 }
 
-data "vault_generic_secret" "mongo_creds" {
-  path = var.CredsPath
-}
+
 
 
 resource "kubernetes_secret" "mongo" {
@@ -23,9 +36,6 @@ resource "kubernetes_secret" "mongo" {
   data = data.vault_generic_secret.mongo_creds.data
 }
 
-data "vault_generic_secret" "minio_backup_user" {
-  path = "secret/minio/root"
-}
 
 resource "kubernetes_secret" "mongo_backup" {
   metadata {
@@ -39,63 +49,19 @@ resource "kubernetes_secret" "mongo_backup" {
 }
 
 
-data "vault_generic_secret" "mongo_encryption_key" {
-  count = local.encryption_keys_count
-  path = "secret/mongo/encryption-${var.InstanceName}"
-}
-
 
 resource "kubernetes_secret" "mongo_encryption_key" {
-  count = local.encryption_keys_count
   metadata {
     name      = "mongo-${var.InstanceName}-mongodb-encryption-key"
     namespace = var.MongoNs
   }
   data = {
-    encryption-key = data.vault_generic_secret.mongo_encryption_key[count.index].data.key
+    encryption-key = data.vault_generic_secret.mongo_encryption_key.data.key
   }
 }
 
 
 
-
-
-resource "kubernetes_persistent_volume" "mongo_data_pv" {
-  count = local.pv_disk_count
-  metadata {
-    name = "${local.target_label}-${count.index}-pv"
-    labels = {
-      target = local.target_label
-    }
-  }
-  spec {
-    capacity = {
-      storage = var.VolumeSize
-    }
-    access_modes = ["ReadWriteOnce"]
-    claim_ref {
-      namespace = var.MongoNs
-      name = "${local.claim_prefix}-rs0-${count.index}"
-    }
-    persistent_volume_source{
-      csi {
-        driver = "pd.csi.storage.gke.io"
-        volume_handle = "projects/${var.Settings.gcpProject}/regions/${var.Settings.clusters[var.Cluster].region}/disks/${local.target_label}-${count.index}"
-      }
-    }
-  node_affinity {
-      required {
-        node_selector_term {
-          match_expressions {
-            key = "topology.gke.io/zone"
-            operator = "In"
-            values = [ "us-east4-a", "us-east4-b"]            
-          }
-        }
-      }
-    }
-  }
-}
 
 resource "helm_release" "mongo_cluster" {
   name      = "mongo-cluster"
@@ -129,7 +95,7 @@ resource "helm_release" "mongo_cluster" {
     value = var.VolumeSize
   }
   
-  #Clever hack with "IF". Remove before May's DR
+  #Clever hack with "IF"
   dynamic "set" {
     for_each = var.Cluster == "sandbox" ? [var.Cluster] : []
     content {
