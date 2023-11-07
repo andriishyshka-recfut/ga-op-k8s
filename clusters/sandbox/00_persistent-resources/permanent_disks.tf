@@ -9,10 +9,17 @@ locals {
   mongo_auth_prefix = local.settings.mongo.auth.pvcPrefix
 
   kafka_count     = local.settings.persistent_resources.permanentDisks.kafka.count
-  tarantool_count = local.settings.persistent_resources.permanentDisks.tarantool.count
   sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
   sftp            = local.settings.sftp-server
   minio_count     = local.settings.persistent_resources.permanentDisks.minio.count
+
+  tarantool_storage_count = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks * 2
+  tsc = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks 
+  tarantool_storage_prefix = local.settings.persistent_resources.permanentDisks.tarantool.storage_prefix 
+  tarantool_router_count = local.settings.persistent_resources.permanentDisks.tarantool.router_disks
+  tarantool_router_prefix = local.settings.persistent_resources.permanentDisks.tarantool.router_prefix 
+
+
   # mongoDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
   restoreDate = local.settings.persistent_resources.permanentDisks.coldBackupDate
@@ -49,10 +56,19 @@ data "google_compute_snapshot" "kafka_zookeeper_snapshot" {
   count       = local.kafka_count
 }
 
-data "google_compute_snapshot" "tarantool_snapshot" {
-  name        = "tarantool-data-dr-${local.restoreDate}"
+
+data "google_compute_snapshot" "tarantool_storage_snapshot" {
+  name        = "tarantool-vortex-cartridge-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}-bcp-${local.restoreDate}"
   most_recent = true
-  count       = local.tarantool_count
+  count       = local.tarantool_storage_count
+}
+
+
+data "google_compute_snapshot" "tarantool_router_snapshot" {
+
+  name        = "tarantool-vortex-cartridge-router-${count.index}-0-bcp-${local.restoreDate}"
+  most_recent = true
+  count       = local.tarantool_router_count
 }
 
 data "google_compute_snapshot" "sonarqube_postgres_snapshot" {
@@ -131,19 +147,32 @@ resource "google_compute_disk" "kafka_zookeeper_pv" {
 }
 
 
-resource "google_compute_disk" "tarantool_pv" {
-  name     = "tarantool-data-${count.index}"
-  count    = local.tarantool_count
+resource "google_compute_disk" "tarantool_storage_pv" {
+  name     = "tarantool-vortex-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
+  count    = local.tarantool_storage_count
   type     = "pd-balanced"
-  size     = data.google_compute_snapshot.tarantool_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.tarantool_snapshot[count.index].name
+  size     = data.google_compute_snapshot.tarantool_storage_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.tarantool_storage_snapshot[count.index].name
   labels = {
-    target = "tarantool-data"
-    id     = "tarantool-data-${count.index}"
+    target = local.tarantool_storage_prefix
+    id     = "${local.tarantool_storage_prefix}-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
   }
-  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+  zone = element([for i in range(local.tarantool_storage_count) : element(local.zones, i % 3)], count.index)
 }
 
+
+resource "google_compute_disk" "tarantool_router_pv" {
+  name     = "tarantool-vortex-router-${count.index}-0"
+  count    = local.tarantool_router_count
+  type     = "pd-balanced"
+  size     = data.google_compute_snapshot.tarantool_router_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.tarantool_router_snapshot[count.index].name
+  labels = {
+    target = local.tarantool_router_prefix
+    id     = "${local.tarantool_router_prefix}-${count.index}"
+  }
+  zone = element([for i in range(local.tarantool_storage_count) : element(local.zones, i % 3)], count.index)
+}
 
 resource "google_compute_disk" "sonarqube_postgres_pv" {
   name  = "sonarqube-postgres-${count.index}"
