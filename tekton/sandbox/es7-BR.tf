@@ -4,7 +4,7 @@ module "es7-backup" {
   Namespace            = "elastic"
   ElasticName          = "elastic"
   NamePrefix           = "xbackup"
-  BackupBucketName     = "es7"
+  BackupBucketName     = "elasticsearch-backups"
   BackupBucketBasePath = "7"
   EsService            = "elasticsearch-coor"
   EsCreds              = "elastic-credentials"
@@ -31,5 +31,5 @@ module "es7-restore" {
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/es7-restore-actions.yaml")
   Settings             = var.Settings
-  depends_on           = [module.es7-backup]
+  depends_on           = [module.elastic]
 }

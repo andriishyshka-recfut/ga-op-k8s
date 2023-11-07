@@ -8,12 +8,11 @@ locals {
   ansibleEnvs = merge(var.GkeClusterConnectionSettings, {
     ANSIBLE_STDOUT_CALLBACK = "debug"
   })
-  diskSize = var.Cluster == "production" ? "700Gi" : "230Gi"
   limit    = var.Cluster == "production" ? { "memory" : "9G", "cpu" : "5" } : { "memory" : "2G", "cpu" : "1" }
   request  = var.Cluster == "production" ? { "memory" : "3G", "cpu" : "1" } : { "memory" : "1G", "cpu" : "0.25" }
-  pv_disk_count = var.Cluster == "production" ? 0 : 3
-  use_pv = var.Cluster == "production" ? false : true
-  replicas = var.Cluster == "production" ? 5 : 3
+  pv_disk_count = var.Cluster == "production" ? 0 : var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
+  replicas = var.Cluster == "production" ? 5 : var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
+  zones = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones
 }
 
 terraform {

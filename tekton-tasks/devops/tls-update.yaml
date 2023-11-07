@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/03-tls-proxy"
+      value: "k8s/tekton/stage-6/06-tls-proxy"
     - name: branch
       value: "\\#252-beats"

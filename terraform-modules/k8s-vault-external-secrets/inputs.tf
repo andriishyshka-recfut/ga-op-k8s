@@ -2,6 +2,6 @@ variable "Cluster" {}
 variable "Color" {}
 
 locals {
-  namespaces = ["camel-k", "magescanner"]
+  namespaces = var.Cluster == "production" ? ["camel-k", "magescanner"] : ["magescanner"]
   # namespaces = ["camel-k"]
 }

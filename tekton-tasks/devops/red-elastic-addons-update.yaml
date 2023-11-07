@@ -11,7 +11,7 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/01-elastic-addons"
+      value: "k8s/tekton/red/01-elastic-addons"
     - name: branch
       value: "master"
   timeout: 1h

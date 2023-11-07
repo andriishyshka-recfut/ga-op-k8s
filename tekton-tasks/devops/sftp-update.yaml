@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/03-sftp-server"
+      value: "k8s/tekton/red/03-sftp-server"
     - name: branch
       value: "master"

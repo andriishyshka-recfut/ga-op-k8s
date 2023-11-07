@@ -1,11 +1,11 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: 01-workloads
+  name: 01-core-components
   namespace: tekton-tasks
 spec:
   workspaces:
-  - name: ws
+    - name: ws
   tasks:
     - name: namespaces
       taskRef:
@@ -15,196 +15,106 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/01-namespaces"
+          value: "k8s/tekton/stage-1/01-namespaces"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
 
     - name: minio
       taskRef:
         name: tg-run
       runAfter:
-      - namespaces
+        - namespaces
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/01-minio"
+          value: "k8s/tekton/stage-1/01-minio"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-
-    - name: mongo
-      taskRef:
-        name: tg-run
-      runAfter:
-      - namespaces
-      - minio
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/01-mongo"
-        - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-
-    - name: kafka
-      taskRef:
-        name: tg-run
-      runAfter:
-      - namespaces
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/01-kafka"
-        - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
 
     - name: redis
       taskRef:
         name: tg-run
       runAfter:
-      - namespaces
+        - namespaces
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/01-redis"
+          value: "k8s/tekton/stage-1/01-redis"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-
-    - name: camel-k
-      taskRef:
-        name: tg-run
-      runAfter:
-      - namespaces
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/01-camel-k"
-        - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-
+          value: "\\#420-sandbox-dr-2023-11-03"
 
     - name: kubescape
       taskRef:
         name: tg-run
       runAfter:
-      - namespaces
+        - namespaces
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/01-kubescape"
+          value: "k8s/tekton/stage-1/01-kubescape"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-
-    - name: monitoring-elastic
-      taskRef:
-        name: tg-run
-      runAfter:
-      - namespaces
-      - minio
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/01-monitoring-elastic"
-        - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-    # - name: monitoring-elastic-backup-restore
-    #   taskRef:
-    #     name: tg-run
-    #   runAfter:
-    #   - namespaces
-    #   - minio
-    #   - monitoring-elastic
-    #   workspaces:
-    #     - name: ws
-    #       workspace: ws
-    #   params:
-    #     - name: path
-    #       value: "k8s/tekton/01-monitoring-backup-restore"
-    #     - name: branch
-    #       value: "\\#395-sandbox-dr-2023-10-06"
-    - name: monitoring
-      taskRef:
-        name: tg-run
-      runAfter:
-      - namespaces
-      - minio
-      # - monitoring-elastic-backup-restore
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/01-monitoring"
-        - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-
-    - name: monitoring-addons
-      taskRef:
-        name: tg-run
-      runAfter:
-      - monitoring
-      # - monitoring-elastic-backup-restore
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/01-monitoring-addons"
-        - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
 
     - name: external-secrets
       taskRef:
         name: tg-run
       runAfter:
-      - namespaces
-      - monitoring
+        - namespaces
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/01-external-secrets"
+          value: "k8s/tekton/stage-1/01-external-secrets"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
 
-    - name: mirroring
+    - name: monitoring-elastic
       taskRef:
         name: tg-run
       runAfter:
-      - namespaces
-      - mongo
-      - kafka
-      - monitoring
+        - namespaces
+        - minio
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/01-mirroring"
+          value: "k8s/tekton/stage-1/01-monitoring-elastic"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
+
+    - name: monitoring
+      taskRef:
+        name: tg-run
+      runAfter:
+        - namespaces
+        - minio
+        - monitoring-elastic-backup-restore
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-1/01-monitoring"
+        - name: branch
+          value: "\\#420-sandbox-dr-2023-11-03"
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: 02-stop-apps
+  name: 02-stop-workloads
   namespace: tekton-tasks
 spec:
   workspaces:
-  - name: ws
+    - name: ws
   tasks:
     - name: stop-apps
       taskRef:
@@ -214,21 +124,21 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/02-stop-apps"
+          value: "k8s/tekton/stage-2/02-stop-apps"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
 
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: 00-stop-sandbox-data-services
+  name: 03-stop-data-services
   namespace: tekton-tasks
 spec:
   workspaces:
-  - name: ws
+    - name: ws
   tasks:
-    - name: stop-apps
+    - name: stop-data-services
       taskRef:
         name: tg-run
       workspaces:
@@ -236,21 +146,21 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/00-stop-data-services"
+          value: "k8s/tekton/stage-3/03-stop-data-services"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
 
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: 03-data-migration
+  name: 04-disk-snapshots
   namespace: tekton-tasks
 spec:
   workspaces:
-  - name: ws
+    - name: ws
   tasks:
-    - name: data-migration
+    - name: disk-snapshots
       taskRef:
         name: tg-run
       workspaces:
@@ -258,20 +168,21 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/02-data-migration"
+          value: "k8s/tekton/stage-4/04-disk-snapshots"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: 04-post-switching
+  name: 05-deploy-data-services
   namespace: tekton-tasks
 spec:
   workspaces:
-  - name: ws
+    - name: ws
   tasks:
-    - name: stop-mirrorings
+    - name: mongo
       taskRef:
         name: tg-run
       workspaces:
@@ -279,60 +190,113 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-stop-mirrorings"
+          value: "k8s/tekton/stage-5/05-mongo"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-    #- name: monitoring-backup-restore
-    #  taskRef:
-    #    name: tg-run
-      # runAfter:
-      #   - fluxcd       
-    #  workspaces:
-    #    - name: ws
-    #      workspace: ws
-    #  params:
-    #    - name: path
-    #      value: "k8s/tekton/03-logs-restore"
-    #    - name: branch
-    #      value: "\\#395-sandbox-dr-2023-10-06"
-    - name: tls-proxy
+          value: "\\#420-sandbox-dr-2023-11-03"
+
+    - name: kafka
       taskRef:
         name: tg-run
-      # runAfter:
-      #   - fluxcd       
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-tls-proxy"
+          value: "k8s/tekton/stage-5/05-kafka"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
+
+    - name: minio-helm
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-5/05-minio-helm"
+        - name: branch
+          value: "\\#420-sandbox-dr-2023-11-03"
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 06-post-switching
+  namespace: tekton-tasks
+spec:
+  workspaces:
+    - name: ws
+  tasks:
+
+    - name: minio-bucket-subdomains
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-6/06-post-minio"
+        - name: branch
+          value: "\\#420-sandbox-dr-2023-11-03"
+
+    - name: restore-system-indices
+      taskRef:
+        name: tg-run
+      runAfter:
+        - minio-bucket-subdomains
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-6/06-restore-system-indices"
+        - name: branch
+          value: "\\#420-sandbox-dr-2023-11-03"
+
     - name: monitoring-post
       taskRef:
         name: tg-run
       runAfter:
-        - tls-proxy
-        - monitoring-backup-restore       
+        - restore-system-indices
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-monitoring-post"
+          value: "k8s/tekton/stage-6/06-monitoring-post"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
+
     - name: istio
       taskRef:
         name: tg-run
+      runAfter:
+        - restore-system-indices
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-istio"
+          value: "k8s/tekton/stage-6/06-istio"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
+
+    - name: tls-proxy
+      taskRef:
+        name: tg-run
+      runAfter:
+        - istio
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-6/06-tls-proxy"
+        - name: branch
+          value: "\\#420-sandbox-dr-2023-11-03"
+
     - name: ingress
       taskRef:
         name: tg-run
@@ -343,92 +307,93 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-ingress"
+          value: "k8s/tekton/stage-6/06-ingress"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-    - name: minio-buckets
+          value: "\\#420-sandbox-dr-2023-11-03"
+
+    - name: tor-controller
       taskRef:
         name: tg-run
       runAfter:
         - ingress
+        - tls-proxy
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-post-minio"
+          value: "k8s/tekton/stage-6/06-tor-controller"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
+
     - name: fluxcd
       taskRef:
         name: tg-run
       runAfter:
-        - monitoring-backup-restore
+        - tor-controller
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-fluxcd"
+          value: "k8s/tekton/stage-6/06-fluxcd"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
+
     - name: kiali
       taskRef:
         name: tg-run
       runAfter:
-        - istio
+        - fluxcd
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-kiali"
+          value: "k8s/tekton/stage-6/06-kiali"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-    - name: tarantool
-      taskRef:
-        name: tg-run
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/03-tarantool"
-        - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
+
     - name: etl-operator
       taskRef:
         name: tg-run
+      runAfter:
+        - fluxcd
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-etl-operator"
+          value: "k8s/tekton/stage-6/06-etl-operator"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
-    - name: tor-operator
+          value: "\\#420-sandbox-dr-2023-11-03"
+
+    - name: 06-restore-old-filebeats
       taskRef:
         name: tg-run
+      runAfter:
+        - fluxcd
       workspaces:
         - name: ws
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/03-tor-controller"
+          value: "k8s/tekton/stage-6/06-restore-old-filebeats"
         - name: branch
-          value: "\\#395-sandbox-dr-2023-10-06"
+          value: "\\#420-sandbox-dr-2023-11-03"
+
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: 05-op
+  name: 07-cleanup
   namespace: tekton-tasks
 spec:
   workspaces:
-  - name: ws
+    - name: ws
   tasks:
-    - name: op
+    - name: remove-crashloop-pods
       taskRef:
         name: tg-run
       workspaces:
@@ -436,6 +401,6 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/op"
+          value: "k8s/tekton/stage-7/07-restart-crashloops"
         - name: branch
           value: "master"

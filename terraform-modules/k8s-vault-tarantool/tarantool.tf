@@ -7,6 +7,14 @@ data "vault_generic_secret" "tarantool_credentials" {
 }
 
 
+data "google_compute_disk" "tarantool_data_pv" {
+  count   = local.pv_disk_count
+  name    = "${local.pv_prefix}-${count.index}"
+  project = var.Settings.gcpProject
+  zone    = element([for i in range(local.pv_disk_count) : element(local.zones, i % 3)], count.index)
+}
+
+
 locals {
   accessKey     = jsondecode(data.vault_generic_secret.minio_credentials.data["tarantool"]).accessKey
   secretKey     = jsondecode(data.vault_generic_secret.minio_credentials.data["tarantool"]).secretKey
@@ -227,51 +235,51 @@ resource "kubernetes_stateful_set" "tarantool_stateful_set" {
 
         }
 
-        dynamic "init_container" {
-          for_each = var.Cluster == "production" ? [var.Cluster] : []
+        # dynamic "init_container" {
+        #   for_each = var.Cluster == "production" ? [var.Cluster] : []
 
-          content {
-            name  = "init-minio-sync"
-            image = "minio/mc"
-            args = [
-              "mirror",
-              "--overwrite",
-              "--remove",
-              "minio/${var.Settings.clusters[var.Cluster].tarantool.backupBucket}",
-              "/home/tarantool/data",
-            ]
-            volume_mount {
-              name       = "tarantool-data"
-              mount_path = "/home/tarantool/data"
-            }
+        #   content {
+        #     name  = "init-minio-sync"
+        #     image = "minio/mc"
+        #     args = [
+        #       "mirror",
+        #       "--overwrite",
+        #       "--remove",
+        #       "minio/${var.Settings.clusters[var.Cluster].tarantool.backupBucket}",
+        #       "/home/tarantool/data",
+        #     ]
+        #     volume_mount {
+        #       name       = "tarantool-data"
+        #       mount_path = "/home/tarantool/data"
+        #     }
 
-            env {
-              name = "MINIO_ACCESS_KEY"
-              value_from {
-                secret_key_ref {
-                  name = "minio-credentials"
-                  key  = "accesskey"
-                }
-              }
-            }
+        #     env {
+        #       name = "MINIO_ACCESS_KEY"
+        #       value_from {
+        #         secret_key_ref {
+        #           name = "minio-credentials"
+        #           key  = "accesskey"
+        #         }
+        #       }
+        #     }
 
-            env {
-              name = "MINIO_SECRET_KEY"
-              value_from {
-                secret_key_ref {
-                  name = "minio-credentials"
-                  key  = "secretkey"
-                }
-              }
-            }
+        #     env {
+        #       name = "MINIO_SECRET_KEY"
+        #       value_from {
+        #         secret_key_ref {
+        #           name = "minio-credentials"
+        #           key  = "secretkey"
+        #         }
+        #       }
+        #     }
 
-            env {
-              name  = "MC_HOST_minio"
-              value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
-            }
+        #     env {
+        #       name  = "MC_HOST_minio"
+        #       value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
+        #     }
 
-          }
-        }
+        #   }
+        # }
       }
 
 
@@ -308,39 +316,37 @@ resource "kubernetes_stateful_set" "tarantool_stateful_set" {
         name = "tarantool-data"
       }
 
-      dynamic "spec" {
-        for_each = var.Cluster == "production" ? [var.Cluster] : []
-        content {
-          access_modes       = ["ReadWriteOnce"]
-          storage_class_name = "kms-encrypted"
+      # dynamic "spec" {
+      #   for_each = var.Cluster == "production" ? [var.Cluster] : []
+      #   content {
+      #     access_modes       = ["ReadWriteOnce"]
+      #     storage_class_name = "kms-encrypted"
 
-          resources {
-            requests = {
-              storage = var.Settings.clusters[var.Cluster].tarantool.pvc_data_size
-            }
-          }
+      #     resources {
+      #       requests = {
+      #         storage = var.Settings.clusters[var.Cluster].tarantool.pvc_data_size
+      #       }
+      #     }
 
-        }
-      }
+      #   }
+      # }
 
-      dynamic "spec" {
-        for_each = var.Cluster == "sandbox" ? [var.Cluster] : []
-        content {
-          access_modes       = ["ReadWriteOnce"]
-          storage_class_name = null
+      spec {
+        access_modes       = ["ReadWriteOnce"]
+        storage_class_name = null
 
-          selector {
-            match_labels = {
-              target = "tarantool-data"
-            }
-          }
-
-          resources {
-            requests = {
-              storage = var.Settings.clusters[var.Cluster].tarantool.pvc_data_size
-            }
+        selector {
+          match_labels = {
+            target = "tarantool-data"
           }
         }
+
+        resources {
+          requests = {
+            storage = data.google_compute_disk.tarantool_data_pv[0].size
+          }
+        }
+        volume_name = "${kubernetes_persistent_volume.tarantool_data_pv[0].metadata.0.name}"
       }
     }
   }
@@ -368,26 +374,26 @@ resource "kubernetes_service" "tarantool_service" {
 
 
 resource "kubernetes_persistent_volume" "tarantool_data_pv" {
-  count = local.pv_disk_count
+  count   = local.pv_disk_count
   metadata {
-    name = "tarantool-data-${count.index}-pv"
+    name = "${local.pv_prefix}-${count.index}-pv"
     labels = {
       target = "tarantool-data"
     }
   }
   spec {
     capacity = {
-      storage = var.Settings.clusters[var.Cluster].tarantool.pvc_data_size
+      storage = data.google_compute_disk.tarantool_data_pv[count.index].size
     }
     access_modes = ["ReadWriteOnce"]
     claim_ref {
       namespace = local.namespace
-      name      = "tarantool-data-tarantool-${count.index}"
+      name      = "${local.pv_prefix}-tarantool-${count.index}"
     }
     persistent_volume_source {
       csi {
         driver        = "pd.csi.storage.gke.io"
-        volume_handle = "projects/${var.Settings.gcpProject}/regions/${var.Settings.clusters[var.Cluster].region}/disks/tarantool-data-${count.index}"
+        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.tarantool_data_pv[count.index].zone}/disks/${local.pv_prefix}-${count.index}"
       }
     }
     node_affinity {
@@ -396,7 +402,7 @@ resource "kubernetes_persistent_volume" "tarantool_data_pv" {
           match_expressions {
             key      = "topology.gke.io/zone"
             operator = "In"
-            values   = ["us-east4-a", "us-east4-b"]
+            values   = [data.google_compute_disk.tarantool_data_pv[count.index].zone]
           }
         }
       }
