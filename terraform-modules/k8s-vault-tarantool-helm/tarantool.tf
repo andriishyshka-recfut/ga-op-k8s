@@ -50,7 +50,11 @@ resource "helm_release" "tarantool_cartridge" {
     name = "tarantool.roles[0].replicasets"
     value = local.storage_count
   }
-  depends_on = [ helm_release.tarantool_operator ]
+  depends_on = [ 
+    helm_release.tarantool_operator, 
+    kubernetes_persistent_volume_claim.tarantool_router_pvc, 
+    kubernetes_persistent_volume_claim.tarantool_storage_pvc 
+  ]
 }
 
 

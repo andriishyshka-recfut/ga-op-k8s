@@ -171,7 +171,7 @@ resource "google_compute_disk" "tarantool_router_pv" {
     target = local.tarantool_router_prefix
     id     = "${local.tarantool_router_prefix}-${count.index}"
   }
-  zone = element([for i in range(local.tarantool_storage_count) : element(local.zones, i % 3)], count.index)
+  zone = element([for i in range(local.tarantool_router_count) : element(local.zones, i % 3)], count.index)
 }
 
 resource "google_compute_disk" "sonarqube_postgres_pv" {
