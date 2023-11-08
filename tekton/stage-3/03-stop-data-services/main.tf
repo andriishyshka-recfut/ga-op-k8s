@@ -7,7 +7,8 @@ data "vault_generic_secret" "k8s_auth_active" {
 }
 
 locals {
-  command = <<COMMAND
+
+  stop_kafka = <<COMMAND
     set -x
 
     echo "Stopping Kafka deployment"
@@ -20,8 +21,11 @@ locals {
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
     scale deploy -n kafka --replicas=0 {}
-    sleep 29
+COMMAND
 
+
+  delete_kafka_resources = <<COMMAND
+    set -x
 
     echo "Deleting Kafka pods"
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
@@ -36,21 +40,6 @@ locals {
     sleep 29
 
 
-    echo "Transfering Kafka topics to new cluster"
-    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true  \
-    get kafkatopic -n kafka | grep -v -e NAME | awk '{print $1}'\
-    | xargs -n 1 -I{} \
-    sh -c "kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true  \
-    get kafkatopic -n kafka {} -o yaml | kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true apply -f -"
-    sleep 29
-
-
     echo "Deleting Kafka PVCs"
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
@@ -61,8 +50,11 @@ locals {
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
     delete pvc -n kafka  {}
-    sleep 29
+COMMAND
 
+
+  stop_mongo = <<COMMAND
+    set -x
 
     echo "Stopping mongo operator"
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
@@ -81,20 +73,10 @@ locals {
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
     scale statefulset -n mongo --replicas=0 --all
+COMMAND
 
-
-    echo "Deleting mongo PVCs"
-    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true  \
-    get pvc -n mongo | grep -e data-mongo- | awk '{print $1}'\
-    | xargs -n 1 -I{} \
-    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true  \
-    delete pvc -n mongo  {}
-    sleep 29
-
+  stop_mongo_auth = <<COMMAND
+    set -x
 
     echo "Stopping mongo-auth operator"
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
@@ -114,8 +96,28 @@ locals {
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
     scale statefulset -n mongo-auth --replicas=0 --all
-    sleep 29
+COMMAND
 
+
+
+  delete_mongo_resources = <<COMMAND
+    set -x
+
+    echo "Deleting mongo PVCs"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get pvc -n mongo | grep -e data-mongo- | awk '{print $1}'\
+    | xargs -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    delete pvc -n mongo  {}
+COMMAND
+
+
+  delete_mongo_auth_resources = <<COMMAND
+    set -x
 
     echo "Deleting mongo-auth PVCs"
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
@@ -127,18 +129,79 @@ locals {
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
     delete pvc -n mongo-auth  {}
-
 COMMAND
+
+
 }
 
 
-resource "null_resource" "stop_services" {
+
+resource "null_resource" "stop_kafka" {
 
   triggers = {
-    command = md5(local.command)
+    command = md5(local.stop_kafka)
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
-    command     = local.command
+    command     = local.stop_kafka
   }
+}
+
+resource "null_resource" "delete_kafka_resources" {
+
+  triggers = {
+    command = md5(local.delete_kafka_resources)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.delete_kafka_resources
+  }
+  depends_on = [ null_resource.stop_kafka ]
+}
+
+resource "null_resource" "stop_mongo" {
+
+  triggers = {
+    command = md5(local.stop_mongo)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_mongo
+  }
+}
+
+resource "null_resource" "stop_mongo_auth" {
+
+  triggers = {
+    command = md5(local.stop_mongo_auth)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_mongo_auth
+  }
+}
+
+resource "null_resource" "delete_mongo_resources" {
+
+  triggers = {
+    command = md5(local.delete_mongo_resources)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.delete_mongo_resources
+  }
+  depends_on = [ null_resource.stop_mongo ]
+}
+
+
+resource "null_resource" "delete_mongo_auth_resources" {
+
+  triggers = {
+    command = md5(local.delete_mongo_auth_resources)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.delete_mongo_auth_resources
+  }
+  depends_on = [ null_resource.stop_mongo_auth ]
 }
