@@ -33,6 +33,23 @@ data "google_compute_disk" "minio_data_pv" {
   zone    = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
 }
 
+data "google_compute_disk" "tarantool_storage_pv" {
+  count = local.tarantool_storage_count
+  name    = "tarantool-vortex-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
+  project = var.Settings.gcpProject
+  zone = element([for i in range(local.tarantool_storage_count) : element(local.zones, i % 3)], count.index)
+}
+
+
+data "google_compute_disk" "tarantool_router_pv" {
+  count = local.tarantool_router_count
+  name    = "tarantool-vortex-router-${count.index}-0"
+  project = var.Settings.gcpProject
+  zone = element([for i in range(local.tarantool_router_count) : element(local.zones, i % 3)], count.index)
+}
+
+
+
 
 resource "google_compute_snapshot" "kafka_snapshot" {
   count       = local.kafka_count
@@ -92,6 +109,32 @@ resource "google_compute_snapshot" "mongo_auth_snapshot" {
   labels = {
     target = "mongo-auth-data"
     id     = "${local.mongo_auth_prefix}-${count.index}"
+  }
+  storage_locations = [local.region]
+}
+
+
+resource "google_compute_snapshot" "tarantool_router_snapshot" {
+  count       = local.tarantool_router_count
+  name        = "${local.tarantool_router_prefix}-${count.index}-0-dr-${local.backupdate}"
+  source_disk = data.google_compute_disk.tarantool_router_pv[count.index].self_link
+  zone        = data.google_compute_disk.tarantool_router_pv[count.index].zone
+  labels = {
+    target = local.tarantool_router_count
+    id     = "${local.tarantool_router_prefix}-${count.index}-0"
+  }
+  storage_locations = [local.region]
+}
+
+
+resource "google_compute_snapshot" "tarantool_storage_snapshot" {
+  count       = local.tarantool_storage_count
+  name        = "${local.tarantool_storage_prefix}-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}-dr-${local.backupdate}"
+  source_disk = data.google_compute_disk.tarantool_storage_pv[count.index].self_link
+  zone        = data.google_compute_disk.tarantool_storage_pv[count.index].zone
+  labels = {
+    target = local.tarantool_storage_prefix
+    id     = "${local.tarantool_storage_prefix}-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
   }
   storage_locations = [local.region]
 }
