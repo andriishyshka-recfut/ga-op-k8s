@@ -355,7 +355,7 @@ tarantool:
 
 # External configuration for docker image registries' credentials
 imagePullSecrets:
-  - name: harbor
+  - harbor
 
 
 # Diagnostic mode in the deployment
