@@ -40,7 +40,7 @@ resource "helm_release" "tarantool_cartridge" {
   }
   set{
     name = "tarantool.image.tag"
-    value = "v1.0.1"
+    value = "v1.0.2"
   }
     set{
     name = "tarantool.auth.password"
@@ -50,6 +50,13 @@ resource "helm_release" "tarantool_cartridge" {
     name = "tarantool.roles[0].replicasets"
     value = local.storage_count
   }
+
+  set{
+    name = "tarantool.roles[0].persistence.spec.resources.requests.storage"
+    value = "20Gi"
+  }
+
+
   depends_on = [ 
     helm_release.tarantool_operator, 
     kubernetes_persistent_volume_claim.tarantool_router_pvc, 
