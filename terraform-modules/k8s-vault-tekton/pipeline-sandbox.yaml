@@ -194,9 +194,23 @@ spec:
         - name: branch
           value: "\\#420-sandbox-dr-2023-11-03"
 
+    - name: kafka-topics
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-5/05-clone-kafka-topics"
+        - name: branch
+          value: "\\#420-sandbox-dr-2023-11-03"
+
     - name: kafka
       taskRef:
         name: tg-run
+      runAfter:
+        - kafka-topics
       workspaces:
         - name: ws
           workspace: ws
