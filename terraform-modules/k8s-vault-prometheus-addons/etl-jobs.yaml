@@ -28,6 +28,19 @@ spec:
         color: ${cluster_color}
         component: stream-processor
         severity: critical
+    - alert: ETLPodsNotSucceeded
+      annotations:
+        description: |
+          ETL pods is in Failed Pending or Unknown phase more than 5 pods
+        summary: ETL pods is in Failed Pending or Unknown phase
+      expr: |
+        sum(kube_pod_status_phase{namespace="etl",phase=~"Failed|Pending|Unknown"}) > 3
+      for: 30m
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
     - alert: ETLMaidRFAliasesWeekend
       annotations:
         description: |
