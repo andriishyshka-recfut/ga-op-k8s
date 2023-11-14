@@ -16,6 +16,7 @@ labels: {}
 # Annotations to add to all deployed objects
 annotations:
   sidecar.istio.io/inject: "false"
+  co.elastic.logs/enabled: "false"
 
 # The default storage class overrides by tarantool.roles.*.persistence.storageClass
 storageClass: ""
@@ -34,7 +35,7 @@ tarantool:
   bucketCount: 30000
   # The default tarantool memtx memory value, overrides by tarantool.roles.*.memtxMemory
   # see: https://www.tarantool.io/ru/doc/latest/reference/configuration/#cfg-storage-memtx-memory
-  memtxMemory: "2Gi"
+  memtxMemory: "3Gi"
   # Option responsible for retrying Cartridge «Can’t ping myself» error on startup, overrides by tarantool.roles.*.  probeUriTimeout
   # see: https://www.tarantool.io/ru/doc/latest/book/cartridge/CHANGELOG/#id41
   probeUriTimeout: 60
@@ -195,6 +196,13 @@ tarantool:
               storage: 5Gi
       service:
         annotations: {}
+      # resources:
+      #   limits:
+      #     cpu: 150m
+      #     memory: 3512Mi
+      #   requests:
+      #     cpu: 150m
+      #     memory: 3512Mi
     # Name of role, required field
     - name: router
       # Count of replicasets in that role, each replicaset is a statefulset, required field
@@ -355,7 +363,8 @@ tarantool:
 
 # External configuration for docker image registries' credentials
 imagePullSecrets:
-  - harbor
+  - name: harbor
+
 
 
 # Diagnostic mode in the deployment

@@ -4,6 +4,7 @@ data "vault_generic_secret" "cppfeed_creds" {
 }
 
 resource "kubernetes_secret" "cppfeed_creds" {
+  count = local.installCount
 
   metadata {
     name      = "weekly-cpp-feed"
@@ -19,7 +20,7 @@ data "vault_generic_secret" "cppfeed_sa" {
   path = "secret/sa/camel-cppfeed"
 }
 resource "kubernetes_secret" "cppfeed_sa_creds" {
-
+count = local.installCount
   metadata {
     name      = "google-service-account-credentials"
     namespace = local.camelNs

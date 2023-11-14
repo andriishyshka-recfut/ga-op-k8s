@@ -48,7 +48,7 @@ resource "helm_release" "tarantool_cartridge" {
   }
   set{
     name = "tarantool.roles[0].replicasets"
-    value = local.storage_count
+    value = local.tsc
   }
 
   set{

@@ -4,6 +4,7 @@ data "vault_generic_secret" "gmail_creds" {
 }
 
 resource "kubernetes_secret" "gmail_creds" {
+  count = local.installCount
 
   metadata {
     name      = "gmail-credentials"
