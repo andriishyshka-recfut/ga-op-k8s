@@ -86,11 +86,11 @@ logstashJavaOpts: "-Xmx4g -Xms4g"
 
 resources:
   requests:
-    cpu: "500m"
-    memory: "4400Mi"
+    cpu: "750m"
+    memory: "6000Mi"
   limits:
-    cpu: "2000m"
-    memory: "8800Mi"
+    cpu: "1000m"
+    memory: "8000Mi"
 
 persistence:
   enabled: true
