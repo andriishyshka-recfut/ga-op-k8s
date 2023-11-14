@@ -103,6 +103,7 @@ for template in check["index_templates"]:
 
 for template in work_templates:
     if template not in site_templates:
+        print(template)
         new_template = update_template(filebeat_template,template)
         do_request("save", new_template, template)
         do_request("ilm", name=template, ilm=ilm_template)

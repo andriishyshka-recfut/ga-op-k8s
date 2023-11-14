@@ -1,7 +1,0 @@
-Topic: minion.geo Group: geo Partition: 0 L-Offset: 17831580 -> 17833072 H-Offset:  Size: 11751326 -> 11749834 (diff 1492) Lag: 
-Topic: whirl.telegram.source Group: whirl Partition: 0 L-Offset: 3181418 -> 3536017 H-Offset:  Size: 585765 -> 231166 (diff 354599) Lag: 
-Topic: dome.beat.darkmarket Group: beat Partition: 0 L-Offset: 103647 -> 104007 H-Offset:  Size: 54641 -> 54281 (diff 360) Lag: 
-Topic: dome.beat.cardingmafia Group: beat Partition: 0 L-Offset: 240863 -> 242693 H-Offset:  Size: 91469 -> 89639 (diff 1830) Lag: 
-Topic: dome.beat.blackhatworld Group: beat Partition: 0 L-Offset: 762012 -> 781394 H-Offset:  Size: 307949 -> 288567 (diff 19382) Lag: 
-Topic: minion.beat.recnac Group: beat Partition: 0 L-Offset: 9203603 -> 9381613 H-Offset:  Size: 4334964 -> 4156954 (diff 178010) Lag: 
-Topic: minion.beat.sagittarius Group: <not associated> Partition: 0 L-Offset: 1333662 -> 1116988 H-Offset:  Size: 72153 -> 288827 (diff -216674) Lag: 

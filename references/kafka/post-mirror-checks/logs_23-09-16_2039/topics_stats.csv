@@ -1,8 +1,0 @@
-Topic                  	Group           	Partition	Low                 	High	Size                            	Lag
-minion.geo             	geo             	0        	17831580 -> 17833072	    	11751326 -> 11749834 (diff 1492)
-whirl.telegram.source  	whirl           	0        	3181418 -> 3536017  	    	585765 -> 231166 (diff 354599)
-dome.beat.darkmarket   	beat            	0        	103647 -> 104007    	    	54641 -> 54281 (diff 360)
-dome.beat.cardingmafia 	beat            	0        	240863 -> 242693    	    	91469 -> 89639 (diff 1830)
-dome.beat.blackhatworld	beat            	0        	762012 -> 781394    	    	307949 -> 288567 (diff 19382)
-minion.beat.recnac     	beat            	0        	9203603 -> 9381613  	    	4334964 -> 4156954 (diff 178010)
-minion.beat.sagittarius	<not associated>	0        	1333662 -> 1116988  	    	72153 -> 288827 (diff -216674)
