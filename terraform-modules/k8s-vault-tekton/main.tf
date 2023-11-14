@@ -115,7 +115,7 @@ resource "null_resource" "crds" {
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipeline-${var.Cluster}.yaml \
+     apply -f ${path.module}/pipeline.yaml \
     --namespace=${local.tektonNs}
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \

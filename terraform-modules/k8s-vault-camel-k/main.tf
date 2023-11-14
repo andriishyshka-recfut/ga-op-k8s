@@ -32,6 +32,7 @@ DOCKER
 }
 
 resource "helm_release" "kamel" {
+  count = local.installCount
   name       = "camel-k"
   chart      = "camel-k"
   repository = "https://apache.github.io/camel-k/charts"
@@ -48,7 +49,7 @@ resource "helm_release" "kamel" {
 }
 
 resource "null_resource" "harbor_creds" {
-
+count = local.installCount
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<COMMAND

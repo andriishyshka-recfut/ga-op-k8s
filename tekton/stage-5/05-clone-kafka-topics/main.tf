@@ -14,7 +14,7 @@ locals {
     kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true create -f ${path.module}/kafka-topic.yaml
-    sleep 29
+    sleep 10
 COMMAND
 
 

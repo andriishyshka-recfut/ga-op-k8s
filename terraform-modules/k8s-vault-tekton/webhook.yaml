@@ -26,13 +26,13 @@ spec:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
     metadata:
-      generateName: op-pipeline-run-
+      generateName: 07-op-restart-crashloops
     spec:
       workspaces:
       - name: ws
         emptyDir: {}
       pipelineRef:
-        name: 05-op
+        name: 07-cleanup
 ---
 apiVersion: v1
 kind: ServiceAccount

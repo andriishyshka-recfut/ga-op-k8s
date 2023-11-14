@@ -15,6 +15,7 @@ data "external" "generate_jks" {
 
 
 resource "kubernetes_secret" "es_credentials" {
+  count = local.installCount
   metadata {
     name      = "jks"
     namespace = local.camelNs
@@ -36,6 +37,7 @@ data "vault_generic_secret" "mysql_credentials" {
 }
 
 resource "kubernetes_secret" "mysql_credentials" {
+  count = local.installCount
   metadata {
     name      = "mysql"
     namespace = local.camelNs

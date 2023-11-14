@@ -27,7 +27,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: jupyter
-          image: jupyter/all-spark-notebook:x86_64-notebook-6.5.4
+          image: jupyter/all-spark-notebook:x86_64-notebook-7.0.6
           volumeMounts:
             - name: users
               mountPath: "/home/jovyan/.jupyter/jupyter_server_config.py"

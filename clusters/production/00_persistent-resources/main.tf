@@ -18,9 +18,9 @@ module "infra-persistent" {
   Settings = var.Settings
   Cluster  = "production"
 
-  providers = {
-    google = google
-  }
+  # providers = {
+  #   google = google
+  # }
 }
 
 # module "dns" {
