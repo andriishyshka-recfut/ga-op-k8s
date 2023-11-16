@@ -13,4 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/stage-6/06-tls-proxy"
     - name: branch
-      value: "\\#252-beats"
+      value: "master"
