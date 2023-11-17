@@ -221,13 +221,9 @@ alertmanager:
           :chart_with_upwards_trend: *<{{ .GeneratorURL }}|Graph>*
           {{- if .Annotations.runbook }}   :notebook: *<{{ .Annotations.runbook }}|Runbook>*{{ end }}
       {{ end }}
-      *Alert details*:
       {{ range .Alerts }}
       *Alert:* {{ .Annotations.summary }}
       *Description:* {{ .Annotations.description }}
-      *Details:*
-        {{ range .Labels.SortedPairs -}} • *{{ .Name }}:* `{{ .Value }}`
-        {{ end }}
       {{ end }}
       {{ end }}
 
