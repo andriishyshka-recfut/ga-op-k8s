@@ -1,0 +1,9 @@
+apiVersion: v1
+description: Helm chart for Auditbeat
+home: https://gitlab.regemini.com/op/k8s/-/tree/master/terraform-modules/k8s-vault-elastic-beats-helm/charts/auditbeat
+name: auditbeat
+version: 7.17.13
+appVersion: 7.17.13
+sources:
+  - https://raw.githubusercontent.com/elastic/beats/7.17/deploy/kubernetes/auditbeat-kubernetes.yaml
+icon: https://helm.elastic.co/icons/beats.png

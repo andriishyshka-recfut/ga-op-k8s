@@ -1,0 +1,212 @@
+---
+# Deploy a auditbeat instance per node for node metrics retrieval
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "auditbeat.fullname" . }}
+  labels:
+    app: "{{ template "auditbeat.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    {{- if .Values.daemonset.labels }}
+    {{- range $key, $value := .Values.daemonset.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- else }}
+    {{- range $key, $value := .Values.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+  {{- if .Values.daemonset.annotations }}
+  annotations:
+    {{- range $key, $value := .Values.daemonset.annotations }}
+      {{ $key }}: {{ $value | quote }}
+      {{- end }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "auditbeat.fullname" . }}"
+      release: {{ .Release.Name | quote }}
+  updateStrategy:
+    {{- if eq .Values.updateStrategy "RollingUpdate" }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.daemonset.maxUnavailable }}
+    {{- end }}
+    type: {{ .Values.updateStrategy }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "auditbeat.fullname" . }}"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{/* This forces a restart if the configmap has changed */}}
+        {{- if or  .Values.filebeatConfig .Values.daemonset.filebeatConfig }}
+        configChecksum: {{ include (print .Template.BasePath "/configmap.yaml") . | sha256sum | trunc 63 }}
+        {{- end }}
+      name: "{{ template "auditbeat.fullname" . }}"
+    spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName  }}
+      {{- end }}
+      serviceAccountName: {{ template "auditbeat.serviceAccount" . }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriod }}
+      {{- if .Values.daemonset.hostNetworking }}
+      hostNetwork: false
+      hostPID: true  # Required by auditd module
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      {{- if .Values.dnsConfig }}
+      dnsConfig: {{ toYaml .Values.dnsConfig | nindent 8 }}
+      {{- end }}
+      {{- if .Values.hostAliases | default .Values.daemonset.hostAliases }}
+      hostAliases: {{ toYaml ( .Values.hostAliases | default .Values.daemonset.hostAliases ) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+      {{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      tolerations:
+        - key: auditbeat
+          operator: Exists
+          effect: NoSchedule
+      {{- if .Values.extraInitContainers }}
+      initContainers:
+      # All the other beats accept a string here while
+      # filebeat accepts a valid yaml array. We're keeping
+      # this as a backwards compatible change, while adding
+      # also a way to pass a string as other templates to
+      # make these implementations consistent.
+      # https://github.com/elastic/helm-charts/issues/490
+      {{- if eq "string" (printf "%T" .Values.extraInitContainers) }}
+      {{ tpl .Values.extraInitContainers . | indent 8 }}
+      {{- else }}
+      {{ toYaml .Values.extraInitContainers | indent 8 }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: "auditbeat"
+          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          args: [
+            "-c", "/usr/share/auditbeat/auditbeat.yml",
+            "-e",
+          ]
+          {{- if .Values.livenessProbe }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          {{- end }}
+          resources:
+{{ toYaml ( .Values.resources | default .Values.daemonset.resources )  | indent 12 }}
+          lifecycle:
+{{ toYaml .Values.lifecycle | nindent 12 }}
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+{{- if .Values.extraEnvs | default .Values.daemonset.extraEnvs }}
+{{ toYaml ( .Values.extraEnvs | default .Values.daemonset.extraEnvs ) | indent 12 }}
+{{- end }}
+          envFrom: {{ toYaml ( .Values.envFrom | default .Values.daemonset.envFrom ) | nindent 12 }}
+          securityContext: {{ toYaml ( .Values.podSecurityContext | default .Values.daemonset.securityContext ) | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/auditbeat/auditbeat.yml
+              readOnly: false
+              subPath: auditbeat.yml
+            - name: modules
+              mountPath: /usr/share/auditbeat/modules.d
+              readOnly: false
+            - name: data
+              mountPath: /usr/share/auditbeat/data
+            - name: bin
+              mountPath: /hostfs/bin
+              readOnly: true
+            - name: sbin
+              mountPath: /hostfs/sbin
+              readOnly: true
+            - name: usrbin
+              mountPath: /hostfs/usr/bin
+              readOnly: true
+            - name: usrsbin
+              mountPath: /hostfs/usr/sbin
+              readOnly: true
+            - name: etc
+              mountPath: /hostfs/etc
+              readOnly: true
+            # Directory with root filesystems of containers executed with containerd, this can be
+            # different with other runtimes. This volume is needed to monitor the file integrity
+            # of files in containers.
+            - name: run-containerd
+              mountPath: /run/containerd
+              readOnly: true
+            {{- range .Values.secretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .path }}
+              {{- if .subPath }}
+              subPath: {{ .subPath }}
+              {{- end }}
+            {{- end }}
+            {{- if .Values.extraVolumeMounts | default .Values.daemonset.extraVolumeMounts }}
+{{ toYaml (.Values.extraVolumeMounts | default .Values.daemonset.extraVolumeMounts ) | indent 10 }}
+            {{- end }}
+      volumes:
+      - name: bin
+        hostPath:
+          path: /bin
+      - name: usrbin
+        hostPath:
+          path: /usr/bin
+      - name: sbin
+        hostPath:
+          path: /sbin
+      - name: usrsbin
+        hostPath:
+          path: /usr/sbin
+      - name: etc
+        hostPath:
+          path: /etc
+      {{- if .Values.auditbeatConfig }}
+      - name: config
+        configMap:
+          defaultMode: 416
+          name: "{{ template "auditbeat.fullname" . }}-config"
+      {{- end }}
+      {{- if .Values.daemonset.auditbeatConfig }}
+      - name: modules
+        configMap:
+          defaultMode: 416
+          name: "{{ template "auditbeat.fullname" . }}-daemonset-modules"
+      {{- end }}
+      - name: data
+        hostPath:
+          # When auditbeat runs as non-root user, this directory needs to be writable by group (g+w).
+          path: /var/lib/auditbeat-data
+          type: DirectoryOrCreate
+      - name: run-containerd
+        hostPath:
+          path: /run/containerd
+          type: DirectoryOrCreate
+      {{- range .Values.secretMounts }}
+      - name: {{ .name }}
+        secret:
+          secretName: {{ .secretName }}
+      {{- end }}
+      {{- if .Values.extraVolumes | default .Values.daemonset.extraVolumes }}
+{{ toYaml ( .Values.extraVolumes | default .Values.daemonset.extraVolumes )  | indent 6 }}
+      {{- end }}

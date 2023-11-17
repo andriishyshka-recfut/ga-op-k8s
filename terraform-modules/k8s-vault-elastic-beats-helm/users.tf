@@ -8,6 +8,12 @@ resource "random_password" "metricbeat_password" {
   special = false
 }
 
+resource "random_password" "auditbeat_password" {
+  length  = 24
+  special = false
+}
+
+
 data "kubernetes_secret" "elastic_pass" {
   metadata {
     name      = "elastic-credentials"
@@ -37,6 +43,16 @@ resource "kubernetes_secret" "metricbeat_creds" {
   }
   data = {
     "password" = random_password.metricbeat_password.result
+  }
+}
+
+resource "kubernetes_secret" "auditbeat_creds" {
+  metadata {
+    name      = "auditbeat-credentials"
+    namespace = local.elasticSettings.globalSettings.namespace
+  }
+  data = {
+    "password" = random_password.auditbeat_password.result
   }
 }
 
@@ -71,6 +87,21 @@ curl -X PUT "https://elastic:$ES_PASSWORD@${var.BeatElasticService}:9200/_securi
 {
     "roles" : ["kibana_admin","ingest_admin","remote_monitoring_agent","metricbeat_role"],
     "password": "${random_password.metricbeat_password.result}"
+}'  &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${var.BeatElasticService}:9200/_security/role/auditbeat_role" -H 'Content-Type: application/json' -k -d '
+{
+  "cluster": ["monitor","manage_ilm"],
+  "indices": [
+    {
+      "names": ["auditbeat-*"],
+      "privileges": ["write","manage"]
+    }
+  ]
+} ' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${var.BeatElasticService}:9200/_security/user/auditbeat_user" -H 'Content-Type: application/json' -k -d '
+{
+    "roles" : ["kibana_admin","ingest_admin","remote_monitoring_agent","auditbeat_role"],
+    "password": "${random_password.auditbeat_password.result}"
 }'
 EOF
 }
