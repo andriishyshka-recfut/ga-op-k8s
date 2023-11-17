@@ -1,6 +1,6 @@
 
 resource "helm_release" "auditbeat" {
-  name      = "auditbeat-test"
+  name      = "auditbeat"
   chart     = "${path.module}/charts/auditbeat"
   wait      = true
   atomic    = true

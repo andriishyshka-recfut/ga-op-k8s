@@ -27,7 +27,7 @@ daemonset:
   # Allows you to add any config files in /usr/share/auditbeat
   # such as auditbeat.yml for daemonset
   tolerations:
-    - key: auditbeat
+    - key: workloadsType
       operator: Exists
       effect: NoSchedule
   auditbeatConfig:
@@ -240,8 +240,7 @@ extraVolumeMounts: []
 # Allows you to add any config files in /usr/share/auditbeat
 # such as auditbeat.yml for both daemonset and deployment
 auditbeatConfig: {}
-nodeSelector:
-  workloadsType: auditbeat-test
+nodeSelector: {}
 podSecurityContext:
   runAsUser: 0
   # If using Red Hat OpenShift uncomment this:
