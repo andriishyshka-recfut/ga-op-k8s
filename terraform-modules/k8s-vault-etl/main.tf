@@ -44,6 +44,22 @@ resource "helm_release" "etl_operator" {
     name  = "elasticSecretsPath"
     value = local.elasticSecretsPath
   }
+  set {
+    name = "resources.requests.cpu"
+    value = "200m"
+  }
+  set {
+    name = "resources.requests.memory"
+    value = "512Mi"
+  }
+  set {
+    name = "resources.limits.cpu"
+    value = "400m"
+  }
+  set {
+    name = "resources.limits.memory"
+    value = "1024Mi"
+  }
 }
 
 
