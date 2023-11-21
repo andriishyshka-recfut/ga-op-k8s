@@ -40,8 +40,9 @@ FAILED_PROJECTS = {
 }
 
 GITLAB_CI_YML = ".gitlab-ci.yml"
+SONAR_FILE = "sonar-project.properties"
 BRANCH_NAME = "sonarqube-integration"
-REPO_ROOT = "/Users/roman_k/Gemini/temp_repos"
+REPO_ROOT = f"{os.getenv('HOME')}/Gemini/temp_repos"
 
 PROPS_TEMPLATE = "sonar.projectKey=<KEY>\n" \
                  "sonar.qualitygate.wait=true"
@@ -49,8 +50,9 @@ PROPS_TEMPLATE = "sonar.projectKey=<KEY>\n" \
 DUMMY_KEY = 'aaaaaaaaaaaaa'
 
 DRY_RUN = False
-GL_TOKEN = 'xxxxxxxxxxxx'
-SONAR_PASS = 'xxxxxxxxxxxx'
+GL_TOKEN = os.environ.get('GL_TOKEN')
+SONAR_PASS = os.environ.get('SONAR_PASS')
+
 
 # if DRY_RUN:
 shutil.rmtree(REPO_ROOT)
@@ -75,8 +77,37 @@ for group in gitlab_groups.items():
         if project.name in EXCLUDED_PROJECTS[group.name]:
             continue
         project = gl.projects.get(project.id)
+        if project.archived:
+            continue
         total += 1
-        print("\tname: {}, id: {}".format(project.name, project.id))
+
+        hasSonar = True;
+        try:
+            result = project.files.get(SONAR_FILE, project.default_branch)
+            if type(result) is not gitlab.v4.objects.files.ProjectFile:
+                # print("No sonar for {}: {}".format(group.name, project.name))
+                hasSonar = False;
+
+        except Exception as e:
+            # print(f"No {SONAR_FILE} found for {group.name}/{project.name} - {project.web_url}")
+            hasSonar = False;
+
+        if hasSonar:
+            continue
+
+        hasGitlab = True;
+        try:
+            result = project.files.get(GITLAB_CI_YML, project.default_branch)
+            if type(result) is not gitlab.v4.objects.files.ProjectFile:
+                hasGitlab = False;
+        except Exception as e:
+            hasGitlab = False;
+
+        if not hasGitlab:
+            print(f"\tSKIPPING: Project not initiated - no {GITLAB_CI_YML} in {project.web_url}")
+            continue
+
+        print(f"\tProcessing: {project.name}, id: {project.id} - {project.web_url}")
 
         repo_path = os.path.join(REPO_ROOT, group.name, project.name)
 
@@ -114,7 +145,6 @@ for group in gitlab_groups.items():
                         with open(os.path.join(repo_path, GITLAB_CI_YML), "w") as f:
                             data = yaml.dump(gitlab_ci, f, sort_keys=False, default_flow_style=False)
                             git.add(GITLAB_CI_YML)
-                            git.commit(message="Add SonarQube properties and pipeline")
 
                     if not DRY_RUN:
                         sonar_project_data = sonar.alm_integrations.import_gitlab_project(almSetting="Gemini",
@@ -129,6 +159,7 @@ for group in gitlab_groups.items():
 
                     if not DRY_RUN:
                         git.add("sonar-project.properties")
+                        git.commit(message="Add SonarQube properties and pipeline")
                         print("Pushing changes to remote")
                         git.push(BRANCH_NAME, u="origin")
 
