@@ -35,7 +35,7 @@ tarantool:
   bucketCount: 30000
   # The default tarantool memtx memory value, overrides by tarantool.roles.*.memtxMemory
   # see: https://www.tarantool.io/ru/doc/latest/reference/configuration/#cfg-storage-memtx-memory
-  memtxMemory: "4Gi"
+  memtxMemory: "1Gi"
   # Option responsible for retrying Cartridge «Can’t ping myself» error on startup, overrides by tarantool.roles.*.  probeUriTimeout
   # see: https://www.tarantool.io/ru/doc/latest/book/cartridge/CHANGELOG/#id41
   probeUriTimeout: 60
@@ -182,6 +182,7 @@ tarantool:
     - name: storage
       replicasets: 6
       replicas: 2
+      memtxMemory: "5Gi"
       vshard:
         weight: 100
         roles:
@@ -198,8 +199,8 @@ tarantool:
         annotations: {}
       resources:
         limits:
-          cpu: 1
-          memory: 4.5Gi
+          cpu: 2
+          memory: 5.5Gi
         requests:
           cpu: 500m
           memory: 3512Mi
