@@ -381,6 +381,8 @@ rules:
   resources: ["namespaces", "deployments", "pods"]
   verbs: ["get", "list", "watch", "update", "patch", "delete"]
 
+
+
 ---
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
@@ -417,6 +419,7 @@ spec:
         emptyDir: {}
       pipelineRef:
         name: 07-cleanup
+
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -424,29 +427,29 @@ metadata:
   name: tekton-failed-etl-jobs-webhook
   namespace: tekton-tasks
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tekton-failed-etl-jobs-triggers-controller-webhook
+  name: tekton-failed-etl-jobs-triggers-controller-cluster-workloads
+  namespace: tekton-tasks
 subjects:
   - kind: ServiceAccount
-    name: tekton-webhook
+    name: tekton-failed-etl-jobs-webhook
     namespace: tekton-tasks
 roleRef:
   kind: ClusterRole
-  name: tekton-failed-etl-jobs-triggers-eventlistener-roles
+  name: tekton-failed-etl-jobs-clusterroles
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: ClusterRole
 metadata:
-  name: tekton-failed-etl-jobs-triggers-controller-cluster-webhook
-subjects:
-  - kind: ServiceAccount
-    name: tekton-webhook
-    namespace: tekton-tasks
-roleRef:
-  kind: ClusterRole
-  name: tekton-failed-etl-jobs-triggers-eventlistener-clusterroles
-  apiGroup: rbac.authorization.k8s.io
+  name: tekton-failed-etl-jobs-clusterroles
+  namespace: tekton-tasks
+rules:
+- apiGroups: ["apps"]
+  resources: ["namespaces"]
+  verbs: ["get", "list"]
+- apiGroups: ["batch"]
+  resources: ["jobs"]
+  verbs: ["get", "list", "create", "delete"]
