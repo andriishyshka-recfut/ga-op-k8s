@@ -398,7 +398,7 @@ spec:
         name: "cel"
       params:
       - name: "filter"
-        value: body.groupLabels.alertname == 'KubePodCrashLooping'
+        value: body.groupLabels.alertname == 'ETLJobsFailed'
     template:
       ref: failed-etl-jobs-template
 ---
