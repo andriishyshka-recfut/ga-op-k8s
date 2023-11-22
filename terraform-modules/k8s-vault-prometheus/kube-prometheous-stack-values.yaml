@@ -176,6 +176,14 @@ alertmanager:
         - channel: '#prometheus'
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
+    - name: "tekton-failed-etl-jobs-webhook-notifications-and-slack"
+      webhook_configs:
+        - send_resolved: false
+          url: "http://el-failed-etl-jobs-webhook-alertmanager-listener.tekton-tasks:8080"
+      slack_configs:
+        - channel: '#prometheus'
+          send_resolved: true
+          text: '{{ template "slack.custom.text" . }}'
     route:
       group_by:
         - alertname
