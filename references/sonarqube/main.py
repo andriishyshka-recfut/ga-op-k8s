@@ -194,6 +194,8 @@ for group in gitlab_groups.items():
 
                 except yaml.YAMLError as exc:
                     print(exc)
+                except Exception as exc:
+                    print(exc)
         except Exception as e:
             print("Failed to process repo {}: {}".format(repo_path, e))
             FAILED_PROJECTS[group.name].append(project.name)
