@@ -380,3 +380,73 @@ rules:
 - apiGroups: ["apps"]
   resources: ["namespaces", "deployments", "pods"]
   verbs: ["get", "list", "watch", "update", "patch", "delete"]
+
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: failed-etl-jobs-webhook-alertmanager-listener
+  namespace: tekton-tasks
+spec:
+  serviceAccountName: tekton-failed-etl-jobs-webhook
+  triggers:
+  - name: failed-etl-jobs-filter
+    interceptors:
+    - ref:
+        name: "cel"
+      params:
+      - name: "filter"
+        value: body.groupLabels.alertname == 'KubePodCrashLooping'
+    template:
+      ref: failed-etl-jobs-template
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: failed-etl-jobs-template
+  namespace: tekton-tasks
+spec:
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: 07-op-restart-crashloops
+    spec:
+      workspaces:
+      - name: ws
+        emptyDir: {}
+      pipelineRef:
+        name: 07-cleanup
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-failed-etl-jobs-webhook
+  namespace: tekton-tasks
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-failed-etl-jobs-triggers-controller-webhook
+subjects:
+  - kind: ServiceAccount
+    name: tekton-webhook
+    namespace: tekton-tasks
+roleRef:
+  kind: ClusterRole
+  name: tekton-failed-etl-jobs-triggers-eventlistener-roles
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-failed-etl-jobs-triggers-controller-cluster-webhook
+subjects:
+  - kind: ServiceAccount
+    name: tekton-webhook
+    namespace: tekton-tasks
+roleRef:
+  kind: ClusterRole
+  name: tekton-failed-etl-jobs-triggers-eventlistener-clusterroles
+  apiGroup: rbac.authorization.k8s.io
