@@ -25,5 +25,6 @@ spec:
       for: 5m
       labels:
         cluster: ${cluster_label}
+        color: ${cluster_color}
         component: stream-processor
         severity: critical
