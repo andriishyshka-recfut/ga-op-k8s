@@ -12,7 +12,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 15m
+  - interval: 1m
     name: An expensive pi query in Elasticsearch
     rules:
     - alert: PiExpensiveESQuery
@@ -22,7 +22,7 @@ spec:
         summary: An expensive query requested by {{ $labels.username }} with query {{ $labels.query }}
       expr: |
         rate(pi_query_expensive[15m]) > 0
-      for: 15m
+      for: 5m
       labels:
         cluster: ${cluster_label}
         component: stream-processor
