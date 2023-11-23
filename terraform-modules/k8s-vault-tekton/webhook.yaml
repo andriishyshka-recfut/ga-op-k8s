@@ -412,13 +412,13 @@ spec:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
     metadata:
-      generateName: 07-op-restart-crashloops
+      generateName: failed-etl-jobs-rerun
     spec:
       workspaces:
       - name: ws
         emptyDir: {}
       pipelineRef:
-        name: 07-cleanup
+        name: failed-etl-jobs-rerun
 
 ---
 apiVersion: v1
