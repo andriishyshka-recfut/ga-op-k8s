@@ -163,7 +163,7 @@ resource "kubernetes_job" "configure_users_access" {
   }
   wait_for_completion = true
   timeouts {
-    create = "3m"
+    create = "10m"
     update = "3m"
   }
   depends_on = [

@@ -21,7 +21,7 @@ spec:
           ETL failed jobs more than 5
         summary: ETL failed jobs is being piled up
       expr: |
-        sum by (namespace) (kube_job_failed{job="kube-state-metrics",namespace=~"etl"}) > 5
+        kube_job_failed{namespace="etl"} > 0
       for: 30m
       labels:
         cluster: ${cluster_label}

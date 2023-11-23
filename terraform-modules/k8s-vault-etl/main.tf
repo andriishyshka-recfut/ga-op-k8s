@@ -14,7 +14,7 @@ resource "helm_release" "etl_operator" {
   repository_password = data.vault_generic_secret.harbor_token.data.password
   set {
     name  = "image.tag"
-    value = "v2.5-rc4"
+    value = "v2.5-rc9"
   }
   set {
     name  = "ansibleGit.tag"
@@ -43,6 +43,22 @@ resource "helm_release" "etl_operator" {
   set {
     name  = "elasticSecretsPath"
     value = local.elasticSecretsPath
+  }
+  set {
+    name  = "resources.requests.cpu"
+    value = "200m"
+  }
+  set {
+    name  = "resources.requests.memory"
+    value = "512Mi"
+  }
+  set {
+    name  = "resources.limits.cpu"
+    value = "800m"
+  }
+  set {
+    name  = "resources.limits.memory"
+    value = "768Mi"
   }
 }
 

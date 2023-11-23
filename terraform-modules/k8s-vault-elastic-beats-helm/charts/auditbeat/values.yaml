@@ -1,0 +1,269 @@
+---
+
+daemonset:
+  annotations: {}
+  # additionals labels
+  labels: {}
+  affinity: {}
+  # Include the daemonset
+  enabled: true
+  # Extra environment variables for auditbeat container.
+  envFrom: []
+  # - configMapRef:
+  #     name: config-secret
+  extraEnvs: []
+  #  - name: MY_ENVIRONMENT_VAR
+  #    value: the_value_goes_here
+  extraVolumes:
+    []
+  # - name: extras
+  #   emptyDir: {}
+  extraVolumeMounts:
+    []
+    # - name: extras
+  #   mountPath: /usr/share/extras
+  #   readOnly: true
+  hostNetworking: true
+  # Allows you to add any config files in /usr/share/auditbeat
+  # such as auditbeat.yml for daemonset
+  tolerations:
+    - key: workloadsType
+      operator: Exists
+      effect: NoSchedule
+  auditbeatConfig:
+    system.yml: |-
+      - module: file_integrity
+        paths:
+        - /hostfs/bin
+        - /hostfs/usr/bin
+        - /hostfs/sbin
+        - /hostfs/usr/sbin
+        - /hostfs/etc
+        exclude_files:
+        - '(?i)\.sw[nop]$'
+        - '~$'
+        - '/\.git($|/)'
+        scan_at_start: true
+        scan_rate_per_sec: 50 MiB
+        max_file_size: 100 MiB
+        hash_types: [sha1]
+        recursive: true
+
+  # Only used when updateStrategy is set to "RollingUpdate"
+  maxUnavailable: 1
+  nodeSelector: {}
+  # A list of secrets and their paths to mount inside the pod
+  # This is useful for mounting certificates for security other sensitive values
+  secretMounts: []
+  #  - name: auditbeat-certificates
+  #    secretName: auditbeat-certificates
+  #    path: /usr/share/auditbeat/certs
+  # Various pod security context settings. Bear in mind that many of these have an impact on auditbeat functioning properly.
+  #
+  # - User that the container will execute as. Typically necessary to run as root (0) in order to properly collect host container logs.
+  # - Whether to execute the auditbeat containers as privileged containers. Typically not necessarily unless running within environments such as OpenShift.
+  securityContext:
+    runAsUser: 0
+    privileged: false
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "100Mi"
+    limits:
+      cpu: "400m"
+      memory: "400Mi"
+  tolerations: []
+
+deployment:
+  # Annotations to apply to the deployment
+  annotations: {}
+  # additionals labels
+  labels: {}
+  affinity: {}
+  # Include the deployment
+  enabled: false
+  # Extra environment variables for auditbeat container.
+  envFrom: []
+  # - configMapRef:
+  #     name: config-secret
+  extraEnvs: []
+  #  - name: MY_ENVIRONMENT_VAR
+  #    value: the_value_goes_here
+  # Allows you to add any config files in /usr/share/auditbeat
+  extraVolumes: []
+  # - name: extras
+  #   emptyDir: {}
+  extraVolumeMounts: []
+  # - name: extras
+  #   mountPath: /usr/share/extras
+  #   readOnly: true
+  # such as auditbeat.yml for deployment
+  auditbeatConfig:
+    auditbeat.yml: |
+      auditbeat
+  nodeSelector: {}
+  # A list of secrets and their paths to mount inside the pod
+  # This is useful for mounting certificates for security other sensitive values
+  secretMounts: []
+  #  - name: auditbeat-certificates
+  #    secretName: auditbeat-certificates
+  #    path: /usr/share/auditbeat/certs
+  #
+  # - User that the container will execute as.
+  # Not necessary to run as root (0) as the auditbeat Deployment use cases do not need access to Kubernetes Node internals
+  # - Typically not necessarily unless running within environments such as OpenShift.
+  securityContext:
+    runAsUser: 0
+    privileged: false
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "100Mi"
+    limits:
+      cpu: "1000m"
+      memory: "200Mi"
+  tolerations: []
+
+# Replicas being used for the auditbeat deployment
+replicas: 1
+
+extraContainers: ""
+# - name: dummy-init
+#   image: busybox
+#   command: ['echo', 'hey']
+
+extraInitContainers: []
+# - name: dummy-init
+
+# Root directory where auditbeat will write data to in order to persist registry data across pod restarts (file position and other metadata).
+hostPathRoot: /var/lib
+
+dnsConfig: {}
+# options:
+#   - name: ndots
+#     value: "2"
+hostAliases: []
+#- ip: "127.0.0.1"
+#  hostnames:
+#  - "foo.local"
+#  - "bar.local"
+image: "docker.elastic.co/beats/auditbeat"
+imageTag: "7.17.13"
+imagePullPolicy: "IfNotPresent"
+imagePullSecrets: []
+
+livenessProbe: {}
+#  exec:
+#    command:
+#      - sh
+#      - -c
+#      - |
+#        #!/usr/bin/env bash -e
+#        curl --fail 127.0.0.1:5066
+#  failureThreshold: 3
+#  initialDelaySeconds: 10
+#  periodSeconds: 10
+#  timeoutSeconds: 5
+
+readinessProbe: {}
+#  exec:
+#    command:
+#      - sh
+#      - -c
+#      - |
+#        #!/usr/bin/env bash -e
+#        auditbeat test output
+#  failureThreshold: 3
+#  initialDelaySeconds: 10
+#  periodSeconds: 10
+#  timeoutSeconds: 5
+
+# Whether this chart should self-manage its service account, role, and associated role binding.
+managedServiceAccount: true
+
+#lifecycle:
+  #postStart:
+    #exec:
+      #command: [ "/bin/bash", "-c", "chmod go-w /usr/share/auditbeat/config/auditbeat.yml" ]
+
+clusterRoleRules:
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+      - nodes
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "apps"
+    resources:
+      - replicasets
+    verbs:
+      - get
+      - list
+      - watch
+
+podAnnotations:
+  {}
+# iam.amazonaws.com/role: es-cluster
+
+# Custom service account override that the pod will use
+serviceAccount: ""
+
+# Annotations to add to the ServiceAccount that is created if the serviceAccount value isn't set.
+serviceAccountAnnotations:
+  {}
+# eks.amazonaws.com/role-arn: arn:aws:iam::111111111111:role/k8s.clustername.namespace.serviceaccount
+
+# How long to wait for auditbeat pods to stop gracefully
+terminationGracePeriod: 30
+# This is the PriorityClass settings as defined in
+# https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+priorityClassName: ""
+
+updateStrategy: RollingUpdate
+
+# Override various naming aspects of this chart
+# Only edit these if you know what you're doing
+nameOverride: ""
+fullnameOverride: "auditbeat"
+
+# DEPRECATED
+affinity: {}
+envFrom: []
+extraEnvs: []
+extraVolumes: []
+extraVolumeMounts: []
+# Allows you to add any config files in /usr/share/auditbeat
+# such as auditbeat.yml for both daemonset and deployment
+auditbeatConfig: {}
+nodeSelector: {}
+podSecurityContext:
+  runAsUser: 0
+  # If using Red Hat OpenShift uncomment this:
+  #privileged: true
+  capabilities:
+    add:
+      # Capabilities needed for auditd module
+      - 'AUDIT_READ'
+      - 'AUDIT_WRITE'
+      - 'AUDIT_CONTROL'
+resources:
+  limits:
+    memory: 200Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+secretMounts: []
+labels: {}
+
+auditbeatConfig:
+  auditbeat.yml: |
+    auditbeat.config.modules:
+      # Mounted `auditbeat-daemonset-modules` configmap:
+      path: $${path.config}/modules.d/*.yml
+      # Reload module configs as they change:
+      reload.enabled: false

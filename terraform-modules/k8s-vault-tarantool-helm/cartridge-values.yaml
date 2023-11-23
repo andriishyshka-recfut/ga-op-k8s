@@ -26,7 +26,7 @@ tarantool:
   # The default cartridge image, overrides by tarantool.roles.*.image
   image:
     repository: harbor.regemini.io/dev/tarantool
-    tag: v1.0.0
+    tag: v1.0.4
     pullPolicy: IfNotPresent
   runDir: /var/run/tarantool
   workDir: /var/lib/tarantool
@@ -35,7 +35,7 @@ tarantool:
   bucketCount: 30000
   # The default tarantool memtx memory value, overrides by tarantool.roles.*.memtxMemory
   # see: https://www.tarantool.io/ru/doc/latest/reference/configuration/#cfg-storage-memtx-memory
-  memtxMemory: "3Gi"
+  memtxMemory: "1Gi"
   # Option responsible for retrying Cartridge «Can’t ping myself» error on startup, overrides by tarantool.roles.*.  probeUriTimeout
   # see: https://www.tarantool.io/ru/doc/latest/book/cartridge/CHANGELOG/#id41
   probeUriTimeout: 60
@@ -182,6 +182,7 @@ tarantool:
     - name: storage
       replicasets: 6
       replicas: 2
+      memtxMemory: "5Gi"
       vshard:
         weight: 100
         roles:
@@ -196,13 +197,13 @@ tarantool:
               storage: 5Gi
       service:
         annotations: {}
-      # resources:
-      #   limits:
-      #     cpu: 150m
-      #     memory: 3512Mi
-      #   requests:
-      #     cpu: 150m
-      #     memory: 3512Mi
+      resources:
+        limits:
+          cpu: 2
+          memory: 5.5Gi
+        requests:
+          cpu: 500m
+          memory: 3512Mi
     # Name of role, required field
     - name: router
       # Count of replicasets in that role, each replicaset is a statefulset, required field
