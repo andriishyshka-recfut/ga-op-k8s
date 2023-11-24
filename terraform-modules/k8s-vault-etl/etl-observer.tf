@@ -25,7 +25,7 @@ resource "kubernetes_deployment" "etl_observer" {
       spec {
         container {
           name  = "flask"
-          image = "harbor.regemini.io/op/etl-observer:v0.1"
+          image = "harbor.regemini.io/op/etl-observer:v0.1.0"
 
           port {
             container_port = 5000
