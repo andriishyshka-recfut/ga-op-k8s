@@ -2,7 +2,7 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
   name: webhook-alertmanager-listener
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   serviceAccountName: tekton-webhook
   triggers:
@@ -20,7 +20,7 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
   name: crashloopbackoffpod-template
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
@@ -38,7 +38,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: tekton-webhook
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1
@@ -48,7 +48,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: tekton-webhook
-    namespace: tekton-tasks
+    namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
   name: tekton-triggers-eventlistener-roles
@@ -61,7 +61,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: tekton-webhook
-    namespace: tekton-tasks
+    namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
   name: tekton-triggers-eventlistener-clusterroles
@@ -73,7 +73,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
   name: fail-bots-webhook-alertmanager-listener
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   serviceAccountName: tekton-bots-webhook
   triggers:
@@ -106,7 +106,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: fail-bots-binding
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   params:
   - name: mode
@@ -124,7 +124,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
   name: fail-bots-template
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   params:
   - name: id
@@ -156,7 +156,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: Trigger
 metadata:
   name: fail-bots-trigger
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   bindings:
   - ref: fail-bots-binding
@@ -169,7 +169,7 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   name: fail-bots-pipelinerun
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   serviceAccountName: tekton-bots-webhook
   pipelineRef:
@@ -190,7 +190,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: fail-bots-pipeline
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   params:
   - name: id
@@ -317,7 +317,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: tekton-bots-webhook
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 imagePullSecrets:
   - name: harbor
 
@@ -327,11 +327,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: tekton-bots-triggers-controller-webhook
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-bots-webhook
-    namespace: tekton-tasks
+    namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
   name: tekton-triggers-eventlistener-roles
@@ -343,11 +343,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: tekton-bots-triggers-controller-cluster-webhook
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-bots-webhook
-    namespace: tekton-tasks
+    namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
   name: tekton-triggers-eventlistener-clusterroles
@@ -359,11 +359,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: tekton-bots-triggers-controller-cluster-workloads
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-bots-webhook
-    namespace: tekton-tasks
+    namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
   name: tekton-bots-triggers-workloads-clusterroles
@@ -375,7 +375,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: tekton-bots-triggers-workloads-clusterroles
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 rules:
 - apiGroups: ["apps"]
   resources: ["namespaces", "deployments", "pods"]
@@ -388,7 +388,7 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
   name: failed-etl-jobs-webhook-alertmanager-listener
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   serviceAccountName: tekton-failed-etl-jobs-webhook
   triggers:
@@ -406,7 +406,7 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
   name: failed-etl-jobs-template
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
@@ -425,17 +425,17 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: tekton-failed-etl-jobs-webhook
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: tekton-failed-etl-jobs-triggers-controller-cluster-workloads
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-failed-etl-jobs-webhook
-    namespace: tekton-tasks
+    namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
   name: tekton-failed-etl-jobs-clusterroles
@@ -445,7 +445,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: tekton-failed-etl-jobs-clusterroles
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 rules:
 - apiGroups: ["apps"]
   resources: ["namespaces"]

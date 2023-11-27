@@ -155,7 +155,7 @@ alertmanager:
     - name: "tekton-webhook-notifications-and-slack"
       webhook_configs:
         - send_resolved: false
-          url: "http://el-webhook-alertmanager-listener.tekton-tasks:8080"
+          url: "http://el-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
         - channel: '#prometheus'
           send_resolved: true
@@ -163,7 +163,7 @@ alertmanager:
     - name: "tekton-and-slack-woresolve"
       webhook_configs:
         - send_resolved: false
-          url: "http://el-webhook-alertmanager-listener.tekton-tasks:8080"
+          url: "http://el-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
         - channel: '#prometheus'
           send_resolved: false
@@ -171,7 +171,7 @@ alertmanager:
     - name: "tekton-fail-bots-webhook-notifications-and-slack"
       webhook_configs:
         - send_resolved: false
-          url: "http://el-fail-bots-webhook-alertmanager-listener.tekton-tasks:8080"
+          url: "http://el-fail-bots-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
         - channel: '#prometheus'
           send_resolved: true
@@ -179,7 +179,7 @@ alertmanager:
     - name: "tekton-failed-etl-jobs-webhook-notifications-and-slack"
       webhook_configs:
         - send_resolved: false
-          url: "http://el-failed-etl-jobs-webhook-alertmanager-listener.tekton-tasks:8080"
+          url: "http://el-failed-etl-jobs-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
         - channel: '#prometheus'
           send_resolved: true
