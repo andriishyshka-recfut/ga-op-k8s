@@ -390,7 +390,7 @@ metadata:
   name: failed-etl-jobs-webhook-alertmanager-listener
   namespace: tekton-pipelines
 spec:
-  serviceAccountName: tekton-failed-etl-jobs-webhook
+  serviceAccountName: tekton-webhook
   triggers:
   - name: failed-etl-jobs-filter
     interceptors:
