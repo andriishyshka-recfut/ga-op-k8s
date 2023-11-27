@@ -168,7 +168,7 @@ for group in gitlab_groups.items():
                         mr = project.mergerequests.create({'source_branch': BRANCH_NAME,
                                                            'target_branch': project.default_branch,
                                                            'title': 'On-board {} to SonarQube'.format(project.name),
-                                                           'labels': ['Support', 'ToDo'],
+                                                           'labels': ['support', 'To Do'],
                                                            'remove_source_branch': 'true',
                                                            'squash_on_merge': 'true',
                                                            'assignee_id' : 2,
