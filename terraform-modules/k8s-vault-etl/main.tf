@@ -14,7 +14,7 @@ resource "helm_release" "etl_operator" {
   repository_password = data.vault_generic_secret.harbor_token.data.password
   set {
     name  = "image.tag"
-    value = "v2.5-rc9"
+    value = "v2.5-rc10"
   }
   set {
     name  = "ansibleGit.tag"
