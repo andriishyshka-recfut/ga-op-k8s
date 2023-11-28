@@ -10,13 +10,13 @@ resource "null_resource" "rerun_failed_jobs" {
       [[ $( echo $JOB_NAME | egrep 'etl-cpp|gs2s3-cpp' ) ]] && export CRONJOB_NAME=$(echo $JOB_NAME | cut -d'-' -f -5) || export CRONJOB_NAME=$(echo $JOB_NAME | cut -d'-' -f -6)
       echo "Creating job $CRONJOB_NAME..."
       kubectl --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} \
-      --insecure-skip-tls-verify=true create job -n etl --from=cronjob/$CRONJOB_NAME $CRONJOB_NAME-rerunbyscript.$(date '+h%Hm%M')
+      --insecure-skip-tls-verify=true create job -n etl --from=cronjob/$CRONJOB_NAME $CRONJOB_NAME-tekton.$(date '+m%M')
       if [ $( echo $JOB_NAME | egrep 'camino|gs2s3') ]; then
         export ETL_CRONJOB_NAME="etl-$(echo $CRONJOB_NAME | cut -d'-' -f -1)"
         echo "Creating job $ETL_CRONJOB_NAME..."
         sleep 15
         kubectl --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} \
-        --insecure-skip-tls-verify=true create job -n etl --from=cronjob/$ETL_CRONJOB_NAME $ETL_CRONJOB_NAME-rerunbyscript.$(date '+h%Hm%M')
+        --insecure-skip-tls-verify=true create job -n etl --from=cronjob/$ETL_CRONJOB_NAME $ETL_CRONJOB_NAME-tekton.$(date '+m%M')
       else
         echo " $JOB_NAME - is not camino or gs2s3 job skipping additional job creation"
       fi
