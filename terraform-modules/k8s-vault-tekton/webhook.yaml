@@ -227,7 +227,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: fail-bots-mongo
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   params:
   - name: id
@@ -269,7 +269,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: fail-bots-restart
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   params:
   - name: namespace
