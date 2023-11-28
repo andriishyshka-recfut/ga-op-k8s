@@ -51,9 +51,7 @@ deployment:
                     hosts: 
 %{ for nodepool,nodepooldata in nodePools ~}
 %{ for counter in range(nodepooldata.replicas) ~}
-%{ if nodepool == "master" ~}
                       - https://${globalSettings.clusterName}-${nodepool}-${counter}.${globalSettings.clusterName}-${nodepool}-headless.${globalSettings.namespace}.svc:9200
-%{ endif ~}
 %{ endfor ~}
 %{ endfor ~}
                     username: metricbeat_user

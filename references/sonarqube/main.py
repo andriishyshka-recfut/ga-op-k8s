@@ -7,6 +7,14 @@ import shutil
 from random import randrange
 
 
+gitlab_groups = {
+    "artifact": "9",
+    "dev": "14",
+    "dome": "10",
+    "maid": "8",
+    "minion": "7"
+}
+
 # gitlab_groups = {
 #     "artifact": "9",
 #     "dev": "14",
@@ -14,14 +22,6 @@ from random import randrange
 #     "maid": "8",
 #     "minion": "7"
 # }
-
-gitlab_groups = {
-    # "maid": "8"
-    # "dome": "10"
-    # "minion": "7"
-    # "artifact": "9"
-    "dev": "14"
-}
 
 EXCLUDED_PROJECTS = {
     "artifact": [],
@@ -120,7 +120,8 @@ for group in gitlab_groups.items():
             with open(os.path.join(repo_path, ".gitlab-ci.yml"), "r") as gitlab_ci_yaml:
                 try:
                     gitlab_ci = yaml.safe_load(gitlab_ci_yaml)
-                    gitlab_ci["stages"].insert(0, 'scan')
+                    if gitlab_ci["stages"][0] != 'scan':
+                        gitlab_ci["stages"].insert(0, 'scan')
                     flat_list = [item for sublist in gitlab_ci["include"] for item in sublist]
 
                     proj_index = None
@@ -130,7 +131,8 @@ for group in gitlab_groups.items():
                             break
                     if proj_index is not None:
                         if "file" in gitlab_ci["include"][proj_index].keys():
-                            gitlab_ci["include"][proj_index]['file'].insert(0, 'scan/1.00-alpine/scan.yaml')
+                            if not gitlab_ci["include"][proj_index]['file'][0].startswith('scan/'):
+                                gitlab_ci["include"][proj_index]['file'].insert(0, 'scan/1.00-alpine/scan.yaml')
                         else:
                             gitlab_ci["include"][proj_index].insert(0, {'file': 'scan/1.00-alpine/scan.yaml'})
                     else:
@@ -166,7 +168,7 @@ for group in gitlab_groups.items():
                         mr = project.mergerequests.create({'source_branch': BRANCH_NAME,
                                                            'target_branch': project.default_branch,
                                                            'title': 'On-board {} to SonarQube'.format(project.name),
-                                                           'labels': ['Support', 'ToDo'],
+                                                           'labels': ['support', 'To Do'],
                                                            'remove_source_branch': 'true',
                                                            'squash_on_merge': 'true',
                                                            'assignee_id' : 2,
