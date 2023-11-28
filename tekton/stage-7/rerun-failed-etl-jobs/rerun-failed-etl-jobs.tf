@@ -12,7 +12,7 @@ resource "null_resource" "rerun_failed_jobs" {
       kubectl --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} \
       --insecure-skip-tls-verify=true create job -n etl --from=cronjob/$CRONJOB_NAME $CRONJOB_NAME-tekton.$(date '+m%M')
       if [ $( echo $JOB_NAME | egrep 'camino|gs2s3') ]; then
-        export ETL_CRONJOB_NAME="etl-$(echo $CRONJOB_NAME | cut -d'-' -f -1)"
+        export ETL_CRONJOB_NAME="etl-$(echo $CRONJOB_NAME | cut -d'-' -f2-)"
         echo "Creating job $ETL_CRONJOB_NAME..."
         sleep 15
         kubectl --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} \
