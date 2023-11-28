@@ -1,0 +1,312 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: fail-bots-webhook-alertmanager-listener
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-bots-webhook
+  triggers:
+  - name: failbotpod-filter
+    interceptors:
+    - ref:
+        name: "cel"
+      params:
+      - name: "filter"
+        value: body.groupLabels.alertname == 'FailBotsScraper'
+      - name: "overlays"
+        value:
+        - key: id
+          expression: "body.alerts.map(x, x.labels).map(y, y.source_id).join(' ')"
+        - key: mode
+          expression: "body.alerts.map(x, x.labels).map(y, y.mode).join(' ')"
+        - key: container
+          expression: "body.alerts.map(x, x.labels).map(y, y.container).join(' ')"
+        - key: namespace
+          expression: "body.alerts.map(x, x.labels).map(y, y.namespace).join(' ')"                    
+    bindings:
+      - ref: fail-bots-binding
+        kind: TriggerBinding 
+    template:
+      ref: fail-bots-template
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: fail-bots-binding
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: mode
+    value: $(extensions.mode)
+  - name: id
+    value: $(extensions.id)
+  - name: container
+    value: $(extensions.container)
+  - name: namespace
+    value: $(extensions.namespace)     
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: fail-bots-template
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: id
+  - name: mode
+  - name: container
+  - name: namespace
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: fail-bots-
+      spec:
+        serviceAccountName: tekton-bots-webhook
+        pipelineRef:
+          name: fail-bots-pipeline
+        params:
+        - name: id
+          value: $(tt.params.id)
+        - name: mode
+          value: $(tt.params.mode)
+        - name: container
+          value: $(tt.params.container)          
+        - name: namespace
+          value: $(tt.params.namespace)
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: fail-bots-trigger
+  namespace: tekton-pipelines
+spec:
+  bindings:
+  - ref: fail-bots-binding
+  template:
+    ref: fail-bots-template
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: fail-bots-pipelinerun
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-bots-webhook
+  pipelineRef:
+    name: fail-bots-pipeline
+  params:
+  - name: id
+    value: $(params.id)
+  - name: mode
+    value: $(params.mode)
+  - name: container
+    value: $(params.container)      
+  - name: namespace
+    value: $(params.namespace)   
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: fail-bots-pipeline
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: id
+  - name: mode
+  - name: namespace
+  - name: container   
+  tasks:
+  - name: fail-bots-mongo
+    taskRef:
+      name: fail-bots-mongo
+    params:
+    - name: id
+      value: $(params.id)
+    - name: mode
+      value: $(params.mode)
+    - name: container
+      value: $(params.container)      
+    - name: namespace
+      value: $(params.namespace)
+  - name: fail-bots-restart
+    taskRef:
+      name: fail-bots-restart
+    params:
+    - name: container
+      value: $(params.container)      
+    - name: namespace
+      value: $(params.namespace)      
+    runAfter:
+      - fail-bots-mongo
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: fail-bots-mongo
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: id
+  - name: mode
+  steps:
+    - name: fail-bots-mongo
+      image: mongo
+      env:
+      - name: URI
+        valueFrom:
+          secretKeyRef:
+            name: mongo-auth
+            key: URI
+      - name: MONGODB_BACKUP_USER
+        valueFrom:
+          secretKeyRef:
+            name: mongo-auth
+            key: MONGODB_BACKUP_USER
+      - name: MONGODB_BACKUP_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mongo-auth
+            key: MONGODB_BACKUP_PASSWORD
+      script: |
+        #! /bin/bash
+        set +x
+
+        # echo $(params.id)
+        # echo $(params.mode)
+
+        IFS=' '
+        read -ra idList <<< "$(params.id)"
+        read -ra modeList <<< "$(params.mode)"
+
+        for ((i=0; i<${#idList[@]}; i++)); do id=${idList[i]} && mode=${modeList[i]} && echo \{\"level\":6,\"sourceId\":\"$id\",\"mode\":\"$mode\",\"msg\":\"$id - $mode\"\} && mongosh "mongodb://$MONGODB_BACKUP_USER:$MONGODB_BACKUP_PASSWORD@$URI" --quiet --eval "db.run.deleteOne({source: /^$id$/i, mode: /^$mode$/i, "end": null})"; done
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: fail-bots-restart
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: namespace
+  - name: container  
+  steps:
+    - name: fail-bots-restart
+      image: harbor.regemini.io/op/tf:latest   
+      env:
+      - name: TF_VAR_Color
+        valueFrom:
+          configMapKeyRef:
+            key: color
+            name: cluster-settings
+      - name: CLUSTER
+        valueFrom:
+          configMapKeyRef:
+            key: cluster
+            name: cluster-settings
+      - name: CONF_PATH
+        valueFrom:
+          configMapKeyRef:
+            key: configPath
+            name: cluster-settings
+      - name: VAULT_ADDR
+        valueFrom:
+          configMapKeyRef:
+            key: vaultAddr
+            name: cluster-settings      
+      script: |
+        #! /bin/bash
+        set +x
+        # echo $(params.container)
+        # echo $(params.namespace)
+
+        IFS=' '
+
+        read -ra contList <<< "$(params.container)"
+        read -ra nsList <<< "$(params.namespace)"    
+            
+        for ((i=0; i<${#contList[@]}; i++)); do kubectl rollout restart deployment ${contList[i]} -n ${nsList[i]}; done
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-bots-webhook
+  namespace: tekton-pipelines
+imagePullSecrets:
+  - name: harbor
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-bots-triggers-controller-webhook
+  namespace: tekton-pipelines
+subjects:
+  - kind: ServiceAccount
+    name: tekton-bots-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-bots-triggers-controller-cluster-webhook
+  namespace: tekton-pipelines
+subjects:
+  - kind: ServiceAccount
+    name: tekton-bots-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-clusterroles
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-bots-triggers-controller-cluster-workloads
+  namespace: tekton-pipelines
+subjects:
+  - kind: ServiceAccount
+    name: tekton-bots-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-bots-triggers-workloads-clusterroles
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tekton-bots-triggers-workloads-clusterroles
+  namespace: tekton-pipelines
+rules:
+- apiGroups: ["apps"]
+  resources: ["namespaces", "deployments", "pods"]
+  verbs: ["get", "list", "watch", "update", "patch", "delete"]
+
