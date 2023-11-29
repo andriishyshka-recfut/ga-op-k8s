@@ -12,30 +12,30 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 30m
-    name: ETL failed jobs more than 5
+  - interval: 10m
+    name: Some of ETL jobs are failed
     rules:
     - alert: ETLJobsFailed
       annotations:
         description: |
-          ETL failed jobs more than 5
+          Some of ETL jobs are failed
         summary: ETL failed jobs is being piled up
       expr: |
-        kube_job_failed{namespace="etl"} > 0
-      for: 30m
+        min_over_time(kube_job_failed{namespace="etl"}[10m]) > 0
+      for: 10m
       labels:
         cluster: ${cluster_label}
         color: ${cluster_color}
         component: stream-processor
         severity: critical
-    - alert: ETLPodsNotSucceeded
+    - alert: ETLPodsPending
       annotations:
         description: |
-          ETL pods is in Failed Pending or Unknown phase more than 5 pods
-        summary: ETL pods is in Failed Pending or Unknown phase
+          ETL pods is in Pending phase more than 15m
+        summary: ETL pods is in Pending phase more than 15m
       expr: |
-        sum(kube_pod_status_phase{namespace="etl",phase=~"Failed|Pending|Unknown"}) > 3
-      for: 30m
+        sum(kube_pod_status_phase{namespace="etl",phase=~"Pending"}) > 3
+      for: 15m
       labels:
         cluster: ${cluster_label}
         color: ${cluster_color}
