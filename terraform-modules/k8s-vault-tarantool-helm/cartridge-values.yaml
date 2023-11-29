@@ -204,6 +204,11 @@ tarantool:
         requests:
           cpu: 500m
           memory: 3512Mi
+      extraEnv:
+        - name: TT_VINYL_MEMORY
+          value: "7368709120"
+        - name: TT_VINYL_CACHE
+          value: "2147483648"
     # Name of role, required field
     - name: router
       # Count of replicasets in that role, each replicaset is a statefulset, required field
