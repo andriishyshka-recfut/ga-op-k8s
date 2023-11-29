@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-settings
+  namespace: tekton-pipelines
+data:
+  cluster: production
+  color: blue
+  configPath: prod.tfvars.json
+  vaultAddr: https://vault.p.regemini.io
