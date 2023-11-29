@@ -12,7 +12,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 10m
+  - interval: 30m
     name: Some of ETL jobs are failed
     rules:
     - alert: ETLJobsFailed
@@ -21,8 +21,8 @@ spec:
           Some of ETL jobs are failed
         summary: ETL failed jobs is being piled up
       expr: |
-        min_over_time(kube_job_failed{namespace="etl"}[10m]) > 0
-      for: 10m
+        min_over_time(kube_job_failed{namespace="etl"}[30m]) > 0
+      for: 30m
       labels:
         cluster: ${cluster_label}
         color: ${cluster_color}
@@ -35,7 +35,7 @@ spec:
         summary: ETL pods is in Pending phase more than 15m
       expr: |
         sum(kube_pod_status_phase{namespace="etl",phase=~"Pending"}) > 3
-      for: 15m
+      for: 30m
       labels:
         cluster: ${cluster_label}
         color: ${cluster_color}
