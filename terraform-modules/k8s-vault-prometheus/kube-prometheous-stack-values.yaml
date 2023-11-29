@@ -208,7 +208,10 @@ alertmanager:
           receiver: "slack-dome-bots"
         - matchers:
           - alertname=~"BotsMinionHealthchekScraperRunRequests|BotsMinionHealthchekQueueReaderActiveWorkers"
-          receiver: "slack-minion-bots" 
+          receiver: "slack-minion-bots"
+        - matchers:
+          - alertname=~"ETLJobsFailed"
+          receiver: "tekton-failed-etl-jobs-webhook-notifications-and-slack"  
         - match_re:
             alertname: ".*"
           receiver: "tekton-webhook-notifications-and-slack"
