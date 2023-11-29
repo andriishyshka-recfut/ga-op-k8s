@@ -15,7 +15,7 @@ resource "null_resource" "rerun_failed_jobs" {
       export RUNNING_POD=$(kubectl --server ${local.gkeClusterConnectionSettings.HOST} \
       --token ${local.gkeClusterConnectionSettings.API_KEY} --insecure-skip-tls-verify=true \
       get pod -n etl | egrep 'Running' | awk '{print $1}' | cut -d'-' -f -6 | grep $CRONJOB_NAME)
-      [[ $($RUNNING_POD | grep $CRONJOB_NAME) ]] && continue || echo "Current job $CRONJOB_NAME is not running"
+      [[ $( echo $RUNNING_POD | grep $CRONJOB_NAME) ]] && continue || echo "Current job $CRONJOB_NAME is not running"
       echo "Creating job $CRONJOB_NAME..."
       kubectl --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} \
       --insecure-skip-tls-verify=true create job -n etl --from=cronjob/$CRONJOB_NAME $CRONJOB_NAME-tekton$(date '+%S')
