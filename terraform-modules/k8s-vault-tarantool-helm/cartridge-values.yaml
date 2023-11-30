@@ -182,7 +182,7 @@ tarantool:
     - name: storage
       replicasets: 6
       replicas: 2
-      memtxMemory: "5Gi"
+      memtxMemory: "6.5G"
       vshard:
         weight: 100
         roles:
@@ -194,16 +194,16 @@ tarantool:
         spec:
           resources:
             requests:
-              storage: 5Gi
+              storage: 15Gi
       service:
         annotations: {}
       resources:
         limits:
           cpu: 2
-          memory: 5.5Gi
+          memory: 6.7G
         requests:
           cpu: 500m
-          memory: 3512Mi
+          memory: 6.7G
       extraEnv:
         - name: TT_VINYL_MEMORY
           value: "7368709120"
