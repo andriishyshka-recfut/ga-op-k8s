@@ -22,7 +22,7 @@ resource "helm_release" "etl_operator" {
   }
   set {
     name  = "camino.tag"
-    value = "v5.0.16"
+    value = "v5.0.17"
   }
   set {
     name  = "gs2s3.tag"
