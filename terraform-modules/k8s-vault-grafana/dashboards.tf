@@ -21,11 +21,11 @@ resource "grafana_folder" "dome" {
 #   folder      = grafana_folder.dome.id
 #   config_json = file("${path.module}/dashboards/dome.json")
 # }
-# resource "grafana_dashboard" "parsing_progress" {
-#   provider    = grafana.elastic
-#   folder      = grafana_folder.dome.id
-#   config_json = file("${path.module}/dashboards/dome-parsing-progress.json")
-# }
+resource "grafana_dashboard" "parsing_progress" {
+  provider    = grafana.elastic
+  folder      = grafana_folder.dome.id
+  config_json = file("${path.module}/dashboards/dome-parsing-progress.json")
+}
 
 
 resource "grafana_folder" "minion" {
