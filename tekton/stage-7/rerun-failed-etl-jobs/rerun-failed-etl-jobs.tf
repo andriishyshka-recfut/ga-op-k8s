@@ -5,10 +5,10 @@ resource "null_resource" "rerun_failed_jobs" {
     set -x
     export CPP_JOB_LIST=$(kubectl --server ${local.gkeClusterConnectionSettings.HOST} \
     --token ${local.gkeClusterConnectionSettings.API_KEY} --insecure-skip-tls-verify=true \
-    get jobs.batch -n etl | egrep -v '(1/1|^NAME)' | egrep -v 'manual' | awk '{print $1}' | egrep 'etl-cpp|gs2s3-cpp' | cut -d'-' -f -5)
+    get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep 'etl-cpp|gs2s3-cpp' | cut -d'-' -f -5)
     export OTHER_JOB_LIST=$(kubectl --server ${local.gkeClusterConnectionSettings.HOST} \
     --token ${local.gkeClusterConnectionSettings.API_KEY} --insecure-skip-tls-verify=true \
-    get jobs.batch -n etl | egrep -v '(1/1|^NAME)' | egrep -v 'manual' | awk '{print $1}' | egrep -v 'etl-cpp|gs2s3-cpp' | cut -d'-' -f -6)
+    get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep -v 'etl-cpp|gs2s3-cpp' | cut -d'-' -f -6)
 
     export JOB_LIST=$(echo -e "$(echo $OTHER_JOB_LIST | tr ' ' '\n' | uniq)\n$(echo $CPP_JOB_LIST | tr ' ' '\n' | uniq)")
     for CRONJOB_NAME in $(echo $JOB_LIST);do
