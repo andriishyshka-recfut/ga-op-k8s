@@ -4,10 +4,8 @@ resource "null_resource" "rerun_failed_jobs" {
     command     = <<COMMAND
     set -x
     export KCMD=" --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} --insecure-skip-tls-verify=true"
-    export CPP_JOB_LIST=$(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' \
-    | egrep 'etl-cpp|gs2s3-cpp' | cut -d'-' -f -5)
-    export OTHER_JOB_LIST=$(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' \
-    | egrep -v 'etl-cpp|gs2s3-cpp' | cut -d'-' -f -6)
+    export CPP_JOB_LIST=$(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep 'etl-cpp|gs2s3-cpp' | cut -d'-' -f -5)
+    export OTHER_JOB_LIST=$(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep -v 'etl-cpp|gs2s3-cpp' | cut -d'-' -f -6)
 
     export JOB_LIST=$(echo -e "$(echo $OTHER_JOB_LIST | tr ' ' '\n' | uniq)\n$(echo $CPP_JOB_LIST | tr ' ' '\n' | uniq)")
     for CRONJOB_NAME in $(echo $JOB_LIST);do
@@ -24,9 +22,9 @@ resource "null_resource" "rerun_failed_jobs" {
         echo " $JOB_NAME - is not camino or gs2s3 job skipping additional job creation"
       fi
 
-      kubectl $(echo $KCMD) delete jobs.batch -n etl $(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep tekton)
+      kubectl $(echo $KCMD) delete jobs.batch -n etl $(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep tekton) || echo "there are no failed tekton jobs"
 
-      if [ $(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | wc -l ) > 1 ]; then
+      if [ $(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | wc -l | xargs ) > 1 ]; then
         kubectl $(echo $KCMD) delete jobs.batch -n etl $(kubectl $(echo $KCMD) get jobs.batch -n etl --sort-by=.status.startTime \
         -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | tac | tail -n+2)
       else
