@@ -23,8 +23,7 @@ resource "null_resource" "rerun_failed_jobs" {
       fi
 
       if [ $(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | wc -l | xargs ) > 1 ]; then
-        kubectl $(echo $KCMD) delete jobs.batch -n etl $(kubectl $(echo $KCMD) get jobs.batch -n etl --sort-by=.status.startTime \
-        -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | tac | tail -n+2)
+        kubectl $(echo $KCMD) delete jobs.batch -n etl $(kubectl $(echo $KCMD) get jobs.batch -n etl --sort-by=.status.startTime -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | tac | tail -n+2)
       else
         echo "Only one job $CRONJOB_NAME failed, nothing to delete"
       fi
