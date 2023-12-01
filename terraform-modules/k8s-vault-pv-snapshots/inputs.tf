@@ -18,7 +18,6 @@ locals {
   kafka_count      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
   kafka_prefix     = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.kafka_prefix
   zookeeper_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.zookeeper_prefix
-  tarantool_count  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.count
   sonarqube_count  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.sonarqube.count
   sftp             = var.Settings.clusters[var.Cluster].sftp-server
   minio_count      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
