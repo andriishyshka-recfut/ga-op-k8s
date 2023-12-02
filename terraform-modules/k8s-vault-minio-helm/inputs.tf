@@ -14,6 +14,7 @@ locals {
   vaultRootCredentialsPath  = "${var.Settings.clusters[var.Cluster][var.Color].minio.vault_users_config_path}/root"
   vaultOidcConfigPath       = var.Settings.clusters[var.Cluster][var.Color].minio.vault_oidc_config_path
   minioFqdn                 = var.Cluster == "production" ? "minio-helm.p.regemini.io" : "minio-helm.t.regemini.io"
+  vaultFqdn                 = var.Cluster == "production" ? "vault.p.regemini.io" : "vault.t.regemini.io"
   minioConsoleFqdn          = var.Settings.clusters[var.Cluster][var.Color].minio.console_fqdn
   currentProject            = var.Settings.gcpProject
   imageTag                  = var.Settings.clusters[var.Cluster][var.Color].minio.image_tag

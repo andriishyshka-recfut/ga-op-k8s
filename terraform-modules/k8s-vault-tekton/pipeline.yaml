@@ -33,19 +33,19 @@ spec:
         - name: branch
           value: "\\#437-Sandbox-DR-20231201"
 
-    # - name: minio
-    #   taskRef:
-    #     name: tg-run
-    #   runAfter:
-    #     - namespaces
-    #   workspaces:
-    #     - name: ws
-    #       workspace: ws
-    #   params:
-    #     - name: path
-    #       value: "k8s/tekton/stage-1/01-minio"
-    #     - name: branch
-    #       value: "\\#437-Sandbox-DR-20231201"          
+    - name: minio
+      taskRef:
+        name: tg-run
+      runAfter:
+        - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-1/01-minio"
+        - name: branch
+          value: "\\#437-Sandbox-DR-20231201"          
 
     - name: redis
       taskRef:
