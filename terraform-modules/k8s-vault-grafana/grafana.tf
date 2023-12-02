@@ -46,3 +46,4 @@ resource "helm_release" "grafana-clients" {
     value = local.grafanaRole
   }
 }
+provider "grafana" {}

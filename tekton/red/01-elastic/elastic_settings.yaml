@@ -2,7 +2,7 @@
 ElasticSettings:
   globalSettings:
     namespace: elastic
-    imageTag: "7.17.14"
+    imageTag: "7.17.15"
     clusterName: red
     remotecerts:
       - "remote.ca.crt"

@@ -91,10 +91,6 @@ terraform {
       source  = "registry.terraform.io/fluxcd/flux"
       version = ">= 0.0.13"
     }
-    grafana = {
-      source  = "grafana/grafana"
-      version = ">= 1.32.0"
-    }
   }
 }
 
