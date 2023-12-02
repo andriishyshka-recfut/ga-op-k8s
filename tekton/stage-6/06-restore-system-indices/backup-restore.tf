@@ -47,6 +47,6 @@ module "restore-lfb-indexes" {
   Actions              = file("${path.root}/restore-lfb-action.yaml")
   Settings             = var.Settings
   depends_on = [
-    module.backup
+    module.restore-service-indexes
   ]
 }
