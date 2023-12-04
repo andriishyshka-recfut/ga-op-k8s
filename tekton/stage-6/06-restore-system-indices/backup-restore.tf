@@ -44,9 +44,9 @@ module "restore-lfb-indexes" {
   EsService            = "monitoring-es-http"
   EsCreds              = "monitoring-es-elastic-user"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
-  Actions              = file("${path.root}/restore-lfb-actions.yaml")
+  Actions              = file("${path.root}/restore-lfb-action.yaml")
   Settings             = var.Settings
   depends_on = [
-    module.backup
+    module.restore-service-indexes
   ]
 }

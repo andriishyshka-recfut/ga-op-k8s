@@ -5,7 +5,7 @@ data "vault_generic_secret" "harbor_token" {
 }
 
 resource "kubernetes_secret" "harbor_image_pull_secrets" {
-
+  count = local.installCount
   metadata {
     name      = "camel-k-registry-secret"
     namespace = local.camelNs
