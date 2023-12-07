@@ -22,8 +22,8 @@ resource "null_resource" "rerun_failed_jobs" {
         echo " $JOB_NAME - is not camino or gs2s3 job skipping additional job creation"
       fi
 
-      if [ $(kubectl $(echo $KCMD) get job -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | wc -l | xargs ) > 1 ]; then
-        kubectl $(echo $KCMD) delete job -n etl $(kubectl $(echo $KCMD) get jobs.batch -n etl --sort-by=.status.startTime -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | tac | tail -n+2)
+      if [ $(kubectl $(echo $KCMD) get job -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | wc -l | xargs ) > 0 ]; then
+        kubectl $(echo $KCMD) delete job -n etl $(kubectl $(echo $KCMD) get jobs.batch -n etl --sort-by=.status.startTime -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME)
       else
         echo "Only one job $CRONJOB_NAME failed, nothing to delete"
       fi
