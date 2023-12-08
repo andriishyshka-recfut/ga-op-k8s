@@ -27,6 +27,6 @@ data "kubectl_file_documents" "tarantool_yaml" {
 }
 resource "kubectl_manifest" "tarantool" {
   # force_new = true
-  count     = 1
+  count     = 2
   yaml_body = element(data.kubectl_file_documents.tarantool_yaml.documents, count.index)
 }
