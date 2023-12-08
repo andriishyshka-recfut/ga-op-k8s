@@ -1,5 +1,5 @@
 elasticsearch:
-  cluster: https://monitoring-es-http:9200
+  cluster: https://mon-es-http:9200
   queries: |-
     [DEFAULT]
     QueryIntervalSecs = 300
@@ -40,7 +40,7 @@ container:
   - name: ES_EXPORTER_BASIC_PASSWORD
     valueFrom:
           secretKeyRef:
-            name: monitoring-es-elastic-user
+            name: mon-es-elastic-user
             key: elastic
   extraVolumeMounts:
     - name: foo
@@ -59,7 +59,7 @@ pod:
   extraVolumes:
   - name: foo
     secret:
-      secretName: monitoring-es-cert
+      secretName: mon-es-cert
       items:
       - key: ca.crt
         path: ca-certificates.crt
