@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus
+  name: tarantool
+  namespace: monitoring
+spec:
+  endpoints:
+    - port: http
+      path: /metrics
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: tarantool
+  namespaceSelector:
+    matchNames:
+      - vortex
