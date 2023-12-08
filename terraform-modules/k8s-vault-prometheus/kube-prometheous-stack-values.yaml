@@ -8,12 +8,12 @@ grafana:
   envValueFrom:
     ELASTIC_PASSWORD:
       secretKeyRef:
-        name: "monitoring-es-elastic-user"
+        name: "mon-es-elastic-user"
         key: elastic
   additionalDataSources:
     - name: "elastic"
       type:  "elasticsearch"
-      url: "https://monitoring-es-http:9200"
+      url: "https://mon-es-http:9200"
       database: "filebeat-*"
       uid: elastic_uid
       basicAuth: true
