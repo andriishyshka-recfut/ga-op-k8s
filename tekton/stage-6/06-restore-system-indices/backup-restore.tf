@@ -9,8 +9,8 @@ module "backup" {
   NamePrefix           = "backup-service-indexes"
   BackupBucketName     = "xbackup"
   BackupBucketBasePath = "es-backup/monitoring"
-  EsService            = "mon-es-http"
-  EsCreds              = "mon-es-elastic-user"
+  EsService            = "monitoring-es-http"
+  EsCreds              = "monitoring-es-elastic-user"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/backup-actions.yaml")
   Settings             = var.Settings
