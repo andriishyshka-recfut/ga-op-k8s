@@ -1,9 +1,6 @@
 variable "Settings" {}
 variable "Color" {}
 variable "Cluster" {}
-locals {
-  version = var.Settings.clusters[var.Cluster][var.Color].elasticsearch.cluster.mon
-}
 
 resource "kubernetes_secret" "python_script" {
   metadata {
