@@ -84,7 +84,7 @@ data "google_compute_snapshot" "sftp_snapshot" {
 }
 
 data "google_compute_snapshot" "minio_tenant_snapshot" {
-  name        = "minio-tenant-bcp2-${count.index}"
+  name        = "minio-tenant-${count.index}-dr-${local.restoreDate}"
   most_recent = true
   count = local.minio_count
 }
