@@ -10,8 +10,8 @@ locals {
   region      = "us-east4"
 
 
-  mongo_count       = var.Settings.clusters[var.Cluster].mongo.magescanner.replicas
-  mongo_prefix      = var.Settings.clusters[var.Cluster].mongo.magescanner.pvcPrefix
+  mongo_count       = var.Cluster == "production" ? var.Settings.clusters[var.Cluster].mongo.main.replicas : var.Settings.clusters[var.Cluster].mongo.magescanner.replicas
+  mongo_prefix      = var.Cluster == "production" ? var.Settings.clusters[var.Cluster].mongo.main.pvcPrefix: var.Settings.clusters[var.Cluster].mongo.magescanner.pvcPrefix
   mongo_auth_count  = var.Settings.clusters[var.Cluster].mongo.auth.replicas
   mongo_auth_prefix = var.Settings.clusters[var.Cluster].mongo.auth.pvcPrefix
 
@@ -19,9 +19,8 @@ locals {
   kafka_prefix     = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.kafka_prefix
   zookeeper_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.zookeeper_prefix
   sonarqube_count  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.sonarqube.count
-  sftp             = var.Settings.clusters[var.Cluster].sftp-server
-  minio_count      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
-  minio_prefix      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.prefix
+  minio_count      = var.Cluster == "production" ? 0 : var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
+  minio_prefix     = var.Cluster == "production" ? "" : var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.prefix
   # mongoDiskSize = trim(var.Settings.clusters[var.Cluster].mongo.magescanner.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(var.Settings.clusters[var.Cluster].mongo.magescanner.volumeSize, "Gi")
 
