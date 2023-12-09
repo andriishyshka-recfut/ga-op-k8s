@@ -75,7 +75,7 @@ elastic_settings:
     enabled: true
     # cert_ttl: "143h"
     name: kibana
-    esName: "monitoring"
+    esName: "mon"
     namespace: "monitoring"
     kibanaVersion: "7.17.15"
     oidc_provider:
