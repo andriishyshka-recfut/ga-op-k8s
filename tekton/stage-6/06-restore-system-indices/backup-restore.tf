@@ -9,8 +9,8 @@ module "backup" {
   NamePrefix           = "backup-service-indexes"
   BackupBucketName     = "xbackup"
   BackupBucketBasePath = "es-backup/monitoring"
-  EsService            = "monitoring-es-http"
-  EsCreds              = "monitoring-es-elastic-user"
+  EsService            = "mon-es-http"
+  EsCreds              = "mon-es-elastic-user"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/backup-actions.yaml")
   Settings             = var.Settings
@@ -25,8 +25,8 @@ module "restore-service-indexes" {
   NamePrefix           = "restore-service-indexes"
   BackupBucketName     = "xbackup"
   BackupBucketBasePath = "es-backup/monitoring"
-  EsService            = "monitoring-es-http"
-  EsCreds              = "monitoring-es-elastic-user"
+  EsService            = "mon-es-http"
+  EsCreds              = "mon-es-elastic-user"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/restore-actions.yaml")
   Settings             = var.Settings
@@ -41,8 +41,8 @@ module "restore-lfb-indexes" {
   NamePrefix           = "restore-lfb-indexes"
   BackupBucketName     = "xbackup"
   BackupBucketBasePath = "es-backup/monitoring"
-  EsService            = "monitoring-es-http"
-  EsCreds              = "monitoring-es-elastic-user"
+  EsService            = "mon-es-http"
+  EsCreds              = "mon-es-elastic-user"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/restore-lfb-action.yaml")
   Settings             = var.Settings
