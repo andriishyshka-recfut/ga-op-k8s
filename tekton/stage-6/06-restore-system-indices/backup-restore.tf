@@ -47,7 +47,7 @@ module "restore-lfb-indexes" {
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/restore-lfb-action.yaml")
   Settings             = var.Settings
-  depends_on = [
-    module.restore-service-indexes
-  ]
+  #depends_on = [
+  #  module.restore-service-indexes
+  #]
 }
