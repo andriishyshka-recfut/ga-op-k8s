@@ -58,7 +58,7 @@ data "google_compute_snapshot" "kafka_zookeeper_snapshot" {
 
 
 data "google_compute_snapshot" "tarantool_storage_snapshot" {
-  name        = "tarantool-vortex-cartridge-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}-dr-${local.restoreDate}"
+  name        = "tarantool-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}-dr-${local.restoreDate}"
   most_recent = true
   count       = local.tarantool_storage_count
 }
@@ -66,7 +66,7 @@ data "google_compute_snapshot" "tarantool_storage_snapshot" {
 
 data "google_compute_snapshot" "tarantool_router_snapshot" {
 
-  name        = "tarantool-vortex-cartridge-router-${count.index}-0-dr-${local.restoreDate}"
+  name        = "tarantool-router-${count.index}-0-dr-${local.restoreDate}"
   most_recent = true
   count       = local.tarantool_router_count
 }
@@ -151,7 +151,7 @@ resource "google_compute_disk" "tarantool_storage_pv" {
   name     = "tarantool-vortex-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
   count    = local.tarantool_storage_count
   type     = "pd-ssd"
-  size     = 20
+  size     = data.google_compute_snapshot.tarantool_storage_snapshot[count.index].disk_size_gb
   snapshot = data.google_compute_snapshot.tarantool_storage_snapshot[count.index].name
   labels = {
     target = local.tarantool_storage_prefix
@@ -165,7 +165,7 @@ resource "google_compute_disk" "tarantool_router_pv" {
   name     = "tarantool-vortex-router-${count.index}-0"
   count    = local.tarantool_router_count
   type     = "pd-ssd"
-  size     = 1
+  size     = data.google_compute_snapshot.tarantool_router_snapshot[count.index].disk_size_gb
   snapshot = data.google_compute_snapshot.tarantool_router_snapshot[count.index].name
   labels = {
     target = local.tarantool_router_prefix
