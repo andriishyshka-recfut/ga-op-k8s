@@ -81,5 +81,5 @@ resource "null_resource" "clone_topics" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.clone_topics
   }
-  depends_on = [ null_resource.delete_topics ]
+  depends_on = [ null_resource.delete_old_topics ]
 }
