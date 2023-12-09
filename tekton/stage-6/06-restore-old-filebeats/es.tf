@@ -24,8 +24,8 @@ module "restore" {
   NamePrefix           = "restore-logs"
   BackupBucketName     = "xbackup"
   BackupBucketBasePath = "es-backup/monitoring"
-  EsService            = "monitoring-es-http"
-  EsCreds              = "monitoring-es-elastic-user"
+  EsService            = "mon-es-http"
+  EsCreds              = "mon-es-elastic-user"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/es-restore-actions.yaml")
   Settings             = var.Settings
