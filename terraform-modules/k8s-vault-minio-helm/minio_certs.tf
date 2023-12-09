@@ -18,7 +18,7 @@ resource "kubernetes_manifest" "clusterissuer_vault_minio" {
           }
         }
         "path"   = "pki-minio/sign/minio"
-        "server" = "${vaultFqdn}"
+        "server" = "${local.vaultFqdn}"
       }
     }
   }
