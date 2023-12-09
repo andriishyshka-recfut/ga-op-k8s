@@ -40,7 +40,7 @@ resource "helm_release" "tarantool_cartridge" {
   }
   set{
     name = "tarantool.image.tag"
-    value = "v1.1.0"
+    value = "v1.1.2"
   }
     set{
     name = "tarantool.auth.password"

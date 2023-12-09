@@ -134,8 +134,13 @@ tarantool:
   runtimeClassName: ""
   # Alternative scheduler for pods, overrides by tarantool.roles.*.schedulerName
   schedulerName: ""
+  nodeSelector:
+    workloadsType: tarantool
   # Tolerations for application pods assignment, will be merged with tarantool.roles.*.tolerations
-  tolerations: []
+  tolerations: 
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
   # Topology Spread Constraints for pod assignment, will be merged with tarantool.roles.*.      topologySpreadConstraints
   topologySpreadConstraints: []
   # Working directory for all cartridge containers, overrides by tarantool.roles.*.workingDir
@@ -205,10 +210,12 @@ tarantool:
           cpu: 500m
           memory: 6.7G
       extraEnv:
-        - name: TT_VINYL_MEMORY
-          value: "7368709120"
-        - name: TT_VINYL_CACHE
-          value: "2147483648"
+        # - name: TT_VINYL_MEMORY
+        #   value: "7368709120"
+        # - name: TT_VINYL_CACHE
+        #   value: "2147483648"
+        - name: TT_MEMTX_MIN_TUPLE_SIZE
+          value: "64"
     # Name of role, required field
     - name: router
       # Count of replicasets in that role, each replicaset is a statefulset, required field
