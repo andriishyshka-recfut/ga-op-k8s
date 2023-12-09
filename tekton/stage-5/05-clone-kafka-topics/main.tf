@@ -25,17 +25,9 @@ COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
-    get kafkatopic -n kafka | grep -v -e NAME | awk '{print $1}'\
-    | xargs -n 1 -I{} \
-    sh -c "kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true  \
-    get kafkatopic -n kafka {} -o yaml >> kafka_topics.yaml
-    
-    kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
+    get kafkatopic -n kafka -o yaml |  kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true apply -f kafka_topics.yaml"
-    sleep 29
+    --insecure-skip-tls-verify=true apply -f -
 COMMAND
 
 }
