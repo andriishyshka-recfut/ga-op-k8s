@@ -86,7 +86,16 @@ resource "null_resource" "harbor_creds" {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      --namespace=${local.tektonNs}  \
-     serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}'
+     serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}' && sleep 30 && \
+    kubectl patch --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     --namespace="tekton-pipelines \
+    configmap config-defaults -p 
+
+
+
+     {"imagePullSecrets":[{"name":"harbor"}],"affinity":{"nodeAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"workloadsType","operator":"In","values":["tekton"]}]}]}}},"tolerations":[{"key":"workloadsType","operator":"Equal","value":"tekton","effect":"NoSchedule"},{"key":"node.kubernetes.io/not-ready","operator":"Exists","effect":"NoExecute","tolerationSeconds":300},{"key":"node.kubernetes.io/unreachable","operator":"Exists","effect":"NoExecute","tolerationSeconds":300}]}
 
 COMMAND
   }
