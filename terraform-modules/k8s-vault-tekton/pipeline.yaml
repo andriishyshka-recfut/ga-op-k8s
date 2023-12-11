@@ -413,7 +413,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: 07-cleanup
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   workspaces:
     - name: ws
@@ -435,7 +435,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: failed-etl-jobs-rerun
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   workspaces:
     - name: ws

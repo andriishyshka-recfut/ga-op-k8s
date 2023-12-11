@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: tg-run
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   params:
     - name: branch
