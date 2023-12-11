@@ -17,6 +17,12 @@ resource "null_resource" "deploy_tekton" {
      --insecure-skip-tls-verify=true  \
      --namespace=${local.tektonNs}  \
      create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
+     --from-literal=vaultAddr=${var.VaultAddress} && \
+     kubectl --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     --namespace=${local.tektonMainNs}  \
+     create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
      --from-literal=vaultAddr=${var.VaultAddress}
 COMMAND
   }
