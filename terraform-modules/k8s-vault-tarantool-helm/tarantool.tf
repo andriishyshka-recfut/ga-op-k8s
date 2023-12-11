@@ -9,13 +9,13 @@ data "vault_generic_secret" "cartridge_creds" {
 
 
 resource "helm_release" "tarantool_operator" {
-  name      = "tarantool-operator"
-  chart     = "oci://harbor.regemini.io/helm/tarantool-operator"
-  wait      = true
-  atomic    = true
-  namespace = local.namespace
-  timeout   = 300
-  version   = "1.0.1"
+  name                = "tarantool-operator"
+  chart               = "oci://harbor.regemini.io/helm/tarantool-operator"
+  wait                = true
+  atomic              = true
+  namespace           = local.namespace
+  timeout             = 300
+  version             = "1.0.1"
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
 }
@@ -32,35 +32,60 @@ resource "helm_release" "tarantool_cartridge" {
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
 
-  values = [ file("${path.module}/cartridge-values.yaml") ]
+  values = [file("${path.module}/cartridge-values.yaml")]
 
-  set{
-    name = "tarantool.image.repository"
+  set {
+    name  = "tarantool.image.repository"
     value = "harbor.regemini.io/dev/tarantool"
   }
   set{
     name = "tarantool.image.tag"
     value = "v1.1.2"
   }
-    set{
-    name = "tarantool.auth.password"
+  set {
+    name  = "tarantool.auth.password"
     value = jsondecode(data.vault_generic_secret.cartridge_creds.data["credentials"]).password
   }
-  set{
-    name = "tarantool.roles[0].replicasets"
+  set {
+    name  = "tarantool.roles[0].replicasets"
     value = local.tsc
   }
 
-  set{
-    name = "tarantool.roles[0].persistence.spec.resources.requests.storage"
+  set {
+    name  = "tarantool.roles[0].persistence.spec.resources.requests.storage"
     value = "20Gi"
   }
 
+  set {
+    name  = "tarantool.roles[0].resources.requests.cpu"
+    value = local.storage_request_cpu
+  }
 
-  depends_on = [ 
-    helm_release.tarantool_operator, 
-    kubernetes_persistent_volume_claim.tarantool_router_pvc, 
-    kubernetes_persistent_volume_claim.tarantool_storage_pvc 
+  set {
+    name  = "tarantool.roles[0].resources.requests.memory"
+    value = local.storage_request_mem
+  }
+
+  set {
+    name  = "tarantool.roles[0].resources.limits.cpu"
+    value = local.storage_limit_cpu
+  }
+
+  set {
+    name  = "tarantool.roles[0].resources.limits.memory"
+    value = local.storage_limit_mem
+  }
+
+  set {
+    name  = "tarantool.roles[0].memtxMemory"
+    value = local.storage_memtx_memory
+  }
+
+
+  depends_on = [
+    helm_release.tarantool_operator,
+    kubernetes_persistent_volume_claim.tarantool_router_pvc,
+    kubernetes_persistent_volume_claim.tarantool_storage_pvc
   ]
 }
 
