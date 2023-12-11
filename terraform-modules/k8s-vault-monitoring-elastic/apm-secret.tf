@@ -2,7 +2,7 @@
 data "kubernetes_secret" "apm_token" {
   count = local.apmCredsToggle
   metadata {
-    name      = "apm-${local.esValues.namespace}-apm-token"
+    name      = "apm-${local.esValues.esName}-apm-token"
     namespace = local.esValues.namespace
   }
   depends_on = [null_resource.ansible_validate_resources]

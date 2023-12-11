@@ -1,9 +1,6 @@
 variable "Settings" {}
 variable "Color" {}
 variable "Cluster" {}
-locals {
-  version = var.Settings.clusters[var.Cluster][var.Color].elasticsearch.cluster.monitoring
-}
 
 resource "kubernetes_secret" "python_script" {
   metadata {
@@ -49,14 +46,14 @@ resource "kubernetes_job" "python_script" {
             name = "ELASTICSEARCH_PASSWORD"
             value_from {
               secret_key_ref {
-                name = "monitoring-es-elastic-user"
+                name = "mon-es-elastic-user"
                 key  = "elastic"
               }
             }
           }
           env {
             name  = "ELASTICSEARCH_URL"
-            value = "monitoring-es-http:9200"
+            value = "mon-es-http:9200"
           }
           volume_mount {
             name       = "ca-cert"
@@ -72,7 +69,7 @@ resource "kubernetes_job" "python_script" {
         volume {
           name = "ca-cert"
           secret {
-            secret_name = "monitoring-es-cert"
+            secret_name = "mon-es-cert"
             items {
               key  = "ca.crt"
               path = "ca.crt"

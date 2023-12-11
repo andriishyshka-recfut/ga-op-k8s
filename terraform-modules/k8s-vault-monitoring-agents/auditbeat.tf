@@ -1,6 +1,6 @@
 data "kubernetes_secret" "es_pass" {
   metadata {
-    name      = "monitoring-es-elastic-user"
+    name      = "mon-es-elastic-user"
     namespace = "monitoring"
   }
 }

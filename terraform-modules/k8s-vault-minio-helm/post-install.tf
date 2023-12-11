@@ -80,12 +80,14 @@ resource "kubernetes_secret" "minio_credentials" {
 # }
 
 resource "time_sleep" "wait_for_tenant" {
+  count = local.runUserAccess
   depends_on = [helm_release.minio_tenant]
 
   create_duration = "40s"
 }
 
 resource "kubernetes_job" "configure_users_access" {
+  count = local.runUserAccess
   metadata {
     name      = "minio-users-access"
     namespace = local.minioNs
