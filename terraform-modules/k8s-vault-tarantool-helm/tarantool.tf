@@ -15,7 +15,7 @@ resource "helm_release" "tarantool_operator" {
   atomic              = true
   namespace           = local.namespace
   timeout             = 300
-  version             = "1.0.1"
+  version             = "1.0.1-v2"
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
 }
