@@ -25,19 +25,19 @@ data "vault_generic_secret" "oidc_secrets" {
 }
 
 resource "helm_release" "minio" {
-  name       = "minio"
-  chart      = "minio"
-  repository = "https://helm.min.io/"
-  # version           = "3.1.1"
+  name              = "minio"
+  chart             = "minio"
+  repository        = "oci://harbor.regemini.io/helm"
+  version           = "8.0.10"
   namespace         = local.minioNs
   dependency_update = "true"
-  timeout = 120
+  timeout           = 120
 
   values = [
     file("${path.module}/minio_values.yaml")
   ]
   set {
-    name = "gcsgateway.replicas"
+    name  = "gcsgateway.replicas"
     value = local.replicas
   }
   set {
@@ -49,23 +49,23 @@ resource "helm_release" "minio" {
     value = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
   }
   set {
-    name = "environment.MINIO_IDENTITY_OPENID_CONFIG_URL"
+    name  = "environment.MINIO_IDENTITY_OPENID_CONFIG_URL"
     value = "${data.vault_generic_secret.oidc_secrets.data.oidc_discovery_url}/.well-known/openid-configuration"
   }
   set {
-    name = "environment.MINIO_DOMAIN"
+    name  = "environment.MINIO_DOMAIN"
     value = local.minioFqdn
   }
   set {
-    name = "environment.MINIO_BROWSER_REDIRECT_URL"
+    name  = "environment.MINIO_BROWSER_REDIRECT_URL"
     value = local.minioConsoleFqdn
   }
   set {
-    name = "gcsgateway.projectId"
+    name  = "gcsgateway.projectId"
     value = local.currentProject
   }
   set {
-    name = "image.tag"
+    name  = "image.tag"
     value = local.imageTag
   }
 

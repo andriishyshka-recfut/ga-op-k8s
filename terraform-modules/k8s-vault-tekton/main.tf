@@ -17,6 +17,12 @@ resource "null_resource" "deploy_tekton" {
      --insecure-skip-tls-verify=true  \
      --namespace=${local.tektonNs}  \
      create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
+     --from-literal=vaultAddr=${var.VaultAddress} && \
+     kubectl --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     --namespace=${local.tektonMainNs}  \
+     create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
      --from-literal=vaultAddr=${var.VaultAddress}
 COMMAND
   }
@@ -86,7 +92,16 @@ resource "null_resource" "harbor_creds" {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      --namespace=${local.tektonNs}  \
-     serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}'
+     serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}' && sleep 30 && \
+    kubectl patch --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     --namespace="tekton-pipelines \
+    configmap config-defaults -p 
+
+
+
+     {"imagePullSecrets":[{"name":"harbor"}],"affinity":{"nodeAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"workloadsType","operator":"In","values":["tekton"]}]}]}}},"tolerations":[{"key":"workloadsType","operator":"Equal","value":"tekton","effect":"NoSchedule"},{"key":"node.kubernetes.io/not-ready","operator":"Exists","effect":"NoExecute","tolerationSeconds":300},{"key":"node.kubernetes.io/unreachable","operator":"Exists","effect":"NoExecute","tolerationSeconds":300}]}
 
 COMMAND
   }
@@ -99,7 +114,7 @@ COMMAND
 resource "null_resource" "crds" {
   triggers = {
     task        = md5(file("${path.module}/task.yaml"))
-    pipeline    = md5(file("${path.module}/pipeline-${var.Cluster}.yaml"))
+    pipeline    = md5(file("${path.module}/pipeline.yaml"))
     pipelinerun = md5(file("${path.module}/pipelinerun.yaml"))
     webhook     = md5(file("${path.module}/webhook.yaml"))
   }

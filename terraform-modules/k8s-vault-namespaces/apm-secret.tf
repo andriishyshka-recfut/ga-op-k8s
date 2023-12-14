@@ -1,5 +1,5 @@
 data "vault_generic_secret" "apm_token" {
-  path = "secret/apm/monitoring-${var.Color}"
+  path = "secret/apm/mon-${var.Color}"
 }
 
 resource "kubernetes_secret" "apm_token_secrets" {

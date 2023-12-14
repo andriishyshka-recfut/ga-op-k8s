@@ -18,7 +18,7 @@ resource "kubernetes_manifest" "clusterissuer_vault_minio" {
           }
         }
         "path"   = "pki-minio/sign/minio"
-        "server" = "http://vault-active.vault:8200"
+        "server" = "${local.vaultFqdn}"
       }
     }
   }
@@ -52,19 +52,19 @@ resource "kubernetes_manifest" "certificate_minio_helm_vault_minio" {
 
 data "kubernetes_secret" "minio_tenant_ca" {
   metadata {
-    name = "tls-ssl-minio"
+    name      = "tls-ssl-minio"
     namespace = "minio-helm"
   }
-  depends_on = [ kubernetes_manifest.certificate_minio_helm_vault_minio ]
+  depends_on = [kubernetes_manifest.certificate_minio_helm_vault_minio]
 }
 
 resource "kubernetes_secret" "operator_ca_secret" {
   metadata {
-    name = "operator-ca-tls"
+    name      = "operator-ca-tls"
     namespace = "minio-operator"
   }
   data = {
     "public.crt" = data.kubernetes_secret.minio_tenant_ca.data["ca.crt"]
   }
-  
+
 }

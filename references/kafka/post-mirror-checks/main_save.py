@@ -6,6 +6,7 @@ import sys
 import timeit
 from concurrent.futures import ThreadPoolExecutor
 from confluent_kafka.cimpl import RESOURCE_TOPIC
+import shutil
 from tabulate import tabulate
 
 from confluent_kafka import Consumer, TopicPartition, OFFSET_INVALID
@@ -195,6 +196,7 @@ source_broker, run_prefix = parse_args(sys.argv[1:])
 show_all = False
 
 results_folder = f'{run_prefix}_{now}'
+shutil.rmtree(results_folder)
 os.mkdir(results_folder)
 source_server_state = analyze_cluster("source", source_broker)
 

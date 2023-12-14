@@ -13,6 +13,12 @@ locals {
   tarantool_router_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.router_disks
   tarantool_router_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.router_prefix 
 
+  storage_request_cpu = var.Cluster == "production" ?  "500m" : "300m"
+  storage_request_mem = var.Cluster == "production" ?  "6.7G" : "2.2G"
+  storage_limit_cpu = var.Cluster == "production" ?  "2" : "500m"
+  storage_limit_mem = var.Cluster == "production" ?  "6.7G" : "2.2G"
+
+  storage_memtx_memory =  var.Cluster == "production" ?  "6.5G" : "2G"
 
 
   zones = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones

@@ -1,6 +1,6 @@
 data "kubernetes_secret" "es_pass" {
   metadata {
-    name      = "monitoring-es-elastic-user"
+    name      = "mon-es-elastic-user"
     namespace = "monitoring"
   }
 }
@@ -14,5 +14,9 @@ resource "helm_release" "auditbeat" {
   set {
     name  = "elastic.password"
     value = data.kubernetes_secret.es_pass.data.elastic
+  }
+  set {
+    name  = "tag"
+    value = "7.17.15"
   }
 }

@@ -72,4 +72,3 @@ resource "helm_release" "gitlab-runner" {
     type  = "string"
   }
 }
-
