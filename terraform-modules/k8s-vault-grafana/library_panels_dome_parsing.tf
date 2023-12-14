@@ -115,8 +115,8 @@
 #     }
 #   })
 # }
-# 
-# 
+
+
 # locals {
 #   grafana_library_dome_parsing_graph = [
 #     for i in grafana_library_panel.dome_parsing_graph[*] :
@@ -127,7 +127,7 @@
 #       }
 #   })]
 # }
-# 
+
 # resource "grafana_dashboard" "dome_parsing_library_panel" {
 #   provider = grafana.elastic
 #   folder   = grafana_folder.dome_parsing.id
