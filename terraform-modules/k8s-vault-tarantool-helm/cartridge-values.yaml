@@ -157,15 +157,16 @@ tarantool:
   foreignLeader: ""
   # Failover configuration
   failover:
-    mode: "disabled"
-    timeout: 5
+    mode: "stateful"
+    timeout: 15
     fencing: false
     fencingTimeout: 10
     fencingPause: 2
     stateProvider: "etcd2"
     etcd2:
       lockDelay: 20
-      endpoints: []
+      endpoints:
+      - http://etcd:2379
       username: "root"
       password: ""
     stateboard:

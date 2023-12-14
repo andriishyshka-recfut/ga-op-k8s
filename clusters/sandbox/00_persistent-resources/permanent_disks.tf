@@ -18,7 +18,8 @@ locals {
   tarantool_storage_prefix = local.settings.persistent_resources.permanentDisks.tarantool.storage_prefix 
   tarantool_router_count = local.settings.persistent_resources.permanentDisks.tarantool.router_disks
   tarantool_router_prefix = local.settings.persistent_resources.permanentDisks.tarantool.router_prefix 
-
+  tarantool_etcd_count = local.settings.persistent_resources.permanentDisks.tarantool.etcd_disks
+  tarantool_etcd_prefix = local.settings.persistent_resources.permanentDisks.tarantool.etcd_prefix 
 
   # mongoDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
@@ -63,12 +64,16 @@ data "google_compute_snapshot" "tarantool_storage_snapshot" {
   count       = local.tarantool_storage_count
 }
 
-
 data "google_compute_snapshot" "tarantool_router_snapshot" {
-
   name        = "tarantool-vortex-cartridge-router-${count.index}-0-bcp-${local.restoreDate}"
   most_recent = true
   count       = local.tarantool_router_count
+}
+
+data "google_compute_snapshot" "tarantool_etcd_snapshot" {
+  name        = "tarantool-etcd-${count.index}-dr-${local.restoreDate}"
+  most_recent = true
+  count       = local.tarantool_etcd_count
 }
 
 data "google_compute_snapshot" "sonarqube_postgres_snapshot" {
@@ -173,6 +178,20 @@ resource "google_compute_disk" "tarantool_router_pv" {
   }
   zone = element([for i in range(local.tarantool_router_count) : element(local.zones, i % 3)], count.index)
 }
+
+resource "google_compute_disk" "tarantool_etcd_pv" {
+  name     = "${local.tarantool_etcd_prefix}-${count.index}"
+  count    = local.tarantool_etcd_count
+  type     = "pd-ssd"
+  size     = data.google_compute_snapshot.tarantool_etcd_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.tarantool_etcd_snapshot[count.index].name
+  labels = {
+    target = local.tarantool_etcd_prefix
+    id     = "${local.tarantool_etcd_prefix}-${count.index}"
+  }
+  zone = element([for i in range(local.tarantool_etcd_count) : element(local.zones, i % 3)], count.index)
+}
+
 
 resource "google_compute_disk" "sonarqube_postgres_pv" {
   name  = "sonarqube-postgres-${count.index}"
