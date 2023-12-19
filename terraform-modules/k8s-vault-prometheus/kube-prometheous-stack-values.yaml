@@ -152,6 +152,12 @@ alertmanager:
       # - channel: '#prometheus'
       #   send_resolved: true
       #   text: '{{ template "slack.custom.text" . }}'
+
+    - name: "slack-dome-mapping"
+      slack_configs:
+        - channel: '#dome-mapping'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true 
     - name: "tekton-webhook-notifications-and-slack"
       webhook_configs:
         - send_resolved: false
@@ -202,7 +208,10 @@ alertmanager:
         - matchers:
           - alertname=~"FailBotsScraper"   
           repeat_interval: 12h
-          receiver: "tekton-fail-bots-webhook-notifications-and-slack"        
+          receiver: "tekton-fail-bots-webhook-notifications-and-slack"
+        - matchers:
+          - alertname=~"DomeMappingChanged"
+          receiver: "slack-dome-mapping"
         - matchers:
           - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"        
           receiver: "slack-dome-bots"

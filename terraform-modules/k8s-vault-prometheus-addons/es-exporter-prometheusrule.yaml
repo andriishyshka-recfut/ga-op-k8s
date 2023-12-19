@@ -159,3 +159,15 @@ spec:
         cluster: ${cluster_label}
         component: stream-processor
         severity: critical
+    - alert: DomeMappingChanged
+      annotations:
+        description: |
+          Dome mapping was changed, action needed to fix it
+        summary: Dome mapping was changed, action needed to fix it
+      expr: |
+        sum_over_time ( query_dome_mapping[24h] ) > 0
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: warning
