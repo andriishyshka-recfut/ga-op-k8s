@@ -1,4 +1,5 @@
 data "vault_generic_secret" "apm_token" {
+  count = local.use_apm
   path = "secret/apm/mon-${var.Color}"
 }
 
@@ -10,7 +11,7 @@ resource "kubernetes_secret" "apm_token_secrets" {
   }
 
   data = {
-    secret-token = data.vault_generic_secret.apm_token.data.token
+    secret-token = data.vault_generic_secret.apm_token[0].data.token
   }
 
   depends_on = [

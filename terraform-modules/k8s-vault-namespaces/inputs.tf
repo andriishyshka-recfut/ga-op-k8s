@@ -10,6 +10,8 @@ locals {
   #   if can(namespace.skipNsCreation) == false
   # ]))
 
+  use_apm = var.Color == "red" ? 0 : 1
+
   namespaceNames = {
     for namespace in var.Settings.clusters[var.Cluster].namespaces : namespace.name => namespace
     if can(namespace.skipNsCreation) == false
