@@ -22,7 +22,8 @@ locals {
 
   storage_memtx_memory =  var.Cluster == "production" ?  "6.5G" : "2G"
 
-
+  vortex_version = "v5.5.5"
+  
   zones = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones
 }
 
