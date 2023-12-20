@@ -17,5 +17,6 @@ locals {
     BASTION_DNS             = var.Settings.bastion_dns
   })
 
+  trial_licenses = var.Color == "red" ? 0 : 1
   eckVersion = var.Settings.clusters[var.Cluster][var.Color].elasticsearch.eck_version
 }
