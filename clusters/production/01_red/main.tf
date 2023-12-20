@@ -56,5 +56,6 @@ module "k8s-istio-lb" {
   source     = "../../../terraform-modules/k8s-istio-lb"
   Settings   = var.Settings
   Cluster    = "production"
+  Color      = "red"
   depends_on = [module.k8s-istio]
 }

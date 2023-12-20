@@ -2,11 +2,12 @@ resource "google_container_cluster" "cluster" {
 
   provider = google-beta
 
+  deletion_protection       = false
   name                      = "${var.Cluster}-${var.Color}"
   location                  = local.gkeRegion
   network                   = data.google_compute_network.vpc.self_link
   subnetwork                = google_compute_subnetwork.net.name
-  default_max_pods_per_node = var.Settings.clusters[var.Cluster][var.Color].pods_per_node
+  default_max_pods_per_node = var.Settings.clusters[var.Cluster].pods_per_node
   #min_master_version = data.google_container_engine_versions.version.latest_master_version
   release_channel {
     channel = "REGULAR"
@@ -148,6 +149,7 @@ resource "google_container_node_pool" "nodepool_additional" {
   name     = "${var.Cluster}-${var.Color}-${each.key}"
   location = local.gkeRegion
   cluster  = google_container_cluster.cluster.name
+  max_pods_per_node = lookup(each.value, "maxPodsPerNode", var.Settings.clusters[var.Cluster].pods_per_node)
 
   autoscaling {
     min_node_count = each.value.minNodes
