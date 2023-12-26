@@ -24,6 +24,7 @@ module "k8s-misc-operators" {
   Cluster                      = "production"
   Color                        = "red"
 }
+
 module "k8s-vault" {
   source                       = "../../../terraform-modules/k8s-vault-red"
   GkeClusterConnectionSettings = module.gke-setup-red.GkeClusterConnectionSettings

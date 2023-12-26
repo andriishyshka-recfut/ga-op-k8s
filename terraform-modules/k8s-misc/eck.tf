@@ -1,4 +1,5 @@
 resource "kubernetes_namespace" "elastic_operator_ns" {
+  count = local.eck_installs
   metadata {
     name = "elastic-system"
     labels = {
@@ -10,6 +11,7 @@ resource "kubernetes_namespace" "elastic_operator_ns" {
 
 
 resource "null_resource" "ansible_eck_crd_playbook" {
+  count = local.eck_installs
   triggers = {
     # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
     version = local.eckVersion
