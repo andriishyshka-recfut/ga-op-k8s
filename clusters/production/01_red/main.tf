@@ -15,14 +15,6 @@ module "gke-setup-red" {
   Color    = "red"
 }
 
-module "k8s-istio" {
-  source                       = "../../../terraform-modules/k8s-istio"
-  GkeClusterConnectionSettings = module.gke-setup-red.GkeClusterConnectionSettings
-  Settings                     = var.Settings
-  Cluster                      = "production"
-  Color                        = "red"
-  depends_on                   = [module.gke-setup-red]
-}
 
 
 module "k8s-misc-operators" {
@@ -31,7 +23,6 @@ module "k8s-misc-operators" {
   Settings                     = var.Settings
   Cluster                      = "production"
   Color                        = "red"
-  depends_on                   = [module.k8s-istio]
 }
 module "k8s-vault" {
   source                       = "../../../terraform-modules/k8s-vault-red"
@@ -40,7 +31,7 @@ module "k8s-vault" {
   Cluster                      = "production"
   Color                        = "red"
   VaultAddress                 = var.VaultAddress
-  depends_on                   = [module.k8s-istio, module.k8s-misc-operators]
+  depends_on                   = [module.k8s-misc-operators]
 }
 
 module "k8s-vault-tekton" {
@@ -50,12 +41,4 @@ module "k8s-vault-tekton" {
   Color                        = "red"
   VaultAddress                 = var.VaultAddress
   # depends_on                   = [module.k8s-vault]
-}
-
-module "k8s-istio-lb" {
-  source     = "../../../terraform-modules/k8s-istio-lb"
-  Settings   = var.Settings
-  Cluster    = "production"
-  Color      = "red"
-  depends_on = [module.k8s-istio]
 }
