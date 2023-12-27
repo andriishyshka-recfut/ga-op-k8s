@@ -7,3 +7,6 @@ variable "VaultAddress" {}
 # variable "OidcClientId" {}
 # variable "OidcClientSecret" {}
 
+locals {
+  vault_auth_secret_name = "vault-k8s-auth-secret"
+}

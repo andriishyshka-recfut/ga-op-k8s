@@ -53,7 +53,7 @@ resource "vault_pki_secret_backend_role" "role" {
   max_ttl            = 32832000
   key_type           = "rsa"
   key_bits           = 2048
-  allowed_domains    = ["elastic-es-http", "elastic-es-http.elastic.svc", "elastic-es-http.elastic"]
+  allowed_domains    = ["mon-es-http",  "mon-es-http.monitoring.svc", "elastic-es-http", "elastic-es-http.elastic.svc", "elastic-es-http.elastic",  "elasticsearch-coor", "red-coor.elastic.svc", "red-coor", "red-coor.elastic.svc"]
   allow_subdomains   = true
   allow_localhost    = true
   allow_bare_domains = true
@@ -78,36 +78,23 @@ data "kubernetes_secret" "cert_manager" {
   }
 }
 
-data "kubernetes_service_account" "vault_sa" {
-  metadata {
-    name      = "vault-sa"
-    namespace = "kube-system"
-  }
-  depends_on = [
-    kubernetes_service_account.vault_sa
-  ]
-}
-
 data "kubernetes_secret" "vault_sa" {
   metadata {
-    name      = data.kubernetes_service_account.vault_sa.default_secret_name
+    name      = local.vault_auth_secret_name
     namespace = "kube-system"
   }
-  depends_on = [
-    data.kubernetes_service_account.vault_sa
-  ]
 }
 
-resource "vault_auth_backend" "default_issuer_production_red" {
+resource "vault_auth_backend" "k8s_production_red" {
   type = "kubernetes"
-  path = "default-issuer-production-red"
+  path = "k8s-production-red"
   tune {
     max_lease_ttl = "2764800s"
   }
 }
 
-resource "vault_kubernetes_auth_backend_config" "default_issuer_production_red" {
-  backend                = vault_auth_backend.default_issuer_production_red.path
+resource "vault_kubernetes_auth_backend_config" "k8s_production_red" {
+  backend                = vault_auth_backend.k8s_production_red.path
   kubernetes_host        = vault_generic_secret.cluster_token.data["HOST"]
   kubernetes_ca_cert     = data.kubernetes_secret.vault_sa.data["ca.crt"]
   token_reviewer_jwt     = data.kubernetes_secret.vault_sa.data["token"]
@@ -116,9 +103,9 @@ resource "vault_kubernetes_auth_backend_config" "default_issuer_production_red" 
   disable_iss_validation = "true"
 }
 
-resource "vault_kubernetes_auth_backend_role" "default_issuer_production_red" {
-  backend                          = vault_auth_backend.default_issuer_production_red.path
-  role_name                        = "cert-manager-production-red"
+resource "vault_kubernetes_auth_backend_role" "k8s_production_red" {
+  backend                          = vault_auth_backend.k8s_production_red.path
+  role_name                        = "cert-manager"
   bound_service_account_names      = ["vault-sa"]
   bound_service_account_namespaces = ["kube-system"]
   token_ttl                        = 0
@@ -152,11 +139,11 @@ resource "kubernetes_manifest" "vault_certmanager" {
       "vault" = {
         "auth" = {
           "kubernetes" = {
-            "mountPath" = "/v1/auth/default-issuer-production-red"
-            "role"      = "cert-manager-production-red"
+            "mountPath" = "/v1/auth/k8s-production-red"
+            "role"      = "cert-manager"
             "secretRef" = {
               "key"  = "token"
-              "name" = data.kubernetes_service_account.vault_sa.default_secret_name
+              "name" = local.vault_auth_secret_name
             }
           }
         }
@@ -165,4 +152,8 @@ resource "kubernetes_manifest" "vault_certmanager" {
       }
     }
   }
+  field_manager {
+    force_conflicts = true
+  }
+
 }
