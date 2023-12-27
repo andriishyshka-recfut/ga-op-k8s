@@ -9,7 +9,7 @@ resource "null_resource" "rerun_failed_jobs" {
 
     export JOB_LIST=$(echo -e "$(echo $OTHER_JOB_LIST | tr ' ' '\n' | uniq)\n$(echo $CPP_JOB_LIST | tr ' ' '\n' | uniq)")
     for CRONJOB_NAME in $(echo $JOB_LIST);do
-      export RUNNING_POD=$(kubectl $(echo $KCMD) get pod -n etl | egrep 'Running' | awk '{print $1}' | cut -d'-' -f -6 | grep $CRONJOB_NAME)
+      export RUNNING_POD=$(kubectl $(echo $KCMD) get pod -n etl | egrep 'Running|Pending|Init' | awk '{print $1}' | cut -d'-' -f -6 | grep $CRONJOB_NAME)
       [[ $( echo $RUNNING_POD | grep $CRONJOB_NAME) ]] && continue || echo "Current job $CRONJOB_NAME is not running"
       echo "Creating job $CRONJOB_NAME..."
       kubectl $(echo $KCMD) create job -n etl --from=cronjob/$CRONJOB_NAME $CRONJOB_NAME-tekton$(date '+%S')
