@@ -34,7 +34,7 @@ spec:
           Logstash pipelines inodes more than 300
         summary: Logstash pipelines inodes more than 300
       expr: |
-       kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 300 or minute() > 40
+       kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 300 and minute() > 40
       for: 5m
       labels:
         cluster: ${cluster_label}
