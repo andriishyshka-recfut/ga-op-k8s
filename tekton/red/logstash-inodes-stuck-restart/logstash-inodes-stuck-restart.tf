@@ -5,10 +5,11 @@ resource "null_resource" "rerun_failed_jobs" {
     set -x
     export KCMD=" --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} --insecure-skip-tls-verify=true"
 
-    if [ $(date '+%M') > 45] && [ $(date '+%M') < 55]; then
+    export MINUTES="$(date '+%M')"
+    if [ "${MINUTES}" < "55" ]; then
       echo "Restarting logstash..."
       kubectl $(echo $KCMD) rollout restart statefulset -n elastic logstash-red
-    elif [ $(date '+%M') < 45]; then
+    elif [ "${MINUTES}" < "45" ]; then
       echo "Waiting for 45 minutes..."
       sleep 180
       echo "Restarting logstash..."
