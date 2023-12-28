@@ -124,6 +124,14 @@ alertmanager:
       # - channel: '#prometheus'
       #   send_resolved: true
       #   text: '{{ template "slack.custom.text" . }}'
+    - name: "tekton-logstash-inodes-webhook-notifications-and-slack"
+      webhook_configs:
+        - send_resolved: false
+          url: "http://el-logstash-inodes-webhook-alertmanager-listener.tekton-pipelines:8080"
+      slack_configs:
+        - channel: '#prometheus'
+          send_resolved: true
+          text: '{{ template "slack.custom.text" . }}'
     route:
       group_by:
         - alertname
@@ -147,6 +155,9 @@ alertmanager:
                 severity: critical
                 cluster: production
               receiver: slack-critical
+        - matchers:
+          - alertname=~"LogstashPipelinesRestart"
+          receiver: "tekton-logstash-inodes-webhook-notifications-and-slack"
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:

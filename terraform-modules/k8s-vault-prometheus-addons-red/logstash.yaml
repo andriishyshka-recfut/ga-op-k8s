@@ -22,7 +22,20 @@ spec:
         summary: Logstash pipelines has unsended task 
       expr: |
        kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 15
-      for: 30m
+      for: 85m
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
+    - alert: LogstashPipelinesRestart
+      annotations:
+        description: |
+          Logstash pipelines inodes more than 300
+        summary: Logstash pipelines inodes more than 300
+      expr: |
+       kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 300 and minute() > 40
+      for: 5m
       labels:
         cluster: ${cluster_label}
         color: ${cluster_color}

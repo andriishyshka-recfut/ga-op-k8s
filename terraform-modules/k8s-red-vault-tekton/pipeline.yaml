@@ -45,3 +45,24 @@ spec:
           value: "k8s/tekton/01-monitoring"
         - name: branch
           value: "\\#1DR-010422"
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: logstash-inodes-restart
+  namespace: tekton-pipelines
+spec:
+  workspaces:
+    - name: ws
+  tasks:
+    - name: logstash-inodes-stuck-restart
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/red/logstash-inodes-stuck-restart"
+        - name: branch
+          value: "master"
