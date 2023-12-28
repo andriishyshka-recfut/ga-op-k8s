@@ -9,11 +9,6 @@ resource "null_resource" "rerun_failed_jobs" {
     if [ "${MINUTES}" < "55" ]; then
       echo "Restarting logstash..."
       kubectl $(echo $KCMD) rollout restart statefulset -n elastic logstash-red
-    elif [ "${MINUTES}" < "45" ]; then
-      echo "Waiting for 45 minutes..."
-      sleep 180
-      echo "Restarting logstash..."
-      kubectl $(echo $KCMD) rollout restart statefulset -n elastic logstash-red
     else
       echo "Time is not between 45 and 55 minutes skipping for now"
     fi
