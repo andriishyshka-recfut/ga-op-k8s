@@ -36,7 +36,7 @@ module "k8s-vault" {
 }
 
 module "k8s-vault-tekton" {
-  source                       = "../../../terraform-modules/k8s-tekton-operator"
+  source                       = "../../../terraform-modules/k8s-red-vault-tekton"
   GkeClusterConnectionSettings = module.gke-setup-red.GkeClusterConnectionSettings
   Cluster                      = "production"
   Color                        = "red"
