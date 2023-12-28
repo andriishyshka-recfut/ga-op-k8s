@@ -34,7 +34,7 @@ spec:
           Logstash pipelines inodes more than 300
         summary: Logstash pipelines inodes more than 300
       expr: |
-       group(kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 300) and group(minute() > 40)
+       group(kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 300) and group(minute() > 35) and group(minute() < 57)
       for: 5m
       labels:
         cluster: ${cluster_label}
