@@ -54,7 +54,7 @@ resource "helm_release" "etl_operator" {
   }
   set {
     name  = "resources.limits.cpu"
-    value = "800m"
+    value = "1200m"
   }
   set {
     name  = "resources.limits.memory"
