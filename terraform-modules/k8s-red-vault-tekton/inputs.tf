@@ -4,7 +4,8 @@ variable "GkeClusterConnectionSettings" {}
 variable "VaultAddress" {}
 
 locals {
-  tektonNs           = "tekton-pipelines"
+  tektonNs           = "tekton-tasks"
+  tektonMainNs       = "tekton-pipelines"
   gkeClusterEndpoint = var.GkeClusterConnectionSettings.HOST
   gkeBearerToken     = var.GkeClusterConnectionSettings.API_KEY
   configPath         = var.Cluster == "production" ? "prod-red.tfvars.json" : "config.tfvars.json"

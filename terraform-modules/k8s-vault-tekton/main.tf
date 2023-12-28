@@ -29,51 +29,6 @@ COMMAND
 
 }
 
-/*
-resource "null_resource" "deploy_tekton" {
-
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = <<COMMAND
-    set -x
-    kubectl apply --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     -f https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml && sleep 30 && \
-    kubectl apply --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     --namespace=${local.tektonNs}  \
-     --filename https://storage.googleapis.com/tekton-releases/dashboard/latest/tekton-dashboard-release.yaml && sleep 30 && \
-     kubectl apply --server ${local.gkeClusterEndpoint}  \
-      --token ${local.gkeBearerToken}  \
-      --insecure-skip-tls-verify=true  \
-      --namespace=${local.tektonNs}  \
-      --filename https://storage.googleapis.com/tekton-releases/triggers/latest/release.yaml && sleep 30 && \
-      kubectl apply --server ${local.gkeClusterEndpoint}  \
-       --token ${local.gkeBearerToken}  \
-       --insecure-skip-tls-verify=true  \
-       --namespace=${local.tektonNs}  \
-       --filename https://storage.googleapis.com/tekton-releases/triggers/latest/interceptors.yaml
-     kubectl --server ${local.gkeClusterEndpoint}  \
-      --token ${local.gkeBearerToken}  \
-      --insecure-skip-tls-verify=true  \
-      --namespace=${local.tektonNs}  \
-     delete configmap cluster-settings || true
-     kubectl --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     --namespace=${local.tektonNs}  \
-     create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
-     --from-literal=vaultAddr=${var.VaultAddress}
-
-COMMAND
-  }
-
-}
-*/
-
-
 resource "null_resource" "harbor_creds" {
 
   provisioner "local-exec" {
