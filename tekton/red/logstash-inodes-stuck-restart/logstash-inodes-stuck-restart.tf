@@ -3,15 +3,8 @@ resource "null_resource" "rerun_failed_jobs" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<COMMAND
     set -x
-    export KCMD=" --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} --insecure-skip-tls-verify=true"
-
-    export MINUTES="$(date '+%M')"
-    if [ $MINUTES < 55 ]; then
-      echo "Restarting logstash..."
-      kubectl $(echo $KCMD) rollout restart statefulset -n elastic logstash-red
-    else
-      echo "Time is not between 45 and 55 minutes skipping for now"
-    fi
+      kubectl --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} \
+       --insecure-skip-tls-verify=true $(echo $KCMD) rollout restart statefulset -n elastic logstash-red
 COMMAND
   }
   triggers = {
