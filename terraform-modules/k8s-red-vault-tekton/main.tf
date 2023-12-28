@@ -69,17 +69,17 @@ resource "null_resource" "harbor_creds" {
     set -x
     export VAULT_ADDR=${var.VaultAddress}
     kubectl --server ${local.gkeClusterEndpoint} \
-      --token ${local.gkeBearerToken}  \
-      --insecure-skip-tls-verify=true  \
-      create secret docker-registry harbor --docker-server=harbor.t.regemini.io \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     create secret docker-registry harbor --docker-server=harbor.regemini.io \
       --docker-username=$(vault kv get -field=user secret/goharbor/docker_login) \
       --docker-password=$(vault kv get -field=password secret/goharbor/docker_login) \
-      --namespace=${local.tektonNs} && sleep 30 && \
+    --namespace=${local.tektonNs} && sleep 30 && \
     kubectl patch --server ${local.gkeClusterEndpoint}  \
-      --token ${local.gkeBearerToken}  \
-      --insecure-skip-tls-verify=true  \
-      --namespace=${local.tektonNs}  \
-      serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}'
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     --namespace=${local.tektonNs}  \
+     serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}'
 
 COMMAND
   }
