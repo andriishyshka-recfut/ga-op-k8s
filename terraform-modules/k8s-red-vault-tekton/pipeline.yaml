@@ -45,7 +45,7 @@ spec:
           value: "k8s/tekton/01-monitoring"
         - name: branch
           value: "\\#1DR-010422"
-
+---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
