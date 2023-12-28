@@ -1,0 +1,60 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ${project_name}-virtualservice
+  namespace: ${project_data.namespace}
+spec:
+  gateways:
+    - istio-ingress/${project_name}-gateway
+  hosts:
+    - ${project_data.domain}
+  http:
+%{ if lookup(basic_auth, project_name, "nope") != "nope" ~}
+%{ for auth_pass in basic_auth[project_name] ~}
+    - match:
+      - uri:
+          prefix: /
+        headers:
+          Authorization:
+            exact: "Basic ${auth_pass}"
+%{ endfor ~}
+      headers:
+        request:
+          remove:
+            - x-forwarded-client-cert
+      route:
+        - destination:
+            host: ${project_data.destination_service}
+            port:
+              number: ${project_data.destination_port}
+          headers:
+            response:
+              set:
+                Strict-Transport-Security: 'max-age=31536000; includeSubDomains'
+    - match:
+      - uri:
+          prefix: /
+      directResponse:
+        status: 401
+      headers:
+        response:
+          set:
+            Www-Authenticate: 'Basic realm="Authentication Required"'
+%{ else ~}
+    - match:
+      - uri:
+          prefix: /
+      headers:
+        request:
+          remove:
+            - x-forwarded-client-cert
+      route:
+        - destination:
+            host: ${project_data.destination_service}
+            port:
+              number: ${project_data.destination_port}
+          headers:
+            response:
+              set:
+                Strict-Transport-Security: 'max-age=31536000; includeSubDomains'
+%{ endif ~}
