@@ -1,8 +1,8 @@
 FROM vault:1.13.3 as vault
-FROM hashicorp/terraform:1.0.11 as terraform
+FROM hashicorp/terraform:1.6.6 as terraform
 FROM curlimages/curl as curl
 RUN curl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /tmp/kubectl &&\
-    curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.36.6/terragrunt_linux_amd64 --output /tmp/terragrunt
+    curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.54.10/terragrunt_linux_amd64 --output /tmp/terragrunt
 
 FROM alpine:latest as ansible
 RUN apk add python3 py3-pip unzip py3-virtualenv bash python3-dev libffi-dev build-base rust rustup cargo openssl-dev musl-dev
@@ -33,7 +33,7 @@ RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git && 
 
 USER 10123
 WORKDIR /home/runner/workdir
-
+COPY ./dummy-kubecfg /.kubeconfig
 COPY ./docker-entrypoint.sh /
 COPY ./docker-entrypoint-tg.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
