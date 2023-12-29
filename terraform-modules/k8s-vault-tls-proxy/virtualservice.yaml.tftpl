@@ -10,8 +10,8 @@ spec:
     - ${project_data.domain}
   http:
 %{ if lookup(basic_auth, project_name, "nope") != "nope" ~}
-%{ for auth_pass in basic_auth[project_name] ~}
     - match:
+%{ for auth_pass in basic_auth[project_name] ~}
       - uri:
           prefix: /
         headers:
