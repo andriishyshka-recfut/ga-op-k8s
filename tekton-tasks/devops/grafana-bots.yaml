@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: etl-update
+  generateName: grafana-update
   namespace: tekton-tasks
 spec:
   taskRef:
