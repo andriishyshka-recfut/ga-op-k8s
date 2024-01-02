@@ -22,7 +22,7 @@ spec:
         summary: Logstash pipelines has unsended task 
       expr: |
        kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 15
-      for: 85m
+      for: 120m
       labels:
         cluster: ${cluster_label}
         color: ${cluster_color}
@@ -34,7 +34,7 @@ spec:
           Logstash pipelines inodes more than 300
         summary: Logstash pipelines inodes more than 300
       expr: |
-       group(kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 300) and group(minute() > 35) and group(minute() < 57)
+       group(kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 300) and group(minute() > 35) and group(minute() < 55)
       for: 5m
       labels:
         cluster: ${cluster_label}

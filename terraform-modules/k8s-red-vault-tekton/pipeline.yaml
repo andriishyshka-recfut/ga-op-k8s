@@ -19,11 +19,11 @@ spec:
         - name: branch
           value: "master"
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: logstash-inodes-restart
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   workspaces:
     - name: ws
