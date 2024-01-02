@@ -87,6 +87,24 @@ spec:
       ref: logstash-inodes-template
 ---
 apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: logstash-inodes-webhook-alertmanager-listener
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-webhook
+  triggers:
+  - name: logstash-inodes-filter
+    interceptors:
+    - ref:
+        name: "cel"
+      params:
+      - name: "filter"
+        value: body.groupLabels.alertname == 'LogstashPipelinesRestart'
+    template:
+      ref: logstash-inodes-template
+---
+apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
   name: logstash-inodes-template
@@ -97,6 +115,7 @@ spec:
     kind: PipelineRun
     metadata:
       generateName: logstash-inodes-restart
+      namespace: tekton-tasks
     spec:
       workspaces:
       - name: ws
