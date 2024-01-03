@@ -83,6 +83,10 @@ resource "helm_release" "prometheus" {
     value = data.vault_generic_secret.prometheus.data.url_bots_minion
   }
   set {
+    name  = "alertmanager.config.receivers[4].slack_configs[0].api_url"
+    value = data.vault_generic_secret.prometheus.data.url_dome_mapping
+  }
+  set {
     name  = "prometheus.prometheusSpec.externalUrl"
     value = local.prometheusExtUrl
   }

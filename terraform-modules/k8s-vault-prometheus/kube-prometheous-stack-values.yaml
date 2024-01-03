@@ -146,18 +146,18 @@ alertmanager:
       slack_configs:
         - channel: '#prometheus-minion'
           text: '{{ template "slack.custom.text" . }}'
-          send_resolved: true              
+          send_resolved: true
+    - name: "slack-dome-mapping"
+      slack_configs:
+        - channel: '#dome-mapping'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true           
     - name: "slack-notifications"
       # slack_configs:
       # - channel: '#prometheus'
       #   send_resolved: true
       #   text: '{{ template "slack.custom.text" . }}'
 
-    - name: "slack-dome-mapping"
-      slack_configs:
-        - channel: '#dome-mapping'
-          text: '{{ template "slack.custom.text" . }}'
-          send_resolved: true 
     - name: "tekton-webhook-notifications-and-slack"
       webhook_configs:
         - send_resolved: false
