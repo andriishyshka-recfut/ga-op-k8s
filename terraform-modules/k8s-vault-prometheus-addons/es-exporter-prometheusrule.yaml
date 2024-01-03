@@ -161,13 +161,13 @@ spec:
         severity: critical
     - alert: DomeMappingChanged
       annotations:
-        description: |
-          Dome mapping was changed, action needed to fix it
-        summary: Dome mapping was changed, action needed to fix it
-      expr: |
-        sum by (namespace) (increase(dome_mapping_hits[24h])) > 0
-      for: 24h
+        summary: ({{ $labels.hits_by_container_name_space }}) - mapping was changed
+      expr: >
+        group by (hits_by_container_name_space)
+        (sum_over_time(dome_mapping_hits_by_container_name_doc_count[1d])) >
+        0
+      for: 5m
       labels:
-        cluster: ${cluster_label}
-        component: stream-processor
-        severity: warning
+      cluster: production
+      component: stream-processor
+      severity: warning

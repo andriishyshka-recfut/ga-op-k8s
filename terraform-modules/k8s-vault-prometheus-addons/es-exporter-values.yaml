@@ -33,7 +33,7 @@ elasticsearch:
     [query_upsertminion_unauthorized]
     QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"upsertminion"}},{"term":{"json.err": "action [indices:data/write/bulk[s]] is unauthorized for user [_upsertMinion.ms]"}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
     [query_dome_mapping]
-    QueryJson = {"query":{"bool":{"must":[],"filter":[{"bool":{"should":[],"minimum_should_match":1}},{"range":{"@timestamp":{"format":"strict_date_optional_time","gte":"now-24h"}}},{"match_phrase":{"json.err":"mapping group not found"}}],"should":[],"must_not":[]}}}
+    QueryJson = {"query":{"bool":{"must":[],"filter":[{"bool":{"should":[],"minimum_should_match":1}},{"range":{"@timestamp":{"format":"strict_date_optional_time","gte":"now-24h"}}},{"match_phrase":{"json.err":"mapping group not found"}}],"should":[],"must_not":[]}},"aggs":{"hits_by_container_name":{"composite":{"sources":[{"space":{"terms":{"field":"kubernetes.container.name"}}}]}}}}
 
 
 container:
