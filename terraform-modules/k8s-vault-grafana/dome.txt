@@ -61,7 +61,6 @@ hak5
 hashkiller
 hpc
 hydramarket
-ifud
 imthack
 instanthack
 infectedzone
