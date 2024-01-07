@@ -1,7 +1,7 @@
 resource "null_resource" "auth_kubernetes_disable" {
   provisioner "local-exec" {
     command = <<-EOT
-      vault auth disable k8s-${var.Cluster}-${var.Color}
+      vault auth disable k8s-${var.Cluster}-${var.Color} || exit
     EOT
     environment = {
       VAULT_ADDR = var.VaultAddress
@@ -21,7 +21,8 @@ resource "vault_auth_backend" "auth_kubernetes" {
 }
 
 data "vault_generic_secret" "cluster_token" {
-  path = "secret/kubernetes-${var.Cluster}-${var.Color}"
+  path       = "secret/kubernetes-${var.Cluster}-${var.Color}"
+  depends_on = [vault_generic_secret.cluster_token]
 }
 
 resource "vault_kubernetes_auth_backend_config" "auth_kubernetes" {

@@ -34,18 +34,18 @@ data "google_compute_disk" "minio_data_pv" {
 }
 
 data "google_compute_disk" "tarantool_storage_pv" {
-  count = local.tarantool_storage_count
+  count   = local.tarantool_storage_count
   name    = "tarantool-vortex-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
   project = var.Settings.gcpProject
-  zone = element([for i in range(local.tarantool_storage_count) : element(local.zones, i % 3)], count.index)
+  zone    = element([for i in range(local.tarantool_storage_count) : element(local.zones, i % 3)], count.index)
 }
 
 
 data "google_compute_disk" "tarantool_router_pv" {
-  count = local.tarantool_router_count
+  count   = local.tarantool_router_count
   name    = "tarantool-vortex-router-${count.index}-0"
   project = var.Settings.gcpProject
-  zone = element([for i in range(local.tarantool_router_count) : element(local.zones, i % 3)], count.index)
+  zone    = element([for i in range(local.tarantool_router_count) : element(local.zones, i % 3)], count.index)
 }
 
 
