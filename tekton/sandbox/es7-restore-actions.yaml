@@ -6,9 +6,7 @@ actions:
     options:
       repository: "minio"
       # name: monitoring-dr-%Y%m%d
-      indices:
-        - '.*'
-      wait_for_completion: False
+      wait_for_completion: True
       include_global_state: True
       # wait_interval: 20
     filters:
@@ -16,7 +14,7 @@ actions:
         state: SUCCESS
       - filtertype: pattern
         kind: prefix
-        value: elastic7-dr
+        value: elastic7-dr-system
   2:
     action: restore
     description: "Restore other"
@@ -24,9 +22,6 @@ actions:
       repository: "minio"
       include_aliases: True
       # name: monitoring-dr-%Y%m%d
-      indices:
-      - '*'
-      - '-.*'
       wait_for_completion: False
       include_global_state: False
       # wait_interval: 20
@@ -35,4 +30,4 @@ actions:
         state: SUCCESS
       - filtertype: pattern
         kind: prefix
-        value: elastic7-dr
+        value: elastic7-dr-other

@@ -20,8 +20,8 @@ module "kibana" {
   Cluster         = var.Cluster
   Color           = var.Color
   Settings        = var.Settings
-  depends_on = [
-    module.es7-restore
-  ]
+  # depends_on = [
+  #   module.es7-restore
+  # ]
 }
 

@@ -26,7 +26,7 @@ locals {
 
   tarantool_storage_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_disks * 2
   tsc = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_disks 
-  tarantool_storage_prefix = ar.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_prefix 
+  tarantool_storage_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_prefix 
   tarantool_router_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.router_disks
   tarantool_router_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.router_prefix 
 
