@@ -32,6 +32,8 @@ filebeatConfig:
       kibana.host: 'http://${kibana}:5601'
       dashboards.enabled: true
       template.enabled: true
+      template.name: "filebeat-%%{[beat.version]}"
+      template.pattern: "filebeat-%%{[beat.version]}-*"
       username: filebeat_user
       password: $${FILEBEAT_PASSWORD}
     logging:
@@ -47,4 +49,14 @@ filebeatConfig:
       protocol: https
       username: filebeat_user
       password: $${FILEBEAT_PASSWORD}
+      index: "filebeat-%%{[beat.version]}-%%{+yyyy.MM.dd}"
+%{ if length(filebeat_groups) > 0 ~}      
+      indices:
+%{ for group in tolist(split(",", filebeat_groups)) ~}
+        - index: "filebeat-${group}"
+          when.contains:
+            kubernetes.labels.log-group-name: "${group}"
+%{ endfor ~}
+%{ endif ~}
+
   
