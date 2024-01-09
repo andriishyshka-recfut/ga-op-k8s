@@ -44,8 +44,8 @@ spec:
     - alert: KubernetesJobFailed
       annotations:
         description: |
-          Kebernetes job was failed {{ $labels.job_name }}
-        summary: {{ $labels.job_name }} job was failed in namespace {{ $labels.namespace }}
+          Kubernetes job was failed {{ $labels.job_name }}
+        summary: "{{ $labels.job_name }} job was failed in namespace {{ $labels.namespace }}"
       expr: |
         kube_job_status_failed{namespace !~ "etl"} > 0
       for: 1h
