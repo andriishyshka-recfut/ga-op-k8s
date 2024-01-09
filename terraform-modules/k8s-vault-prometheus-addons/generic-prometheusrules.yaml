@@ -41,3 +41,16 @@ spec:
         color: ${cluster_color}
         component: stream-processor
         severity: critical
+    - alert: KubernetesJobFailed
+      annotations:
+        description: |
+          Kebernetes job was failed {{ $labels.job_name }}
+        summary: {{ $labels.job_name }} job was failed in namespace {{ $labels.namespace }}
+      expr: |
+        kube_job_status_failed{namespace !~ "etl"} > 0
+      for: 1h
+      labels:
+        cluster: ${cluster_label}
+        color: ${cluster_color}
+        component: stream-processor
+        severity: critical
