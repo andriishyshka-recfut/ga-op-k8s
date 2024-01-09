@@ -150,6 +150,10 @@ locals {
             memory = "900M"
           }
         }
+        annotations = {
+          es_logs_enabled = "true"
+          es_logs_json_error_key = "true"
+        }
       }
       workhorse = {
         resources = {
@@ -190,6 +194,10 @@ locals {
         minReplicas = 1
         service = {
           internalPort = 2224
+        }
+        annotations = {
+          es_logs_enabled = "true"
+          es_logs_json_error_key = "true"
         }
       }
       toolbox = {

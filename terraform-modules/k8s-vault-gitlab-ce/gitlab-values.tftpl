@@ -114,6 +114,9 @@ gitlab:
       requests:
         cpu: ${gitlab.webservice.resources.requests.cpu}
         memory: ${gitlab.webservice.resources.requests.memory}
+    annotations:
+      co.elastic.logs/enabled: ${gitlab.webservice.annotations.es_logs_enabled}
+      co.elastic.logs/json.add_error_key: ${gitlab.webservice.annotations.es_logs_json_error_key}
   workhorse:
     resources:
       limits:
@@ -142,6 +145,9 @@ gitlab:
     minReplicas: ${gitlab.gitlab-shell.minReplicas}
     service:
       internalPort: ${gitlab.gitlab-shell.service.internalPort}
+    annotations:
+      co.elastic.logs/enabled: ${gitlab.gitlab-shell.annotations.es_logs_enabled}
+      co.elastic.logs/json.add_error_key: ${gitlab.gitlab-shell.annotations.es_logs_json_error_key}
   toolbox:
     persistence:
       enabled: ${gitlab.toolbox.persistence.enabled}
