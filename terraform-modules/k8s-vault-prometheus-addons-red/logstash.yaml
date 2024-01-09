@@ -15,19 +15,6 @@ spec:
   - interval: 30m
     name: Logstash Pipelines
     rules:
-    - alert: LogstashPipeleines
-      annotations:
-        description: |
-          Logstash pipelines volume size
-        summary: Logstash pipelines has unsended task 
-      expr: |
-       kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 15
-      for: 120m
-      labels:
-        cluster: ${cluster_label}
-        color: ${cluster_color}
-        component: stream-processor
-        severity: critical
     - alert: LogstashPipelinesRestart
       annotations:
         description: |
