@@ -1,8 +1,9 @@
 module "k8s-istio" {
-  source   = "../../../terraform-modules/k8s-istio"
-  Settings = var.Settings
-  Cluster  = var.Cluster
-  Color    = var.Color
+  source                       = "../../../terraform-modules/k8s-istio"
+  Settings                     = var.Settings
+  Cluster                      = var.Cluster
+  Color                        = var.Color
+  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
 }
 
 module "k8s-istio-lb" {

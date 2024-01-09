@@ -196,7 +196,10 @@ source_broker, run_prefix = parse_args(sys.argv[1:])
 show_all = False
 
 results_folder = f'{run_prefix}_{now}'
-shutil.rmtree(results_folder)
+try:
+    shutil.rmtree(results_folder)
+except:
+    print()
 os.mkdir(results_folder)
 source_server_state = analyze_cluster("source", source_broker)
 

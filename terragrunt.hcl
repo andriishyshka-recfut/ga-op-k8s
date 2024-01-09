@@ -90,7 +90,7 @@ terraform {
     flux = {
       source  = "registry.terraform.io/fluxcd/flux"
       version = ">= 0.0.13"
-    }
+    }    
   }
 }
 

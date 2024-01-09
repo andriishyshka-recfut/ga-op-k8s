@@ -9,4 +9,6 @@ variable "VaultAddress" {}
 
 locals {
   vault_auth_secret_name = "vault-k8s-auth-secret"
+  vaultFqdn     = "vault.p.regemini.io"
+  vaultLocalUrl = "http://vault.vault.svc"
 }

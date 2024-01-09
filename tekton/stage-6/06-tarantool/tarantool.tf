@@ -1,5 +1,6 @@
 
 module "tarantool" {
+  count                        = 0
   source                       = "../../../terraform-modules/k8s-vault-tarantool"
   Settings                     = var.Settings
   Cluster                      = var.Cluster

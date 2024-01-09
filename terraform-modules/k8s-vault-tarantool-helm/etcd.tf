@@ -18,6 +18,12 @@ resource "helm_release" "etcd" {
     value = data.vault_generic_secret.etcd_creds.data.password
   }
 
+
+  set {
+    name  = "replicaCount"
+    value = local.etcd_replica_count
+  }
+
   set {
     name  = "initialClusterState"
     value = "new"
