@@ -32,6 +32,16 @@ resource "helm_release" "kubescape" {
   namespace         = "kubescape"
 
   set {
+    name = "kubescape.image.tag"
+    value = "v3.0.3"
+  }
+
+  set {
+    name = "kubescapeScheduler.image.tag"
+    value = "v0.2.2"
+  }
+
+  set {
     name  = "cloudProviderEngine"
     value = "gke"
   }

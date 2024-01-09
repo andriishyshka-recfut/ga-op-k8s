@@ -98,7 +98,7 @@ kubescapeScheduler:
   image:
     # -- source code: https://github.com/kubescape/http-request (public repo)
     repository: quay.io/kubescape/http-request
-    tag: 	v0.0.14
+    tag: 	v0.2.2
     pullPolicy: IfNotPresent
 
   replicaCount: 1
