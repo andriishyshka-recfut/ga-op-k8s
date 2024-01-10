@@ -12,7 +12,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 30m
+  - interval: 5m
     name: Logstash Pipelines
     rules:
     - alert: LogstashPipelinesRestart
