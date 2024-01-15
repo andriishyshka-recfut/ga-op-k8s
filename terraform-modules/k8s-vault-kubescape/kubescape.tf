@@ -26,7 +26,7 @@ resource "kubernetes_secret" "minio_credentials" {
 resource "helm_release" "kubescape" {
   name              = "kubescape"
   repository        = "${path.module}"
-  chart             = "kubescape-cloud-operator"
+  chart             = "kubescape-operator"
   wait              = true
   atomic            = true
   namespace         = "kubescape"
@@ -39,6 +39,26 @@ resource "helm_release" "kubescape" {
   set {
     name = "kubescapeScheduler.image.tag"
     value = "v0.2.2"
+  }
+
+  set {
+    name = "capabilities.continuousScan"
+    value = "disabled"
+  }
+
+  set {
+    name = "capabilities.nodeScan"
+    value = "disabled"
+  }
+
+  set {
+    name = "capabilities.relevancy"
+    value = "disabled"
+  }
+
+  set {
+    name = "capabilities.vulnerabilityScan"
+    value = "disabled"
   }
 
   set {
@@ -89,6 +109,8 @@ resource "helm_release" "kubescape" {
     name = "kubescape.resources.limits.memory"
     value = "3Gi"
   }
+
+  timeout = 60
 
   depends_on = [kubernetes_secret.minio_credentials]
 }
