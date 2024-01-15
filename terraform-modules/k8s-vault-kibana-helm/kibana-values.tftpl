@@ -50,14 +50,14 @@ kibanaConfig:
           browser:
             chromium:
               disableSandbox: "true"
-        encryptionKey: ${reporting_encryptionkey}
+        encryptionKey: ${kibana_xpack_secrets.reportingEncryptionKey}
         index: .reporting-re
         roles:
           enabled: false
       encryptedSavedObjects:
-        encryptionKey: ${encryptedsavedobjects_encryptionkey}
+        encryptionKey: ${kibana_xpack_secrets.encryptedSavedObjectsEncryptionKey}
       security:
-        encryptionKey: ${security_encryptionkey}
+        encryptionKey: ${kibana_xpack_secrets.securityEncryptionKey}
         session:
           idleTimeout: "1d"
           lifespan: "30d"
