@@ -10,6 +10,7 @@ locals {
           realm = "geminiadvisory"
         }
       }
+      kibana_xpack_secrets = "secret/red/kibana"
     }
   }
 }

@@ -85,7 +85,7 @@ curl -X PUT "https://elastic:$ES_PASSWORD@${var.BeatElasticService}:9200/_securi
 }'  &&\
 curl -X PUT "https://elastic:$ES_PASSWORD@${var.BeatElasticService}:9200/_security/user/metricbeat_user" -H 'Content-Type: application/json' -k -d '
 {
-    "roles" : ["kibana_admin","ingest_admin","remote_monitoring_agent","metricbeat_role"],
+    "roles" : ["kibana_admin","ingest_admin","remote_monitoring_agent","metricbeat_role","remote_monitoring_collector","monitoring_user"],
     "password": "${random_password.metricbeat_password.result}"
 }'  &&\
 curl -X PUT "https://elastic:$ES_PASSWORD@${var.BeatElasticService}:9200/_security/role/auditbeat_role" -H 'Content-Type: application/json' -k -d '
