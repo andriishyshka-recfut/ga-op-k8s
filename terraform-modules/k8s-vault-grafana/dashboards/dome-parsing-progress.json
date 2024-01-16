@@ -3,7 +3,7 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource" : "logstash",
+        "datasource": "logstash",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -26,7 +26,7 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource" : "logstash",
+      "datasource": "logstash",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -39,10 +39,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -90,7 +86,7 @@
               "type": "terms"
             }
           ],
-          "datasource" : "logstash",
+          "datasource": "logstash",
           "hide": false,
           "metrics": [
             {
@@ -109,7 +105,7 @@
       "type": "bargauge"
     },
     {
-      "datasource" : "logstash",
+      "datasource": "logstash",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -122,10 +118,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -173,7 +165,7 @@
               "type": "terms"
             }
           ],
-          "datasource" : "logstash",
+          "datasource": "logstash",
           "hide": false,
           "metrics": [
             {
@@ -192,7 +184,7 @@
       "type": "bargauge"
     },
     {
-      "datasource" : "logstash",
+      "datasource": "logstash",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -205,10 +197,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -256,7 +244,7 @@
               "type": "terms"
             }
           ],
-          "datasource" : "logstash",
+          "datasource": "logstash",
           "hide": false,
           "metrics": [
             {
@@ -275,7 +263,7 @@
       "type": "bargauge"
     },
     {
-      "datasource" : "logstash",
+      "datasource": "logstash",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -286,11 +274,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -338,7 +323,7 @@
               "type": "terms"
             }
           ],
-          "datasource" : "logstash",
+          "datasource": "logstash",
           "hide": false,
           "metrics": [
             {
@@ -357,7 +342,7 @@
       "type": "bargauge"
     },
     {
-      "datasource" : "logstash",
+      "datasource": "logstash",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -368,11 +353,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -420,7 +402,7 @@
               "type": "terms"
             }
           ],
-          "datasource" : "logstash",
+          "datasource": "logstash",
           "hide": false,
           "metrics": [
             {
@@ -439,7 +421,7 @@
       "type": "bargauge"
     },
     {
-      "datasource" : "logstash",
+      "datasource": "logstash",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -450,11 +432,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -502,7 +481,7 @@
               "type": "terms"
             }
           ],
-          "datasource" : "logstash",
+          "datasource": "logstash",
           "hide": false,
           "metrics": [
             {
@@ -536,6 +515,6 @@
   "timezone": "",
   "title": "Dome parsing progress",
   "uid": "b77d6323-d928-4c1c-ae0e-542836988d0a",
-  "version": 22,
+  "version": 24,
   "weekStart": ""
 }
