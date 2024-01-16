@@ -26,17 +26,15 @@ deployment:
                   contains:
                     kubernetes.labels.chart: "elasticsearch"
                 config:
-%{ for logstash_name,logstash_password in logstash_pipelines_creds ~}
-%{ for logstash,logstash_namespace in logstash_namespaces ~}
+%{ for logstash_name,logstash_value in logstash_pipelines_creds ~}
                   - module: logstash
                     metricsets: ["node", "node_stats"]
                     enabled: true
                     period: 10s
-                    hosts: ["logstash-${logstash_name}.${logstash_namespace}.svc:9600"]
+                    hosts: ["logstash-${logstash_name}.${logstash_value.namespace}.svc:9600"]
                     username: logstash
-                    password: ${logstash_password}
+                    password: ${logstash_value.password}
                     xpack.enabled: true
-%{ endfor ~}
 %{ endfor ~}
                   - module: elasticsearch
                     period: 10s
