@@ -5,7 +5,7 @@ resource "null_resource" "crushloop_pod_delete" {
     set -x
     export KCMD=" --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} --insecure-skip-tls-verify=true"
      [[ $(kubectl $(echo $KCMD) get pods -A -o=custom-columns='STATE:status.containerStatuses[*].state.waiting.reason' | grep CrashLoopBackOff) ]] && \
-      kubectl $(echo $KCMD) get po $(kubectl $(echo $KCMD) get pods -A -o=custom-columns='NAME:metadata.name, NAMERSPACE:metadata.namespace , STATE:status.containerStatuses[*].state.waiting.reason ' \
+      kubectl $(echo $KCMD) delete po $(kubectl $(echo $KCMD) get pods -A -o=custom-columns='NAME:metadata.name, NAMERSPACE:metadata.namespace , STATE:status.containerStatuses[*].state.waiting.reason ' \
        | grep CrashLoopBackOff | awk '{print "-n "$2" "$1}') || echo "There is no CrashLoopBackOff pod to delete"
 COMMAND
   }
