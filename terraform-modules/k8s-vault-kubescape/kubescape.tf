@@ -77,6 +77,7 @@ resource "helm_release" "kubescape" {
     name  = "kubescapeScheduler.enabled"
     value = "true"
   }
+
   set {
     name  = "kubescape.enabled"
     value = "true"
@@ -108,6 +109,16 @@ resource "helm_release" "kubescape" {
   set {
     name = "kubescape.resources.limits.memory"
     value = "3Gi"
+  }
+
+  set {
+    name  = "kubescape.serviceMonitor.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "kubescape.serviceMonitor.namespace"
+    value = "monitoring"
   }
 
   timeout = 60
