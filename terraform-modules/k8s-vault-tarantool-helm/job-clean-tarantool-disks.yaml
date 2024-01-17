@@ -1,0 +1,945 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-1
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-0-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-2
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-0-1
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-3
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-1-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-4
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-1-1
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-5
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-2-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-6
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-2-1
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-7
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-3-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-8
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-3-1
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-9
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-4-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-10
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-4-1
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-11
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-5-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-12
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-5-1
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-13
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-6-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-14
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-6-1
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-15
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-7-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-16
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-7-1
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-router-a
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-router-0-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-router-b
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-router-1-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-etcd-0
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: data-etcd-0
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-etcd-1
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: data-etcd-1
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-etcd-2
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: data-etcd-2
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-etcd-3
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: data-etcd-3
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-etcd-4
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: data-etcd-4
+
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-etcd-5
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: data-etcd-5
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-etcd-6
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: data-etcd-6

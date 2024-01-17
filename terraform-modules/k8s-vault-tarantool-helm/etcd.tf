@@ -21,7 +21,7 @@ resource "helm_release" "etcd" {
 
   set {
     name  = "replicaCount"
-    value = local.etcd_replica_count
+    value = local.tarantool_etcd_count
   }
 
   set {
