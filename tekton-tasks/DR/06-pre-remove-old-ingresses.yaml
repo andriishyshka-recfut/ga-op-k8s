@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: remove-old-cluster-ingresess-
+  namespace: tekton-tasks
+spec:
+  taskRef:
+    name: tg-destroy
+  workspaces:
+    - name: ws # this workspace name must be declared in the Task
+      emptyDir: {}
+  params:
+    - name: path
+      value: "k8s/tekton/stage-6/06-ingress"
+    - name: branch
+      value: "\\#474-Prod-DR-20240105"
