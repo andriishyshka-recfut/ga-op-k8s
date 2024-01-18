@@ -99,7 +99,7 @@ COMMAND
 
 ### For Bots-mongo-restart
 data "vault_generic_secret" "mongo_creds" {
-  path = "secret/mongo/tekton"
+  path = local.mongoCredsPath
 }
 
 resource "kubernetes_secret" "mongo_auth" {
