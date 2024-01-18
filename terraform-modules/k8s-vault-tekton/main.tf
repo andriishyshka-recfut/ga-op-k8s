@@ -97,3 +97,19 @@ COMMAND
   ]
 }
 
+### For Bots-mongo-restart
+data "vault_generic_secret" "mongo_creds" {
+  path = local.mongoCredsPath
+}
+
+resource "kubernetes_secret" "mongo_auth" {
+  metadata {
+    name      = "mongo-auth"
+    namespace = local.tektonMainNs
+  }
+  data = {
+    MONGODB_BACKUP_USER     = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_USER
+    MONGODB_BACKUP_PASSWORD = data.vault_generic_secret.mongo_creds.data.data.MONGODB_BACKUP_PASSWORD
+  }
+}
+
