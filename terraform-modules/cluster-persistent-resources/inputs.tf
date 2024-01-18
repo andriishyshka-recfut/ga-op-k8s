@@ -14,3 +14,8 @@ locals {
   gkeKmsVolumeKey       = var.Settings.clusters[var.Cluster].persistent_resources.gke_kms_volume_key
   gkeRegion             = var.Settings.clusters[var.Cluster].region
 }
+
+
+data "google_compute_network" "vpc" {
+  name = var.Settings.vpc_name
+}
