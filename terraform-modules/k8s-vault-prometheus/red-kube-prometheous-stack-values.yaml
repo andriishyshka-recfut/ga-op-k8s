@@ -123,11 +123,11 @@ alertmanager:
       webhook_configs:
         - send_resolved: false
           url: "http://el-logstash-inodes-webhook-alertmanager-listener.tekton-pipelines:8080"
+      slack_configs:
+        - channel: '#prometheus-critical'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
     - name: "slack-notifications"
-      # slack_configs:
-      # - channel: '#prometheus'
-      #   send_resolved: true
-      #   text: '{{ template "slack.custom.text" . }}'
       slack_configs:
         - channel: '#prometheus'
           send_resolved: true
@@ -144,6 +144,9 @@ alertmanager:
         - match:
             alertname: Watchdog
           receiver: "null"
+        - matchers:
+          - alertname=~"LogstashPipelinesRestart"
+          receiver: "tekton-logstash-inodes-webhook-notifications-and-slack"
         #Activate this after update prometheus version more than 0.22.2, and disable match_re
         # - matchers: [ "alertname =~ .*" ]
         #   receiver: "tekton-webhook-notifications"
@@ -155,9 +158,6 @@ alertmanager:
                 severity: critical
                 cluster: production
               receiver: slack-critical
-        - matchers:
-          - alertname=~"LogstashPipelinesRestart"
-          receiver: "tekton-logstash-inodes-webhook-notifications-and-slack"
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:
