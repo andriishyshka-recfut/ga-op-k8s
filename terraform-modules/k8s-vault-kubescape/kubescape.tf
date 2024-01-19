@@ -152,6 +152,11 @@ resource "helm_release" "kubescape" {
     value = "monitoring"
   }
 
+  set {
+    name  = "prometheusExporter.name"
+    value = "prometheus-kubescape"
+  }
+
   timeout = 60
 
   depends_on = [kubernetes_secret.minio_credentials]
