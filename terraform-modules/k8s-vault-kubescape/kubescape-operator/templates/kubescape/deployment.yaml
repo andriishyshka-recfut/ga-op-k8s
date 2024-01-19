@@ -200,7 +200,9 @@ spec:
         args: 
           - mirror
           - --watch
-          - /home/nonroot/results
+          - --exclude
+          - "*.json"
+          - /home/nonroot/results/
           - "minio/{{ .Values.kubescape.minioBucket }}"
         env:
         - name: MINIO_ACCESS_KEY

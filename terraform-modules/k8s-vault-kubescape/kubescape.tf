@@ -57,8 +57,8 @@ resource "helm_release" "kubescape" {
   }
 
   set {
-    name = "configuration.prometheusAnnotations"
-    value = "enable"
+    name = "kubescape.prometheusAnnotation.enabled"
+    value = "true"
   }
 
   set {
