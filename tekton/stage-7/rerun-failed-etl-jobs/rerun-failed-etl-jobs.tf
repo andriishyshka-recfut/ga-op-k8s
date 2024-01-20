@@ -16,7 +16,7 @@ resource "null_resource" "rerun_failed_jobs" {
       if [ $( echo $CRONJOB_NAME | egrep 'camino|gs2s3') ]; then
         export ETL_CRONJOB_NAME="etl-$(echo $CRONJOB_NAME | cut -d'-' -f2-)"
         echo "Creating job $ETL_CRONJOB_NAME..."
-        sleep 60
+        sleep 360
         kubectl $(echo $KCMD) create job -n etl --from=cronjob/$ETL_CRONJOB_NAME $ETL_CRONJOB_NAME-tekton$(date '+%S')
       else
         echo " $JOB_NAME - is not camino or gs2s3 job skipping additional job creation"
