@@ -13,6 +13,7 @@ spec:
     - port: {{ .Values.prometheusExporter.service.port }}
       targetPort: {{ .Values.prometheusExporter.service.targetPort }}
       protocol: {{ .Values.prometheusExporter.service.protocol }}
+      name: metrics
   selector:
     app: {{ .Values.prometheusExporter.name }}
 {{- end }}
