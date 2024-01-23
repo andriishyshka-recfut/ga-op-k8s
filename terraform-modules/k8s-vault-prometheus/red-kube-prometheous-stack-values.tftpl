@@ -10,6 +10,7 @@ grafana:
   #     secretKeyRef:
   #       name: "monitoring-es-elastic-user"
   #       key: elastic
+  adminPassword: ${grafana_admin_pass}
   enabled: true
   namespaceOverride: "monitoring"
   podAnnotations:
@@ -22,8 +23,12 @@ grafana:
       token_url: https://accounts.google.com/o/oauth2/token
       allowed_domains: geminiadvisory.io
       allow_sign_up: true
+      client_id: ${grafana_auth_google_client_id}
+      client_secret: ${grafana_auth_google_client_id}
     users:
-      auto_assign_org_role: Viewer
+      auto_assign_org_role: ${grafana_users_auto_assign_org_role}
+    server:
+      root_url: ${grafana_server_root_url}
   # nodeSelector:
   #   workloadsType: default
   # tolerations:
@@ -67,6 +72,7 @@ prometheus:
     # externalUrl: "https://prometheus.t.regemini.io"
     # externalUrl: "http://localhost:9090"
     # listenLocal: true
+    externalUrl: ${prometheus_external_url}
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
@@ -77,6 +83,7 @@ prometheus:
             requests:
               storage: 50Gi
     thanos:
+      version: ${thanos_version}
       baseImage: quay.io/thanos/thanos
       objectStorageConfig:
         key: thanos.yaml
@@ -105,6 +112,7 @@ prometheus:
     
 alertmanager:
   alertmanagerSpec:
+    externalUrl: ${prometheus_external_url}
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
@@ -116,7 +124,8 @@ alertmanager:
     - name: "null"
     - name: "slack-critical"
       slack_configs:
-        - channel: '#prometheus-critical'
+        - api_url: ${prometheus_slack_webhooks.url_critical}
+          channel: '#prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "tekton-logstash-inodes-webhook-notifications-and-slack"
@@ -124,12 +133,14 @@ alertmanager:
         - send_resolved: false
           url: "http://el-logstash-inodes-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
-        - channel: '#prometheus-critical'
+        - api_url: ${prometheus_slack_webhooks.url_critical}
+          channel: '#prometheus'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-notifications"
       slack_configs:
-        - channel: '#prometheus'
+        - api_url: ${prometheus_slack_webhooks.url}
+          channel: '#prometheus'
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     route:
@@ -141,23 +152,20 @@ alertmanager:
       receiver: "slack-notifications"
       repeat_interval: 24h
       routes:
-        - match:
-            alertname: Watchdog
+        - matchers:
+          - alertname: "Watchdog"
           receiver: "null"
         - matchers:
-          - alertname=~"LogstashPipelinesRestart"
+          - alertname: "LogstashPipelinesRestart"
           receiver: "tekton-logstash-inodes-webhook-notifications-and-slack"
-        #Activate this after update prometheus version more than 0.22.2, and disable match_re
-        # - matchers: [ "alertname =~ .*" ]
-        #   receiver: "tekton-webhook-notifications"
-        - match_re:
-            alertname: ".*"
+        - matchers:
+          - alertname: ".*"
           receiver: "slack-notifications"
           routes:
-            - match:
-                severity: critical
-                cluster: production
-              receiver: slack-critical
+            - matchers:
+              - severity: critical
+              - cluster: production
+              receiver: "slack-critical"
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:
@@ -189,6 +197,7 @@ defaultRules:
     kubeScheduler: false
     kubernetesResources: false
     kubeApiserver: false
+    kubeProxy: false
 
 kubeScheduler:
   enabled: false

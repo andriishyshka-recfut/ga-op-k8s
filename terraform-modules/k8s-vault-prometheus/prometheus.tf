@@ -44,66 +44,16 @@ resource "helm_release" "prometheus" {
   dependency_update = true
   version           = local.helmVersion
   values = [
-    file("${path.module}/${local.prometheusConfigFile}")
+    templatefile("${path.module}/${local.prometheusConfigFile}",{
+      prometheus_slack_webhooks = local.prometheusSlackWebHooks,
+      grafana_admin_pass        = data.vault_generic_secret.grafana.data.adminPassword,
+      grafana_server_root_url   = data.vault_generic_secret.grafana.data.root_url,
+      grafana_auth_google_client_id = data.vault_generic_secret.oidc_secrets.data.oidc_client_id,
+      grafana_auth_google_client_id = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret,
+      grafana_users_auto_assign_org_role = local.grafanaRole
+      prometheus_external_url = local.prometheusExtUrl
+      additional_rule_labels  = var.Cluster
+      thanos_version = local.thanosSidecarVersion
+    })
   ]
-  set {
-    name  = "grafana.adminPassword"
-    value = data.vault_generic_secret.grafana.data.adminPassword
-  }
-  set {
-    name  = "grafana.grafana\\.ini.server.root_url"
-    value = data.vault_generic_secret.grafana.data.root_url
-  }
-  set {
-    name  = "grafana.grafana\\.ini.auth\\.google.client_id"
-    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
-  }
-  set {
-    name  = "grafana.grafana\\.ini.auth\\.google.client_secret"
-    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret
-  }
-  set {
-    name  = "grafana.grafana\\.ini.users.auto_assign_org_role"
-    value = local.grafanaRole
-  }
-  set {
-    name  = "alertmanager.config.global.slack_api_url"
-    value = data.vault_generic_secret.prometheus.data.url
-  }
-  set {
-    name  = "alertmanager.config.receivers[1].slack_configs[0].api_url"
-    value = data.vault_generic_secret.prometheus.data.url_critical
-  }
-  set {
-    name  = "alertmanager.config.receivers[2].slack_configs[0].api_url"
-    value = data.vault_generic_secret.prometheus.data.url_bots_dome
-  }
-  set {
-    name  = "alertmanager.config.receivers[3].slack_configs[0].api_url"
-    value = data.vault_generic_secret.prometheus.data.url_bots_minion
-  }
-  set {
-    name  = "alertmanager.config.receivers[4].slack_configs[0].api_url"
-    value = data.vault_generic_secret.prometheus.data.url_dome_mapping
-  }
-  set {
-    name  = "prometheus.prometheusSpec.externalUrl"
-    value = local.prometheusExtUrl
-  }
-  set {
-    name  = "alertmanager.alertmanagerSpec.externalUrl"
-    value = local.prometheusExtUrl
-  }
-  set {
-    name  = "defaultRules.additionalRuleLabels.cluster"
-    value = var.Cluster
-  }
-  set {
-    name  = "defaultRules.rules.kubeProxy"
-    value = false
-  }
-  set {
-    name  = "prometheus.prometheusSpec.thanos.version"
-    value = local.thanosSidecarVersion
-  }
 }
