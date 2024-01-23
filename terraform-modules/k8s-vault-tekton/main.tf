@@ -4,26 +4,32 @@ resource "null_resource" "deploy_tekton" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<COMMAND
     set -x
-    kubectl --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-    create namespace ${local.tektonNs} && \
-    kubectl apply --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken} \
+     --insecure-skip-tls-verify=true \
+     create namespace ${local.tektonNs} && \
+    kubectl apply --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken} \
+     --insecure-skip-tls-verify=true \
      -f https://storage.googleapis.com/tekton-releases/operator/latest/release.yaml && sleep 30 && \
-     kubectl --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     --namespace=${local.tektonNs}  \
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken} \
+     --insecure-skip-tls-verify=true \
+     --namespace=${local.tektonNs} \
      create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
      --from-literal=vaultAddr=${var.VaultAddress} && \
-     kubectl --server ${local.gkeClusterEndpoint}  \
-     --token ${local.gkeBearerToken}  \
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken} \
      --insecure-skip-tls-verify=true  \
-     --namespace=${local.tektonMainNs}  \
+     --namespace=${local.tektonMainNs} \
      create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
-     --from-literal=vaultAddr=${var.VaultAddress}
+     --from-literal=vaultAddr=${var.VaultAddress} && \
+    kubectl --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken} \
+     --insecure-skip-tls-verify=true  \
+     --namespace=${local.tektonMainNs} \
+     patch configmap config-defaults --type json \
+     --patch '[{"op": "add", "path":"/data/default-pod-template","value": "imagePullSecrets:\n  - name: harbor\naffinity:\n  nodeAffinity:\n    requiredDuringSchedulingIgnoredDuringExecution:\n      nodeSelectorTerms:\n        - matchExpressions:\n            - key: workloadsType\n              operator: In\n              values:\n                - tekton\ntolerations:\n  - key: \"workloadsType\"\n    operator: \"Equal\"\n    value: \"tekton\"\n    effect: \"NoSchedule\"\n  - key: node.kubernetes.io/not-ready\n    operator: Exists\n    effect: NoExecute\n    tolerationSeconds: 300\n  - key: node.kubernetes.io/unreachable\n    operator: Exists\n    effect: NoExecute\n    tolerationSeconds: 300"}]'
 COMMAND
   }
 
@@ -110,7 +116,7 @@ resource "kubernetes_secret" "mongo_auth" {
   data = {
     MONGODB_BACKUP_USER     = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_USER
     MONGODB_BACKUP_PASSWORD = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_PASSWORD
-    URI = data.vault_generic_secret.mongo_creds.data.URI
+    URI                     = data.vault_generic_secret.mongo_creds.data.URI
   }
 }
 
