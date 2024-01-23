@@ -3,7 +3,7 @@ locals {
   namespace = "gitlab"
   gitlab_values = {
     global = {
-      edition       = "ce"
+      edition = "ce"
       shell = {
         port = 2224
         hostKeys = {
@@ -119,8 +119,8 @@ locals {
           connection = {}
         }
         ciSecureFiles = {
-          enabled    = true
-          bucket     = "gitlab-ci-secure-files-orbital-wording"
+          enabled = true
+          bucket  = "gitlab-ci-secure-files-orbital-wording"
           connection = {
             secret = "gitlab-object-storage"
             key    = "connection"
@@ -239,7 +239,7 @@ locals {
       rbac = {
         create = true
       }
-      concurrent      = 4
+      concurrent      = 12
       check_interval  = 0
       session_timeout = 1800
       image           = "alpine:3.16.1"
