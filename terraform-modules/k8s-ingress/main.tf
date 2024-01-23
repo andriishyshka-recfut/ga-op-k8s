@@ -36,3 +36,8 @@ resource "kubernetes_manifest" "ingress_virtualservice" {
     kubernetes_manifest.ingress_gateway
   ]
 }
+
+resource "kubernetes_manifest" "ingress_internal" {
+  for_each = local.internalIngressSettings
+  manifest = yamldecode(templatefile("${path.module}/internal-ingress.tftpl", merge({ settings = each.value }, { name = each.key }, { static_ip = local.internalStaticIps[each.key] })))
+}

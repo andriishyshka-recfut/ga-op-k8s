@@ -10,5 +10,5 @@ metadata:
     tier: {{ .Values.global.namespaceTier }}
 data:
   request-body.json: |-
-    { "excludedNamespaces": [ "kubescape", "kube-system" ], "format": "html", "keepLocal": true, "submit": false, "targetType": "control", "useCachedArtifacts": false }
+    {"commands":[{"CommandName":"kubescapeScan","args":{"scanV1": { "excludedNamespaces": [ "kubescape", "kube-system" ], "format": "html", "keepLocal": true, "submit": false, "targetType": "control", "useCachedArtifacts": false }}}]}
 {{- end }}

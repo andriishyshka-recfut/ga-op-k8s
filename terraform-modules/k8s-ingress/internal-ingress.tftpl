@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name:  "${name}-internal-ingress"
+  namespace: ${settings.namespace}
+  annotations:
+    networking.gke.io/load-balancer-type: Internal
+    networking.gke.io/internal-load-balancer-subnet: ${static_ip.subnet}
+spec:
+  ports:
+    - name: tcp-port
+      protocol: TCP
+      port: ${settings.port}
+      targetPort: ${settings.target_port}
+  selector:
+%{ for label,value in settings.labels_selector ~}
+    "${label}": "${value}"
+%{ endfor ~}
+  type: LoadBalancer
+  loadBalancerIP: ${static_ip.ip}
+  externalTrafficPolicy: Cluster

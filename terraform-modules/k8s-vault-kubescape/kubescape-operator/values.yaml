@@ -31,7 +31,7 @@ capabilities:
   # This is an experimental capability with an elevated security risk. Read the
   # matching docs before enabling.
   autoUpgrading: disable
-
+  prometheusExporter: enable
   # seccompGenerator: disable
 
 configurations:
@@ -66,9 +66,6 @@ cloudProviderMetadata:
 
   # -- GKE project
   gkeProject:
-
-# -- enable/disable trigger image scan for new images
-triggerNewImageScan: false
 
 # Additional volumes applied to all containers
 volumes: [ ]
@@ -186,7 +183,7 @@ kubescape:
   image:
     # -- source code: https://github.com/kubescape/kubescape/tree/master/httphandler (public repo)
     repository: quay.io/kubescape/kubescape
-    tag: v3.0.2
+    tag: v3.0.3
     pullPolicy: IfNotPresent
 
   resources:
@@ -245,7 +242,7 @@ operator:
   image:
     # -- source code: https://github.com/kubescape/operator
     repository: quay.io/kubescape/operator
-    tag: v0.1.70
+    tag: v0.1.71
     pullPolicy: IfNotPresent
 
   service:
@@ -325,7 +322,7 @@ kubevuln:
   image:
     # -- source code: https://github.com/kubescape/kubevuln
     repository: quay.io/kubescape/kubevuln
-    tag: v0.2.139
+    tag: v0.2.140
     pullPolicy: IfNotPresent
 
   replicaCount: 1
@@ -557,16 +554,16 @@ storage:
 
   resources:
     requests:
-      cpu: 50m
+      cpu: 100m
       memory: 400Mi
     limits:
-      cpu: 150m
+      cpu: 500m
       memory: 1500Mi
 
   replicaCount: 1
   image:
     repository: quay.io/kubescape/storage
-    tag: v0.0.54
+    tag: v0.0.58
     pullPolicy: IfNotPresent
 
 
@@ -592,7 +589,7 @@ nodeAgent:
   name: node-agent
   image:
     repository: quay.io/kubescape/node-agent
-    tag: v0.1.135
+    tag: v0.1.136
     pullPolicy: IfNotPresent
 
   config:
@@ -708,7 +705,7 @@ synchronizer:
   name: synchronizer
   image:
     repository: quay.io/kubescape/synchronizer
-    tag: v0.0.31
+    tag: v0.0.34
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -750,3 +747,25 @@ helmReleaseUpgrader:
 
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 1
+
+
+# Prometheus exporter
+prometheusExporter:
+  name: "prometheus-exporter"
+  image:
+    repository: "quay.io/kubescape/prometheus-exporter"
+    tag: "v0.0.6"
+    pullPolicy: "IfNotPresent"
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 10Mi
+    limits:
+      cpu: 50m
+      memory: 100Mi
+
+  service:
+    port: 8080
+    targetPort: 8080
+    protocol: TCP

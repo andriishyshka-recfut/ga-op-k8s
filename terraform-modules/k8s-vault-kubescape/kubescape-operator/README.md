@@ -1,8 +1,12 @@
 # Kubescape Operator
 
-![Version: 1.17.1](https://img.shields.io/badge/Version-1.17.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.17.1](https://img.shields.io/badge/AppVersion-v1.17.1-informational?style=flat-square)
+![Version: 1.17.3](https://img.shields.io/badge/Version-1.17.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.17.3](https://img.shields.io/badge/AppVersion-v1.17.3-informational?style=flat-square)
 
 ## Install
+
+> **Warning:** We only support installing this chart using Helm or ArgoCD.
+Using alternative installation methods, such as Kustomize, Helmfile or using custom scripts, may lead to unexpected behavior and issues.
+We cannot guarantee compatibility or provide support for deployments that are installed using methods other than Helm or ArgoCD.
 
 Run the install command:
 ```
@@ -221,7 +225,6 @@ docker-compose logs uptrace
 | cloudProviderMetadata.aksClientID | string | `nil` | AKS client ID |
 | cloudProviderMetadata.aksClientSecret | string | `nil` | AKS client secret |
 | cloudProviderMetadata.aksTenantID | string | `nil` | AKS tenant ID |
-| triggerNewImageScan | bool | `false` | enable/disable trigger image scan for new images |
 | volumes | object | `[]` | Additional volumes for all containers |
 | volumeMounts | object | `[]` | Additional volumeMounts for all containers |
 

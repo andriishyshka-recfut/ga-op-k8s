@@ -93,7 +93,7 @@ data "google_compute_snapshot" "minio_tenant_snapshot" {
 }
 
 data "google_compute_snapshot" "tarantool_etcd_snapshot" {
-  name        = "etcd-empty"
+  name        = "etcd-snapshot-${count.index}"
   most_recent = true
   count       = local.tarantool_etcd_count
 }

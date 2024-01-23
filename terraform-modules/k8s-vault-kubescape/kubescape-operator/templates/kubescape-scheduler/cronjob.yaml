@@ -1,5 +1,5 @@
-{{- if not (.Capabilities.APIVersions.Has "batch/v1/CronJob") }}
-  {{- fail "`batch/v1/CronJob not supported`" }}
+{{- if not (.Capabilities.APIVersions.Has "batch/v1") }}
+  {{- fail "`batch/v1 not supported`" }}
 {{- end }}
 {{- $components := fromYaml (include "components" .) }}
 {{- if .Values.kubescapeScheduler.enabled }}
@@ -46,8 +46,8 @@ spec:
             args:
               - -method=post
               - -scheme=http
-              - -host=kubescape:8080
-              - -path=v1/scan
+              - -host={{ .Values.operator.name }}:{{ .Values.operator.service.port }}
+              - -path=v1/triggerAction
               - -headers='Content-Type:application/json'
               - -path-body=/home/ks/request-body.json
             volumeMounts:

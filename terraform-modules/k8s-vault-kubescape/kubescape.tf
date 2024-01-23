@@ -41,9 +41,24 @@ resource "helm_release" "kubescape" {
     value = "v0.2.2"
   }
 
+###################################
+#    Features and capabilities
+###################################
+
+
   set {
     name = "capabilities.continuousScan"
-    value = "disabled"
+    value = "enable"
+  }
+
+  set {
+    name = "capabilities.prometheusExporter"
+    value = "enable"
+  }
+
+  set {
+    name = "kubescape.prometheusAnnotation.enabled"
+    value = "true"
   }
 
   set {
@@ -61,22 +76,12 @@ resource "helm_release" "kubescape" {
     value = "disabled"
   }
 
-  set {
-    name  = "cloudProviderEngine"
-    value = "gke"
-  }
-  set {
-    name  = "clusterName"
-    value = local.clusterName
-  }
-  set {
-    name  = "kubescapeScheduler.scanSchedule"
-    value = "0 2 * * *"
-  }
+
   set {
     name  = "kubescapeScheduler.enabled"
     value = "true"
   }
+
   set {
     name  = "kubescape.enabled"
     value = "true"
@@ -85,6 +90,54 @@ resource "helm_release" "kubescape" {
     name  = "kubescape.submit"
     value = "false"
   }
+
+  set {
+    name  = "kubescape.serviceMonitor.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "kubescape.enableHostScan"
+    value = "false"
+  }
+
+
+###################################
+#    Settings
+###################################
+
+  set {
+    name  = "kubescapeScheduler.scanSchedule"
+    value = "0 2 * * *"
+  }
+
+  set {
+    name  = "kubescape.resources.requests.cpu"
+    value = "300m"
+  }
+
+  set {
+    name  = "kubescape.resources.requests.memory"
+    value = "256Mi"
+  }
+  set {
+    name  = "kubescape.resources.limits.cpu"
+    value = "800m"
+  }
+  set {
+    name  = "kubescape.resources.limits.memory"
+    value = "1Gi"
+  }
+
+  set {
+    name  = "cloudProviderEngine"
+    value = "gke"
+  }
+  set {
+    name  = "clusterName"
+    value = local.clusterName
+  }
+
   set {
     name  = "kubescape.minioBucket"
     value = local.minioBucket
@@ -93,21 +146,15 @@ resource "helm_release" "kubescape" {
     name  = "kubescape.skipUpdateCheck"
     value = "true"
   }
+
   set {
-    name  = "kubescape.enableHostScan"
-    value = "false"
+    name  = "kubescape.serviceMonitor.namespace"
+    value = "monitoring"
   }
+
   set {
-    name = "kubescape.resources.limits.cpu"
-    value = "250m"
-  }
-  set {
-    name = "kubescape.resources.requests.memory"
-    value = "2Gi"
-  }
-  set {
-    name = "kubescape.resources.limits.memory"
-    value = "3Gi"
+    name  = "prometheusExporter.name"
+    value = "prometheus-kubescape"
   }
 
   timeout = 60
