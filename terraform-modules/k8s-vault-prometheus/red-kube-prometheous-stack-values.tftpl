@@ -24,7 +24,7 @@ grafana:
       allowed_domains: geminiadvisory.io
       allow_sign_up: true
       client_id: ${grafana_auth_google_client_id}
-      client_secret: ${grafana_auth_google_client_id}
+      client_secret: ${grafana_auth_google_client_secret}
     users:
       auto_assign_org_role: ${grafana_users_auto_assign_org_role}
     server:
@@ -152,20 +152,23 @@ alertmanager:
       receiver: "slack-notifications"
       repeat_interval: 24h
       routes:
-        - matchers:
-          - alertname: "Watchdog"
+        - match:
+            alertname: Watchdog
           receiver: "null"
         - matchers:
-          - alertname: "LogstashPipelinesRestart"
+          - alertname=~"LogstashPipelinesRestart"
           receiver: "tekton-logstash-inodes-webhook-notifications-and-slack"
-        - matchers:
-          - alertname: ".*"
+        #Activate this after update prometheus version more than 0.22.2, and disable match_re
+        # - matchers: [ "alertname =~ .*" ]
+        #   receiver: "tekton-webhook-notifications"
+        - match_re:
+            alertname: ".*"
           receiver: "slack-notifications"
           routes:
-            - matchers:
-              - severity: critical
-              - cluster: production
-              receiver: "slack-critical"
+            - match:
+                severity: critical
+                cluster: production
+              receiver: slack-critical
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:
@@ -198,6 +201,8 @@ defaultRules:
     kubernetesResources: false
     kubeApiserver: false
     kubeProxy: false
+  additionalRuleLabels:
+    cluster: ${additional_rule_labels}
 
 kubeScheduler:
   enabled: false

@@ -40,7 +40,7 @@ grafana:
       allowed_domains: geminiadvisory.io
       allow_sign_up: true
       client_id: ${grafana_auth_google_client_id}
-      client_secret: ${grafana_auth_google_client_id}
+      client_secret: ${grafana_auth_google_client_secret}
     users:
       auto_assign_org_role: ${grafana_users_auto_assign_org_role}
     server:
@@ -209,36 +209,39 @@ alertmanager:
       receiver: "slack-notifications"
       repeat_interval: 24h
       routes:
-        - matchers:
-          - alertname: "Watchdog"
+        - match:
+            alertname: Watchdog
           receiver: "null"
+        #Activate this after update prometheus version more than 0.22.2, and disable match_re
+        # - matchers: [ "alertname =~ .*" ]
+        #   receiver: "tekton-webhook-notifications"
         - matchers:
-          - alertname=~"FailBotsScraper"   
+          - alertname=~"FailBotsScraper"
           repeat_interval: 12h
           receiver: "tekton-fail-bots-webhook-notifications-and-slack"
         - matchers:
           - alertname=~"DomeMappingChanged"
           receiver: "slack-dome-mapping"
         - matchers:
-          - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"        
+          - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"
           receiver: "slack-dome-bots"
         - matchers:
           - alertname=~"BotsMinionHealthchekScraperRunRequests|BotsMinionHealthchekQueueReaderActiveWorkers"
           receiver: "slack-minion-bots"
         - matchers:
           - alertname=~"ETLJobsFailed"
-          receiver: "tekton-failed-etl-jobs-webhook-notifications-and-slack"  
-        - matchers:
-          - alertname=~".*"
+          receiver: "tekton-failed-etl-jobs-webhook-notifications-and-slack"
+        - match_re:
+            alertname: ".*"
           receiver: "tekton-webhook-notifications-and-slack"
           routes:
-            - matchers:
-              - not_resolve: "yes"
+            - match:
+                not_resolve: "yes"
               receiver: "tekton-and-slack-woresolve"
-            - matchers:
-              - severity: critical
-              - cluster: production
-              receiver: "slack-critical"                 
+            - match:
+                severity: critical
+                cluster: production
+              receiver: "slack-critical"
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:
@@ -267,6 +270,8 @@ defaultRules:
     kubernetesResources: false
     kubeApiserver: false
     kubeProxy: false
+  additionalRuleLabels:
+    cluster: ${additional_rule_labels}
 
 kubeScheduler:
   enabled: false
