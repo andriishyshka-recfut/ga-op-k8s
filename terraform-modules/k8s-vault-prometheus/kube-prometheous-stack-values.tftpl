@@ -5,6 +5,7 @@ namespaceOverride: "monitoring"
 fullnameOverride: "prometheus"
 
 grafana:
+  adminPassword: ${grafana_admin_pass}
   envValueFrom:
     ELASTIC_PASSWORD:
       secretKeyRef:
@@ -38,8 +39,12 @@ grafana:
       token_url: https://accounts.google.com/o/oauth2/token
       allowed_domains: geminiadvisory.io
       allow_sign_up: true
+      client_id: ${grafana_auth_google_client_id}
+      client_secret: ${grafana_auth_google_client_secret}
     users:
-      auto_assign_org_role: Viewer
+      auto_assign_org_role: ${grafana_users_auto_assign_org_role}
+    server:
+      root_url: ${grafana_server_root_url}
   nodeSelector:
     workloadsType: data
   tolerations:
@@ -83,6 +88,7 @@ prometheus:
     # externalUrl: "https://prometheus.t.regemini.io"
     # externalUrl: "http://localhost:9090"
     # listenLocal: true
+    externalUrl: ${prometheus_external_url}
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
@@ -93,6 +99,7 @@ prometheus:
             requests:
               storage: 50Gi
     thanos:
+      version: ${thanos_version}
       baseImage: quay.io/thanos/thanos
       objectStorageConfig:
         key: thanos.yaml
@@ -123,6 +130,7 @@ prometheus:
 # Fix for used with istio
 alertmanager:
   alertmanagerSpec:
+    externalUrl: ${prometheus_external_url}
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
@@ -134,36 +142,35 @@ alertmanager:
     - name: "null"
     - name: "slack-critical"
       slack_configs:
-        - channel: '#prometheus-critical'
+        - api_url: ${prometheus_slack_webhooks.url_critical}
+          channel: '#prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-dome-bots"
       slack_configs:
-        - channel: '#prometheus-dome'
+        - api_url: ${prometheus_slack_webhooks.url_bots_dome}
+          channel: '#prometheus-dome'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true         
     - name: "slack-minion-bots"
       slack_configs:
-        - channel: '#prometheus-minion'
+        - api_url: ${prometheus_slack_webhooks.url_bots_minion}
+          channel: '#prometheus-minion'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-dome-mapping"
       slack_configs:
-        - channel: '#dome-mapping'
+        - api_url: ${prometheus_slack_webhooks.url_dome_mapping}
+          channel: '#dome-mapping'
           text: '{{ template "slack.custom.text" . }}'
-          send_resolved: true           
-    - name: "slack-notifications"
-      # slack_configs:
-      # - channel: '#prometheus'
-      #   send_resolved: true
-      #   text: '{{ template "slack.custom.text" . }}'
-
+          send_resolved: true
     - name: "tekton-webhook-notifications-and-slack"
       webhook_configs:
         - send_resolved: false
           url: "http://el-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
-        - channel: '#prometheus'
+        - api_url: ${prometheus_slack_webhooks.url}
+          channel: '#prometheus'
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     - name: "tekton-and-slack-woresolve"
@@ -171,7 +178,8 @@ alertmanager:
         - send_resolved: false
           url: "http://el-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
-        - channel: '#prometheus'
+        - api_url: ${prometheus_slack_webhooks.url}
+          channel: '#prometheus'
           send_resolved: false
           text: '{{ template "slack.custom.text" . }}'
     - name: "tekton-fail-bots-webhook-notifications-and-slack"
@@ -179,7 +187,8 @@ alertmanager:
         - send_resolved: false
           url: "http://el-fail-bots-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
-        - channel: '#prometheus'
+        - api_url: ${prometheus_slack_webhooks.url}
+          channel: '#prometheus'
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     - name: "tekton-failed-etl-jobs-webhook-notifications-and-slack"
@@ -187,7 +196,8 @@ alertmanager:
         - send_resolved: false
           url: "http://el-failed-etl-jobs-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
-        - channel: '#prometheus'
+        - api_url: ${prometheus_slack_webhooks.url_critical}
+          channel: '#prometheus-critical'
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     route:
@@ -199,39 +209,36 @@ alertmanager:
       receiver: "slack-notifications"
       repeat_interval: 24h
       routes:
-        - match:
-            alertname: Watchdog
-          receiver: "null"
-        #Activate this after update prometheus version more than 0.22.2, and disable match_re
-        # - matchers: [ "alertname =~ .*" ]
-        #   receiver: "tekton-webhook-notifications"
         - matchers:
-          - alertname=~"FailBotsScraper"   
+          - alertname=~"Watchdog"
+          receiver: "null"
+        - matchers:
+          - alertname=~"FailBotsScraper"
           repeat_interval: 12h
           receiver: "tekton-fail-bots-webhook-notifications-and-slack"
         - matchers:
           - alertname=~"DomeMappingChanged"
           receiver: "slack-dome-mapping"
         - matchers:
-          - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"        
+          - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"
           receiver: "slack-dome-bots"
         - matchers:
           - alertname=~"BotsMinionHealthchekScraperRunRequests|BotsMinionHealthchekQueueReaderActiveWorkers"
           receiver: "slack-minion-bots"
         - matchers:
           - alertname=~"ETLJobsFailed"
-          receiver: "tekton-failed-etl-jobs-webhook-notifications-and-slack"  
-        - match_re:
-            alertname: ".*"
+          receiver: "tekton-failed-etl-jobs-webhook-notifications-and-slack"
+        - matchers:
+          - alertname=~".*"
           receiver: "tekton-webhook-notifications-and-slack"
           routes:
-            - match:
-                not_resolve: "yes"
-              receiver: "tekton-and-slack-woresolve"
-            - match:
-                severity: critical
-                cluster: production
-              receiver: "slack-critical"                 
+          - matchers:
+            - not_resolve=~"yes"
+            receiver: "tekton-and-slack-woresolve"
+            - matchers:
+              - severity=~"critical"
+              - cluster=~"production"
+              receiver: "slack-critical"
     templates:
       - /etc/alertmanager/config/*.tmpl
   templateFiles:
@@ -259,6 +266,9 @@ defaultRules:
     kubeScheduler: false
     kubernetesResources: false
     kubeApiserver: false
+    kubeProxy: false
+  additionalRuleLabels:
+    cluster: ${additional_rule_labels}
 
 kubeScheduler:
   enabled: false
