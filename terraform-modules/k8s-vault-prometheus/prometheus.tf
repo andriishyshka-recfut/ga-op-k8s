@@ -45,15 +45,13 @@ resource "helm_release" "prometheus" {
   version           = local.helmVersion
   values = [
     templatefile("${path.module}/${local.prometheusConfigFile}",{
-      prometheus_slack_webhooks = local.prometheusSlackWebHooks,
-      grafana_admin_pass        = data.vault_generic_secret.grafana.data.adminPassword,
-      grafana_server_root_url   = data.vault_generic_secret.grafana.data.root_url,
-      grafana_auth_google_client_id = data.vault_generic_secret.oidc_secrets.data.oidc_client_id,
-      grafana_auth_google_client_secret = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret,
-      grafana_users_auto_assign_org_role = local.grafanaRole
-      prometheus_external_url = local.prometheusExtUrl
-      additional_rule_labels  = var.Cluster
-      thanos_version = local.thanosSidecarVersion
+      prometheus_slack_webhooks          = local.prometheusSlackWebHooks,
+      grafana_creds                      = data.vault_generic_secret.grafana.data,
+      grafana_auth_google                = data.vault_generic_secret.oidc_secrets.data,
+      grafana_users_auto_assign_org_role = local.grafanaRole,
+      prometheus_external_url            = local.prometheusExtUrl,
+      additional_rule_labels             = var.Cluster,
+      thanos_version                     = local.thanosSidecarVersion
     })
   ]
 }
