@@ -26,6 +26,7 @@ resource "helm_release" "tarantool_cartridge" {
   chart               = "oci://harbor.regemini.io/helm/cartridge"
   wait                = true
   atomic              = true
+  force_update        = true
   namespace           = local.namespace
   timeout             = 300
   version             = "1.0.2"
