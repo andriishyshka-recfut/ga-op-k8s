@@ -158,7 +158,7 @@ resource "kubernetes_job" "filebeats_check_script" {
     backoff_limit = 4
   }
   wait_for_completion = true
-  depends_on          = [kubernetes_secret.filebeats_check_script, helm_release.beat, kubernetes_role_binding.filebeats_check_rolebinding]
+  depends_on          = [kubernetes_secret.filebeats_check_script, kubernetes_secret.workload_readiness_script helm_release.beat, kubernetes_role_binding.filebeats_check_rolebinding]
 }
 
 resource "kubernetes_secret" "python_script" {
