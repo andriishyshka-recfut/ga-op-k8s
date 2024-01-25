@@ -114,8 +114,12 @@ resource "kubernetes_job" "filebeats_check_script" {
             value = local.filebeat_workload_name
           }
           env {
-            name  = "WORKLOAD_NAMESPACE"
-            value = local.namespace
+            name = "WORKLOAD_NAMESPACE"
+            value_from {
+              field_ref {
+                field_path = "metadata.namespace"
+              }
+            }
           }
           env {
             name  = "CHECK_TIMEOUT"
