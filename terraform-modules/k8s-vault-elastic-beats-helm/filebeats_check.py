@@ -1,34 +1,15 @@
-from kubernetes import client, config
-import json,time,os
+#!/usr/bin/env python3
 
-# Configs can be set in Configuration class directly or using helper utility
-config.load_incluster_config()
+from importlib.machinery import SourceFileLoader
 
-api = client.AppsV1Api()
-name = os.getenv('DAEMONSET_NAME')
-namespace = os.getenv('NAMESPACE')
-pretty = 'true'
+workload_readiness = SourceFileLoader('workload_readiness', '/opt/workload-readiness.py').load_module()
 
-def api_response():
-  return api.read_namespaced_daemon_set_status(name, namespace, pretty=pretty)
+import workload_readiness, os
 
-def desired_pods():
-  return api_response().status.desired_number_scheduled
-def ready_pods():
-  return api_response().status.number_ready
+workload_type_env = os.getenv('WORKLOAD_TYPE')
+workload_name_env = os.getenv('WORKLOAD_NAME')
+workload_namespace_env = os.getenv('WORKLOAD_NAMESPACE')
+check_timeout_env = os.getenv('CHECK_TIMEOUT')
+check_retries_env = os.getenv('CHECK_RETRIES')
 
-for iterator in range(10):
-  if desired_pods() > ready_pods():
-    print(iterator, "th iteration")
-    time.sleep(60)
-    continue
-  else:
-    break
-
-print("Here is STATUS:", "\n\n", api_response().status)
-
-if desired_pods() == ready_pods():
-  print("\n", "Filebeat pods are ready")
-else:
-  print("\n", "Failed, ready pods not quel to desired")
-  exit(1)
+workload_readiness.check(workload_type=workload_type_env, workload_name=workload_name_env, workload_namespace=workload_namespace_env, check_timeout=check_timeout_env, check_retries=check_retries_env)

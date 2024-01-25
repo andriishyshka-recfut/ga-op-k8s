@@ -15,7 +15,7 @@ resource "helm_release" "filebeat" {
 
 resource "kubernetes_secret" "filebeats_check_script" {
   metadata {
-    name      = "filebeats-check"
+    name      = "${helm_release.filebeat.name}-check"
     namespace = local.elasticSettings.globalSettings.namespace
   }
   data = {
@@ -23,9 +23,19 @@ resource "kubernetes_secret" "filebeats_check_script" {
   }
 }
 
+resource "kubernetes_secret" "workload_readiness_script" {
+  metadata {
+    name      = "workload-readiness"
+    namespace = local.elasticSettings.globalSettings.namespace
+  }
+  data = {
+    "workload-readiness.py" = "${file("${path.root}/../../../references/workload-check/workload-readiness.py")}"
+  }
+}
+
 resource "kubernetes_service_account" "filebeats_check_sa" {
   metadata {
-    name = "filebeats-check-sa"
+    name = "${helm_release.filebeat.name}-check-sa"
     namespace = local.elasticSettings.globalSettings.namespace
   }
   secret {
@@ -35,17 +45,17 @@ resource "kubernetes_service_account" "filebeats_check_sa" {
 
 resource "kubernetes_secret" "filebeats_check_sa_secret" {
   metadata {
-    name = "filebeats-check-sa-secret"
+    name = "${helm_release.filebeat.name}-check-sa-secret"
     namespace = local.elasticSettings.globalSettings.namespace
   }
 }
 
 resource "kubernetes_role" "filebeats_check_role" {
   metadata {
-    name = "filebeats-check"
+    name = "${helm_release.filebeat.name}-check"
     namespace = local.elasticSettings.globalSettings.namespace
     labels = {
-      job = "filebeats-check"
+      job = "${helm_release.filebeat.name}-check"
     }
   }
 
@@ -59,7 +69,7 @@ resource "kubernetes_role" "filebeats_check_role" {
 
 resource "kubernetes_role_binding" "filebeats_check_rolebinding" {
   metadata {
-    name      = "filebeats_check_rolebinding"
+    name      = "${helm_release.filebeat.name}_check_rolebinding"
     namespace = local.elasticSettings.globalSettings.namespace
   }
   role_ref {
@@ -75,7 +85,7 @@ resource "kubernetes_role_binding" "filebeats_check_rolebinding" {
 }
 resource "kubernetes_job" "filebeats_check_script" {
   metadata {
-    name      = "filebeats-check-job"
+    name      = "${helm_release.filebeat.name}-check-job"
     namespace = local.elasticSettings.globalSettings.namespace
   }
   spec {
@@ -91,23 +101,42 @@ resource "kubernetes_job" "filebeats_check_script" {
           image   = "harbor.regemini.io/op/tf:latest"
           command = ["/ansible/bin/python3", "/opt/filebeats_check.py"]
           env {
-            name  = "DAEMONSET_NAME"
+            name  = "WORKLOAD_TYPE"
+            value = "daemonset"
+          }
+          env {
+            name  = "WORKLOAD_NAME"
             value = helm_release.filebeat.name
           }
           env {
-            name  = "NAMESPACE"
+            name = "WORKLOAD_NAMESPACE"
             value = local.elasticSettings.globalSettings.namespace
           }
+          env {
+            name  = "CHECK_TIMEOUT"
+            value = "60"
+          }
+          env {
+            name  = "CHECK_RETRIES"
+            value = "10"
+          }
           volume_mount {
-            name       = "script"
+            name       = "scripts"
             mount_path = "/opt"
             read_only  = "true"
           }
         }
         volume {
-          name = "script"
-          secret {
-            secret_name = "filebeats-check"
+          name = "scripts"
+          projected {
+            sources {
+              secret {
+                name = "${helm_release.filebeat.name}-check"
+              }
+              secret {
+                name = "workload-readiness"
+              }
+            }
           }
         }
         service_account_name = kubernetes_service_account.filebeats_check_sa.metadata.0.name
@@ -120,13 +149,13 @@ resource "kubernetes_job" "filebeats_check_script" {
     backoff_limit = 4
   }
   wait_for_completion = true
-  depends_on          = [kubernetes_secret.filebeats_check_script, helm_release.filebeat, kubernetes_role_binding.filebeats_check_rolebinding]
+  depends_on          = [kubernetes_secret.filebeats_check_script, kubernetes_secret.workload_readiness_script, helm_release.filebeat, kubernetes_role_binding.filebeats_check_rolebinding]
 }
 
 resource "kubernetes_secret" "python_script" {
   metadata {
-    name      = "filebeat-script"
-    namespace = "elastic"
+    name      = "${helm_release.filebeat.name}-script"
+    namespace = local.elasticSettings.globalSettings.namespace
   }
   data = {
     "filebeat.py" = "${file("${path.module}/filebeat.py")}"
@@ -135,8 +164,8 @@ resource "kubernetes_secret" "python_script" {
 
 resource "kubernetes_job" "python_script" {
   metadata {
-    name      = "filebeat-script"
-    namespace = "elastic"
+    name      = "${helm_release.filebeat.name}-script-job"
+    namespace = local.elasticSettings.globalSettings.namespace
   }
   spec {
     template {
@@ -200,7 +229,7 @@ resource "kubernetes_job" "python_script" {
         volume {
           name = "script"
           secret {
-            secret_name = "filebeat-script"
+            secret_name = "${helm_release.filebeat.name}-script"
           }
         }
         image_pull_secrets {
