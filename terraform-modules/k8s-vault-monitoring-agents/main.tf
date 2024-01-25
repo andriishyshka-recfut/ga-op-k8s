@@ -28,6 +28,16 @@ resource "kubernetes_secret" "filebeats_check_script" {
   }
 }
 
+resource "kubernetes_secret" "workload_readiness_script" {
+  metadata {
+    name      = "workload-readiness"
+    namespace = local.namespace
+  }
+  data = {
+    "workload-readiness.py" = "${file("${path.root}/../../../references/workload-check/workload-readiness.py")}"
+  }
+}
+
 resource "kubernetes_service_account" "filebeats_check_sa" {
   metadata {
     name = "filebeats-check-sa"
@@ -57,7 +67,7 @@ resource "kubernetes_role" "filebeats_check_role" {
   rule {
     api_groups     = ["apps"]
     resources      = ["daemonsets/status"]
-    resource_names = ["${local.filebeat_daemonset_name}"]
+    resource_names = ["${local.filebeat_workload_name}"]
     verbs          = ["get", "list", "watch"]
   }
 }
@@ -96,25 +106,44 @@ resource "kubernetes_job" "filebeats_check_script" {
           image   = "harbor.regemini.io/op/tf:latest"
           command = ["/ansible/bin/python3", "/opt/filebeats_check.py"]
           env {
-            name  = "DAEMONSET_NAME"
-            value = local.filebeat_daemonset_name
+            name  = "WORKLOAD_TYPE"
+            value = local.filebeat_workload_type
           }
           env {
-            name  = "NAMESPACE"
+            name  = "WORKLOAD_NAME"
+            value = local.filebeat_workload_name
+          }
+          env {
+            name  = "WORKLOAD_NAMESPACE"
             value = local.namespace
           }
+          env {
+            name  = "CHECK_TIMEOUT"
+            value = "60"
+          }
+          env {
+            name  = "CHECK_RETRIES"
+            value = "10"
+          }
           volume_mount {
-            name       = "script"
+            name       = "scripts"
             mount_path = "/opt"
             read_only  = "true"
           }
         }
-        volume {
-          name = "script"
-          secret {
-            secret_name = "filebeats-check"
-          }
-        }
+          volume {
+            name = "scripts"
+            projected {
+              sources {
+                secret {
+                  name = "filebeats-check"
+                  }
+                secret {
+                  name = "workload-readiness"
+                  }
+                }
+              }
+            }
         service_account_name = kubernetes_service_account.filebeats_check_sa.metadata.0.name
         image_pull_secrets {
           name = "harbor"
