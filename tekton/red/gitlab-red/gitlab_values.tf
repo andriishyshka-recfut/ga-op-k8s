@@ -242,13 +242,23 @@ locals {
       concurrent      = 12
       check_interval  = 0
       session_timeout = 1800
-      image           = "alpine:3.16.1"
+      image           = "alpine:3.19.0"
       cache = {
         minio_url   = "minio.t.regemini.io:443"
         bucket      = "ardent-rarity-239115-gitlab-tmp"
         path        = "/cache/"
         shared      = true
         secret_name = "minio"
+      }
+      resources = {
+        requests = {
+          cpu    = "1"
+          memory = "512Mi"
+        }
+        limits = {
+          cpu    = "2"
+          memory = "3072Mi"
+        }
       }
     }
   }
