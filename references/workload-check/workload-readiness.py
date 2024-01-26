@@ -1,10 +1,21 @@
-from kubernetes import client, config
-import json,time,re
+from kubernetes import client
+import json,time,re,os
 
-# Configs can be set in Configuration class directly or using helper utility
-config.load_incluster_config()
+kube_cert_filename = '/tmp/ca.crt'
+f = open( kube_cert_filename, 'w' )
+f.write(os.getenv('KUBE_CLUSTER_CA_CERT_DATA'))
+f.close()
 
-api = client.AppsV1Api()
+configuration = client.Configuration()
+
+configuration.api_key['authorization'] = os.getenv('KUBE_TOKEN')
+configuration.host = os.getenv('KUBE_HOST')
+configuration.ssl_ca_cert = kube_cert_filename
+configuration.api_key_prefix['authorization'] = 'Bearer'
+
+auth_client = client.ApiClient(configuration)
+
+api = client.AppsV1Api(auth_client)
 
 def desired_pods(**kwargs):
     workload_type = kwargs['workload_type']
@@ -12,7 +23,7 @@ def desired_pods(**kwargs):
         try:
             return api.read_namespaced_daemon_set_status(kwargs['workload_name'], kwargs['workload_namespace'], pretty='true').status.desired_number_scheduled
         except Exception as e:
-            print(json.loads(e.body)['message'])
+            print(e)
             exit()
 
     elif workload_type == "deployment":

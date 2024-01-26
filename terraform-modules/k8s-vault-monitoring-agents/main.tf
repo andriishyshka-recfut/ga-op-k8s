@@ -18,148 +18,30 @@ resource "helm_release" "beat" {
 
 }
 
-resource "kubernetes_secret" "filebeats_check_script" {
-  metadata {
-    name      = "filebeats-check"
-    namespace = local.namespace
-  }
-  data = {
-    "filebeats_check.py" = "${file("${path.module}/filebeats_check.py")}"
-  }
-}
+resource "null_resource" "workload_readiness_check" {
 
-resource "kubernetes_secret" "workload_readiness_script" {
-  metadata {
-    name      = "workload-readiness"
-    namespace = local.namespace
+  triggers = {
+    filebeats_check = md5(file("${path.module}/${local.filebeat_check_script_path}"))
+    workload_readiness = md5(file("${path.module}/${local.workload_check_module_path}"))
   }
-  data = {
-    "workload-readiness.py" = "${file("${path.root}/../../../references/workload-check/workload-readiness.py")}"
-  }
-}
-
-resource "kubernetes_service_account" "filebeats_check_sa" {
-  metadata {
-    name = "filebeats-check-sa"
-    namespace = local.namespace
-  }
-  secret {
-    name = "${kubernetes_secret.filebeats_check_sa_secret.metadata.0.name}"
-  }
-}
-
-resource "kubernetes_secret" "filebeats_check_sa_secret" {
-  metadata {
-    name = "filebeats-check-sa-secret"
-    namespace = local.namespace
-  }
-}
-
-resource "kubernetes_role" "filebeats_check_role" {
-  metadata {
-    name = "filebeats-check"
-    namespace = local.namespace
-    labels = {
-      job = "filebeats-check"
+  provisioner "local-exec" {
+    command = <<COMMAND
+    python3 ../${local.filebeat_check_script_path}
+COMMAND
+    environment = {
+      WORKLOAD_TYPE        = local.filebeat_workload_type
+      WORKLOAD_NAME        = local.filebeat_workload_name
+      WORKLOAD_NAMESPACE   = local.namespace
+      WORKLOAD_MODULE_PATH = "../${local.workload_check_module_path}"
+      CHECK_TIMEOUT        = "60"
+      CHECK_RETRIES        = "10"
     }
   }
-
-  rule {
-    api_groups     = ["apps"]
-    resources      = ["daemonsets/status"]
-    resource_names = ["${local.filebeat_workload_name}"]
-    verbs          = ["get", "list", "watch"]
-  }
+  depends_on = [
+    helm_release.beat
+  ]
 }
 
-resource "kubernetes_role_binding" "filebeats_check_rolebinding" {
-  metadata {
-    name      = "filebeats_check_rolebinding"
-    namespace = local.namespace
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "Role"
-    name      = kubernetes_role.filebeats_check_role.metadata.0.name
-  }
-  subject {
-    kind      = "ServiceAccount"
-    name      = kubernetes_service_account.filebeats_check_sa.metadata.0.name
-    namespace = local.namespace
-  }
-}
-resource "kubernetes_job" "filebeats_check_script" {
-  metadata {
-    name      = "filebeats-check-job"
-    namespace = local.namespace
-  }
-  spec {
-    template {
-      metadata {
-        annotations = {
-          "sidecar.istio.io/inject" : "false"
-        }
-      }
-      spec {
-        container {
-          name    = "script"
-          image   = "harbor.regemini.io/op/tf:latest"
-          command = ["/ansible/bin/python3", "/opt/filebeats_check.py"]
-          env {
-            name  = "WORKLOAD_TYPE"
-            value = local.filebeat_workload_type
-          }
-          env {
-            name  = "WORKLOAD_NAME"
-            value = local.filebeat_workload_name
-          }
-          env {
-            name = "WORKLOAD_NAMESPACE"
-            value_from {
-              field_ref {
-                field_path = "metadata.namespace"
-              }
-            }
-          }
-          env {
-            name  = "CHECK_TIMEOUT"
-            value = "60"
-          }
-          env {
-            name  = "CHECK_RETRIES"
-            value = "10"
-          }
-          volume_mount {
-            name       = "scripts"
-            mount_path = "/opt"
-            read_only  = "true"
-          }
-        }
-          volume {
-            name = "scripts"
-            projected {
-              sources {
-                secret {
-                  name = "filebeats-check"
-                  }
-                secret {
-                  name = "workload-readiness"
-                  }
-                }
-              }
-            }
-        service_account_name = kubernetes_service_account.filebeats_check_sa.metadata.0.name
-        image_pull_secrets {
-          name = "harbor"
-        }
-        restart_policy = "Never"
-      }
-    }
-    backoff_limit = 4
-  }
-  wait_for_completion = true
-  depends_on          = [kubernetes_secret.filebeats_check_script, kubernetes_secret.workload_readiness_script helm_release.beat, kubernetes_role_binding.filebeats_check_rolebinding]
-}
 
 resource "kubernetes_secret" "python_script" {
   metadata {
@@ -250,5 +132,6 @@ resource "kubernetes_job" "python_script" {
     backoff_limit = 4
   }
   wait_for_completion = true
-  depends_on          = [kubernetes_secret.python_script, helm_release.beat, kubernetes_job.filebeats_check_script]
+  depends_on          = [kubernetes_secret.python_script, helm_release.beat]
 }
+
