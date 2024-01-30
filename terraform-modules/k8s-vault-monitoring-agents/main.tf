@@ -17,7 +17,7 @@ resource "helm_release" "beat" {
   }
     set {
     name  = "priorityClassName"
-    value = kubernetes_priority_class.monitoring_beats.0.name
+    value = kubernetes_priority_class.monitoring_beats.metadata.0.name
   }
 
 }
