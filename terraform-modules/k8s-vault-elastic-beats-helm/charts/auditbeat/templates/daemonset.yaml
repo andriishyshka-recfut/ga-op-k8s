@@ -76,10 +76,7 @@ spec:
       nodeSelector:
       {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
-      tolerations:
-        - key: auditbeat
-          operator: Exists
-          effect: NoSchedule
+      tolerations: {{ toYaml ( .Values.tolerations | default .Values.daemonset.tolerations ) | nindent 8 }}
       {{- if .Values.extraInitContainers }}
       initContainers:
       # All the other beats accept a string here while
