@@ -48,6 +48,7 @@ spec:
        export KUBE_CLUSTER_CA_CERT_DATA=$(vault kv get -field=CLUSTER_CA_CERTIFICATE secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
        export GIT_USER=$(vault kv get -field=username secret/gitlab )
        export GIT_TOKEN=$(vault kv get -field=token_read_repo secret/gitlab )
+       export SLACK_WEBHOOK_URL=$(vault kv get -field=prometheus-critical secret/slack/tekton )
 
        cd $(workspaces.ws.path)
        git clone --single-branch --branch $(params.branch) https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
@@ -57,7 +58,7 @@ spec:
 
        cd $(workspaces.ws.path)/$(params.path)
        git log -1
-       terragrunt apply -auto-approve
+       terragrunt apply -auto-approve && [[ "$(context.pipeline.name)" == "failed-etl-jobs-rerun" ]] && curl -X POST -H 'Content-type: application/json' --data '{"text":"Tekton task failed-etl-jobs-rerun was failed due to tf error! Check tekton!"}' ${SLACK_WEBHOOK_URL} || echo "tf is ok"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
