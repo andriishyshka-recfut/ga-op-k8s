@@ -53,8 +53,19 @@ resource "null_resource" "harbor_creds" {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      --namespace=${local.tektonNs}  \
+     serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}' \
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     create secret docker-registry harbor --docker-server=harbor.regemini.io \
+      --docker-username=$(vault kv get -field=user secret/goharbor/docker_login) \
+      --docker-password=$(vault kv get -field=password secret/goharbor/docker_login) \
+    --namespace=${local.tektonMainNs} && sleep 30 && \
+    kubectl patch --server ${local.gkeClusterEndpoint}  \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     --namespace=${local.tektonMainNs}  \
      serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}'
-
 COMMAND
   }
 
@@ -93,7 +104,27 @@ resource "null_resource" "crds" {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      apply -f ${path.module}/pipelinerun.yaml \
-    --namespace=${local.tektonNs}
+    --namespace=${local.tektonNs} \
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     apply -f ${path.module}/task.yaml \
+    --namespace=${local.tektonMainNs} \
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     apply -f ${path.module}/pipeline.yaml \
+    --namespace=${local.tektonMainNs}
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     apply -f ${path.module}/webhook.yaml \
+    --namespace=${local.tektonMainNs}
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     apply -f ${path.module}/pipelinerun.yaml \
+    --namespace=${local.tektonMainNs}
 
 COMMAND
   }
