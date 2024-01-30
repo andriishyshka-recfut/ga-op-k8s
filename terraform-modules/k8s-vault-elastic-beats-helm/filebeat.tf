@@ -6,11 +6,15 @@ resource "helm_release" "filebeat" {
   timeout   = 7200
   namespace = local.elasticSettings.globalSettings.namespace
   values = [
-    templatefile("${path.module}/filebeat-values.tftpl", merge(local.elasticSettings.globalSettings, { kibana = var.BeatKibanaService, elastic = var.BeatElasticService, filebeat_groups = local.filebeat_groups }))
+    templatefile("${path.module}/filebeat-values.tftpl", merge(local.elasticSettings.globalSettings, { kibana = var.BeatKibanaService, elastic = var.BeatElasticService, filebeat_groups = var.filebeat_groups }))
   ]
   depends_on = [
     kubernetes_job.beats_users
   ]
+  set {
+    name  = "priorityClassName"
+    value = kubernetes_priority_class.beats.metadata.0.name
+  }
 }
 
 resource "null_resource" "workload_readiness_check" {
@@ -66,7 +70,7 @@ resource "kubernetes_job" "python_script" {
           command = ["/ansible/bin/python3", "/opt/filebeat.py"]
           env {
             name  = "TEMPLATES"
-            value = local.filebeat_groups
+            value = var.filebeat_groups
           }
           env {
             name  = "FILEBEAT_VERSION"
@@ -126,4 +130,14 @@ resource "kubernetes_job" "python_script" {
   }
   wait_for_completion = true
   depends_on          = [kubernetes_secret.python_script, helm_release.filebeat, null_resource.workload_readiness_check]
+}
+
+resource "kubernetes_priority_class" "beats" {
+  metadata {
+    name = "beats"
+  }
+
+  value = 100000
+  description = "Used to place elasticsearch beats on nodes with higher priority"
+  preemption_policy = "PreemptLowerPriority"
 }

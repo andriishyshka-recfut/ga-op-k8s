@@ -12,4 +12,8 @@ resource "helm_release" "auditbeat" {
   depends_on = [
     kubernetes_job.beats_users
   ]
+  set {
+    name  = "priorityClassName"
+    value = kubernetes_priority_class.beats.metadata.0.name
+  }
 }

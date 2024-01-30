@@ -72,7 +72,6 @@ daemonset:
     limits:
       cpu: "400m"
       memory: "400Mi"
-  tolerations: []
 
 deployment:
   # Annotations to apply to the deployment
