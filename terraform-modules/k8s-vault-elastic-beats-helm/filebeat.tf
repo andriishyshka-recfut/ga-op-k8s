@@ -13,143 +13,28 @@ resource "helm_release" "filebeat" {
   ]
 }
 
-resource "kubernetes_secret" "filebeats_check_script" {
-  metadata {
-    name      = "${helm_release.filebeat.name}-check"
-    namespace = local.elasticSettings.globalSettings.namespace
-  }
-  data = {
-    "filebeats_check.py" = "${file("${path.module}/filebeats_check.py")}"
-  }
-}
+resource "null_resource" "workload_readiness_check" {
 
-resource "kubernetes_secret" "workload_readiness_script" {
-  metadata {
-    name      = "workload-readiness"
-    namespace = local.elasticSettings.globalSettings.namespace
+  triggers = {
+    filebeats_check = md5(file("${path.module}/${local.filebeat_check_script_path}"))
+    workload_readiness = md5(file("${path.module}/${local.workload_check_module_path}"))
   }
-  data = {
-    "workload-readiness.py" = "${file("${path.root}/../../../references/workload-check/workload-readiness.py")}"
-  }
-}
-
-resource "kubernetes_service_account" "filebeats_check_sa" {
-  metadata {
-    name = "${helm_release.filebeat.name}-check-sa"
-    namespace = local.elasticSettings.globalSettings.namespace
-  }
-  secret {
-    name = "${kubernetes_secret.filebeats_check_sa_secret.metadata.0.name}"
-  }
-}
-
-resource "kubernetes_secret" "filebeats_check_sa_secret" {
-  metadata {
-    name = "${helm_release.filebeat.name}-check-sa-secret"
-    namespace = local.elasticSettings.globalSettings.namespace
-  }
-}
-
-resource "kubernetes_role" "filebeats_check_role" {
-  metadata {
-    name = "${helm_release.filebeat.name}-check"
-    namespace = local.elasticSettings.globalSettings.namespace
-    labels = {
-      job = "${helm_release.filebeat.name}-check"
+  provisioner "local-exec" {
+    command = <<COMMAND
+    python3 ../${local.filebeat_check_script_path}
+COMMAND
+    environment = {
+      WORKLOAD_TYPE        = local.filebeat_workload_type
+      WORKLOAD_NAME        = local.filebeat_workload_name
+      WORKLOAD_NAMESPACE   = local.elasticSettings.globalSettings.namespace
+      WORKLOAD_MODULE_PATH = "../${local.workload_check_module_path}"
+      CHECK_TIMEOUT        = "60"
+      CHECK_RETRIES        = "10"
     }
   }
-
-  rule {
-    api_groups     = ["apps"]
-    resources      = ["daemonsets/status"]
-    resource_names = ["${helm_release.filebeat.name}"]
-    verbs          = ["get", "list", "watch"]
-  }
-}
-
-resource "kubernetes_role_binding" "filebeats_check_rolebinding" {
-  metadata {
-    name      = "${helm_release.filebeat.name}_check_rolebinding"
-    namespace = local.elasticSettings.globalSettings.namespace
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "Role"
-    name      = kubernetes_role.filebeats_check_role.metadata.0.name
-  }
-  subject {
-    kind      = "ServiceAccount"
-    name      = kubernetes_service_account.filebeats_check_sa.metadata.0.name
-    namespace = local.elasticSettings.globalSettings.namespace
-  }
-}
-resource "kubernetes_job" "filebeats_check_script" {
-  metadata {
-    name      = "${helm_release.filebeat.name}-check-job"
-    namespace = local.elasticSettings.globalSettings.namespace
-  }
-  spec {
-    template {
-      metadata {
-        annotations = {
-          "sidecar.istio.io/inject" : "false"
-        }
-      }
-      spec {
-        container {
-          name    = "script"
-          image   = "harbor.regemini.io/op/tf:latest"
-          command = ["/ansible/bin/python3", "/opt/filebeats_check.py"]
-          env {
-            name  = "WORKLOAD_TYPE"
-            value = "daemonset"
-          }
-          env {
-            name  = "WORKLOAD_NAME"
-            value = helm_release.filebeat.name
-          }
-          env {
-            name = "WORKLOAD_NAMESPACE"
-            value = local.elasticSettings.globalSettings.namespace
-          }
-          env {
-            name  = "CHECK_TIMEOUT"
-            value = "60"
-          }
-          env {
-            name  = "CHECK_RETRIES"
-            value = "10"
-          }
-          volume_mount {
-            name       = "scripts"
-            mount_path = "/opt"
-            read_only  = "true"
-          }
-        }
-        volume {
-          name = "scripts"
-          projected {
-            sources {
-              secret {
-                name = "${helm_release.filebeat.name}-check"
-              }
-              secret {
-                name = "workload-readiness"
-              }
-            }
-          }
-        }
-        service_account_name = kubernetes_service_account.filebeats_check_sa.metadata.0.name
-        image_pull_secrets {
-          name = "harbor"
-        }
-        restart_policy = "Never"
-      }
-    }
-    backoff_limit = 4
-  }
-  wait_for_completion = true
-  depends_on          = [kubernetes_secret.filebeats_check_script, kubernetes_secret.workload_readiness_script, helm_release.filebeat, kubernetes_role_binding.filebeats_check_rolebinding]
+  depends_on = [
+    helm_release.filebeat
+  ]
 }
 
 resource "kubernetes_secret" "python_script" {
@@ -179,14 +64,13 @@ resource "kubernetes_job" "python_script" {
           name    = "script"
           image   = "harbor.regemini.io/op/tf:latest"
           command = ["/ansible/bin/python3", "/opt/filebeat.py"]
-          # command = ["sh", "-c", "tail -f /dev/null"]
           env {
             name  = "TEMPLATES"
             value = local.filebeat_groups
           }
           env {
             name  = "FILEBEAT_VERSION"
-            value = local.version
+            value = local.elasticSettings.globalSettings.imageTag
           }
           env {
             name  = "ELASTICSEARCH_USERNAME"
@@ -203,7 +87,7 @@ resource "kubernetes_job" "python_script" {
           }
           env {
             name  = "ELASTICSEARCH_URL"
-            value = "red-coor:9200"
+            value = "${local.elasticSettings.globalSettings.clusterName}-coor:9200"
           }
           volume_mount {
             name       = "ca-cert"
@@ -241,5 +125,5 @@ resource "kubernetes_job" "python_script" {
     backoff_limit = 4
   }
   wait_for_completion = true
-  depends_on          = [kubernetes_secret.python_script, helm_release.filebeat, kubernetes_job.filebeats_check_script]
+  depends_on          = [kubernetes_secret.python_script, helm_release.filebeat, null_resource.workload_readiness_check]
 }
