@@ -15,7 +15,21 @@ resource "helm_release" "beat" {
     name  = "beatsVersion"
     value = local.version
   }
+    set {
+    name  = "priorityClassName"
+    value = kubernetes_priority_class.monitoring_beats.0.name
+  }
 
+}
+
+resource "kubernetes_priority_class" "monitoring_beats" {
+  metadata {
+    name = "monitoring-beats"
+  }
+
+  value = 100000
+  description = "Used to place monitoring beats on nodes with higher priority"
+  preemption_policy = "PreemptLowerPriority"
 }
 
 resource "null_resource" "workload_readiness_check" {
