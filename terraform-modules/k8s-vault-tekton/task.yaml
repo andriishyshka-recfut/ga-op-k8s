@@ -17,7 +17,7 @@ spec:
     mountPath: /workspace
   steps:
     - name: tg-apply
-      image: harbor.regemini.io/op/tf:latest
+      image: harbor.regemini.io/op/opentofu
       env:
         - name: TF_VAR_Color
           valueFrom:
@@ -78,7 +78,7 @@ spec:
     mountPath: /workspace
   steps:
     - name: tg-apply-destroy
-      image: harbor.regemini.io/op/tf:latest
+      image: harbor.regemini.io/op/opentofu
       env:
         - name: TF_VAR_Color
           valueFrom:

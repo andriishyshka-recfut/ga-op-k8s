@@ -103,7 +103,7 @@ resource "kubernetes_job" "filebeats_check_script" {
       spec {
         container {
           name    = "script"
-          image   = "harbor.regemini.io/op/tf:latest"
+          image   = "harbor.regemini.io/op/opentofu:latest"
           command = ["/ansible/bin/python3", "/opt/filebeats_check.py"]
           env {
             name  = "WORKLOAD_TYPE"
@@ -158,7 +158,12 @@ resource "kubernetes_job" "filebeats_check_script" {
     backoff_limit = 4
   }
   wait_for_completion = true
-  depends_on          = [kubernetes_secret.filebeats_check_script, kubernetes_secret.workload_readiness_script helm_release.beat, kubernetes_role_binding.filebeats_check_rolebinding]
+  depends_on          = [
+    kubernetes_secret.filebeats_check_script, 
+    kubernetes_secret.workload_readiness_script,
+    helm_release.beat, 
+    kubernetes_role_binding.filebeats_check_rolebinding
+  ]
 }
 
 resource "kubernetes_secret" "python_script" {
@@ -186,7 +191,7 @@ resource "kubernetes_job" "python_script" {
       spec {
         container {
           name    = "script"
-          image   = "harbor.regemini.io/op/tf:latest"
+          image   = "harbor.regemini.io/op/opentofu:latest"
           command = ["/ansible/bin/python3", "/opt/filebeat.py"]
           # command = ["sh", "-c", "tail -f /dev/null"]
           env {

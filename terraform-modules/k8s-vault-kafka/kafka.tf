@@ -8,7 +8,7 @@ resource "helm_release" "kafka_operator" {
   atomic     = true
   namespace  = local.kafkaNs
   timeout    = 900
-  version    = "0.32.0"
+  version    = local.operatorChartVersion
 }
 
 

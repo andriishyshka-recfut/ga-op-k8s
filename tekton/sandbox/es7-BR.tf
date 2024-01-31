@@ -1,22 +1,22 @@
 
 module "es7-backup" {
-  source               = "../../terraform-modules/k8s-es-curator"
-  Namespace            = "elastic"
-  ElasticName          = "elastic"
-  NamePrefix           = "xbackup"
-  BackupBucketName     = "elasticsearch-backups"
-  BackupBucketBasePath = "7"
-  EsService            = "elasticsearch-coor"
-  EsCreds              = "elastic-credentials"
-  MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
-  Actions              = file("${path.root}/es7-backup-actions.yaml")
-  Settings             = var.Settings
-  providers = {
-    kubernetes = kubernetes.kubernetes-inactive
-  }
+source               = "../../terraform-modules/k8s-es-curator"
+Namespace            = "elastic"
+ElasticName          = "elastic"
+NamePrefix           = "xbackup"
+BackupBucketName     = "elasticsearch-backups"
+BackupBucketBasePath = "7"
+EsService            = "elasticsearch-coor"
+EsCreds              = "elastic-credentials"
+MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
+Actions              = file("${path.root}/es7-backup-actions.yaml")
+Settings             = var.Settings
+providers = {
+kubernetes = kubernetes.kubernetes-inactive
+}
   depends_on = [
-    module.elastic
-  ]
+module.elastic
+]
 }
 
 module "es7-restore" {

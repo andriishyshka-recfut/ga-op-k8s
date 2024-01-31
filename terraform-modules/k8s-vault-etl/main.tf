@@ -14,19 +14,19 @@ resource "helm_release" "etl_operator" {
   repository_password = data.vault_generic_secret.harbor_token.data.password
   set {
     name  = "image.tag"
-    value = "v2.7-rc8"
+    value = local.operatorTag
   }
   set {
     name  = "ansibleGit.tag"
-    value = "rc10"
+    value = local.ansibleScriptsTag
   }
   set {
     name  = "camino.tag"
-    value = "v5.0.17"
+    value = local.caminoTag
   }
   set {
     name  = "gs2s3.tag"
-    value = "v5.0.1"
+    value = local.gs2s3Tag
   }
   set {
     name  = "vaultPath"
