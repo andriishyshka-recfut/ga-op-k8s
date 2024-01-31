@@ -38,7 +38,7 @@ resource "helm_release" "istio_base" {
   name       = "istio-base"
   chart      = "base"
   repository = "https://istio-release.storage.googleapis.com/charts"
-  version    = var.Settings.clusters[var.Cluster][var.Color].istio_helm_version
+  version    = var.Settings.clusters[var.Cluster][var.Color].versions.istio.helm_version
   wait       = true
   atomic     = true
   namespace  = "istio-system"
@@ -52,7 +52,7 @@ resource "helm_release" "istiod" {
   name       = "istiod"
   chart      = "istiod"
   repository = "https://istio-release.storage.googleapis.com/charts"
-  version    = var.Settings.clusters[var.Cluster][var.Color].istio_helm_version
+  version    = var.Settings.clusters[var.Cluster][var.Color].versions.istio.helm_version
   wait       = true
   atomic     = true
   namespace  = "istio-system"
@@ -69,7 +69,7 @@ resource "helm_release" "istio_ingress" {
   name       = "istio-ingressgateway"
   chart      = "gateway"
   repository = "https://istio-release.storage.googleapis.com/charts"
-  version    = var.Settings.clusters[var.Cluster][var.Color].istio_helm_version
+  version    = var.Settings.clusters[var.Cluster][var.Color].versions.istio.helm_version
   wait       = true
   atomic     = true
   namespace  = "istio-ingress"

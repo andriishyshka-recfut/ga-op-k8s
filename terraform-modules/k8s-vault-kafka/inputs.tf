@@ -1,5 +1,6 @@
 variable "GkeClusterConnectionSettings" {}
 variable "Cluster" {}
+variable "Color" {}
 variable "Settings" {}
 
 
@@ -13,6 +14,8 @@ locals {
   pv_disk_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
   replicas = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
   zones = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones
+
+  operatorChartVersion = var.Settings.clusters[var.Cluster][var.Color].versions.kafka.operator_chart_version
 }
 
 terraform {

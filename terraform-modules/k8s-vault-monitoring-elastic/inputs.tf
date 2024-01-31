@@ -25,7 +25,7 @@ locals {
   oidcRealmName          = lookup(var.ElasticSettings.elastic.oidc_gcloud, "oidc_realm_name", "")
   esValues               = var.ElasticSettings.elastic
   apmToken               = var.ElasticSettings.elastic.apmToken
-  version                = var.Settings.clusters[var.Cluster][var.Color].elasticsearch.cluster[local.esValues.esName]
+  version                = var.Settings.clusters[var.Cluster][var.Color].versions.elasticsearch.cluster[local.esValues.esName]
   monUrl                 = var.Settings.MonElasticFQDN
   gcsSetup               = lookup(var.ElasticSettings.elastic, "gcs_enable", "no") == "yes" ? 1 : 0
   ansibleEnvs = merge(var.GkeClusterConnectionSettings, {

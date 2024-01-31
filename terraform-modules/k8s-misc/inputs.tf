@@ -19,5 +19,5 @@ locals {
 
   trial_licenses = var.Color == "red" ? 0 : 1
   eck_installs = var.Color == "red" ? 0 : 1
-  eckVersion = var.Settings.clusters[var.Cluster][var.Color].elasticsearch.eck_version
+  eckVersion = var.Settings.clusters[var.Cluster][var.Color].versions.elasticsearch.eck_version
 }

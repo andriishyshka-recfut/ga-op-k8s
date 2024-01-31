@@ -71,6 +71,22 @@ resource "helm_release" "logstash" {
     name  = "log_level"
     value = try(each.value.log_level, local.log_level)
   }
+  set {
+    name  = "resources.requests.cpu"
+    value = try(each.value.cpu_request, local.cpu_request)
+  }
+  set {
+    name  = "resources.requests.memory"
+    value = try(each.value.mem_request, local.mem_request)
+  }
+  set {
+    name  = "resources.limits.cpu"
+    value = try(each.value.cpu_limit, local.cpu_limit)
+  }
+  set {
+    name  = "resources.limits.memory"
+    value = try(each.value.mem_limit, local.mem_limit)
+  }
 
   depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds, kubernetes_manifest.tmp_logstash]
 }

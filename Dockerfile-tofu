@@ -1,10 +1,10 @@
-FROM vault:1.13.3 as vault
-FROM curlimages/curl as curl
+FROM --platform=linux/amd64 vault:1.13.3 as vault
+FROM --platform=linux/amd64 curlimages/curl as curl
 RUN curl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /tmp/kubectl &&\
     curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.54.10/terragrunt_linux_amd64 --output /tmp/terragrunt &&\
     curl -L https://github.com/opentofu/opentofu/releases/download/v1.6.1/tofu_1.6.1_amd64.apk --output /tmp/opentofu.apk
 
-FROM alpine:latest as ansible
+FROM --platform=linux/amd64 alpine:latest as ansible
 RUN apk add python3 py3-pip unzip py3-virtualenv bash python3-dev libffi-dev build-base rust rustup cargo openssl-dev musl-dev
 RUN cd / && python3 -m venv ansible && \
     bash -c "source /ansible/bin/activate && pip install --upgrade pip && pip install ansible pyyaml==5.3.1 docker-compose jmespath kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl kafka-python"
@@ -12,7 +12,7 @@ RUN cd / && python3 -m venv ansible && \
 
 FROM --platform=linux/amd64 openjdk:18-jdk-alpine as java
 
-FROM alpine:latest
+FROM --platform=linux/amd64 alpine:latest
 
 
 COPY --from=vault /bin/vault /bin/vault

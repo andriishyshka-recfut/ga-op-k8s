@@ -4,4 +4,5 @@ module "kafka" {
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
   Cluster                      = var.Cluster
   Settings                     = var.Settings
+  Color                        = var.Color
 }
