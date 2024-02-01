@@ -1,5 +1,6 @@
 variable "Cluster" {}
 variable "Color" {}
+variable "Settings" {}
 variable "SecretPath" {
   default = "etl"
 }
