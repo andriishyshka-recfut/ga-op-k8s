@@ -4,6 +4,7 @@ variable "Cluster" {}
 variable "Color" {}
 
 locals {
+  helmVersion       = lookup(var.Settings.clusters[var.Cluster][var.Color].versions.grafana_for_clients, "helm_version", "grafana-7.3.0")
   elasticUsername   = data.vault_generic_secret.elastic.data["username"]
   elasticPassword   = data.vault_generic_secret.elastic.data["password"]
   grafanaUsername   = data.vault_generic_secret.grafana.data["username"]
