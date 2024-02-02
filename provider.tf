@@ -54,7 +54,7 @@ terraform {
   backend "kubernetes" {
     secret_suffix    = "k8s-state"
     namespace = "tekton-pipelines"
-    load_config_file = false
+    config_path = "./kubeconfig"
   }
   required_providers {
     kubectl = {
@@ -64,11 +64,7 @@ terraform {
     flux = {
       source  = "registry.terraform.io/fluxcd/flux"
       version = ">= 0.0.13"
-    }
-    grafana = {
-      source  = "registry.terraform.io/grafana/grafana"
-      version = ">= 2.0.0"
-    }
+    }    
   }
 }
 

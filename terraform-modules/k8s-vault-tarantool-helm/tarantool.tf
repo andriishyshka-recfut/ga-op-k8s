@@ -15,7 +15,7 @@ resource "helm_release" "tarantool_operator" {
   atomic              = true
   namespace           = local.namespace
   timeout             = 300
-  version             = "1.0.1-v2"
+  version             = local.operatorChartVersion
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
 }
@@ -26,9 +26,10 @@ resource "helm_release" "tarantool_cartridge" {
   chart               = "oci://harbor.regemini.io/helm/cartridge"
   wait                = true
   atomic              = true
+  force_update        = true
   namespace           = local.namespace
   timeout             = 300
-  version             = "1.0.2"
+  version             = local.cartridgeChartVersion
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
 
@@ -40,7 +41,7 @@ resource "helm_release" "tarantool_cartridge" {
   }
   set {
     name  = "tarantool.image.tag"
-    value = "v1.1.2"
+    value = local.cartridgeTag
   }
   set {
     name  = "tarantool.auth.password"

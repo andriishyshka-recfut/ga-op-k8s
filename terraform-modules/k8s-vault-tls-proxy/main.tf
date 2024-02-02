@@ -183,7 +183,8 @@ resource "kubernetes_manifest" "tls_proxy_cert" {
       "dnsNames" = [
         each.value.domain
       ]
-      "duration" = "720h0m0s"
+      "duration"    = "1080h0m0s"
+      "renewBefore" = "360h0m0s"
       "issuerRef" = {
         "kind" = "ClusterIssuer"
         "name" = lookup(each.value, "cluster_issuer", "vault-${each.key}-issuer")

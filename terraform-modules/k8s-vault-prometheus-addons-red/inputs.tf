@@ -8,7 +8,7 @@ variable "OidcSecretVaultPath" {
 
 
 locals {
-  helmVersion      = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus, "helm_version", "17.0.0")
+  helmVersion      = lookup(var.Settings.clusters[var.Cluster][var.Color].versions.prometheus, "helm_version", "17.0.0")
   prometheusNs     = "monitoring"
   prometheusExtUrl = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus, "prometheusExtUrl", "http://localhost:9090")
 }

@@ -1,0 +1,23 @@
+{{- $components := fromYaml (include "components" .) }}
+{{- if $components.prometheusExporter.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.prometheusExporter.name }}
+  namespace: {{ .Values.kubescape.serviceMonitor.namespace | default .Values.ksNamespace }}
+  labels:
+    app: {{ .Values.prometheusExporter.name }}
+    release: prometheus
+spec:
+  namespaceSelector:
+    matchNames:
+      -  {{ .Values.ksNamespace }}
+  selector:
+    matchLabels:
+      app: {{ .Values.prometheusExporter.name }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: {{ .Values.kubescape.serviceMonitor.interval }}
+      scrapeTimeout: {{ .Values.kubescape.serviceMonitor.scrapeTimeout }}
+{{ end }}

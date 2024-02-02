@@ -1,5 +1,6 @@
 locals {
   settings = jsondecode(file("${path.module}/../../../prod.tfvars.json")).Settings.clusters["production"]
+  settings_red = jsondecode(file("${path.module}/../../../prod-red.tfvars.json")).Settings.clusters["production"]
 
   zones = local.settings.persistent_resources.permanentDisks.zones
 
@@ -13,11 +14,13 @@ locals {
   sftp            = local.settings.sftp-server
   minio_count     = local.settings.persistent_resources.permanentDisks.minio.count
 
-  tarantool_storage_count = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks * 2
-  tsc = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks 
-  tarantool_storage_prefix = local.settings.persistent_resources.permanentDisks.tarantool.storage_prefix 
-  tarantool_router_count = local.settings.persistent_resources.permanentDisks.tarantool.router_disks
-  tarantool_router_prefix = local.settings.persistent_resources.permanentDisks.tarantool.router_prefix 
+  tarantool_storage_count = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks * 2
+  tsc = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks 
+  tarantool_storage_prefix = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_prefix 
+  tarantool_router_count = local.settings_red.persistent_resources.permanentDisks.tarantool.router_disks
+  tarantool_router_prefix = local.settings_red.persistent_resources.permanentDisks.tarantool.router_prefix 
+  tarantool_etcd_count = local.settings_red.persistent_resources.permanentDisks.tarantool.etcd_disks
+  tarantool_etcd_prefix = local.settings_red.persistent_resources.permanentDisks.tarantool.etcd_prefix 
 
 
   # mongoDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
@@ -89,6 +92,11 @@ data "google_compute_snapshot" "minio_tenant_snapshot" {
   count = local.minio_count
 }
 
+data "google_compute_snapshot" "tarantool_etcd_snapshot" {
+  name        = "etcd-snapshot-${count.index}"
+  most_recent = true
+  count       = local.tarantool_etcd_count
+}
 
 
 
@@ -218,4 +226,17 @@ resource "google_compute_disk" "minio_pv" {
   labels = {
     target = "minio-tenant"
   }
+}
+
+resource "google_compute_disk" "tarantool_etcd_pv" {
+  name     = "${local.tarantool_etcd_prefix}-${count.index}"
+  count    = local.tarantool_etcd_count
+  type     = "pd-ssd"
+  size     = data.google_compute_snapshot.tarantool_etcd_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.tarantool_etcd_snapshot[count.index].name
+  labels = {
+    target = local.tarantool_etcd_prefix
+    id     = "${local.tarantool_etcd_prefix}-${count.index}"
+  }
+  zone = element([for i in range(local.tarantool_etcd_count) : element(local.zones, i % 3)], count.index)
 }

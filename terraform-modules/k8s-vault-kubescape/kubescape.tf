@@ -26,10 +26,108 @@ resource "kubernetes_secret" "minio_credentials" {
 resource "helm_release" "kubescape" {
   name              = "kubescape"
   repository        = "${path.module}"
-  chart             = "kubescape-cloud-operator"
+  chart             = "kubescape-operator"
   wait              = true
   atomic            = true
   namespace         = "kubescape"
+
+  set {
+    name = "kubescape.image.tag"
+    value = "v3.0.3"
+  }
+
+  set {
+    name = "kubescapeScheduler.image.tag"
+    value = "v0.2.2"
+  }
+
+###################################
+#    Features and capabilities
+###################################
+
+
+  set {
+    name = "capabilities.continuousScan"
+    value = "enable"
+  }
+
+  set {
+    name = "capabilities.prometheusExporter"
+    value = "enable"
+  }
+
+  set {
+    name = "kubescape.prometheusAnnotation.enabled"
+    value = "true"
+  }
+
+  set {
+    name = "capabilities.nodeScan"
+    value = "disabled"
+  }
+
+  set {
+    name = "capabilities.relevancy"
+    value = "disabled"
+  }
+
+  set {
+    name = "capabilities.vulnerabilityScan"
+    value = "disabled"
+  }
+
+
+  set {
+    name  = "kubescapeScheduler.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "kubescape.enabled"
+    value = "true"
+  }
+  set {
+    name  = "kubescape.submit"
+    value = "false"
+  }
+
+  set {
+    name  = "kubescape.serviceMonitor.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "kubescape.enableHostScan"
+    value = "false"
+  }
+
+
+###################################
+#    Settings
+###################################
+
+  set {
+    name  = "kubescapeScheduler.scanSchedule"
+    value = "0 2 * * *"
+  }
+
+  set {
+    name  = "kubescape.resources.requests.cpu"
+    value = "300m"
+  }
+
+  set {
+    name  = "kubescape.resources.requests.memory"
+    value = "256Mi"
+  }
+  set {
+    name  = "kubescape.resources.limits.cpu"
+    value = "800m"
+  }
+  set {
+    name  = "kubescape.resources.limits.memory"
+    value = "1Gi"
+  }
 
   set {
     name  = "cloudProviderEngine"
@@ -39,22 +137,7 @@ resource "helm_release" "kubescape" {
     name  = "clusterName"
     value = local.clusterName
   }
-  set {
-    name  = "kubescapeScheduler.scanSchedule"
-    value = "0 2 * * *"
-  }
-  set {
-    name  = "kubescapeScheduler.enabled"
-    value = "true"
-  }
-  set {
-    name  = "kubescape.enabled"
-    value = "true"
-  }
-  set {
-    name  = "kubescape.submit"
-    value = "false"
-  }
+
   set {
     name  = "kubescape.minioBucket"
     value = local.minioBucket
@@ -63,22 +146,18 @@ resource "helm_release" "kubescape" {
     name  = "kubescape.skipUpdateCheck"
     value = "true"
   }
+
   set {
-    name  = "kubescape.enableHostScan"
-    value = "false"
+    name  = "kubescape.serviceMonitor.namespace"
+    value = "monitoring"
   }
+
   set {
-    name = "kubescape.resources.limits.cpu"
-    value = "250m"
+    name  = "prometheusExporter.name"
+    value = "prometheus-kubescape"
   }
-  set {
-    name = "kubescape.resources.requests.memory"
-    value = "2Gi"
-  }
-  set {
-    name = "kubescape.resources.limits.memory"
-    value = "3Gi"
-  }
+
+  timeout = 60
 
   depends_on = [kubernetes_secret.minio_credentials]
 }

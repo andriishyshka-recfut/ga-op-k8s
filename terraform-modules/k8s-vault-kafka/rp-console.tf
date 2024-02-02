@@ -1,7 +1,7 @@
 resource "helm_release" "red_panda_console" {
   name       = "rp-console"
   chart      = "console"
-  repository = "https://packages.vectorized.io/public/console/helm/charts/"
+  repository = "https://charts.redpanda.com"
   wait       = true
   atomic     = true
   namespace  = local.kafkaNs

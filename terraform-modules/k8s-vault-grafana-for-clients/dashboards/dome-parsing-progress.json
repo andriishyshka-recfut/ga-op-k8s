@@ -1,0 +1,520 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "logstash",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 28,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": "logstash",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "displayMode": "lcd",
+        "minVizHeight": 11,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Sum$/",
+          "limit": 200,
+          "values": true
+        },
+        "showUnfilled": true,
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.0.1",
+      "targets": [
+        {
+          "alias": "",
+          "bucketAggs": [
+            {
+              "field": "json.sourceId",
+              "id": "2",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "asc",
+                "orderBy": "_term",
+                "size": "200"
+              },
+              "type": "terms"
+            }
+          ],
+          "datasource": "logstash",
+          "hide": false,
+          "metrics": [
+            {
+              "field": "json.count",
+              "id": "8",
+              "type": "sum"
+            }
+          ],
+          "query": "json.recordType:ACTIVITY",
+          "refId": "A",
+          "timeField": "@timestamp"
+        }
+      ],
+      "title": "ACTIVITY",
+      "transformations": [],
+      "type": "bargauge"
+    },
+    {
+      "datasource": "logstash",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "displayMode": "lcd",
+        "minVizHeight": 11,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Sum$/",
+          "limit": 200,
+          "values": true
+        },
+        "showUnfilled": true,
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.0.1",
+      "targets": [
+        {
+          "alias": "",
+          "bucketAggs": [
+            {
+              "field": "json.sourceId",
+              "id": "2",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "asc",
+                "orderBy": "_term",
+                "size": "200"
+              },
+              "type": "terms"
+            }
+          ],
+          "datasource": "logstash",
+          "hide": false,
+          "metrics": [
+            {
+              "field": "json.count",
+              "id": "8",
+              "type": "sum"
+            }
+          ],
+          "query": "json.recordType:CHAT",
+          "refId": "A",
+          "timeField": "@timestamp"
+        }
+      ],
+      "title": "CHAT",
+      "transformations": [],
+      "type": "bargauge"
+    },
+    {
+      "datasource": "logstash",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 1,
+      "options": {
+        "displayMode": "lcd",
+        "minVizHeight": 11,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Sum$/",
+          "limit": 200,
+          "values": true
+        },
+        "showUnfilled": true,
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.0.1",
+      "targets": [
+        {
+          "alias": "",
+          "bucketAggs": [
+            {
+              "field": "json.sourceId",
+              "id": "2",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "asc",
+                "orderBy": "_term",
+                "size": "200"
+              },
+              "type": "terms"
+            }
+          ],
+          "datasource": "logstash",
+          "hide": false,
+          "metrics": [
+            {
+              "field": "json.count",
+              "id": "8",
+              "type": "sum"
+            }
+          ],
+          "query": "json.recordType:POST",
+          "refId": "A",
+          "timeField": "@timestamp"
+        }
+      ],
+      "title": "POST",
+      "transformations": [],
+      "type": "bargauge"
+    },
+    {
+      "datasource": "logstash",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 2,
+      "options": {
+        "displayMode": "lcd",
+        "minVizHeight": 11,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Sum$/",
+          "limit": 200,
+          "values": true
+        },
+        "showUnfilled": true,
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.0.1",
+      "targets": [
+        {
+          "alias": "",
+          "bucketAggs": [
+            {
+              "field": "json.sourceId",
+              "id": "2",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "asc",
+                "orderBy": "_term",
+                "size": "200"
+              },
+              "type": "terms"
+            }
+          ],
+          "datasource": "logstash",
+          "hide": false,
+          "metrics": [
+            {
+              "field": "json.count",
+              "id": "8",
+              "type": "sum"
+            }
+          ],
+          "query": "json.recordType:PROFILE",
+          "refId": "A",
+          "timeField": "@timestamp"
+        }
+      ],
+      "title": "PROFILE",
+      "transformations": [],
+      "type": "bargauge"
+    },
+    {
+      "datasource": "logstash",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 5,
+      "options": {
+        "displayMode": "lcd",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Sum$/",
+          "limit": 200,
+          "values": true
+        },
+        "showUnfilled": true,
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.0.1",
+      "targets": [
+        {
+          "alias": "",
+          "bucketAggs": [
+            {
+              "field": "json.sourceId",
+              "id": "2",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "asc",
+                "orderBy": "_term",
+                "size": "200"
+              },
+              "type": "terms"
+            }
+          ],
+          "datasource": "logstash",
+          "hide": false,
+          "metrics": [
+            {
+              "field": "json.count",
+              "id": "8",
+              "type": "sum"
+            }
+          ],
+          "query": "json.recordType:POST_NEW",
+          "refId": "A",
+          "timeField": "@timestamp"
+        }
+      ],
+      "title": "POST_NEW",
+      "transformations": [],
+      "type": "bargauge"
+    },
+    {
+      "datasource": "logstash",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      },
+      "id": 6,
+      "options": {
+        "displayMode": "lcd",
+        "minVizHeight": 11,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Sum$/",
+          "limit": 200,
+          "values": true
+        },
+        "showUnfilled": true,
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.0.1",
+      "targets": [
+        {
+          "alias": "",
+          "bucketAggs": [
+            {
+              "field": "json.sourceId",
+              "id": "2",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "asc",
+                "orderBy": "_term",
+                "size": "200"
+              },
+              "type": "terms"
+            }
+          ],
+          "datasource": "logstash",
+          "hide": false,
+          "metrics": [
+            {
+              "field": "json.count",
+              "id": "8",
+              "type": "sum"
+            }
+          ],
+          "query": "json.recordType:PROFILE_FORWARD",
+          "refId": "A",
+          "timeField": "@timestamp"
+        }
+      ],
+      "title": "PROFILE_FORWARD",
+      "transformations": [],
+      "type": "bargauge"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Dome parsing progress",
+  "uid": "b77d6323-d928-4c1c-ae0e-542836988d0a",
+  "version": 24,
+  "weekStart": ""
+}

@@ -12,26 +12,13 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 30m
+  - interval: 5m
     name: Logstash Pipelines
     rules:
-    - alert: LogstashPipeleines
-      annotations:
-        description: |
-          Logstash pipelines volume size
-        summary: Logstash pipelines has unsended task 
-      expr: |
-       kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 15
-      for: 120m
-      labels:
-        cluster: ${cluster_label}
-        color: ${cluster_color}
-        component: stream-processor
-        severity: critical
     - alert: LogstashPipelinesRestart
       annotations:
         description: |
-          Logstash pipelines inodes more than 300
+          Tekton task logstash-inodes-restart had to be triggered automatically (Could check tekton red) 
         summary: Logstash pipelines inodes more than 300
       expr: |
        group(kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 300) and group(minute() > 35) and group(minute() < 55)

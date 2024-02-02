@@ -1,0 +1,205 @@
+nameOverride: "prometheus"
+
+namespaceOverride: "monitoring"
+
+fullnameOverride: "prometheus"
+
+grafana:
+  # envValueFrom:
+  #   ELASTIC_PASSWORD:
+  #     secretKeyRef:
+  #       name: "monitoring-es-elastic-user"
+  #       key: elastic
+  adminPassword: ${grafana_creds.adminPassword}
+  enabled: true
+  namespaceOverride: "monitoring"
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  grafana.ini:
+    auth.google:
+      enabled: true
+      scopes: https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
+      auth_url: https://accounts.google.com/o/oauth2/auth
+      token_url: https://accounts.google.com/o/oauth2/token
+      allowed_domains: geminiadvisory.io
+      allow_sign_up: true
+      client_id: ${grafana_auth_google.oidc_client_id}
+      client_secret: ${grafana_auth_google.oidc_client_secret}
+    users:
+      auto_assign_org_role: ${grafana_users_auto_assign_org_role}
+    server:
+      root_url: ${grafana_creds.root_url}
+  # nodeSelector:
+  #   workloadsType: default
+  # tolerations:
+  # - key: "workloadsType"
+  #   operator: "Exists"
+  #   effect: "NoSchedule"
+
+
+kube-state-metrics:
+  namespaceOverride: "monitoring"
+  customLabels:
+    release: prometheus
+
+prometheus-node-exporter:
+  namespaceOverride: "monitoring"
+
+prometheusOperator:
+  # nodeSelector:
+  #   workloadsType: default
+  # tolerations:
+  # - key: "workloadsType"
+  #   operator: "Exists"
+  #   effect: "NoSchedule"
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  admissionWebhooks:
+    patch:
+      podAnnotations:
+        sidecar.istio.io/inject: "false"
+
+prometheus:
+  # nodeSelector:
+  #   workloadsType: default
+  # tolerations:
+  #   - key: "workloadsType"
+  #     operator: "Exists"
+  #     effect: "NoSchedule"
+  prometheusSpec:
+    prometheusRulesExcludedFromEnforce: false
+    ###  Url for replace internal cluster domain name for generated url in slack messages
+    # externalUrl: "https://prometheus.t.regemini.io"
+    # externalUrl: "http://localhost:9090"
+    # listenLocal: true
+    externalUrl: ${prometheus_external_url}
+    podMetadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 50Gi
+    thanos:
+      version: ${thanos_version}
+      baseImage: quay.io/thanos/thanos
+      objectStorageConfig:
+        key: thanos.yaml
+        name: thanos-objstore-config
+
+
+  thanosService:
+    enabled: true
+    annotations: 
+      sidecar.istio.io/inject: "false"
+    labels: {}
+
+    type: ClusterIP
+    clusterIP: "None"
+
+    portName: grpc
+    port: 10901
+    targetPort: "grpc"
+
+    httpPortName: http
+    httpPort: 10902
+    targetHttpPort: "http"
+
+  thanosServiceMonitor:
+    enabled: false
+    
+alertmanager:
+  alertmanagerSpec:
+    externalUrl: ${prometheus_external_url}
+    podMetadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    # listenLocal: true
+  config:
+    global:
+      resolve_timeout: 5m
+    receivers:
+    - name: "null"
+    - name: "slack-critical"
+      slack_configs:
+        - api_url: ${prometheus_slack_webhooks.url_critical}
+          channel: '#prometheus-critical'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
+    - name: "tekton-logstash-inodes-webhook-notifications-and-slack"
+      webhook_configs:
+        - send_resolved: false
+          url: "http://el-logstash-inodes-webhook-alertmanager-listener.tekton-pipelines:8080"
+      slack_configs:
+        - api_url: ${prometheus_slack_webhooks.url_critical}
+          channel: '#prometheus'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
+    - name: "slack-notifications"
+      slack_configs:
+        - api_url: ${prometheus_slack_webhooks.url}
+          channel: '#prometheus'
+          send_resolved: true
+          text: '{{ template "slack.custom.text" . }}'
+    route:
+      group_by:
+        - alertname
+        - job
+      group_interval: 5m
+      group_wait: 30s
+      receiver: "slack-notifications"
+      repeat_interval: 24h
+      routes:
+        - matchers:
+          - alertname=~"Watchdog"
+          receiver: "null"
+        - matchers:
+          - alertname=~"LogstashPipelinesRestart"
+          receiver: "tekton-logstash-inodes-webhook-notifications-and-slack"
+        - matchers:
+          - alertname=~".*"
+          receiver: "slack-notifications"
+          routes:
+            - matchers:
+              - severity=~"critical"
+              - cluster=~"production"
+              receiver: slack-critical
+    templates:
+      - /etc/alertmanager/config/*.tmpl
+  templateFiles:
+    slack-my.tmpl: |-
+      {{ define "slack.custom.text"}}
+      {{ with index .Alerts 0 -}}
+          :chart_with_upwards_trend: *<{{ .GeneratorURL }}|Graph>*
+          {{- if .Annotations.runbook }}   :notebook: *<{{ .Annotations.runbook }}|Runbook>*{{ end }}
+      {{ end }}
+      *Alert details*:
+      {{ range .Alerts }}
+      *Alert:* [RED CLUSTER] {{ .Annotations.summary }}
+      *Description:* {{ .Annotations.description }}
+      *Details:*
+        {{ range .Labels.SortedPairs -}} • *{{ .Name }}:* `{{ .Value }}`
+        {{ end }}
+      {{ end }}
+      {{ end }}
+
+kubeControllerManager:
+  enabled: false
+coreDns:
+  enabled: false
+kubeDns:
+  enabled: true
+
+defaultRules:
+  rules:
+    kubeScheduler: false
+    kubernetesResources: false
+    kubeApiserver: false
+    kubeProxy: false
+  additionalRuleLabels:
+    cluster: ${additional_rule_labels}
+
+kubeScheduler:
+  enabled: false
