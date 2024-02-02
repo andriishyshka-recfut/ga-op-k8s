@@ -12,13 +12,14 @@ data "vault_generic_secret" "oidc_secrets" {
 }
 
 resource "helm_release" "grafana-clients" {
-  name       = "grafana-clients"
-  chart      = "grafana"
-  version    = "6.58.2"
-  repository = "https://grafana.github.io/helm-charts"
-  wait       = true
-  atomic     = true
-  namespace  = "grafana-clients"
+  name          = "grafana-clients"
+  chart         = "grafana"
+  version       = local.helmVersion
+  repository    = "https://grafana.github.io/helm-charts"
+  wait          = true
+  atomic        = true
+  force_update  = true
+  namespace     = "grafana-clients"
   # values = [
   #   yamlencode(local.grafanaValues)
   # ]

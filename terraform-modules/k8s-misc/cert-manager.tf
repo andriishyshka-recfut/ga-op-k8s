@@ -2,7 +2,7 @@ resource "helm_release" "cert_manager" {
   name       = "${var.Cluster}-cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = var.Settings.clusters[var.Cluster][var.Color].cert_manager.version
+  version    = var.Settings.clusters[var.Cluster][var.Color].versions.cert_manager.version
   namespace  = "kube-system"
   set {
     name  = "installCRDs"

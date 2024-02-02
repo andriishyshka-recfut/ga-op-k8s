@@ -82,7 +82,7 @@ resource "kubernetes_job" "python_script" {
       spec {
         container {
           name    = "script"
-          image   = "harbor.regemini.io/op/tf:latest"
+          image   = "harbor.regemini.io/op/opentofu:latest"
           command = ["/ansible/bin/python3", "/opt/filebeat.py"]
           # command = ["sh", "-c", "tail -f /dev/null"]
           env {

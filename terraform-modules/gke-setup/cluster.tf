@@ -122,6 +122,7 @@ resource "google_container_node_pool" "nodepool_default" {
   autoscaling {
     min_node_count = 1
     max_node_count = 6
+    location_policy = "BALANCED"
   }
   node_count = 1
   # version = data.google_container_engine_versions.version.latest_node_version
