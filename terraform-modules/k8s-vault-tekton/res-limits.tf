@@ -23,8 +23,8 @@
      }
    }
    depends_on = [
-    null_resource.deploy_tekton
-    null_resource.harbor_creds
+    null_resource.deploy_tekton,
+    null_resource.harbor_creds,
     null_resource.crds
     ]
  }
