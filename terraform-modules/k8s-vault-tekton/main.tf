@@ -53,7 +53,7 @@ resource "null_resource" "harbor_creds" {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      --namespace=${local.tektonNs}  \
-     serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}' \
+     serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}' && sleep 30 && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
