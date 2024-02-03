@@ -18,7 +18,7 @@ module "backup" {
     kubernetes = kubernetes.kubernetes-inactive
   }
 }
-/*
+
 module "restore-service-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"
   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
@@ -34,7 +34,7 @@ module "restore-service-indexes" {
   depends_on = [
    module.backup
   ]
-}*/
+}
 module "restore-lfb-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"
   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
@@ -47,7 +47,7 @@ module "restore-lfb-indexes" {
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/restore-lfb-action.yaml")
   Settings             = var.Settings
-#  depends_on = [
-#   module.restore-service-indexes
-#  ]
+  depends_on = [
+   module.restore-service-indexes
+  ]
 }
