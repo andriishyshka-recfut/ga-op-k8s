@@ -88,43 +88,19 @@ resource "null_resource" "crds" {
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/task.yaml \
-    --namespace=${local.tektonNs}
+     apply -f ${path.module}/task.yaml
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipeline.yaml \
-    --namespace=${local.tektonNs}
+     apply -f ${path.module}/pipeline.yaml
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/webhook.yaml \
-    --namespace=${local.tektonNs}
+     apply -f ${path.module}/webhook.yaml
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipelinerun.yaml \
-    --namespace=${local.tektonNs} \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/task.yaml \
-    --namespace=${local.tektonMainNs} \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipeline.yaml \
-    --namespace=${local.tektonMainNs}
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/webhook.yaml \
-    --namespace=${local.tektonMainNs}
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipelinerun.yaml \
-    --namespace=${local.tektonMainNs}
+     apply -f ${path.module}/pipelinerun.yaml
 
 COMMAND
   }
