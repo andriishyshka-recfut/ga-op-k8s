@@ -16,4 +16,5 @@ module "beats" {
   BeatKibanaService  = "kb-ga"
   BeatElasticService = "red-coor.elastic.svc"
   logstash_list      = var.Settings.clusters[var.Cluster][var.Color].logstash
+  depends_on         = [module.kibana]
 }
