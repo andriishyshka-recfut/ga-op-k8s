@@ -7,7 +7,7 @@ terraform {
     }
     grafana = {
       source  = "registry.terraform.io/grafana/grafana"
-      version = ">= 2.0.0"
+      version = ">= 2.11.0"
     }
   }
 }
@@ -31,6 +31,6 @@ provider "grafana" {
   alias                  = "elastic"
   url                    = local.url
   auth                   = "${local.grafanaUsername}:${local.grafanaPassword}"
-  org_id                 = grafana_organization.elastic.org_id
+  # org_id                 = grafana_organization.elastic.org_id
   # store_dashboard_sha256 = true
 }
