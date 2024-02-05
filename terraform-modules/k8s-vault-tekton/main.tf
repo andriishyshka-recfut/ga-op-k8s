@@ -53,7 +53,7 @@ resource "null_resource" "harbor_creds" {
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      --namespace=${local.tektonNs}  \
-     serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}' \
+     serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}' && sleep 30 && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
@@ -88,43 +88,19 @@ resource "null_resource" "crds" {
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/task.yaml \
-    --namespace=${local.tektonNs}
+     apply -f ${path.module}/task.yaml
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipeline.yaml \
-    --namespace=${local.tektonNs}
+     apply -f ${path.module}/pipeline.yaml
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/webhook.yaml \
-    --namespace=${local.tektonNs}
+     apply -f ${path.module}/webhook.yaml
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipelinerun.yaml \
-    --namespace=${local.tektonNs} \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/task.yaml \
-    --namespace=${local.tektonMainNs} \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipeline.yaml \
-    --namespace=${local.tektonMainNs}
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/webhook.yaml \
-    --namespace=${local.tektonMainNs}
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipelinerun.yaml \
-    --namespace=${local.tektonMainNs}
+     apply -f ${path.module}/pipelinerun.yaml
 
 COMMAND
   }
@@ -134,20 +110,20 @@ COMMAND
   ]
 }
 
-### For Bots-mongo-restart
- data "vault_generic_secret" "mongo_creds" {
-   path = local.mongoCredsPath
- }
+# ### For Bots-mongo-restart
+#  data "vault_generic_secret" "mongo_creds" {
+#    path = local.mongoCredsPath
+#  }
 
- resource "kubernetes_secret" "mongo_auth" {
-   metadata {
-     name      = "mongo-auth"
-     namespace = local.tektonMainNs
-   }
-   data = {
-     MONGODB_BACKUP_USER     = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_USER
-     MONGODB_BACKUP_PASSWORD = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_PASSWORD
-     URI                     = data.vault_generic_secret.mongo_creds.data.URI
-   }
- }
+#  resource "kubernetes_secret" "mongo_auth" {
+#    metadata {
+#      name      = "mongo-auth"
+#      namespace = local.tektonMainNs
+#    }
+#    data = {
+#      MONGODB_BACKUP_USER     = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_USER
+#      MONGODB_BACKUP_PASSWORD = data.vault_generic_secret.mongo_creds.data.MONGODB_BACKUP_PASSWORD
+#      URI                     = data.vault_generic_secret.mongo_creds.data.URI
+#    }
+#  }
 

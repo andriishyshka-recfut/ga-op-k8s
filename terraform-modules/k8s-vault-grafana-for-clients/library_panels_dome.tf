@@ -5,6 +5,7 @@ resource "random_string" "dome" {
 
 resource "grafana_library_panel" "dome_graph" {
   provider  = grafana.elastic
+  org_id    = grafana_organization.elastic.org_id
   count     = length(local.index_dome)
   name      = "dome-${element(local.index_dome, count.index)}-${random_string.dome.id}"
   folder_id = grafana_folder.dome.id
@@ -170,6 +171,7 @@ resource "grafana_library_panel" "dome_graph" {
 
 resource "grafana_library_panel" "dome_table_old" {
   provider  = grafana.elastic
+  org_id    = grafana_organization.elastic.org_id
   count     = length(local.index_dome)
   name      = "dome-table-${element(local.index_dome, count.index)}-${random_string.dome.id}"
   folder_id = grafana_folder.dome.id
@@ -297,6 +299,7 @@ locals {
 
 resource "grafana_dashboard" "dome_library_panel" {
   provider = grafana.elastic
+  org_id    = grafana_organization.elastic.org_id
   folder   = grafana_folder.dome.id
   depends_on = [
     grafana_library_panel.dome_graph
