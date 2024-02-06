@@ -23,19 +23,15 @@
 #   }
 # }
 
-data "vault_generic_secret" "harbor_token" {
-  path = "secret/goharbor/docker_login"
-}
 
 resource "helm_release" "sonarqube" {
   name              = "sonarqube"
-  chart             = "oci://harbor.regemini.io/helm/sonarqube"
+  repository        = "https://SonarSource.github.io/helm-chart-sonarqube"
+  chart             = "sonarqube"
   version           = "10.4.0"
   wait              = true
   atomic            = true
   namespace         = local.namespace
-  repository_username = data.vault_generic_secret.harbor_token.data.user
-  repository_password = data.vault_generic_secret.harbor_token.data.password
   set{
     name = "postgresql.persistence.size"
     value = local.diskSize
