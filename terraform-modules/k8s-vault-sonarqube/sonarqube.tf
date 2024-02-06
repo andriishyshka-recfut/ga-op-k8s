@@ -23,22 +23,23 @@
 #   }
 # }
 
+data "vault_generic_secret" "harbor_token" {
+  path = "secret/goharbor/docker_login"
+}
 
 resource "helm_release" "sonarqube" {
   name              = "sonarqube"
-  repository        = "https://SonarSource.github.io/helm-chart-sonarqube"
-  chart             = "sonarqube"
-  version           = "10.3.0+2009"
+  chart             = "oci://harbor.regemini.io/helm/sonarqube"
+  version           = "10.4.0"
   wait              = true
   atomic            = true
   namespace         = local.namespace
+  repository_username = data.vault_generic_secret.harbor_token.data.user
+  repository_password = data.vault_generic_secret.harbor_token.data.password
   set{
     name = "postgresql.persistence.size"
     value = local.diskSize
   }
-
-
-
   # depends_on = [kubernetes_secret.minio_credentials]
 }
 
