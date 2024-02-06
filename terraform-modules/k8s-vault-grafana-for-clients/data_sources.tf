@@ -78,15 +78,15 @@ resource "grafana_data_source" "logstash" {
   type                = "elasticsearch"
   org_id              = grafana_organization.elastic.org_id
   name                = "logstash"
-  url                 = "http://red-coor.elastic.svc:9200"
+  url                 = "https://10.203.0.2:9222"
   basic_auth_enabled  = "true"
   basic_auth_username = local.elasticUsername
   access_mode         = "proxy"
-  database_name       = "logstash"
+  database_name       = "filebeat-*"
   is_default          = false
   json_data_encoded = jsonencode({
     timeField      = "@timestamp"
-    esVersion      = "7.17.17"
+    esVersion      = local.esVersion
     maxConcurrentShardRequests = 256
     timeInterval   = "10s"
   })
