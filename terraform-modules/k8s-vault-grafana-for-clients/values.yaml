@@ -14,9 +14,9 @@ grafana.ini:
   users:
     auto_assign_org_role: Viewer
     auto_assign_org: true
-    auto_assign_org_id: 2
+    # auto_assign_org_id: 2
   org_name: Regemini
-persistence:
-  type: pvc
-  enabled: true
-  existingClaim: grafana-clients-pvc
+# persistence:
+#   type: pvc
+#   enabled: true
+#   existingClaim: grafana-clients-pvc
