@@ -3,7 +3,7 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "logstash",
+        "datasource": "prod-filebeat",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -26,7 +26,7 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": "logstash",
+      "datasource": "prod-filebeat",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -86,7 +86,7 @@
               "type": "terms"
             }
           ],
-          "datasource": "logstash",
+          "datasource": "prod-filebeat",
           "hide": false,
           "metrics": [
             {
@@ -105,7 +105,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": "logstash",
+      "datasource": "prod-filebeat",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -165,7 +165,7 @@
               "type": "terms"
             }
           ],
-          "datasource": "logstash",
+          "datasource": "prod-filebeat",
           "hide": false,
           "metrics": [
             {
@@ -184,7 +184,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": "logstash",
+      "datasource": "prod-filebeat",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -244,7 +244,7 @@
               "type": "terms"
             }
           ],
-          "datasource": "logstash",
+          "datasource": "prod-filebeat",
           "hide": false,
           "metrics": [
             {
@@ -263,7 +263,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": "logstash",
+      "datasource": "prod-filebeat",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -323,7 +323,7 @@
               "type": "terms"
             }
           ],
-          "datasource": "logstash",
+          "datasource": "prod-filebeat",
           "hide": false,
           "metrics": [
             {
@@ -342,7 +342,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": "logstash",
+      "datasource": "prod-filebeat",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -402,7 +402,7 @@
               "type": "terms"
             }
           ],
-          "datasource": "logstash",
+          "datasource": "prod-filebeat",
           "hide": false,
           "metrics": [
             {
@@ -421,7 +421,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": "logstash",
+      "datasource": "prod-filebeat",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -481,7 +481,7 @@
               "type": "terms"
             }
           ],
-          "datasource": "logstash",
+          "datasource": "prod-filebeat",
           "hide": false,
           "metrics": [
             {

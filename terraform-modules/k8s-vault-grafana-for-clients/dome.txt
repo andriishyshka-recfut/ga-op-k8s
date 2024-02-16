@@ -66,8 +66,6 @@ infectedzone
 korovka
 lcp
 leakbase
-leakeddatabases
-leakforums
 leakzone
 legitcarders
 level23hacktools

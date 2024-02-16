@@ -5,13 +5,13 @@ resource "random_string" "dome" {
 
 resource "grafana_library_panel" "dome_graph" {
   provider  = grafana.elastic
-  org_id    = grafana_organization.elastic.org_id
+  org_id    = local.org_id
   count     = length(local.index_dome)
   name      = "dome-${element(local.index_dome, count.index)}-${random_string.dome.id}"
   folder_id = grafana_folder.dome.id
   depends_on = [
     grafana_data_source.dome
-  ]      
+  ]
   model_json = jsonencode({
     "aliasColors" : {},
     "version" : 1,
@@ -90,52 +90,52 @@ resource "grafana_library_panel" "dome_graph" {
         "refId" : "A",
         "timeField" : "@timestamp"
       },
+      {
+        "alias" : "POST added",
+        "bucketAggs" : [
           {
-            "alias": "POST added",
-            "bucketAggs": [
-              {
-                "field": "timeStampAdded",
-                "id": "2",
-                "settings": {
-                  "interval": "auto"
-                },
-                "type": "date_histogram"
-              }
-            ],
-            "hide": false,
-            "metrics": [
-              {
-                "id": "1",
-                "type": "count"
-              }
-            ],
-            "query": "",
-            "refId": "B",
-            "timeField": "@timestamp"
-          },
+            "field" : "timeStampAdded",
+            "id" : "2",
+            "settings" : {
+              "interval" : "auto"
+            },
+            "type" : "date_histogram"
+          }
+        ],
+        "hide" : false,
+        "metrics" : [
           {
-            "alias": "PROFILE lastSeen",
-            "bucketAggs": [
-              {
-                "field": "timeStampLastSeen",
-                "id": "2",
-                "settings": {
-                  "interval": "auto"
-                },
-                "type": "date_histogram"
-              }
-            ],
-            "hide": false,
-            "metrics": [
-              {
-                "id": "1",
-                "type": "count"
-              }
-            ],
-            "query": "",
-            "refId": "C",
-            "timeField": "@timestamp"
-          }              
+            "id" : "1",
+            "type" : "count"
+          }
+        ],
+        "query" : "",
+        "refId" : "B",
+        "timeField" : "@timestamp"
+      },
+      {
+        "alias" : "PROFILE lastSeen",
+        "bucketAggs" : [
+          {
+            "field" : "timeStampLastSeen",
+            "id" : "2",
+            "settings" : {
+              "interval" : "auto"
+            },
+            "type" : "date_histogram"
+          }
+        ],
+        "hide" : false,
+        "metrics" : [
+          {
+            "id" : "1",
+            "type" : "count"
+          }
+        ],
+        "query" : "",
+        "refId" : "C",
+        "timeField" : "@timestamp"
+      }
     ],
     "thresholds" : [],
     "timeRegions" : [],
@@ -171,13 +171,13 @@ resource "grafana_library_panel" "dome_graph" {
 
 resource "grafana_library_panel" "dome_table_old" {
   provider  = grafana.elastic
-  org_id    = grafana_organization.elastic.org_id
+  org_id    = local.org_id
   count     = length(local.index_dome)
   name      = "dome-table-${element(local.index_dome, count.index)}-${random_string.dome.id}"
   folder_id = grafana_folder.dome.id
   depends_on = [
     grafana_data_source.dome
-  ]      
+  ]
   model_json = jsonencode({
     "columns" : [],
     "datasource" : "dome-${element(local.index_dome, count.index)}",
@@ -299,11 +299,11 @@ locals {
 
 resource "grafana_dashboard" "dome_library_panel" {
   provider = grafana.elastic
-  org_id    = grafana_organization.elastic.org_id
+  org_id   = local.org_id
   folder   = grafana_folder.dome.id
   depends_on = [
     grafana_library_panel.dome_graph
-  ]      
+  ]
   config_json = jsonencode({
     "panels" : concat(local.grafana_library_dome_graph, local.grafana_library_table)
     "annotations" : {

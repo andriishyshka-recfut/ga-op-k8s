@@ -10,12 +10,12 @@ grafana.ini:
     token_url: https://accounts.google.com/o/oauth2/token
     allowed_domains: geminiadvisory.io
     allow_sign_up: true
-    org_name: Regemini
+    # org_name: Regemini
   users:
     auto_assign_org_role: Viewer
     auto_assign_org: true
-    # auto_assign_org_id: 2
-  org_name: Regemini
+    auto_assign_org_id: 1
+  # org_name: Regemini
 # persistence:
 #   type: pvc
 #   enabled: true
