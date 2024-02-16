@@ -62,6 +62,7 @@ data "google_service_account" "vault_sa" {
 
 resource "google_service_account_key" "vault_key" {
   service_account_id = data.google_service_account.vault_sa.name
+  valid_before = timeadd(timestamp(), "2M")
 }
 
 resource "kubernetes_secret" "kms_creds" {
