@@ -12,17 +12,17 @@ terraform {
   }
 }
 
-resource "grafana_organization" "elastic" {
-  provider = grafana.elastic
-  name     = "Regemini"
-#   admins   = local.grafanaAdmins
-#   editors  = local.grafanaEditors
-#   viewers  = local.grafanaViewers
-}
+# resource "grafana_organization" "elastic" {
+#   provider = grafana.elastic
+#   name     = "Regemini"
+# #   admins   = local.grafanaAdmins
+# #   editors  = local.grafanaEditors
+# #   viewers  = local.grafanaViewers
+# }
 
-provider "grafana" { 
-  alias                  = "elastic"
-  url                    = local.url
-  auth                   = "${local.grafanaUsername}:${local.grafanaPassword}"
+provider "grafana" {
+  alias = "elastic"
+  url   = local.url
+  auth  = "${local.grafanaUsername}:${local.grafanaPassword}"
   # store_dashboard_sha256 = true
 }
