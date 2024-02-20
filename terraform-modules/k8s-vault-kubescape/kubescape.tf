@@ -122,7 +122,7 @@ resource "helm_release" "kubescape" {
   }
   set {
     name  = "kubescape.resources.limits.cpu"
-    value = "800m"
+    value = "1000m"
   }
   set {
     name  = "kubescape.resources.limits.memory"
