@@ -28,7 +28,7 @@ resource "helm_release" "sonarqube" {
   name              = "sonarqube"
   repository        = "https://SonarSource.github.io/helm-chart-sonarqube"
   chart             = "sonarqube"
-  version           = "10.3.0+2009"
+  version           = "10.4.0"
   wait              = true
   atomic            = true
   namespace         = local.namespace
@@ -36,9 +36,6 @@ resource "helm_release" "sonarqube" {
     name = "postgresql.persistence.size"
     value = local.diskSize
   }
-
-
-
   # depends_on = [kubernetes_secret.minio_credentials]
 }
 

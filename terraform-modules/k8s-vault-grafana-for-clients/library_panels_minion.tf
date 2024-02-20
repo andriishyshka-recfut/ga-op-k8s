@@ -5,12 +5,13 @@ resource "random_string" "minion" {
 
 resource "grafana_library_panel" "minion_graph" {
   provider  = grafana.elastic
+  org_id    = local.org_id
   count     = length(local.index_minion)
   name      = "minion-${element(local.index_minion, count.index)}-${random_string.minion.id}"
   folder_id = grafana_folder.minion.id
   depends_on = [
     grafana_data_source.minion
-  ]   
+  ]
   model_json = jsonencode({
     "aliasColors" : {},
     "bars" : false,
@@ -138,10 +139,11 @@ locals {
 
 resource "grafana_dashboard" "minion_library_panel" {
   provider = grafana.elastic
+  org_id   = local.org_id
   folder   = grafana_folder.minion.id
   depends_on = [
     grafana_library_panel.minion_graph
-  ]     
+  ]
   config_json = jsonencode({
     "panels" : concat(local.grafana_library_minion_graph)
     "annotations" : {
