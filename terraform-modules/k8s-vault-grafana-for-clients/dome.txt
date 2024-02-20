@@ -28,7 +28,6 @@ cracked
 cracking
 crackingitaly
 crackingmafia
-crackingpro
 crackingx
 crax
 crdpro
@@ -67,8 +66,6 @@ infectedzone
 korovka
 lcp
 leakbase
-leakeddatabases
-leakforums
 leakzone
 legitcarders
 level23hacktools

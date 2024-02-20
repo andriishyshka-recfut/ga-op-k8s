@@ -170,7 +170,7 @@ resource "null_resource" "certs_installed" {
 }
 
 resource "kubernetes_manifest" "tls_proxy_cert" {
-  for_each = local.project_data
+  for_each = nonsensitive(local.project_data_enabled)
   manifest = {
     "apiVersion" = "cert-manager.io/v1"
     "kind"       = "Certificate"

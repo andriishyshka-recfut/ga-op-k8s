@@ -88,6 +88,7 @@ resource "kubernetes_role_binding" "filebeats_check_rolebinding" {
     namespace = local.namespace
   }
 }
+/*
 resource "kubernetes_job" "filebeats_check_script" {
   metadata {
     name      = "filebeats-check-job"
@@ -165,7 +166,7 @@ resource "kubernetes_job" "filebeats_check_script" {
     kubernetes_role_binding.filebeats_check_rolebinding
   ]
 }
-
+*/
 resource "kubernetes_secret" "python_script" {
   metadata {
     name      = "filebeat-script"
@@ -255,5 +256,5 @@ resource "kubernetes_job" "python_script" {
     backoff_limit = 4
   }
   wait_for_completion = true
-  depends_on          = [kubernetes_secret.python_script, helm_release.beat, kubernetes_job.filebeats_check_script]
+  depends_on          = [kubernetes_secret.python_script, helm_release.beat]
 }

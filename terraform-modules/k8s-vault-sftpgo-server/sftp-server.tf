@@ -14,7 +14,7 @@ resource "helm_release" "sftp-server" {
   }
   set {
     name  = "image.tag"
-    value = "edge"
+    value = each.value.image_tag
   }
   set {
     name  = "volumes[0].name"
