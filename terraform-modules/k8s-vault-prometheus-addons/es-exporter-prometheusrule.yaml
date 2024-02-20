@@ -162,15 +162,13 @@ spec:
   - interval: 24h
     name: DomeMapping
     rules:
-      - alert: DomeMappingChanged
-        annotations:
-          summary: '{{ $labels.hits_by_container_name_space }} - mapping was changed'
-        expr: >
-          group by (hits_by_container_name_space)
-          (sum_over_time(dome_mapping_hits_by_container_name_doc_count[1d])) >
-          0
-        for: 24h
-        labels:
-          cluster: ${cluster_label}
-          component: stream-processor
-          severity: critical
+    - alert: DomeMappingChanged
+      annotations:
+        summary: '{{ $labels.hits_by_container_name_space }} - mapping was changed'
+      expr: >
+        group by (hits_by_container_name_space) (sum_over_time(dome_mapping_hits_by_container_name_doc_count[1d])) > 0
+      for: 24h
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: critical
