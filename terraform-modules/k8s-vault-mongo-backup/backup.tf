@@ -75,9 +75,12 @@ EOT
             claim_name = "backup-${lower(random_id.rand.hex)}"
           }
         }
+        image_pull_secrets {
+          name = "harbor"
+        }
         container {
           name    = "dump"
-          image   = "mongo"
+          image   = "harbor.regemini.io/op/mongo-backup:7.0.5"
           command = ["bash", "-c", local.backupCommand]
           volume_mount {
             name       = "data"
