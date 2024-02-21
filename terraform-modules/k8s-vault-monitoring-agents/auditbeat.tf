@@ -17,6 +17,10 @@ resource "helm_release" "auditbeat" {
   }
   set {
     name  = "tag"
-    value = "7.17.15"
+    value = local.version
+  }
+  set {
+    name  = "priorityClassName"
+    value = kubernetes_priority_class.monitoring_beats.metadata.0.name
   }
 }

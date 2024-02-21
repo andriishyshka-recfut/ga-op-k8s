@@ -18,6 +18,7 @@ spec:
         app: auditbeat
         version: "{{ .Values.tag }}"
     spec:
+      priorityClassName: {{ .Values.priorityClassName }}
       serviceAccountName: auditbeat
       terminationGracePeriodSeconds: 30
       hostNetwork: false

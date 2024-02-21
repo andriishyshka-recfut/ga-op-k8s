@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
 from importlib.machinery import SourceFileLoader
+import os
 
-workload_readiness = SourceFileLoader('workload_readiness', '/opt/workload-readiness.py').load_module()
+workload_readiness = SourceFileLoader('workload_readiness', os.getenv('WORKLOAD_MODULE_PATH')).load_module()
 
 import workload_readiness, os
+
 
 workload_type_env = os.getenv('WORKLOAD_TYPE')
 workload_name_env = os.getenv('WORKLOAD_NAME')
