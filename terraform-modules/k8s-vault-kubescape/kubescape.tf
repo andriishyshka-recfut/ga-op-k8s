@@ -113,12 +113,12 @@ resource "helm_release" "kubescape" {
 
   set {
     name  = "kubescape.resources.requests.cpu"
-    value = "300m"
+    value = "600m"
   }
 
   set {
     name  = "kubescape.resources.requests.memory"
-    value = "256Mi"
+    value = "1Gi"
   }
   # set {
   #   name  = "kubescape.resources.limits.cpu"
