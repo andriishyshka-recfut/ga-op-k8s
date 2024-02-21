@@ -120,14 +120,14 @@ resource "helm_release" "kubescape" {
     name  = "kubescape.resources.requests.memory"
     value = "256Mi"
   }
-  set {
-    name  = "kubescape.resources.limits.cpu"
-    value = "1000m"
-  }
-  set {
-    name  = "kubescape.resources.limits.memory"
-    value = "1Gi"
-  }
+  # set {
+  #   name  = "kubescape.resources.limits.cpu"
+  #   value = "1000m"
+  # }
+  # set {
+  #   name  = "kubescape.resources.limits.memory"
+  #   value = "1Gi"
+  # }
 
   set {
     name  = "cloudProviderEngine"
