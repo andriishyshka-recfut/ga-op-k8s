@@ -172,7 +172,7 @@ spec:
         cluster: ${cluster_label}
         component: stream-processor
         severity: critical
-  - interval: 5m
+  - interval: 24h
     name: DomeMapping
     rules:
       - alert: DomeMappingChanged
@@ -181,7 +181,7 @@ spec:
         expr: >
           group by (langs) (sum_over_time(dome_mapping_langs_doc_count[1d])) >
           0
-        for: 5m
+        for: 24h
         labels:
           cluster: ${cluster_label}
           component: stream-processor
