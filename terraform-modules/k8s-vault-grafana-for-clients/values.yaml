@@ -20,3 +20,9 @@ grafana.ini:
 #   type: pvc
 #   enabled: true
 #   existingClaim: grafana-clients-pvc
+persistence:
+  type: pvc
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 5Gi
