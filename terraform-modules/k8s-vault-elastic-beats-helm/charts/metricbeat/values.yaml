@@ -97,7 +97,7 @@ daemonset:
       memory: "100Mi"
     limits:
       cpu: "1000m"
-      memory: "200Mi"
+      memory: "800Mi"
   tolerations: []
 
 deployment:
