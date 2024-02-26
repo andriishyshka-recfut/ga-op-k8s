@@ -130,6 +130,10 @@ resource "kubernetes_job" "python_script" {
   }
   wait_for_completion = true
   depends_on          = [kubernetes_secret.python_script, helm_release.filebeat, null_resource.workload_readiness_check]
+  timeouts {
+    create = "10m"
+    update = "10m"
+  }
 }
 
 resource "kubernetes_priority_class" "beats" {
