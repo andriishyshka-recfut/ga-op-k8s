@@ -36,6 +36,10 @@ resource "helm_release" "sonarqube" {
     name = "postgresql.persistence.size"
     value = local.diskSize
   }
+  set{
+    name = "image.tag"
+    value = "10.4.1-community"
+  }
   # depends_on = [kubernetes_secret.minio_credentials]
 }
 
