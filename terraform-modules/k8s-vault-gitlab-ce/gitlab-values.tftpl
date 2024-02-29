@@ -143,7 +143,7 @@ gitlab:
       requests:
         cpu: ${gitlab.webservice.resources.requests.cpu}
         memory: ${gitlab.webservice.resources.requests.memory}
-    labels:
+    podLabels:
       log-group-name: ${gitlab-name}
     annotations:
       co.elastic.logs/enabled: true
