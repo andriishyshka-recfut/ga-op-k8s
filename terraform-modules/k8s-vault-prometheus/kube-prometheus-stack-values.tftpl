@@ -3,6 +3,7 @@ nameOverride: "prometheus"
 fullnameOverride: "prometheus"
 
 grafana:
+  assertNoLeakedSecrets: false
   adminPassword: ${grafana_creds.adminPassword}
   envValueFrom:
     ELASTIC_PASSWORD:

@@ -24,8 +24,8 @@ resource "helm_release" "vault_agent_injector" {
 resource "helm_release" "vault" {
   name = "vault"
   #chart = "${path.module}/umbrella-vault"
-  chart      = "vault"
-  repository = "https://helm.releases.hashicorp.com"
+  chart             = "vault"
+  repository        = "https://helm.releases.hashicorp.com"
   version           = local.vaultVersion
   namespace         = "vault"
   dependency_update = "true"
@@ -62,7 +62,7 @@ data "google_service_account" "vault_sa" {
 
 resource "google_service_account_key" "vault_key" {
   service_account_id = data.google_service_account.vault_sa.name
-  valid_before = timeadd(timestamp(), "2M")
+  # valid_before = timeadd(timestamp(), "2M")
 }
 
 resource "kubernetes_secret" "kms_creds" {

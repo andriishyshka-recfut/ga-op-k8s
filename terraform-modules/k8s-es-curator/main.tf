@@ -21,8 +21,8 @@ resource "kubernetes_config_map" "curator" {
   }
 
   data = {
-    "config.yml"  = "${file("${path.module}/config.yaml")}"
-    "actions.yml" = var.Actions
+    "config.yml"     = "${file("${path.module}/config.yaml")}"
+    "actionfile.yml" = var.Actions
   }
 }
 
@@ -48,12 +48,13 @@ resource "kubernetes_job" "es_backup_and_restore" {
           }
         }
         container {
-          name    = "curator"
-          image   = "bitnami/elasticsearch-curator-archived"
-          command = ["bash", "-c", local.backupCommand]
+          name  = "curator"
+          image = "untergeek/curator:7.0.1"
+          # command = ["bash", "-c", local.backupCommand]
+          args = ["--config", "/.curator/config.yml", "/.curator/actionfile.yml"]
           volume_mount {
             name       = "curator"
-            mount_path = "/curator"
+            mount_path = "/.curator"
 
           }
           env {

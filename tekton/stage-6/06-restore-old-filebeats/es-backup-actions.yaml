@@ -21,8 +21,8 @@ actions:
         allow_ilm_indices: True
     filters:
       - filtertype: pattern
-        kind: prefix
-        value: filebeat-
+        kind: regex
+        value: '^(filebeat-|apm-).*$'
       - filtertype: age
         source: creation_date
         direction: older
