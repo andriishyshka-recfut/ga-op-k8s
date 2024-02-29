@@ -15,19 +15,3 @@ actions:
       - filtertype: pattern
         kind: prefix
         value: elastic7-dr-system
-  2:
-    action: restore
-    description: "Restore other"
-    options:
-      repository: "minio"
-      include_aliases: True
-      # name: monitoring-dr-%Y%m%d
-      wait_for_completion: False
-      include_global_state: False
-      # wait_interval: 20
-    filters:
-      - filtertype: state
-        state: SUCCESS
-      - filtertype: pattern
-        kind: prefix
-        value: elastic7-dr-other

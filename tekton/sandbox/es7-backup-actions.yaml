@@ -1,6 +1,20 @@
 ---
 actions:
   1:
+    action: close
+    description: >-
+      Close indices older than 30 days (based on index name), for logstash-
+      prefixed indices.
+    options:
+      skip_flush: False
+      delete_aliases: False
+      ignore_sync_failures: True
+      disable_action: True
+    filters:
+    - filtertype: pattern
+      kind: regex
+      value: ^.*$
+  2:
     action: snapshot
     description: >-
       Snapshot logstash- prefixed indices older than 1 day (based on index
@@ -23,7 +37,7 @@ actions:
       - filtertype: pattern
         kind: regex
         value: ^\..*$
-  2:
+  3:
     action: snapshot
     description: >-
       Snapshot logstash- prefixed indices older than 1 day (based on index

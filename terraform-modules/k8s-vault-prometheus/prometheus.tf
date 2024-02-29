@@ -29,8 +29,8 @@ config:
   access_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).accessKey}
   secret_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).secretKey}
 EOF
-  
-   }
+
+  }
 
 }
 
@@ -44,7 +44,7 @@ resource "helm_release" "prometheus" {
   dependency_update = true
   version           = local.helmVersion
   values = [
-    templatefile("${path.module}/${local.prometheusConfigFile}",{
+    templatefile("${path.module}/${local.prometheusConfigFile}", {
       prometheus_slack_webhooks          = local.prometheusSlackWebHooks,
       grafana_creds                      = data.vault_generic_secret.grafana.data,
       grafana_auth_google                = data.vault_generic_secret.oidc_secrets.data,
