@@ -10,8 +10,14 @@ global:
       node-pool: ${global.pod.labels.node-pool}
   antiAffinity: ${global.antiAffinity}
   affinity:
-    podAntiAffinity:
-      node-pool: ${global.affinity.podAntiAffinity.node-pool}
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: workloadsType
+            operator: In
+            values:
+            - ${gitlab-name}
   email:
     display_name: ${global.email.display_name}
     from: ${global.email.from}
@@ -104,6 +110,29 @@ nginx-ingress:
   enabled: ${nginx-ingress.enabled}
 registry:
   enabled: ${registry.enabled}
+gitaly:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: workloadsType
+            operator: In
+            values:
+            - gitlab-service
+  tolerations:
+  - effect: NoSchedule
+    key: workloadsType
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+
 gitlab:
   webservice:
     minReplicas: ${gitlab.webservice.minReplicas}
@@ -115,8 +144,29 @@ gitlab:
         cpu: ${gitlab.webservice.resources.requests.cpu}
         memory: ${gitlab.webservice.resources.requests.memory}
     annotations:
-      co.elastic.logs/enabled: ${gitlab.webservice.annotations.es_logs_enabled}
-      co.elastic.logs/json.add_error_key: ${gitlab.webservice.annotations.es_logs_json_error_key}
+      co.elastic.logs/enabled: true
+      co.elastic.logs/json.add_error_key: true
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: workloadsType
+              operator: In
+              values:
+              - gitlab-service
+    tolerations:
+    - effect: NoSchedule
+      key: workloadsType
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
   workhorse:
     resources:
       limits:
@@ -137,6 +187,27 @@ gitlab:
       requests:
         cpu: ${gitlab.sidekiq.resources.requests.cpu}
         memory: ${gitlab.sidekiq.resources.requests.memory}
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: workloadsType
+              operator: In
+              values:
+              - gitlab-service
+    tolerations:
+    - effect: NoSchedule
+      key: workloadsType
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
   gitlab-grafana:
     enabled: ${gitlab.gitlab-grafana.enabled}
   praefect:
@@ -145,9 +216,27 @@ gitlab:
     minReplicas: ${gitlab.gitlab-shell.minReplicas}
     service:
       internalPort: ${gitlab.gitlab-shell.service.internalPort}
-    annotations:
-      co.elastic.logs/enabled: ${gitlab.gitlab-shell.annotations.es_logs_enabled}
-      co.elastic.logs/json.add_error_key: ${gitlab.gitlab-shell.annotations.es_logs_json_error_key}
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: workloadsType
+              operator: In
+              values:
+              - gitlab-service
+    tolerations:
+    - effect: NoSchedule
+      key: workloadsType
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
   toolbox:
     persistence:
       enabled: ${gitlab.toolbox.persistence.enabled}
@@ -178,33 +267,7 @@ redis:
 prometheus:
   install: ${prometheus.install}
 gitlab-runner:
-  install: ${gitlab-runner.install}
-  gitlabUrl: http://${global.hosts.gitlab.name}/
-  pullSecrets: ${gitlab-runner.pull_secrets}
-  rbac:
-    create: ${gitlab-runner.rbac.create}
-  runners:
-    config: |
-      concurrent = ${gitlab-runner.concurrent}
-      check_interval = ${gitlab-runner.check_interval}
-      [session_server]
-      session_timeout = ${gitlab-runner.session_timeout}
-      [[runners]]
-      name = "${gitlab-name}-runner"
-      url = "${global.hosts.gitlab.name}"
-      [runners.kubernetes]
-      image = "${gitlab-runner.image}"
-      image_pull_secrets = ["${gitlab-name}-${gitlab-runner.pull_secrets}"]
-        [runners.cache]
-          Type = "s3"
-          Path = "${gitlab-runner.cache.path}"
-          Shared = ${gitlab-runner.cache.shared}
-          [runners.cache.s3]
-            ServerAddress = "${gitlab-runner.cache.minio_url}"
-            AuthenticationType = "access-key"
-            BucketName = "${gitlab-runner.cache.bucket}"
-    cache:
-      secretName: ${gitlab-name}-${gitlab-runner.cache.secret_name}
+  install: false
 
 extraEnv:
   PLANTUML_ENCODING: deflate

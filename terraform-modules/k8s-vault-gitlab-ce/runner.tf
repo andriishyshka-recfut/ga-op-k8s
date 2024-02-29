@@ -47,6 +47,7 @@ resource "helm_release" "gitlab-runner" {
   repository = "https://charts.gitlab.io"
   chart      = "gitlab-runner"
   wait       = true
+  # force_update = true
   atomic     = true
   namespace  = lookup(each.value, "namespace", local.namespace)
   version    = each.value.runner_version

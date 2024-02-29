@@ -22,3 +22,16 @@ runners:
           BucketName = "gitlab-tmp-orbital-wording"
   cache:
     secretName: ${name}-minio
+tolerations:
+- effect: NoSchedule
+  key: workloadsType
+  operator: Exists
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: workloadsType
+          operator: In
+          values:
+          - gitlab-runners
