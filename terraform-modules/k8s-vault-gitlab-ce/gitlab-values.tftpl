@@ -144,7 +144,7 @@ gitlab:
         cpu: ${gitlab.webservice.resources.requests.cpu}
         memory: ${gitlab.webservice.resources.requests.memory}
     labels:
-      log-group-name: gitlab
+      log-group-name: ${gitlab-name}
     annotations:
       co.elastic.logs/enabled: true
       co.elastic.logs/json.add_error_key: true
