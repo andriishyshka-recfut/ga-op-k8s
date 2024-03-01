@@ -16,19 +16,22 @@ resource "kubernetes_secret" "gitlab-runner-registration" {
   ]
 }
 
-# resource "kubernetes_secret" "minio" {
-#   metadata {
-#     name      = "minio"
-#     namespace = "gitlab"
-#   }
-#   data = {
-#     accesskey = data.vault_generic_secret.gitlab.data["minio_cache_accesskey"]
-#     secretkey = data.vault_generic_secret.gitlab.data["minio_cache_secretkey"]
-#   }
-#   depends_on = [
-#     data.vault_generic_secret.gitlab
-#   ]
-# }
+data "vault_generic_secret" "minio_creds" {
+  path = "secret/minio/users"
+}
+
+resource "kubernetes_secret" "minio_creds" {
+  for_each = var.gitlab_list
+  metadata {
+    name      = "${each.key}-runner-minio-creds"
+    namespace = each.value.namespace
+  }
+  data = {
+    accesskey = jsondecode(data.vault_generic_secret.minio_creds.data[local.runner_minio_user]).accessKey,
+    secretkey = jsondecode(data.vault_generic_secret.minio_creds.data[local.runner_minio_user]).secretKey
+  }
+  depends_on = [data.vault_generic_secret.gitlab]
+}
 
 data "kubernetes_secret" "gitlab-runner-registration" {
   for_each = var.gitlab_list
