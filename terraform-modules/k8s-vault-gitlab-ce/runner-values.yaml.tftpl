@@ -14,14 +14,15 @@ runners:
         memory_limit = "4Gi"
       [runners.cache]
         Type = "s3"
-        Path = "/cache/"
+        Path = "cache"
         Shared = true
         [runners.cache.s3]
           ServerAddress = "minio.p.regemini.io:443"
           AuthenticationType = "access-key"
-          BucketName = "gitlab-tmp-orbital-wording"
+          BucketName = "minio-gitlab-runner-cache-orbital-wording"
   cache:
-    secretName: ${name}-minio
+      secretName: ${name}-runner-minio-creds
+
 tolerations:
 - effect: NoSchedule
   key: workloadsType

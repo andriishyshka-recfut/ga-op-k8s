@@ -72,27 +72,9 @@ resource "kubernetes_secret" "smtp" {
   }
 }
 
-### Runner secrets
-data "vault_generic_secret" "gitlab_runner" {
-  path = "secret/gitlab/runner"
-}
-
-resource "kubernetes_secret" "minio" {
-  for_each = var.gitlab_list
-  metadata {
-    name      = "${each.key}-minio"
-    namespace = lookup(each.value, "namespace", local.namespace)
-  }
-  data = {
-    accesskey = data.vault_generic_secret.gitlab_runner.data["minio_cache_accesskey"]
-    secretkey = data.vault_generic_secret.gitlab_runner.data["minio_cache_secretkey"]
-  }
-}
-
 data "vault_generic_secret" "harbor_token" {
   path = "secret/goharbor/docker_login"
 }
-
 
 resource "kubernetes_secret" "harbor_image_pull_secrets" {
   for_each = var.gitlab_list
