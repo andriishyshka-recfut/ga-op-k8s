@@ -12,6 +12,18 @@ runners:
         cpu_limit = "2"
         memory_request = "512Mi"
         memory_limit = "4Gi"
+      [runners.kubernetes.affinity]
+        [runners.kubernetes.affinity.node_affinity]
+          [runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution]
+            [[runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution.node_selector_terms]]
+              [[runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution.node_selector_terms.match_expressions]]
+                key = "workloadsType"
+                operator = "In"
+                values = [
+                  "gitlab-runners"
+                ]
+      [runners.kubernetes.node_tolerations]
+        "workloadsType=gitlab-runners" = "NoSchedule"
       [runners.cache]
         Type = "s3"
         Path = "cache"
@@ -22,17 +34,3 @@ runners:
           BucketName = "minio-gitlab-runner-cache-orbital-wording"
   cache:
       secretName: ${name}-runner-minio-creds
-
-tolerations:
-- effect: NoSchedule
-  key: workloadsType
-  operator: Exists
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: workloadsType
-          operator: In
-          values:
-          - gitlab-runners

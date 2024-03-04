@@ -75,8 +75,5 @@ resource "helm_release" "gitlab-runner" {
     value = true
     type  = "string"
   }
-  set {
-    name  = "nodeSelector.workloadsType"
-    value = "gitlab-runners"
-  }
+
 }
