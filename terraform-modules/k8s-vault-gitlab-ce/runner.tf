@@ -51,9 +51,9 @@ resource "helm_release" "gitlab-runner" {
   chart      = "gitlab-runner"
   wait       = true
   # force_update = true
-  atomic     = true
-  namespace  = lookup(each.value, "namespace", local.namespace)
-  version    = each.value.runner_version
+  atomic    = true
+  namespace = lookup(each.value, "namespace", local.namespace)
+  version   = each.value.runner_version
   values = [
     templatefile("${path.module}/runner-values.yaml.tftpl", merge({ values = each.value }, { name = each.key }))
   ]
@@ -74,5 +74,9 @@ resource "helm_release" "gitlab-runner" {
     name  = "rbac.create"
     value = true
     type  = "string"
+  }
+  set {
+    name  = "nodeSelector.workloadsType"
+    value = "gitlab-runners"
   }
 }
