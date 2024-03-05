@@ -49,7 +49,7 @@ module "restore-service-indexes" {
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/restore-actions.yaml")
   Settings             = var.Settings
-  # depends_on           = [module.backup-service]
+  depends_on           = [module.backup-service]
 }
 module "restore-lfb-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"

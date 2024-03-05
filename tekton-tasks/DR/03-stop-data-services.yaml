@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: stop-sandbox-data-services
+  name: stop-data-services
   namespace: tekton-tasks
 spec:
   # timeouts:
