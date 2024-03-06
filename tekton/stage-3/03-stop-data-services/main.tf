@@ -99,6 +99,16 @@ COMMAND
 COMMAND
 
 
+  stop_minio_helm = <<COMMAND
+    set -x
+
+    echo "Stopping minio-helm replicas"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    scale statefulset -n minio-helm --replicas=0 --all
+COMMAND
+
 
   delete_mongo_resources = <<COMMAND
     set -x
@@ -131,6 +141,20 @@ COMMAND
     delete pvc -n mongo-auth  {}
 COMMAND
 
+  delete_minio_helm_resources = <<COMMAND
+    set -x
+
+    echo "Deleting minio-helm PVCs"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get pvc -n minio-helm | grep -e data0-minio- | awk '{print $1}'\
+    | xargs -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    delete pvc -n minio-helm {}
+COMMAND
 
 }
 
