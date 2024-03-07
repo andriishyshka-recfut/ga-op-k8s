@@ -12,7 +12,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 2m
+  - interval: 1m
     name: WordpressHighCpuUsage
     rules:
     - alert: WordpressHighCpuUsage
@@ -22,7 +22,7 @@ spec:
         summary: This means https://geminiadvisory.io/ server high cpu usage.
       expr: |
         100 * avg(1 - rate(node_cpu_seconds_total{mode="idle", service="wordpress-node-exporter"}[1m])) > 60
-      for: 3m
+      for: 1m
       labels:
         component: stream-processor
         severity: critical
@@ -43,7 +43,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 5m
+  - interval: 1m
     name: WordpressHighMemoryUsage
     rules:
     - alert: WordpressHighMemoryUsage
@@ -56,7 +56,7 @@ spec:
         avg_over_time(node_memory_Cached_bytes{service="wordpress-node-exporter"}[1m]) + 
         avg_over_time(node_memory_Buffers_bytes{service="wordpress-node-exporter"}[1m])) / 
         avg_over_time(node_memory_MemTotal_bytes{service="wordpress-node-exporter"}[1m]))) > 80
-      for: 6m
+      for: 1m
       labels:
         component: stream-processor
         severity: critical
@@ -90,6 +90,7 @@ spec:
         node_filesystem_size_bytes{fstype!="rootfs",mountpoint="/mnt/stateful_partition",service="wordpress-node-exporter"})) > 80 or 
         ((100 - ((node_filesystem_avail_bytes{fstype!="rootfs",mountpoint="/",service="wordpress-node-exporter"} * 100) / 
         node_filesystem_size_bytes{fstype!="rootfs",mountpoint="/",service="wordpress-node-exporter"}))) > 80
+      for: 10m
       labels:
         component: stream-processor
         severity: critical
