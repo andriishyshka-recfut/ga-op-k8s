@@ -34,5 +34,5 @@ spec:
       release: prometheus
   endpoints:
   - port: metrics
-    interval: 30s
+    interval: 15s
     honorLabels: true

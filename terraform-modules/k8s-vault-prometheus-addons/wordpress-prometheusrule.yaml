@@ -22,10 +22,11 @@ spec:
         summary: This means https://geminiadvisory.io/ server high cpu usage.
       expr: |
         100 * avg(1 - rate(node_cpu_seconds_total{mode="idle", service="wordpress-node-exporter"}[1m])) > 60
-      for: 1m
+      for: 30s
       labels:
         component: stream-processor
         severity: critical
+        cluster: production
 
 ---
 
@@ -56,10 +57,11 @@ spec:
         avg_over_time(node_memory_Cached_bytes{service="wordpress-node-exporter"}[1m]) + 
         avg_over_time(node_memory_Buffers_bytes{service="wordpress-node-exporter"}[1m])) / 
         avg_over_time(node_memory_MemTotal_bytes{service="wordpress-node-exporter"}[1m]))) > 80
-      for: 1m
+      for: 30s
       labels:
         component: stream-processor
         severity: critical
+        cluster: production
 
 ---
 
@@ -94,3 +96,4 @@ spec:
       labels:
         component: stream-processor
         severity: critical
+        
