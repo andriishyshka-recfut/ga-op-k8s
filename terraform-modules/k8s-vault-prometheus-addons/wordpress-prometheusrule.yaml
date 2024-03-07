@@ -21,7 +21,7 @@ spec:
           This means https://geminiadvisory.io/ server high cpu usage.
         summary: This means https://geminiadvisory.io/ server high cpu usage.
       expr: |
-        100 * avg(1 - rate(node_cpu_seconds_total{mode="idle", service="wordpress-node-exporter"}[1m])) > 60
+        100 * avg(1 - rate(node_cpu_seconds_total{mode="idle", service="wordpress-node-exporter"}[1m])) > 30
       for: 30s
       labels:
         component: stream-processor
@@ -56,7 +56,7 @@ spec:
         100 * (1 - ((avg_over_time(node_memory_MemFree_bytes{service="wordpress-node-exporter"}[1m]) + 
         avg_over_time(node_memory_Cached_bytes{service="wordpress-node-exporter"}[1m]) + 
         avg_over_time(node_memory_Buffers_bytes{service="wordpress-node-exporter"}[1m])) / 
-        avg_over_time(node_memory_MemTotal_bytes{service="wordpress-node-exporter"}[1m]))) > 80
+        avg_over_time(node_memory_MemTotal_bytes{service="wordpress-node-exporter"}[1m]))) > 50
       for: 30s
       labels:
         component: stream-processor
