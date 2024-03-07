@@ -1,0 +1,8 @@
+data "kubectl_file_documents" "wordpress-prometheusrule" {
+  content = file("${path.module}/wordpress-prometheusrule.yaml")
+}
+resource "kubectl_manifest" "wordpress-prometheusrule" {
+  force_new = true
+  count     = 1
+  yaml_body = element(data.kubectl_file_documents.wordpress-prometheusrule.documents, count.index)
+}
