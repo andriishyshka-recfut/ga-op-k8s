@@ -55,9 +55,12 @@ EOT
             }
           }
           spec {
+            image_pull_secrets {
+              name = "harbor"
+            }
             container {
               name    = "dump"
-              image   = "mongo"
+              image   = "harbor.regemini.io/op/mongo-backup:7.0.5"
               command = ["bash", "-c", local.backupCommand]
               env {
                 name = "MINIO_ACCESS_KEY"
