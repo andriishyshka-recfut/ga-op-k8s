@@ -7,14 +7,6 @@ import shutil
 from random import randrange
 
 
-gitlab_groups = {
-    "artifact": "9",
-    "dev": "14",
-    "dome": "10",
-    "maid": "8",
-    "minion": "7"
-}
-
 # gitlab_groups = {
 #     "artifact": "9",
 #     "dev": "14",
@@ -23,12 +15,20 @@ gitlab_groups = {
 #     "minion": "7"
 # }
 
+gitlab_groups = {
+    "artifact": "9"
+#     "dev": "14"
+#     "dome": "10"
+#     "maid": "8"
+#     "minion": "7"
+}
+
 EXCLUDED_PROJECTS = {
     "artifact": [],
-    "dev": [],
-    "dome": ["darkmoney","leakeddatabases","validmarket"],
+    "dev": ["gitlab-ci-library"],
+    "dome": [],
     "maid": [],
-    "minion": ["bankomat"]
+    "minion": ["madfox","toxyzen","bbmarket"]
 }
 
 FAILED_PROJECTS = {
@@ -41,7 +41,7 @@ FAILED_PROJECTS = {
 
 GITLAB_CI_YML = ".gitlab-ci.yml"
 SONAR_FILE = "sonar-project.properties"
-BRANCH_NAME = "sonarqube-integration"
+BRANCH_NAME = "pipeline-improvements"
 REPO_ROOT = f"{os.getenv('HOME')}/Gemini/temp_repos"
 
 PROPS_TEMPLATE = "sonar.projectKey=<KEY>\n" \
@@ -81,6 +81,7 @@ for group in gitlab_groups.items():
             continue
         total += 1
 
+        print(f"Analyzing {project.name}")
         hasSonar = True;
         try:
             result = project.files.get(SONAR_FILE, project.default_branch)
@@ -89,11 +90,11 @@ for group in gitlab_groups.items():
                 hasSonar = False;
 
         except Exception as e:
-            # print(f"No {SONAR_FILE} found for {group.name}/{project.name} - {project.web_url}")
+            print(f"\tNo {SONAR_FILE} found for {group.name}/{project.name} - {project.web_url}")
             hasSonar = False;
 
-        if hasSonar:
-            continue
+        # if hasSonar:
+        #     continue
 
         hasGitlab = True;
         try:
@@ -122,7 +123,15 @@ for group in gitlab_groups.items():
                     gitlab_ci = yaml.safe_load(gitlab_ci_yaml)
                     if gitlab_ci["stages"][0] != 'scan':
                         gitlab_ci["stages"].insert(0, 'scan')
-                    flat_list = [item for sublist in gitlab_ci["include"] for item in sublist]
+
+                    stages = []
+                    for stage in gitlab_ci["stages"]:
+                        if stage != 'scan':
+                            stages.append(stage)
+                        if stage == 'test':
+                            stages.append('scan')
+
+                    gitlab_ci["stages"] = stages
 
                     proj_index = None
                     for i in range(0, len(gitlab_ci["include"])):
@@ -136,8 +145,17 @@ for group in gitlab_groups.items():
                         else:
                             gitlab_ci["include"][proj_index].insert(0, {'file': 'scan/1.00-alpine/scan.yaml'})
                     else:
+                        proj_index = 0
                         gitlab_ci["include"].insert(0, {'project': "dev/gitlab-ci-library", 'ref': 'master',
                                                         'file': ['scan/1.00-alpine/scan.yaml']})
+
+                    if os.path.isdir(os.path.join(repo_path, "bot")):
+                        includes = []
+                        for inc_file in gitlab_ci["include"][proj_index]['file']:
+                            if inc_file.startswith('build/'):
+                                inc_file = 'build/bot-default.yaml'
+                            includes.append(inc_file)
+                        gitlab_ci["include"][proj_index]['file'] = includes
 
                     if 'sast' in gitlab_ci.keys():
                         gitlab_ci['sast'].update(
@@ -147,49 +165,54 @@ for group in gitlab_groups.items():
                         with open(os.path.join(repo_path, GITLAB_CI_YML), "w") as f:
                             data = yaml.dump(gitlab_ci, f, sort_keys=False, default_flow_style=False)
                             git.add(GITLAB_CI_YML)
+                            git.commit(message="Enable test cover reports")
+
+                    if not hasSonar:
+                        if not DRY_RUN:
+                            print(f'\tCreating new Sonar project for {project.name}')
+                            sonar_project_data = sonar.alm_integrations.import_gitlab_project(almSetting="Gemini",
+                                                                                              gitlabProjectId=project.id)
+                            project_key = sonar_project_data["project"]["key"]
+                        else:
+                            project_key = DUMMY_KEY
+
+                        sonar_properties = open(os.path.join(repo_path, "sonar-project.properties"), "w")
+                        sonar_properties.write(PROPS_TEMPLATE.replace("<KEY>", project_key))
+                        sonar_properties.close()
 
                     if not DRY_RUN:
-                        sonar_project_data = sonar.alm_integrations.import_gitlab_project(almSetting="Gemini",
-                                                                                          gitlabProjectId=project.id)
-                        project_key = sonar_project_data["project"]["key"]
-                    else:
-                        project_key = DUMMY_KEY
-
-                    sonar_properties = open(os.path.join(repo_path, "sonar-project.properties"), "w")
-                    sonar_properties.write(PROPS_TEMPLATE.replace("<KEY>", project_key))
-                    sonar_properties.close()
-
-                    if not DRY_RUN:
-                        git.add("sonar-project.properties")
-                        git.commit(message="Add SonarQube properties and pipeline")
-                        print("Pushing changes to remote")
+                        if not hasSonar:
+                            git.add("sonar-project.properties")
+                            git.commit(message="Add SonarQube properties")
+                        print("\tPushing changes to remote")
                         git.push(BRANCH_NAME, u="origin")
 
                         mr = project.mergerequests.create({'source_branch': BRANCH_NAME,
                                                            'target_branch': project.default_branch,
-                                                           'title': 'On-board {} to SonarQube'.format(project.name),
+                                                           'title': 'SonarQube updates'.format(project.name),
                                                            'labels': ['support', 'To Do'],
                                                            'remove_source_branch': 'true',
                                                            'squash_on_merge': 'true',
                                                            'assignee_id' : 2,
                                                            'reviewer_ids': [2]})
-
+                        print(f"\tCreated MR: {mr.web_url}")
                     else:
                         print("New {} for {}:".format(GITLAB_CI_YML, repo_path))
                         print(yaml.dump(gitlab_ci, sort_keys=False, default_flow_style=False))
                         print("\n")
 
                     if not DRY_RUN:
-                        sched = project.pipelineschedules.create({
-                            'ref': project.default_branch,
-                            'description': 'SonarQube (weekly)',
-                            'cron': '{} 2 * * 6'.format(randrange(59)),
-                            'cron_timezone': 'UTC'
-                        })
-                        sched.variables.create(
-                            {'key': 'CI_SCHEDULE_SOURCE', "variable_type": "env_var", 'value': 'sonarqube'})
+                        if not hasSonar:
+                            sched = project.pipelineschedules.create({
+                                'ref': project.default_branch,
+                                'description': 'SonarQube (weekly)',
+                                'cron': '{} 2 * * 6'.format(randrange(59)),
+                                'cron_timezone': 'UTC'
+                            })
+                            sched.variables.create(
+                                {'key': 'CI_SCHEDULE_SOURCE', "variable_type": "env_var", 'value': 'sonarqube'})
                     else:
-                        print("Adding pipeline schedule")
+                        print("\tFaking pipeline schedule")
 
                     # print("\n================================================================\n\n")
                     # input("Press Enter to continue...")
