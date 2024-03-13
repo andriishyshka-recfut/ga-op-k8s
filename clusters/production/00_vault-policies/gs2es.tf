@@ -26,5 +26,14 @@ path "secret/data/es-creds-compose-prod/elasticKey" {
 path "secret/data/es-creds-compose-prod/elasticCrt" {
   capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/metaEs2gsMagecart-similarwebMs" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/_similarweb.ms" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/metaEs2mysql-roicalcMs" {
+  capabilities = ["read","list"]
+}
 EOT
 }
