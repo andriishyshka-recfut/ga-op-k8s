@@ -9,9 +9,9 @@ runners:
         image = "alpine:3.19.0"
         image_pull_secrets = ["${name}-harbor"]
         cpu_request = "1"
-        cpu_limit = "2"
+        cpu_limit = "4"
         memory_request = "512Mi"
-        memory_limit = "4Gi"
+        memory_limit = "6Gi"
       [runners.kubernetes.affinity]
         [runners.kubernetes.affinity.node_affinity]
           [runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution]
