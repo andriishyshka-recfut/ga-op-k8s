@@ -48,7 +48,7 @@ resource "helm_release" "kubescape" {
 
   set {
     name = "capabilities.continuousScan"
-    value = "enable"
+    value = "disable"
   }
 
   set {
@@ -63,17 +63,17 @@ resource "helm_release" "kubescape" {
 
   set {
     name = "capabilities.nodeScan"
-    value = "disabled"
+    value = "disable"
   }
 
   set {
     name = "capabilities.relevancy"
-    value = "disabled"
+    value = "disable"
   }
 
   set {
     name = "capabilities.vulnerabilityScan"
-    value = "disabled"
+    value = "disable"
   }
 
 
