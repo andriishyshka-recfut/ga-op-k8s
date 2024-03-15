@@ -160,22 +160,9 @@ spec:
         component: stream-processor
         severity: critical
   - interval: 24h
-    name: DomeMappingHits
+    name: DomeMappingChanged
     rules:
-    - alert: DomeMappingHitsChanged
-      annotations:
-        summary: '{{ $labels.hits_by_container_name_space }} - mapping by hits was changed'
-      expr: >
-        group by (hits_by_container_name_space) (sum_over_time(dome_mapping_hits_by_container_name_doc_count[1d])) > 0
-      for: 24h
-      labels:
-        cluster: ${cluster_label}
-        component: stream-processor
-        severity: critical
-  - interval: 24h
-    name: DomeMappingLangs
-    rules:
-      - alert: DomeMappingLangsChanged
+      - alert: DomeMappingChanged
         annotations:
           summary: '{{ $labels.langs }} - mapping by lang was changed'
         expr: >
