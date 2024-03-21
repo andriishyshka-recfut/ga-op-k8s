@@ -107,6 +107,7 @@ jobservice:
   nodeSelector:
     workloadsType: data
 registry:
+  replicas: 2
   podAnnotations:
     sidecar.istio.io/inject: "false"
   tolerations:
