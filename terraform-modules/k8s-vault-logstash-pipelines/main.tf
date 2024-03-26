@@ -88,7 +88,7 @@ resource "helm_release" "logstash" {
     value = try(each.value.mem_limit, local.mem_limit)
   }
 
-  depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds, kubernetes_manifest.tmp_logstash]
+  depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds, kubernetes_manifest.tmp_logstash, kubernetes_job.logstash_user]
 }
 
 # Stuck point, if you want run logstash on another namespace than elastic
@@ -128,23 +128,104 @@ resource "kubernetes_secret" "minio_creds" {
   depends_on = [data.vault_generic_secret.minio_creds]
 }
 
-
-data "vault_generic_secret" "logstash_es_creds" {
-  for_each = var.logstash_list
-  path     = "secret/logstash/${each.key}"
+locals {
+  logstash_user = "logstash"
+  logstash_password = random_password.logstash_password.result
+  setupSandboxUser = <<EOF
+curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_url}:9200/_security/role/logstash_sandbox" -H 'Content-Type: application/json' -k -d '
+{
+  "indices": [
+    {
+      "names": ["added*","pans*","creds*"],
+      "privileges": ["read"]
+    }
+  ]
+} ' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_url}/_security/role/logstash_writer" -H 'Content-Type: application/json' -k -d '
+{
+  "cluster": ["manage_index_templates","monitor","manage_ilm"],
+  "indices": [
+    {
+      "names": ["logstash*"],
+      "privileges": ["write","create","create_index","manage","manage_ilm"]
+    }
+  ]
+} ' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_url}/_security/role/logstash_reader" -H 'Content-Type: application/json' -k -d '
+{
+  "cluster": ["manage_logstash_pipelines"],
+  "indices": [
+    {
+      "names": ["logstash*"],
+      "privileges": ["read","view_index_metadata"]
+    }
+  ]
+} ' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_url}/_security/role/logstash_admin" -H 'Content-Type: application/json' -k -d '
+{
+  "cluster": ["manage_logstash_pipelines"],
+  "indices": [
+    {
+      "names": [".logstash*"],
+      "privileges": ["create","delete","index","manage","read"]
+    }
+  ]
+} ' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_url}/_security/user/logstash" -H 'Content-Type: application/json' -k -d '
+{
+    "roles" : ["","logstash_writer","logstash_reader","logstash_admin"],
+    "password": "${local.logstash_passwd}"
+}'
+EOF
 }
 
-resource "kubernetes_secret" "logstash_es_creds" {
-  for_each = var.logstash_list
-  metadata {
-    name      = "${each.key}-logstash-es-creds"
-    namespace = each.value.namespace
-  }
+resource "random_password" "logstash_password" {
+  length  = 32
+  special = false
+}
 
-  data = {
-    password          = data.vault_generic_secret.logstash_es_creds[each.key].data.es_password,
-    username          = data.vault_generic_secret.logstash_es_creds[each.key].data.es_username,
-    logstash_password = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_api_password
+resource "kubernetes_job" "logstash_user" {
+  metadata {
+    name      = "es-logstash-user-setup"
+    namespace = local.es_creds_ns
   }
-  depends_on = [data.vault_generic_secret.logstash_es_creds]
+  spec {
+    template {
+      metadata {
+
+        annotations = {
+          "sidecar.istio.io/inject" = "false"
+        }
+      }
+      spec {
+        container {
+          name    = "post-install"
+          image   = "curlimages/curl"
+          command = ["sh", "-c", var.Cluster == "production" ? local.setupProdUser : local.setupSandboxUser]
+          env {
+            name = "ES_PASSWORD"
+            value_from {
+              secret_key_ref {
+                name = local.es_creds_creds
+                key  = local.es_creds_ns
+              }
+            }
+          }
+          resources {
+            requests = {
+              cpu    = "100m"
+              memory = "100M"
+            }
+          }
+        }
+        restart_policy = "Never"
+      }
+    }
+    backoff_limit = 4
+  }
+  wait_for_completion = true
+  timeouts {
+    create = "5m"
+    update = "5m"
+  }
 }
