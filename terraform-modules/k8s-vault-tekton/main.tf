@@ -24,6 +24,12 @@ resource "null_resource" "deploy_tekton" {
      --namespace=${local.tektonMainNs} \
      create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
      --from-literal=vaultAddr=${var.VaultAddress} && \
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken} \
+     --insecure-skip-tls-verify=true \
+     --namespace=${local.tektonNs} \
+    patch serviceaccount default --type json \
+    --patch '[{"op": "add","path":"/metadata/annotations","value":{"iam.gke.io/gcp-service-account": "velero@${var.Settings.gcpProject}.iam.gserviceaccount.com"}}]' && \
     kubectl --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken} \
      --insecure-skip-tls-verify=true  \

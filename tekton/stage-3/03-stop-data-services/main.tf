@@ -205,6 +205,17 @@ resource "null_resource" "stop_mongo_auth" {
   }
 }
 
+resource "null_resource" "stop_minio_helm" {
+
+  triggers = {
+    command = md5(local.stop_mongo_auth)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_minio_helm
+  }
+}
+
 resource "null_resource" "delete_mongo_resources" {
 
   triggers = {
@@ -228,4 +239,16 @@ resource "null_resource" "delete_mongo_auth_resources" {
     command     = local.delete_mongo_auth_resources
   }
   depends_on = [ null_resource.stop_mongo_auth ]
+}
+
+resource "null_resource" "delete_minio_helm_resources" {
+
+  triggers = {
+    command = md5(local.delete_minio_helm_resources)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.delete_minio_helm_resources
+  }
+  depends_on = [ null_resource.stop_minio_helm ]
 }

@@ -49,6 +49,7 @@ module "k8s-vault-tekton" {
   GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
   Cluster                      = "sandbox"
   Color                        = "green"
+  Settings                     = var.Settings
   VaultAddress                 = var.VaultAddress
   depends_on                   = [module.k8s-vault]
 }

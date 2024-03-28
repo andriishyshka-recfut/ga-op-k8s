@@ -12,7 +12,7 @@ locals {
   prometheusNs     = "monitoring"
   grafanaRole      = var.Cluster == "production" ? "Viewer" : "Editor"
   prometheusExtUrl = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus, "prometheusExtUrl", "http://localhost:9090")
-  vortex           = var.Cluster == "production" ? 0 : 1
+  vortex           = 0
 }
 
 terraform {

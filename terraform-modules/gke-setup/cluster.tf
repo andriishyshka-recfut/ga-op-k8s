@@ -81,11 +81,11 @@ resource "google_container_cluster" "cluster" {
 
   logging_service    = "none"
   monitoring_service = "none"
-  monitoring_config {
-    managed_prometheus{
-      enabled = false
-    }
-  }
+  # monitoring_config {
+  #   managed_prometheus{
+  #     enabled = false
+  #   }
+  # }
   addons_config {
     network_policy_config {
       disabled = false
@@ -109,6 +109,11 @@ resource "google_container_cluster" "cluster" {
   lifecycle {
     ignore_changes = all
   }
+
+  workload_identity_config {
+    workload_pool = "${var.Settings.gcpProject}.svc.id.goog"
+  }
+
   depends_on = [
     google_compute_subnetwork.net
   ]

@@ -12,7 +12,7 @@ data "vault_generic_secret" "es_access" {
 
 data "vault_generic_secret" "vortex_basic_auth" {
   count = local.vortex
-  path  = "secret/tls-proxy/basic-auth/vortex"
+  path  = "secret/tls-proxy/basic-auth/vortex-default"
 }
 
 resource "kubernetes_manifest" "vortex_cert" {
@@ -31,7 +31,7 @@ resource "kubernetes_manifest" "vortex_cert" {
       ]
       "issuerRef" = {
         "kind" = "ClusterIssuer"
-        "name" = "vault-vortex-issuer"
+        "name" = "vault-vortex-default-issuer"
       }
       "secretName" = "vortex-cert"
     }
