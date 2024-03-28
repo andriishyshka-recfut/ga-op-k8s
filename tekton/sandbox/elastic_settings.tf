@@ -16,7 +16,11 @@ locals {
         "co.elastic.logs/exclude_lines" : "^.*\"event.type\":\"transport\""
       }
       addons = {
-        notifications = {},
+        notifications = {
+          slack = {
+            vault_path = "secret/elastic-notification-accounts"
+          }
+        },
         authorizations = {
           ga = {
             vault_path      = "secret/elasticsearch-admin/saml_geminiadvisory_sandbox"
