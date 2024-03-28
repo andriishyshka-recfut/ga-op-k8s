@@ -13,4 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/stage-6/06-ingress"
     - name: branch
-      value: "\\#542-prod-dr-2024-03-01"
+      value: "\\#582-Sandbox-DR-20240322"

@@ -2,6 +2,7 @@ variable "Cluster" {}
 variable "Color" {}
 variable "GkeClusterConnectionSettings" {}
 variable "VaultAddress" {}
+variable "Settings" {}
 
 locals {
   tektonMainNs       = "tekton-pipelines"

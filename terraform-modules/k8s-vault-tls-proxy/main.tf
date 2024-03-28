@@ -135,7 +135,7 @@ resource "local_file" "tmp_json" {
     "key"        = tls_private_key.clients_rsa_key[each.key].private_key_pem
     "cert"       = vault_pki_secret_backend_sign.clients[each.key].certificate,
     "ca"         = vault_pki_secret_backend_sign.clients[each.key].issuing_ca,
-    "serial"     = vault_pki_secret_backend_sign.clients[each.key].serial,
+    "serial"     = vault_pki_secret_backend_sign.clients[each.key].serial_number,
     "expiration" = tostring(vault_pki_secret_backend_sign.clients[each.key].expiration)
   })
   depends_on = [
