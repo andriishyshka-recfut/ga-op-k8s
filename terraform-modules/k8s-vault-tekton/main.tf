@@ -48,25 +48,11 @@ resource "null_resource" "harbor_creds" {
     command     = <<COMMAND
     set -x
     export VAULT_ADDR=${var.VaultAddress}
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     create secret docker-registry harbor --docker-server=harbor.regemini.io \
-      --docker-username=$(vault kv get -field=user secret/goharbor/docker_login) \
-      --docker-password=$(vault kv get -field=password secret/goharbor/docker_login) \
-    --namespace=${local.tektonNs} && sleep 30 && \
     kubectl patch --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
      --namespace=${local.tektonNs}  \
      serviceaccount default -p '{"imagePullSecrets": [{"name": "harbor"}]}' && sleep 30 && \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     create secret docker-registry harbor --docker-server=harbor.regemini.io \
-      --docker-username=$(vault kv get -field=user secret/goharbor/docker_login) \
-      --docker-password=$(vault kv get -field=password secret/goharbor/docker_login) \
-    --namespace=${local.tektonMainNs} && sleep 30 && \
     kubectl patch --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
@@ -78,6 +64,50 @@ COMMAND
   depends_on = [
     null_resource.deploy_tekton
   ]
+}
+
+data "vault_generic_secret" "goharbor" {
+  path = "secret/goharbor/docker_login"
+}
+
+resource "kubernetes_secret" "harbor_creds" {
+  metadata {
+    name = "harbor"
+    namespace = local.tektonMainNs
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      auths = {
+        "${local.registry_server}" = {
+          "username" = data.vault_generic_secret.goharbor.data.user
+          "password" = data.vault_generic_secret.goharbor.data.password
+          "auth"     = base64encode("${data.vault_generic_secret.goharbor.data.user}:${data.vault_generic_secret.goharbor.data.password}")
+        }
+      }
+    })
+  }
+}
+
+resource "kubernetes_secret" "harbor_creds" {
+  metadata {
+    name = "harbor"
+    namespace = local.tektonNs
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      auths = {
+        "${local.registry_server}" = {
+          "username" = data.vault_generic_secret.goharbor.data.user
+          "password" = data.vault_generic_secret.goharbor.data.password
+          "auth"     = base64encode("${data.vault_generic_secret.goharbor.data.user}:${data.vault_generic_secret.goharbor.data.password}")
+        }
+      }
+    })
+  }
 }
 
 resource "null_resource" "crds" {
