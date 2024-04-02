@@ -11,7 +11,7 @@ locals {
 
   kafka_count     = local.settings.persistent_resources.permanentDisks.kafka.count
   sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
-  sftp            = local.settings.sftp-server
+  # sftp            = local.settings_red.sftp-server
   minio_count     = local.settings.persistent_resources.permanentDisks.minio.count
 
   tarantool_storage_count = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks * 2
@@ -80,11 +80,11 @@ data "google_compute_snapshot" "sonarqube_postgres_snapshot" {
   count       = local.sonarqube_count
 }
 
-data "google_compute_snapshot" "sftp_snapshot" {
-  for_each    = local.sftp
-  name        = "${each.key}-config-dr-${local.restoreDate}"
-  most_recent = true
-}
+# data "google_compute_snapshot" "sftp_snapshot" {
+#   for_each    = local.sftp
+#   name        = "${each.key}-config-dr-${local.restoreDate}"
+#   most_recent = true
+# }
 
 data "google_compute_snapshot" "minio_tenant_snapshot" {
   name        = "minio-tenant-${count.index}-dr-${local.restoreDate}"
@@ -197,19 +197,19 @@ resource "google_compute_disk" "sonarqube_postgres_pv" {
   zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
 }
 
-resource "google_compute_disk" "sftp_pv" {
-  for_each = local.sftp
-  name     = "sftp-server-${each.key}-config"
-  type     = "pd-balanced"
-  size     = data.google_compute_snapshot.sftp_snapshot[each.key].disk_size_gb
-  snapshot = data.google_compute_snapshot.sftp_snapshot[each.key].name
-  labels = {
-    target = "sftp-server-${each.key}-config"
-    id     = "sftp-server-${each.key}-config"
-  }
+# resource "google_compute_disk" "sftp_pv" {
+#   for_each = local.sftp
+#   name     = "sftp-server-${each.key}-config"
+#   type     = "pd-balanced"
+#   size     = data.google_compute_snapshot.sftp_snapshot[each.key].disk_size_gb
+#   snapshot = data.google_compute_snapshot.sftp_snapshot[each.key].name
+#   labels = {
+#     target = "sftp-server-${each.key}-config"
+#     id     = "sftp-server-${each.key}-config"
+#   }
 
-  zone = each.value.zone
-}
+#   zone = each.value.zone
+# }
 
 
 

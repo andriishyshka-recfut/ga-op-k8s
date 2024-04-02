@@ -17,9 +17,9 @@ project = args.project if args.project else ""
 vault = args.vault if args.vault else 'https://vault.p.regemini.io'
 
 client = hvac.Client(url=vault)
-client.kv.default_kv_version = 2
-certs = client.kv.read_secret(path='tls-proxy/certs/' + project)["data"]["data"]
-domain = client.kv.read_secret(path='tls-proxy/projects/'+ project)["data"]["data"]["domain"]
+# client.kv.default_kv_version = 2
+certs = client.secrets.kv.read_secret(path='tls-proxy/certs/' + project)["data"]["data"]
+domain = client.secrets.kv.read_secret(path='tls-proxy/projects/'+ project)["data"]["data"]["domain"]
 certfile = open("tmp.pem","w")
 certfile.write(certs["key"])
 certfile.write(certs["cert"])

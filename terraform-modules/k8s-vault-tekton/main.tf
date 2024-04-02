@@ -1,13 +1,68 @@
-resource "null_resource" "deploy_tekton" {
+resource "kubernetes_namespace" "tekton" {
+  metadata {
+    name = local.tektonNs
+  }
+}
 
+resource "kubernetes_namespace" "tektonMain" {
+  metadata {
+    name = local.tektonMainNs
+  }
+}
+
+data "vault_generic_secret" "goharbor" {
+  path = "secret/goharbor/docker_login"
+}
+
+resource "kubernetes_secret" "harbor_creds_main" {
+  metadata {
+    name = "harbor"
+    namespace = local.tektonMainNs
+  }
+  type = "kubernetes.io/dockerconfigjson"
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      auths = {
+        "${local.registry_server}" = {
+          "username" = data.vault_generic_secret.goharbor.data.user
+          "password" = data.vault_generic_secret.goharbor.data.password
+          "auth"     = base64encode("${data.vault_generic_secret.goharbor.data.user}:${data.vault_generic_secret.goharbor.data.password}")
+        }
+      }
+    })
+  }
+  depends_on = [
+    kubernetes_namespace.tektonMain
+  ]
+}
+
+resource "kubernetes_secret" "harbor_creds" {
+  metadata {
+    name = "harbor"
+    namespace = local.tektonNs
+  }
+  type = "kubernetes.io/dockerconfigjson"
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      auths = {
+        "${local.registry_server}" = {
+          "username" = data.vault_generic_secret.goharbor.data.user
+          "password" = data.vault_generic_secret.goharbor.data.password
+          "auth"     = base64encode("${data.vault_generic_secret.goharbor.data.user}:${data.vault_generic_secret.goharbor.data.password}")
+        }
+      }
+    })
+  }
+  depends_on = [
+    kubernetes_namespace.tekton
+  ]
+}
+
+resource "null_resource" "deploy_tekton" {
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<COMMAND
     set -x
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken} \
-     --insecure-skip-tls-verify=true \
-     create namespace ${local.tektonNs} && \
     kubectl apply --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken} \
      --insecure-skip-tls-verify=true \
@@ -39,10 +94,15 @@ resource "null_resource" "deploy_tekton" {
 COMMAND
   }
 
+  depends_on = [
+    kubernetes_secret.harbor_creds_main,
+    kubernetes_secret.harbor_creds,
+    kubernetes_namespace.tekton,
+    kubernetes_namespace.tektonMain    
+  ]
 }
 
 resource "null_resource" "harbor_creds" {
-
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<COMMAND
@@ -62,52 +122,12 @@ COMMAND
   }
 
   depends_on = [
-    null_resource.deploy_tekton
+    null_resource.deploy_tekton,
+    kubernetes_secret.harbor_creds_main,
+    kubernetes_secret.harbor_creds,
+    kubernetes_namespace.tekton,
+    kubernetes_namespace.tektonMain  
   ]
-}
-
-data "vault_generic_secret" "goharbor" {
-  path = "secret/goharbor/docker_login"
-}
-
-resource "kubernetes_secret" "harbor_creds" {
-  metadata {
-    name = "harbor"
-    namespace = local.tektonMainNs
-  }
-
-  type = "kubernetes.io/dockerconfigjson"
-  data = {
-    ".dockerconfigjson" = jsonencode({
-      auths = {
-        "${local.registry_server}" = {
-          "username" = data.vault_generic_secret.goharbor.data.user
-          "password" = data.vault_generic_secret.goharbor.data.password
-          "auth"     = base64encode("${data.vault_generic_secret.goharbor.data.user}:${data.vault_generic_secret.goharbor.data.password}")
-        }
-      }
-    })
-  }
-}
-
-resource "kubernetes_secret" "harbor_creds" {
-  metadata {
-    name = "harbor"
-    namespace = local.tektonNs
-  }
-
-  type = "kubernetes.io/dockerconfigjson"
-  data = {
-    ".dockerconfigjson" = jsonencode({
-      auths = {
-        "${local.registry_server}" = {
-          "username" = data.vault_generic_secret.goharbor.data.user
-          "password" = data.vault_generic_secret.goharbor.data.password
-          "auth"     = base64encode("${data.vault_generic_secret.goharbor.data.user}:${data.vault_generic_secret.goharbor.data.password}")
-        }
-      }
-    })
-  }
 }
 
 resource "null_resource" "crds" {
@@ -142,7 +162,11 @@ COMMAND
   }
   depends_on = [
     null_resource.deploy_tekton,
-    null_resource.harbor_creds
+    null_resource.harbor_creds,
+    kubernetes_secret.harbor_creds_main,
+    kubernetes_secret.harbor_creds,
+    kubernetes_namespace.tekton,
+    kubernetes_namespace.tektonMain  
   ]
 }
 

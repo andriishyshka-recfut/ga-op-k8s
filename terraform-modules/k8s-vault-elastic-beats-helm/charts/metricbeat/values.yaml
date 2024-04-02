@@ -160,7 +160,7 @@ deployment:
       memory: "100Mi"
     limits:
       cpu: "1000m"
-      memory: "200Mi"
+      memory: "500Mi"
   tolerations: []
 
 # Replicas being used for the kube-state-metrics metricbeat deployment

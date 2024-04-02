@@ -1,0 +1,19 @@
+Topic: attachment.ocr.telegram Group: ocr Partition: 0 L-Offset:  H-Offset:  Size:  Lag: 208956 -> 208356
+Topic: birl.telegram.source Group: birl Partition: 0 L-Offset:  H-Offset: 242545 -> 242914 Size: 97923 -> 98292 (diff -369) Lag: 39470 -> 39839
+Topic: dome.beat.cardvilla Group: beat Partition: 0 L-Offset: 914020 -> 914288 H-Offset:  Size: 58928 -> 58660 (diff 268) Lag: 
+Topic: dome.beat.enclave Group: beat Partition: 0 L-Offset: 1147897 -> 1167019 H-Offset:  Size: 105142 -> 86020 (diff 19122) Lag: 
+Topic: dome.beat.omerta Group: beat Partition: 0 L-Offset: 228628 -> 228671 H-Offset:  Size: 562 -> 519 (diff 43) Lag: 
+Topic: dome.upsert Group: upsertDome Partition: 0 L-Offset: 391532959 -> 391807748 H-Offset:  Size: 4872083 -> 4597294 (diff 274789) Lag: 
+Topic: mage.scan Group: beat Partition: 6 L-Offset: 1693526 -> 1693825 H-Offset:  Size: 66524 -> 66225 (diff 299) Lag: 
+Topic: mage.scan Group: beat Partition: 10 L-Offset: 1675836 -> 1675874 H-Offset:  Size: 83525 -> 83487 (diff 38) Lag: 
+Topic: mage.scan Group: beat Partition: 16 L-Offset: 1671662 -> 1671709 H-Offset:  Size: 86148 -> 86101 (diff 47) Lag: 
+Topic: mage.scan Group: beat Partition: 18 L-Offset: 1690209 -> 1690383 H-Offset:  Size: 67351 -> 67177 (diff 174) Lag: 
+Topic: mage.scan Group: magescanner Partition: 6 L-Offset: 1693526 -> 1693825 H-Offset:  Size: 66524 -> 66225 (diff 299) Lag: 
+Topic: mage.scan Group: magescanner Partition: 10 L-Offset: 1675836 -> 1675874 H-Offset:  Size: 83525 -> 83487 (diff 38) Lag: 
+Topic: mage.scan Group: magescanner Partition: 16 L-Offset: 1671662 -> 1671709 H-Offset:  Size: 86148 -> 86101 (diff 47) Lag: 
+Topic: mage.scan Group: magescanner Partition: 18 L-Offset: 1690209 -> 1690383 H-Offset:  Size: 67351 -> 67177 (diff 174) Lag: 
+Topic: mage.task.target Group: magescanner Partition: 0 L-Offset: 845569 -> 938652 H-Offset:  Size: 313548 -> 220465 (diff 93083) Lag: 
+Topic: minion.upsert Group: upsertMinion Partition: 0 L-Offset: 3662152557 -> 3676287041 H-Offset:  Size: 56404836 -> 42270352 (diff 14134484) Lag: 
+Topic: os3t.attachment Group: os3 Partition: 0 L-Offset:  H-Offset: 17375611 -> 17375867 Size: 382 -> 638 (diff -256) Lag: 382 -> 638
+Topic: telegram Group: beat Partition: 0 L-Offset: 162487027 -> 162487294 H-Offset:  Size: 10681161 -> 10680894 (diff 267) Lag: 
+Topic: testcart Group: beat Partition: 0 L-Offset: 31142895 -> 31144931 H-Offset:  Size: 5770272 -> 5768236 (diff 2036) Lag: 

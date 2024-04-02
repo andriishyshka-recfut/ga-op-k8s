@@ -1,0 +1,20 @@
+Topic                  	Group       	Partition	Low                     	High                	Size                                	Lag
+attachment.ocr.telegram	ocr         	0        	                        	                    	                                    	208956 -> 208356
+birl.telegram.source   	birl        	0        	                        	242545 -> 242914    	97923 -> 98292 (diff -369)          	39470 -> 39839
+dome.beat.cardvilla    	beat        	0        	914020 -> 914288        	                    	58928 -> 58660 (diff 268)
+dome.beat.enclave      	beat        	0        	1147897 -> 1167019      	                    	105142 -> 86020 (diff 19122)
+dome.beat.omerta       	beat        	0        	228628 -> 228671        	                    	562 -> 519 (diff 43)
+dome.upsert            	upsertDome  	0        	391532959 -> 391807748  	                    	4872083 -> 4597294 (diff 274789)
+mage.scan              	beat        	6        	1693526 -> 1693825      	                    	66524 -> 66225 (diff 299)
+mage.scan              	beat        	10       	1675836 -> 1675874      	                    	83525 -> 83487 (diff 38)
+mage.scan              	beat        	16       	1671662 -> 1671709      	                    	86148 -> 86101 (diff 47)
+mage.scan              	beat        	18       	1690209 -> 1690383      	                    	67351 -> 67177 (diff 174)
+mage.scan              	magescanner 	6        	1693526 -> 1693825      	                    	66524 -> 66225 (diff 299)
+mage.scan              	magescanner 	10       	1675836 -> 1675874      	                    	83525 -> 83487 (diff 38)
+mage.scan              	magescanner 	16       	1671662 -> 1671709      	                    	86148 -> 86101 (diff 47)
+mage.scan              	magescanner 	18       	1690209 -> 1690383      	                    	67351 -> 67177 (diff 174)
+mage.task.target       	magescanner 	0        	845569 -> 938652        	                    	313548 -> 220465 (diff 93083)
+minion.upsert          	upsertMinion	0        	3662152557 -> 3676287041	                    	56404836 -> 42270352 (diff 14134484)
+os3t.attachment        	os3         	0        	                        	17375611 -> 17375867	382 -> 638 (diff -256)              	382 -> 638
+telegram               	beat        	0        	162487027 -> 162487294  	                    	10681161 -> 10680894 (diff 267)
+testcart               	beat        	0        	31142895 -> 31144931    	                    	5770272 -> 5768236 (diff 2036)
