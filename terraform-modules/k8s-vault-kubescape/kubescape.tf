@@ -33,7 +33,7 @@ resource "helm_release" "kubescape" {
 
   set {
     name = "kubescape.image.tag"
-    value = "v3.0.3"
+    value = "v3.0.8"
   }
 
   set {
