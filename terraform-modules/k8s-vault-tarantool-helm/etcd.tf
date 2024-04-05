@@ -28,6 +28,10 @@ resource "helm_release" "etcd" {
     name  = "initialClusterState"
     value = "new"
   }
+  set {
+    name  = "removeMemberOnContainerTermination"
+    value = "false"
+  }
 
   depends_on = [kubernetes_persistent_volume_claim.tarantool_etcd_pvc]
 }
