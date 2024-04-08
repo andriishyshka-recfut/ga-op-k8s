@@ -1,3 +1,7 @@
+locals {
+  report_prefix = "${local.clusterName}-nightly-${version}"
+}
+
 
 resource "kubernetes_config_map" "scan_settings" {
   metadata {
@@ -40,7 +44,7 @@ resource "kubernetes_cron_job_v1" "demo" {
                  <<-EOT
                       wget https://dl.min.io/client/mc/release/linux-amd64/mc
                       chmod +x ./mc
-                      kubescape scan framework nsa,mitre,cis-v1.23-t1.0.1,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format html --keep-local -o /home/nonroot/results/kubescape_3_0_8_test_$(date +%d-%m-%Y_%H%m).html --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
+                      kubescape scan framework nsa,mitre,cis-v1.23-t1.0.1,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format html --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).html --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
                       ./mc cp /home/nonroot/results/*.html minio/${local.minioBucket}
                   EOT
               ]
