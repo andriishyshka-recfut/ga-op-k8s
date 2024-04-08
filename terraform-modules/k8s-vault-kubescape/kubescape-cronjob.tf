@@ -1,5 +1,5 @@
 locals {
-  report_prefix = "${local.clusterName}-nightly-${version}"
+  report_prefix = "${local.clusterName}-nightly-${local.version}"
 }
 
 
