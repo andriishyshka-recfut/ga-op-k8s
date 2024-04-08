@@ -33,7 +33,7 @@ resource "helm_release" "kubescape" {
 
   set {
     name = "kubescape.image.tag"
-    value = "v3.0.8"
+    value = local.version
   }
 
   set {
@@ -48,7 +48,7 @@ resource "helm_release" "kubescape" {
 
   set {
     name = "capabilities.continuousScan"
-    value = "disable"
+    value = "enable"
   }
 
   set {
@@ -79,7 +79,7 @@ resource "helm_release" "kubescape" {
 
   set {
     name  = "kubescapeScheduler.enabled"
-    value = "true"
+    value = "false"
   }
 
   set {
@@ -106,10 +106,10 @@ resource "helm_release" "kubescape" {
 #    Settings
 ###################################
 
-  set {
-    name  = "kubescapeScheduler.scanSchedule"
-    value = "0 2 * * *"
-  }
+  # set {
+  #   name  = "kubescapeScheduler.scanSchedule"
+  #   value = "0 2 * * *"
+  # }
 
   set {
     name  = "kubescape.resources.requests.cpu"

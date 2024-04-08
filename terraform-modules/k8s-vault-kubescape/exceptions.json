@@ -1,0 +1,107 @@
+[
+{
+    "name": "exclude-minimize-the-admission-of-windows-host-process-containers",
+    "policyType": "postureExceptionPolicy",
+    "actions": [
+        "alertOnly"
+    ],
+    "resources": [
+        {
+            "designatorType": "Attributes",
+            "attributes": {
+                "kind": ".*"
+            }
+        }
+    ],
+    "posturePolicies": [
+        {
+            "controlID": "C-0202"
+        }
+    ]
+},
+
+{
+    "name": "exclude-minimize-the-admission-of-privileged-containers",
+    "policyType": "postureExceptionPolicy",
+    "actions": [
+        "alertOnly"
+    ],
+    "resources": [
+        {
+            "designatorType": "Attributes",
+            "attributes": {
+                "kind": ".*"
+            }
+        }
+    ],
+    "posturePolicies": [
+        {
+            "controlID": "C-0193"
+        }
+    ]
+},
+
+{
+    "name": "exclude-list-kubernetes-secrets",
+    "policyType": "postureExceptionPolicy",
+    "actions": [
+        "alertOnly"
+    ],
+    "resources": [
+        {
+            "designatorType": "Attributes",
+            "attributes": {
+                "kind": ".*"
+            }
+        }
+    ],
+    "posturePolicies": [
+        {
+            "controlID": "C-0015"
+        }
+    ]
+},
+
+{
+    "name": "exclude-excessive-security-context",
+    "policyType": "postureExceptionPolicy",
+    "actions": [
+        "alertOnly"
+    ],
+    "resources": [
+        {
+            "designatorType": "Attributes",
+            "attributes": {
+                "kind": ".*"
+            }
+        }
+    ],
+    "posturePolicies": [
+        {
+            "controlID": "C-0211",
+            "ruleName": "drop-capability-netraw"
+        },
+        {
+            "controlID": "C-0211",
+            "ruleName": "set-seLinuxOptions"
+        },
+        {
+            "controlID": "C-0211",
+            "ruleName": "set-seccomp-profile"
+        },
+        {
+            "controlID": "C-0211",
+            "ruleName": "set-procmount-default"
+        },
+        {
+            "controlID": "C-0211",
+            "ruleName": "set-sysctls-params"
+        },
+        {
+            "controlID": "C-0211",
+            "ruleName": "set-supplementalgroups-values"
+        }
+    ]
+}
+
+]
