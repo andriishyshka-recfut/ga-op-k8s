@@ -89,6 +89,20 @@ spec:
         - name: branch
           value: "\\#592_prod_dr_30_03_24"
 
+    - name: update-apm-token-in-namespaces
+      taskRef:
+        name: tg-run
+      runAfter:
+        - monitoring-elastic
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-1/01-namespaces"
+        - name: branch
+          value: "\\#592_prod_dr_30_03_24"
+
     - name: monitoring
       taskRef:
         name: tg-run
