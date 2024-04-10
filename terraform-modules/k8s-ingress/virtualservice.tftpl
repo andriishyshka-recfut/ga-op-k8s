@@ -21,22 +21,32 @@ spec:
   http:
 %{ if lookup(settings,"cert-manager",false) ~}
     - match:
-        - withoutHeaders:
-            :path:
-              prefix: /.well-known/acme-challenge/
-          port: 80
+      - withoutHeaders:
+          :path:
+            prefix: /.well-known/acme-challenge/
+        port: 80
       redirect:
         scheme: https
 %{ endif ~}
     - match:
 %{ if lookup(service, "sub_uri",false) != false ~}
 %{ for path in lookup(service, "sub_uri","") }
-        - uri:
-            prefix: ${ path }
+      - uri:
+          prefix: ${ path }
+%{ if lookup(basic_auth, name, false) != false ~}
+        headers:
+          Authorization:
+            regex: "Basic (${join("|",basic_auth[name])})"
+%{ endif ~}
 %{ endfor ~}
 %{ else ~}
-        - uri:
-            prefix: /
+      - uri:
+          prefix: /
+%{ if lookup(basic_auth, name, "false") != "false" ~}
+        headers:
+          Authorization:
+            regex: "Basic (${join("|",basic_auth[name])})"
+%{ endif ~}
 %{ endif ~}
 %{ if lookup(service,"redirect_uri",false) != false ~}
       rewrite:
@@ -57,6 +67,17 @@ spec:
             response:
               set:
                 Strict-Transport-Security: max-age=31536000; includeSubDomains
+%{ if lookup(basic_auth, name, false) != false ~}
+    - match:
+      - uri:
+          prefix: /
+      directResponse:
+        status: 401
+      headers:
+        response:
+          set:
+            Www-Authenticate: 'Basic realm="Authentication Required"'
+%{ endif ~}
 %{ endif ~}
 %{ else ~}
   tcp:

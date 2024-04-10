@@ -1,3 +1,6 @@
+
+
+
 resource "kubernetes_manifest" "ingress_letsencrypt_cert" {
   for_each = local.certManager
   manifest = {
@@ -31,7 +34,7 @@ resource "kubernetes_manifest" "ingress_gateway" {
 }
 resource "kubernetes_manifest" "ingress_virtualservice" {
   for_each = local.virtualService
-  manifest = yamldecode(templatefile("${path.module}/virtualservice.tftpl", merge({ settings = local.ingressSettings[each.value.ingress] }, { service = local.ingressSettings[each.value.ingress].services[each.value.index], name = each.key, ingress = each.value.ingress })))
+  manifest = yamldecode(templatefile("${path.module}/virtualservice.tftpl", merge({ settings = local.ingressSettings[each.value.ingress] }, { service = local.ingressSettings[each.value.ingress].services[each.value.index], name = each.key, ingress = each.value.ingress, basic_auth = local.auth_user_list })))
   depends_on = [
     kubernetes_manifest.ingress_gateway
   ]
