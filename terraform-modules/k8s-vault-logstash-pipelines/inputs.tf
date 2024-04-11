@@ -23,8 +23,8 @@ locals {
   log_level        = "info"
   cpu_request      = "100m"
   mem_request      = "256Mi"
-  cpu_limit        = "400m"
-  mem_limit        = "512Mi"
+  cpu_limit        = "800m"
+  mem_limit        = "1536Mi"
 
   minio_users      = { for k, v in { for k, v in var.logstash_list : lookup(v, "minio_user", local.minio_user) => lookup(v, "namespace", local.namespace)... } : k => distinct(v) }
   namespaces       = toset(distinct([for k, v in var.logstash_list : lookup(v, "namespace", local.namespace)]))
