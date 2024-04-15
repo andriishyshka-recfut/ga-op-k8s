@@ -91,12 +91,11 @@ resource "helm_release" "logstash" {
   depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds, kubernetes_manifest.tmp_logstash, kubernetes_job.logstash_user]
 }
 
-# Stuck point, if you want run logstash on another namespace than elastic
 data "kubernetes_secret" "logstash_elastic_ca" {
   for_each = var.logstash_list
   metadata {
-    name      = each.value.elastic_cert_secretname
-    namespace = each.value.elastic_namespace
+    name      = try(each.value.es_cert_secretname, local.es_cert_secretname)
+    namespace = try(each.value.es_namespace local.namespace)
   }
 }
 
@@ -109,7 +108,6 @@ resource "kubernetes_secret" "logstash_elastic_ca" {
   data       = data.kubernetes_secret.logstash_elastic_ca[each.key].data
   depends_on = [data.kubernetes_secret.logstash_elastic_ca]
 }
-
 
 data "vault_generic_secret" "minio_creds" {
   path = "secret/minio/users"
@@ -128,66 +126,53 @@ resource "kubernetes_secret" "minio_creds" {
   depends_on = [data.vault_generic_secret.minio_creds]
 }
 
-locals {
-  logstash_user = "logstash"
-  logstash_password = random_password.logstash_password.result
-  setupSandboxUser = <<EOF
-curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_url}:9200/_security/role/logstash_sandbox" -H 'Content-Type: application/json' -k -d '
-{
-  "indices": [
-    {
-      "names": ["added*","pans*","creds*"],
-      "privileges": ["read"]
-    }
-  ]
-} ' &&\
-curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_url}/_security/role/logstash_writer" -H 'Content-Type: application/json' -k -d '
-{
-  "cluster": ["manage_index_templates","monitor","manage_ilm"],
-  "indices": [
-    {
-      "names": ["logstash*"],
-      "privileges": ["write","create","create_index","manage","manage_ilm"]
-    }
-  ]
-} ' &&\
-curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_url}/_security/role/logstash_reader" -H 'Content-Type: application/json' -k -d '
-{
-  "cluster": ["manage_logstash_pipelines"],
-  "indices": [
-    {
-      "names": ["logstash*"],
-      "privileges": ["read","view_index_metadata"]
-    }
-  ]
-} ' &&\
-curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_url}/_security/role/logstash_admin" -H 'Content-Type: application/json' -k -d '
-{
-  "cluster": ["manage_logstash_pipelines"],
-  "indices": [
-    {
-      "names": [".logstash*"],
-      "privileges": ["create","delete","index","manage","read"]
-    }
-  ]
-} ' &&\
-curl -X PUT "https://elastic:$ES_PASSWORD@${local.es_url}/_security/user/logstash" -H 'Content-Type: application/json' -k -d '
-{
-    "roles" : ["","logstash_writer","logstash_reader","logstash_admin"],
-    "password": "${local.logstash_passwd}"
-}'
-EOF
+resource "random_password" "logstash_es_password" {
+  for_each  = var.logstash_list
+  length    = 32
+  special   = false
 }
 
-resource "random_password" "logstash_password" {
-  length  = 32
-  special = false
+resource "random_password" "logstash_api_password" {
+  for_each  = var.logstash_list
+  length    = 32
+  special   = false
+}
+
+resource "vault_generic_secret" "logstash_es_creds" {
+  for_each                = var.logstash_list
+  path                    = "secret/logstash/${each.key}"
+  data_json               = jsonencode({
+    logstash_es_password    = resource.random_password.logstash_password[each.key].result
+    logstash_es_username    = local.logstash_user
+    logstash_api_password   = resource.random_password.logstash_api_password[each.key].result
+  })
+}
+
+data "vault_generic_secret" "logstash_es_creds" {
+  for_each = var.logstash_list
+  path     = "secret/logstash/${each.key}"
+}
+
+resource "kubernetes_secret" "logstash_es_creds" {
+  for_each = var.logstash_list
+  metadata {
+    name      = "${each.key}-logstash-es-creds"
+    namespace = each.value.namespace
+  }
+
+  data = {
+    password              = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_es_password,
+    username              = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_es_username,
+    logstash_api_password = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_api_password
+  }
+  depends_on = [data.vault_generic_secret.logstash_es_creds]
 }
 
 resource "kubernetes_job" "logstash_user" {
+  for_each    = var.logstash_list
   metadata {
-    name      = "es-logstash-user-setup"
-    namespace = local.es_creds_ns
+    name      = "logstash-${each.key}-user-setup"
+    namespace = try(each.value.namespace, local.namespace)
   }
   spec {
     template {
@@ -206,8 +191,8 @@ resource "kubernetes_job" "logstash_user" {
             name = "ES_PASSWORD"
             value_from {
               secret_key_ref {
-                name = local.es_creds_creds
-                key  = local.es_creds_ns
+                name = try(each.value.es_creds_secret, "elastic-credentials")
+                key  = try(each.value.es_user, "elastic")
               }
             }
           }
