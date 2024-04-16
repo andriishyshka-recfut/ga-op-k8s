@@ -13,6 +13,8 @@ spec:
       params:
       - name: "filter"
         value: body.groupLabels.alertname == 'KubePodCrashLooping'
+      - name: "filter"
+        value: body.groupLabels.alertname == 'PodPhaseFailed'
     template:
       ref: crashloopbackoffpod-template
 ---
