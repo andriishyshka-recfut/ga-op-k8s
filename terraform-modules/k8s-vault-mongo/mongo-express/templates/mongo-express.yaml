@@ -35,8 +35,10 @@ spec:
         #   value: my-cluster-name-rs0
         - name: ME_CONFIG_MONGODB_SERVER
           value: ''
-        - name: ME_CONFIG_BASICAUTH_USERNAME
-          value: ''
+        - name: ME_CONFIG_BASICAUTH
+          value: 'false'
+        - name: ME_CONFIG_MONGODB_ENABLE_ADMIN
+          value: 'true'
         - name: MONGO_USER
           valueFrom:
                 secretKeyRef:
