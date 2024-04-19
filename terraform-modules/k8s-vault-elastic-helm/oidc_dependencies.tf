@@ -38,6 +38,22 @@ locals {
     xpack.security.authc.token.enabled: true
     xpack.security.authc.realms.native.basic1.order: 1
 %{for auth_key, auth in local.auth_list~}
+%{if auth.type == "okta"~}
+    xpack.security.authc.realms.oidc.${auth.oidc_realm_name}:
+      order: ${index(keys(local.auth_list), auth_key) + 2}
+      rp.response_type: code
+      rp.redirect_uri: https://${var.OidcRedirectUri}/api/security/oidc/callback
+      op.issuer: https://accounts.google.com
+      op.authorization_endpoint: https://accounts.google.com/o/oauth2/v2/auth
+      op.token_endpoint: https://oauth2.googleapis.com/token
+      op.jwkset_path: https://www.googleapis.com/oauth2/v3/certs
+      claims.principal: "email"
+      rp.requested_scopes:
+        - email
+        - openid
+        - profile
+      rp.client_id: ${data.vault_generic_secret.oidc[auth].data.oidc_client_id}
+%{endif~}
 %{if auth.type == "oidc"~}
     xpack.security.authc.realms.oidc.${auth.oidc_realm_name}:
       order: ${index(keys(local.auth_list), auth_key) + 2}
