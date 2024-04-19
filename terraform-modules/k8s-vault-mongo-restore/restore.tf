@@ -2,17 +2,18 @@ locals {
   restoreCommand = <<EOT
 set -e;
 set +x ;
-apt-get update -q && apt-get install wget -yq ;
+apt-get update -q && apt-get install wget gpg -yq ;
 wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
 chmod +x mc ;
 source /vault/secrets/config ;
 cd /data;
 %{for setting in var.BackupSettings}
 %{if setting.encrypt}
-/mc cp  backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.gpg ${setting.dbName}.gpg;
+/mc cp  backup/${var.BackupBucket}/mongod-backup/mongo/${setting.dbName}.gpg ${setting.dbName}.gpg;
 gpg -r Backup   -o ${setting.dbName}.tar.gz --decrypt ${setting.dbName}.gpg ;
 %{else}
-/mc cp  backup/${var.BackupBucket}/mongod-migrate/${var.MongoNs}/${setting.dbName}.tar.gz ${setting.dbName}.tar.gz;
+bcp_file=$(/mc find backup/${var.BackupBucket}/mongod-backup/mongo/${setting.dbName} --name "*${local.restore_date}*.gz" | sort -n | tail -1);
+/mc cp  $bcp_file ${setting.dbName}.tar.gz;
 %{endif}
 mongorestore --archive="${setting.dbName}.tar.gz" --gzip --uri=$MONGODB_URL --db ${setting.dbName} ;
 %{endfor}
@@ -52,7 +53,7 @@ resource "kubernetes_job" "mongo_restore" {
         annotations = {
           "sidecar.istio.io/inject"                          = "false"
           "vault.hashicorp.com/agent-inject"                 = "true"
-          "vault.hashicorp.com/agent-inject-secret-config"   = "secret/backup/gpg"
+          "vault.hashicorp.com/agent-inject-secret-config"   = "secret/data/backup/gpg"
           "vault.hashicorp.com/role"                         = var.MongoNs
           "vault.hashicorp.com/agent-pre-populate-only"      = "true"
           "vault.hashicorp.com/auth-path"                    = "auth/k8s-${var.Cluster}-${var.Color}"
@@ -81,7 +82,7 @@ EOT
         }
         container {
           name    = "restore"
-          image   = "mongo"
+          image   = "harbor.regemini.io/op/mongo-backup:7.0.5"
           command = ["bash", "-c", local.restoreCommand]
           volume_mount {
             name       = "data"
@@ -89,12 +90,12 @@ EOT
           }
           resources {
             limits = {
-              cpu    = 2
+              cpu    = 1
               memory = "2Gi"
             }
             requests = {
-              cpu    = 0.5
-              memory = "1Gi"
+              cpu    = 0.1
+              memory = "256Mi"
             }
           }
           env {
@@ -114,6 +115,10 @@ EOT
                 key  = "secretkey"
               }
             }
+          }
+          env {
+            name  = "RESTORE_DATE"
+            value = local.restore_date
           }
           env {
             name  = "MC_HOST_backup"
@@ -139,16 +144,19 @@ EOT
           }
           env {
             name  = "MONGODB_URL"
-            value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@${var.Color}-rs0:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
+            value = "mongodb://$(MONGO_USER):$(MONGO_PASS)@mongo-main-rs0:27017/?ssl=false&authSource=admin&readPreference=primaryPreferred&replicaSet=rs0"
           }
+        }
+        image_pull_secrets {
+          name = "harbor"
         }
         restart_policy = "Never"
       }
     }
 
-    backoff_limit = 1
+    backoff_limit = 0
   }
-  wait_for_completion = true
+  wait_for_completion = false
   timeouts {
     create = "1200m"
     update = "1200m"

@@ -16,3 +16,22 @@ module "mongo" {
   Repository     = each.value.repository
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
 }
+
+module "mongo6" {
+  for_each       = var.Settings.clusters[var.Cluster].mongo6
+  source         = "../../../terraform-modules/k8s-vault-mongo6"
+  CredsPath      = each.value.vaultPath
+  MongoNs        = each.value.namespace
+  BackupSettings = each.value.mongoMigrateSettings
+  BackupBucket   = each.value.backupBucket
+  VolumeSize     = each.value.volumeSize
+  Replicas       = each.value.replicas
+  PvcPrefix      = each.value.pvcPrefix
+  InstanceName   = each.key
+  Cluster        = var.Cluster
+  Color          = var.Color
+  Settings       = var.Settings
+  ImageTag       = each.value.imageTag
+  Repository     = each.value.repository
+  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+}

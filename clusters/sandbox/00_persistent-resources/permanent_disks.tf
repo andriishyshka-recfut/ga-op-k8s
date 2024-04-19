@@ -7,6 +7,10 @@ locals {
   mongo_prefix      = local.settings.mongo.magescanner.pvcPrefix
   mongo_auth_count  = local.settings.mongo.auth.replicas
   mongo_auth_prefix = local.settings.mongo.auth.pvcPrefix
+  
+
+  mongo6_count       = local.settings.mongo6.main.replicas
+  mongo6_prefix      = local.settings.mongo6.main.pvcPrefix
 
   kafka_count     = local.settings.persistent_resources.permanentDisks.kafka.count
   sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
@@ -108,7 +112,7 @@ resource "google_compute_disk" "mongo_pv" {
     id     = "${local.mongo_prefix}-${count.index}"
   }
 
-  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+  zone = element([for i in range(local.mongo_count) : element(local.zones, i % 3)], count.index)
 }
 
 resource "google_compute_disk" "mongo_auth_pv" {
@@ -122,8 +126,24 @@ resource "google_compute_disk" "mongo_auth_pv" {
     id     = "${local.mongo_auth_prefix}-${count.index}"
   }
 
-  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+  zone = element([for i in range(local.mongo_count) : element(local.zones, i % 3)], count.index)
 }
+
+
+resource "google_compute_disk" "mongo6_pv" {
+  name     = "${local.mongo6_prefix}-${count.index}"
+  count    = local.mongo_count
+  type     = "pd-balanced"
+  size     = data.google_compute_snapshot.mongo_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.mongo_snapshot[count.index].name
+  labels = {
+    target = local.mongo6_prefix
+    id     = "${local.mongo6_prefix}-${count.index}"
+  }
+
+  zone = element([for i in range(local.mongo_count) : element(local.zones, i % 3)], count.index)
+}
+
 
 resource "google_compute_disk" "kafka_pv" {
   name     = "kafka-data-${count.index}"
