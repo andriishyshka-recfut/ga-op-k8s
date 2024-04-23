@@ -24,7 +24,7 @@ ca = os.getenv('CA_CERT',default="").replace('\\n','\n')
 snapshots = os.getenv("SNAPSHOTS",default=[]).split(',')
 sleep_time = os.getenv("SLEEP_TIME",default=60)
 repository = 'minio'
-wait_for_completion = os.getenv("WAIT_FC",default="false")
+wait_for_completion = os.getenv("WAIT_FC",default=False)
 ca_verify = os.getenv("CHECK_SSL",default=True)
 
 basic = HTTPBasicAuth(username,password)
@@ -101,7 +101,7 @@ if len(snapshots) > 0:
             global_state = "false"
         restore = do_request(snapshot,"recover",global_state).json()
         recovery_indexes = do_request(snapshot,"status").json()
-        if wait_for_completion == "true":
+        if wait_for_completion:
             wait_count = 0
             for index,value in recovery_indexes.items():
                 if value["shards"][0]["type"] == "SNAPSHOT":
