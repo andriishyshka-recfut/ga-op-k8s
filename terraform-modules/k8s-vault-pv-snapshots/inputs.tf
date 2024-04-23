@@ -10,10 +10,10 @@ locals {
   region      = "us-east4"
 
 
-  mongo_count       = var.Cluster == "production" ? var.Settings.clusters[var.Cluster].mongo.main.replicas : var.Settings.clusters[var.Cluster].mongo.magescanner.replicas
-  mongo_prefix      = var.Cluster == "production" ? var.Settings.clusters[var.Cluster].mongo.main.pvcPrefix: var.Settings.clusters[var.Cluster].mongo.magescanner.pvcPrefix
-  mongo_auth_count  = var.Settings.clusters[var.Cluster].mongo.auth.replicas
-  mongo_auth_prefix = var.Settings.clusters[var.Cluster].mongo.auth.pvcPrefix
+  mongo_count       = var.Cluster == "production" ? var.Settings.clusters[var.Cluster].mongo6.main.replicas : var.Settings.clusters[var.Cluster].mongo6.main.replicas
+  mongo_prefix      = var.Cluster == "production" ? var.Settings.clusters[var.Cluster].mongo6.main.pvcPrefix: var.Settings.clusters[var.Cluster].mongo6.main.pvcPrefix
+  mongo_auth_count  = var.Settings.clusters[var.Cluster].mongo6.auth.replicas
+  mongo_auth_prefix = var.Settings.clusters[var.Cluster].mongo6.auth.pvcPrefix
 
   kafka_count      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
   kafka_prefix     = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.kafka_prefix
