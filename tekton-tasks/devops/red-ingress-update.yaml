@@ -11,6 +11,6 @@ spec:
       emptyDir: {}
   params:
     - name: path
-      value: "k8s/tekton/stage-6/06-ingress"
+      value: "k8s/tekton/red/03-ingress"
     - name: branch
       value: "master"
