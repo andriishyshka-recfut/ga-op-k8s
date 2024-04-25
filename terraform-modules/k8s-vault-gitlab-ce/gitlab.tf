@@ -4,7 +4,7 @@ resource "helm_release" "gitlab" {
   chart      = "gitlab"
   name       = each.key
   namespace  = lookup(each.value, "namespace", local.namespace)
-  timeout    = 300
+  timeout    = 600
   wait       = true
   atomic     = true
   version    = each.value.helm_version
