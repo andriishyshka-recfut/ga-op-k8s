@@ -27,7 +27,7 @@ spec:
         cluster: ${cluster_label}
         color: ${cluster_color}
         component: stream-processor
-        severity: critical
+        severity: warning
     - alert: PodMemConsumption
       annotations:
         description: |
@@ -40,7 +40,7 @@ spec:
         cluster: ${cluster_label}
         color: ${cluster_color}
         component: stream-processor
-        severity: critical
+        severity: warning
     - alert: KubernetesJobFailed
       annotations:
         description: |

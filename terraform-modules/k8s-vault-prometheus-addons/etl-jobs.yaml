@@ -27,7 +27,7 @@ spec:
         cluster: ${cluster_label}
         color: ${cluster_color}
         component: stream-processor
-        severity: critical
+        severity: etl
     - alert: ETLPodsPending
       annotations:
         description: |
@@ -66,4 +66,4 @@ spec:
         cluster: ${cluster_label}
         color: ${cluster_color}
         component: stream-processor
-        severity: critical
+        severity: etl

@@ -145,6 +145,12 @@ alertmanager:
           channel: '#prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
+    - name: "slack-etl"
+      slack_configs:
+        - api_url: ${prometheus_slack_webhooks.url_etl}
+          channel: '#prometheus-etl'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
     - name: "slack-dome-bots"
       slack_configs:
         - api_url: ${prometheus_slack_webhooks.url_bots_dome}
@@ -228,6 +234,14 @@ alertmanager:
           - alertname=~"ETLJobsFailed"
           receiver: "tekton-failed-etl-jobs-webhook-notifications-and-slack"
         - matchers:
+          - severity=~"etl"
+          - cluster=~"production"
+          receiver: "slack-etl"
+        - matchers:
+          - namespace=~"etl"
+          - cluster=~"production"
+          receiver: "slack-etl"
+        - matchers:
           - alertname=~".*"
           receiver: "tekton-webhook-notifications-and-slack"
           routes:
@@ -236,6 +250,7 @@ alertmanager:
             receiver: "tekton-and-slack-woresolve"
           - matchers:
             - severity=~"critical"
+            - severity!~"etl"
             - cluster=~"production"
             receiver: "slack-critical"
     templates:
