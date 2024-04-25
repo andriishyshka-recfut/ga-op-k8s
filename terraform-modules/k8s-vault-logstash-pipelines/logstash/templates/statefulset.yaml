@@ -129,7 +129,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ template "logstash.fullname" . }}-logstash-es-creds
-                key: logstash_password
+                key: logstash_api_password
           - name: 'MINIO_ENDPOINT'
             value: {{ .Values.minio.endpoint }}
           - name: 'MINIO_BUCKET'
