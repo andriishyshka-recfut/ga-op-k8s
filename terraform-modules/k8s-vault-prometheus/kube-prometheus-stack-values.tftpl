@@ -201,8 +201,8 @@ alertmanager:
         - send_resolved: false
           url: "http://el-failed-etl-jobs-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_critical}
-          channel: '#prometheus-critical'
+        - api_url: ${prometheus_slack_webhooks.url_etl}
+          channel: '#prometheus-etl'
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     route:
