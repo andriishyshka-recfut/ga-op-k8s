@@ -18,6 +18,7 @@ resource "helm_release" "kafka_cluster" {
   namespace = local.kafkaNs
   wait      = true
   atomic    = true
+  timeout   = 900
   set {
     name = "subdomain"
     value = "${var.Settings.clusters[var.Cluster].subdomain}.${var.Settings.clusters[var.Cluster].domain}"
