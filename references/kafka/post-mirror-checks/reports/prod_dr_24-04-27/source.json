@@ -1,0 +1,7557 @@
+{
+    "attachment.ocr.telegram": {
+        "ocr": {
+            "0": {
+                "high": 2261395,
+                "lag": 0,
+                "low": 1925114,
+                "size": 336281
+            }
+        }
+    },
+    "attachment.ocr.telegram.backlog": {
+        "<not associated>": {
+            "0": {
+                "high": 707978,
+                "low": 702924,
+                "size": 5054
+            }
+        }
+    },
+    "birl.telegram.backlog": {
+        "<not associated>": {
+            "0": {
+                "high": 50654,
+                "low": 41299,
+                "size": 9355
+            }
+        }
+    },
+    "birl.telegram.failed": {
+        "<not associated>": {
+            "0": {
+                "high": 176894,
+                "low": 66886,
+                "size": 110008
+            }
+        }
+    },
+    "birl.telegram.source": {
+        "birl": {
+            "0": {
+                "high": 653752,
+                "lag": 0,
+                "low": 543967,
+                "size": 109785
+            }
+        }
+    },
+    "checker.out": {
+        "<not associated>": {
+            "0": {
+                "high": 7188,
+                "low": 1429,
+                "size": 5759
+            }
+        }
+    },
+    "checker.seen": {
+        "seenChecker": {
+            "0": {
+                "high": 12720,
+                "lag": 0,
+                "low": 12462,
+                "size": 258
+            }
+        }
+    },
+    "crypto.paste.source": {
+        "live": {
+            "0": {
+                "high": 73356,
+                "lag": 0,
+                "low": 69189,
+                "size": 4167
+            }
+        }
+    },
+    "crypto.paste.upsert": {
+        "live": {
+            "0": {
+                "high": 677,
+                "lag": 0,
+                "low": 671,
+                "size": 6
+            }
+        }
+    },
+    "crypto.posts.source": {
+        "live": {
+            "0": {
+                "high": 35515935,
+                "lag": 0,
+                "low": 34967477,
+                "size": 548458
+            }
+        }
+    },
+    "crypto.posts.upsert": {
+        "live": {
+            "0": {
+                "high": 1042068,
+                "lag": 0,
+                "low": 1037289,
+                "size": 4779
+            }
+        }
+    },
+    "crypto.profiles.source": {
+        "live": {
+            "0": {
+                "high": 2936293,
+                "lag": 0,
+                "low": 2896140,
+                "size": 40153
+            }
+        }
+    },
+    "crypto.profiles.upsert": {
+        "live": {
+            "0": {
+                "high": 183,
+                "lag": 0,
+                "low": 183,
+                "size": 0
+            }
+        }
+    },
+    "crypto.rf.source": {
+        "live": {
+            "0": {
+                "high": 131314,
+                "lag": 0,
+                "low": 127073,
+                "size": 4241
+            }
+        }
+    },
+    "crypto.rf.upsert": {
+        "live": {
+            "0": {
+                "high": 121176,
+                "lag": 0,
+                "low": 117243,
+                "size": 3933
+            }
+        }
+    },
+    "crypto.telegram.message.source": {
+        "live": {
+            "0": {
+                "high": 74747855,
+                "lag": 0,
+                "low": 73062428,
+                "size": 1685427
+            }
+        }
+    },
+    "crypto.telegram.message.upsert": {
+        "live": {
+            "0": {
+                "high": 7892,
+                "lag": 0,
+                "low": 7674,
+                "size": 218
+            }
+        }
+    },
+    "crypto.telegram.profile.source": {
+        "live": {
+            "0": {
+                "high": 557554,
+                "lag": 0,
+                "low": 532183,
+                "size": 25371
+            }
+        }
+    },
+    "crypto.telegram.profile.upsert": {
+        "live": {
+            "0": {
+                "high": 155,
+                "lag": 0,
+                "low": 146,
+                "size": 9
+            }
+        }
+    },
+    "crypto.telegram.source.source": {
+        "live": {
+            "0": {
+                "high": 77466,
+                "lag": 0,
+                "low": 72147,
+                "size": 5319
+            }
+        }
+    },
+    "crypto.telegram.source.upsert": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome": {
+        "beat": {
+            "0": {
+                "high": 445160157,
+                "lag": 156,
+                "low": 436499745,
+                "size": 8660412
+            }
+        }
+    },
+    "dome.0x00sec.post": {
+        "0x00sec": {
+            "0": {
+                "high": 84438,
+                "lag": 24,
+                "low": 84354,
+                "size": 84
+            }
+        }
+    },
+    "dome.0x00sec.profile": {
+        "0x00sec": {
+            "0": {
+                "high": 375108,
+                "lag": 9708,
+                "low": 0,
+                "size": 375108
+            }
+        }
+    },
+    "dome.altenen.post": {
+        "altenen": {
+            "0": {
+                "high": 528834,
+                "lag": 9698,
+                "low": 517521,
+                "size": 11313
+            }
+        }
+    },
+    "dome.altenen.post_new": {
+        "altenen": {
+            "0": {
+                "high": 6718,
+                "lag": 1,
+                "low": 6717,
+                "size": 1
+            }
+        }
+    },
+    "dome.altenen.post_prime": {
+        "altenen": {
+            "0": {
+                "high": 12488,
+                "lag": 6682,
+                "low": 0,
+                "size": 12488
+            }
+        }
+    },
+    "dome.altenen.post_vip": {
+        "altenen": {
+            "0": {
+                "high": 12091,
+                "lag": 813,
+                "low": 5573,
+                "size": 6518
+            }
+        }
+    },
+    "dome.altenen.post_vip_infinite": {
+        "<not associated>": {
+            "0": {
+                "high": 125053,
+                "low": 29903,
+                "size": 95150
+            }
+        }
+    },
+    "dome.altenen.profile": {
+        "altenen": {
+            "0": {
+                "high": 265157,
+                "lag": 1053,
+                "low": 0,
+                "size": 265157
+            }
+        }
+    },
+    "dome.altenen.profile_forward": {
+        "altenen": {
+            "0": {
+                "high": 554994,
+                "lag": 42040,
+                "low": 508751,
+                "size": 46243
+            }
+        }
+    },
+    "dome.antichat.post": {
+        "antichat": {
+            "0": {
+                "high": 986875,
+                "lag": 12,
+                "low": 986806,
+                "size": 69
+            }
+        }
+    },
+    "dome.antichat.profile": {
+        "antichat": {
+            "0": {
+                "high": 2069955,
+                "lag": 18,
+                "low": 2069458,
+                "size": 497
+            }
+        }
+    },
+    "dome.antimigalki.post": {
+        "antimigalki": {
+            "0": {
+                "high": 241380,
+                "lag": 29,
+                "low": 241245,
+                "size": 135
+            }
+        }
+    },
+    "dome.antimigalki.profile": {
+        "antimigalki": {
+            "0": {
+                "high": 34872,
+                "lag": 0,
+                "low": 34594,
+                "size": 278
+            }
+        }
+    },
+    "dome.ascarding.post": {
+        "ascarding": {
+            "0": {
+                "high": 152121,
+                "lag": 5,
+                "low": 146694,
+                "size": 5427
+            }
+        }
+    },
+    "dome.ascarding.post_vip": {
+        "ascarding": {
+            "0": {
+                "high": 33410,
+                "lag": 21994,
+                "low": 1187,
+                "size": 32223
+            }
+        }
+    },
+    "dome.ascarding.profile": {
+        "ascarding": {
+            "0": {
+                "high": 78135,
+                "lag": 1,
+                "low": 73260,
+                "size": 4875
+            }
+        }
+    },
+    "dome.bdf.post": {
+        "<not associated>": {
+            "0": {
+                "high": 96288,
+                "low": 96114,
+                "size": 174
+            }
+        }
+    },
+    "dome.bdf.post_new": {
+        "bdf": {
+            "0": {
+                "high": 11309,
+                "lag": 0,
+                "low": 11253,
+                "size": 56
+            }
+        }
+    },
+    "dome.bdf.post_prime": {
+        "bdf": {
+            "0": {
+                "high": 2558,
+                "lag": 0,
+                "low": 1934,
+                "size": 624
+            }
+        }
+    },
+    "dome.bdf.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.bdf.profile": {
+        "bdf": {
+            "0": {
+                "high": 208465,
+                "lag": 21,
+                "low": 161067,
+                "size": 47398
+            }
+        }
+    },
+    "dome.beat.": {
+        "<not associated>": {
+            "0": {
+                "high": 20,
+                "low": 20,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.0x00sec": {
+        "beat": {
+            "0": {
+                "high": 324539,
+                "lag": 0,
+                "low": 303519,
+                "size": 21020
+            }
+        }
+    },
+    "dome.beat.altenen": {
+        "beat": {
+            "0": {
+                "high": 10139453,
+                "lag": 2,
+                "low": 9610996,
+                "size": 528457
+            }
+        }
+    },
+    "dome.beat.antichat": {
+        "beat": {
+            "0": {
+                "high": 3590716,
+                "lag": 8,
+                "low": 3518439,
+                "size": 72277
+            }
+        }
+    },
+    "dome.beat.antimigalki": {
+        "beat": {
+            "0": {
+                "high": 254723,
+                "lag": 2,
+                "low": 239992,
+                "size": 14731
+            }
+        }
+    },
+    "dome.beat.ascarding": {
+        "beat": {
+            "0": {
+                "high": 688853,
+                "lag": 0,
+                "low": 613603,
+                "size": 75250
+            }
+        }
+    },
+    "dome.beat.bdf": {
+        "beat": {
+            "0": {
+                "high": 590529,
+                "lag": 0,
+                "low": 575006,
+                "size": 15523
+            }
+        }
+    },
+    "dome.beat.bhf": {
+        "beat": {
+            "0": {
+                "high": 134209007,
+                "lag": 52,
+                "low": 133170835,
+                "size": 1038172
+            }
+        }
+    },
+    "dome.beat.bitcointalk": {
+        "beat": {
+            "0": {
+                "high": 6687329,
+                "lag": 2,
+                "low": 6317670,
+                "size": 369659
+            }
+        }
+    },
+    "dome.beat.blackbiz": {
+        "beat": {
+            "0": {
+                "high": 5363,
+                "lag": 2,
+                "low": 0,
+                "size": 5363
+            }
+        }
+    },
+    "dome.beat.blackbones": {
+        "beat": {
+            "0": {
+                "high": 372485,
+                "lag": 0,
+                "low": 349794,
+                "size": 22691
+            }
+        }
+    },
+    "dome.beat.blackhacker": {
+        "beat": {
+            "0": {
+                "high": 11939,
+                "lag": 0,
+                "low": 0,
+                "size": 11939
+            }
+        }
+    },
+    "dome.beat.blackhatprotools": {
+        "beat": {
+            "0": {
+                "high": 57974,
+                "lag": 0,
+                "low": 54505,
+                "size": 3469
+            }
+        }
+    },
+    "dome.beat.blackhatworld": {
+        "beat": {
+            "0": {
+                "high": 9845262,
+                "lag": 0,
+                "low": 9758312,
+                "size": 86950
+            }
+        }
+    },
+    "dome.beat.blasthack": {
+        "beat": {
+            "0": {
+                "high": 2873587,
+                "lag": 0,
+                "low": 2769407,
+                "size": 104180
+            }
+        }
+    },
+    "dome.beat.breached": {
+        "beat": {
+            "0": {
+                "high": 1259932,
+                "lag": 0,
+                "low": 1258150,
+                "size": 1782
+            }
+        }
+    },
+    "dome.beat.carder": {
+        "beat": {
+            "0": {
+                "high": 1110855,
+                "lag": 1,
+                "low": 1082597,
+                "size": 28258
+            }
+        }
+    },
+    "dome.beat.carderone": {
+        "beat": {
+            "0": {
+                "high": 218889,
+                "lag": 0,
+                "low": 209535,
+                "size": 9354
+            }
+        }
+    },
+    "dome.beat.carders": {
+        "beat": {
+            "0": {
+                "high": 356572,
+                "lag": 0,
+                "low": 336026,
+                "size": 20546
+            }
+        }
+    },
+    "dome.beat.cardingleaks": {
+        "<not associated>": {
+            "0": {
+                "high": 147265,
+                "low": 147265,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.cardingmafia": {
+        "beat": {
+            "0": {
+                "high": 1163296,
+                "lag": 0,
+                "low": 1079625,
+                "size": 83671
+            }
+        }
+    },
+    "dome.beat.cardingworld": {
+        "beat": {
+            "0": {
+                "high": 168359,
+                "lag": 1,
+                "low": 157394,
+                "size": 10965
+            }
+        }
+    },
+    "dome.beat.cardvilla": {
+        "beat": {
+            "0": {
+                "high": 1083334,
+                "lag": 1,
+                "low": 1038486,
+                "size": 44848
+            }
+        }
+    },
+    "dome.beat.cebulka": {
+        "<not associated>": {
+            "0": {
+                "high": 9491,
+                "low": 9491,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.centerclub": {
+        "beat": {
+            "0": {
+                "high": 2896021,
+                "lag": 1,
+                "low": 2614709,
+                "size": 281312
+            }
+        }
+    },
+    "dome.beat.club2crd": {
+        "beat": {
+            "0": {
+                "high": 162990749,
+                "lag": 0,
+                "low": 162662637,
+                "size": 328112
+            }
+        }
+    },
+    "dome.beat.codeby": {
+        "beat": {
+            "0": {
+                "high": 496956,
+                "lag": 0,
+                "low": 474098,
+                "size": 22858
+            }
+        }
+    },
+    "dome.beat.cracked": {
+        "beat": {
+            "0": {
+                "high": 4801309,
+                "lag": 21,
+                "low": 4493597,
+                "size": 307712
+            }
+        }
+    },
+    "dome.beat.cracking": {
+        "beat": {
+            "0": {
+                "high": 923330,
+                "lag": 0,
+                "low": 824377,
+                "size": 98953
+            }
+        }
+    },
+    "dome.beat.crackingitaly": {
+        "<not associated>": {
+            "0": {
+                "high": 39949,
+                "low": 39949,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.crackingmafia": {
+        "beat": {
+            "0": {
+                "high": 4284023,
+                "lag": 20,
+                "low": 3796702,
+                "size": 487321
+            }
+        }
+    },
+    "dome.beat.crackingpro": {
+        "beat": {
+            "0": {
+                "high": 1370479,
+                "lag": 0,
+                "low": 1300976,
+                "size": 69503
+            }
+        }
+    },
+    "dome.beat.crackingx": {
+        "beat": {
+            "0": {
+                "high": 470649,
+                "lag": 1,
+                "low": 456413,
+                "size": 14236
+            }
+        }
+    },
+    "dome.beat.crackx": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.crax": {
+        "<not associated>": {
+            "0": {
+                "high": 2430197,
+                "low": 2430197,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.crdpro": {
+        "beat": {
+            "0": {
+                "high": 2268433,
+                "lag": 0,
+                "low": 2029561,
+                "size": 238872
+            }
+        }
+    },
+    "dome.beat.crimemarket": {
+        "<not associated>": {
+            "0": {
+                "high": 2740113,
+                "low": 2740113,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.crimenetwork": {
+        "<not associated>": {
+            "0": {
+                "high": 572382,
+                "low": 572382,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.cryptbb": {
+        "beat": {
+            "0": {
+                "high": 185660,
+                "lag": 0,
+                "low": 169054,
+                "size": 16606
+            }
+        }
+    },
+    "dome.beat.cweb": {
+        "beat": {
+            "0": {
+                "high": 109990,
+                "lag": 0,
+                "low": 104249,
+                "size": 5741
+            }
+        }
+    },
+    "dome.beat.cyberbreach": {
+        "beat": {
+            "0": {
+                "high": 495985,
+                "lag": 1,
+                "low": 449650,
+                "size": 46335
+            }
+        }
+    },
+    "dome.beat.cybercarders": {
+        "beat": {
+            "0": {
+                "high": 4348131,
+                "lag": 3,
+                "low": 4019181,
+                "size": 328950
+            }
+        }
+    },
+    "dome.beat.dark2web": {
+        "beat": {
+            "0": {
+                "high": 591607,
+                "lag": 0,
+                "low": 557391,
+                "size": 34216
+            }
+        }
+    },
+    "dome.beat.darkmarket": {
+        "beat": {
+            "0": {
+                "high": 731288,
+                "lag": 1,
+                "low": 669471,
+                "size": 61817
+            }
+        }
+    },
+    "dome.beat.darkmoney": {
+        "<not associated>": {
+            "0": {
+                "high": 913949,
+                "low": 913949,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.darknet": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.darktime": {
+        "beat": {
+            "0": {
+                "high": 1023,
+                "lag": 0,
+                "low": 949,
+                "size": 74
+            }
+        }
+    },
+    "dome.beat.demonforums": {
+        "beat": {
+            "0": {
+                "high": 546842,
+                "lag": 0,
+                "low": 467579,
+                "size": 79263
+            }
+        }
+    },
+    "dome.beat.dread": {
+        "<not associated>": {
+            "0": {
+                "high": 700024,
+                "low": 700024,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.dublikat": {
+        "beat": {
+            "0": {
+                "high": 798051,
+                "lag": 2,
+                "low": 779489,
+                "size": 18562
+            }
+        }
+    },
+    "dome.beat.elhacker": {
+        "beat": {
+            "0": {
+                "high": 315792,
+                "lag": 0,
+                "low": 314844,
+                "size": 948
+            }
+        }
+    },
+    "dome.beat.enclave": {
+        "beat": {
+            "0": {
+                "high": 1450966,
+                "lag": 0,
+                "low": 1361086,
+                "size": 89880
+            }
+        }
+    },
+    "dome.beat.exploit.in": {
+        "beat": {
+            "0": {
+                "high": 3246917,
+                "lag": 1,
+                "low": 3037372,
+                "size": 209545
+            }
+        }
+    },
+    "dome.beat.forumteam": {
+        "<not associated>": {
+            "0": {
+                "high": 1250849,
+                "low": 1250849,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.freehack": {
+        "beat": {
+            "0": {
+                "high": 373764,
+                "lag": 0,
+                "low": 367937,
+                "size": 5827
+            }
+        }
+    },
+    "dome.beat.fssquad": {
+        "beat": {
+            "0": {
+                "high": 505493,
+                "lag": 0,
+                "low": 497945,
+                "size": 7548
+            }
+        }
+    },
+    "dome.beat.gerki": {
+        "beat": {
+            "0": {
+                "high": 406850,
+                "lag": 1,
+                "low": 380688,
+                "size": 26162
+            }
+        }
+    },
+    "dome.beat.hackflag": {
+        "beat": {
+            "0": {
+                "high": 133731,
+                "lag": 1,
+                "low": 131301,
+                "size": 2430
+            }
+        }
+    },
+    "dome.beat.hackforums": {
+        "beat": {
+            "0": {
+                "high": 321480,
+                "lag": 0,
+                "low": 314668,
+                "size": 6812
+            }
+        }
+    },
+    "dome.beat.hackingfather": {
+        "<not associated>": {
+            "0": {
+                "high": 209300,
+                "low": 209300,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.hacklife": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.hak5": {
+        "beat": {
+            "0": {
+                "high": 723997,
+                "lag": 1,
+                "low": 683233,
+                "size": 40764
+            }
+        }
+    },
+    "dome.beat.hashkiller": {
+        "beat": {
+            "0": {
+                "high": 65270,
+                "lag": 0,
+                "low": 62155,
+                "size": 3115
+            }
+        }
+    },
+    "dome.beat.hpc": {
+        "beat": {
+            "0": {
+                "high": 103394,
+                "lag": 0,
+                "low": 101826,
+                "size": 1568
+            }
+        }
+    },
+    "dome.beat.hydramarket": {
+        "<not associated>": {
+            "0": {
+                "high": 439264,
+                "low": 439264,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.ifud": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.imthack": {
+        "<not associated>": {
+            "0": {
+                "high": 301854,
+                "low": 301854,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.infectedzone": {
+        "<not associated>": {
+            "0": {
+                "high": 207515,
+                "low": 207515,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.instanthack": {
+        "<not associated>": {
+            "0": {
+                "high": 2376411,
+                "low": 2376411,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.korovka": {
+        "beat": {
+            "0": {
+                "high": 389130,
+                "lag": 0,
+                "low": 379482,
+                "size": 9648
+            }
+        }
+    },
+    "dome.beat.lcp": {
+        "beat": {
+            "0": {
+                "high": 2391,
+                "lag": 0,
+                "low": 2382,
+                "size": 9
+            }
+        }
+    },
+    "dome.beat.leakbase": {
+        "beat": {
+            "0": {
+                "high": 682645,
+                "lag": 0,
+                "low": 616002,
+                "size": 66643
+            }
+        }
+    },
+    "dome.beat.leakeddatabases": {
+        "<not associated>": {
+            "0": {
+                "high": 11150,
+                "low": 11150,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.leakforums": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.leakzone": {
+        "beat": {
+            "0": {
+                "high": 180096,
+                "lag": 0,
+                "low": 168820,
+                "size": 11276
+            }
+        }
+    },
+    "dome.beat.legitcarders": {
+        "beat": {
+            "0": {
+                "high": 50908,
+                "lag": 1,
+                "low": 46827,
+                "size": 4081
+            }
+        }
+    },
+    "dome.beat.level23hacktools": {
+        "beat": {
+            "0": {
+                "high": 120071,
+                "lag": 0,
+                "low": 103263,
+                "size": 16808
+            }
+        }
+    },
+    "dome.beat.lolzteam": {
+        "beat": {
+            "0": {
+                "high": 7002934,
+                "lag": 23,
+                "low": 6522799,
+                "size": 480135
+            }
+        }
+    },
+    "dome.beat.migalki": {
+        "beat": {
+            "0": {
+                "high": 28345,
+                "lag": 0,
+                "low": 25506,
+                "size": 2839
+            }
+        }
+    },
+    "dome.beat.mmgp": {
+        "beat": {
+            "0": {
+                "high": 1898625,
+                "lag": 0,
+                "low": 1857282,
+                "size": 41343
+            }
+        }
+    },
+    "dome.beat.moon": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.mpgh": {
+        "beat": {
+            "0": {
+                "high": 1046130,
+                "lag": 1,
+                "low": 883082,
+                "size": 163048
+            }
+        }
+    },
+    "dome.beat.navigator": {
+        "beat": {
+            "0": {
+                "high": 212413,
+                "lag": 0,
+                "low": 201373,
+                "size": 11040
+            }
+        }
+    },
+    "dome.beat.niflheim": {
+        "beat": {
+            "0": {
+                "high": 285855,
+                "lag": 0,
+                "low": 259837,
+                "size": 26018
+            }
+        }
+    },
+    "dome.beat.nohide": {
+        "<not associated>": {
+            "0": {
+                "high": 80009,
+                "low": 80009,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.nulled": {
+        "beat": {
+            "0": {
+                "high": 5985808,
+                "lag": 8,
+                "low": 5587349,
+                "size": 398459
+            }
+        }
+    },
+    "dome.beat.nulledbb": {
+        "beat": {
+            "0": {
+                "high": 1853335,
+                "lag": 1,
+                "low": 1610676,
+                "size": 242659
+            }
+        }
+    },
+    "dome.beat.ogusers": {
+        "beat": {
+            "0": {
+                "high": 62970,
+                "lag": 0,
+                "low": 19531,
+                "size": 43439
+            }
+        }
+    },
+    "dome.beat.omerta": {
+        "beat": {
+            "0": {
+                "high": 233486,
+                "lag": 0,
+                "low": 232500,
+                "size": 986
+            }
+        }
+    },
+    "dome.beat.patched": {
+        "beat": {
+            "0": {
+                "high": 90935,
+                "lag": 0,
+                "low": 89674,
+                "size": 1261
+            }
+        }
+    },
+    "dome.beat.piratebuhta": {
+        "beat": {
+            "0": {
+                "high": 1407307,
+                "lag": 1,
+                "low": 1282804,
+                "size": 124503
+            }
+        }
+    },
+    "dome.beat.probiv": {
+        "beat": {
+            "0": {
+                "high": 1354604,
+                "lag": 0,
+                "low": 1279853,
+                "size": 74751
+            }
+        }
+    },
+    "dome.beat.procrd": {
+        "beat": {
+            "0": {
+                "high": 568693,
+                "lag": 0,
+                "low": 525737,
+                "size": 42956
+            }
+        }
+    },
+    "dome.beat.prologic": {
+        "beat": {
+            "0": {
+                "high": 808959,
+                "lag": 1,
+                "low": 769310,
+                "size": 39649
+            }
+        }
+    },
+    "dome.beat.ramp": {
+        "beat": {
+            "0": {
+                "high": 287404,
+                "lag": 0,
+                "low": 256735,
+                "size": 30669
+            }
+        }
+    },
+    "dome.beat.rstforums": {
+        "beat": {
+            "0": {
+                "high": 745349,
+                "lag": 5,
+                "low": 709627,
+                "size": 35722
+            }
+        }
+    },
+    "dome.beat.runion": {
+        "beat": {
+            "0": {
+                "high": 570954,
+                "lag": 0,
+                "low": 570783,
+                "size": 171
+            }
+        }
+    },
+    "dome.beat.rutor": {
+        "beat": {
+            "0": {
+                "high": 2066551,
+                "lag": 0,
+                "low": 1705915,
+                "size": 360636
+            }
+        }
+    },
+    "dome.beat.selkis": {
+        "<not associated>": {
+            "0": {
+                "high": 1136090,
+                "low": 1136090,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.shadowcarders": {
+        "beat": {
+            "0": {
+                "high": 6613635,
+                "lag": 0,
+                "low": 6318669,
+                "size": 294966
+            }
+        }
+    },
+    "dome.beat.sinisterly": {
+        "beat": {
+            "0": {
+                "high": 1973181,
+                "lag": 3,
+                "low": 1888850,
+                "size": 84331
+            }
+        }
+    },
+    "dome.beat.skynetzone": {
+        "<not associated>": {
+            "0": {
+                "high": 5027596,
+                "low": 5027596,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.slivup": {
+        "beat": {
+            "0": {
+                "high": 899146,
+                "lag": 0,
+                "low": 821681,
+                "size": 77465
+            }
+        }
+    },
+    "dome.beat.thebotnet": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.thehub": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.ufolabs": {
+        "beat": {
+            "0": {
+                "high": 557221,
+                "lag": 0,
+                "low": 502060,
+                "size": 55161
+            }
+        }
+    },
+    "dome.beat.underc0de": {
+        "beat": {
+            "0": {
+                "high": 297951,
+                "lag": 0,
+                "low": 249397,
+                "size": 48554
+            }
+        }
+    },
+    "dome.beat.validmarket": {
+        "beat": {
+            "0": {
+                "high": 68049,
+                "lag": 0,
+                "low": 64096,
+                "size": 3953
+            }
+        }
+    },
+    "dome.beat.verified": {
+        "beat": {
+            "0": {
+                "high": 12225,
+                "lag": 0,
+                "low": 11065,
+                "size": 1160
+            }
+        }
+    },
+    "dome.beat.veryleaks": {
+        "beat": {
+            "0": {
+                "high": 294552,
+                "lag": 0,
+                "low": 288386,
+                "size": 6166
+            }
+        }
+    },
+    "dome.beat.vlmi": {
+        "beat": {
+            "0": {
+                "high": 1537039,
+                "lag": 17,
+                "low": 1376729,
+                "size": 160310
+            }
+        }
+    },
+    "dome.beat.wwhclub": {
+        "<not associated>": {
+            "0": {
+                "high": 11928347,
+                "low": 11928347,
+                "size": 0
+            }
+        }
+    },
+    "dome.beat.xss": {
+        "beat": {
+            "0": {
+                "high": 2588345,
+                "lag": 0,
+                "low": 2410088,
+                "size": 178257
+            }
+        }
+    },
+    "dome.beat.youhack": {
+        "beat": {
+            "0": {
+                "high": 1401827,
+                "lag": 0,
+                "low": 1296512,
+                "size": 105315
+            }
+        }
+    },
+    "dome.bhf.post": {
+        "bhf": {
+            "0": {
+                "high": 224484,
+                "lag": 1033,
+                "low": 222600,
+                "size": 1884
+            }
+        }
+    },
+    "dome.bhf.post_mapping": {
+        "bhf": {
+            "0": {
+                "high": 984777,
+                "lag": 72,
+                "low": 981230,
+                "size": 3547
+            }
+        }
+    },
+    "dome.bhf.post_new": {
+        "bhf": {
+            "0": {
+                "high": 11534,
+                "lag": 0,
+                "low": 11512,
+                "size": 22
+            }
+        }
+    },
+    "dome.bhf.profile": {
+        "bhf": {
+            "0": {
+                "high": 99171,
+                "lag": 1,
+                "low": 99162,
+                "size": 9
+            }
+        }
+    },
+    "dome.bhf.profile_forward": {
+        "bhf": {
+            "0": {
+                "high": 19048,
+                "lag": 1,
+                "low": 0,
+                "size": 19048
+            }
+        }
+    },
+    "dome.bitcointalk.post": {
+        "bitcointalk": {
+            "0": {
+                "high": 530673,
+                "lag": 3352,
+                "low": 525997,
+                "size": 4676
+            }
+        }
+    },
+    "dome.bitcointalk.post_new": {
+        "bitcointalk": {
+            "0": {
+                "high": 154476,
+                "lag": 0,
+                "low": 153344,
+                "size": 1132
+            }
+        }
+    },
+    "dome.bitcointalk.profile": {
+        "bitcointalk": {
+            "0": {
+                "high": 7059041,
+                "lag": 3409365,
+                "low": 3520585,
+                "size": 3538456
+            }
+        }
+    },
+    "dome.blackbiz.post": {
+        "blackbiz": {
+            "0": {
+                "high": 142382,
+                "lag": 51,
+                "low": 142143,
+                "size": 239
+            }
+        }
+    },
+    "dome.blackbiz.post_prime": {
+        "blackbiz": {
+            "0": {
+                "high": 33034,
+                "lag": 2985,
+                "low": 0,
+                "size": 33034
+            }
+        }
+    },
+    "dome.blackbiz.profile": {
+        "blackbiz": {
+            "0": {
+                "high": 309310,
+                "lag": 144603,
+                "low": 0,
+                "size": 309310
+            }
+        }
+    },
+    "dome.blackbones.post": {
+        "blackbones": {
+            "0": {
+                "high": 149232,
+                "lag": 74,
+                "low": 148896,
+                "size": 336
+            }
+        }
+    },
+    "dome.blackbones.post_new": {
+        "blackbones": {
+            "0": {
+                "high": 1025,
+                "lag": 1,
+                "low": 1024,
+                "size": 1
+            }
+        }
+    },
+    "dome.blackbones.post_prime": {
+        "blackbones": {
+            "0": {
+                "high": 40570,
+                "lag": 27542,
+                "low": 10759,
+                "size": 29811
+            }
+        }
+    },
+    "dome.blackbones.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.blackbones.profile": {
+        "blackbones": {
+            "0": {
+                "high": 198703,
+                "lag": 0,
+                "low": 189505,
+                "size": 9198
+            }
+        }
+    },
+    "dome.blackbones.profile_forward": {
+        "blackbones": {
+            "0": {
+                "high": 2052,
+                "lag": 11,
+                "low": 0,
+                "size": 2052
+            }
+        }
+    },
+    "dome.blackhacker.post": {
+        "blackhacker": {
+            "0": {
+                "high": 45172,
+                "lag": 187,
+                "low": 42361,
+                "size": 2811
+            }
+        }
+    },
+    "dome.blackhacker.profile": {
+        "blackhacker": {
+            "0": {
+                "high": 39746,
+                "lag": 31,
+                "low": 36376,
+                "size": 3370
+            }
+        }
+    },
+    "dome.blackhatprotools.post": {
+        "blackhatprotools": {
+            "0": {
+                "high": 6107,
+                "lag": 1,
+                "low": 3808,
+                "size": 2299
+            }
+        }
+    },
+    "dome.blackhatprotools.post_vip": {
+        "blackhatprotools": {
+            "0": {
+                "high": 11979,
+                "lag": 2979,
+                "low": 5143,
+                "size": 6836
+            }
+        }
+    },
+    "dome.blackhatprotools.profile": {
+        "blackhatprotools": {
+            "0": {
+                "high": 19846,
+                "lag": 730,
+                "low": 13705,
+                "size": 6141
+            }
+        }
+    },
+    "dome.blackhatworld.post": {
+        "blackhatworld": {
+            "0": {
+                "high": 410496,
+                "lag": 1678,
+                "low": 27432,
+                "size": 383064
+            }
+        }
+    },
+    "dome.blackhatworld.post_new": {
+        "blackhatworld": {
+            "0": {
+                "high": 55134,
+                "lag": 1959,
+                "low": 0,
+                "size": 55134
+            }
+        }
+    },
+    "dome.blackhatworld.profile": {
+        "blackhatworld": {
+            "0": {
+                "high": 1732081,
+                "lag": 1232543,
+                "low": 0,
+                "size": 1732081
+            }
+        }
+    },
+    "dome.blackhatworld.profile_forward": {
+        "blackhatworld": {
+            "0": {
+                "high": 402389,
+                "lag": 318507,
+                "low": 0,
+                "size": 402389
+            }
+        }
+    },
+    "dome.blasthack.post": {
+        "blasthack": {
+            "0": {
+                "high": 136423,
+                "lag": 63,
+                "low": 136312,
+                "size": 111
+            }
+        }
+    },
+    "dome.blasthack.post_new": {
+        "blasthack": {
+            "0": {
+                "high": 25719,
+                "lag": 1,
+                "low": 25718,
+                "size": 1
+            }
+        }
+    },
+    "dome.blasthack.profile": {
+        "blasthack": {
+            "0": {
+                "high": 516569,
+                "lag": 284133,
+                "low": 0,
+                "size": 516569
+            }
+        }
+    },
+    "dome.breached.post": {
+        "breached": {
+            "0": {
+                "high": 21563,
+                "lag": 372,
+                "low": 19995,
+                "size": 1568
+            }
+        }
+    },
+    "dome.breached.post_new": {
+        "breached": {
+            "0": {
+                "high": 1411,
+                "lag": 4,
+                "low": 1374,
+                "size": 37
+            }
+        }
+    },
+    "dome.breached.post_prime": {
+        "breached": {
+            "0": {
+                "high": 11032,
+                "lag": 6281,
+                "low": 4684,
+                "size": 6348
+            }
+        }
+    },
+    "dome.breached.profile": {
+        "breached": {
+            "0": {
+                "high": 35257,
+                "lag": 5036,
+                "low": 0,
+                "size": 35257
+            }
+        }
+    },
+    "dome.carder.post": {
+        "carder": {
+            "0": {
+                "high": 240017,
+                "lag": 108,
+                "low": 239795,
+                "size": 222
+            }
+        }
+    },
+    "dome.carder.post_new": {
+        "carder": {
+            "0": {
+                "high": 5525,
+                "lag": 0,
+                "low": 5383,
+                "size": 142
+            }
+        }
+    },
+    "dome.carder.profile": {
+        "carder": {
+            "0": {
+                "high": 149610,
+                "lag": 30905,
+                "low": 0,
+                "size": 149610
+            }
+        }
+    },
+    "dome.carderone.post": {
+        "carderone": {
+            "0": {
+                "high": 341647,
+                "lag": 0,
+                "low": 341593,
+                "size": 54
+            }
+        }
+    },
+    "dome.carderone.profile": {
+        "carderone": {
+            "0": {
+                "high": 43789,
+                "lag": 0,
+                "low": 43668,
+                "size": 121
+            }
+        }
+    },
+    "dome.carders.post": {
+        "carders": {
+            "0": {
+                "high": 103231,
+                "lag": 172,
+                "low": 94340,
+                "size": 8891
+            }
+        }
+    },
+    "dome.carders.profile": {
+        "carders": {
+            "0": {
+                "high": 248260,
+                "lag": 30478,
+                "low": 214155,
+                "size": 34105
+            }
+        }
+    },
+    "dome.cardingleaks.post": {
+        "cardingleaks": {
+            "0": {
+                "high": 73759,
+                "lag": 17,
+                "low": 70174,
+                "size": 3585
+            }
+        }
+    },
+    "dome.cardingleaks.profile": {
+        "cardingleaks": {
+            "0": {
+                "high": 139960,
+                "lag": 1,
+                "low": 70246,
+                "size": 69714
+            }
+        }
+    },
+    "dome.cardingmafia.post": {
+        "cardingmafia": {
+            "0": {
+                "high": 114747,
+                "lag": 389,
+                "low": 98511,
+                "size": 16236
+            }
+        }
+    },
+    "dome.cardingmafia.profile": {
+        "cardingmafia": {
+            "0": {
+                "high": 264825,
+                "lag": 15,
+                "low": 0,
+                "size": 264825
+            }
+        }
+    },
+    "dome.cardingworld.post": {
+        "cardingworld": {
+            "0": {
+                "high": 157719,
+                "lag": 18,
+                "low": 157695,
+                "size": 24
+            }
+        }
+    },
+    "dome.cardingworld.profile": {
+        "cardingworld": {
+            "0": {
+                "high": 101088,
+                "lag": 147,
+                "low": 100018,
+                "size": 1070
+            }
+        }
+    },
+    "dome.cardvilla.post": {
+        "cardvilla": {
+            "0": {
+                "high": 220105,
+                "lag": 3669,
+                "low": 173146,
+                "size": 46959
+            }
+        }
+    },
+    "dome.cardvilla.post_new": {
+        "cardvilla": {
+            "0": {
+                "high": 1322,
+                "lag": 4,
+                "low": 1235,
+                "size": 87
+            }
+        }
+    },
+    "dome.cardvilla.profile": {
+        "cardvilla": {
+            "0": {
+                "high": 599079,
+                "lag": 59,
+                "low": 0,
+                "size": 599079
+            }
+        }
+    },
+    "dome.cardvilla.profile_forward": {
+        "cardvilla": {
+            "0": {
+                "high": 3222,
+                "lag": 0,
+                "low": 3221,
+                "size": 1
+            }
+        }
+    },
+    "dome.cebulka.post": {
+        "<not associated>": {
+            "0": {
+                "high": 7378,
+                "low": 6030,
+                "size": 1348
+            }
+        }
+    },
+    "dome.cebulka.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 57185,
+                "low": 0,
+                "size": 57185
+            }
+        }
+    },
+    "dome.centerclub.post": {
+        "centerclub": {
+            "0": {
+                "high": 468749,
+                "lag": 13233,
+                "low": 442860,
+                "size": 25889
+            }
+        }
+    },
+    "dome.centerclub.post_prime": {
+        "centerclub": {
+            "0": {
+                "high": 859,
+                "lag": 5,
+                "low": 0,
+                "size": 859
+            }
+        }
+    },
+    "dome.centerclub.profile": {
+        "centerclub": {
+            "0": {
+                "high": 465080,
+                "lag": 12996,
+                "low": 450478,
+                "size": 14602
+            }
+        }
+    },
+    "dome.club2crd.post": {
+        "club2crd": {
+            "0": {
+                "high": 96342,
+                "lag": 0,
+                "low": 96255,
+                "size": 87
+            }
+        }
+    },
+    "dome.club2crd.post_mapping": {
+        "club2crd": {
+            "0": {
+                "high": 69194,
+                "lag": 1,
+                "low": 69193,
+                "size": 1
+            }
+        }
+    },
+    "dome.club2crd.post_new": {
+        "club2crd": {
+            "0": {
+                "high": 25387,
+                "lag": 0,
+                "low": 25380,
+                "size": 7
+            }
+        }
+    },
+    "dome.club2crd.profile": {
+        "club2crd": {
+            "0": {
+                "high": 249434,
+                "lag": 42910,
+                "low": 204190,
+                "size": 45244
+            }
+        }
+    },
+    "dome.club2crd.profile_forward": {
+        "club2crd": {
+            "0": {
+                "high": 24412533,
+                "lag": 24197484,
+                "low": 0,
+                "size": 24412533
+            }
+        }
+    },
+    "dome.codeby.post": {
+        "codeby": {
+            "0": {
+                "high": 143431,
+                "lag": 19,
+                "low": 143391,
+                "size": 40
+            }
+        }
+    },
+    "dome.codeby.post_new": {
+        "codeby": {
+            "0": {
+                "high": 4963,
+                "lag": 0,
+                "low": 4962,
+                "size": 1
+            }
+        }
+    },
+    "dome.codeby.profile": {
+        "codeby": {
+            "0": {
+                "high": 243925,
+                "lag": 31993,
+                "low": 0,
+                "size": 243925
+            }
+        }
+    },
+    "dome.codeby.profile_forward": {
+        "codeby": {
+            "0": {
+                "high": 27513,
+                "lag": 0,
+                "low": 0,
+                "size": 27513
+            }
+        }
+    },
+    "dome.combolist.post": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.combolist.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.combolist.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.cracked.post": {
+        "cracked": {
+            "0": {
+                "high": 794069,
+                "lag": 504233,
+                "low": 0,
+                "size": 794069
+            }
+        }
+    },
+    "dome.cracked.post_new": {
+        "cracked": {
+            "0": {
+                "high": 3542,
+                "lag": 0,
+                "low": 3530,
+                "size": 12
+            }
+        }
+    },
+    "dome.cracked.post_vip": {
+        "cracked": {
+            "0": {
+                "high": 61126,
+                "lag": 348,
+                "low": 0,
+                "size": 61126
+            }
+        }
+    },
+    "dome.cracked.profile": {
+        "cracked": {
+            "0": {
+                "high": 4084961,
+                "lag": 3705278,
+                "low": 0,
+                "size": 4084961
+            }
+        }
+    },
+    "dome.cracking.post": {
+        "cracking": {
+            "0": {
+                "high": 742284,
+                "lag": 411,
+                "low": 741822,
+                "size": 462
+            }
+        }
+    },
+    "dome.cracking.post_new": {
+        "cracking": {
+            "0": {
+                "high": 298097,
+                "lag": 1,
+                "low": 298096,
+                "size": 1
+            }
+        }
+    },
+    "dome.cracking.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 914,
+                "low": 914,
+                "size": 0
+            }
+        }
+    },
+    "dome.cracking.post_vip": {
+        "cracking": {
+            "0": {
+                "high": 48646,
+                "lag": 1423,
+                "low": 0,
+                "size": 48646
+            }
+        }
+    },
+    "dome.cracking.profile": {
+        "cracking": {
+            "0": {
+                "high": 6597,
+                "lag": 132,
+                "low": 1627,
+                "size": 4970
+            }
+        }
+    },
+    "dome.crackingitaly.post": {
+        "<not associated>": {
+            "0": {
+                "high": 59704,
+                "low": 0,
+                "size": 59704
+            }
+        }
+    },
+    "dome.crackingitaly.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 6980,
+                "low": 0,
+                "size": 6980
+            }
+        }
+    },
+    "dome.crackingitaly.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 612,
+                "low": 0,
+                "size": 612
+            }
+        }
+    },
+    "dome.crackingitaly.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 47541,
+                "low": 0,
+                "size": 47541
+            }
+        }
+    },
+    "dome.crackingitaly.profile_forward": {
+        "<not associated>": {
+            "0": {
+                "high": 8863,
+                "low": 0,
+                "size": 8863
+            }
+        }
+    },
+    "dome.crackingmafia.post": {
+        "crackingmafia": {
+            "0": {
+                "high": 127504,
+                "lag": 54,
+                "low": 110180,
+                "size": 17324
+            }
+        }
+    },
+    "dome.crackingmafia.profile": {
+        "crackingmafia": {
+            "0": {
+                "high": 100250,
+                "lag": 1,
+                "low": 99489,
+                "size": 761
+            }
+        }
+    },
+    "dome.crackingpro.post": {
+        "crackingpro": {
+            "0": {
+                "high": 149939,
+                "lag": 3412,
+                "low": 104059,
+                "size": 45880
+            }
+        }
+    },
+    "dome.crackingpro.post_vip": {
+        "crackingpro": {
+            "0": {
+                "high": 9863,
+                "lag": 1,
+                "low": 9862,
+                "size": 1
+            }
+        }
+    },
+    "dome.crackingpro.profile": {
+        "crackingpro": {
+            "0": {
+                "high": 345455,
+                "lag": 180059,
+                "low": 0,
+                "size": 345455
+            }
+        }
+    },
+    "dome.crackingpro.profile_forward": {
+        "crackingpro": {
+            "0": {
+                "high": 69212,
+                "lag": 56350,
+                "low": 0,
+                "size": 69212
+            }
+        }
+    },
+    "dome.crackingx.post": {
+        "crackingx": {
+            "0": {
+                "high": 98763,
+                "lag": 0,
+                "low": 98717,
+                "size": 46
+            }
+        }
+    },
+    "dome.crackingx.post_prime": {
+        "crackingx": {
+            "0": {
+                "high": 52119,
+                "lag": 34563,
+                "low": 0,
+                "size": 52119
+            }
+        }
+    },
+    "dome.crackingx.profile": {
+        "crackingx": {
+            "0": {
+                "high": 69410,
+                "lag": 7775,
+                "low": 33228,
+                "size": 36182
+            }
+        }
+    },
+    "dome.crackingx.profile_promotion": {
+        "crackingx": {
+            "0": {
+                "high": 9150,
+                "lag": 7653,
+                "low": 0,
+                "size": 9150
+            }
+        }
+    },
+    "dome.crackx.post": {
+        "<not associated>": {
+            "0": {
+                "high": 178521,
+                "low": 168358,
+                "size": 10163
+            }
+        }
+    },
+    "dome.crackx.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.crackx.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 353,
+                "low": 0,
+                "size": 353
+            }
+        }
+    },
+    "dome.crackx.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 59716,
+                "low": 58881,
+                "size": 835
+            }
+        }
+    },
+    "dome.crax.post": {
+        "crax": {
+            "0": {
+                "high": 254078,
+                "lag": 3913,
+                "low": 39371,
+                "size": 214707
+            }
+        }
+    },
+    "dome.crax.post_prime": {
+        "crax": {
+            "0": {
+                "high": 62326,
+                "lag": 26345,
+                "low": 22411,
+                "size": 39915
+            }
+        }
+    },
+    "dome.crax.profile": {
+        "crax": {
+            "0": {
+                "high": 132361,
+                "lag": 420,
+                "low": 0,
+                "size": 132361
+            }
+        }
+    },
+    "dome.crdpro.post": {
+        "crdpro": {
+            "0": {
+                "high": 113814,
+                "lag": 93,
+                "low": 113274,
+                "size": 540
+            }
+        }
+    },
+    "dome.crdpro.post_new": {
+        "crdpro": {
+            "0": {
+                "high": 18676,
+                "lag": 1101,
+                "low": 16199,
+                "size": 2477
+            }
+        }
+    },
+    "dome.crdpro.post_prime": {
+        "crdpro": {
+            "0": {
+                "high": 11034,
+                "lag": 1164,
+                "low": 653,
+                "size": 10381
+            }
+        }
+    },
+    "dome.crdpro.post_vip": {
+        "crdpro": {
+            "0": {
+                "high": 30313,
+                "lag": 511,
+                "low": 26734,
+                "size": 3579
+            }
+        }
+    },
+    "dome.crdpro.profile": {
+        "crdpro": {
+            "0": {
+                "high": 206053,
+                "lag": 24,
+                "low": 87087,
+                "size": 118966
+            }
+        }
+    },
+    "dome.crdpro.profile_forward": {
+        "crdpro": {
+            "0": {
+                "high": 92532,
+                "lag": 71694,
+                "low": 0,
+                "size": 92532
+            }
+        }
+    },
+    "dome.crimemarket.post": {
+        "<not associated>": {
+            "0": {
+                "high": 98100,
+                "low": 95850,
+                "size": 2250
+            }
+        }
+    },
+    "dome.crimemarket.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 206330,
+                "low": 180111,
+                "size": 26219
+            }
+        }
+    },
+    "dome.crimemarket.profile_forward": {
+        "<not associated>": {
+            "0": {
+                "high": 44184,
+                "low": 0,
+                "size": 44184
+            }
+        }
+    },
+    "dome.crimenetwork.post": {
+        "crimenetwork": {
+            "0": {
+                "high": 90998,
+                "lag": 32,
+                "low": 88953,
+                "size": 2045
+            }
+        }
+    },
+    "dome.crimenetwork.profile": {
+        "crimenetwork": {
+            "0": {
+                "high": 56240,
+                "lag": 20554,
+                "low": 0,
+                "size": 56240
+            }
+        }
+    },
+    "dome.cryptbb.post": {
+        "cryptbb": {
+            "0": {
+                "high": 34517,
+                "lag": 3,
+                "low": 34115,
+                "size": 402
+            }
+        }
+    },
+    "dome.cryptbb.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.cryptbb.post_vip": {
+        "cryptbb": {
+            "0": {
+                "high": 4391,
+                "lag": 8,
+                "low": 4356,
+                "size": 35
+            }
+        }
+    },
+    "dome.cryptbb.profile": {
+        "cryptbb": {
+            "0": {
+                "high": 56680,
+                "lag": 0,
+                "low": 56679,
+                "size": 1
+            }
+        }
+    },
+    "dome.cweb.post": {
+        "cweb": {
+            "0": {
+                "high": 51201,
+                "lag": 1,
+                "low": 50898,
+                "size": 303
+            }
+        }
+    },
+    "dome.cweb.profile": {
+        "cweb": {
+            "0": {
+                "high": 48664,
+                "lag": 11,
+                "low": 48391,
+                "size": 273
+            }
+        }
+    },
+    "dome.cyberbreach.post": {
+        "cyberbreach": {
+            "0": {
+                "high": 114682,
+                "lag": 7583,
+                "low": 0,
+                "size": 114682
+            }
+        }
+    },
+    "dome.cyberbreach.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 68,
+                "low": 0,
+                "size": 68
+            }
+        }
+    },
+    "dome.cyberbreach.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 5006,
+                "low": 0,
+                "size": 5006
+            }
+        }
+    },
+    "dome.cyberbreach.profile": {
+        "cyberbreach": {
+            "0": {
+                "high": 110427,
+                "lag": 7,
+                "low": 0,
+                "size": 110427
+            }
+        }
+    },
+    "dome.cyberbreach.profile_forward": {
+        "cyberbreach": {
+            "0": {
+                "high": 79365,
+                "lag": 0,
+                "low": 0,
+                "size": 79365
+            }
+        }
+    },
+    "dome.cybercarders.post": {
+        "cybercarders": {
+            "0": {
+                "high": 291215,
+                "lag": 0,
+                "low": 291176,
+                "size": 39
+            }
+        }
+    },
+    "dome.cybercarders.post_new": {
+        "cybercarders": {
+            "0": {
+                "high": 121451,
+                "lag": 6241,
+                "low": 0,
+                "size": 121451
+            }
+        }
+    },
+    "dome.cybercarders.post_vip": {
+        "cybercarders": {
+            "0": {
+                "high": 3096,
+                "lag": 1,
+                "low": 3095,
+                "size": 1
+            }
+        }
+    },
+    "dome.cybercarders.profile": {
+        "cybercarders": {
+            "0": {
+                "high": 187937,
+                "lag": 12523,
+                "low": 0,
+                "size": 187937
+            }
+        }
+    },
+    "dome.cybercarders.profile_forward": {
+        "cybercarders": {
+            "0": {
+                "high": 391395,
+                "lag": 274281,
+                "low": 0,
+                "size": 391395
+            }
+        }
+    },
+    "dome.dark2web.post": {
+        "dark2web": {
+            "0": {
+                "high": 8740,
+                "lag": 7,
+                "low": 4552,
+                "size": 4188
+            }
+        }
+    },
+    "dome.dark2web.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 16203,
+                "low": 14222,
+                "size": 1981
+            }
+        }
+    },
+    "dome.dark2web.profile": {
+        "dark2web": {
+            "0": {
+                "high": 177509,
+                "lag": 21,
+                "low": 0,
+                "size": 177509
+            }
+        }
+    },
+    "dome.darkmarket.post": {
+        "darkmarket": {
+            "0": {
+                "high": 408585,
+                "lag": 3180,
+                "low": 401431,
+                "size": 7154
+            }
+        }
+    },
+    "dome.darkmarket.post_new": {
+        "darkmarket": {
+            "0": {
+                "high": 1,
+                "lag": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.darkmarket.profile": {
+        "darkmarket": {
+            "0": {
+                "high": 250133,
+                "lag": 78161,
+                "low": 160509,
+                "size": 89624
+            }
+        }
+    },
+    "dome.darkmoney.post": {
+        "<not associated>": {
+            "0": {
+                "high": 471716,
+                "low": 453677,
+                "size": 18039
+            }
+        }
+    },
+    "dome.darkmoney.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 932288,
+                "low": 0,
+                "size": 932288
+            }
+        }
+    },
+    "dome.darknet.post": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.darknet.post_new": {
+        "darknet": {
+            "0": {
+                "high": 3,
+                "lag": 1,
+                "low": 2,
+                "size": 1
+            }
+        }
+    },
+    "dome.darknet.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.darktime.post": {
+        "darktime": {
+            "0": {
+                "high": 8051,
+                "lag": 22,
+                "low": 7492,
+                "size": 559
+            }
+        }
+    },
+    "dome.darktime.profile": {
+        "darktime": {
+            "0": {
+                "high": 89925,
+                "lag": 85338,
+                "low": 0,
+                "size": 89925
+            }
+        }
+    },
+    "dome.demonforums.post": {
+        "demonforums": {
+            "0": {
+                "high": 137887,
+                "lag": 429,
+                "low": 128038,
+                "size": 9849
+            }
+        }
+    },
+    "dome.demonforums.post_prime": {
+        "demonforums": {
+            "0": {
+                "high": 30615,
+                "lag": 6943,
+                "low": 2851,
+                "size": 27764
+            }
+        }
+    },
+    "dome.demonforums.profile": {
+        "demonforums": {
+            "0": {
+                "high": 108985,
+                "lag": 20,
+                "low": 85679,
+                "size": 23306
+            }
+        }
+    },
+    "dome.dread.post": {
+        "dread": {
+            "0": {
+                "high": 2154220,
+                "lag": 69665,
+                "low": 0,
+                "size": 2154220
+            }
+        }
+    },
+    "dome.dread.post_new": {
+        "dread": {
+            "0": {
+                "high": 589529,
+                "lag": 1,
+                "low": 589487,
+                "size": 42
+            }
+        }
+    },
+    "dome.dread.profile": {
+        "dread": {
+            "0": {
+                "high": 9558,
+                "lag": 0,
+                "low": 9333,
+                "size": 225
+            }
+        }
+    },
+    "dome.dublikat.post": {
+        "dublikat": {
+            "0": {
+                "high": 784441,
+                "lag": 13,
+                "low": 782417,
+                "size": 2024
+            }
+        }
+    },
+    "dome.dublikat.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 14545,
+                "low": 14509,
+                "size": 36
+            }
+        }
+    },
+    "dome.dublikat.profile": {
+        "dublikat": {
+            "0": {
+                "high": 611563,
+                "lag": 114325,
+                "low": 0,
+                "size": 611563
+            }
+        }
+    },
+    "dome.elhacker.post": {
+        "elhacker": {
+            "0": {
+                "high": 342879,
+                "lag": 48,
+                "low": 342535,
+                "size": 344
+            }
+        }
+    },
+    "dome.elhacker.profile": {
+        "elhacker": {
+            "0": {
+                "high": 926787,
+                "lag": 544500,
+                "low": 0,
+                "size": 926787
+            }
+        }
+    },
+    "dome.enclave.post": {
+        "enclave": {
+            "0": {
+                "high": 608892,
+                "lag": 191137,
+                "low": 83841,
+                "size": 525051
+            }
+        }
+    },
+    "dome.enclave.profile": {
+        "enclave": {
+            "0": {
+                "high": 218484,
+                "lag": 1,
+                "low": 217694,
+                "size": 790
+            }
+        }
+    },
+    "dome.eternia.post": {
+        "<not associated>": {
+            "0": {
+                "high": 314,
+                "low": 313,
+                "size": 1
+            }
+        }
+    },
+    "dome.eternia.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 371,
+                "low": 371,
+                "size": 0
+            }
+        }
+    },
+    "dome.eternia.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 656,
+                "low": 656,
+                "size": 0
+            }
+        }
+    },
+    "dome.exploit.post": {
+        "exploit": {
+            "0": {
+                "high": 31884,
+                "lag": 43,
+                "low": 31776,
+                "size": 108
+            }
+        }
+    },
+    "dome.exploit.post_new": {
+        "exploit": {
+            "0": {
+                "high": 14149,
+                "lag": 35,
+                "low": 14086,
+                "size": 63
+            }
+        }
+    },
+    "dome.exploit.post_prime": {
+        "exploit": {
+            "0": {
+                "high": 903,
+                "lag": 1,
+                "low": 400,
+                "size": 503
+            }
+        }
+    },
+    "dome.exploit.post_vip": {
+        "exploit": {
+            "0": {
+                "high": 609,
+                "lag": 1,
+                "low": 608,
+                "size": 1
+            }
+        }
+    },
+    "dome.exploit.profile": {
+        "exploit": {
+            "0": {
+                "high": 2734,
+                "lag": 455,
+                "low": 0,
+                "size": 2734
+            }
+        }
+    },
+    "dome.exploit.profile_forward": {
+        "exploit": {
+            "0": {
+                "high": 326226,
+                "lag": 323555,
+                "low": 0,
+                "size": 326226
+            }
+        }
+    },
+    "dome.forumteam.post": {
+        "forumteam": {
+            "0": {
+                "high": 306269,
+                "lag": 3547,
+                "low": 302480,
+                "size": 3789
+            }
+        }
+    },
+    "dome.forumteam.post_new": {
+        "forumteam": {
+            "0": {
+                "high": 2973,
+                "lag": 1,
+                "low": 2818,
+                "size": 155
+            }
+        }
+    },
+    "dome.forumteam.post_prime": {
+        "forumteam": {
+            "0": {
+                "high": 362634,
+                "lag": 282632,
+                "low": 0,
+                "size": 362634
+            }
+        }
+    },
+    "dome.forumteam.profile": {
+        "forumteam": {
+            "0": {
+                "high": 275638,
+                "lag": 29720,
+                "low": 133207,
+                "size": 142431
+            }
+        }
+    },
+    "dome.freehack.post": {
+        "freehack": {
+            "0": {
+                "high": 173052,
+                "lag": 18,
+                "low": 172583,
+                "size": 469
+            }
+        }
+    },
+    "dome.freehack.profile": {
+        "freehack": {
+            "0": {
+                "high": 103672,
+                "lag": 25,
+                "low": 87814,
+                "size": 15858
+            }
+        }
+    },
+    "dome.fssquad.post": {
+        "fssquad": {
+            "0": {
+                "high": 89106,
+                "lag": 284,
+                "low": 48175,
+                "size": 40931
+            }
+        }
+    },
+    "dome.fssquad.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 1332,
+                "low": 871,
+                "size": 461
+            }
+        }
+    },
+    "dome.fssquad.post_vip": {
+        "fssquad": {
+            "0": {
+                "high": 1597,
+                "lag": 1,
+                "low": 1547,
+                "size": 50
+            }
+        }
+    },
+    "dome.fssquad.profile": {
+        "fssquad": {
+            "0": {
+                "high": 910384,
+                "lag": 770384,
+                "low": 0,
+                "size": 910384
+            }
+        }
+    },
+    "dome.gerki.post": {
+        "gerki": {
+            "0": {
+                "high": 266303,
+                "lag": 13,
+                "low": 266260,
+                "size": 43
+            }
+        }
+    },
+    "dome.gerki.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 762,
+                "low": 25,
+                "size": 737
+            }
+        }
+    },
+    "dome.gerki.profile": {
+        "gerki": {
+            "0": {
+                "high": 297829,
+                "lag": 38932,
+                "low": 221804,
+                "size": 76025
+            }
+        }
+    },
+    "dome.hackflag.post": {
+        "hackflag": {
+            "0": {
+                "high": 64661,
+                "lag": 52,
+                "low": 64580,
+                "size": 81
+            }
+        }
+    },
+    "dome.hackflag.profile": {
+        "hackflag": {
+            "0": {
+                "high": 120615,
+                "lag": 64,
+                "low": 117211,
+                "size": 3404
+            }
+        }
+    },
+    "dome.hackforums.post": {
+        "hackforums": {
+            "0": {
+                "high": 54971,
+                "lag": 1032,
+                "low": 19518,
+                "size": 35453
+            }
+        }
+    },
+    "dome.hackforums.profile": {
+        "hackforums": {
+            "0": {
+                "high": 11953,
+                "lag": 137,
+                "low": 0,
+                "size": 11953
+            }
+        }
+    },
+    "dome.hackingfather.post": {
+        "<not associated>": {
+            "0": {
+                "high": 11274,
+                "low": 0,
+                "size": 11274
+            }
+        }
+    },
+    "dome.hackingfather.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 2189,
+                "low": 2180,
+                "size": 9
+            }
+        }
+    },
+    "dome.hackingfather.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 86474,
+                "low": 80190,
+                "size": 6284
+            }
+        }
+    },
+    "dome.hacklife.post": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.hacklife.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.hacklife.profile": {
+        "hacklife": {
+            "0": {
+                "high": 1,
+                "lag": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.hak5.post": {
+        "hak5": {
+            "0": {
+                "high": 555511,
+                "lag": 327953,
+                "low": 0,
+                "size": 555511
+            }
+        }
+    },
+    "dome.hak5.profile": {
+        "hak5": {
+            "0": {
+                "high": 259406,
+                "lag": 22,
+                "low": 0,
+                "size": 259406
+            }
+        }
+    },
+    "dome.hashkiller.post": {
+        "hashkiller": {
+            "0": {
+                "high": 19727,
+                "lag": 1,
+                "low": 19726,
+                "size": 1
+            }
+        }
+    },
+    "dome.hashkiller.post_new": {
+        "hashkiller": {
+            "0": {
+                "high": 2356,
+                "lag": 0,
+                "low": 2342,
+                "size": 14
+            }
+        }
+    },
+    "dome.hpc.post": {
+        "hpc": {
+            "0": {
+                "high": 55473,
+                "lag": 161,
+                "low": 55243,
+                "size": 230
+            }
+        }
+    },
+    "dome.hpc.profile": {
+        "hpc": {
+            "0": {
+                "high": 261542,
+                "lag": 89341,
+                "low": 0,
+                "size": 261542
+            }
+        }
+    },
+    "dome.hydramarket.chat": {
+        "<not associated>": {
+            "0": {
+                "high": 87,
+                "low": 86,
+                "size": 1
+            }
+        }
+    },
+    "dome.hydramarket.post": {
+        "<not associated>": {
+            "0": {
+                "high": 324733,
+                "low": 8947,
+                "size": 315786
+            }
+        }
+    },
+    "dome.hydramarket.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 76217,
+                "low": 0,
+                "size": 76217
+            }
+        }
+    },
+    "dome.hydramarket.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.hydramarket.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 370283,
+                "low": 34769,
+                "size": 335514
+            }
+        }
+    },
+    "dome.ifud.post": {
+        "<not associated>": {
+            "0": {
+                "high": 2634,
+                "low": 2233,
+                "size": 401
+            }
+        }
+    },
+    "dome.ifud.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 1226,
+                "low": 789,
+                "size": 437
+            }
+        }
+    },
+    "dome.imthack.post": {
+        "imthack": {
+            "0": {
+                "high": 66778,
+                "lag": 1,
+                "low": 65408,
+                "size": 1370
+            }
+        }
+    },
+    "dome.imthack.profile": {
+        "imthack": {
+            "0": {
+                "high": 166971,
+                "lag": 3,
+                "low": 165760,
+                "size": 1211
+            }
+        }
+    },
+    "dome.infectedzone.post": {
+        "infectedzone": {
+            "0": {
+                "high": 109235,
+                "lag": 1,
+                "low": 109171,
+                "size": 64
+            }
+        }
+    },
+    "dome.infectedzone.profile": {
+        "infectedzone": {
+            "0": {
+                "high": 165552,
+                "lag": 13519,
+                "low": 147611,
+                "size": 17941
+            }
+        }
+    },
+    "dome.instanthack.post": {
+        "instanthack": {
+            "0": {
+                "high": 138576,
+                "lag": 9261,
+                "low": 0,
+                "size": 138576
+            }
+        }
+    },
+    "dome.instanthack.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 17418,
+                "low": 0,
+                "size": 17418
+            }
+        }
+    },
+    "dome.instanthack.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 15802,
+                "low": 13689,
+                "size": 2113
+            }
+        }
+    },
+    "dome.instanthack.profile": {
+        "instanthack": {
+            "0": {
+                "high": 195420,
+                "lag": 110364,
+                "low": 0,
+                "size": 195420
+            }
+        }
+    },
+    "dome.korovka.post": {
+        "korovka": {
+            "0": {
+                "high": 3916,
+                "lag": 38,
+                "low": 3868,
+                "size": 48
+            }
+        }
+    },
+    "dome.korovka.post_new": {
+        "korovka": {
+            "0": {
+                "high": 2563,
+                "lag": 21,
+                "low": 2540,
+                "size": 23
+            }
+        }
+    },
+    "dome.korovka.profile": {
+        "korovka": {
+            "0": {
+                "high": 19262,
+                "lag": 11,
+                "low": 18291,
+                "size": 971
+            }
+        }
+    },
+    "dome.lcp.post": {
+        "lcp": {
+            "0": {
+                "high": 9550,
+                "lag": 8,
+                "low": 9538,
+                "size": 12
+            }
+        }
+    },
+    "dome.leakbase.post": {
+        "leakbase": {
+            "0": {
+                "high": 380164,
+                "lag": 42168,
+                "low": 321444,
+                "size": 58720
+            }
+        }
+    },
+    "dome.leakbase.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 57447,
+                "low": 0,
+                "size": 57447
+            }
+        }
+    },
+    "dome.leakbase.profile": {
+        "leakbase": {
+            "0": {
+                "high": 226952,
+                "lag": 182221,
+                "low": 0,
+                "size": 226952
+            }
+        }
+    },
+    "dome.leakeddatabases.post": {
+        "<not associated>": {
+            "0": {
+                "high": 35198,
+                "low": 34681,
+                "size": 517
+            }
+        }
+    },
+    "dome.leakeddatabases.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 39876,
+                "low": 38946,
+                "size": 930
+            }
+        }
+    },
+    "dome.leakforums.post": {
+        "<not associated>": {
+            "0": {
+                "high": 2657,
+                "low": 0,
+                "size": 2657
+            }
+        }
+    },
+    "dome.leakforums.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 313,
+                "low": 0,
+                "size": 313
+            }
+        }
+    },
+    "dome.leakforums.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 2701,
+                "low": 0,
+                "size": 2701
+            }
+        }
+    },
+    "dome.leakzone.post": {
+        "leakzone": {
+            "0": {
+                "high": 29507,
+                "lag": 660,
+                "low": 28634,
+                "size": 873
+            }
+        }
+    },
+    "dome.leakzone.post_vip": {
+        "leakzone": {
+            "0": {
+                "high": 11478,
+                "lag": 1,
+                "low": 11472,
+                "size": 6
+            }
+        }
+    },
+    "dome.leakzone.profile": {
+        "leakzone": {
+            "0": {
+                "high": 137966,
+                "lag": 13,
+                "low": 137764,
+                "size": 202
+            }
+        }
+    },
+    "dome.legitcarders.post": {
+        "<not associated>": {
+            "0": {
+                "high": 3141,
+                "low": 3115,
+                "size": 26
+            }
+        }
+    },
+    "dome.legitcarders.post_new": {
+        "legitcarders": {
+            "0": {
+                "high": 1184,
+                "lag": 13,
+                "low": 1084,
+                "size": 100
+            }
+        }
+    },
+    "dome.legitcarders.profile": {
+        "legitcarders": {
+            "0": {
+                "high": 45924,
+                "lag": 45080,
+                "low": 0,
+                "size": 45924
+            }
+        }
+    },
+    "dome.level23hacktools.post": {
+        "level23hacktools": {
+            "0": {
+                "high": 279188,
+                "lag": 91,
+                "low": 279083,
+                "size": 105
+            }
+        }
+    },
+    "dome.level23hacktools.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 1480,
+                "low": 1480,
+                "size": 0
+            }
+        }
+    },
+    "dome.level23hacktools.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 12,
+                "low": 0,
+                "size": 12
+            }
+        }
+    },
+    "dome.level23hacktools.profile": {
+        "level23hacktools": {
+            "0": {
+                "high": 111703,
+                "lag": 452,
+                "low": 0,
+                "size": 111703
+            }
+        }
+    },
+    "dome.lolzteam.post": {
+        "lolzteam": {
+            "0": {
+                "high": 691461,
+                "lag": 7548,
+                "low": 0,
+                "size": 691461
+            }
+        }
+    },
+    "dome.lolzteam.post_new": {
+        "lolzteam": {
+            "0": {
+                "high": 410,
+                "lag": 82,
+                "low": 0,
+                "size": 410
+            }
+        }
+    },
+    "dome.lolzteam.profile": {
+        "lolzteam": {
+            "0": {
+                "high": 7155061,
+                "lag": 6868120,
+                "low": 0,
+                "size": 7155061
+            }
+        }
+    },
+    "dome.lolzteam.profile_forward": {
+        "lolzteam": {
+            "0": {
+                "high": 888372,
+                "lag": 213841,
+                "low": 0,
+                "size": 888372
+            }
+        }
+    },
+    "dome.mapping": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.migalki.post": {
+        "migalki": {
+            "0": {
+                "high": 9974,
+                "lag": 11,
+                "low": 9920,
+                "size": 54
+            }
+        }
+    },
+    "dome.migalki.profile": {
+        "migalki": {
+            "0": {
+                "high": 141335,
+                "lag": 1830,
+                "low": 137549,
+                "size": 3786
+            }
+        }
+    },
+    "dome.mmgp.post": {
+        "mmgp": {
+            "0": {
+                "high": 244893,
+                "lag": 2282,
+                "low": 242270,
+                "size": 2623
+            }
+        }
+    },
+    "dome.mmgp.post_new": {
+        "mmgp": {
+            "0": {
+                "high": 28286,
+                "lag": 1,
+                "low": 28285,
+                "size": 1
+            }
+        }
+    },
+    "dome.mmgp.profile": {
+        "mmgp": {
+            "0": {
+                "high": 626559,
+                "lag": 74,
+                "low": 477676,
+                "size": 148883
+            }
+        }
+    },
+    "dome.moon.post": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.moon.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.mpgh.activity": {
+        "<not associated>": {
+            "0": {
+                "high": 25,
+                "low": 24,
+                "size": 1
+            }
+        }
+    },
+    "dome.mpgh.post": {
+        "mpgh": {
+            "0": {
+                "high": 106434,
+                "lag": 19657,
+                "low": 14094,
+                "size": 92340
+            }
+        }
+    },
+    "dome.mpgh.post_new": {
+        "mpgh": {
+            "0": {
+                "high": 26221,
+                "lag": 2,
+                "low": 25585,
+                "size": 636
+            }
+        }
+    },
+    "dome.mpgh.profile": {
+        "mpgh": {
+            "0": {
+                "high": 6288027,
+                "lag": 6113813,
+                "low": 0,
+                "size": 6288027
+            }
+        }
+    },
+    "dome.navigator.post": {
+        "navigator": {
+            "0": {
+                "high": 344063,
+                "lag": 2304,
+                "low": 339926,
+                "size": 4137
+            }
+        }
+    },
+    "dome.navigator.post_new": {
+        "navigator": {
+            "0": {
+                "high": 2602,
+                "lag": 1,
+                "low": 2580,
+                "size": 22
+            }
+        }
+    },
+    "dome.navigator.profile": {
+        "navigator": {
+            "0": {
+                "high": 92211,
+                "lag": 0,
+                "low": 91086,
+                "size": 1125
+            }
+        }
+    },
+    "dome.niflheim.post": {
+        "niflheim": {
+            "0": {
+                "high": 157805,
+                "lag": 12,
+                "low": 121756,
+                "size": 36049
+            }
+        }
+    },
+    "dome.niflheim.post_prime": {
+        "niflheim": {
+            "0": {
+                "high": 177015,
+                "lag": 123621,
+                "low": 0,
+                "size": 177015
+            }
+        }
+    },
+    "dome.niflheim.post_vip": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.niflheim.profile": {
+        "niflheim": {
+            "0": {
+                "high": 160081,
+                "lag": 1738,
+                "low": 146067,
+                "size": 14014
+            }
+        }
+    },
+    "dome.nohide.post": {
+        "nohide": {
+            "0": {
+                "high": 33303,
+                "lag": 1,
+                "low": 33270,
+                "size": 33
+            }
+        }
+    },
+    "dome.nohide.profile": {
+        "nohide": {
+            "0": {
+                "high": 33758,
+                "lag": 993,
+                "low": 27689,
+                "size": 6069
+            }
+        }
+    },
+    "dome.nulled.post": {
+        "nulled": {
+            "0": {
+                "high": 3119854,
+                "lag": 26582,
+                "low": 2438097,
+                "size": 681757
+            }
+        }
+    },
+    "dome.nulled.post_prime": {
+        "nulled": {
+            "0": {
+                "high": 41334,
+                "lag": 1286,
+                "low": 5433,
+                "size": 35901
+            }
+        }
+    },
+    "dome.nulled.post_vip": {
+        "nulled": {
+            "0": {
+                "high": 5431,
+                "lag": 0,
+                "low": 5427,
+                "size": 4
+            }
+        }
+    },
+    "dome.nulled.profile": {
+        "nulled": {
+            "0": {
+                "high": 5769427,
+                "lag": 5600052,
+                "low": 0,
+                "size": 5769427
+            }
+        }
+    },
+    "dome.nulled.profile_banned": {
+        "nulled": {
+            "0": {
+                "high": 30118,
+                "lag": 9,
+                "low": 0,
+                "size": 30118
+            }
+        }
+    },
+    "dome.nulled.profile_forward": {
+        "nulled": {
+            "0": {
+                "high": 1294797,
+                "lag": 804789,
+                "low": 0,
+                "size": 1294797
+            }
+        }
+    },
+    "dome.nulledbb.post": {
+        "nulledbb": {
+            "0": {
+                "high": 864046,
+                "lag": 0,
+                "low": 863880,
+                "size": 166
+            }
+        }
+    },
+    "dome.nulledbb.post_prime": {
+        "nulledbb": {
+            "0": {
+                "high": 81963,
+                "lag": 78774,
+                "low": 2964,
+                "size": 78999
+            }
+        }
+    },
+    "dome.nulledbb.post_vip": {
+        "nulledbb": {
+            "0": {
+                "high": 1871,
+                "lag": 61,
+                "low": 769,
+                "size": 1102
+            }
+        }
+    },
+    "dome.nulledbb.profile": {
+        "nulledbb": {
+            "0": {
+                "high": 901607,
+                "lag": 12,
+                "low": 678798,
+                "size": 222809
+            }
+        }
+    },
+    "dome.ogusers.post": {
+        "ogusers": {
+            "0": {
+                "high": 200464,
+                "lag": 2482,
+                "low": 197945,
+                "size": 2519
+            }
+        }
+    },
+    "dome.ogusers.post_new": {
+        "ogusers": {
+            "0": {
+                "high": 1554,
+                "lag": 0,
+                "low": 1490,
+                "size": 64
+            }
+        }
+    },
+    "dome.ogusers.profile": {
+        "ogusers": {
+            "0": {
+                "high": 3512,
+                "lag": 0,
+                "low": 3506,
+                "size": 6
+            }
+        }
+    },
+    "dome.omerta.post": {
+        "omerta": {
+            "0": {
+                "high": 912964,
+                "lag": 0,
+                "low": 912631,
+                "size": 333
+            }
+        }
+    },
+    "dome.omerta.profile": {
+        "omerta": {
+            "0": {
+                "high": 59494,
+                "lag": 0,
+                "low": 59289,
+                "size": 205
+            }
+        }
+    },
+    "dome.patched.post": {
+        "patched": {
+            "0": {
+                "high": 12991,
+                "lag": 22,
+                "low": 12887,
+                "size": 104
+            }
+        }
+    },
+    "dome.patched.profile": {
+        "patched": {
+            "0": {
+                "high": 455415,
+                "lag": 1,
+                "low": 455411,
+                "size": 4
+            }
+        }
+    },
+    "dome.patched.profile_forward": {
+        "patched": {
+            "0": {
+                "high": 783681,
+                "lag": 298,
+                "low": 783383,
+                "size": 298
+            }
+        }
+    },
+    "dome.piratebuhta.post": {
+        "piratebuhta": {
+            "0": {
+                "high": 392853,
+                "lag": 35,
+                "low": 369217,
+                "size": 23636
+            }
+        }
+    },
+    "dome.piratebuhta.post_prime": {
+        "piratebuhta": {
+            "0": {
+                "high": 20593,
+                "lag": 1782,
+                "low": 1187,
+                "size": 19406
+            }
+        }
+    },
+    "dome.piratebuhta.profile": {
+        "piratebuhta": {
+            "0": {
+                "high": 125313,
+                "lag": 6,
+                "low": 102497,
+                "size": 22816
+            }
+        }
+    },
+    "dome.probiv.post": {
+        "probiv": {
+            "0": {
+                "high": 143697,
+                "lag": 305,
+                "low": 119262,
+                "size": 24435
+            }
+        }
+    },
+    "dome.probiv.post_vip": {
+        "probiv": {
+            "0": {
+                "high": 3483,
+                "lag": 2,
+                "low": 1285,
+                "size": 2198
+            }
+        }
+    },
+    "dome.probiv.profile": {
+        "probiv": {
+            "0": {
+                "high": 222930,
+                "lag": 22463,
+                "low": 114800,
+                "size": 108130
+            }
+        }
+    },
+    "dome.procrd.post": {
+        "procrd": {
+            "0": {
+                "high": 418910,
+                "lag": 11,
+                "low": 418865,
+                "size": 45
+            }
+        }
+    },
+    "dome.procrd.post_new": {
+        "procrd": {
+            "0": {
+                "high": 4218,
+                "lag": 1,
+                "low": 4216,
+                "size": 2
+            }
+        }
+    },
+    "dome.procrd.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 56093,
+                "low": 34906,
+                "size": 21187
+            }
+        }
+    },
+    "dome.prologic.post": {
+        "prologic": {
+            "0": {
+                "high": 646868,
+                "lag": 119,
+                "low": 644305,
+                "size": 2563
+            }
+        }
+    },
+    "dome.prologic.profile": {
+        "prologic": {
+            "0": {
+                "high": 541186,
+                "lag": 13,
+                "low": 525862,
+                "size": 15324
+            }
+        }
+    },
+    "dome.ramp.post": {
+        "ramp": {
+            "0": {
+                "high": 64441,
+                "lag": 88,
+                "low": 64148,
+                "size": 293
+            }
+        }
+    },
+    "dome.ramp.profile": {
+        "ramp": {
+            "0": {
+                "high": 47334,
+                "lag": 3002,
+                "low": 40282,
+                "size": 7052
+            }
+        }
+    },
+    "dome.rstforums.post": {
+        "rstforums": {
+            "0": {
+                "high": 309684,
+                "lag": 32,
+                "low": 309548,
+                "size": 136
+            }
+        }
+    },
+    "dome.rstforums.profile": {
+        "rstforums": {
+            "0": {
+                "high": 428953,
+                "lag": 241,
+                "low": 0,
+                "size": 428953
+            }
+        }
+    },
+    "dome.runion.post": {
+        "runion": {
+            "0": {
+                "high": 630630,
+                "lag": 0,
+                "low": 630597,
+                "size": 33
+            }
+        }
+    },
+    "dome.rutor.post": {
+        "rutor": {
+            "0": {
+                "high": 64267,
+                "lag": 16361,
+                "low": 0,
+                "size": 64267
+            }
+        }
+    },
+    "dome.rutor.profile": {
+        "rutor": {
+            "0": {
+                "high": 2732418,
+                "lag": 2635824,
+                "low": 0,
+                "size": 2732418
+            }
+        }
+    },
+    "dome.selkis.post": {
+        "selkis": {
+            "0": {
+                "high": 101989,
+                "lag": 130,
+                "low": 73327,
+                "size": 28662
+            }
+        }
+    },
+    "dome.selkis.post_prime": {
+        "selkis": {
+            "0": {
+                "high": 20581,
+                "lag": 18497,
+                "low": 0,
+                "size": 20581
+            }
+        }
+    },
+    "dome.selkis.profile": {
+        "selkis": {
+            "0": {
+                "high": 107616,
+                "lag": 20,
+                "low": 0,
+                "size": 107616
+            }
+        }
+    },
+    "dome.shadowcarders.post": {
+        "shadowcarders": {
+            "0": {
+                "high": 99909,
+                "lag": 124,
+                "low": 99219,
+                "size": 690
+            }
+        }
+    },
+    "dome.shadowcarders.profile": {
+        "shadowcarders": {
+            "0": {
+                "high": 305222,
+                "lag": 64713,
+                "low": 201811,
+                "size": 103411
+            }
+        }
+    },
+    "dome.sinisterly.post": {
+        "sinisterly": {
+            "0": {
+                "high": 517753,
+                "lag": 115,
+                "low": 512786,
+                "size": 4967
+            }
+        }
+    },
+    "dome.sinisterly.post_new": {
+        "sinisterly": {
+            "0": {
+                "high": 1,
+                "lag": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.sinisterly.post_prime": {
+        "sinisterly": {
+            "0": {
+                "high": 77223,
+                "lag": 7,
+                "low": 38979,
+                "size": 38244
+            }
+        }
+    },
+    "dome.sinisterly.profile": {
+        "sinisterly": {
+            "0": {
+                "high": 265500,
+                "lag": 133737,
+                "low": 2328,
+                "size": 263172
+            }
+        }
+    },
+    "dome.sinisterly.profile_forward": {
+        "<not associated>": {
+            "0": {
+                "high": 2026,
+                "low": 0,
+                "size": 2026
+            }
+        }
+    },
+    "dome.skynetzone.post": {
+        "skynetzone": {
+            "0": {
+                "high": 96935,
+                "lag": 2859,
+                "low": 77741,
+                "size": 19194
+            }
+        }
+    },
+    "dome.skynetzone.post_prime": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.skynetzone.post_vip": {
+        "skynetzone": {
+            "0": {
+                "high": 421,
+                "lag": 1,
+                "low": 392,
+                "size": 29
+            }
+        }
+    },
+    "dome.skynetzone.profile": {
+        "skynetzone": {
+            "0": {
+                "high": 69723,
+                "lag": 6248,
+                "low": 46918,
+                "size": 22805
+            }
+        }
+    },
+    "dome.slivup.post": {
+        "slivup": {
+            "0": {
+                "high": 23518,
+                "lag": 31,
+                "low": 22622,
+                "size": 896
+            }
+        }
+    },
+    "dome.slivup.post_prime": {
+        "slivup": {
+            "0": {
+                "high": 15031,
+                "lag": 5976,
+                "low": 8216,
+                "size": 6815
+            }
+        }
+    },
+    "dome.slivup.post_vip": {
+        "slivup": {
+            "0": {
+                "high": 13464,
+                "lag": 67,
+                "low": 9180,
+                "size": 4284
+            }
+        }
+    },
+    "dome.slivup.profile": {
+        "slivup": {
+            "0": {
+                "high": 291306,
+                "lag": 116,
+                "low": 154123,
+                "size": 137183
+            }
+        }
+    },
+    "dome.thebotnet.post": {
+        "<not associated>": {
+            "0": {
+                "high": 1729,
+                "low": 0,
+                "size": 1729
+            }
+        }
+    },
+    "dome.thebotnet.post_new": {
+        "<not associated>": {
+            "0": {
+                "high": 3429,
+                "low": 0,
+                "size": 3429
+            }
+        }
+    },
+    "dome.thebotnet.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 2088,
+                "low": 0,
+                "size": 2088
+            }
+        }
+    },
+    "dome.thehub.post": {
+        "<not associated>": {
+            "0": {
+                "high": 595,
+                "low": 595,
+                "size": 0
+            }
+        }
+    },
+    "dome.thehub.post_new": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.thehub.profile": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "dome.ufolabs.post": {
+        "ufolabs": {
+            "0": {
+                "high": 274888,
+                "lag": 194,
+                "low": 263220,
+                "size": 11668
+            }
+        }
+    },
+    "dome.ufolabs.post_new": {
+        "ufolabs": {
+            "0": {
+                "high": 1,
+                "lag": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "dome.ufolabs.profile": {
+        "ufolabs": {
+            "0": {
+                "high": 389725,
+                "lag": 80118,
+                "low": 252943,
+                "size": 136782
+            }
+        }
+    },
+    "dome.underc0de.post": {
+        "underc0de": {
+            "0": {
+                "high": 62039,
+                "lag": 54,
+                "low": 61963,
+                "size": 76
+            }
+        }
+    },
+    "dome.underc0de.profile": {
+        "underc0de": {
+            "0": {
+                "high": 200940,
+                "lag": 1,
+                "low": 187148,
+                "size": 13792
+            }
+        }
+    },
+    "dome.upsert": {
+        "upsertDome": {
+            "0": {
+                "high": 415529105,
+                "lag": 0,
+                "low": 408838362,
+                "size": 6690743
+            }
+        }
+    },
+    "dome.validmarket.post": {
+        "validmarket": {
+            "0": {
+                "high": 138570,
+                "lag": 125,
+                "low": 138112,
+                "size": 458
+            }
+        }
+    },
+    "dome.validmarket.post_prime": {
+        "validmarket": {
+            "0": {
+                "high": 61804,
+                "lag": 42533,
+                "low": 0,
+                "size": 61804
+            }
+        }
+    },
+    "dome.validmarket.profile": {
+        "validmarket": {
+            "0": {
+                "high": 66683,
+                "lag": 1451,
+                "low": 0,
+                "size": 66683
+            }
+        }
+    },
+    "dome.verified.post": {
+        "verified": {
+            "0": {
+                "high": 2258,
+                "lag": 1492,
+                "low": 0,
+                "size": 2258
+            }
+        }
+    },
+    "dome.verified.post_new": {
+        "verified": {
+            "0": {
+                "high": 2787,
+                "lag": 25,
+                "low": 2661,
+                "size": 126
+            }
+        }
+    },
+    "dome.veryleaks.post": {
+        "veryleaks": {
+            "0": {
+                "high": 14739,
+                "lag": 2436,
+                "low": 38,
+                "size": 14701
+            }
+        }
+    },
+    "dome.veryleaks.post_new": {
+        "veryleaks": {
+            "0": {
+                "high": 1954,
+                "lag": 176,
+                "low": 360,
+                "size": 1594
+            }
+        }
+    },
+    "dome.veryleaks.profile": {
+        "veryleaks": {
+            "0": {
+                "high": 945507,
+                "lag": 848616,
+                "low": 69825,
+                "size": 875682
+            }
+        }
+    },
+    "dome.vlmi.post": {
+        "vlmi": {
+            "0": {
+                "high": 446296,
+                "lag": 54,
+                "low": 415529,
+                "size": 30767
+            }
+        }
+    },
+    "dome.vlmi.post_prime": {
+        "vlmi": {
+            "0": {
+                "high": 2940,
+                "lag": 2275,
+                "low": 0,
+                "size": 2940
+            }
+        }
+    },
+    "dome.vlmi.profile": {
+        "vlmi": {
+            "0": {
+                "high": 367095,
+                "lag": 25178,
+                "low": 182704,
+                "size": 184391
+            }
+        }
+    },
+    "dome.vlmi.profile_promotion": {
+        "<not associated>": {
+            "0": {
+                "high": 11189,
+                "low": 0,
+                "size": 11189
+            }
+        }
+    },
+    "dome.wwhclub.post": {
+        "wwhclub": {
+            "0": {
+                "high": 584416,
+                "lag": 0,
+                "low": 584255,
+                "size": 161
+            }
+        }
+    },
+    "dome.wwhclub.post_new": {
+        "wwhclub": {
+            "0": {
+                "high": 88126,
+                "lag": 1,
+                "low": 87820,
+                "size": 306
+            }
+        }
+    },
+    "dome.wwhclub.post_prime": {
+        "wwhclub": {
+            "0": {
+                "high": 88460,
+                "lag": 62715,
+                "low": 1115,
+                "size": 87345
+            }
+        }
+    },
+    "dome.wwhclub.profile": {
+        "wwhclub": {
+            "0": {
+                "high": 422899,
+                "lag": 61425,
+                "low": 0,
+                "size": 422899
+            }
+        }
+    },
+    "dome.wwhclub.profile_forward": {
+        "wwhclub": {
+            "0": {
+                "high": 449852,
+                "lag": 251304,
+                "low": 0,
+                "size": 449852
+            }
+        }
+    },
+    "dome.xss.post": {
+        "xss": {
+            "0": {
+                "high": 87010,
+                "lag": 1,
+                "low": 87009,
+                "size": 1
+            }
+        }
+    },
+    "dome.xss.post_new": {
+        "xss": {
+            "0": {
+                "high": 58369,
+                "lag": 19,
+                "low": 58285,
+                "size": 84
+            }
+        }
+    },
+    "dome.xss.post_prime": {
+        "xss": {
+            "0": {
+                "high": 23090,
+                "lag": 12761,
+                "low": 4288,
+                "size": 18802
+            }
+        }
+    },
+    "dome.xss.profile": {
+        "xss": {
+            "0": {
+                "high": 90727,
+                "lag": 570,
+                "low": 4601,
+                "size": 86126
+            }
+        }
+    },
+    "dome.xss.profile_forward": {
+        "xss": {
+            "0": {
+                "high": 463388,
+                "lag": 401487,
+                "low": 0,
+                "size": 463388
+            }
+        }
+    },
+    "dome.youhack.post": {
+        "youhack": {
+            "0": {
+                "high": 265833,
+                "lag": 131,
+                "low": 263700,
+                "size": 2133
+            }
+        }
+    },
+    "dome.youhack.profile": {
+        "youhack": {
+            "0": {
+                "high": 908542,
+                "lag": 304934,
+                "low": 581115,
+                "size": 327427
+            }
+        }
+    },
+    "heartbeats": {
+        "<not associated>": {
+            "0": {
+                "high": 75298,
+                "low": 0,
+                "size": 75298
+            }
+        }
+    },
+    "mage.analysis": {
+        "beat": {
+            "0": {
+                "high": 62154934,
+                "lag": 52,
+                "low": 60719505,
+                "size": 1435429
+            }
+        }
+    },
+    "mage.analysis.upsert": {
+        "upsertMage": {
+            "0": {
+                "high": 33525932,
+                "lag": 0,
+                "low": 32573042,
+                "size": 952890
+            }
+        }
+    },
+    "mage.scan": {
+        "beat": {
+            "0": {
+                "high": 22316271,
+                "lag": 6,
+                "low": 22260721,
+                "size": 55550
+            },
+            "1": {
+                "high": 1954538,
+                "lag": 7,
+                "low": 1880091,
+                "size": 74447
+            },
+            "2": {
+                "high": 1954265,
+                "lag": 6,
+                "low": 1884844,
+                "size": 69421
+            },
+            "3": {
+                "high": 1953989,
+                "lag": 6,
+                "low": 1871309,
+                "size": 82680
+            },
+            "4": {
+                "high": 1953745,
+                "lag": 6,
+                "low": 1876517,
+                "size": 77228
+            },
+            "5": {
+                "high": 1953469,
+                "lag": 6,
+                "low": 1873691,
+                "size": 79778
+            },
+            "6": {
+                "high": 1953227,
+                "lag": 7,
+                "low": 1886753,
+                "size": 66474
+            },
+            "7": {
+                "high": 1953006,
+                "lag": 7,
+                "low": 1875083,
+                "size": 77923
+            },
+            "8": {
+                "high": 1952802,
+                "lag": 6,
+                "low": 1886702,
+                "size": 66100
+            },
+            "9": {
+                "high": 1952588,
+                "lag": 6,
+                "low": 1881315,
+                "size": 71273
+            },
+            "10": {
+                "high": 1952358,
+                "lag": 6,
+                "low": 1870815,
+                "size": 81543
+            },
+            "11": {
+                "high": 1951983,
+                "lag": 5,
+                "low": 1876133,
+                "size": 75850
+            },
+            "12": {
+                "high": 1951532,
+                "lag": 5,
+                "low": 1885128,
+                "size": 66404
+            },
+            "13": {
+                "high": 1951171,
+                "lag": 5,
+                "low": 1871010,
+                "size": 80161
+            },
+            "14": {
+                "high": 1950858,
+                "lag": 5,
+                "low": 1867025,
+                "size": 83833
+            },
+            "15": {
+                "high": 1950631,
+                "lag": 5,
+                "low": 1885162,
+                "size": 65469
+            },
+            "16": {
+                "high": 1950435,
+                "lag": 5,
+                "low": 1866607,
+                "size": 83828
+            },
+            "17": {
+                "high": 1950259,
+                "lag": 7,
+                "low": 1867518,
+                "size": 82741
+            },
+            "18": {
+                "high": 1950088,
+                "lag": 6,
+                "low": 1882824,
+                "size": 67264
+            },
+            "19": {
+                "high": 1949924,
+                "lag": 6,
+                "low": 1866359,
+                "size": 83565
+            }
+        },
+        "magescanner": {
+            "0": {
+                "high": 22316271,
+                "lag": 1,
+                "low": 22260721,
+                "size": 55550
+            },
+            "1": {
+                "high": 1954538,
+                "lag": 1,
+                "low": 1880091,
+                "size": 74447
+            },
+            "2": {
+                "high": 1954265,
+                "lag": 0,
+                "low": 1884844,
+                "size": 69421
+            },
+            "3": {
+                "high": 1953989,
+                "lag": 0,
+                "low": 1871309,
+                "size": 82680
+            },
+            "4": {
+                "high": 1953745,
+                "lag": 0,
+                "low": 1876517,
+                "size": 77228
+            },
+            "5": {
+                "high": 1953469,
+                "lag": 0,
+                "low": 1873691,
+                "size": 79778
+            },
+            "6": {
+                "high": 1953227,
+                "lag": 0,
+                "low": 1886753,
+                "size": 66474
+            },
+            "7": {
+                "high": 1953006,
+                "lag": 0,
+                "low": 1875083,
+                "size": 77923
+            },
+            "8": {
+                "high": 1952802,
+                "lag": 0,
+                "low": 1886702,
+                "size": 66100
+            },
+            "9": {
+                "high": 1952588,
+                "lag": 0,
+                "low": 1881315,
+                "size": 71273
+            },
+            "10": {
+                "high": 1952358,
+                "lag": 0,
+                "low": 1870815,
+                "size": 81543
+            },
+            "11": {
+                "high": 1951983,
+                "lag": 1,
+                "low": 1876133,
+                "size": 75850
+            },
+            "12": {
+                "high": 1951532,
+                "lag": 1,
+                "low": 1885128,
+                "size": 66404
+            },
+            "13": {
+                "high": 1951171,
+                "lag": 0,
+                "low": 1871010,
+                "size": 80161
+            },
+            "14": {
+                "high": 1950858,
+                "lag": 0,
+                "low": 1867025,
+                "size": 83833
+            },
+            "15": {
+                "high": 1950631,
+                "lag": 0,
+                "low": 1885162,
+                "size": 65469
+            },
+            "16": {
+                "high": 1950435,
+                "lag": 0,
+                "low": 1866607,
+                "size": 83828
+            },
+            "17": {
+                "high": 1950259,
+                "lag": 0,
+                "low": 1867518,
+                "size": 82741
+            },
+            "18": {
+                "high": 1950088,
+                "lag": 0,
+                "low": 1882824,
+                "size": 67264
+            },
+            "19": {
+                "high": 1949924,
+                "lag": 0,
+                "low": 1866359,
+                "size": 83565
+            }
+        }
+    },
+    "mage.scan.upsert": {
+        "upsertMage": {
+            "0": {
+                "high": 32240365,
+                "lag": 0,
+                "low": 31661519,
+                "size": 578846
+            }
+        }
+    },
+    "mage.task.scanned": {
+        "magetasker": {
+            "0": {
+                "high": 66192621,
+                "lag": 0,
+                "low": 65066078,
+                "size": 1126543
+            }
+        }
+    },
+    "mage.task.target": {
+        "magescanner": {
+            "0": {
+                "high": 1443641,
+                "lag": 972,
+                "low": 1225243,
+                "size": 218398
+            }
+        }
+    },
+    "mage.task.target.2": {
+        "magescanner": {
+            "0": {
+                "high": 8119732,
+                "lag": 369,
+                "low": 7527811,
+                "size": 591921
+            }
+        }
+    },
+    "mage.task.target.3": {
+        "magescanner": {
+            "0": {
+                "high": 5202625,
+                "lag": 378,
+                "low": 4940969,
+                "size": 261656
+            }
+        }
+    },
+    "mage.task.target.4": {
+        "magescanner": {
+            "0": {
+                "high": 7467244,
+                "lag": 281,
+                "low": 6753203,
+                "size": 714041
+            }
+        }
+    },
+    "mage.task.target.5": {
+        "magescanner": {
+            "0": {
+                "high": 4769104,
+                "lag": 370,
+                "low": 4271868,
+                "size": 497236
+            }
+        }
+    },
+    "mage.task.target.manual": {
+        "magescanner": {
+            "0": {
+                "high": 297503,
+                "lag": 0,
+                "low": 17654,
+                "size": 279849
+            }
+        }
+    },
+    "mage.task.target.priority": {
+        "magescanner": {
+            "0": {
+                "high": 9264863,
+                "lag": 442,
+                "low": 8852015,
+                "size": 412848
+            }
+        }
+    },
+    "magecart": {
+        "beat": {
+            "0": {
+                "high": 1058142,
+                "lag": 0,
+                "low": 1028589,
+                "size": 29553
+            }
+        }
+    },
+    "magecart.sanitizer": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "magecart.upsert": {
+        "upsertMage": {
+            "0": {
+                "high": 1287112,
+                "lag": 1,
+                "low": 1209087,
+                "size": 78025
+            }
+        }
+    },
+    "maid": {
+        "beatMaid": {
+            "0": {
+                "high": 16535595,
+                "lag": 0,
+                "low": 16134220,
+                "size": 401375
+            }
+        }
+    },
+    "maid.cracker": {
+        "cracker": {
+            "0": {
+                "high": 141,
+                "lag": 0,
+                "low": 136,
+                "size": 5
+            }
+        }
+    },
+    "maid.seen": {
+        "seenMaid": {
+            "0": {
+                "high": 15903989,
+                "lag": 0,
+                "low": 15506063,
+                "size": 397926
+            }
+        }
+    },
+    "maid.seen.backlog": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "maid.upsert": {
+        "upsertMaid": {
+            "0": {
+                "high": 16535430,
+                "lag": 0,
+                "low": 16134060,
+                "size": 401370
+            }
+        }
+    },
+    "maid.whistle": {
+        "whistle": {
+            "0": {
+                "high": 49075715,
+                "lag": 0,
+                "low": 47727295,
+                "size": 1348420
+            }
+        }
+    },
+    "minion": {
+        "beatMinion": {
+            "0": {
+                "high": 4622890800,
+                "lag": 8099,
+                "low": 4473197454,
+                "size": 149693346
+            }
+        }
+    },
+    "minion-pan": {
+        "beatMinionPan": {
+            "0": {
+                "high": 327395449,
+                "lag": 22,
+                "low": 325191557,
+                "size": 2203892
+            }
+        }
+    },
+    "minion.achernar.cnp": {
+        "achernar": {
+            "0": {
+                "high": 3489372,
+                "lag": 8358,
+                "low": 3421818,
+                "size": 67554
+            }
+        }
+    },
+    "minion.acrux.cnp": {
+        "acrux": {
+            "0": {
+                "high": 672653,
+                "lag": 0,
+                "low": 615223,
+                "size": 57430
+            }
+        }
+    },
+    "minion.adhara.account": {
+        "adhara": {
+            "0": {
+                "high": 886329,
+                "lag": 2,
+                "low": 884750,
+                "size": 1579
+            }
+        }
+    },
+    "minion.adhara.pii": {
+        "adhara": {
+            "0": {
+                "high": 837613,
+                "lag": 16,
+                "low": 835283,
+                "size": 2330
+            }
+        }
+    },
+    "minion.altair.cnp": {
+        "altair": {
+            "0": {
+                "high": 217859,
+                "lag": 0,
+                "low": 217498,
+                "size": 361
+            }
+        }
+    },
+    "minion.antlia.cnp": {
+        "antlia": {
+            "0": {
+                "high": 3050370,
+                "lag": 394,
+                "low": 3000872,
+                "size": 49498
+            }
+        }
+    },
+    "minion.apus.cnp": {
+        "apus": {
+            "0": {
+                "high": 354097,
+                "lag": 7,
+                "low": 351077,
+                "size": 3020
+            }
+        }
+    },
+    "minion.auriga.account": {
+        "auriga": {
+            "0": {
+                "high": 354993,
+                "lag": 2,
+                "low": 354171,
+                "size": 822
+            }
+        }
+    },
+    "minion.beat-review": {
+        "beatMinionReview": {
+            "0": {
+                "high": 161523479,
+                "lag": 0,
+                "low": 141515289,
+                "size": 20008190
+            }
+        }
+    },
+    "minion.beat.achernar": {
+        "beatMinion": {
+            "0": {
+                "high": 76430867,
+                "lag": 117,
+                "low": 62704893,
+                "size": 13725974
+            }
+        }
+    },
+    "minion.beat.acrux": {
+        "beatMinion": {
+            "0": {
+                "high": 49152846,
+                "lag": 0,
+                "low": 48809799,
+                "size": 343047
+            }
+        }
+    },
+    "minion.beat.adhara": {
+        "beatMinion": {
+            "0": {
+                "high": 1127619146,
+                "lag": 0,
+                "low": 1116888673,
+                "size": 10730473
+            }
+        }
+    },
+    "minion.beat.altair": {
+        "beatMinion": {
+            "0": {
+                "high": 23993425,
+                "lag": 0,
+                "low": 21522382,
+                "size": 2471043
+            }
+        }
+    },
+    "minion.beat.antlia": {
+        "beatMinion": {
+            "0": {
+                "high": 130970824,
+                "lag": 300,
+                "low": 121466016,
+                "size": 9504808
+            }
+        }
+    },
+    "minion.beat.apus": {
+        "<not associated>": {
+            "0": {
+                "high": 14146112,
+                "low": 13640823,
+                "size": 505289
+            }
+        }
+    },
+    "minion.beat.auriga": {
+        "beatMinion": {
+            "0": {
+                "high": 10787798,
+                "lag": 46,
+                "low": 10108337,
+                "size": 679461
+            }
+        }
+    },
+    "minion.beat.becrux": {
+        "<not associated>": {
+            "0": {
+                "high": 1810614,
+                "low": 1810614,
+                "size": 0
+            }
+        }
+    },
+    "minion.beat.bootes": {
+        "beatMinion": {
+            "0": {
+                "high": 98365629,
+                "lag": 750,
+                "low": 82093855,
+                "size": 16271774
+            }
+        }
+    },
+    "minion.beat.bravo": {
+        "beatMinion": {
+            "0": {
+                "high": 65138716,
+                "lag": 269,
+                "low": 57666662,
+                "size": 7472054
+            }
+        }
+    },
+    "minion.beat.caelum": {
+        "beatMinion": {
+            "0": {
+                "high": 46960501,
+                "lag": 0,
+                "low": 44931055,
+                "size": 2029446
+            }
+        }
+    },
+    "minion.beat.canis": {
+        "beatMinion": {
+            "0": {
+                "high": 7444491,
+                "lag": 0,
+                "low": 6666571,
+                "size": 777920
+            }
+        }
+    },
+    "minion.beat.capella": {
+        "<not associated>": {
+            "0": {
+                "high": 5380409,
+                "low": 5380409,
+                "size": 0
+            }
+        }
+    },
+    "minion.beat.carinae": {
+        "beatMinion": {
+            "0": {
+                "high": 12035895,
+                "lag": 15,
+                "low": 11433001,
+                "size": 602894
+            }
+        }
+    },
+    "minion.beat.cayuse": {
+        "beatMinion": {
+            "0": {
+                "high": 1402040,
+                "lag": 0,
+                "low": 1332362,
+                "size": 69678
+            }
+        }
+    },
+    "minion.beat.centauri": {
+        "beatMinion": {
+            "0": {
+                "high": 24160578,
+                "lag": 0,
+                "low": 19512321,
+                "size": 4648257
+            }
+        }
+    },
+    "minion.beat.cephei": {
+        "beatMinion": {
+            "0": {
+                "high": 14073555,
+                "lag": 0,
+                "low": 13690388,
+                "size": 383167
+            }
+        }
+    },
+    "minion.beat.cygni": {
+        "beatMinion": {
+            "0": {
+                "high": 899337,
+                "lag": 0,
+                "low": 810292,
+                "size": 89045
+            }
+        }
+    },
+    "minion.beat.draco": {
+        "beatMinion": {
+            "0": {
+                "high": 13609868,
+                "lag": 30,
+                "low": 12302755,
+                "size": 1307113
+            }
+        }
+    },
+    "minion.beat.grus": {
+        "beatMinion": {
+            "0": {
+                "high": 31107205,
+                "lag": 250,
+                "low": 27644281,
+                "size": 3462924
+            }
+        }
+    },
+    "minion.beat.hadar": {
+        "beatMinion": {
+            "0": {
+                "high": 749934,
+                "lag": 0,
+                "low": 702957,
+                "size": 46977
+            }
+        }
+    },
+    "minion.beat.indus": {
+        "beatMinion": {
+            "0": {
+                "high": 9524903,
+                "lag": 100,
+                "low": 8101839,
+                "size": 1423064
+            }
+        }
+    },
+    "minion.beat.kichai": {
+        "beatMinion": {
+            "0": {
+                "high": 29586475,
+                "lag": 0,
+                "low": 27504789,
+                "size": 2081686
+            }
+        }
+    },
+    "minion.beat.kilo": {
+        "beatMinion": {
+            "0": {
+                "high": 14503304,
+                "lag": 0,
+                "low": 13633602,
+                "size": 869702
+            }
+        }
+    },
+    "minion.beat.leo": {
+        "beatMinion": {
+            "0": {
+                "high": 9902544,
+                "lag": 0,
+                "low": 9125565,
+                "size": 776979
+            }
+        }
+    },
+    "minion.beat.lupus": {
+        "beatMinion": {
+            "0": {
+                "high": 31201556,
+                "lag": 300,
+                "low": 27871367,
+                "size": 3330189
+            }
+        }
+    },
+    "minion.beat.majoris": {
+        "beatMinion": {
+            "0": {
+                "high": 7470732,
+                "lag": 60,
+                "low": 7420494,
+                "size": 50238
+            }
+        }
+    },
+    "minion.beat.mensa": {
+        "beatMinion": {
+            "0": {
+                "high": 931638,
+                "lag": 2,
+                "low": 825353,
+                "size": 106285
+            }
+        }
+    },
+    "minion.beat.mike": {
+        "beatMinion": {
+            "0": {
+                "high": 31294481,
+                "lag": 54,
+                "low": 27876721,
+                "size": 3417760
+            }
+        }
+    },
+    "minion.beat.musca": {
+        "beatMinion": {
+            "0": {
+                "high": 78094139,
+                "lag": 550,
+                "low": 67102398,
+                "size": 10991741
+            }
+        }
+    },
+    "minion.beat.octans": {
+        "beatMinion": {
+            "0": {
+                "high": 2961229,
+                "lag": 0,
+                "low": 2694599,
+                "size": 266630
+            }
+        }
+    },
+    "minion.beat.orion": {
+        "beatMinion": {
+            "0": {
+                "high": 120171975,
+                "lag": 300,
+                "low": 106310960,
+                "size": 13861015
+            }
+        }
+    },
+    "minion.beat.osage": {
+        "beatMinion": {
+            "0": {
+                "high": 39098156,
+                "lag": 0,
+                "low": 37549839,
+                "size": 1548317
+            }
+        }
+    },
+    "minion.beat.pavo": {
+        "beatMinion": {
+            "0": {
+                "high": 481028,
+                "lag": 0,
+                "low": 427336,
+                "size": 53692
+            }
+        }
+    },
+    "minion.beat.pisces": {
+        "beatMinion": {
+            "0": {
+                "high": 15014734,
+                "lag": 121,
+                "low": 14001461,
+                "size": 1013273
+            }
+        }
+    },
+    "minion.beat.polaris": {
+        "beatMinion": {
+            "0": {
+                "high": 42016214,
+                "lag": 82,
+                "low": 40430985,
+                "size": 1585229
+            }
+        }
+    },
+    "minion.beat.pollux": {
+        "beatMinion": {
+            "0": {
+                "high": 15250503,
+                "lag": 0,
+                "low": 13985626,
+                "size": 1264877
+            }
+        }
+    },
+    "minion.beat.puppis": {
+        "beatMinion": {
+            "0": {
+                "high": 298464023,
+                "lag": 0,
+                "low": 275236326,
+                "size": 23227697
+            }
+        }
+    },
+    "minion.beat.recnac": {
+        "beatMinion": {
+            "0": {
+                "high": 62277181,
+                "lag": 2,
+                "low": 53782733,
+                "size": 8494448
+            }
+        }
+    },
+    "minion.beat.regulus": {
+        "beatMinion": {
+            "0": {
+                "high": 32290902,
+                "lag": 150,
+                "low": 29584403,
+                "size": 2706499
+            }
+        }
+    },
+    "minion.beat.reticulum": {
+        "beatMinion": {
+            "0": {
+                "high": 291039,
+                "lag": 12,
+                "low": 182926,
+                "size": 108113
+            }
+        }
+    },
+    "minion.beat.review": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "minion.beat.rigil": {
+        "beatMinion": {
+            "0": {
+                "high": 85759729,
+                "lag": 0,
+                "low": 78517714,
+                "size": 7242015
+            }
+        }
+    },
+    "minion.beat.scutum": {
+        "beatMinion": {
+            "0": {
+                "high": 11307948,
+                "lag": 150,
+                "low": 8449932,
+                "size": 2858016
+            }
+        }
+    },
+    "minion.beat.sioux": {
+        "<not associated>": {
+            "0": {
+                "high": 666246,
+                "low": 666246,
+                "size": 0
+            }
+        }
+    },
+    "minion.beat.sirius": {
+        "beatMinion": {
+            "0": {
+                "high": 8717281,
+                "lag": 0,
+                "low": 8285316,
+                "size": 431965
+            }
+        }
+    },
+    "minion.beat.vela": {
+        "beatMinion": {
+            "0": {
+                "high": 2948464,
+                "lag": 40,
+                "low": 2895319,
+                "size": 53145
+            }
+        }
+    },
+    "minion.beat.victor": {
+        "beatMinion": {
+            "0": {
+                "high": 972547546,
+                "lag": 275,
+                "low": 885039586,
+                "size": 87507960
+            }
+        }
+    },
+    "minion.beat.volans": {
+        "beatMinion": {
+            "0": {
+                "high": 103478534,
+                "lag": 216,
+                "low": 98654290,
+                "size": 4824244
+            }
+        }
+    },
+    "minion.beat.washoe": {
+        "beatMinion": {
+            "0": {
+                "high": 79398401,
+                "lag": 289,
+                "low": 74266915,
+                "size": 5131486
+            }
+        }
+    },
+    "minion.beat_pan": {
+        "beatMinionPan": {
+            "0": {
+                "high": 327512632,
+                "lag": 26,
+                "low": 325313367,
+                "size": 2199265
+            }
+        }
+    },
+    "minion.becrux.cnp": {
+        "becrux": {
+            "0": {
+                "high": 819,
+                "lag": 1,
+                "low": 818,
+                "size": 1
+            }
+        }
+    },
+    "minion.blackpass.account": {
+        "<not associated>": {
+            "0": {
+                "high": 97408,
+                "low": 0,
+                "size": 97408
+            }
+        }
+    },
+    "minion.bootes.cnp": {
+        "bootes": {
+            "0": {
+                "high": 2558178,
+                "lag": 342,
+                "low": 2497958,
+                "size": 60220
+            }
+        }
+    },
+    "minion.bravo.cnp_new": {
+        "<not associated>": {
+            "0": {
+                "high": 2,
+                "low": 1,
+                "size": 1
+            }
+        }
+    },
+    "minion.bravo.cnp_vip": {
+        "bravo": {
+            "0": {
+                "high": 1047577,
+                "lag": 6271,
+                "low": 1035560,
+                "size": 12017
+            }
+        }
+    },
+    "minion.caelum.cnp": {
+        "caelum": {
+            "0": {
+                "high": 90048,
+                "lag": 0,
+                "low": 89672,
+                "size": 376
+            }
+        }
+    },
+    "minion.canis.cnp": {
+        "canis": {
+            "0": {
+                "high": 342700,
+                "lag": 1,
+                "low": 342699,
+                "size": 1
+            }
+        }
+    },
+    "minion.capella.cnp": {
+        "<not associated>": {
+            "0": {
+                "high": 93775,
+                "low": 93761,
+                "size": 14
+            }
+        }
+    },
+    "minion.carinae.cnp": {
+        "carinae": {
+            "0": {
+                "high": 424395,
+                "lag": 11734,
+                "low": 397602,
+                "size": 26793
+            }
+        }
+    },
+    "minion.cartel.cp": {
+        "<not associated>": {
+            "0": {
+                "high": 4075,
+                "low": 3507,
+                "size": 568
+            }
+        }
+    },
+    "minion.cayuse.cnp": {
+        "cayuse": {
+            "0": {
+                "high": 35036,
+                "lag": 0,
+                "low": 34972,
+                "size": 64
+            }
+        }
+    },
+    "minion.cayuse.cp": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "minion.centauri.cnp": {
+        "centauri": {
+            "0": {
+                "high": 516590,
+                "lag": 0,
+                "low": 513288,
+                "size": 3302
+            }
+        }
+    },
+    "minion.cephei.cnp": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "minion.cephei.cnp_new": {
+        "cephei": {
+            "0": {
+                "high": 197598,
+                "lag": 0,
+                "low": 197395,
+                "size": 203
+            }
+        }
+    },
+    "minion.cephei.review": {
+        "cephei": {
+            "0": {
+                "high": 2011336,
+                "lag": 91,
+                "low": 1995265,
+                "size": 16071
+            }
+        }
+    },
+    "minion.ching": {
+        "camino-minion-bmo-sold-daily": {
+            "0": {
+                "high": 33252994,
+                "lag": 2923,
+                "low": 32307425,
+                "size": 945569
+            }
+        },
+        "camino-minion-boa-sold-daily": {
+            "0": {
+                "high": 33252994,
+                "lag": 2923,
+                "low": 32307425,
+                "size": 945569
+            }
+        },
+        "camino-minion-capitaloneca-sold-daily": {
+            "0": {
+                "high": 33252994,
+                "lag": 2923,
+                "low": 32307425,
+                "size": 945569
+            }
+        },
+        "camino-minion-dscvr-sold-daily": {
+            "0": {
+                "high": 33252994,
+                "lag": 2923,
+                "low": 32307425,
+                "size": 945569
+            }
+        },
+        "camino-minion-fiserv-sold-daily-sftpremote": {
+            "0": {
+                "high": 33252994,
+                "lag": 2923,
+                "low": 32307425,
+                "size": 945569
+            }
+        },
+        "camino-minion-mastercard-sold-hourly": {
+            "0": {
+                "high": 33252994,
+                "lag": 2,
+                "low": 32307425,
+                "size": 945569
+            }
+        },
+        "camino-minion-rbc-sold-daily": {
+            "0": {
+                "high": 33252994,
+                "lag": 2923,
+                "low": 32307425,
+                "size": 945569
+            }
+        },
+        "camino-minion-swed-sold-daily": {
+            "0": {
+                "high": 33252994,
+                "lag": 2923,
+                "low": 32307425,
+                "size": 945569
+            }
+        }
+    },
+    "minion.crd2life.account": {
+        "<not associated>": {
+            "0": {
+                "high": 76926,
+                "low": 76262,
+                "size": 664
+            }
+        }
+    },
+    "minion.cvv.pii": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "minion.cygni.cnp": {
+        "cygni": {
+            "0": {
+                "high": 24806,
+                "lag": 0,
+                "low": 24764,
+                "size": 42
+            }
+        }
+    },
+    "minion.draco.cnp": {
+        "draco": {
+            "0": {
+                "high": 545524,
+                "lag": 1837,
+                "low": 529701,
+                "size": 15823
+            }
+        }
+    },
+    "minion.geo": {
+        "geo": {
+            "0": {
+                "high": 372965978,
+                "lag": 0,
+                "low": 345666221,
+                "size": 27299757
+            }
+        }
+    },
+    "minion.geo.deferred": {
+        "geo": {
+            "0": {
+                "high": 184494496,
+                "lag": 585936,
+                "low": 170634914,
+                "size": 13859582
+            }
+        }
+    },
+    "minion.grus.cnp": {
+        "grus": {
+            "0": {
+                "high": 1251942,
+                "lag": 8886,
+                "low": 1104462,
+                "size": 147480
+            }
+        }
+    },
+    "minion.hadar.cnp": {
+        "hadar": {
+            "0": {
+                "high": 29017,
+                "lag": 1,
+                "low": 29016,
+                "size": 1
+            }
+        }
+    },
+    "minion.indus.cnp": {
+        "indus": {
+            "0": {
+                "high": 214791,
+                "lag": 6183,
+                "low": 205588,
+                "size": 9203
+            }
+        }
+    },
+    "minion.jshop.pii": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "minion.kichai.cnp": {
+        "kichai": {
+            "0": {
+                "high": 38121,
+                "lag": 0,
+                "low": 38089,
+                "size": 32
+            }
+        }
+    },
+    "minion.kilo.cnp": {
+        "kilo": {
+            "0": {
+                "high": 452717,
+                "lag": 0,
+                "low": 438276,
+                "size": 14441
+            }
+        }
+    },
+    "minion.kilo.pii": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "minion.leo.cnp": {
+        "leo": {
+            "0": {
+                "high": 393525,
+                "lag": 3793,
+                "low": 385650,
+                "size": 7875
+            }
+        }
+    },
+    "minion.lupus.cnp": {
+        "lupus": {
+            "0": {
+                "high": 1389054,
+                "lag": 5420,
+                "low": 1289632,
+                "size": 99422
+            }
+        }
+    },
+    "minion.majoris.cnp": {
+        "majoris": {
+            "0": {
+                "high": 471274,
+                "lag": 11714,
+                "low": 456963,
+                "size": 14311
+            }
+        }
+    },
+    "minion.mark": {
+        "kaching": {
+            "0": {
+                "high": 11185,
+                "lag": 0,
+                "low": 10966,
+                "size": 219
+            }
+        }
+    },
+    "minion.mensa.account": {
+        "mensa": {
+            "0": {
+                "high": 1128436,
+                "lag": 2505,
+                "low": 1112376,
+                "size": 16060
+            }
+        }
+    },
+    "minion.mike.cnp": {
+        "mike": {
+            "0": {
+                "high": 2491701,
+                "lag": 798529,
+                "low": 1532964,
+                "size": 958737
+            }
+        }
+    },
+    "minion.mike.cp": {
+        "mike": {
+            "0": {
+                "high": 2135860,
+                "lag": 9201,
+                "low": 2084120,
+                "size": 51740
+            }
+        }
+    },
+    "minion.musca.cnp": {
+        "musca": {
+            "0": {
+                "high": 2530174,
+                "lag": 1332,
+                "low": 2437805,
+                "size": 92369
+            }
+        }
+    },
+    "minion.november.cp": {
+        "november": {
+            "0": {
+                "high": 10000,
+                "lag": 10000,
+                "low": 0,
+                "size": 10000
+            }
+        }
+    },
+    "minion.octans.cnp": {
+        "octans": {
+            "0": {
+                "high": 138734,
+                "lag": 1283,
+                "low": 133977,
+                "size": 4757
+            }
+        }
+    },
+    "minion.orion.cnp": {
+        "orion": {
+            "0": {
+                "high": 1957932,
+                "lag": 185,
+                "low": 1941196,
+                "size": 16736
+            }
+        }
+    },
+    "minion.osage.cnp": {
+        "osage": {
+            "0": {
+                "high": 640953,
+                "lag": 84665,
+                "low": 482070,
+                "size": 158883
+            }
+        }
+    },
+    "minion.osage.cnp_new": {
+        "osage": {
+            "0": {
+                "high": 65848,
+                "lag": 871,
+                "low": 64788,
+                "size": 1060
+            }
+        }
+    },
+    "minion.osage.cp": {
+        "<not associated>": {
+            "0": {
+                "high": 3,
+                "low": 2,
+                "size": 1
+            }
+        }
+    },
+    "minion.osage.cp_vip": {
+        "osage": {
+            "0": {
+                "high": 348976,
+                "lag": 50377,
+                "low": 216362,
+                "size": 132614
+            }
+        }
+    },
+    "minion.pavo.cnp": {
+        "pavo": {
+            "0": {
+                "high": 29896,
+                "lag": 5469,
+                "low": 1245,
+                "size": 28651
+            }
+        }
+    },
+    "minion.pavo.review": {
+        "pavo": {
+            "0": {
+                "high": 4152,
+                "lag": 1,
+                "low": 4131,
+                "size": 21
+            }
+        }
+    },
+    "minion.pisces.cnp": {
+        "pisces": {
+            "0": {
+                "high": 182465,
+                "lag": 7138,
+                "low": 169114,
+                "size": 13351
+            }
+        }
+    },
+    "minion.pisces.cp": {
+        "<not associated>": {
+            "0": {
+                "high": 20000,
+                "low": 10000,
+                "size": 10000
+            }
+        }
+    },
+    "minion.polaris.cnp": {
+        "polaris": {
+            "0": {
+                "high": 2067059,
+                "lag": 101066,
+                "low": 1816143,
+                "size": 250916
+            }
+        }
+    },
+    "minion.pollux.cnp": {
+        "pollux": {
+            "0": {
+                "high": 810803,
+                "lag": 524460,
+                "low": 0,
+                "size": 810803
+            }
+        }
+    },
+    "minion.pp24.pii": {
+        "<not associated>": {
+            "0": {
+                "high": 10000,
+                "low": 0,
+                "size": 10000
+            }
+        }
+    },
+    "minion.puppis.account": {
+        "puppis": {
+            "0": {
+                "high": 612697,
+                "lag": 36,
+                "low": 610413,
+                "size": 2284
+            }
+        }
+    },
+    "minion.puppis.pii": {
+        "puppis": {
+            "0": {
+                "high": 238937,
+                "lag": 6,
+                "low": 237783,
+                "size": 1154
+            }
+        }
+    },
+    "minion.recnac.cnp": {
+        "recnac": {
+            "0": {
+                "high": 1603645,
+                "lag": 39319,
+                "low": 1529018,
+                "size": 74627
+            }
+        }
+    },
+    "minion.recnac.cnp_new": {
+        "recnac": {
+            "0": {
+                "high": 167640,
+                "lag": 0,
+                "low": 167506,
+                "size": 134
+            }
+        }
+    },
+    "minion.recnac.cp": {
+        "recnac": {
+            "0": {
+                "high": 670082,
+                "lag": 3966,
+                "low": 660082,
+                "size": 10000
+            }
+        }
+    },
+    "minion.recnac.pii": {
+        "recnac": {
+            "0": {
+                "high": 20000,
+                "lag": 10000,
+                "low": 10000,
+                "size": 10000
+            }
+        }
+    },
+    "minion.regulus.account": {
+        "regulus": {
+            "0": {
+                "high": 536673,
+                "lag": 172,
+                "low": 476291,
+                "size": 60382
+            }
+        }
+    },
+    "minion.reticulum.cnp": {
+        "reticulum": {
+            "0": {
+                "high": 56670,
+                "lag": 474,
+                "low": 55887,
+                "size": 783
+            }
+        }
+    },
+    "minion.review": {
+        "beatMinionReview": {
+            "0": {
+                "high": 238964836,
+                "lag": 4460,
+                "low": 221587090,
+                "size": 17377746
+            }
+        }
+    },
+    "minion.rigil.cnp": {
+        "sniffcc-pool": {
+            "0": {
+                "high": 1801707,
+                "lag": 0,
+                "low": 1780272,
+                "size": 21435
+            }
+        }
+    },
+    "minion.sanitizer": {
+        "sanitizer": {
+            "0": {
+                "high": 104838400,
+                "lag": 0,
+                "low": 102356645,
+                "size": 2481755
+            }
+        }
+    },
+    "minion.sanitizer.review": {
+        "sanitizer": {
+            "0": {
+                "high": 119015,
+                "lag": 0,
+                "low": 119007,
+                "size": 8
+            }
+        }
+    },
+    "minion.sanitizer_pan": {
+        "sanitizer": {
+            "0": {
+                "high": 83650663,
+                "lag": 0,
+                "low": 82136836,
+                "size": 1513827
+            }
+        }
+    },
+    "minion.scutum.cnp": {
+        "scutum": {
+            "0": {
+                "high": 516102,
+                "lag": 34133,
+                "low": 454958,
+                "size": 61144
+            }
+        }
+    },
+    "minion.scutum.cnp_new": {
+        "scutum": {
+            "0": {
+                "high": 66036,
+                "lag": 0,
+                "low": 66035,
+                "size": 1
+            }
+        }
+    },
+    "minion.scutum.review": {
+        "scutum": {
+            "0": {
+                "high": 18723,
+                "lag": 0,
+                "low": 18515,
+                "size": 208
+            }
+        }
+    },
+    "minion.seen": {
+        "seenMinion": {
+            "0": {
+                "high": 154082866,
+                "lag": 133,
+                "low": 147370548,
+                "size": 6712318
+            }
+        }
+    },
+    "minion.seen.backlog": {
+        "<not associated>": {
+            "0": {
+                "high": 69864631,
+                "low": 69864631,
+                "size": 0
+            }
+        }
+    },
+    "minion.seen.pan": {
+        "seenpans": {
+            "0": {
+                "high": 180785790,
+                "lag": 0,
+                "low": 178914860,
+                "size": 1870930
+            }
+        }
+    },
+    "minion.sioux.cnp": {
+        "<not associated>": {
+            "0": {
+                "high": 3606,
+                "low": 3587,
+                "size": 19
+            }
+        }
+    },
+    "minion.sioux.cp": {
+        "<not associated>": {
+            "0": {
+                "high": 182281,
+                "low": 172204,
+                "size": 10077
+            }
+        }
+    },
+    "minion.sirius.cnp": {
+        "sirius": {
+            "0": {
+                "high": 358192,
+                "lag": 199,
+                "low": 312248,
+                "size": 45944
+            }
+        }
+    },
+    "minion.sirius.cnp_new": {
+        "<not associated>": {
+            "0": {
+                "high": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "minion.uniform.cnp": {
+        "uniform": {
+            "0": {
+                "high": 1,
+                "lag": 1,
+                "low": 0,
+                "size": 1
+            }
+        }
+    },
+    "minion.upsert": {
+        "upsertMinion": {
+            "0": {
+                "high": 4250881061,
+                "lag": 0,
+                "low": 4181967298,
+                "size": 68913763
+            }
+        }
+    },
+    "minion.upsert.review": {
+        "upsertMinion": {
+            "0": {
+                "high": 133626682,
+                "lag": 0,
+                "low": 131272033,
+                "size": 2354649
+            }
+        }
+    },
+    "minion.upsert_pan": {
+        "upsertMinion": {
+            "0": {
+                "high": 529082197,
+                "lag": 0,
+                "low": 528046731,
+                "size": 1035466
+            }
+        }
+    },
+    "minion.uscufeed": {
+        "uscufeed": {
+            "0": {
+                "high": 204507578,
+                "lag": 34,
+                "low": 200347167,
+                "size": 4160411
+            }
+        }
+    },
+    "minion.vela.cnp": {
+        "vela": {
+            "0": {
+                "high": 165984,
+                "lag": 639,
+                "low": 164335,
+                "size": 1649
+            }
+        }
+    },
+    "minion.victor.cnp": {
+        "victor": {
+            "0": {
+                "high": 742915,
+                "lag": 1,
+                "low": 728793,
+                "size": 14122
+            }
+        }
+    },
+    "minion.victor.cnp_vip": {
+        "victor": {
+            "0": {
+                "high": 61969,
+                "lag": 7976,
+                "low": 51964,
+                "size": 10005
+            }
+        }
+    },
+    "minion.victor.cp": {
+        "victor": {
+            "0": {
+                "high": 1476378,
+                "lag": 0,
+                "low": 1468637,
+                "size": 7741
+            }
+        }
+    },
+    "minion.victor.cp_vip": {
+        "victor": {
+            "0": {
+                "high": 240108,
+                "lag": 1961,
+                "low": 230079,
+                "size": 10029
+            }
+        }
+    },
+    "minion.volans.cnp": {
+        "volans": {
+            "0": {
+                "high": 1574740,
+                "lag": 1321,
+                "low": 1571432,
+                "size": 3308
+            }
+        }
+    },
+    "minion.vortex": {
+        "vortex": {
+            "0": {
+                "high": 813152874,
+                "lag": 0,
+                "low": 808405558,
+                "size": 4747316
+            }
+        }
+    },
+    "minion.washoe.account": {
+        "<not associated>": {
+            "0": {
+                "high": 4,
+                "low": 3,
+                "size": 1
+            }
+        }
+    },
+    "minion.washoe.cnp": {
+        "washoe": {
+            "0": {
+                "high": 926497,
+                "lag": 2562,
+                "low": 923913,
+                "size": 2584
+            }
+        }
+    },
+    "os3.attachment": {
+        "os3": {
+            "0": {
+                "high": 4067178,
+                "lag": 0,
+                "low": 4067178,
+                "size": 0
+            },
+            "1": {
+                "high": 3931343,
+                "lag": 0,
+                "low": 3931343,
+                "size": 0
+            },
+            "2": {
+                "high": 4281943,
+                "lag": 0,
+                "low": 4281943,
+                "size": 0
+            },
+            "3": {
+                "high": 4129091,
+                "lag": 0,
+                "low": 4129091,
+                "size": 0
+            },
+            "4": {
+                "high": 4047267,
+                "lag": 1,
+                "low": 4047266,
+                "size": 1
+            },
+            "5": {
+                "high": 4102127,
+                "lag": 0,
+                "low": 4102127,
+                "size": 0
+            },
+            "6": {
+                "high": 4051534,
+                "lag": 0,
+                "low": 4051534,
+                "size": 0
+            },
+            "7": {
+                "high": 4161594,
+                "lag": 18,
+                "low": 4161576,
+                "size": 18
+            },
+            "8": {
+                "high": 4140342,
+                "lag": 0,
+                "low": 4140342,
+                "size": 0
+            },
+            "9": {
+                "high": 4094881,
+                "lag": 2581,
+                "low": 4094881,
+                "size": 0
+            },
+            "10": {
+                "high": 4098637,
+                "lag": 400,
+                "low": 4098319,
+                "size": 318
+            },
+            "11": {
+                "high": 4162308,
+                "lag": 4981,
+                "low": 4162308,
+                "size": 0
+            },
+            "12": {
+                "high": 3953322,
+                "lag": 915,
+                "low": 3952407,
+                "size": 915
+            },
+            "13": {
+                "high": 4086363,
+                "lag": 1,
+                "low": 4086363,
+                "size": 0
+            },
+            "14": {
+                "high": 4036792,
+                "lag": 0,
+                "low": 4036792,
+                "size": 0
+            },
+            "15": {
+                "high": 4064106,
+                "lag": 0,
+                "low": 4064106,
+                "size": 0
+            },
+            "16": {
+                "high": 3892939,
+                "lag": 2,
+                "low": 3892937,
+                "size": 2
+            },
+            "17": {
+                "high": 4059482,
+                "lag": 0,
+                "low": 4059482,
+                "size": 0
+            },
+            "18": {
+                "high": 4074097,
+                "lag": 0,
+                "low": 4074097,
+                "size": 0
+            },
+            "19": {
+                "high": 4214581,
+                "lag": 0,
+                "low": 4214581,
+                "size": 0
+            },
+            "20": {
+                "high": 3891063,
+                "lag": 1,
+                "low": 3891062,
+                "size": 1
+            },
+            "21": {
+                "high": 4108318,
+                "lag": 0,
+                "low": 4108318,
+                "size": 0
+            },
+            "22": {
+                "high": 4122913,
+                "lag": 8,
+                "low": 4122905,
+                "size": 8
+            },
+            "23": {
+                "high": 4046253,
+                "lag": 0,
+                "low": 4046253,
+                "size": 0
+            },
+            "24": {
+                "high": 4007140,
+                "lag": 0,
+                "low": 4007140,
+                "size": 0
+            },
+            "25": {
+                "high": 4032914,
+                "lag": 0,
+                "low": 4032914,
+                "size": 0
+            },
+            "26": {
+                "high": 4139474,
+                "lag": 0,
+                "low": 4139474,
+                "size": 0
+            },
+            "27": {
+                "high": 4067774,
+                "lag": 0,
+                "low": 4067774,
+                "size": 0
+            },
+            "28": {
+                "high": 4060482,
+                "lag": 0,
+                "low": 4060482,
+                "size": 0
+            },
+            "29": {
+                "high": 4071205,
+                "lag": 0,
+                "low": 4071205,
+                "size": 0
+            },
+            "30": {
+                "high": 4174680,
+                "lag": 0,
+                "low": 4174680,
+                "size": 0
+            },
+            "31": {
+                "high": 3999807,
+                "lag": 0,
+                "low": 3999807,
+                "size": 0
+            },
+            "32": {
+                "high": 4074092,
+                "lag": 0,
+                "low": 4074092,
+                "size": 0
+            },
+            "33": {
+                "high": 4122124,
+                "lag": 0,
+                "low": 4122124,
+                "size": 0
+            },
+            "34": {
+                "high": 4107288,
+                "lag": 0,
+                "low": 4107288,
+                "size": 0
+            },
+            "35": {
+                "high": 4032260,
+                "lag": 0,
+                "low": 4032260,
+                "size": 0
+            },
+            "36": {
+                "high": 4084639,
+                "lag": 0,
+                "low": 4084639,
+                "size": 0
+            },
+            "37": {
+                "high": 4110280,
+                "lag": 0,
+                "low": 4110280,
+                "size": 0
+            },
+            "38": {
+                "high": 4069938,
+                "lag": 0,
+                "low": 4069938,
+                "size": 0
+            },
+            "39": {
+                "high": 3955279,
+                "lag": 0,
+                "low": 3955279,
+                "size": 0
+            },
+            "40": {
+                "high": 4176572,
+                "lag": 0,
+                "low": 4176572,
+                "size": 0
+            },
+            "41": {
+                "high": 3919640,
+                "lag": 0,
+                "low": 3919640,
+                "size": 0
+            },
+            "42": {
+                "high": 4042874,
+                "lag": 0,
+                "low": 4042874,
+                "size": 0
+            },
+            "43": {
+                "high": 4144811,
+                "lag": 0,
+                "low": 4144811,
+                "size": 0
+            },
+            "44": {
+                "high": 4011179,
+                "lag": 0,
+                "low": 4011179,
+                "size": 0
+            },
+            "45": {
+                "high": 3880411,
+                "lag": 2849,
+                "low": 3880411,
+                "size": 0
+            },
+            "46": {
+                "high": 3942783,
+                "lag": 0,
+                "low": 3942783,
+                "size": 0
+            },
+            "47": {
+                "high": 4022486,
+                "lag": 0,
+                "low": 4022486,
+                "size": 0
+            },
+            "48": {
+                "high": 4138826,
+                "lag": 2,
+                "low": 4138824,
+                "size": 2
+            },
+            "49": {
+                "high": 4125380,
+                "lag": 0,
+                "low": 4125380,
+                "size": 0
+            },
+            "50": {
+                "high": 4149024,
+                "lag": 0,
+                "low": 4149024,
+                "size": 0
+            },
+            "51": {
+                "high": 4010824,
+                "lag": 0,
+                "low": 4010824,
+                "size": 0
+            },
+            "52": {
+                "high": 4017780,
+                "lag": 8,
+                "low": 4017772,
+                "size": 8
+            },
+            "53": {
+                "high": 3983345,
+                "lag": 0,
+                "low": 3983345,
+                "size": 0
+            },
+            "54": {
+                "high": 4090782,
+                "lag": 0,
+                "low": 4090782,
+                "size": 0
+            },
+            "55": {
+                "high": 4024459,
+                "lag": 0,
+                "low": 4024459,
+                "size": 0
+            },
+            "56": {
+                "high": 4118350,
+                "lag": 0,
+                "low": 4118350,
+                "size": 0
+            },
+            "57": {
+                "high": 4060648,
+                "lag": 0,
+                "low": 4060648,
+                "size": 0
+            },
+            "58": {
+                "high": 4061174,
+                "lag": 0,
+                "low": 4061174,
+                "size": 0
+            },
+            "59": {
+                "high": 3978402,
+                "lag": 0,
+                "low": 3978402,
+                "size": 0
+            }
+        }
+    },
+    "os3.debug": {
+        "os3": {
+            "0": {
+                "high": 522293,
+                "lag": 0,
+                "low": 522293,
+                "size": 0
+            },
+            "1": {
+                "high": 518217,
+                "lag": 2,
+                "low": 518215,
+                "size": 2
+            },
+            "2": {
+                "high": 517240,
+                "lag": 4,
+                "low": 517236,
+                "size": 4
+            },
+            "3": {
+                "high": 527311,
+                "lag": 0,
+                "low": 527311,
+                "size": 0
+            },
+            "4": {
+                "high": 518057,
+                "lag": 0,
+                "low": 518057,
+                "size": 0
+            },
+            "5": {
+                "high": 519508,
+                "lag": 0,
+                "low": 519508,
+                "size": 0
+            },
+            "6": {
+                "high": 516834,
+                "lag": 0,
+                "low": 516834,
+                "size": 0
+            },
+            "7": {
+                "high": 519070,
+                "lag": 0,
+                "low": 519070,
+                "size": 0
+            },
+            "8": {
+                "high": 517565,
+                "lag": 0,
+                "low": 517565,
+                "size": 0
+            },
+            "9": {
+                "high": 519362,
+                "lag": 0,
+                "low": 519362,
+                "size": 0
+            }
+        }
+    },
+    "os3c.attachment": {
+        "os3": {
+            "0": {
+                "high": 11030,
+                "lag": 0,
+                "low": 11030,
+                "size": 0
+            },
+            "1": {
+                "high": 11118,
+                "lag": 0,
+                "low": 11118,
+                "size": 0
+            },
+            "2": {
+                "high": 10684,
+                "lag": 0,
+                "low": 10684,
+                "size": 0
+            },
+            "3": {
+                "high": 11120,
+                "lag": 0,
+                "low": 11120,
+                "size": 0
+            },
+            "4": {
+                "high": 10722,
+                "lag": 0,
+                "low": 10722,
+                "size": 0
+            },
+            "5": {
+                "high": 11018,
+                "lag": 0,
+                "low": 11018,
+                "size": 0
+            },
+            "6": {
+                "high": 10692,
+                "lag": 0,
+                "low": 10692,
+                "size": 0
+            },
+            "7": {
+                "high": 10904,
+                "lag": 0,
+                "low": 10904,
+                "size": 0
+            },
+            "8": {
+                "high": 10338,
+                "lag": 0,
+                "low": 10338,
+                "size": 0
+            },
+            "9": {
+                "high": 10828,
+                "lag": 0,
+                "low": 10828,
+                "size": 0
+            }
+        }
+    },
+    "os3t.attachment": {
+        "os3": {
+            "0": {
+                "high": 26341124,
+                "lag": 0,
+                "low": 26341124,
+                "size": 0
+            }
+        }
+    },
+    "paste": {
+        "upsertpaste": {
+            "0": {
+                "high": 3708280,
+                "lag": 0,
+                "low": 3703631,
+                "size": 4649
+            }
+        }
+    },
+    "syncmage.events.attacker.url": {
+        "camino-magecart-mastercard-added-daily": {
+            "0": {
+                "high": 1074,
+                "lag": 0,
+                "low": 247,
+                "size": 827
+            }
+        },
+        "mageanalyst": {
+            "0": {
+                "high": 1074,
+                "lag": 0,
+                "low": 247,
+                "size": 827
+            }
+        }
+    },
+    "telegram": {
+        "beat": {
+            "0": {
+                "high": 224277532,
+                "lag": 373,
+                "low": 212128110,
+                "size": 12149422
+            }
+        }
+    },
+    "telegram.upsert": {
+        "upsertTelegram": {
+            "0": {
+                "high": 313897913,
+                "lag": 0,
+                "low": 304695750,
+                "size": 9202163
+            }
+        }
+    },
+    "testcart": {
+        "beat": {
+            "0": {
+                "high": 41203059,
+                "lag": 80,
+                "low": 36468029,
+                "size": 4735030
+            }
+        }
+    },
+    "testcart.upsert": {
+        "upsertMage": {
+            "0": {
+                "high": 64102765,
+                "lag": 0,
+                "low": 63697810,
+                "size": 404955
+            }
+        }
+    },
+    "twirl.dome.source": {
+        "twirl": {
+            "0": {
+                "high": 5986816,
+                "lag": 0,
+                "low": 5894035,
+                "size": 92781
+            }
+        }
+    },
+    "twirl.paste.source": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "twirl.telegram.source": {
+        "twirl": {
+            "0": {
+                "high": 76294112,
+                "lag": 0,
+                "low": 70813286,
+                "size": 5480826
+            }
+        }
+    },
+    "upsertmage.events.firstinfection": {
+        "camino-magecart-mastercard-identified-daily": {
+            "0": {
+                "high": 893,
+                "lag": 0,
+                "low": 78,
+                "size": 815
+            }
+        }
+    },
+    "upsertmage.events.newinfection": {
+        "camino-magecart-synchrony-newinfection-daily": {
+            "0": {
+                "high": 19618,
+                "lag": 0,
+                "low": 2693,
+                "size": 16925
+            }
+        }
+    },
+    "whirl.pans.source": {
+        "whirl": {
+            "0": {
+                "high": 6913997,
+                "lag": 0,
+                "low": 6694959,
+                "size": 219038
+            }
+        }
+    },
+    "whirl.paste.backlog": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "whirl.paste.source": {
+        "whirl": {
+            "0": {
+                "high": 88235,
+                "lag": 0,
+                "low": 84068,
+                "size": 4167
+            }
+        }
+    },
+    "whirl.post.backlog": {
+        "<not associated>": {
+            "0": {
+                "high": 0,
+                "low": 0,
+                "size": 0
+            }
+        }
+    },
+    "whirl.post.source": {
+        "whirl": {
+            "0": {
+                "high": 34637136,
+                "lag": 0,
+                "low": 34166880,
+                "size": 470256
+            }
+        }
+    },
+    "whirl.telegram.backlog": {
+        "<not associated>": {
+            "0": {
+                "high": 312409292,
+                "low": 312409292,
+                "size": 0
+            }
+        }
+    },
+    "whirl.telegram.source": {
+        "whirl": {
+            "0": {
+                "high": 66810427,
+                "lag": 0,
+                "low": 63352017,
+                "size": 3458410
+            }
+        }
+    }
+}
