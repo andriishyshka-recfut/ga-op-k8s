@@ -18,6 +18,9 @@ data "vault_generic_secret" "gcp_sa_keys" {
   path = "secret/etl/google_credentials"
 }
 
+data "vault_generic_secret" "sendgrid_api_key" {
+  path = "secret/etl/sendgrid"
+}
 
 
 resource "kubernetes_secret" "gitlab_token" {
@@ -80,6 +83,16 @@ resource "kubernetes_secret" "google_credentials" {
   }
 }
 
+resource "kubernetes_secret" "sendgrid_api_key" {
+  metadata {
+    name      = "sendgrid"
+    namespace = local.namespace
+  }
+
+  data = {
+    api_key = data.vault_generic_secret.sendgrid_api_key.data.api_key
+  }
+}
 
 
 resource "kubernetes_manifest" "externalsecret_ssh" {
