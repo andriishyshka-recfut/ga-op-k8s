@@ -1,39 +1,16 @@
-data "vault_generic_secret" "gitlab_token" {
-  path = "secret/gitlab"
-}
 
 data "vault_generic_secret" "minio_default_settings" {
   path = "secret/etl/minio"
-}
-
-data "vault_generic_secret" "email_creds" {
-  path = "secret/etl/mail"
-}
-
-data "vault_generic_secret" "slack_creds" {
-  path = "secret/etl/slack"
 }
 
 data "vault_generic_secret" "gcp_sa_keys" {
   path = "secret/etl/google_credentials"
 }
 
-data "vault_generic_secret" "sendgrid_api_key" {
-  path = "secret/etl/sendgrid"
+data "vault_generic_secret" "api_keys" {
+  path = "secret/etl/vault"
 }
 
-
-resource "kubernetes_secret" "gitlab_token" {
-  metadata {
-    name      = "gitlab-creds"
-    namespace = local.namespace
-  }
-
-  data = {
-    "username" = data.vault_generic_secret.gitlab_token.data.username
-    "token"    = data.vault_generic_secret.gitlab_token.data.token_read_repo
-  }
-}
 
 
 resource "kubernetes_secret" "minio_default_settings" {
@@ -49,28 +26,19 @@ resource "kubernetes_secret" "minio_default_settings" {
 }
 
 
-resource "kubernetes_secret" "email_creds" {
+resource "kubernetes_secret" "api_keys" {
   metadata {
-    name      = "email-creds"
+    name      = "api-keys"
     namespace = local.namespace
   }
 
   data = {
-    "credentials" = data.vault_generic_secret.email_creds.data.credentials
-    "pass"        = data.vault_generic_secret.email_creds.data.pass
+    "vault" = jsonencode(data.vault_generic_secret.api_keys.data)
   }
+  
 }
 
-resource "kubernetes_secret" "slack_creds" {
-  metadata {
-    name      = "slack"
-    namespace = local.namespace
-  }
 
-  data = {
-    "slacktoken" = data.vault_generic_secret.slack_creds.data.token
-  }
-}
 
 resource "kubernetes_secret" "google_credentials" {
   metadata {
@@ -80,17 +48,6 @@ resource "kubernetes_secret" "google_credentials" {
 
   data = {
     "cppfeed" = data.vault_generic_secret.gcp_sa_keys.data.cppfeed
-  }
-}
-
-resource "kubernetes_secret" "sendgrid_api_key" {
-  metadata {
-    name      = "sendgrid"
-    namespace = local.namespace
-  }
-
-  data = {
-    api_key = data.vault_generic_secret.sendgrid_api_key.data.api_key
   }
 }
 
