@@ -29,5 +29,5 @@ module "restore" {
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/es-restore-actions.yaml")
   Settings             = var.Settings
-  # depends_on           = [module.backup]
+  depends_on           = [module.backup]
 }
