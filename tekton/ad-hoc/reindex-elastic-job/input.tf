@@ -1,6 +1,6 @@
 locals {
   run_prefix = "index_name_2028080401"
-  imageTag = "v1.1"
+  imageTag = "v1.2"
 
   workDir = "/opt/reindex/${var.Cluster}"
 
