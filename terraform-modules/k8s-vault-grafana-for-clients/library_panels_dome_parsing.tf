@@ -2,7 +2,7 @@
 #   provider  = grafana.elastic
 #   count     = length(local.index_dome_parsing)
 #   name      = "dome_parsing-${element(local.index_dome_parsing, count.index)}"
-#   folder_id = grafana_folder.dome_parsing.id
+#   folder_uid = grafana_folder.dome_parsing.uid
 #   model_json = jsonencode({
 #     "aliasColors" : {},
 #     "bars" : false,

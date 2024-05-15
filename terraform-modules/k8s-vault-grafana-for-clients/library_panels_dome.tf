@@ -8,7 +8,7 @@ resource "grafana_library_panel" "dome_graph" {
   org_id    = local.org_id
   count     = length(local.index_dome)
   name      = "dome-${element(local.index_dome, count.index)}-${random_string.dome.id}"
-  folder_id = grafana_folder.dome.id
+  folder_uid = grafana_folder.dome.uid
   depends_on = [
     grafana_data_source.dome
   ]
@@ -174,7 +174,7 @@ resource "grafana_library_panel" "dome_table_old" {
   org_id    = local.org_id
   count     = length(local.index_dome)
   name      = "dome-table-${element(local.index_dome, count.index)}-${random_string.dome.id}"
-  folder_id = grafana_folder.dome.id
+  folder_uid = grafana_folder.dome.uid
   depends_on = [
     grafana_data_source.dome
   ]

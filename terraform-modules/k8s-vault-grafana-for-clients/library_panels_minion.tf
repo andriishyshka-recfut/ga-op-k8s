@@ -8,7 +8,7 @@ resource "grafana_library_panel" "minion_graph" {
   org_id    = local.org_id
   count     = length(local.index_minion)
   name      = "minion-${element(local.index_minion, count.index)}-${random_string.minion.id}"
-  folder_id = grafana_folder.minion.id
+  folder_uid = grafana_folder.minion.uid
   depends_on = [
     grafana_data_source.minion
   ]
