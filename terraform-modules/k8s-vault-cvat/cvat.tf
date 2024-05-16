@@ -22,7 +22,7 @@ resource "kubernetes_persistent_volume" "nfs" {
 
 resource "kubernetes_manifest" "persistentvolumeclaim_nfs" {
   depends_on = [kubernetes_persistent_volume.nfs]
-  manifest   = templatefile("${path.module}/pvc.yaml.tftpl", { storage = local.volume_size })
+  manifest   = yamldecode(templatefile("${path.module}/pvc.yaml.tftpl", { storage = local.volume_size }))
 }
 
 resource "helm_release" "cvat" {
