@@ -17,7 +17,7 @@ locals {
   vaultFqdn                 = var.Cluster == "production" ? "https://vault.p.regemini.io" : "https://vault.t.regemini.io"
   minioConsoleFqdn          = var.Settings.clusters[var.Cluster][var.Color].minio.console_fqdn
   currentProject            = var.Settings.gcpProject
-  imageTag                  = var.Settings.clusters[var.Cluster][var.Color].versions.minio.image_tag
+  imageTag                  = var.Settings.clusters[var.Cluster].versions.minio.image_tag
   mcImageTag                = "RELEASE.2023-09-13T23-08-58Z"
   pv_disk_count             = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
   diskSize                  = "20Gi"

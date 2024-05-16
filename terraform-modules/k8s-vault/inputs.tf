@@ -41,6 +41,6 @@ locals {
   certManagerIssuerToggle   = var.Settings.clusters[var.Cluster][var.Color].vault.create_cert-manager_issuer ? 1 : 0
   # istioExposeToggle         = var.Settings.clusters[var.Cluster][var.Color].vault.istio_expose ? 1 : 0
   replicasCount  = 0
-  vaultVersion   = var.Settings.clusters[var.Cluster][var.Color].versions.vault.version
+  vaultVersion   = var.Settings.clusters[var.Cluster].versions.vault.version
   currentProject = data.google_client_config.current.project
 }

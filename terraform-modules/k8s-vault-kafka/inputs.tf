@@ -15,7 +15,7 @@ locals {
   replicas = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
   zones = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones
 
-  operatorChartVersion = var.Settings.clusters[var.Cluster][var.Color].versions.kafka.operator_chart_version
+  operatorChartVersion = var.Settings.clusters[var.Cluster].versions.kafka.operator_chart_version
 }
 
 terraform {

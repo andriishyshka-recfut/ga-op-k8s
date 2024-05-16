@@ -12,7 +12,7 @@ locals {
   minioFqdn                 = var.Settings.clusters[var.Cluster][var.Color].minio.fqdn
   minioConsoleFqdn                 = var.Settings.clusters[var.Cluster][var.Color].minio.console_fqdn
   currentProject  = var.Settings.gcpProject
-  imageTag = var.Settings.clusters[var.Cluster][var.Color].versions.minio.image_tag
-  mcImageTag = var.Settings.clusters[var.Cluster][var.Color].versions.minio.mc_image_tag
+  imageTag = var.Settings.clusters[var.Cluster].versions.minio.image_tag
+  mcImageTag = var.Settings.clusters[var.Cluster].versions.minio.mc_image_tag
   replicas = var.Settings.clusters[var.Cluster][var.Color].minio.replicas
 }
