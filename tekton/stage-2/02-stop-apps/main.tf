@@ -17,7 +17,11 @@ locals {
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
-     scale deploy -l zero=true --replicas=0 --all
+     get deployment -l zero=true --all-namespaces|awk 'NR>1 {print $1,$2}'| xargs -n 2 \
+     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     scale deploy --replicas=0 -n $1
     sleep 29
   COMMAND
 
