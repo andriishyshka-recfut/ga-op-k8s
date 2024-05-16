@@ -11,7 +11,7 @@ locals {
   es_creds_secretname = "elastic-credentials"
   es_cert_secretname  = "elastic-https-certs"
   namespace           = "elastic"
-  logstash_version    =  var.Settings.clusters[var.Cluster][var.Color].versions.logstash.logstash_version
+  logstash_version    =  var.Settings.clusters[var.Cluster].versions.logstash.logstash_version
 
   minio_user          = "logstash-red"
   minio_endpoint      = "https://minio.regemini.io"

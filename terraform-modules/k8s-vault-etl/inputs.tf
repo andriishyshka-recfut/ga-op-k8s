@@ -20,11 +20,11 @@ data "vault_kv_secrets_list_v2" "etl_clients_list" {
 locals {
   clients   = nonsensitive(toset(data.vault_kv_secrets_list_v2.etl_clients_list.names))
   namespace = "etl"
-  observerTag = var.Settings.clusters[var.Cluster][var.Color].versions.etl.observer_tag
-  operatorTag = var.Settings.clusters[var.Cluster][var.Color].versions.etl.operator_tag
-  ansibleScriptsTag = var.Settings.clusters[var.Cluster][var.Color].versions.etl.ansible_scripts_tag
-  caminoTag = var.Settings.clusters[var.Cluster][var.Color].versions.etl.camino_tag
-  gs2s3Tag = var.Settings.clusters[var.Cluster][var.Color].versions.etl.gs2s3_tag
+  observerTag = var.Settings.clusters[var.Cluster].versions.etl.observer_tag
+  operatorTag = var.Settings.clusters[var.Cluster].versions.etl.operator_tag
+  ansibleScriptsTag = var.Settings.clusters[var.Cluster].versions.etl.ansible_scripts_tag
+  caminoTag = var.Settings.clusters[var.Cluster].versions.etl.camino_tag
+  gs2s3Tag = var.Settings.clusters[var.Cluster].versions.etl.gs2s3_tag
   elasticSecretsPath = var.Cluster == "production" ? "/secret/data/es-creds-compose-prod/metaCamino" : "/secret/data/elasticsearch-admin/elastic7-v2"
 }
 
