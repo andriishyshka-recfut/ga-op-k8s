@@ -1,0 +1,10 @@
+cvat:
+  backend:
+%{ for volume in volumes_list ~}
+    additionalVolumes:
+      - name: cvat-backend-data
+        persistentVolumeClaim:
+          claimName: cvat-backend-data
+      - name: cvat-backend-per-service-cache
+        emptyDir: {}
+%{ endfor ~}

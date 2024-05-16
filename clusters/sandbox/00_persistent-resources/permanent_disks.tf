@@ -17,13 +17,13 @@ locals {
   sftp            = local.settings.sftp-server
   minio_count     = local.settings.persistent_resources.permanentDisks.minio.count
 
-  tarantool_storage_count = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks * 2
-  tsc = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks 
-  tarantool_storage_prefix = local.settings.persistent_resources.permanentDisks.tarantool.storage_prefix 
-  tarantool_router_count = local.settings.persistent_resources.permanentDisks.tarantool.router_disks
-  tarantool_router_prefix = local.settings.persistent_resources.permanentDisks.tarantool.router_prefix 
-  tarantool_etcd_count = local.settings.persistent_resources.permanentDisks.tarantool.etcd_disks
-  tarantool_etcd_prefix = local.settings.persistent_resources.permanentDisks.tarantool.etcd_prefix 
+  tarantool_storage_count  = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks * 2
+  tsc                      = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks
+  tarantool_storage_prefix = local.settings.persistent_resources.permanentDisks.tarantool.storage_prefix
+  tarantool_router_count   = local.settings.persistent_resources.permanentDisks.tarantool.router_disks
+  tarantool_router_prefix  = local.settings.persistent_resources.permanentDisks.tarantool.router_prefix
+  tarantool_etcd_count     = local.settings.persistent_resources.permanentDisks.tarantool.etcd_disks
+  tarantool_etcd_prefix    = local.settings.persistent_resources.permanentDisks.tarantool.etcd_prefix
 
   # mongoDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
@@ -95,7 +95,7 @@ data "google_compute_snapshot" "sftp_snapshot" {
 data "google_compute_snapshot" "minio_tenant_snapshot" {
   name        = "minio-tenant-bcp2-${count.index}"
   most_recent = true
-  count = local.minio_count
+  count       = local.minio_count
 }
 
 
@@ -257,4 +257,16 @@ resource "google_compute_disk" "minio_pv" {
   labels = {
     target = "minio-tenant"
   }
+}
+
+# We use it now for cvat 
+resource "google_compute_disk" "nfs_pv" {
+  name  = "nfs-pv"
+  count = local.tarantool_etcd_count
+  type  = "pd-balanced"
+  size  = "20"
+  labels = {
+    type = "nfs"
+  }
+  zone = "us-east4-a"
 }
