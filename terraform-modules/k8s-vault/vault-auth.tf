@@ -13,7 +13,7 @@ resource "vault_auth_backend" "auth_kubernetes" {
   type = "kubernetes"
   path = "k8s-${var.Cluster}-${var.Color}"
   tune {
-    max_lease_ttl = "2764800s"
+    max_lease_ttl = "3628800s"
   }
   depends_on = [
     null_resource.auth_kubernetes_disable
