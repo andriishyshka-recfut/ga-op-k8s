@@ -1,5 +1,5 @@
 locals {
-  settings = jsondecode(file("${path.module}/../../../prod.tfvars.json")).Settings.clusters["production"]
+  settings     = jsondecode(file("${path.module}/../../../prod.tfvars.json")).Settings.clusters["production"]
   settings_red = jsondecode(file("${path.module}/../../../prod-red.tfvars.json")).Settings.clusters["production"]
 
   zones = local.settings.persistent_resources.permanentDisks.zones
@@ -12,15 +12,15 @@ locals {
   kafka_count     = local.settings.persistent_resources.permanentDisks.kafka.count
   sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
   # sftp            = local.settings_red.sftp-server
-  minio_count     = local.settings.persistent_resources.permanentDisks.minio.count
+  minio_count = local.settings.persistent_resources.permanentDisks.minio.count
 
-  tarantool_storage_count = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks * 2
-  tsc = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks 
-  tarantool_storage_prefix = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_prefix 
-  tarantool_router_count = local.settings_red.persistent_resources.permanentDisks.tarantool.router_disks
-  tarantool_router_prefix = local.settings_red.persistent_resources.permanentDisks.tarantool.router_prefix 
-  tarantool_etcd_count = local.settings_red.persistent_resources.permanentDisks.tarantool.etcd_disks
-  tarantool_etcd_prefix = local.settings_red.persistent_resources.permanentDisks.tarantool.etcd_prefix 
+  tarantool_storage_count  = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks * 2
+  tsc                      = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks
+  tarantool_storage_prefix = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_prefix
+  tarantool_router_count   = local.settings_red.persistent_resources.permanentDisks.tarantool.router_disks
+  tarantool_router_prefix  = local.settings_red.persistent_resources.permanentDisks.tarantool.router_prefix
+  tarantool_etcd_count     = local.settings_red.persistent_resources.permanentDisks.tarantool.etcd_disks
+  tarantool_etcd_prefix    = local.settings_red.persistent_resources.permanentDisks.tarantool.etcd_prefix
 
 
   # mongoDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
@@ -89,7 +89,7 @@ data "google_compute_snapshot" "sonarqube_postgres_snapshot" {
 data "google_compute_snapshot" "minio_tenant_snapshot" {
   name        = "minio-tenant-${count.index}-dr-${local.restoreDate}"
   most_recent = true
-  count = local.minio_count
+  count       = local.minio_count
 }
 
 data "google_compute_snapshot" "tarantool_etcd_snapshot" {
@@ -240,3 +240,4 @@ resource "google_compute_disk" "tarantool_etcd_pv" {
   }
   zone = element([for i in range(local.tarantool_etcd_count) : element(local.zones, i % 3)], count.index)
 }
+

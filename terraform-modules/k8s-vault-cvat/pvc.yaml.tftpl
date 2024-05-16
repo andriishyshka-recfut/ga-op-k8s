@@ -1,0 +1,13 @@
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: cvat-backend-data
+      namespace: cvat
+    spec:
+      accessModes:
+      - ReadWriteMany
+      resources:
+        requests:
+          storage: ${storage}
+      volumeName: nfs-pv
+      storageClassName: ""

@@ -1,0 +1,18 @@
+cvat:
+%{ for affinity in affinity_list ~}
+  ${ affinity }:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: workloadsType
+                  operator: In
+                  values:
+                    - cvat
+    tolerations:
+      - key: workloadsType
+        operator: Equal
+        effect: NoSchedule
+        value: cvat
+%{ endfor ~}

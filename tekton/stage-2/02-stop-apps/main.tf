@@ -115,6 +115,28 @@ COMMAND
      --insecure-skip-tls-verify=true  \
      scale deploy -n pi --replicas=0 --all
   COMMAND
+
+  stop_cvat = <<COMMAND
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     scale deploy -n cvat --replicas=0 --all && \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     delete pvc cvat-backend-data -n cvat  && \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     delete pv nfs-pv -n cvat
+  COMMAND
+
+  stop_nfs = <<COMMAND
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     scale deploy -n nfs --replicas=0 --all
+  COMMAND
 }
 
 
@@ -138,7 +160,7 @@ resource "null_resource" "stop_zero_services" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_zero_services
   }
-  depends_on = [ null_resource.stop_flux ]
+  depends_on = [null_resource.stop_flux]
 }
 
 resource "null_resource" "stop_dome_and_minion_bots" {
@@ -150,7 +172,7 @@ resource "null_resource" "stop_dome_and_minion_bots" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_dome_and_minion_bots
   }
-  depends_on = [ null_resource.stop_flux ]
+  depends_on = [null_resource.stop_flux]
 }
 
 resource "null_resource" "stop_core_services" {
@@ -162,7 +184,7 @@ resource "null_resource" "stop_core_services" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_core_services
   }
-  depends_on = [ null_resource.stop_flux ]
+  depends_on = [null_resource.stop_flux]
 }
 
 resource "null_resource" "stop_etl_operator" {
@@ -196,7 +218,7 @@ resource "null_resource" "stop_maid_services" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_maid_services
   }
-  depends_on = [ null_resource.stop_flux ]
+  depends_on = [null_resource.stop_flux]
 }
 
 resource "null_resource" "stop_magescanner" {
@@ -208,7 +230,7 @@ resource "null_resource" "stop_magescanner" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_magescanner
   }
-  depends_on = [ null_resource.stop_flux ]
+  depends_on = [null_resource.stop_flux]
 }
 
 resource "null_resource" "stop_camel_k" {
@@ -220,7 +242,7 @@ resource "null_resource" "stop_camel_k" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_camel_k
   }
-  depends_on = [ null_resource.stop_flux ]
+  depends_on = [null_resource.stop_flux]
 }
 
 resource "null_resource" "stop_shout" {
@@ -232,7 +254,7 @@ resource "null_resource" "stop_shout" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_shout
   }
-  depends_on = [ null_resource.stop_flux ]
+  depends_on = [null_resource.stop_flux]
 }
 
 resource "null_resource" "stop_telegram_services" {
@@ -244,7 +266,7 @@ resource "null_resource" "stop_telegram_services" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_telegram_services
   }
-  depends_on = [ null_resource.stop_flux ]
+  depends_on = [null_resource.stop_flux]
 }
 
 resource "null_resource" "stop_pi_services" {
@@ -256,6 +278,29 @@ resource "null_resource" "stop_pi_services" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_pi_services
   }
-  depends_on = [ null_resource.stop_flux ]
+  depends_on = [null_resource.stop_flux]
 }
 
+resource "null_resource" "stop_cvat" {
+  count = var.Cluster == "sandbox" ? 1 : 0
+  triggers = {
+    command = md5(local.stop_cvat)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_cvat
+  }
+  depends_on = [null_resource.stop_flux]
+}
+
+resource "null_resource" "stop_nfs" {
+  count = var.Cluster == "sandbox" ? 1 : 0
+  triggers = {
+    command = md5(local.stop_nfs)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_nfs
+  }
+  depends_on = [null_resource.stop_flux]
+}

@@ -8,6 +8,7 @@ terraform {
       "plan",
       "import",
       "push",
+      "destroy",
       "refresh"
     ]
 
