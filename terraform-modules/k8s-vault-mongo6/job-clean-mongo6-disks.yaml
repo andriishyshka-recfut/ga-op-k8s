@@ -1,0 +1,112 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-data-mongo-rs-0
+  namespace: mongo
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: mongod-data-mongo-main-rs0-0
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-data-mongo-rs0-1
+  namespace: mongo
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: mongod-data-mongo-main-rs0-1
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-data-mongo-rs0-2
+  namespace: mongo
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: mongod-data-mongo-main-rs0-2
