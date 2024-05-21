@@ -1,5 +1,5 @@
 module "harbor" {
-  source   = "../../terraform-modules/k8s-vault-harbor"
+  source   = "../../../terraform-modules/k8s-vault-harbor"
   Settings = var.Settings
   Cluster  = var.Cluster
   Color    = var.Color
