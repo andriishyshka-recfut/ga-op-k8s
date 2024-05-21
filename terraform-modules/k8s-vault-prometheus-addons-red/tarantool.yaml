@@ -1,0 +1,48 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus
+  name: tarantool
+  namespace: monitoring
+spec:
+  endpoints:
+    - port: http
+      path: /metrics
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: tarantool
+  namespaceSelector:
+    matchNames:
+      - vortex
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: monitoring
+  name: tarantool.rules
+  labels:
+    app: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/part-of: prometheus
+    prometheus: k8s
+    release: prometheus
+    role: alert-rules
+spec:
+  groups:
+    - interval: 1m
+      name: Tarantool Alerts
+      rules:
+        - alert: tarantoolCartridgeCritical
+          annotations:
+            description: |
+              Critical alert detected on Tarantool Cartridge node
+            summary: Tarantool Node Critical
+          expr: |
+            tnt_cartridge_issues{level="critical"} > 0
+          labels:
+            cluster: ${cluster_label}
+            color: ${cluster_color}
+            component: tarantool
+            severity: critical
