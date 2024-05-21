@@ -2,7 +2,7 @@ locals {
   ElasticSettings = {
     globalSettings = {
       namespace            = "elastic",
-      imageTag             = var.Settings.clusters[var.Cluster][var.Color].versions.elasticsearch.cluster.elastic
+      imageTag             = var.Settings.clusters[var.Cluster].versions.elasticsearch.cluster.elastic
       clusterName          = "elasticsearch",
       remotecerts          = ["remote.ca.crt", "remote2.ca.crt"],
       remoteCertsVaultPath = "secret/elasticsearch-admin/remote-certs",

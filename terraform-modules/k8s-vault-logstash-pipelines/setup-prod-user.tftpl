@@ -1,0 +1,35 @@
+curl -X PUT "https://elastic:$ES_PASSWORD@${es_url}/_security/role/logstash_writer" -H 'Content-Type: application/json' -k -d '
+{
+  "cluster": ["manage_index_templates","monitor","manage_ilm"],
+  "indices": [
+    {
+      "names": ["logstash*"],
+      "privileges": ["write","create","create_index","manage","manage_ilm"]
+    }
+  ]
+} ' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${es_url}/_security/role/logstash_reader" -H 'Content-Type: application/json' -k -d '
+{
+  "cluster": ["manage_logstash_pipelines"],
+  "indices": [
+    {
+      "names": ["logstash*"],
+      "privileges": ["read","view_index_metadata"]
+    }
+  ]
+} ' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${es_url}/_security/role/logstash_admin" -H 'Content-Type: application/json' -k -d '
+{
+  "cluster": ["manage_logstash_pipelines"],
+  "indices": [
+    {
+      "names": [".logstash*"],
+      "privileges": ["create","delete","index","manage","read"]
+    }
+  ]
+} ' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${es_url}/_security/user/logstash" -H 'Content-Type: application/json' -k -d '
+{
+    "roles" : ["_minionRO_","_domeRO_","_pansRO_","_cryptoRO_","gForum","_cppRO_","_magecartRO_","_maidRO_","_checkerRO_","logstash_writer","logstash_reader","logstash_admin"],
+    "password": "${password}"
+}'
