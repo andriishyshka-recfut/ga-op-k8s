@@ -21,7 +21,7 @@ resource "helm_release" "logstash" {
   }
   set {
     name  = "imageTag"
-    value = try(each.value.logstash_version, local.logstash_version)
+    value = try(each.value.logstash_version, var.logstash_version)
   }
   set {
     name  = "elastic.host"
@@ -95,7 +95,7 @@ data "kubernetes_secret" "logstash_elastic_ca" {
   for_each = var.logstash_list
   metadata {
     name      = try(each.value.es_cert_secretname, local.es_cert_secretname)
-    namespace = try(each.value.es_namespace local.namespace)
+    namespace = try(each.value.es_namespace, local.namespace)
   }
 }
 
@@ -142,7 +142,7 @@ resource "vault_generic_secret" "logstash_es_creds" {
   for_each                = var.logstash_list
   path                    = "secret/logstash/${each.key}"
   data_json               = jsonencode({
-    logstash_es_password    = resource.random_password.logstash_password[each.key].result
+    logstash_es_password    = resource.random_password.logstash_es_password[each.key].result
     logstash_es_username    = local.logstash_user
     logstash_api_password   = resource.random_password.logstash_api_password[each.key].result
   })
@@ -151,6 +151,7 @@ resource "vault_generic_secret" "logstash_es_creds" {
 data "vault_generic_secret" "logstash_es_creds" {
   for_each = var.logstash_list
   path     = "secret/logstash/${each.key}"
+  depends_on = [vault_generic_secret.logstash_es_creds]
 }
 
 resource "kubernetes_secret" "logstash_es_creds" {
@@ -186,7 +187,7 @@ resource "kubernetes_job" "logstash_user" {
         container {
           name    = "post-install"
           image   = "curlimages/curl"
-          command = ["sh", "-c", var.Cluster == "production" ? local.setupProdUser : local.setupSandboxUser]
+          command = ["sh", "-c", var.Cluster == "production" ? templatefile("${path.module}/setup-prod-user.tftpl", { password = random_password.logstash_es_password[each.key].result, es_url = element(split("/", local.es_host), length(split("/", local.es_host)) -1)}) : templatefile("${path.module}/setup-sandbox-user.tftpl", { password = random_password.logstash_es_password[each.key].result, es_url = element(split("/", each.value.es_host), length(split("/", each.value.es_host)) -1)})]
           env {
             name = "ES_PASSWORD"
             value_from {

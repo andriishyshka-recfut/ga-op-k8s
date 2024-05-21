@@ -238,6 +238,7 @@ resource "null_resource" "stop_magescanner" {
 }
 
 resource "null_resource" "stop_camel_k" {
+  count = var.Cluster == "production" ? 1 : 0
 
   triggers = {
     command = md5(local.stop_camel_k)

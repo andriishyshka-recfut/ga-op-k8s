@@ -1,10 +1,10 @@
 
 module "fluxcd" {
-  source  = "../../../terraform-modules/k8s-vault-fluxcd"
+  source  = "../../../terraform-modules/k8s-vault-fluxcd-helm"
   Cluster = var.Cluster
   Color   = var.Color
 }
 
-provider "flux" {
-  # alias = "fluxcd"
-}
+# provider "flux" {
+#   # alias = "fluxcd"
+# }
