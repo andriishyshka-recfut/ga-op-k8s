@@ -32,7 +32,7 @@ COMMAND
       WORKLOAD_NAME        = local.filebeat_workload_name
       WORKLOAD_NAMESPACE   = local.elasticSettings.globalSettings.namespace
       WORKLOAD_MODULE_PATH = "../${local.workload_check_module_path}"
-      CHECK_TIMEOUT        = "60"
+      CHECK_TIMEOUT        = "360"
       CHECK_RETRIES        = "10"
     }
   }

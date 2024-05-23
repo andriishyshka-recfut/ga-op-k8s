@@ -96,7 +96,7 @@ def check(**kwargs):
     try:
       kwargs["check_timeout"]
     except KeyError:
-      kwargs["check_timeout"] = 60
+      kwargs["check_timeout"] = 180
     try:
       kwargs["check_retries"]
     except KeyError:
@@ -107,6 +107,8 @@ def check(**kwargs):
     workload_name = validate_types(type="str", var_value=kwargs['workload_name'], var_name="workload_name")
     workload_namespace = validate_types(type="str", var_value=kwargs['workload_namespace'], var_name="workload_namespace")
     workload_type = validate_types(type="str", var_value=kwargs['workload_type'], var_name="workload_type")
+    
+    time.sleep(timeout)
 
     for iterator in range(retries):
 
