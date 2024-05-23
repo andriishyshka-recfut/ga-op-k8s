@@ -1,5 +1,3 @@
-
-
 # crVersion: 1.13.0
 pause: false
 unmanaged: false
@@ -20,7 +18,6 @@ imagePullPolicy: Always
 
 secrets:
   users: mongo
-
 
 pmm:
   enabled: false
@@ -53,71 +50,69 @@ pmm:
 #            storage: 3Gi
 
 replsets:
-- name: rs0
-  size: 3
-  antiAffinityTopologyKey: "kubernetes.io/hostname"
-
-  annotations:
-    sidecar.istio.io/proxyCPU: 5m
-    sidecar.istio.io/proxyMemory: 30M
-
-  nodeSelector:
-    workloadsType: data
-
-  tolerations:
-  - key: "workloadsType"
-    operator: "Exists"
-    effect: "NoSchedule"
-  - key: "node.kubernetes.io/memory-pressure"
-    operator: "Exists"
-    effect: "NoSchedule"
-
-
-  podDisruptionBudget:
-    maxUnavailable: 1
-  expose:
-    enabled: false
-    exposeType: LoadBalancer
-  arbiter:
-    enabled: false
-    size: 1
+  - name: rs0
+    size: 3
     antiAffinityTopologyKey: "kubernetes.io/hostname"
 
+    annotations:
+      sidecar.istio.io/proxyCPU: 5m
+      sidecar.istio.io/proxyMemory: 30M
 
-  mongod:
-    net:
-      port: 27017
-      hostPort: 0
-    security:
-      redactClientLogData: false
-      enableEncryption: true
-      encryptionKeySecret: my-cluster-name-mongodb-encryption-key
-      encryptionCipherMode: AES256-CBC
-    setParameter:
-      ttlMonitorSleepSecs: 60
-      wiredTigerConcurrentReadTransactions: 128
-      wiredTigerConcurrentWriteTransactions: 128
-    storage:
-      engine: wiredTiger
-      inMemory:
-        engineConfig:
-          inMemorySizeRatio: 0.9
-      mmapv1:
-        nsSize: 16
-        smallfiles: false
-      wiredTiger:
-        engineConfig:
-          cacheSizeRatio: 0.5
-          directoryForIndexes: false
-          journalCompressor: snappy
-        collectionConfig:
-          blockCompressor: snappy
-        indexConfig:
-          prefixCompression: true
-    operationProfiling:
-      mode: slowOp
-      slowOpThresholdMs: 100
-      rateLimit: 100
+    nodeSelector:
+      workloadsType: data
+
+    tolerations:
+      - key: "workloadsType"
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+    podDisruptionBudget:
+      maxUnavailable: 1
+    expose:
+      enabled: false
+      exposeType: LoadBalancer
+    arbiter:
+      enabled: false
+      size: 1
+      antiAffinityTopologyKey: "kubernetes.io/hostname"
+
+    mongod:
+      net:
+        port: 27017
+        hostPort: 0
+      security:
+        redactClientLogData: false
+        enableEncryption: true
+        encryptionKeySecret: my-cluster-name-mongodb-encryption-key
+        encryptionCipherMode: AES256-CBC
+      setParameter:
+        ttlMonitorSleepSecs: 60
+        wiredTigerConcurrentReadTransactions: 128
+        wiredTigerConcurrentWriteTransactions: 128
+      storage:
+        engine: wiredTiger
+        inMemory:
+          engineConfig:
+            inMemorySizeRatio: 0.9
+        mmapv1:
+          nsSize: 16
+          smallfiles: false
+        wiredTiger:
+          engineConfig:
+            cacheSizeRatio: 0.5
+            directoryForIndexes: false
+            journalCompressor: snappy
+          collectionConfig:
+            blockCompressor: snappy
+          indexConfig:
+            prefixCompression: true
+      operationProfiling:
+        mode: slowOp
+        slowOpThresholdMs: 100
+        rateLimit: 100
 
 backup:
   enabled: true
@@ -130,7 +125,20 @@ backup:
     minio:
       type: s3
       s3:
-        region: minio
+        region: us-east-4
         credentialsSecret: mongo-backup
         endpointUrl: http://minio.minio:9000/
-
+        prefix: mongo_psmdb
+  tasks:
+    - name: daily
+      enabled: true
+      schedule: "15 1 * * *"
+      type: logical
+      storageName: minio
+      keep: 14
+    - name: monthly
+      enabled: true
+      schedule: "15 4 1 * *"
+      type: logical
+      storageName: minio
+      keep: 3
