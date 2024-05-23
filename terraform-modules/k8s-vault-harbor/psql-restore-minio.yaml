@@ -1,63 +1,60 @@
 
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: harbor-restore
-  namespace: harbor
-spec:
-  template:
-    metadata:
-      annotations:
-        sidecar.istio.io/inject: "false"
-    spec:
-      containers:
-      - name: dump
-        image: postgres:9.6
-        command: ["bash",  "-c"]
-        args:
-         - set -e;
-           apt-get update -q && apt-get install wget -yq ;
-           wget --quiet  https://dl.min.io/client/mc/release/linux-amd64/mc ;
-           chmod +x mc ;
-           psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "SELECT pg_terminate_backend(pg_stat_activity.pid)
-              FROM pg_stat_activity
-              WHERE datname = 'notarysigner'
-              AND pid <> pg_backend_pid();" ;
-           psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "SELECT pg_terminate_backend(pg_stat_activity.pid)
-              FROM pg_stat_activity
-              WHERE datname = 'notaryserver'
-              AND pid <> pg_backend_pid();" ;
-           psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "SELECT pg_terminate_backend(pg_stat_activity.pid)
-              FROM pg_stat_activity
-              WHERE datname = 'registry'
-              AND pid <> pg_backend_pid();" ;
-           psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "drop database registry";
-           psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "drop database notarysigner";
-           psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "drop database notaryserver";
-           psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database registry";
-           psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database notarysigner";
-           psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database notaryserver ";
-           ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/registry.sql | psql --host=harbor-harbor-database --port=5432 --username=postgres --dbname=registry -v ON_ERROR_STOP=ON;
-           ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/notarysigner.sql | psql --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notarysigner -v ON_ERROR_STOP=ON;
-           ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup/notaryserver.sql | psql --host=harbor-harbor-database --port=5432 --username=postgres --dbname=notaryserver -v ON_ERROR_STOP=ON;
-           # ./mc cat backup/minio-xbackup-ardent-rarity-239115/harbor-backup.sql | psql --host=harbor-harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON  ;
-        env:
-        - name: MINIO_ACCESS_KEY
-          valueFrom:
-                secretKeyRef:
-                  name: minio-credentials
-                  key:  accesskey
-        - name: MINIO_SECRET_KEY
-          valueFrom:
-                secretKeyRef:
-                  name: minio-credentials
-                  key: secretkey
-        - name: MC_HOST_backup
-          value: "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
-        - name: PGPASSWORD
-          valueFrom:
-                secretKeyRef:
-                  name: harbor-harbor-database
-                  key:  POSTGRES_PASSWORD
-      restartPolicy: Never
-  backoffLimit: 3
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: harbor-restore
+#   namespace: harbor
+# spec:
+#   template:
+#     metadata:
+#       annotations:
+#         sidecar.istio.io/inject: "false"
+#     spec:
+#       containers:
+#       - name: dump
+#         image: postgres:9.6
+#         command: ["bash",  "-c"]
+#         args:
+#          - set -e;
+#            apt-get update -q && apt-get install wget -yq ;
+#            wget --quiet  https://dl.min.io/client/mc/release/linux-amd64/mc ;
+#            chmod +x mc ;
+#            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "SELECT pg_terminate_backend(pg_stat_activity.pid)
+#               FROM pg_stat_activity
+#               WHERE datname = 'notarysigner'
+#               AND pid <> pg_backend_pid();" ;
+#            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "SELECT pg_terminate_backend(pg_stat_activity.pid)
+#               FROM pg_stat_activity
+#               WHERE datname = 'notaryserver'
+#               AND pid <> pg_backend_pid();" ;
+#            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "SELECT pg_terminate_backend(pg_stat_activity.pid)
+#               FROM pg_stat_activity
+#               WHERE datname = 'registry'
+#               AND pid <> pg_backend_pid();" ;
+#            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "drop database registry";
+#            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "drop database notarysigner";
+#            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "drop database notaryserver";
+#            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database registry";
+#            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database notarysigner";
+#            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database notaryserver ";
+#            ./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup/registry.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=registry -v ON_ERROR_STOP=ON;
+#            ./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup/notarysigner.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner -v ON_ERROR_STOP=ON;
+#            ./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup/notaryserver.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver -v ON_ERROR_STOP=ON;
+#            # ./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup.sql | psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON  ;
+#         env:
+#         - name: MINIO_ACCESS_KEY
+#           value: jsondecode(data.vault_generic_secret.minio_auth.data.harbor).accessKey
+
+#         - name: MINIO_SECRET_KEY
+#           valueFrom:
+#           value: jsondecode(data.vault_generic_secret.minio_auth.data.harbor).secretKey
+
+#         - name: MC_HOST_backup
+#           value: "https://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.p.regemini.io"
+#         - name: PGPASSWORD
+#           valueFrom:
+#                 secretKeyRef:
+#                   name: harbor-database
+#                   key:  POSTGRES_PASSWORD
+#       restartPolicy: Never
+#   backoffLimit: 3

@@ -5,7 +5,7 @@ expose:
   tls:
     enabled: false
 
-externalURL: "https://harbor.t.regemini.io"
+externalURL: "https://harbor.regemini.io"
 logLevel: debug
 
 persistence:
@@ -14,8 +14,8 @@ persistence:
     disableredirect: true
     s3:
       region: minio
-      bucket: harbor-backet-ardent-rarity-239115
-      regionendpoint: http://minio.minio:9000
+      bucket: harbor-orbital-wording-233917
+      regionendpoint: https://minio.p.regemini.io
       encrypt: false
       secure: false
       v4auth: true
@@ -107,7 +107,6 @@ jobservice:
   nodeSelector:
     workloadsType: data
 registry:
-  replicas: 2
   podAnnotations:
     sidecar.istio.io/inject: "false"
   tolerations:
