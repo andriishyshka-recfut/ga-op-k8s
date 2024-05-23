@@ -21,6 +21,7 @@ inventory.gcp.yaml
 .ssh/
 .ansible/
 .passwd
+.DS_Store
 
 __pycache__
 
