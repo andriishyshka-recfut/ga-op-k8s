@@ -61,7 +61,8 @@
   ],
   "sensitiveValuesAllowed": [
     "/secret/data/",
-    "$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio"
+    "$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio",
+    "elastic-webhook-server-cert"
   ],
   "servicesNames": [
     "nifi-service",
@@ -100,7 +101,12 @@
     "MC_HOST",
     "SECRET_NAME",
     "KEY_NAME",
-    "JWT_POLICY"
+    "JWT_POLICY",
+    "SPREADSHEET_CREDENTIALS_FILE",
+    "ELASTICSEARCH_CLIENT_KEY_PATH",
+    "GOOGLE_APPLICATION_CREDENTIALS",
+    "ETCD_AUTH_TOKEN",
+    "PROBE_PASSWORD_PATH"
   ],
   "recommendedLabels": [
     "app",
