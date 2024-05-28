@@ -1,3 +1,11 @@
+data "vault_generic_secret" "k8s_auth_inactive" {
+  path = local.inactiveClusterVaultPath
+}
+
+data "vault_generic_secret" "k8s_auth_active" {
+  path = local.activeClusterVaultPath
+}
+
 module "mongo6" {
   for_each                     = var.Settings.clusters[var.Cluster].mongo6
   source                       = "../../../terraform-modules/k8s-vault-mongo6"
@@ -50,3 +58,4 @@ resource "null_resource" "create_kafka_crd" {
     command     = local.clone_mongo_backups
   }
 }
+
