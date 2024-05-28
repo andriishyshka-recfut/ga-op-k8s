@@ -52,7 +52,7 @@ resource "google_container_cluster" "cluster" {
       for_each = var.ClusterColors
       content {
         display_name = "${cidr_blocks.value}-pods"
-        cidr_block   = var.Settings.clusters[var.Cluster][cidr_blocks.value].pods_subnet_range
+        cidr_block   = var.Settings.clusters[var.Cluster][cidr_blocks.value].subnets.pods_secondary_range
       }
     }
     # cidr_blocks {
@@ -130,8 +130,8 @@ resource "google_container_node_pool" "nodepool_default" {
   location = local.gkeRegion
   cluster  = google_container_cluster.cluster.name
   autoscaling {
-    min_node_count = 1
-    max_node_count = 6
+    min_node_count  = 1
+    max_node_count  = 6
     location_policy = "BALANCED"
   }
   node_count = 1
@@ -171,10 +171,10 @@ resource "google_container_node_pool" "nodepool_additional" {
     ignore_changes = all
   }
 
-  provider = google-beta
-  name     = "${var.Cluster}-${var.Color}-${each.key}"
-  location = local.gkeRegion
-  cluster  = google_container_cluster.cluster.name
+  provider          = google-beta
+  name              = "${var.Cluster}-${var.Color}-${each.key}"
+  location          = local.gkeRegion
+  cluster           = google_container_cluster.cluster.name
   max_pods_per_node = lookup(each.value, "maxPodsPerNode", var.Settings.clusters[var.Cluster].pods_per_node)
 
   autoscaling {
@@ -202,6 +202,18 @@ resource "google_container_node_pool" "nodepool_additional" {
       key    = "workloadsType"
       value  = each.value.taintWorkloadsType
       effect = "NO_SCHEDULE"
+    }
+  }
+  dynamic "network_config" {
+    for_each = lookup(each.value, "pod_ip_subnetwork_name", false) != false ? [0] : []
+    content {
+      pod_range            = local.additionalNodepools[each.key].pod_ip_subnetwork_name
+      enable_private_nodes = true
+      # additional_pod_network_configs {
+      #   subnetwork          = "${var.Cluster}-${var.Color}-subnetwork"
+      #   secondary_pod_range = local.additionalNodepools[each.key].pod_ip_subnetwork_name
+      #   max_pods_per_node   = each.value.maxPodsPerNode
+      # }
     }
   }
   management {

@@ -33,7 +33,7 @@ locals {
   # redPods             = var.Settings.clusters[var.Cluster]["red"].pods_subnet_range
   gkeKmsVolumeKey = var.Settings.clusters[var.Cluster].persistent_resources.gke_kms_volume_key
   gkeRegion       = var.Settings.clusters[var.Cluster].region
-  subnetIps       = [for color in var.ClusterColors : var.Settings.clusters[var.Cluster][color].pods_subnet_range]
+  subnetIps       = [for color in var.ClusterColors : var.Settings.clusters[var.Cluster][color].subnets.pods_secondary_range]
 }
 
 
