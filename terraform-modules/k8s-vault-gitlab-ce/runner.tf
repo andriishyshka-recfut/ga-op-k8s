@@ -2,14 +2,14 @@ data "vault_generic_secret" "gitlab" {
   path = "secret/gitlab"
 }
 
-resource "kubernetes_secret" "gitlab-runner-registration" {
+resource "kubernetes_secret" "gitlab-runner-auth" {
   for_each = var.gitlab_list
   metadata {
-    name      = "gitlab-runner-registration"
+    name      = "gitlab-runner-auth"
     namespace = lookup(each.value, "namespace", local.namespace)
   }
   data = {
-    runner-registration-token = data.vault_generic_secret.gitlab.data["runner_registration_token"]
+    authentication_token = data.vault_generic_secret.gitlab.data["authentication_token"]
   }
   depends_on = [
     data.vault_generic_secret.gitlab
@@ -33,14 +33,14 @@ resource "kubernetes_secret" "minio_creds" {
   depends_on = [data.vault_generic_secret.gitlab]
 }
 
-data "kubernetes_secret" "gitlab-runner-registration" {
+data "kubernetes_secret" "gitlab-runner-auth" {
   for_each = var.gitlab_list
   metadata {
-    name      = "gitlab-runner-registration"
+    name      = "gitlab-runner-auth"
     namespace = lookup(each.value, "namespace", local.namespace)
   }
   depends_on = [
-    kubernetes_secret.gitlab-runner-registration
+    kubernetes_secret.gitlab-runner-auth
   ]
 }
 
@@ -58,16 +58,21 @@ resource "helm_release" "gitlab-runner" {
     templatefile("${path.module}/runner-values.yaml.tftpl", merge({ values = each.value }, { name = each.key }))
   ]
   depends_on = [
-    data.kubernetes_secret.gitlab-runner-registration
+    data.kubernetes_secret.gitlab-runner-auth
   ]
   set {
     name  = "gitlabUrl"
     value = "https://gitlab.regemini.com/"
     type  = "string"
   }
+  # set {
+  #   name  = "runnerRegistrationToken"
+  #   value = data.kubernetes_secret.gitlab-runner-registration[each.key].data["runner-registration-token"]
+  #   type  = "string"
+  # }
   set {
-    name  = "runnerRegistrationToken"
-    value = data.kubernetes_secret.gitlab-runner-registration[each.key].data["runner-registration-token"]
+    name  = "runnerToken"
+    value = data.kubernetes_secret.gitlab-runner-auth[each.key].data["authentication_token"]
     type  = "string"
   }
   set {
