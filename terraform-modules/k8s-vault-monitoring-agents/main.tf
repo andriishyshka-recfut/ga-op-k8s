@@ -9,17 +9,12 @@ resource "helm_release" "beat" {
   atomic    = true
   namespace = local.namespace
   values = [
-    templatefile("${path.module}/beats_values.yaml.tftpl", { filebeat_groups = local.filebeat_groups })
+    templatefile("${path.module}/beats_values.yaml.tftpl", { filebeat_groups = local.filebeat_groups, priority_class = kubernetes_priority_class.monitoring_beats.metadata.0.name })
   ]
   set {
     name  = "beatsVersion"
     value = local.version
   }
-    set {
-    name  = "priorityClassName"
-    value = kubernetes_priority_class.monitoring_beats.metadata.0.name
-  }
-
 }
 
 resource "kubernetes_priority_class" "monitoring_beats" {
