@@ -79,7 +79,6 @@ shoshone
 sierra
 sigmacc
 siktor
-sioux
 sirius
 tango
 taurus
