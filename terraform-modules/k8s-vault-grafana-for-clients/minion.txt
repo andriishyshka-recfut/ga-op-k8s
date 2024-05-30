@@ -15,14 +15,12 @@ authorize
 batmarket
 bbmarket
 becrux
-bigcards
 blackbet
 bravo
 buyccgate
 cancer
 canis
 canopus
-capella
 carinae
 cayuse
 centauri
@@ -39,7 +37,6 @@ gemini
 golf
 hidatsa
 juliet
-jwstore
 kentaurus
 kfcclub
 kichai
@@ -75,9 +72,7 @@ rigel
 rigil
 romeo
 russianmarket
-sagittarius
 sclass
-scorpio
 scuti
 shaula
 shoshone
@@ -90,7 +85,6 @@ tango
 taurus
 toxyzen
 tulalip
-uniform
 ute
 vega
 victor
