@@ -59,37 +59,37 @@ core:
     effect: "NoSchedule"
   nodeSelector:
     workloadsType: data
-chartmuseum:
-  replicas: 1
-  podAnnotations:
-    sidecar.istio.io/inject: "false"
-  tolerations:
-  - key: "workloadsType"
-    operator: "Exists"
-    effect: "NoSchedule"
-  nodeSelector:
-    workloadsType: data
-notary:
-  server:
-    replicas: 1
-    podAnnotations:
-      sidecar.istio.io/inject: "false"
-    tolerations:
-    - key: "workloadsType"
-      operator: "Exists"
-      effect: "NoSchedule"
-    nodeSelector:
-      workloadsType: data
-  signer:
-    replicas: 1
-    podAnnotations:
-      sidecar.istio.io/inject: "false"
-    tolerations:
-    - key: "workloadsType"
-      operator: "Exists"
-      effect: "NoSchedule"
-    nodeSelector:
-      workloadsType: data
+# chartmuseum:
+#   replicas: 1
+#   podAnnotations:
+#     sidecar.istio.io/inject: "false"
+#   tolerations:
+#   - key: "workloadsType"
+#     operator: "Exists"
+#     effect: "NoSchedule"
+#   nodeSelector:
+#     workloadsType: data
+# notary:
+#   server:
+#     replicas: 1
+#     podAnnotations:
+#       sidecar.istio.io/inject: "false"
+#     tolerations:
+#     - key: "workloadsType"
+#       operator: "Exists"
+#       effect: "NoSchedule"
+#     nodeSelector:
+#       workloadsType: data
+#   signer:
+#     replicas: 1
+#     podAnnotations:
+#       sidecar.istio.io/inject: "false"
+#     tolerations:
+#     - key: "workloadsType"
+#       operator: "Exists"
+#       effect: "NoSchedule"
+#     nodeSelector:
+#       workloadsType: data
 portal:
   replicas: 1
   tolerations:
