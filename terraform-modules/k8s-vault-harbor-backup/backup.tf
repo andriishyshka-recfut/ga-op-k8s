@@ -5,9 +5,9 @@ locals {
   apt-get update -q && apt-get install wget  redis-tools -yq ;
   wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
   chmod +x mc ;
-  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=registry   |  ./mc pipe backup/minio-xbackup-orbital-wording-233917/harbor-backup/registry.sql ;
-  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner  |  ./mc pipe backup/minio-xbackup-orbital-wording-233917/harbor-backup/notarysigner.sql ;
-  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver  |  ./mc pipe backup/minio-xbackup-orbital-wording-233917/harbor-backup/notaryserver.sql ;
+  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=registry   |  ./mc pipe backup/minio-xbackup-orbital-wording-233917/harbor-backup/$DATE/registry.sql ;
+  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner  |  ./mc pipe backup/minio-xbackup-orbital-wording-233917/harbor-backup/$DATE/notarysigner.sql ;
+  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver  |  ./mc pipe backup/minio-xbackup-orbital-wording-233917/harbor-backup/$DATE/notaryserver.sql ;
 
 EOF
 }
@@ -36,7 +36,7 @@ resource "kubernetes_job" "harbor_backup" {
 
         container {
           name    = "dump"
-          image   = "postgres:13.3"
+          image   = "postgres:14.9"
           command = ["bash", "-c", local.backupCommand]
           env {
             name = "MINIO_ACCESS_KEY"
@@ -61,7 +61,7 @@ resource "kubernetes_job" "harbor_backup" {
           }
           env {
             name  = "DATE"
-            value = formatdate("DD-MMM-YYYY-hh", timestamp())
+            value = formatdate("YYYY-MM-DD_hh:mm", timestamp())
           }
         }
         restart_policy = "Never"

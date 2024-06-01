@@ -109,6 +109,7 @@ jobservice:
 registry:
   podAnnotations:
     sidecar.istio.io/inject: "false"
+  replicas: 3
   tolerations:
   - key: "workloadsType"
     operator: "Exists"
