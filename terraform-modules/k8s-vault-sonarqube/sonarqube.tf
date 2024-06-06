@@ -28,7 +28,7 @@ resource "helm_release" "sonarqube" {
   name              = "sonarqube"
   repository        = "https://SonarSource.github.io/helm-chart-sonarqube"
   chart             = "sonarqube"
-  version           = "10.4.0"
+  version           = local.chart_version
   wait              = true
   atomic            = true
   namespace         = local.namespace
@@ -38,7 +38,7 @@ resource "helm_release" "sonarqube" {
   }
   set{
     name = "image.tag"
-    value = "10.4.1-community"
+    value = local.image_tag
   }
   # depends_on = [kubernetes_secret.minio_credentials]
 }

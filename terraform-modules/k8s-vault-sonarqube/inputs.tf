@@ -9,6 +9,8 @@ locals {
   diskSize = "50Gi"
   namespace = "sonarqube"
   # minioBucket = "${var.Settings.clusters[var.Cluster].sonarqubeBackuBucket}"
+  chart_version = var.Settings.clusters[var.Cluster].versions.sonarqube.helm_chart_version
+  image_tag = var.Settings.clusters[var.Cluster].versions.sonarqube.image_tag
 }
 
 terraform {
