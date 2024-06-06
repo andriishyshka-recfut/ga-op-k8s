@@ -106,7 +106,8 @@
     "ELASTICSEARCH_CLIENT_KEY_PATH",
     "GOOGLE_APPLICATION_CREDENTIALS",
     "ETCD_AUTH_TOKEN",
-    "PROBE_PASSWORD_PATH"
+    "PROBE_PASSWORD_PATH",
+    "KEY_FILTER"
   ],
   "recommendedLabels": [
     "app",
