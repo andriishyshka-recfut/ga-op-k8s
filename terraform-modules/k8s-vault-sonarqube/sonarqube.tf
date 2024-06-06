@@ -30,7 +30,7 @@ resource "helm_release" "sonarqube" {
   chart             = "sonarqube"
   version           = local.chart_version
   wait              = true
-  atomic            = true
+  atomic            = false
   namespace         = local.namespace
   set{
     name = "postgresql.persistence.size"
