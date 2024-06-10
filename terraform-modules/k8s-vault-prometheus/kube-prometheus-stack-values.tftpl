@@ -208,7 +208,7 @@ alertmanager:
     - name: "tekton-etl-leftovers-webhook"
       webhook_configs:
         - send_resolved: false
-          url: "http://tekton-etl-leftovers-webhook-alertmanager-listener.tekton-pipelines:8080"
+          url: "http://el-etl-leftovers-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
         - api_url: ${prometheus_slack_webhooks.url_etl}
           channel: '#prometheus-etl'
