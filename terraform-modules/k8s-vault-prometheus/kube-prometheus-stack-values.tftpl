@@ -205,6 +205,15 @@ alertmanager:
           channel: '#prometheus-etl'
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
+    - name: "tekton-etl-leftovers-webhook"
+      webhook_configs:
+        - send_resolved: false
+          url: "http://tekton-etl-leftovers-webhook-alertmanager-listener.tekton-pipelines:8080"
+      slack_configs:
+        - api_url: ${prometheus_slack_webhooks.url_etl}
+          channel: '#prometheus-etl'
+          send_resolved: true
+          text: '{{ template "slack.custom.text" . }}'
     route:
       group_by:
         - alertname
@@ -233,6 +242,9 @@ alertmanager:
         - matchers:
           - alertname=~"ETLJobsFailed"
           receiver: "tekton-failed-etl-jobs-webhook-notifications-and-slack"
+        - matchers:
+          - alertname=~"ETLLeftOvers"
+          receiver: "tekton-etl-leftovers-webhook"
         - matchers:
           - severity=~"etl"
           - cluster=~"production"
