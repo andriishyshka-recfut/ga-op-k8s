@@ -403,8 +403,8 @@ spec:
         value: body.groupLabels.alertname == 'ETLJobsFailed'
       - name: "overlays"
         value:
-        - key: etl_job_name
-          expression: "body.alerts.map(x, x.labels).map(y, y.etl_job_name).join(' ')"
+        - key: job_name
+          expression: "body.alerts.map(x, x.labels).map(y, y.job_name).join(' ')"
     template:
       ref: failed-etl-jobs-template
 ---
@@ -481,7 +481,7 @@ spec:
         - key: etl_job_name
           expression: "body.alerts.map(x, x.labels).map(y, y.etl_job_name).join(' ')"
     template:
-      ref: etl-jobs-template
+      ref: etl-leftovers-template
 ---
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
