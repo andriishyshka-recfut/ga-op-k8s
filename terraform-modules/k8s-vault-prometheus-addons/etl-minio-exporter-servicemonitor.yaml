@@ -17,6 +17,7 @@ spec:
   selector:
     matchLabels:
       app: etl-minio-exporter
+---
 apiVersion: v1
 kind: Service
 metadata:

@@ -37,6 +37,7 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
     namespace = local.prometheusNs
     labels = {
       app = "etl-minio-exporter"
+      release = "prometheus"
     }
   }
 
@@ -53,6 +54,7 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
       metadata {
         labels = {
           app = "etl-minio-exporter"
+          release = "prometheus"
         }
         annotations = {
           "sidecar.istio.io/inject" = "false"
