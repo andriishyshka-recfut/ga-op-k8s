@@ -403,8 +403,8 @@ spec:
         value: body.groupLabels.alertname == 'ETLJobsFailed'
       - name: "overlays"
         value:
-        - key: job_name
-          expression: "body.alerts.map(x, x.labels).map(y, y.job_name).join(' ')"
+        - key: etl_job_name
+          expression: "body.alerts.map(x, x.labels).map(y, y.etl_job_name).join(' ')"
     template:
       ref: failed-etl-jobs-template
 ---
@@ -478,8 +478,8 @@ spec:
         value: body.groupLabels.alertname == 'ETLLeftOvers'
       - name: "overlays"
         value:
-        - key: minio_path
-          expression: "body.alerts.map(x, x.labels).map(y, y.minio_path).join(' ')"
+        - key: etl_job_name
+          expression: "body.alerts.map(x, x.labels).map(y, y.etl_job_name).join(' ')"
     template:
       ref: etl-jobs-template
 ---
