@@ -4,28 +4,19 @@ resource "null_resource" "rerun_failed_jobs" {
     command     = <<COMMAND
     set -x
     export KCMD=" --server ${local.gkeClusterConnectionSettings.HOST} --token ${local.gkeClusterConnectionSettings.API_KEY} --insecure-skip-tls-verify=true"
-    export CPP_JOB_LIST=$(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep 'etl-cpp|gs2s3-cpp' | egrep -v 'manual|rerun' | cut -d'-' -f -5)
-    export OTHER_JOB_LIST=$(kubectl $(echo $KCMD) get jobs.batch -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep -v 'etl-cpp|gs2s3-cpp' | egrep -v 'manual|rerun' | cut -d'-' -f -6)
 
-    export JOB_LIST=$(echo -e "$(echo $OTHER_JOB_LIST | tr ' ' '\n' | uniq)\n$(echo $CPP_JOB_LIST | tr ' ' '\n' | uniq)")
-    for CRONJOB_NAME in $(echo $JOB_LIST);do
-      export RUNNING_POD=$(kubectl $(echo $KCMD) get pod -n etl | egrep 'Running|Pending|Init' | awk '{print $1}' | cut -d'-' -f -6 | grep $CRONJOB_NAME)
-      [[ $( echo $RUNNING_POD | grep $CRONJOB_NAME) ]] && continue || echo "Current job $CRONJOB_NAME is not running"
-      echo "Creating job $CRONJOB_NAME..."
-      kubectl $(echo $KCMD) create job -n etl --from=cronjob/$CRONJOB_NAME $CRONJOB_NAME-tekton$(date '+%S')
-      if [ $( echo $CRONJOB_NAME | egrep 'camino|gs2s3') ]; then
-        export ETL_CRONJOB_NAME="etl-$(echo $CRONJOB_NAME | cut -d'-' -f2-)"
-        echo "Creating job $ETL_CRONJOB_NAME..."
-        sleep 360
-        kubectl $(echo $KCMD) create job -n etl --from=cronjob/$ETL_CRONJOB_NAME $ETL_CRONJOB_NAME-tekton$(date '+%S')
-      else
-        echo " $JOB_NAME - is not camino or gs2s3 job skipping additional job creation"
-      fi
+    IFS=' '
+    read -ra  <<< "$(params.job_name)"
+    for ((i=0; i<${#CRONJOB_NAME[@]}; i++)); do
+      export RUNNING_POD=$(kubectl $(echo $KCMD) get pod -n etl | egrep 'Running|Pending|Init' | awk '{print $1}' | cut -d'-' -f -6 | grep $CRONJOB_NAME[i])
+      [[ $( echo $RUNNING_POD | grep $CRONJOB_NAME[i]) ]] && continue || echo "Current job $CRONJOB_NAME is not running"
+      echo "Creating job $CRONJOB_NAME[i]..."
+      kubectl $(echo $KCMD) create job -n etl --from=cronjob/$CRONJOB_NAME[i] $CRONJOB_NAME[i]-tekton$(date '+%S')
 
-      if [ $(kubectl $(echo $KCMD) get job -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | egrep -v 'manual|rerun' | wc -l | xargs ) > 0 ]; then
-        kubectl $(echo $KCMD) delete job -n etl $(kubectl $(echo $KCMD) get jobs.batch -n etl --sort-by=.status.startTime -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME | egrep -v 'manual|rerun')
+      if [ $(kubectl $(echo $KCMD) get job -n etl -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME[i] | egrep -v 'manual|rerun' | wc -l | xargs ) > 0 ]; then
+        kubectl $(echo $KCMD) delete job -n etl $(kubectl $(echo $KCMD) get jobs.batch -n etl --sort-by=.status.startTime -o jsonpath='{range .items[?(.status.conditions[].type == "Failed")]}{.metadata.name}{"\n"}{end}' | egrep $CRONJOB_NAME[i] | egrep -v 'manual|rerun')
       else
-        echo "Only one job $CRONJOB_NAME failed, nothing to delete"
+        echo "Only one job $CRONJOB_NAME[i] failed, nothing to delete"
       fi
     done
 COMMAND

@@ -401,6 +401,10 @@ spec:
       params:
       - name: "filter"
         value: body.groupLabels.alertname == 'ETLJobsFailed'
+      - name: "overlays"
+        value:
+        - key: job_name
+          expression: "body.alerts.map(x, x.labels).map(y, y.job_name).join(' ')"
     template:
       ref: failed-etl-jobs-template
 ---
@@ -447,6 +451,81 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: tekton-failed-etl-jobs-clusterroles
+  namespace: tekton-pipelines
+rules:
+- apiGroups: ["apps"]
+  resources: ["namespaces"]
+  verbs: ["get", "list"]
+- apiGroups: ["batch"]
+  resources: ["jobs"]
+  verbs: ["get", "list", "create", "delete"]
+
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: etl-leftovers-webhook-alertmanager-listener
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-webhook
+  triggers:
+  - name: etl-leftovers-filter
+    interceptors:
+    - ref:
+        name: "cel"
+      params:
+      - name: "filter"
+        value: body.groupLabels.alertname == 'ETLLeftOvers'
+      - name: "overlays"
+        value:
+        - key: etl_job_name
+          expression: "body.alerts.map(x, x.labels).map(y, y.etl_job_name).join(' ')"
+    template:
+      ref: etl-leftovers-template
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: etl-leftovers-template
+  namespace: tekton-pipelines
+spec:
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: etl-leftovers-rerun
+    spec:
+      workspaces:
+      - name: ws
+        emptyDir: {}
+      pipelineRef:
+        name: etl-leftovers-rerun
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-etl-leftovers-webhook
+  namespace: tekton-pipelines
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-etl-leftovers-triggers-controller-cluster-workloads
+  namespace: tekton-pipelines
+subjects:
+  - kind: ServiceAccount
+    name: tekton-etl-leftovers-jobs-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-etl-leftovers-clusterroles
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tekton-etl-leftovers-clusterroles
   namespace: tekton-pipelines
 rules:
 - apiGroups: ["apps"]

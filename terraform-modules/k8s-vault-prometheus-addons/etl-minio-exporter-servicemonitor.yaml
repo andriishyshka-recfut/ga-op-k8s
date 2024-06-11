@@ -1,0 +1,38 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: etl-minio-exporter
+    release: prometheus
+  name: etl-minio-exporter
+  namespace: monitoring
+spec:
+  endpoints:
+    - path: /
+      interval: 15s
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  selector:
+    matchLabels:
+      app: etl-minio-exporter
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: etl-minio-exporter
+  namespace: monitoring
+  labels:
+    app: etl-minio-exporter
+    release: prometheus
+spec:
+  selector:
+    app: etl-minio-exporter
+    release: prometheus
+  type: ClusterIP
+  ports:
+  - name: metrics
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
