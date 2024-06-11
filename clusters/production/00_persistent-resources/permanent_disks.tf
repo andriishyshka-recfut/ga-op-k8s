@@ -4,10 +4,10 @@ locals {
 
   zones = local.settings.persistent_resources.permanentDisks.zones
 
-  mongo_count       = local.settings.mongo.main.replicas
-  mongo_prefix      = local.settings.mongo.main.pvcPrefix
-  mongo_auth_count  = local.settings.mongo.auth.replicas
-  mongo_auth_prefix = local.settings.mongo.auth.pvcPrefix
+  mongo_count       = local.settings.mongo6.main.replicas
+  mongo_prefix      = local.settings.mongo6.main.pvcPrefix
+  mongo_auth_count  = local.settings.mongo6.auth.replicas
+  mongo_auth_prefix = local.settings.mongo6.auth.pvcPrefix
 
   kafka_count     = local.settings.persistent_resources.permanentDisks.kafka.count
   sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
@@ -61,7 +61,7 @@ data "google_compute_snapshot" "kafka_zookeeper_snapshot" {
 
 
 data "google_compute_snapshot" "tarantool_storage_snapshot" {
-  name        = "tarantool-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}-dr-${local.restoreDate}"
+  name        = "tarantool-storage-0-0-dr-04122023"
   most_recent = true
   count       = local.tarantool_storage_count
 }

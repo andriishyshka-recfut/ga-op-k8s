@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean-tarantool-<INDX_1>-<INDX_2>
+  namespace: vortex
+spec:
+  template:
+    metadata:
+      annotations:
+        "sidecar.istio.io/inject": "false"
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Before;
+              ls -A1 /data;
+              echo Removing;
+              rm -rf /data/*;
+              rm -rf /data/.*;
+              echo After;
+              ls -A1 /data ;
+          volumeMounts:
+            - mountPath: "/data"
+              name: old-data
+      imagePullSecrets:
+        - name: harbor
+      securityContext:
+        fsGroup: 1200
+      restartPolicy: Never
+      volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: tarantool-cartridge-data-volume-tarantool-cartridge-storage-<INDX_1>-<INDX_2>
