@@ -79,27 +79,6 @@
     "posturePolicies": [
         {
             "controlID": "C-0211",
-            "ruleName": "drop-capability-netraw"
-        },
-        {
-            "controlID": "C-0211",
-            "ruleName": "set-seLinuxOptions"
-        },
-        {
-            "controlID": "C-0211",
-            "ruleName": "set-seccomp-profile"
-        },
-        {
-            "controlID": "C-0211",
-            "ruleName": "set-procmount-default"
-        },
-        {
-            "controlID": "C-0211",
-            "ruleName": "set-sysctls-params"
-        },
-        {
-            "controlID": "C-0211",
-            "ruleName": "set-supplementalgroups-values"
         }
     ]
 }
