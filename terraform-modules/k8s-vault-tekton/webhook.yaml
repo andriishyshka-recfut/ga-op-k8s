@@ -383,124 +383,7 @@ rules:
   resources: ["namespaces", "deployments", "pods"]
   verbs: ["get", "list", "watch", "update", "patch", "delete"]
 
-
-
----
-apiVersion: triggers.tekton.dev/v1alpha1
-kind: EventListener
-metadata:
-  name: failed-etl-jobs-webhook-alertmanager-listener
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-webhook
-  triggers:
-  - name: failed-etl-jobs-filter
-    interceptors:
-    - ref:
-        name: "cel"
-      params:
-      - name: "filter"
-        value: body.groupLabels.alertname == 'ETLJobsFailed'
-      - name: "overlays"
-        value:
-        - key: job_name
-          expression: "body.alerts.map(x, x.labels).map(y, y.job_name).join(' ')"
-    template:
-      ref: failed-etl-jobs-template
----
-apiVersion: triggers.tekton.dev/v1alpha1
-kind: TriggerTemplate
-metadata:
-  name: failed-etl-jobs-template
-  namespace: tekton-pipelines
-spec:
-  resourcetemplates:
-  - apiVersion: tekton.dev/v1beta1
-    kind: PipelineRun
-    metadata:
-      generateName: failed-etl-jobs-rerun
-    spec:
-      workspaces:
-      - name: ws
-        emptyDir: {}
-      pipelineRef:
-        name: failed-etl-jobs-rerun
-
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: tekton-failed-etl-jobs-webhook
-  namespace: tekton-pipelines
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: tekton-failed-etl-jobs-triggers-controller-cluster-workloads
-  namespace: tekton-pipelines
-subjects:
-  - kind: ServiceAccount
-    name: tekton-failed-etl-jobs-webhook
-    namespace: tekton-pipelines
-roleRef:
-  kind: ClusterRole
-  name: tekton-failed-etl-jobs-clusterroles
-  apiGroup: rbac.authorization.k8s.io
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: tekton-failed-etl-jobs-clusterroles
-  namespace: tekton-pipelines
-rules:
-- apiGroups: ["apps"]
-  resources: ["namespaces"]
-  verbs: ["get", "list"]
-- apiGroups: ["batch"]
-  resources: ["jobs"]
-  verbs: ["get", "list", "create", "delete"]
-
----
-apiVersion: triggers.tekton.dev/v1alpha1
-kind: EventListener
-metadata:
-  name: etl-leftovers-webhook-alertmanager-listener
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-webhook
-  triggers:
-  - name: etl-leftovers-filter
-    interceptors:
-    - ref:
-        name: "cel"
-      params:
-      - name: "filter"
-        value: body.groupLabels.alertname == 'ETLLeftOvers'
-      - name: "overlays"
-        value:
-        - key: etl_job_name
-          expression: "body.alerts.map(x, x.labels).map(y, y.etl_job_name).join(' ')"
-    template:
-      ref: etl-leftovers-template
----
-apiVersion: triggers.tekton.dev/v1alpha1
-kind: TriggerTemplate
-metadata:
-  name: etl-leftovers-template
-  namespace: tekton-pipelines
-spec:
-  resourcetemplates:
-  - apiVersion: tekton.dev/v1beta1
-    kind: PipelineRun
-    metadata:
-      generateName: etl-leftovers-rerun
-    spec:
-      workspaces:
-      - name: ws
-        emptyDir: {}
-      pipelineRef:
-        name: etl-leftovers-rerun
-
+#ETL
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -515,7 +398,7 @@ metadata:
   namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
-    name: tekton-etl-leftovers-jobs-webhook
+    name: tekton-etl-leftovers-webhook
     namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
@@ -529,8 +412,342 @@ metadata:
   namespace: tekton-pipelines
 rules:
 - apiGroups: ["apps"]
-  resources: ["namespaces"]
+  resources: ["namespaces", "deployments", "pods"]
   verbs: ["get", "list"]
 - apiGroups: ["batch"]
-  resources: ["jobs"]
-  verbs: ["get", "list", "create", "delete"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "delete"]
+  
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-etl-leftovers-triggers-controller-webhook
+  namespace: tekton-pipelines
+subjects:
+  - kind: ServiceAccount
+    name: tekton-etl-leftovers-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-etl-leftovers-triggers-controller-cluster-webhook
+  namespace: tekton-pipelines
+subjects:
+  - kind: ServiceAccount
+    name: tekton-etl-leftovers-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-clusterroles
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: etl-leftovers-webhook-alertmanager-listener
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-etl-leftovers-webhook
+  triggers:
+  - name: etl-leftovers-filter
+    interceptors:
+    - ref:
+        name: "cel"
+      params:
+      - name: "filter"
+        value: body.groupLabels.alertname == 'ETLLeftOvers'
+      - name: "overlays"
+        value:
+        - key: job_name
+          expression: "body.alerts.map(x, x.labels).map(y, y.etl_job_name).join(' ')"                  
+    bindings:
+      - ref: etl-leftovers-binding
+        kind: TriggerBinding 
+    template:
+      ref: etl-leftovers-template
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: etl-leftovers-binding
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: job_name
+    value: $(extensions.job_name)
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: etl-leftovers-template
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: job_name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: etl-leftovers-
+      spec:
+        serviceAccountName: tekton-etl-leftovers-webhook
+        pipelineRef:
+          name: etl-leftovers-pipeline
+        params:
+        - name: job_name
+          value: $(tt.params.job_name)
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: etl-leftovers-trigger
+  namespace: tekton-pipelines
+spec:
+  bindings:
+  - ref: etl-leftovers-binding
+  template:
+    ref: etl-leftovers-template
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: etl-leftovers-pipelinerun
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-etl-leftovers-webhook
+  pipelineRef:
+    name: etl-leftovers-pipeline
+  params:
+  - name: job_name
+    value: $(params.job_name)
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: etl-leftovers-pipeline
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: job_name
+  tasks:
+  - name: etl-leftovers-rerun
+    taskRef:
+      name: etl-leftovers-rerun
+    params:
+    - name: job_name
+      value: $(params.job_name)
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: etl-leftovers-rerun
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: job_name
+  steps:
+    - name: etl-leftovers-rerun
+      image: harbor.regemini.io/op/tf:latest
+      env:
+      - name: TF_VAR_Color
+        valueFrom:
+          configMapKeyRef:
+            key: color
+            name: cluster-settings
+      - name: CLUSTER
+        valueFrom:
+          configMapKeyRef:
+            key: cluster
+            name: cluster-settings
+      - name: CONF_PATH
+        valueFrom:
+          configMapKeyRef:
+            key: configPath
+            name: cluster-settings
+      - name: VAULT_ADDR
+        valueFrom:
+          configMapKeyRef:
+            key: vaultAddr
+            name: cluster-settings      
+      script: |
+        #! /bin/bash
+        set -x
+        echo $(params.job_name)
+    
+        IFS=' '
+        for CRONJOB_NAME in $(params.job_name); do
+          echo "Creating job $CRONJOB_NAME..."
+          kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $CRONJOB_NAME-tekton$(date "+%S")
+        done
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: failed-etl-jobs-webhook-alertmanager-listener
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-etl-leftovers-webhook
+  triggers:
+  - name: failed-etl-jobs-filter
+    interceptors:
+    - ref:
+        name: "cel"
+      params:
+      - name: "filter"
+        value: body.groupLabels.alertname == 'ETLJobsFailed'
+      - name: "overlays"
+        value:
+        - key: job_name
+          expression: "body.alerts.map(x, x.labels).map(y, y.job_name).join(' ')"                  
+    bindings:
+      - ref: failed-etl-jobs-binding
+        kind: TriggerBinding 
+    template:
+      ref: failed-etl-jobs-template
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: failed-etl-jobs-binding
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: job_name
+    value: $(extensions.job_name)
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: failed-etl-jobs-template
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: job_name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: failed-etl-jobs-
+      spec:
+        serviceAccountName: tekton-etl-leftovers-webhook
+        pipelineRef:
+          name: failed-etl-jobs-pipeline
+        params:
+        - name: job_name
+          value: $(tt.params.job_name)
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: failed-etl-jobs-trigger
+  namespace: tekton-pipelines
+spec:
+  bindings:
+  - ref: failed-etl-jobs-binding
+  template:
+    ref: failed-etl-jobs-template
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: failed-etl-jobs-pipelinerun
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-etl-leftovers-webhook
+  pipelineRef:
+    name: failed-etl-jobs-pipeline
+  params:
+  - name: job_name
+    value: $(params.job_name)
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: failed-etl-jobs-pipeline
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: job_name
+  tasks:
+  - name: failed-etl-jobs-rerun
+    taskRef:
+      name: failed-etl-jobs-rerun
+    params:
+    - name: job_name
+      value: $(params.job_name)
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: failed-etl-jobs-rerun
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: job_name
+  steps:
+    - name: failed-etl-jobs-rerun
+      image: harbor.regemini.io/op/tf:latest
+      env:
+      - name: TF_VAR_Color
+        valueFrom:
+          configMapKeyRef:
+            key: color
+            name: cluster-settings
+      - name: CLUSTER
+        valueFrom:
+          configMapKeyRef:
+            key: cluster
+            name: cluster-settings
+      - name: CONF_PATH
+        valueFrom:
+          configMapKeyRef:
+            key: configPath
+            name: cluster-settings
+      - name: VAULT_ADDR
+        valueFrom:
+          configMapKeyRef:
+            key: vaultAddr
+            name: cluster-settings      
+      script: |
+        #! /bin/bash
+        set -x
+    
+        IFS=' '
+        for JOB_NAME in $(params.job_name); do
+          export CRONJOB_NAME=${JOB_NAME%-*}
+          echo "Creating job $CRONJOB_NAME..."
+          kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $CRONJOB_NAME-tekton$(date '+%S')
+          kubectl delete job -n etl  $JOB_NAME
+        done
