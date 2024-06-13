@@ -597,7 +597,7 @@ spec:
         IFS=' '
         for CRONJOB_NAME in $(params.job_name); do
           echo "Creating job $CRONJOB_NAME..."
-          kubectl create job -n etl --from=cronjob/etl-$CRONJOB_NAME etl-$CRONJOB_NAME-tekton$(date "+%S") || kubectl create job -n etl --from=cronjob/$(kubectl get cronjob -n etl | grep ${CRONJOB_NAME} | awk '{print $1}') $(kubectl get cronjob -n etl | grep ${CRONJOB_NAME} | awk '{print $1}')-tekton$(date "+%S")
+          kubectl create job -n etl --from=cronjob/etl-$CRONJOB_NAME etl-$CRONJOB_NAME-tekton$(date "+%S") || kubectl create job -n etl --from=cronjob/$(kubectl get cronjob -n etl | grep ${CRONJOB_NAME} | grep etl | awk '{print $1}') $(kubectl get cronjob -n etl | grep ${CRONJOB_NAME} | grep etl | awk '{print $1}')-tekton$(date "+%S")
         done
 
 ---
