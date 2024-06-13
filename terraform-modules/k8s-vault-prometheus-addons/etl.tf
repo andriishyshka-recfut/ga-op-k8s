@@ -73,7 +73,7 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
 
       spec {
         container {
-          image = "harbor.regemini.io/op/etl-minio-exporter:3"
+          image = "harbor.regemini.io/op/etl-minio-exporter:3.12.3"
           name  = "etl-minio-exporter"
 
           resources {
