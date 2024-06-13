@@ -1,3 +1,13 @@
+data "kubectl_file_documents" "etl_rules" {
+  content = templatefile("${path.module}/etl-jobs.yaml", { cluster_label : var.Cluster, cluster_color : var.Color })
+}
+
+resource "kubectl_manifest" "etl_rules" {
+  count     = 1
+  yaml_body = element(data.kubectl_file_documents.etl_rules.documents, count.index)
+}
+
+
 data "vault_generic_secret" "etl_minio_exporter_config" {
   path = "secret/op/monitoring/etl-minio-exporter-config"
 }
@@ -63,7 +73,7 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
 
       spec {
         container {
-          image = "harbor.regemini.io/op/etl-minio-exporter:3"
+          image = "harbor.regemini.io/op/etl-minio-exporter:3.12.3"
           name  = "etl-minio-exporter"
 
           resources {
@@ -173,7 +183,7 @@ resource "kubectl_manifest" "etl_minio_exporter_servicemonitor" {
 }
 
 data "kubectl_file_documents" "etl_minio_exporter_rules" {
-  content = templatefile("${path.module}/etl-minio-exporter-prometheusrule.yaml", { cluster_label : var.Cluster })
+  content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster })
 }
 
 resource "kubectl_manifest" "etl_minio_exporter_rules" {
