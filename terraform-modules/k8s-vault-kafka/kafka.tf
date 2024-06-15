@@ -20,6 +20,10 @@ resource "helm_release" "kafka_cluster" {
   atomic    = true
   timeout   = 900
   set {
+    name = "kafkaVersion"
+    value = local.kafkaVersion
+  }
+  set {
     name = "subdomain"
     value = "${var.Settings.clusters[var.Cluster].subdomain}.${var.Settings.clusters[var.Cluster].domain}"
   }
@@ -29,6 +33,10 @@ resource "helm_release" "kafka_cluster" {
   }
   set {
     name = "zookeeperDiskSize"
+    value = "${data.google_compute_disk.kafka_zookeeper_pv[0].size}Gi"
+  }
+  set {
+    name = "controllerDiskSize"
     value = "${data.google_compute_disk.kafka_zookeeper_pv[0].size}Gi"
   }
   set {
