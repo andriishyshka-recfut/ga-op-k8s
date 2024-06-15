@@ -5,9 +5,16 @@ data "google_compute_disk" "kafka_data_pv" {
   zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
 }
 
-data "google_compute_disk" "kafka_zookeeper_pv" {
+# data "google_compute_disk" "kafka_zookeeper_pv" {
+#   count   = local.kafka_count
+#   name    = "${local.zookeeper_prefix}-${count.index}"
+#   project = var.Settings.gcpProject
+#   zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
+# }
+
+data "google_compute_disk" "kafka_controller_pv" {
   count   = local.kafka_count
-  name    = "${local.zookeeper_prefix}-${count.index}"
+  name    = "${local.controller_prefix}-${count.index}"
   project = var.Settings.gcpProject
   zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
 }
@@ -63,17 +70,31 @@ resource "google_compute_snapshot" "kafka_snapshot" {
   storage_locations = [local.region]
 }
 
-resource "google_compute_snapshot" "kafka_zookeeper_snapshot" {
+# resource "google_compute_snapshot" "kafka_zookeeper_snapshot" {
+#   count       = local.kafka_count
+#   name        = "${local.zookeeper_prefix}-${count.index}-dr-${local.backupdate}"
+#   source_disk = data.google_compute_disk.kafka_zookeeper_pv[count.index].self_link
+#   zone        = data.google_compute_disk.kafka_zookeeper_pv[count.index].zone
+#   labels = {
+#     target = "kafka-zookeeper"
+#     id     = "${local.zookeeper_prefix}-${count.index}"
+#   }
+#   storage_locations = [local.region]
+# }
+
+
+resource "google_compute_snapshot" "kafka_controller_snapshot" {
   count       = local.kafka_count
-  name        = "${local.zookeeper_prefix}-${count.index}-dr-${local.backupdate}"
-  source_disk = data.google_compute_disk.kafka_zookeeper_pv[count.index].self_link
-  zone        = data.google_compute_disk.kafka_zookeeper_pv[count.index].zone
+  name        = "${local.controller_prefix}-${count.index}-dr-${local.backupdate}"
+  source_disk = data.google_compute_disk.kafka_controller_pv[count.index].self_link
+  zone        = data.google_compute_disk.kafka_controller_pv[count.index].zone
   labels = {
-    target = "kafka-zookeeper"
-    id     = "${local.zookeeper_prefix}-${count.index}"
+    target = "kafka-controller"
+    id     = "${local.controller_prefix}-${count.index}"
   }
   storage_locations = [local.region]
 }
+
 
 
 resource "google_compute_snapshot" "minio_snapshot" {
