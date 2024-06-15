@@ -175,7 +175,7 @@ resource "kubectl_manifest" "etl_minio_exporter_servicemonitor" {
 }
 
 data "kubectl_file_documents" "etl_minio_exporter_rules" {
-  content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster })
+  content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster, cluster_color: var.Color })
 }
 
 resource "kubectl_manifest" "etl_minio_exporter_rules" {
