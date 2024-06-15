@@ -3,6 +3,9 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: kafka-cluster
+annotations:
+    strimzi.io/node-pools: enabled
+    strimzi.io/kraft: enabled
 spec:
   kafka:
     template:
@@ -70,6 +73,10 @@ spec:
         deleteClaim: true
         class: ""
 
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+
   zookeeper:
     replicas: {{ .Values.replicas }}
     template:
@@ -105,6 +112,3 @@ spec:
         target: kafka-zookeeper
       deleteClaim: true
       class: ""
-  entityOperator:
-    topicOperator: {}
-    userOperator: {}
