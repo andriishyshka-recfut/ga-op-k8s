@@ -5,7 +5,10 @@ metadata:
   name: kafka-cluster
 annotations:
     strimzi.io/node-pools: enabled
-    strimzi.io/kraft: enabled
+    strimzi.io/kraft: migration
+
+    # Switch during Prod DR migration
+    # strimzi.io/kraft: enabled
 spec:
   kafka:
     template:
@@ -77,6 +80,8 @@ spec:
     topicOperator: {}
     userOperator: {}
 
+
+# Delete Zookeeper after switching to Kraft
   zookeeper:
     replicas: {{ .Values.replicas }}
     template:
