@@ -1,3 +1,7 @@
+locals {
+  etl_minio_exporter_version = lookup(var.Settings.clusters[var.Cluster].versions.etl_minio_exporter, "version", "3.12.3")
+}
+
 data "vault_generic_secret" "etl_minio_exporter_config" {
   path = "secret/op/monitoring/etl-minio-exporter-config"
 }
@@ -63,7 +67,7 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
 
       spec {
         container {
-          image = "harbor.regemini.io/op/etl-minio-exporter:3.12.3"
+          image = "harbor.regemini.io/op/etl-minio-exporter:${local.etl_minio_exporter_version}"
           name  = "etl-minio-exporter"
 
           resources {
