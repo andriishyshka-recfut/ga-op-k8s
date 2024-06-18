@@ -6,7 +6,7 @@ locals {
       clusterName          = "elasticsearch",
       remotecerts          = ["remote.ca.crt", "remote2.ca.crt"],
       remoteCertsVaultPath = "secret/elasticsearch-admin/remote-certs",
-      plugins              = ["repository-s3", "repository-gcs"]
+      plugins              = ["repository-s3"]
       gcsVaultPath         = "secret/sa/prod-transfer"
       volumeExt            = false
       podAnnotations = {

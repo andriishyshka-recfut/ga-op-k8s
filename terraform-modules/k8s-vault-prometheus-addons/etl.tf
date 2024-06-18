@@ -1,13 +1,3 @@
-data "kubectl_file_documents" "etl_rules" {
-  content = templatefile("${path.module}/etl-jobs.yaml", { cluster_label : var.Cluster, cluster_color : var.Color })
-}
-
-resource "kubectl_manifest" "etl_rules" {
-  count     = 1
-  yaml_body = element(data.kubectl_file_documents.etl_rules.documents, count.index)
-}
-
-
 data "vault_generic_secret" "etl_minio_exporter_config" {
   path = "secret/op/monitoring/etl-minio-exporter-config"
 }
@@ -36,8 +26,8 @@ resource "kubernetes_secret" "minio_creds" {
     namespace = local.prometheusNs
   }
   data = {
-    access_key = jsondecode(data.vault_generic_secret.minio_creds.data["logstash-red"]).accessKey,
-    secret_key = jsondecode(data.vault_generic_secret.minio_creds.data["logstash-red"]).secretKey
+    access_key = jsondecode(data.vault_generic_secret.minio_creds.data["etl"]).accessKey,
+    secret_key = jsondecode(data.vault_generic_secret.minio_creds.data["etl"]).secretKey
   }
 }
 
@@ -183,7 +173,7 @@ resource "kubectl_manifest" "etl_minio_exporter_servicemonitor" {
 }
 
 data "kubectl_file_documents" "etl_minio_exporter_rules" {
-  content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster })
+  content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster, cluster_color: var.Color })
 }
 
 resource "kubectl_manifest" "etl_minio_exporter_rules" {

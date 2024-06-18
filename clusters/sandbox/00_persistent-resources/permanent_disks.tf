@@ -3,10 +3,10 @@ locals {
 
   zones = local.settings.persistent_resources.permanentDisks.zones
 
-  mongo_count       = local.settings.mongo.magescanner.replicas
-  mongo_prefix      = local.settings.mongo.magescanner.pvcPrefix
-  mongo_auth_count  = local.settings.mongo.auth.replicas
-  mongo_auth_prefix = local.settings.mongo.auth.pvcPrefix
+  mongo_count       = local.settings.mongo6.main.replicas
+  mongo_prefix      = local.settings.mongo6.main.pvcPrefix
+  mongo_auth_count  = local.settings.mongo6.auth.replicas
+  mongo_auth_prefix = local.settings.mongo6.auth.pvcPrefix
   
 
   mongo6_count       = local.settings.mongo6.main.replicas
@@ -25,8 +25,8 @@ locals {
   tarantool_etcd_count     = local.settings.persistent_resources.permanentDisks.tarantool.etcd_disks
   tarantool_etcd_prefix    = local.settings.persistent_resources.permanentDisks.tarantool.etcd_prefix
 
-  # mongoDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
-  # mongoAuthDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
+  # mongoDiskSize = trim(local.settings.mongo6.main.volumeSize, "Gi")
+  # mongoAuthDiskSize = trim(local.settings.mongo6.main.volumeSize, "Gi")
   restoreDate = local.settings.persistent_resources.permanentDisks.coldBackupDate
 
 }
@@ -171,6 +171,19 @@ resource "google_compute_disk" "kafka_zookeeper_pv" {
   zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
 }
 
+
+resource "google_compute_disk" "kafka_controller_pv" {
+  name     = "kafka-controller-${count.index}"
+  count    = local.kafka_count
+  type     = "pd-balanced"
+  size     = data.google_compute_snapshot.kafka_zookeeper_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.kafka_zookeeper_snapshot[count.index].name
+  labels = {
+    target = "kafka-controller"
+    id     = "kafka-controller-${count.index}"
+  }
+  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+}
 
 resource "google_compute_disk" "tarantool_storage_pv" {
   name     = "tarantool-vortex-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"

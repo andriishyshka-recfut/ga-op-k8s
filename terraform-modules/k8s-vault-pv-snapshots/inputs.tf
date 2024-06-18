@@ -17,7 +17,13 @@ locals {
 
   kafka_count      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
   kafka_prefix     = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.kafka_prefix
-  zookeeper_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.zookeeper_prefix
+
+  #Uncomment for Prod DR:
+  # zookeeper_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.zookeeper_prefix
+
+  #Comment for Prod DR:
+  controller_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.controller_prefix
+  
   sonarqube_count  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.sonarqube.count
   minio_count      = var.Cluster == "production" ? 0 : var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
   minio_prefix     = var.Cluster == "production" ? "" : var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.prefix
