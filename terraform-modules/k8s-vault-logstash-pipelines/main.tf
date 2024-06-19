@@ -87,6 +87,10 @@ resource "helm_release" "logstash" {
     name  = "resources.limits.memory"
     value = try(each.value.mem_limit, local.mem_limit)
   }
+  set {
+    name  = "logstashJavaOpts"
+    value = try(each.value.java_opts, local.java_opts)
+  }
 
   depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds, kubernetes_manifest.tmp_logstash, kubernetes_job.logstash_user]
 }

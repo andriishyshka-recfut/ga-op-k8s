@@ -2,7 +2,7 @@ curl -X PUT "https://elastic:$ES_PASSWORD@${es_url}/_security/role/logstash_sand
 {
   "indices": [
     {
-      "names": ["added*","pans*","creds*"],
+      "names": ["added*","pans*","creds*","checker*"],
       "privileges": ["read"]
     }
   ]
