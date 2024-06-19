@@ -13,15 +13,15 @@ data "vault_generic_secret" "api_keys" {
 
 
 data "vault_generic_secret" "elastic_ca" {
-  path = "${local.elasticCertsPath}/elasticCa"
+  path = "${local.elasticCertsPath}/elasticCa${local.elasticSecretsPrefix}"
 }
 
 data "vault_generic_secret" "elastic_crt" {
-  path = "${local.elasticCertsPath}/elasticCrt"
+  path = "${local.elasticCertsPath}/elasticCrt${local.elasticSecretsPrefix}"
 }
 
 data "vault_generic_secret" "elastic_key" {
-  path = "${local.elasticCertsPath}/elasticKey"
+  path = "${local.elasticCertsPath}/elasticKey${local.elasticSecretsPrefix}"
 }
 
 
