@@ -25,6 +25,7 @@ locals {
   ansibleScriptsTag = var.Settings.clusters[var.Cluster].versions.etl.ansible_scripts_tag
   caminoTag = var.Settings.clusters[var.Cluster].versions.etl.camino_tag
   gs2s3Tag = var.Settings.clusters[var.Cluster].versions.etl.gs2s3_tag
+  elasticCertsPath = "secret/es-creds-compose-prod"
   elasticSecretsPath = var.Cluster == "production" ? "/secret/data/es-creds-compose-prod/metaCamino" : "/secret/data/elasticsearch-admin/elastic7-v2"
 }
 

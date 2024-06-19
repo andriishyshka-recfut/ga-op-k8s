@@ -12,6 +12,20 @@ data "vault_generic_secret" "api_keys" {
 }
 
 
+data "vault_generic_secret" "elastic_ca" {
+  path = "${local.elasticCertsPath}/elasticCa"
+}
+
+data "vault_generic_secret" "elastic_crt" {
+  path = "${local.elasticCertsPath}/elasticCrt"
+}
+
+data "vault_generic_secret" "elastic_key" {
+  path = "${local.elasticCertsPath}/elasticKey"
+}
+
+
+
 
 resource "kubernetes_secret" "minio_default_settings" {
   metadata {
@@ -51,6 +65,19 @@ resource "kubernetes_secret" "google_credentials" {
   }
 }
 
+
+resource "kubernetes_secret" "elastic_certs" {
+  metadata {
+    name      = "elastic-certs"
+    namespace = "core"
+  }
+  data = {
+    "ca.crt"  = data.vault_generic_secret.elastic_ca.data.ELASTICSEARCH_CA_CRT
+    "tls.crt" = data.vault_generic_secret.elastic_crt.data.ELASTICSEARCH_CLIENT_CRT
+    "tls.key" = data.vault_generic_secret.elastic_key.data.ELASTICSEARCH_CLIENT_KEY
+  }
+
+}
 
 resource "kubernetes_manifest" "externalsecret_ssh" {
   manifest = {
