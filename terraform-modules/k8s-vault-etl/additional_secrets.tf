@@ -69,7 +69,7 @@ resource "kubernetes_secret" "google_credentials" {
 resource "kubernetes_secret" "elastic_certs" {
   metadata {
     name      = "elastic-certs"
-    namespace = "core"
+    namespace = local.namespace
   }
   data = {
     "ca.crt"  = data.vault_generic_secret.elastic_ca.data.ELASTICSEARCH_CA_CRT
