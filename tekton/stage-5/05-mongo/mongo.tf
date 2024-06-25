@@ -48,7 +48,7 @@ COMMAND
 }
 
 
-resource "null_resource" "create_kafka_crd" {
+resource "null_resource" "create_mongo_crd" {
   depends_on = [module.mongo6]
   triggers = {
     command = md5(local.clone_mongo_backups)

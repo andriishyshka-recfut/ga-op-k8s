@@ -5,9 +5,9 @@ locals {
   apt-get update -q && apt-get install wget  redis-tools -yq ;
   wget --quiet https://dl.min.io/client/mc/release/linux-amd64/mc ;
   chmod +x mc ;
-  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=registry   |  ./mc pipe backup/minio-xbackup-orbital-wording-233917/harbor-backup/$DATE/registry.sql ;
-  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner  |  ./mc pipe backup/minio-xbackup-orbital-wording-233917/harbor-backup/$DATE/notarysigner.sql ;
-  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver  |  ./mc pipe backup/minio-xbackup-orbital-wording-233917/harbor-backup/$DATE/notaryserver.sql ;
+  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=registry   |  ./mc pipe backup/minio-xbackup-orbital-wording/harbor-backup/$DATE/registry.sql ;
+  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner  |  ./mc pipe backup/minio-xbackup-orbital-wording/harbor-backup/$DATE/notarysigner.sql ;
+  pg_dump --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver  |  ./mc pipe backup/minio-xbackup-orbital-wording/harbor-backup/$DATE/notaryserver.sql ;
 
 EOF
 }

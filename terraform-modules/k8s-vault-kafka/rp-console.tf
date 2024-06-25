@@ -12,6 +12,6 @@ resource "helm_release" "red_panda_console" {
   }
   depends_on = [
     helm_release.kafka_cluster,
-    null_resource.ansible_wait_for_kafka
+    # null_resource.ansible_wait_for_kafka
   ]
 }

@@ -32,10 +32,10 @@ resource "helm_release" "kafka_cluster" {
     value = "${data.google_compute_disk.kafka_data_pv[0].size}Gi"
   }
   # Uncomment for Prod DR
-  # set {
-  #   name = "zookeeperDiskSize"
-  #   value = "${data.google_compute_disk.kafka_zookeeper_pv[0].size}Gi"
-  # }
+  set {
+    name = "zookeeperDiskSize"
+    value = "${data.google_compute_disk.kafka_zookeeper_pv[0].size}Gi"
+  }
   set {
     name = "controllerDiskSize"
     value = "${data.google_compute_disk.kafka_controller_pv[0].size}Gi"

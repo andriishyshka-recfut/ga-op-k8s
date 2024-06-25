@@ -7,7 +7,7 @@ module "backup-service" {
   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
   ElasticName          = local.monitoringEs.elastic_settings.elastic.esName
   NamePrefix           = "backup-service-indexes"
-  BackupBucketName     = "xbackup"
+  BackupBucketName     = "backup"
   BackupBucketBasePath = "es-backup/monitoring"
   EsService            = "mon-es-http"
   EsCreds              = "mon-es-elastic-user"
@@ -24,7 +24,7 @@ module "backup-lfb" {
   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
   ElasticName          = local.monitoringEs.elastic_settings.elastic.esName
   NamePrefix           = "backup-service-indexes"
-  BackupBucketName     = "xbackup"
+  BackupBucketName     = "backup"
   BackupBucketBasePath = "es-backup/monitoring"
   EsService            = "mon-es-http"
   EsCreds              = "mon-es-elastic-user"
@@ -44,7 +44,7 @@ module "backup-lfb" {
 #   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
 #   ElasticName          = local.monitoringEs.elastic_settings.elastic.esName
 #   NamePrefix           = "restore-service-indexes"
-#   BackupBucketName     = "xbackup"
+#   BackupBucketName     = "backup"
 #   BackupBucketBasePath = "es-backup/monitoring"
 #   EsService            = "mon-es-http"
 #   EsCreds              = "mon-es-elastic-user"
@@ -58,7 +58,7 @@ module "backup-lfb" {
 #   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
 #   ElasticName          = local.monitoringEs.elastic_settings.elastic.esName
 #   NamePrefix           = "restore-lfb-indexes"
-#   BackupBucketName     = "xbackup"
+#   BackupBucketName     = "backup"
 #   BackupBucketBasePath = "es-backup/monitoring"
 #   EsService            = "mon-es-http"
 #   EsCreds              = "mon-es-elastic-user"
