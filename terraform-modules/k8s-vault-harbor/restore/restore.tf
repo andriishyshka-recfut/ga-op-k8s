@@ -32,11 +32,11 @@ psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON 
 psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database notarysigner";
 psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database notaryserver ";
 ./mc alias set backup https://minio.p.regemini.io $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
-./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup/$DATE/registry.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=registry -v ON_ERROR_STOP=ON;
-./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup/$DATE/notarysigner.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner -v ON_ERROR_STOP=ON;
-./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup/$DATE/notaryserver.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver -v ON_ERROR_STOP=ON;
+./mc cat backup/minio-xbackup-orbital-wording/harbor-backup/$DATE/registry.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=registry -v ON_ERROR_STOP=ON;
+./mc cat backup/minio-xbackup-orbital-wording/harbor-backup/$DATE/notarysigner.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner -v ON_ERROR_STOP=ON;
+./mc cat backup/minio-xbackup-orbital-wording/harbor-backup/$DATE/notaryserver.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver -v ON_ERROR_STOP=ON;
 echo "Postgres restore completed";
-# ./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup/dump.rdb > /redis/dump.rdb ;
+# ./mc cat backup/minio-xbackup-orbital-wording/harbor-backup/dump.rdb > /redis/dump.rdb ;
 # echo "Redis restore completed";
 EOF
 }

@@ -7,13 +7,16 @@ data "vault_generic_secret" "k8s_auth_active" {
 }
 
 locals {
+  kafka_strimzi_version = "0.41.0"
+
   create_kafka_crd = <<COMMAND
     set -x
 
     echo "Creating Kafka CRD"
     kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true create -f ${path.module}/kafka-topic.yaml
+    --insecure-skip-tls-verify=true apply -f \
+    https://github.com/strimzi/strimzi-kafka-operator/releases/download/${local.kafka_strimzi_version}/strimzi-crds-${local.kafka_strimzi_version}.yaml
     sleep 10
 COMMAND
 
@@ -68,7 +71,7 @@ resource "null_resource" "delete_old_topics" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.delete_topics
   }
-  depends_on = [ null_resource.create_kafka_crd ]
+  depends_on = [null_resource.create_kafka_crd]
 }
 
 
@@ -81,5 +84,5 @@ resource "null_resource" "clone_topics" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.clone_topics
   }
-  depends_on = [ null_resource.delete_old_topics ]
+  depends_on = [null_resource.delete_old_topics]
 }

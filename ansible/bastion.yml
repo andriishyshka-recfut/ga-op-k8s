@@ -10,9 +10,9 @@
 
     - name: Create temp_dir
       file:
-          path: "{{ temp_dir }}"
-          state: directory
-          mode: '0755'
+        path: "{{ temp_dir }}"
+        state: directory
+        mode: "0755"
       delegate_to: localhost
       become: False
 
@@ -53,7 +53,7 @@
       when: cluster_name == "production"
 
     - debug: msg="nodePort is {{ item.nodePort }}"
-      with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
+      with_items: "{{ (nodeport_mapping.stdout | from_json).spec.ports }}"
       when: item.name == 'https'
 
     # - name: Copy control plane files
@@ -67,31 +67,30 @@
         src: "bastion-compose/envoy-{{ cluster_name }}.yaml"
         dest: "/etc/bastion-compose/envoy.yaml"
 
-
     - name: set nodePort
       set_fact:
-        nodePort:  "{{ item.nodePort }}"
-      with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
+        nodePort: "{{ item.nodePort }}"
+      with_items: "{{ (nodeport_mapping.stdout | from_json).spec.ports }}"
       when: item.name == 'https'
 
     - name: set nodePort HTTP
       set_fact:
-        nodePortHttp:  "{{ item.nodePort }}"
-      with_items: '{{ (nodeport_mapping.stdout | from_json).spec.ports }}'
+        nodePortHttp: "{{ item.nodePort }}"
+      with_items: "{{ (nodeport_mapping.stdout | from_json).spec.ports }}"
       when: item.name == 'http2'
-    
+
     - when: cluster_name == "production"
       block:
         - name: set nodePortRed
           set_fact:
-            nodePortRed:  "{{ item.nodePort }}"
-          with_items: '{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}'
+            nodePortRed: "{{ item.nodePort }}"
+          with_items: "{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}"
           when: item.name == 'https'
 
         - name: set nodePortRed HTTP
           set_fact:
-            nodePortHttpRed:  "{{ item.nodePort }}"
-          with_items: '{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}'
+            nodePortHttpRed: "{{ item.nodePort }}"
+          with_items: "{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}"
           when: item.name == 'http2'
 
     - name: update xds config
@@ -110,32 +109,32 @@
     - name: Create array from found files in format required for COMPOSE_FILE
       set_fact:
         compose_files: "{% set output = [] %}\
-              {% for element in registered_files.files %}\
-                {{ output.append( element.path ) }}\
-             {% endfor %}\
-             {{ output }}"
+          {% for element in registered_files.files %}\
+          {{ output.append( element.path ) }}\
+          {% endfor %}\
+          {{ output }}"
 
     - name: Start all
-      docker_compose:
+      community.docker.docker_compose_v2:
         project_src: "{{ compose_dest }}"
         files: "{{ compose_files }}"
-        build: yes
-        recreate: smart
+        build: always
+        recreate: always
         remove_orphans: yes
-        debug: yes
         timeout: 60
+        services:
+          - envoy
       register: output
 
     - pause:
         seconds: 5
 
     - name: Recreate discovery
-      docker_compose:
+      community.docker.docker_compose_v2:
         project_src: "{{ compose_dest }}"
         files: "{{ compose_files }}"
         recreate: always
         remove_orphans: yes
-        debug: yes
         timeout: 60
         services:
           - control-plane

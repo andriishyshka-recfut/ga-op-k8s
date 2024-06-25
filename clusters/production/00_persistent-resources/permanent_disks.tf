@@ -53,8 +53,8 @@ data "google_compute_snapshot" "kafka_snapshot" {
   count       = local.kafka_count
 }
 
-data "google_compute_snapshot" "kafka_zookeeper_snapshot" {
-  name        = "kafka-zookeeper-${count.index}-dr-${local.restoreDate}"
+data "google_compute_snapshot" "kafka_controller_snapshot" {
+  name        = "kafka-controller-${count.index}-dr-${local.restoreDate}"
   most_recent = true
   count       = local.kafka_count
 }
@@ -141,17 +141,17 @@ resource "google_compute_disk" "kafka_pv" {
   zone = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
 }
 
-resource "google_compute_disk" "kafka_zookeeper_pv" {
-  name     = "kafka-zookeeper-${count.index}"
+resource "google_compute_disk" "kafka_controller_pv" {
+  name     = "kafka-controller-${count.index}"
   count    = local.kafka_count
   type     = "pd-balanced"
   size     = data.google_compute_snapshot.kafka_zookeeper_snapshot[count.index].disk_size_gb
   snapshot = data.google_compute_snapshot.kafka_zookeeper_snapshot[count.index].name
   labels = {
-    target = "kafka-zookeeper"
-    id     = "kafka-zookeeper-${count.index}"
+    target = "kafka-controller"
+    id     = "kafka-controller-${count.index}"
   }
-  zone = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
+  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
 }
 
 

@@ -1,5 +1,5 @@
 locals {
-  etl_minio_exporter_version = lookup(var.Settings.clusters[var.Cluster].versions.etl_minio_exporter, "version", "3.12.3")
+  etl_minio_exporter_version = lookup(var.Settings.clusters[var.Cluster].versions.etl-minio-exporter, "version", "3.12.3")
 }
 
 data "vault_generic_secret" "etl_minio_exporter_config" {
@@ -8,7 +8,7 @@ data "vault_generic_secret" "etl_minio_exporter_config" {
 
 resource "kubernetes_config_map" "etl_minio_exporter_config" {
   metadata {
-    name = "etl-minio-exporter-creds"
+    name      = "etl-minio-exporter-creds"
     namespace = local.prometheusNs
   }
 
@@ -26,7 +26,7 @@ data "vault_generic_secret" "minio_creds" {
 
 resource "kubernetes_secret" "minio_creds" {
   metadata {
-    name = "etl-minio-exporter-creds"
+    name      = "etl-minio-exporter-creds"
     namespace = local.prometheusNs
   }
   data = {
@@ -37,10 +37,10 @@ resource "kubernetes_secret" "minio_creds" {
 
 resource "kubernetes_deployment_v1" "etl_minio_exporter" {
   metadata {
-    name = "etl-minio-exporter"
+    name      = "etl-minio-exporter"
     namespace = local.prometheusNs
     labels = {
-      app = "etl-minio-exporter"
+      app     = "etl-minio-exporter"
       release = "prometheus"
     }
   }
@@ -57,7 +57,7 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
     template {
       metadata {
         labels = {
-          app = "etl-minio-exporter"
+          app     = "etl-minio-exporter"
           release = "prometheus"
         }
         annotations = {
@@ -83,60 +83,60 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
           env {
             name = "MINIO_ENDPOINT"
             value_from {
-                config_map_key_ref {
-                    key = "minio_endpoint"
-                    name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
-                }
+              config_map_key_ref {
+                key  = "minio_endpoint"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
             }
           }
           env {
             name = "MINIO_BUCKET_NAME"
             value_from {
-                config_map_key_ref {
-                    key = "minio_bucket_name"
-                    name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
-                }
+              config_map_key_ref {
+                key  = "minio_bucket_name"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
             }
           }
           env {
             name = "MINIO_REFRESH_INTERVAL"
             value_from {
-                config_map_key_ref {
-                    key = "minio_refresh_interval"
-                    name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
-                }
+              config_map_key_ref {
+                key  = "minio_refresh_interval"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
             }
           }
           env {
             name = "METRICS_SERVER_PORT"
             value_from {
-                config_map_key_ref {
-                    key = "metrics_server_port"
-                    name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
-                }
+              config_map_key_ref {
+                key  = "metrics_server_port"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
             }
           }
           env {
             name = "MINIO_ACCESS_KEY"
             value_from {
-                secret_key_ref {
-                    key = "access_key"
-                    name = kubernetes_secret.minio_creds.metadata.0.name
-                }
+              secret_key_ref {
+                key  = "access_key"
+                name = kubernetes_secret.minio_creds.metadata.0.name
+              }
             }
           }
           env {
             name = "MINIO_SECRET_KEY"
             value_from {
-                secret_key_ref {
-                    key = "secret_key"
-                    name = kubernetes_secret.minio_creds.metadata.0.name
-                }
+              secret_key_ref {
+                key  = "secret_key"
+                name = kubernetes_secret.minio_creds.metadata.0.name
+              }
             }
           }
           port {
             container_port = 8000
-            name = "metrics"
+            name           = "metrics"
           }
           liveness_probe {
             tcp_socket {
@@ -177,7 +177,7 @@ resource "kubectl_manifest" "etl_minio_exporter_servicemonitor" {
 }
 
 data "kubectl_file_documents" "etl_minio_exporter_rules" {
-  content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster, cluster_color: var.Color })
+  content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster, cluster_color : var.Color })
 }
 
 resource "kubectl_manifest" "etl_minio_exporter_rules" {
