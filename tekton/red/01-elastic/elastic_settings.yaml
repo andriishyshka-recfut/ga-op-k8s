@@ -2,14 +2,13 @@
 ElasticSettings:
   globalSettings:
     namespace: elastic
-    imageTag: "7.17.20"
+    imageTag: "7.17.22"
     clusterName: red
     remotecerts:
       - "remote.ca.crt"
     remoteCertsVaultPath: "secret/red/elasticsearch-admin/remote-certs"
     plugins:
       - "repository-s3"
-      - "repository-gcs"
     volumeExt: false
     podAnnotations:
       co.elastic.logs/enabled: "true"
