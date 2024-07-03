@@ -25,8 +25,8 @@ locals {
   controller_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.controller_prefix
   
   sonarqube_count  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.sonarqube.count
-  minio_count      = var.Cluster == "production" ? 0 : var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
-  minio_prefix     = var.Cluster == "production" ? "" : var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.prefix
+  minio_count      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
+  minio_prefix     = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.prefix
   # mongoDiskSize = trim(var.Settings.clusters[var.Cluster].mongo.magescanner.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(var.Settings.clusters[var.Cluster].mongo.magescanner.volumeSize, "Gi")
 

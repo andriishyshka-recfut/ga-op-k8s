@@ -5,13 +5,6 @@ data "google_compute_disk" "kafka_data_pv" {
   zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
 }
 
-# data "google_compute_disk" "kafka_zookeeper_pv" {
-#   count   = local.kafka_count
-#   name    = "${local.zookeeper_prefix}-${count.index}"
-#   project = var.Settings.gcpProject
-#   zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
-# }
-
 data "google_compute_disk" "kafka_controller_pv" {
   count   = local.kafka_count
   name    = "${local.controller_prefix}-${count.index}"
