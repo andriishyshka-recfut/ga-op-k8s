@@ -1,14 +1,14 @@
 
 data "vault_generic_secret" "minio_default_settings" {
-  path = "secret/etl/minio"
+  path = "secret/${var.SecretPath}/minio"
 }
 
 data "vault_generic_secret" "gcp_sa_keys" {
-  path = "secret/etl/google_credentials"
+  path = "secret/${var.SecretPath}/google_credentials"
 }
 
 data "vault_generic_secret" "api_keys" {
-  path = "secret/etl/vault"
+  path = "secret/${var.SecretPath}/vault"
 }
 
 
@@ -94,7 +94,7 @@ resource "kubernetes_manifest" "externalsecret_ssh" {
       "dataFrom" = [
         {
           "extract" = {
-            "key" = "secret/data/etl/ssh"
+            "key" = "secret/data/${var.SecretPath}/ssh"
           }
         },
       ]

@@ -80,7 +80,7 @@ resource "kubernetes_manifest" "externalsecret_etl_creds" {
         {
           "secretKey" = "etl-settings"
           "remoteRef" = {
-            "key"      = "secret/data/etl/clients/${each.key}"
+            "key"      = "secret/data/${var.SecretPath}/clients/${each.key}"
             "property" = ""
           }
         },

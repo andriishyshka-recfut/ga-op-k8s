@@ -2,7 +2,7 @@ variable "Cluster" {}
 variable "Color" {}
 variable "Settings" {}
 variable "SecretPath" {
-  default = "etl"
+  default = "wl/etl"
 }
 
 # data "vault_generic_secret" "clients" {
