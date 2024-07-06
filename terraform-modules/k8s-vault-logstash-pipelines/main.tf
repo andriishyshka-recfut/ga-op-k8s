@@ -174,10 +174,10 @@ resource "kubernetes_secret" "logstash_es_creds" {
 }
 
 resource "kubernetes_job" "logstash_user" {
-  for_each    = var.logstash_list
+  #for_each    = var.logstash_list
   metadata {
     name      = "logstash-${each.key}-user-setup"
-    namespace = try(each.value.namespace, local.namespace)
+    namespace = local.namespace
   }
   spec {
     template {
