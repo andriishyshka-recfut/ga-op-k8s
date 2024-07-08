@@ -1,12 +1,12 @@
 replicas: ${replicas}
 minimumMasterNodes: 1
-clusterName: ${clusterName}
-clusterHealthCheckParams: ${clusterHealthCheckParams}
+clusterName: ${globalSettings.clusterName}
+clusterHealthCheckParams: ${globalSettings.clusterHealthCheckParams}
 nodeGroup: ${nodePool}
 labels:
   metricbeat: true
-podAnnotations: %{ if length(podAnnotations) == 0 ~} {} %{ else }
-%{ for annotation,annotationValue in podAnnotations ~}
+podAnnotations: %{ if length(globalSettings.podAnnotations) == 0 ~} {} %{ else }
+%{ for annotation,annotationValue in globalSettings.podAnnotations ~}
   ${annotation}: ${annotationValue}
 %{ endfor ~}
 %{ endif ~}
@@ -20,7 +20,7 @@ resources:
 %{ endif ~}
     memory: ${ resources.memLimit }
 esJavaOpts: ${esJavaOpts}
-%{ if  volumeExt ~}
+%{ if  globalSettings.volumeExt ~}
 persistence:
   enabled: false
 %{ else ~}
@@ -55,10 +55,10 @@ readinessProbe:
   successThreshold: 3
   timeoutSeconds: 5
 extraVolumes:
-%{ if  volumeExt ~}
-  - name: ${clusterName}-${nodePool}
+%{ if  globalSettings.volumeExt ~}
+  - name: ${globalSettings.clusterName}-${nodePool}
     persistentVolumeClaim:
-      claimName: ${clusterName}-${nodePool}
+      claimName: ${globalSettings.clusterName}-${nodePool}
 %{ endif ~}
   - name: elastic-plugins-local
     emptyDir: {}
@@ -69,23 +69,23 @@ extraVolumeMounts:
     mountPath: /usr/share/elasticsearch/plugins
   - name: elastic-transport-certificates
     mountPath: /usr/share/elasticsearch/config/transport-certs
-%{ if length(plugins) > 0 ~}
+%{ if length(globalSettings.plugins) > 0 ~}
 extraInitContainers:
   - name: install-plugins
-    image: docker.elastic.co/elasticsearch/elasticsearch:${imageTag}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${globalSettings.imageTag}
     command:
       - sh
       - '-c'
       - >
-%{ for plugin in distinct(plugins) ~}
-        bin/elasticsearch-plugin install --batch ${plugin} %{ if index(plugins, plugin) +1 < length(distinct(plugins))  } && %{ endif }
+%{ for plugin in distinct(globalSettings.plugins) ~}
+        bin/elasticsearch-plugin install --batch ${plugin} %{ if index(globalSettings.plugins, plugin) +1 < length(distinct(globalSettings.plugins))  } && %{ endif }
 %{ endfor ~}
     volumeMounts:
       - name: elastic-plugins-local
         mountPath: /usr/share/elasticsearch/plugins
 %{ endif ~}
   - name: setup-tls-cert
-    image: "docker.elastic.co/elasticsearch/elasticsearch:${imageTag}"
+    image: "docker.elastic.co/elasticsearch/elasticsearch:${globalSettings.imageTag}"
     command:
       - sh
       - -c
@@ -135,14 +135,14 @@ secretMounts:
     secretName: elastic-https-certs
     path: /usr/share/elasticsearch/config/https-certs
     defaultMode: 0755
-%{ if length(remotecerts) > 0 ~}
+%{ if length(globalSettings.remotecerts) > 0 ~}
   - name: elastic-remote-certs
     secretName: elastic-remote-certs
     path: /usr/share/elasticsearch/config/remote-certs
     defaultMode: 0755
 %{ endif ~}
-%{ if lookup(addons, "authorizations", 0) != 0 ~}
-%{ for auth in addons.authorizations ~}
+%{ if lookup(globalSettings.addons, "authorizations", 0) != 0 ~}
+%{ for auth in globalSettings.addons.authorizations ~}
 %{ if auth.type == "saml" ~}
   - name: elastic-${ auth.secret_name }
     secretName: ${ auth.secret_name }
@@ -151,24 +151,29 @@ secretMounts:
 %{ endif ~}
 %{ endfor ~}
 %{ endif ~}
-keystore: %{ if length(plugins) == 0 } [] %{ endif }
-%{ if contains(plugins, "repository-s3") ~}
+keystore: %{ if length(globalSettings.plugins) == 0 } [] %{ endif }
+%{ if contains(globalSettings.plugins, "repository-s3") ~}
   - secretName: minio-credentials
 %{ endif ~}
-%{ if contains(plugins, "repository-gcs") ~}
+%{ if contains(globalSettings.plugins, "repository-gcs") ~}
   - secretName: gcs-credentials
 %{ endif ~}
-%{ if lookup(addons.notifications, "slack", 0) != 0 ~}
+%{ if lookup(globalSettings.addons.notifications, "slack", 0) != 0 ~}
   - secretName: slack-notification
 %{ endif ~}
-%{ if lookup(addons.notifications, "email", 0) != 0 ~}
+%{ if lookup(globalSettings.addons.notifications, "email", 0) != 0 ~}
   - secretName: email-notification
 %{ endif ~}
-%{ if lookup(addons, "authorizations", 0) != 0 ~}
-%{ for auth in addons.authorizations ~}
+%{ if lookup(globalSettings.addons, "authorizations", 0) != 0 ~}
+%{ for auth in globalSettings.addons.authorizations ~}
 %{ if auth.type == "oidc" ~}
   - secretName: ${ auth.secret_name }
 %{ endif ~}
+%{ endfor ~}
+%{ endif ~}
+%{ if lookup(globalSettings, "keystores", 0) != 0 ~}
+%{ for keystore in globalSettings.keystores ~}
+  - secretName: ${ keystore }-credentials
 %{ endfor ~}
 %{ endif ~}
 protocol: https
@@ -181,8 +186,8 @@ esConfig:
     xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/transport-certs/transportcert/transportcert.crt
     xpack.security.transport.ssl.certificate_authorities:
       - /usr/share/elasticsearch/config/ca/ca.crt
-%{ if length(remotecerts) > 0 ~}
-%{ for cert in remotecerts ~}
+%{ if length(globalSettings.remotecerts) > 0 ~}
+%{ for cert in globalSettings.remotecerts ~}
       - /usr/share/elasticsearch/config/remote-certs/${cert}
 %{ endfor ~}
 %{ endif ~}
@@ -190,13 +195,13 @@ esConfig:
     xpack.security.http.ssl.key: /usr/share/elasticsearch/config/https-certs/tls.key
     xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/https-certs/tls.crt
     xpack.security.http.ssl.certificate_authorities: /usr/share/elasticsearch/config/https-certs/ca.crt
-%{ if lookup(addons.notifications, "slack", 0) != 0 ~}
+%{ if lookup(globalSettings.addons.notifications, "slack", 0) != 0 ~}
 ${ slackNotification }
 %{ endif ~}
-%{ if lookup(addons.notifications, "email", 0) != 0 ~}
+%{ if lookup(globalSettings.addons.notifications, "email", 0) != 0 ~}
 ${ emailNotification }
 %{ endif ~}
-%{ if lookup(addons, "authorizations", 0) != 0 ~}
+%{ if lookup(globalSettings.addons, "authorizations", 0) != 0 ~}
 ${ configAuth }
 %{ endif ~}
     xpack.security.audit.enabled: true

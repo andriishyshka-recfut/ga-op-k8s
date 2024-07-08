@@ -18,7 +18,7 @@ resource "kubernetes_secret" "elastic_secret" {
 
 resource "helm_release" "elastic" {
   depends_on = [
-    kubernetes_secret.elastic_secret, kubernetes_persistent_volume_claim.elsticsearch
+    kubernetes_secret.elastic_secret, kubernetes_persistent_volume_claim.elsticsearch, kubernetes_secret.keystores
   ]
   for_each  = local.nodePools
   name      = each.key
@@ -28,7 +28,7 @@ resource "helm_release" "elastic" {
   timeout   = 14400
   namespace = local.globalSettings.namespace
   values = [
-    templatefile("${path.module}/elastic-values.tftpl", merge(each.value, local.globalSettings, local.combineSettings, { nodePool = each.key }))
+    templatefile("${path.module}/elastic-values.tftpl", merge(each.value, { globalSettings = local.globalSettings }, local.combineSettings, { nodePool = each.key }))
   ]
   set {
     name  = "imageTag"
