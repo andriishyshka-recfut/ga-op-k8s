@@ -598,7 +598,7 @@ spec:
         for MINIO_PATH in $(params.job_name); do
           echo "Creating job $MINIO_PATH..."
           CRONJOB_NAME=$(kubectl get cronjob -n etl | grep ${MINIO_PATH} | grep etl | awk '{print $1}')
-          kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 53 ]] && echo ${CRONJOB_NAME::-10}-tkt$(date '+%H%M')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tkt$(date '+%H%M')-$((0 + RANDOM % 9)))
+          kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tekton$(date '+%S')-$((0 + RANDOM % 9)))
         done
 
 ---
@@ -749,6 +749,6 @@ spec:
         for JOB_NAME in $(params.job_name); do
           export CRONJOB_NAME=${JOB_NAME%-*}
           echo "Creating job $CRONJOB_NAME..."
-          kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 53 ]] && echo ${CRONJOB_NAME::-10}-tkt$(date '+%H%M')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tkt$(date '+%H%M')-$((0 + RANDOM % 9)))
+          kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tekton$(date '+%S')-$((0 + RANDOM % 9)))
           kubectl delete job -n etl  $JOB_NAME
         done
