@@ -1,4 +1,3 @@
-
 ElasticSettings:
   globalSettings:
     namespace: elastic
@@ -10,11 +9,13 @@ ElasticSettings:
     plugins:
       - "repository-s3"
     volumeExt: false
+    keystores:
+      - aws
     podAnnotations:
       co.elastic.logs/enabled: "true"
       co.elastic.logs/module: "elasticsearch"
       sidecar.istio.io/inject: "false"
-      co.elastic.logs/exclude_lines: "^.*\"event.type\":\"transport\",^.*metricbeat_user,^.*filebeat_user"
+      co.elastic.logs/exclude_lines: '^.*"event.type":"transport",^.*metricbeat_user,^.*filebeat_user'
     addons:
       notifications:
         slack:
@@ -29,14 +30,14 @@ ElasticSettings:
           type: "saml"
           domain: "k.regemini.com"
     license:
-      vault_path: "secret/red/elasticsearch-admin/license"
-      name: "recorded-future-ab-production-47f9d58a-60b7-42e6-8f23-254345a83cc6-v5.json"
+      vault_path: "secret/red/misc/elasticsearch/license"
+      name: "recorded-future-ab-production-0e020930-282b-48b1-9296-988677dc9c5f-v5.json"
     clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
   nodePools:
     master:
       replicas: 3
       workloadsType: mstr
-      roles: 
+      roles:
         master: "true"
       resources:
         cpuReq: "7"
@@ -49,7 +50,7 @@ ElasticSettings:
       replicas: 15
       workloadsType: data
       roles:
-       data: "true" 
+        data: "true"
       resources:
         cpuReq: "15"
         cpuLimit: "15"
@@ -72,7 +73,7 @@ ElasticSettings:
     ingest:
       replicas: 3
       workloadsType: coor
-      roles: 
+      roles:
         ingest: "true"
       resources:
         cpuReq: "7"
@@ -81,5 +82,3 @@ ElasticSettings:
         memLimit: "24Gi"
       storage: "30Gi"
       esJavaOpts: "-Xms12g -Xmx12g"
-
-

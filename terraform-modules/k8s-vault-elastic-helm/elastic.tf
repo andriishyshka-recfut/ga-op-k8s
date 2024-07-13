@@ -25,7 +25,7 @@ resource "helm_release" "elastic" {
   chart     = "${path.module}/charts/elasticsearch"
   wait      = true
   atomic    = false
-  timeout   = 14400
+  timeout   = 28800
   namespace = local.globalSettings.namespace
   values = [
     templatefile("${path.module}/elastic-values.tftpl", merge(each.value, { globalSettings = local.globalSettings }, local.combineSettings, { nodePool = each.key }))
