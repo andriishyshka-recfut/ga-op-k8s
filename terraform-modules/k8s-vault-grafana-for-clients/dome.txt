@@ -59,6 +59,7 @@ hacklife
 hak5
 hashkiller
 hpc
+hohekammer
 hydramarket
 imthack
 instanthack
@@ -72,7 +73,6 @@ level23hacktools
 lolzteam
 migalki
 mmgp
-moon
 mpgh
 navigator
 niflheim
