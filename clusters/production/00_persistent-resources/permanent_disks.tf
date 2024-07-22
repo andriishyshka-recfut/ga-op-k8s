@@ -9,7 +9,9 @@ locals {
   mongo_auth_count  = local.settings.mongo6.auth.replicas
   mongo_auth_prefix = local.settings.mongo6.auth.pvcPrefix
 
-  kafka_count     = local.settings.persistent_resources.permanentDisks.kafka.count
+  kafka_enabled = true
+
+  kafka_count     = local.kafka_enabled ? local.settings.persistent_resources.permanentDisks.kafka.count : 0
   sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
   # sftp            = local.settings_red.sftp-server
   minio_count = local.settings.persistent_resources.permanentDisks.minio.count
@@ -145,13 +147,13 @@ resource "google_compute_disk" "kafka_controller_pv" {
   name     = "kafka-controller-${count.index}"
   count    = local.kafka_count
   type     = "pd-balanced"
-  size     = data.google_compute_snapshot.kafka_zookeeper_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.kafka_zookeeper_snapshot[count.index].name
+  size     = data.google_compute_snapshot.kafka_controller_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.kafka_controller_snapshot[count.index].name
   labels = {
     target = "kafka-controller"
     id     = "kafka-controller-${count.index}"
   }
-  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+  zone = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
 }
 
 

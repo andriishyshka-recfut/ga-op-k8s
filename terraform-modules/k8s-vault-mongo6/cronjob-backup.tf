@@ -21,6 +21,7 @@ resource "random_id" "rand" {
   byte_length = 8
 }
 
+/*
 resource "kubernetes_cron_job_v1" "mongo_backup" {
   metadata {
     name      = "mongo-backup"
@@ -113,3 +114,4 @@ EOT
     }
   }
 }
+*/
