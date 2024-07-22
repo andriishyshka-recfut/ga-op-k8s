@@ -20,8 +20,8 @@ resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {
   data = {
     "config.env" = join("\n",
     [
-      "MINIO_ROOT_USER=${data.vault_generic_secret.root_credentials_from_vault.data.accessKey}",
-      "MINIO_ROOT_PASSWORD=${data.vault_generic_secret.root_credentials_from_vault.data.secretKey}"
+      "export MINIO_ROOT_USER=${data.vault_generic_secret.root_credentials_from_vault.data.accessKey}",
+      "export MINIO_ROOT_PASSWORD=${data.vault_generic_secret.root_credentials_from_vault.data.secretKey}"
     ]
     )
 
