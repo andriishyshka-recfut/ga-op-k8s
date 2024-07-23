@@ -35,7 +35,7 @@ resource "helm_release" "cvat" {
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
   values = [
-    templatefile("${path.module}/values-main.yaml.tftpl", { tag = "v2.12.0" }),
+    templatefile("${path.module}/values-main.yaml.tftpl", { tag = "v2.16.1" }),
     templatefile("${path.module}/values-affinity.yaml.tftpl", { affinity_list = local.affinity_list }),
     templatefile("${path.module}/values-volumes.yaml.tftpl", { volumes_list = local.pvc_list })
   ]
