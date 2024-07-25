@@ -81,6 +81,7 @@ nulledbb
 nohide
 ogusers
 omerta
+opencard
 patched
 piratebuhta
 probiv
