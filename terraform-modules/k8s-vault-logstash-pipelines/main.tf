@@ -191,7 +191,7 @@ resource "kubernetes_job" "logstash_user" {
         container {
           name    = "post-install"
           image   = "curlimages/curl"
-          command = ["sh", "-c", templatefile("${path.module}/setup-${var.Cluster}-user.tftpl", { password = random_password.logstash_es_password[each.key].result, es_url = each.value.es_host })]
+          command = ["sh", "-c", templatefile("${path.module}/setup-${var.Cluster}-user.tftpl", { password = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_es_password, es_url = each.value.es_host })]
           env {
             name = "ES_PASSWORD"
             value_from {
