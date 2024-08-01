@@ -1,0 +1,56 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaMirrorMaker2
+metadata:
+  name: migration
+  namespace: kafka-test
+spec:
+  version: 3.7.0
+  replicas: 2
+  connectCluster: my-target-cluster
+  clusters:
+    - alias: "my-source-cluster"
+      bootstrapServers: kafka-cluster-kafka-bootstrap.kafka:9092
+    - alias: "my-target-cluster"
+      bootstrapServers: kafka-test-kafka-bootstrap:9092
+      config:
+        ## Configure Kafka Connect topics default replication factor. -1 means it will use the default replication factor configured in the broker
+        config.storage.replication.factor: -1
+        offset.storage.replication.factor: -1
+        status.storage.replication.factor: -1
+        topic.creation.default.replication.factor: -1
+        ## Configure Kafka Connect topics names (in case the defaults need to be changed).
+        #config.storage.topic: mirrormaker2-cluster-config
+        #offset.storage.topic: mirrormaker2-cluster-offset
+        #status.storage.topic: mirrormaker2-cluster-status
+        ## Configure MirrorMaker2 tuning parameters for producers
+        #producer.ack: 1
+        #producer.batch.size: 50000
+        #producer.buffer.memory: 225000000
+        producer.compression.type: gzip
+        #producer.linger.ms: 1500
+        producer.max.request.size: 157286400
+        #producer.request.timeout.ms: 60000
+        #offset_flush_timeout: 250000
+        #task_shutdown_graceful_timeout_ms: 10000
+
+  mirrors:
+    - sourceCluster: "my-source-cluster"
+      targetCluster: "my-target-cluster"
+      sourceConnector:
+        tasksMax: 32
+        config:
+          replication.factor: -1
+          offset-syncs.topic.replication.factor: -1
+          sync.topic.acls.enabled: "false"
+          refresh.topics.interval.seconds: 600
+          replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
+      checkpointConnector:
+        tasksMax: 32
+        config:
+          checkpoints.topic.replication.factor: -1
+          sync.group.offsets.enabled: "true"
+          refresh.groups.interval.seconds: 600
+          replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
+      topicsPattern: ".*"
+      groupsPattern: ".*"
+      topicsExcludePattern: "^.*test.*$"
