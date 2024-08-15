@@ -1,5 +1,5 @@
 locals {
-  etl_minio_exporter_version = lookup(var.Settings.clusters[var.Cluster].versions.etl-minio-exporter, "version", "3.12.3")
+  etl_minio_exporter_version = lookup(var.Settings.clusters[var.Cluster].versions.etl-minio-exporter, "version", "3.12.5")
 }
 
 data "vault_generic_secret" "etl_minio_exporter_config" {
@@ -13,10 +13,17 @@ resource "kubernetes_config_map" "etl_minio_exporter_config" {
   }
 
   data = {
-    minio_endpoint         = data.vault_generic_secret.etl_minio_exporter_config.data.minio_endpoint,
-    minio_bucket_name      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_bucket_name,
-    metrics_server_port    = data.vault_generic_secret.etl_minio_exporter_config.data.metrics_server_port,
-    minio_refresh_interval = data.vault_generic_secret.etl_minio_exporter_config.data.minio_refresh_interval
+    minio_endpoint              = data.vault_generic_secret.etl_minio_exporter_config.data.minio_endpoint,
+    minio_etl_bucket_name       = data.vault_generic_secret.etl_minio_exporter_config.data.minio_bucket_name,
+    minio_kubescape_bucket_name = data.vault_generic_secret.etl_minio_exporter_config.data.minio_kubescape_bucket_name,
+    minio_etl_hourly_delta      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_hourly_delta,
+    minio_etl_bihourly_delta    = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_bihourly_delta,
+    minio_etl_daily_delta       = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_daily_delta,
+    minio_etl_weekly_delta      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_weekly_delta,
+    minio_etl_exclude_list      =  data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_exclude_list,
+    metrics_server_port         = data.vault_generic_secret.etl_minio_exporter_config.data.metrics_server_port,
+    minio_refresh_interval      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_refresh_interval
+
   }
 }
 
@@ -30,8 +37,8 @@ resource "kubernetes_secret" "minio_creds" {
     namespace = local.prometheusNs
   }
   data = {
-    access_key = jsondecode(data.vault_generic_secret.minio_creds.data["etl"]).accessKey,
-    secret_key = jsondecode(data.vault_generic_secret.minio_creds.data["etl"]).secretKey
+    access_key = jsondecode(data.vault_generic_secret.minio_creds.data["etl_exporter"]).accessKey,
+    secret_key = jsondecode(data.vault_generic_secret.minio_creds.data["etl_exporter"]).secretKey
   }
 }
 
@@ -90,10 +97,82 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
             }
           }
           env {
-            name = "MINIO_BUCKET_NAME"
+            name = "MINIO_ACCESS_KEY"
+            value_from {
+              secret_key_ref {
+                key  = "access_key"
+                name = kubernetes_secret.minio_creds.metadata.0.name
+              }
+            }
+          }
+          env {
+            name = "MINIO_SECRET_KEY"
+            value_from {
+              secret_key_ref {
+                key  = "secret_key"
+                name = kubernetes_secret.minio_creds.metadata.0.name
+              }
+            }
+          }
+          env {
+            name = "MINIO_ETL_BUCKET_NAME"
             value_from {
               config_map_key_ref {
-                key  = "minio_bucket_name"
+                key  = "minio_etl_bucket_name"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
+            }
+          }
+          env {
+            name = "MINIO_KUBESCAPE_BUCKET_NAME"
+            value_from {
+              config_map_key_ref {
+                key  = "minio_kubescape_bucket_name"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
+            }
+          }
+          env {
+            name = "MINIO_ETL_HOURLY_DELTA"
+            value_from {
+              config_map_key_ref {
+                key  = "minio_etl_hourly_delta"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
+            }
+          }
+          env {
+            name = "MINIO_ETL_BIHOURLY_DELTA"
+            value_from {
+              config_map_key_ref {
+                key  = "minio_etl_bihourly_delta"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
+            }
+          }
+          env {
+            name = "MINIO_ETL_DAILY_DELTA"
+            value_from {
+              config_map_key_ref {
+                key  = "minio_etl_daily_delta"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
+            }
+          }
+          env {
+            name = "MINIO_ETL_WEEKLY_DELTA"
+            value_from {
+              config_map_key_ref {
+                key  = "minio_etl_weekly_delta"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
+            }
+          }
+          env {
+            name = "MINIO_ETL_EXCLUDE_LIST"
+            value_from {
+              config_map_key_ref {
+                key  = "minio_etl_exclude_list"
                 name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
               }
             }
@@ -113,24 +192,6 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
               config_map_key_ref {
                 key  = "metrics_server_port"
                 name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
-              }
-            }
-          }
-          env {
-            name = "MINIO_ACCESS_KEY"
-            value_from {
-              secret_key_ref {
-                key  = "access_key"
-                name = kubernetes_secret.minio_creds.metadata.0.name
-              }
-            }
-          }
-          env {
-            name = "MINIO_SECRET_KEY"
-            value_from {
-              secret_key_ref {
-                key  = "secret_key"
-                name = kubernetes_secret.minio_creds.metadata.0.name
               }
             }
           }
