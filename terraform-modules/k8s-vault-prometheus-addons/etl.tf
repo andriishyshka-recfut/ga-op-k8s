@@ -14,7 +14,7 @@ resource "kubernetes_config_map" "etl_minio_exporter_config" {
 
   data = {
     minio_endpoint              = data.vault_generic_secret.etl_minio_exporter_config.data.minio_endpoint,
-    minio_etl_bucket_name       = data.vault_generic_secret.etl_minio_exporter_config.data.minio_bucket_name,
+    minio_etl_bucket_name       = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_bucket_name,
     minio_kubescape_bucket_name = data.vault_generic_secret.etl_minio_exporter_config.data.minio_kubescape_bucket_name,
     minio_etl_hourly_delta      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_hourly_delta,
     minio_etl_bihourly_delta    = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_bihourly_delta,
