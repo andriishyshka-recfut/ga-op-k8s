@@ -114,7 +114,7 @@ spec:
           - name: LS_JAVA_OPTS
             value: "{{ .Values.logstashJavaOpts }}"
           - name: 'ELASTICSEARCH_HOSTS'
-            value: {{ .Values.elastic.host }}
+            value: "https://{{ .Values.elastic.host }}"
           - name: 'ELASTICSEARCH_USER'
             valueFrom:
               secretKeyRef:

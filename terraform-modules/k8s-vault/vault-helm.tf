@@ -17,7 +17,7 @@ resource "helm_release" "vault_agent_injector" {
   depends_on = [
     kubernetes_secret.kms_creds,
     kubernetes_namespace.vault,
-
+    helm_release.vault
   ]
 }
 

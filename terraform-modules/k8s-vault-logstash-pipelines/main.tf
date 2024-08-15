@@ -25,7 +25,7 @@ resource "helm_release" "logstash" {
   }
   set {
     name  = "elastic.host"
-    value = "https://${try(each.value.es_host, local.es_host)}"
+    value = try(each.value.es_host, local.es_host)
   }
   set {
     name  = "elastic.pipelineID"

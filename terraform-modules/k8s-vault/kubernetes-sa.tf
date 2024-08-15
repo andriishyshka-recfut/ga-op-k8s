@@ -20,17 +20,19 @@ resource "kubernetes_cluster_role_binding" "cluster_admin_role_binding" {
     name      = "k8s-admin"
     namespace = "kube-system"
   }
+  depends_on = [kubernetes_service_account.k8s_cluster_admin]
 }
 
 resource "kubernetes_secret_v1" "cluster_admin_creds" {
   metadata {
     namespace = "kube-system"
-    name = "sa-k8s-admin"
+    name      = "sa-k8s-admin"
     annotations = {
       "kubernetes.io/service-account.name" = "k8s-admin"
     }
   }
-  type = "kubernetes.io/service-account-token"
+  type       = "kubernetes.io/service-account-token"
+  depends_on = [kubernetes_service_account.k8s_cluster_admin]
 }
 
 
@@ -56,12 +58,13 @@ resource "kubernetes_service_account" "vault" {
 resource "kubernetes_secret_v1" "vault" {
   metadata {
     namespace = "kube-system"
-    name = "sa-vault"
+    name      = "sa-vault"
     annotations = {
       "kubernetes.io/service-account.name" = "vault"
     }
   }
-  type = "kubernetes.io/service-account-token"
+  type       = "kubernetes.io/service-account-token"
+  depends_on = [kubernetes_service_account.vault]
 }
 
 data "kubernetes_secret" "vault" {

@@ -1,34 +1,34 @@
 
-data "vault_generic_secret" "gitlab_token" {
-  path = "secret/gitlab"
-}
+# data "vault_generic_secret" "gitlab_token" {
+#   path = "secret/gitlab"
+# }
 
-resource "kubernetes_secret" "gitlab_token" {
-  metadata {
-    name      = "gitlab-token"
-    namespace = local.namespace
-  }
+# resource "kubernetes_secret" "gitlab_token" {
+#   metadata {
+#     name      = "gitlab-token"
+#     namespace = local.namespace
+#   }
 
-  data = {
-    "username" = data.vault_generic_secret.gitlab_token.data.username
-    "password" = data.vault_generic_secret.gitlab_token.data.fluxcd
-  }
+#   data = {
+#     "username" = data.vault_generic_secret.gitlab_token.data.username
+#     "password" = data.vault_generic_secret.gitlab_token.data.fluxcd
+#   }
 
-}
+# }
 
-data "vault_generic_secret" "helm_creds" {
-  path = "secret/goharbor/docker_login"
-}
+# data "vault_generic_secret" "helm_creds" {
+#   path = "secret/goharbor/docker_login"
+# }
 
-resource "kubernetes_secret" "helm_creds" {
-  metadata {
-    name      = "helm-credentials"
-    namespace = local.namespace
-  }
-  data = {
-    "username" = data.vault_generic_secret.helm_creds.data.user
-    "password" = data.vault_generic_secret.helm_creds.data.password
-  }
+# resource "kubernetes_secret" "helm_creds" {
+#   metadata {
+#     name      = "helm-credentials"
+#     namespace = local.namespace
+#   }
+#   data = {
+#     "username" = data.vault_generic_secret.helm_creds.data.user
+#     "password" = data.vault_generic_secret.helm_creds.data.password
+#   }
 
 
-}
+# }

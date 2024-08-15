@@ -21,7 +21,7 @@ module "kibana" {
   Color           = var.Color
   Settings        = var.Settings
   depends_on = [
-    null_resource.elastic_restore
+    # module.es7-restore-other
   ]
 }
 
