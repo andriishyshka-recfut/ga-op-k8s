@@ -57,8 +57,12 @@ resource "helm_release" "istiod" {
   atomic     = true
   namespace  = "istio-system"
   set {
-    name  = "global.logAsJson"
+    name  = "defaults.global.logAsJson"
     value = true
+  }
+  set {
+    name  = "defaults.meshConfig.accessLogEncoding"
+    value = "JSON"
   }
   depends_on = [
     helm_release.istio_base

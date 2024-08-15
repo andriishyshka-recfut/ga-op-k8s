@@ -131,6 +131,20 @@ spec:
         - name: branch
           value: "\\#739-Sandbox-DR-20240810"
 
+    - name: fluxcd
+      taskRef:
+        name: tg-run
+      runAfter:
+        - monitoring
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-1/01-fluxcd"
+        - name: branch
+          value: "\\#739-Sandbox-DR-20240810"
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -403,7 +417,7 @@ spec:
           workspace: ws
       params:
         - name: path
-          value: "k8s/tekton/stage-6/06-fluxcd"
+          value: "k8s/tekton/stage-6/06-fluxcd-resources"
         - name: branch
           value: "\\#739-Sandbox-DR-20240810"
 

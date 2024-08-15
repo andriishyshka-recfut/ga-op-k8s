@@ -1,88 +1,88 @@
-data "vault_generic_secret" "k8s_auth_inactive" {
-  path = local.inactiveClusterVaultPath
-}
+# data "vault_generic_secret" "k8s_auth_inactive" {
+#   path = local.inactiveClusterVaultPath
+# }
 
-data "vault_generic_secret" "k8s_auth_active" {
-  path = local.activeClusterVaultPath
-}
+# data "vault_generic_secret" "k8s_auth_active" {
+#   path = local.activeClusterVaultPath
+# }
 
-locals {
-  kafka_strimzi_version = "0.41.0"
+# locals {
+#   kafka_strimzi_version = "0.41.0"
 
-  create_kafka_crd = <<COMMAND
-    set -x
+#   create_kafka_crd = <<COMMAND
+#     set -x
 
-    echo "Creating Kafka CRD"
-    kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true apply -f \
-    https://github.com/strimzi/strimzi-kafka-operator/releases/download/${local.kafka_strimzi_version}/strimzi-crds-${local.kafka_strimzi_version}.yaml
-    sleep 10
-COMMAND
-
-
-  delete_topics = <<COMMAND
-    set -x
-
-    echo "Delete existing Kafka topics in new cluster"
-    kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true delete KafkaTopic --all -n kafka
-COMMAND
-
-  clone_topics = <<COMMAND
-    set -x
-
-    echo "Delete existing Kafka topics in new cluster"
-    kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true delete KafkaTopic --all -n kafka
-
-    echo "Transfering Kafka topics to new cluster"
-    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true  \
-    get kafkatopic -n kafka -o yaml |  kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true apply -f -
-COMMAND
-
-}
+#     echo "Creating Kafka CRD"
+#     kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
+#     --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
+#     --insecure-skip-tls-verify=true apply -f \
+#     https://github.com/strimzi/strimzi-kafka-operator/releases/download/${local.kafka_strimzi_version}/strimzi-crds-${local.kafka_strimzi_version}.yaml
+#     sleep 10
+# COMMAND
 
 
-resource "null_resource" "create_kafka_crd" {
+#   delete_topics = <<COMMAND
+#     set -x
 
-  triggers = {
-    command = md5(local.create_kafka_crd)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.create_kafka_crd
-  }
-}
+#     echo "Delete existing Kafka topics in new cluster"
+#     kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
+#     --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
+#     --insecure-skip-tls-verify=true delete KafkaTopic --all -n kafka
+# COMMAND
+
+#   clone_topics = <<COMMAND
+#     set -x
+
+#     echo "Delete existing Kafka topics in new cluster"
+#     kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
+#     --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
+#     --insecure-skip-tls-verify=true delete KafkaTopic --all -n kafka
+
+#     echo "Transfering Kafka topics to new cluster"
+#     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+#     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+#     --insecure-skip-tls-verify=true  \
+#     get kafkatopic -n kafka -o yaml |  kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
+#     --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
+#     --insecure-skip-tls-verify=true apply -f -
+# COMMAND
+
+# }
 
 
-resource "null_resource" "delete_old_topics" {
+# resource "null_resource" "create_kafka_crd" {
 
-  triggers = {
-    command = md5(local.delete_topics)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.delete_topics
-  }
-  depends_on = [null_resource.create_kafka_crd]
-}
+#   triggers = {
+#     command = md5(local.create_kafka_crd)
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = local.create_kafka_crd
+#   }
+# }
 
 
-resource "null_resource" "clone_topics" {
+# resource "null_resource" "delete_old_topics" {
 
-  triggers = {
-    command = md5(local.clone_topics)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.clone_topics
-  }
-  depends_on = [null_resource.delete_old_topics]
-}
+#   triggers = {
+#     command = md5(local.delete_topics)
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = local.delete_topics
+#   }
+#   depends_on = [null_resource.create_kafka_crd]
+# }
+
+
+# resource "null_resource" "clone_topics" {
+
+#   triggers = {
+#     command = md5(local.clone_topics)
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = local.clone_topics
+#   }
+#   depends_on = [null_resource.delete_old_topics]
+# }

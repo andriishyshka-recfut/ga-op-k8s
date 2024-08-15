@@ -1,0 +1,24 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ${ name }
+  namespace: ${ lookup(values ,"namespace", globals.namespace) }
+spec:
+  chart:
+    spec:
+      chart: ${ values.chart_name}
+      sourceRef:
+        kind: HelmRepository
+        name: ${ values.helm_repository }
+  interval: 1h0m0s
+%{ if lookup( values, "additional_args",false) != false ~}
+  values:
+    additionalArgs:
+%{ for arg in values.additional_args ~}
+      - ${ arg }
+%{ endfor ~}
+%{ endif ~}
+    # adminUser:
+    #   create: true
+    #   passwordHash: { .Values.web_password }
+    #   username: admin
