@@ -21,7 +21,15 @@ locals {
      kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
-     scale deploy --replicas=0 -n $1
+     scale deploy --replicas=0 -n $1 && \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     get statefulset -l zero=true --all-namespaces|awk 'NR>1 {print $1,$2}'| xargs -n 2 \
+     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     scale statefulset --replicas=0 -n $1 
     sleep 29
   COMMAND
 
@@ -171,29 +179,29 @@ resource "null_resource" "stop_zero_services" {
   depends_on = [null_resource.stop_flux]
 }
 
-resource "null_resource" "stop_dome_and_minion_bots" {
+# resource "null_resource" "stop_dome_and_minion_bots" {
 
-  triggers = {
-    command = md5(local.stop_dome_and_minion_bots)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.stop_dome_and_minion_bots
-  }
-  depends_on = [null_resource.stop_zero_services]
-}
+#   triggers = {
+#     command = md5(local.stop_dome_and_minion_bots)
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = local.stop_dome_and_minion_bots
+#   }
+#   depends_on = [null_resource.stop_zero_services]
+# }
 
-resource "null_resource" "stop_core_services" {
+# resource "null_resource" "stop_core_services" {
 
-  triggers = {
-    command = md5(local.stop_core_services)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.stop_core_services
-  }
-  depends_on = [null_resource.stop_zero_services]
-}
+#   triggers = {
+#     command = md5(local.stop_core_services)
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = local.stop_core_services
+#   }
+#   depends_on = [null_resource.stop_zero_services]
+# }
 
 resource "null_resource" "stop_etl_operator" {
 
@@ -217,29 +225,29 @@ resource "null_resource" "delete_etl_jobs" {
   }
 }
 
-resource "null_resource" "stop_maid_services" {
+# resource "null_resource" "stop_maid_services" {
 
-  triggers = {
-    command = md5(local.stop_maid_services)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.stop_maid_services
-  }
-  depends_on = [null_resource.stop_zero_services]
-}
+#   triggers = {
+#     command = md5(local.stop_maid_services)
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = local.stop_maid_services
+#   }
+#   depends_on = [null_resource.stop_zero_services]
+# }
 
-resource "null_resource" "stop_magescanner" {
+# resource "null_resource" "stop_magescanner" {
 
-  triggers = {
-    command = md5(local.stop_magescanner)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.stop_magescanner
-  }
-  depends_on = [null_resource.stop_zero_services]
-}
+#   triggers = {
+#     command = md5(local.stop_magescanner)
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = local.stop_magescanner
+#   }
+#   depends_on = [null_resource.stop_zero_services]
+# }
 
 resource "null_resource" "stop_camel_k" {
   count = var.Cluster == "production" ? 1 : 0
@@ -254,41 +262,41 @@ resource "null_resource" "stop_camel_k" {
   depends_on = [null_resource.stop_zero_services]
 }
 
-resource "null_resource" "stop_shout" {
+# resource "null_resource" "stop_shout" {
 
-  triggers = {
-    command = md5(local.stop_shout)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.stop_shout
-  }
-  depends_on = [null_resource.stop_zero_services]
-}
+#   triggers = {
+#     command = md5(local.stop_shout)
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = local.stop_shout
+#   }
+#   depends_on = [null_resource.stop_zero_services]
+# }
 
-resource "null_resource" "stop_telegram_services" {
+# resource "null_resource" "stop_telegram_services" {
 
-  triggers = {
-    command = md5(local.stop_telegram_services)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.stop_telegram_services
-  }
-  depends_on = [null_resource.stop_zero_services]
-}
+#   triggers = {
+#     command = md5(local.stop_telegram_services)
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = local.stop_telegram_services
+#   }
+#   depends_on = [null_resource.stop_zero_services]
+# }
 
-resource "null_resource" "stop_pi_services" {
+# resource "null_resource" "stop_pi_services" {
 
-  triggers = {
-    command = md5(local.stop_pi_services)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.stop_pi_services
-  }
-  depends_on = [null_resource.stop_zero_services]
-}
+#   triggers = {
+#     command = md5(local.stop_pi_services)
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = local.stop_pi_services
+#   }
+#   depends_on = [null_resource.stop_zero_services]
+# }
 
 resource "null_resource" "stop_cvat" {
   count = var.Cluster == "sandbox" ? 1 : 0
