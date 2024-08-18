@@ -81,13 +81,7 @@ terraform {
   backend "kubernetes" {
     secret_suffix    = "${element(split("/", get_terragrunt_dir()), length(split("/", get_terragrunt_dir())) - 1)}-state"
     namespace = "tekton-pipelines"
-    config_path = "./kubeconfig"
-  }
-  required_providers {
-    kubectl = {
-      source  = "registry.opentofu.org/gavinbunney/kubectl"
-      version = ">= 1.14.0"
-    }   
+    config_path = "./kubeconfig" 
   }
 }
 
