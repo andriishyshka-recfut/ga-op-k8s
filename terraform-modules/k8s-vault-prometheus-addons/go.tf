@@ -3,9 +3,9 @@ data "kubectl_file_documents" "go" {
   content = file("${path.module}/go-podmonitor.yaml")
 }
 
-resource "kubectl_manifest" "go" {
+resource "kubernetes_manifest" "go" {
   count     = 1
-  yaml_body = element(data.kubectl_file_documents.go.documents, count.index)
+  manifest = yamldecode(element(data.kubectl_file_documents.go.documents, count.index))
 }
 
 data "http" "grafana_dashboard_go" {
@@ -38,16 +38,16 @@ data "kubectl_file_documents" "go_rules" {
   content = templatefile("${path.module}/go-prometheusrule.yaml", { cluster_label : var.Cluster })
 }
 
-resource "kubectl_manifest" "go_rules" {
+resource "kubernetes_manifest" "go_rules" {
   count     = 1
-  yaml_body = element(data.kubectl_file_documents.go_rules.documents, count.index)
+  manifest = yamldecode(element(data.kubectl_file_documents.go_rules.documents, count.index))
 }
 
 data "kubectl_file_documents" "upsert_rules" {
   content = templatefile("${path.module}/upsert-rules.yaml", { cluster_label : var.Cluster })
 }
 
-resource "kubectl_manifest" "upsert_rules" {
+resource "kubernetes_manifest" "upsert_rules" {
   count     = 1
-  yaml_body = element(data.kubectl_file_documents.upsert_rules.documents, count.index)
+  manifest = yamldecode( element(data.kubectl_file_documents.upsert_rules.documents, count.index))
 }

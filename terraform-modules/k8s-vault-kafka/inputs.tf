@@ -20,11 +20,11 @@ locals {
   kafkaVersion         = var.Settings.clusters[var.Cluster].versions.kafka.kafka_version
 }
 
-terraform {
-  required_providers {
-    kubectl = {
-      source  = "registry.terraform.io/gavinbunney/kubectl"
-      version = ">= 1.10.0"
-    }
-  }
-}
+# terraform {
+#   required_providers {
+#     kubectl = {
+#       source  = "registry.terraform.io/gavinbunney/kubectl"
+#       version = ">= 1.10.0"
+#     }
+#   }
+# }

@@ -15,14 +15,15 @@ spec:
       cpu: {{ .Values.cpuReuest }}
       memory: {{ .Values.memReuest }}
   roles:
-  - broker
+    - broker
+    - controller
   storage:
     type: jbod
     volumes:
-    - class: ""
-      deleteClaim: true
-      id: 0
-      selector:
-        target: kafka-data
-      size: {{ .Values.diskSize }}
-      type: persistent-claim
+      - class: ""
+        deleteClaim: true
+        id: 0
+        selector:
+          target: kafka-data
+        size: {{ .Values.diskSize }}
+        type: persistent-claim

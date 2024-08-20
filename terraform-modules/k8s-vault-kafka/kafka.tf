@@ -32,10 +32,10 @@ resource "helm_release" "kafka_cluster" {
     value = "${data.google_compute_disk.kafka_data_pv[0].size}Gi"
   }
 
-  set {
-    name  = "controllerDiskSize"
-    value = "${data.google_compute_disk.kafka_controller_pv[0].size}Gi"
-  }
+  # set {
+  #   name  = "controllerDiskSize"
+  #   value = "${data.google_compute_disk.kafka_controller_pv[0].size}Gi"
+  # }
   set {
     name  = "cpuReuest"
     value = local.request.cpu

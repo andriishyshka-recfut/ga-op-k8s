@@ -24,14 +24,7 @@ locals {
     if can(namespace.admins)
   }
   developers = [
-    "vladyslav.martynenko@geminiadvisory.io",
-    "anton@geminiadvisory.io",
-    "eugene@geminiadvisory.io",
-    "oleksandr.pidmogylnyi@geminiadvisory.io",
-    "valerii.korolov@geminiadvisory.io",
-    "oleh.babenko@geminiadvisory.io",
-    "oleh.lialin@geminiadvisory.io",
-    "oleksii.osinnii@geminiadvisory.io"
+    "dev@geminiadvisory.io"
   ]
   namespaceDevAccess = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [

@@ -57,6 +57,7 @@ replsets:
     annotations:
       sidecar.istio.io/proxyCPU: 5m
       sidecar.istio.io/proxyMemory: 30M
+      co.elastic.logs/exclude_lines: ^.*"s":"I".*
 
     nodeSelector:
       workloadsType: data
@@ -113,7 +114,13 @@ replsets:
         mode: slowOp
         slowOpThresholdMs: 100
         rateLimit: 100
-
+sharding:
+  configsvrReplSet:
+    annotations:
+      co.elastic.logs/exclude_lines: ^.*"s":"I".*
+  mongos:
+    annotations:
+      co.elastic.logs/exclude_lines: ^.*"s":"I".*
 backup:
   enabled: true
   restartOnFailure: true

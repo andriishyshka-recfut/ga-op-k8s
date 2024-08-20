@@ -3,7 +3,7 @@ resource "kubernetes_namespace" "ns" {
   metadata {
     name = each.key
     labels = {
-      istio-injection = lookup(each.value, "istio", "enabled")
+      istio-injection                      = lookup(each.value, "istio", "enabled")
       "pod-security.kubernetes.io/enforce" = lookup(each.value, "podSecurityPolicy", "baseline")
     }
   }
@@ -129,7 +129,7 @@ resource "kubernetes_role_binding" "developers_groups_binding" {
   dynamic "subject" {
     for_each = toset(flatten(local.developers))
     content {
-      kind      = "User"
+      kind      = "Group"
       name      = subject.key
       api_group = "rbac.authorization.k8s.io"
     }

@@ -55,7 +55,12 @@ data "kubectl_file_documents" "rule_lag" {
   # content = file("${path.module}/kafka-lag-prometheusrule.yaml")
   content = templatefile("${path.module}/kafka-lag-prometheusrule.yaml", { cluster_label : var.Cluster })
 }
-resource "kubectl_manifest" "rule_lag" {
-  count     = 1
-  yaml_body = element(data.kubectl_file_documents.rule_lag.documents, count.index)
+# resource "kubectl_manifest" "rule_lag" {
+#   count     = 1
+#   yaml_body = element(data.kubectl_file_documents.rule_lag.documents, count.index)
+# }
+
+resource "kubernetes_manifest" "rule_lag" {
+  count    = 1
+  manifest = yamldecode(element(data.kubectl_file_documents.rule_lag.documents, count.index))
 }
