@@ -24,6 +24,11 @@ resource "kubernetes_config_map" "harbor_dashboards" {
 }
 
 
-resource "kubectl_manifest" "harbor" {
-    yaml_body = file("${path.module}/harbor.yaml")
+data "kubectl_file_documents" "harbor_yaml" {
+  content = file("${path.module}/harbor.yaml")
 }
+resource "kubernetes_manifest" "harbor" {
+  count     = 1
+  manifest = yamldecode(element(data.kubectl_file_documents.harbor_yaml.documents, count.index))
+}
+

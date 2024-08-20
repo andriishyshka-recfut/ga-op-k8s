@@ -1,3 +1,28 @@
+locals {
+  kafka_strimzi_version = var.Settings.clusters[var.Cluster].versions.kafka.operator_chart_version
+
+  create_kafka_crd = <<COMMAND
+    set -x
+
+    echo "Creating Kafka CRD"
+    kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true apply -f \
+    https://github.com/strimzi/strimzi-kafka-operator/releases/download/${local.kafka_strimzi_version}/strimzi-crds-${local.kafka_strimzi_version}.yaml
+    sleep 10
+COMMAND
+}
+
+
+data "vault_generic_secret" "k8s_auth_inactive" {
+  path = local.inactiveClusterVaultPath
+}
+
+data "vault_generic_secret" "k8s_auth_active" {
+  path = local.activeClusterVaultPath
+}
+
+
 resource "null_resource" "create_kafka_crd" {
 
   triggers = {
@@ -35,17 +60,3 @@ locals {
 }
 
 
-locals {
-  kafka_strimzi_version = var.Settings.clusters[var.Cluster].versions.kafka.operator_chart_version
-
-  create_kafka_crd = <<COMMAND
-    set -x
-
-    echo "Creating Kafka CRD"
-    kubectl  --server ${data.vault_generic_secret.k8s_auth_active.data.HOST}  \
-    --token ${data.vault_generic_secret.k8s_auth_active.data.k8s_sa_token}  \
-    --insecure-skip-tls-verify=true apply -f \
-    https://github.com/strimzi/strimzi-kafka-operator/releases/download/${local.kafka_strimzi_version}/strimzi-crds-${local.kafka_strimzi_version}.yaml
-    sleep 10
-COMMAND
-}

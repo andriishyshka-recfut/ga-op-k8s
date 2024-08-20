@@ -232,16 +232,16 @@ data "kubectl_file_documents" "etl_minio_exporter_servicemonitor" {
   content = file("${path.module}/etl-minio-exporter-servicemonitor.yaml")
 }
 
-resource "kubectl_manifest" "etl_minio_exporter_servicemonitor" {
+resource "kubernetes_manifest" "etl_minio_exporter_servicemonitor" {
   count     = 2
-  yaml_body = element(data.kubectl_file_documents.etl_minio_exporter_servicemonitor.documents, count.index)
+  manifest = yamldecode(element(data.kubectl_file_documents.etl_minio_exporter_servicemonitor.documents, count.index))
 }
 
 data "kubectl_file_documents" "etl_minio_exporter_rules" {
   content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster, cluster_color : var.Color })
 }
 
-resource "kubectl_manifest" "etl_minio_exporter_rules" {
+resource "kubernetes_manifest" "etl_minio_exporter_rules" {
   count     = 1
-  yaml_body = element(data.kubectl_file_documents.etl_minio_exporter_rules.documents, count.index)
+  manifest = yamldecode(element(data.kubectl_file_documents.etl_minio_exporter_rules.documents, count.index))
 }
