@@ -46,7 +46,8 @@ resource "vault_kubernetes_auth_backend_role" "role_tekton" {
   token_ttl                        = 0
   token_policies                   = ["tekton"]
   depends_on = [
-    vault_kubernetes_auth_backend_config.auth_kubernetes
+    vault_kubernetes_auth_backend_config.auth_kubernetes,
+    vault_auth_backend.auth_kubernetes
   ]
 }
 
@@ -58,6 +59,7 @@ resource "vault_kubernetes_auth_backend_role" "role_cert-manager" {
   token_ttl                        = 0
   token_policies                   = ["pki"]
   depends_on = [
-    vault_kubernetes_auth_backend_config.auth_kubernetes
+    vault_kubernetes_auth_backend_config.auth_kubernetes,
+    vault_auth_backend.auth_kubernetes
   ]
 }

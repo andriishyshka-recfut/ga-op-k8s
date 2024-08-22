@@ -49,5 +49,8 @@ resource "helm_release" "vault_certmanager" {
     name  = "pkiPath"
     value = "pki-elastic-int"
   }
-  depends_on = [helm_release.vault]
+  depends_on = [
+    helm_release.vault,
+    vault_auth_backend.auth_kubernetes
+  ]
 }
