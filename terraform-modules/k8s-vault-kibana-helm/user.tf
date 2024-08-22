@@ -13,7 +13,7 @@ data "kubernetes_secret" "elastic_pass" {
 resource "kubernetes_secret" "kibana_creds" {
   for_each = local.kibanaSettings
   metadata {
-    name      = "kibana-credentials"
+    name      = "kibana-${each.key}-credentials"
     namespace = each.value.namespace
   }
   data = {
@@ -24,7 +24,7 @@ resource "kubernetes_secret" "kibana_creds" {
 resource "kubernetes_secret" "kibana_elastic_user" {
   for_each = local.kibanaSettings
   metadata {
-    name      = "kibana-elastic-probe"
+    name      = "kibana-${each.key}-elastic-probe"
     namespace = each.value.namespace
   }
 

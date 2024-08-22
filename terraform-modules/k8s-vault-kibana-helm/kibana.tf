@@ -1,22 +1,4 @@
-resource "random_password" "security_encryptionkey" {
-  for_each = local.kibanaSettings
-  length   = 48
-  special  = false
-}
-
-resource "random_password" "reporting_encryptionkey" {
-  for_each = local.kibanaSettings
-  length   = 48
-  special  = false
-}
-
-resource "random_password" "encryptedsavedobjects_encryptionkey" {
-  for_each = local.kibanaSettings
-  length   = 48
-  special  = false
-}
-
-data "vault_generic_secret" "kibana_xpack_secrets" {
+data "vault_generic_secret" "kibana_xpack_secrets_vault" {
   for_each = local.kibanaSettings
   path     = each.value.kibana_xpack_secrets
 }
@@ -29,7 +11,7 @@ resource "helm_release" "kibana" {
   timeout   = 2000
   namespace = each.value.namespace
   values = [
-    templatefile("${path.module}/kibana-values.tftpl", merge(local.globalSettings, each.value, { kibana_name = each.key, kibana_xpack_secrets = data.vault_generic_secret.kibana_xpack_secrets[each.key].data }))
+    templatefile("${path.module}/kibana-values.tftpl", merge(local.globalSettings, { settings = each.value, kibana_name = each.key, kibana_xpack_secrets = data.vault_generic_secret.kibana_xpack_secrets_vault[each.key].data, order_counter = local.order_counter[each.key] }))
   ]
   set {
     name  = "elasticsearchHosts"

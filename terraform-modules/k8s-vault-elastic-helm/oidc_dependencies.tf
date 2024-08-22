@@ -26,39 +26,43 @@ resource "kubernetes_secret" "oidc" {
     namespace = local.globalSettings.namespace
   }
   data = {
-    "xpack.security.authc.realms.oidc.${lookup(each.value, "oidc_realm_name", "nope")}.rp.client_secret" = data.vault_generic_secret.oidc[each.key].data.oidc_client_secret
+    "xpack.security.authc.realms.oidc.${lookup(each.value, "oidc_realm_name", "nope")}.rp.client_secret" = data.vault_generic_secret.oidc[each.key].data.client_secret
   }
 }
 
 locals {
-  auth_list  = lookup(local.globalSettings.addons, "authorizations", {})
-  oidc_list  = { for name, value in local.auth_list : name => value if value.type == "oidc" }
-  saml_list  = { for name, value in local.auth_list : name => value if value.type == "saml" }
-  configAuth = <<EOF
+  auth_list       = lookup(local.globalSettings.addons, "authorizations", {})
+  oidc_check_list = ["oidc", "okta"]
+  oidc_list       = { for name, value in local.auth_list : name => value if contains(local.oidc_check_list, value.type) }
+  saml_list       = { for name, value in local.auth_list : name => value if value.type == "saml" }
+  configAuth      = <<EOF
     xpack.security.authc.token.enabled: true
     xpack.security.authc.realms.native.basic1.order: 1
 %{for auth_key, auth in local.auth_list~}
-%{if auth.type == "okta"~}
+%{if auth.type == "okta" || auth.type == "oidc"~}
     xpack.security.authc.realms.oidc.${auth.oidc_realm_name}:
       order: ${index(keys(local.auth_list), auth_key) + 2}
-      rp.response_type: code
-      rp.redirect_uri: https://${var.OidcRedirectUri}/api/security/oidc/callback
-      op.issuer: https://accounts.google.com
-      op.authorization_endpoint: https://accounts.google.com/o/oauth2/v2/auth
-      op.token_endpoint: https://oauth2.googleapis.com/token
-      op.jwkset_path: https://www.googleapis.com/oauth2/v3/certs
+      rp.response_type: "code" 
+      rp.redirect_uri: https://${auth.domain}/api/security/oidc/callback
+      op.issuer: ${data.vault_generic_secret.oidc[auth_key].data.issuer}
+      op.authorization_endpoint: "${data.vault_generic_secret.oidc[auth_key].data.issuer}/oauth2/v1/authorize"
+      op.jwkset_path: "${data.vault_generic_secret.oidc[auth_key].data.issuer}/oauth2/v1/keys"
+      op.token_endpoint: "${data.vault_generic_secret.oidc[auth_key].data.issuer}/oauth2/v1/token"
+      op.endsession_endpoint: "${data.vault_generic_secret.oidc[auth_key].data.issuer}/oauth2/v1/logout"
       claims.principal: "email"
+      claims.groups: "groups"
       rp.requested_scopes:
         - email
         - openid
         - profile
-      rp.client_id: ${data.vault_generic_secret.oidc[auth].data.oidc_client_id}
+        - groups
+      rp.client_id: ${data.vault_generic_secret.oidc[auth_key].data.client_id}
 %{endif~}
 %{if auth.type == "oidc"~}
     xpack.security.authc.realms.oidc.${auth.oidc_realm_name}:
       order: ${index(keys(local.auth_list), auth_key) + 2}
       rp.response_type: code
-      rp.redirect_uri: https://${var.OidcRedirectUri}/api/security/oidc/callback
+      rp.redirect_uri: https://${auth.domain}/api/security/oidc/callback
       op.issuer: https://accounts.google.com
       op.authorization_endpoint: https://accounts.google.com/o/oauth2/v2/auth
       op.token_endpoint: https://oauth2.googleapis.com/token
@@ -68,8 +72,9 @@ locals {
         - email
         - openid
         - profile
-      rp.client_id: ${data.vault_generic_secret.oidc[auth].data.oidc_client_id}
-%{else~}
+      rp.client_id: ${data.vault_generic_secret.oidc[auth_key].data.oidc_client_id}
+%{endif~}
+%{if auth.type == "saml"~}
     xpack.security.authc.realms.saml.${auth.saml_realm_name}:
       order: ${index(keys(local.auth_list), auth_key) + 2}
       attributes.groups: groups

@@ -28,6 +28,13 @@ locals {
             secret_name     = "saml-geminiadvisory"
             type            = "saml"
             domain          = "k.t.regemini.io"
+          },
+          okta = {
+            vault_path      = "secret/misc/oidc/okta/test"
+            oidc_realm_name = "okta"
+            secret_name     = "oidc-okta"
+            type            = "okta"
+            domain          = "k2.t.regemini.io"
           }
         }
       },
