@@ -1,6 +1,7 @@
 locals {
   KibanaSettings = {
     ga = {
+      basic_auth    = true,
       replicas      = 3,
       publicBaseUrl = "https://k.regemini.com"
       namespace     = "elastic"
@@ -10,7 +11,7 @@ locals {
           realm = "geminiadvisory"
         }
       }
-      kibana_xpack_secrets = "secret/red/kibana"
+      kibana_xpack_secrets_vault = "secret/red/kibana"
     }
   }
 }

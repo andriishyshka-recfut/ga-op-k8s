@@ -166,7 +166,7 @@ keystore: %{ if length(globalSettings.plugins) == 0 } [] %{ endif }
 %{ endif ~}
 %{ if lookup(globalSettings.addons, "authorizations", 0) != 0 ~}
 %{ for auth in globalSettings.addons.authorizations ~}
-%{ if auth.type == "oidc" ~}
+%{ if auth.type == "oidc" || auth.type == "okta"~}
   - secretName: ${ auth.secret_name }
 %{ endif ~}
 %{ endfor ~}
