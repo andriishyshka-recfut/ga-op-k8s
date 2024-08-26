@@ -131,9 +131,8 @@ resource "kubernetes_secret" "minio_creds" {
 }
 
 resource "random_password" "logstash_es_password" {
-  for_each = var.logstash_list
-  length   = 32
-  special  = false
+  length  = 32
+  special = false
 }
 
 resource "random_password" "logstash_api_password" {
@@ -146,7 +145,7 @@ resource "vault_generic_secret" "logstash_es_creds" {
   for_each = var.logstash_list
   path     = "secret/logstash/${each.key}"
   data_json = jsonencode({
-    logstash_es_password  = resource.random_password.logstash_es_password[each.key].result
+    logstash_es_password  = resource.random_password.logstash_es_password.result
     logstash_es_username  = local.logstash_user
     logstash_api_password = resource.random_password.logstash_api_password[each.key].result
   })
@@ -218,4 +217,5 @@ resource "kubernetes_job" "logstash_user" {
     create = "5m"
     update = "5m"
   }
+  depends_on = [kubernetes_secret.logstash_es_creds]
 }
