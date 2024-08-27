@@ -53,7 +53,21 @@ resource "vault_pki_secret_backend_role" "role" {
   max_ttl            = 32832000
   key_type           = "rsa"
   key_bits           = 2048
-  allowed_domains    = ["mon-es-http",  "mon-es-http.monitoring.svc", "elastic-es-http", "elastic-es-http.elastic.svc", "elastic-es-http.elastic",  "elasticsearch-coor", "red-coor.elastic.svc", "red-coor", "red-coor.elastic.svc"]
+  allowed_domains    = [
+    "mon-es-http",  
+    "mon-es-http.monitoring.svc", 
+    "elastic-es-http", 
+    "elastic-es-http.elastic.svc", 
+    "elastic-es-http.elastic", 
+    "elasticsearch-coor", 
+    "red-coor.elastic.svc", 
+    "red-coor", 
+    "red-coor.elastic.svc",
+    "*.red-ingest-headless.elastic.svc",
+    "*.red-data-headless.elastic.svc",
+    "*.red-coor-headless.elastic.svc",
+    "*.red-master-headless.elastic.svc"
+  ]
   allow_subdomains   = true
   allow_localhost    = true
   allow_bare_domains = true
