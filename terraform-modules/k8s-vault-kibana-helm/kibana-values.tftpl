@@ -78,7 +78,7 @@ kibanaConfig:
               ${auth_key}:
                 order: ${index(keys(settings.authorizations), auth_key) + order_counter }
                 realm: ${auth.realm}
-                description: Log in with ${auth.type}/${auth.realm}
+                description: %{if lookup(auth, "description",false) != false} ${auth.description} %{else}Log in with ${auth.type}/${auth.realm} %{ endif }
 %{ endfor ~}
 %{ endif ~}
     server:
