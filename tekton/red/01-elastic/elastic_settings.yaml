@@ -29,6 +29,12 @@ ElasticSettings:
           secret_name: "saml-geminiadvisory"
           type: "saml"
           domain: "k.regemini.com"
+        recordedfuture:
+          vault_path: "secret/misc/oidc/okta/recordedfuture"
+          oidc_realm_name: "recordedfuture"
+          secret_name: "oidc-recordedfuture"
+          type: "okta"
+          domain: "kk.regemini.com"
     license:
       vault_path: "secret/red/misc/elasticsearch/license"
       name: "recorded-future-ab-production-0e020930-282b-48b1-9296-988677dc9c5f-v5.json"

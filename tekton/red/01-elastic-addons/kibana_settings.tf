@@ -11,7 +11,19 @@ locals {
           realm = "geminiadvisory"
         }
       }
-      kibana_xpack_secrets_vault = "secret/red/kibana"
+      kibana_xpack_secrets = "secret/red/kibana"
+    },
+    recordedfuture = {
+      replicas      = 1,
+      publicBaseUrl = "https://kk.regemini.com"
+      namespace     = "elastic"
+      authorizations = {
+        okta = {
+          type  = "okta",
+          realm = "recordedfuture"
+        }
+      }
+      kibana_xpack_secrets = "secret/mw/kibana/xpack_secrets/recordedfuture"
     }
   }
 }
