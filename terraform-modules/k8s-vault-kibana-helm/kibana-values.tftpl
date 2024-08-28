@@ -78,6 +78,7 @@ kibanaConfig:
               ${auth_key}:
                 order: ${index(keys(settings.authorizations), auth_key) + order_counter }
                 realm: ${auth.realm}
+                description: Log in with ${auth.type}/${auth.realm}
 %{ endfor ~}
 %{ endif ~}
     server:
