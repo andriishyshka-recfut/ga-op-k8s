@@ -100,3 +100,15 @@ spec:
         cluster: ${cluster_label}
         component: stream-processor
         severity: critical
+    - alert: CaptchaNotSolved
+      annotations:
+        description: |
+          No sollution is ready by captcha  within  30m.
+        summary: No sollution is ready by captcha  within  30m.
+      expr: |
+        sum_over_time ( captcha_solver_solvings_total[30m] ) == 0
+      for: 5m
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: critical
