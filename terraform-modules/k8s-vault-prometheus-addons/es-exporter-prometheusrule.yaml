@@ -123,18 +123,6 @@ spec:
         cluster: ${cluster_label}
         component: stream-processor
         severity: critical
-    - alert: CaptchaNotReady
-      annotations:
-        description: |
-          No sollution is ready logs by captcha  within  30m.
-        summary: No sollution is ready logs by captcha  within  30m.
-      expr: |
-        sum_over_time ( captcha_hits[30m] ) == 0
-      for: 5m
-      labels:
-        cluster: ${cluster_label}
-        component: stream-processor
-        severity: critical
     - alert: UpsertdomeUnauthorized
       annotations:
         description: |
