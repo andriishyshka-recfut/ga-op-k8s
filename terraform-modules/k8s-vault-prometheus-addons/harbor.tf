@@ -24,11 +24,11 @@ resource "kubernetes_config_map" "harbor_dashboards" {
 }
 
 
-data "kubectl_file_documents" "harbor_yaml" {
-  content = file("${path.module}/harbor.yaml")
-}
-resource "kubernetes_manifest" "harbor" {
-  count     = 1
-  manifest = yamldecode(element(data.kubectl_file_documents.harbor_yaml.documents, count.index))
-}
+# data "kubectl_file_documents" "harbor_yaml" {
+#   content = file("${path.module}/harbor.yaml")
+# }
+# resource "kubernetes_manifest" "harbor" {
+#   count     = 1
+#   manifest = yamldecode(element(data.kubectl_file_documents.harbor_yaml.documents, count.index))
+# }
 

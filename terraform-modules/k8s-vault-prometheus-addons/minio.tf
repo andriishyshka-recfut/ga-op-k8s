@@ -1,18 +1,18 @@
 
 
-data "kubectl_file_documents" "minio" {
-  content = file("${path.module}/minio.yaml")
-}
+# data "kubectl_file_documents" "minio" {
+#   content = file("${path.module}/minio.yaml")
+# }
 
 # resource "kubectl_manifest" "minio" {
 #   count     = 2
 #   yaml_body = element(data.kubectl_file_documents.minio.documents, count.index)
 # }
 
-resource "kubernetes_manifest" "minio" {
-  count    = 2
-  manifest = yamldecode(element(data.kubectl_file_documents.minio.documents, count.index))
-}
+# resource "kubernetes_manifest" "minio" {
+#   count    = 2
+#   manifest = yamldecode(element(data.kubectl_file_documents.minio.documents, count.index))
+# }
 
 data "http" "grafana_dashboard_minio" {
   url = "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/minio-dashboard.json"

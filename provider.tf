@@ -41,30 +41,12 @@ provider "kubernetes" {
 
 }
 
-provider "kubectl" {
-    # alias = "kube"
-    cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
-    host                   = data.vault_generic_secret.k8s_auth.data.HOST
-    token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
-    load_config_file       = false
-  }
-
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "kubernetes" {
     secret_suffix    = "k8s-state"
     namespace = "tekton-pipelines"
-    config_path = "./kubeconfig"
-  }
-  required_providers {
-    kubectl = {
-      source  = "registry.terraform.io/gavinbunney/kubectl"
-      version = ">= 1.14.0"
-    }
-    flux = {
-      source  = "registry.terraform.io/fluxcd/flux"
-      version = ">= 0.0.13"
-    }    
+    config_path = "./kubeconfig" 
   }
 }
 

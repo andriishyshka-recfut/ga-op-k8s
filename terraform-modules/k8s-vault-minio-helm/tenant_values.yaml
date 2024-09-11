@@ -1,6 +1,5 @@
-secrets:
-  existingSecret: minio-cluster
-
+#secrets:
+#  existingSecret: minio-cluster
 
 tenant:
   name: minio-tenant

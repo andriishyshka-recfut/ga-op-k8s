@@ -14,7 +14,6 @@ spec:
 {{- end }}
   config:
 {{ indent 4 .Values.filebeat.config }}
-  priorityClassName: {{ .Values.priorityClassName }}
   daemonSet:
     podTemplate:
       spec:
@@ -22,6 +21,7 @@ spec:
           - key: "workloadsType"
             operator: "Exists"
             effect: "NoSchedule"
+        priorityClassName: {{ .Values.filebeat.priorityClassName }}
         serviceAccountName: filebeat
         automountServiceAccountToken: true
         terminationGracePeriodSeconds: 30

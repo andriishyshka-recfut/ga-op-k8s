@@ -15,6 +15,10 @@ locals {
       op-charts = {
         url        = "https://gitlab.regemini.com/op/charts.git",
         git_branch = "main"
+      },
+      gitops = {
+        url        = "https://gitlab.regemini.com/op/gitops.git",
+        git_branch = var.Cluster
       }
     },
     helm-repositories = {
