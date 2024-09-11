@@ -11,10 +11,7 @@ dashboards:
   kibana: "kibana"
 filebeat:
   name: "log"
-  daemonSet:
-    podTemplate:
-      spec:
-        priorityClassName: ${priority_class}
+  priorityClassName: ${priority_class}
   config: |
     filebeat.autodiscover:
       providers:

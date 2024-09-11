@@ -3,7 +3,7 @@ locals {
 }
 
 data "vault_generic_secret" "etl_minio_exporter_config" {
-  path = "secret/op/monitoring/etl-minio-exporter-config"
+  path = "secret/mw/monitoring/prometheus/etl-minio-exporter-config"
 }
 
 resource "kubernetes_config_map" "etl_minio_exporter_config" {
@@ -20,9 +20,10 @@ resource "kubernetes_config_map" "etl_minio_exporter_config" {
     minio_etl_bihourly_delta    = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_bihourly_delta,
     minio_etl_daily_delta       = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_daily_delta,
     minio_etl_weekly_delta      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_weekly_delta,
-    minio_etl_exclude_list      =  data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_exclude_list,
+    minio_etl_exclude_list      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_exclude_list,
     metrics_server_port         = data.vault_generic_secret.etl_minio_exporter_config.data.metrics_server_port,
     minio_refresh_interval      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_refresh_interval
+    minio_secure                = data.vault_generic_secret.etl_minio_exporter_config.data.minio_secure
 
   }
 }
@@ -195,6 +196,15 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
               }
             }
           }
+          env {
+            name = "MINIO_SECURE"
+            value_from {
+              config_map_key_ref {
+                key  = "minio_secure"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
+            }
+          }
           port {
             container_port = 8000
             name           = "metrics"
@@ -228,20 +238,20 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
   }
 }
 
-data "kubectl_file_documents" "etl_minio_exporter_servicemonitor" {
-  content = file("${path.module}/etl-minio-exporter-servicemonitor.yaml")
-}
+# data "kubectl_file_documents" "etl_minio_exporter_servicemonitor" {
+#   content = file("${path.module}/etl-minio-exporter-servicemonitor.yaml")
+# }
 
-resource "kubernetes_manifest" "etl_minio_exporter_servicemonitor" {
-  count     = 2
-  manifest = yamldecode(element(data.kubectl_file_documents.etl_minio_exporter_servicemonitor.documents, count.index))
-}
+# resource "kubernetes_manifest" "etl_minio_exporter_servicemonitor" {
+#   count     = 2
+#   manifest = yamldecode(element(data.kubectl_file_documents.etl_minio_exporter_servicemonitor.documents, count.index))
+# }
 
-data "kubectl_file_documents" "etl_minio_exporter_rules" {
-  content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster, cluster_color : var.Color })
-}
+# data "kubectl_file_documents" "etl_minio_exporter_rules" {
+#   content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster, cluster_color : var.Color })
+# }
 
-resource "kubernetes_manifest" "etl_minio_exporter_rules" {
-  count     = 1
-  manifest = yamldecode(element(data.kubectl_file_documents.etl_minio_exporter_rules.documents, count.index))
-}
+# resource "kubernetes_manifest" "etl_minio_exporter_rules" {
+#   count     = 1
+#   manifest = yamldecode(element(data.kubectl_file_documents.etl_minio_exporter_rules.documents, count.index))
+# }
