@@ -32,13 +32,13 @@ locals {
 
   minio_endpoints = jsonencode({
     old = {
-      name   = "Old minio"
+      name   = "OG"
       url    = "minio.minio:9000"
       secure = false
       bucket = "minio-logstash-pipelines-orbital-wording-233917"
     }
     new = {
-      name   = "New minio"
+      name   = "NG"
       url    = "minio-tenant-hl.minio-helm.svc.cluster.local:9000"
       secure = true
       bucket = "etl-logstash-feeds"
