@@ -44,6 +44,16 @@ resource "kubernetes_deployment" "etl_observer" {
           }
 
           env {
+            name = "MINIO_ENDPOINTS"
+            value_from {
+              config_map_key_ref {
+                name = kubernetes_config_map.minio_endpoints.metadata[0].name
+                key  = "endpoints"
+              }
+            }
+          }
+
+          env {
             name = "BUCKET_NAME"
             value_from {
               secret_key_ref {

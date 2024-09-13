@@ -28,5 +28,22 @@ locals {
   elasticCertsPath = "secret/es-creds-compose-prod"
   elasticSecretsPrefix = var.Cluster == "production" ? "" : "-ext"
   elasticSecretsPath = var.Cluster == "production" ? "/secret/data/es-creds-compose-prod/metaCamino" : "/secret/data/elasticsearch-admin/elastic7-v2"
+
+
+  minio_endpoints = jsonencode({
+    old = {
+      name   = "Old minio"
+      url    = "minio.minio:9000"
+      secure = false
+      bucket = "minio-logstash-pipelines-orbital-wording-233917"
+    }
+    new = {
+      name   = "New minio"
+      url    = "minio-tenant-hl.minio-helm.svc.cluster.local:9000"
+      secure = true
+      bucket = "etl-logstash-feeds"
+    }
+  })
+
 }
 
