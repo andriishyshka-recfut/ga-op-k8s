@@ -23,8 +23,6 @@ resource "kubernetes_config_map" "etl_minio_exporter_config" {
     minio_etl_exclude_list      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_exclude_list,
     metrics_server_port         = data.vault_generic_secret.etl_minio_exporter_config.data.metrics_server_port,
     minio_refresh_interval      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_refresh_interval
-    minio_secure                = data.vault_generic_secret.etl_minio_exporter_config.data.minio_secure
-
   }
 }
 
@@ -192,15 +190,6 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
             value_from {
               config_map_key_ref {
                 key  = "metrics_server_port"
-                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
-              }
-            }
-          }
-          env {
-            name = "MINIO_SECURE"
-            value_from {
-              config_map_key_ref {
-                key  = "minio_secure"
                 name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
               }
             }

@@ -5,12 +5,12 @@ data "google_compute_disk" "kafka_data_pv" {
   zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
 }
 
-data "google_compute_disk" "kafka_controller_pv" {
-  count   = local.kafka_count
-  name    = "${local.controller_prefix}-${count.index}"
-  project = var.Settings.gcpProject
-  zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
-}
+# data "google_compute_disk" "kafka_controller_pv" {
+#   count   = local.kafka_count
+#   name    = "${local.controller_prefix}-${count.index}"
+#   project = var.Settings.gcpProject
+#   zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
+# }
 
 data "google_compute_disk" "mongo_data_pv" {
   count   = local.mongo_count
@@ -76,17 +76,17 @@ resource "google_compute_snapshot" "kafka_snapshot" {
 # }
 
 
-resource "google_compute_snapshot" "kafka_controller_snapshot" {
-  count       = local.kafka_count
-  name        = "${local.controller_prefix}-${count.index}-dr-${local.backupdate}"
-  source_disk = data.google_compute_disk.kafka_controller_pv[count.index].self_link
-  zone        = data.google_compute_disk.kafka_controller_pv[count.index].zone
-  labels = {
-    target = "kafka-controller"
-    id     = "${local.controller_prefix}-${count.index}"
-  }
-  storage_locations = [local.region]
-}
+# resource "google_compute_snapshot" "kafka_controller_snapshot" {
+#   count       = local.kafka_count
+#   name        = "${local.controller_prefix}-${count.index}-dr-${local.backupdate}"
+#   source_disk = data.google_compute_disk.kafka_controller_pv[count.index].self_link
+#   zone        = data.google_compute_disk.kafka_controller_pv[count.index].zone
+#   labels = {
+#     target = "kafka-controller"
+#     id     = "${local.controller_prefix}-${count.index}"
+#   }
+#   storage_locations = [local.region]
+# }
 
 
 
