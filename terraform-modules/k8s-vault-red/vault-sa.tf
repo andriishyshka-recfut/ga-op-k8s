@@ -27,3 +27,22 @@ data "kubernetes_secret" "vault" {
     kubernetes_secret_v1.vault
   ]
 }
+
+resource "kubernetes_cluster_role_binding" "vault" {
+  metadata {
+    name = "vault-auth"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "system:auth-delegator"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "vault"
+    namespace = "kube-system"
+  }
+  depends_on = [
+    kubernetes_service_account.vault
+  ]
+}
