@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   version: {{ .Values.kibanaVersion }}
-  count: 1
+  count: {{ .Values.count }}
   elasticsearchRef:
     name: "{{ .Values.esName }}"
   http:

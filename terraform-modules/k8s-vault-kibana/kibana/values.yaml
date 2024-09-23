@@ -10,3 +10,4 @@ oidc_provider:
   oidc_realm_name: "google"
 xpack_reporting_index_re:
   enabled: "no"
+count: 2
