@@ -12,9 +12,6 @@ spec:
     - name: path
       type: string
       description: path in k8s repo where to run terragrunt
-  workspaces:
-  - name: ws
-    mountPath: /workspace
   steps:
     - name: tg-apply
       image: harbor.regemini.io/op/tf:latest

@@ -18,10 +18,10 @@ spec:
     - alert: LogstashPipelinesRestart
       annotations:
         description: |
-          Tekton task logstash-inodes-restart had to be triggered automatically (Could check tekton red) 
+          Tekton task logstash-inodes-restart had to be triggered automatically (Could check tekton red)
         summary: Logstash pipelines inodes more than 300
       expr: |
-       group(kubelet_volume_stats_inodes_used{persistentvolumeclaim="tmp-logstash-red"} > 300) and group(minute() > 35) and group(minute() < 55)
+        kubelet_volume_stats_inodes_used{persistentvolumeclaim=~"tmp-logstash.+"} > 300 and ON() minute() > 35 < 55
       for: 5m
       labels:
         cluster: ${cluster_label}
