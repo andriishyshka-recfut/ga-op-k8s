@@ -1,0 +1,27 @@
+extraEnvVarsSecret: events-credentials
+config:
+  logLevel: ${log_level}
+  logFormat: pretty
+  receivers:
+    - name: "dump"
+      file:
+        path: "/dev/stdout"
+        layout: {}
+    - name: "elastic"
+      elasticsearch:
+        hosts:
+          - https://${elastic_prefix}-es-http:9200
+        index: kube-events
+        username: kube-events
+        password: $${ELASTIC_EVENTS_PASSWORD}
+        useEventID: false
+        deDot: true
+        tls: 
+          insecureSkipVerify: true
+  route:
+    routes:
+      - match:
+          - receiver: "elastic"
+#      - match:
+#          - kind: "Pod|Deployment|ReplicaSet"
+#            receiver: "elastic"
