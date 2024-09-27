@@ -3,5 +3,5 @@ module "minio_domains" {
   Cluster    = var.Cluster
   Settings   = var.Settings
   Color      = var.Color
-  depends_on = [module.lb-switch]
+  depends_on = [null_resource.ansible_bastion_playbook]
 }
