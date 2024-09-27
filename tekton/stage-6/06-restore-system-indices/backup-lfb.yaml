@@ -8,20 +8,19 @@ actions:
       the repository filesystem access check.  Use the other options to create
       the snapshot.
     options:
-        repository: minio
-          # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
-        name: monitoring-dr-lfb-%Y%m%d
-        ignore_unavailable: False
-        include_global_state: False
-        partial: False
-        wait_for_completion: True
-        skip_repo_fs_check: False
-        disable_action: False
-        allow_ilm_indices: True
+      repository: minio
+      # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
+      name: monitoring-dr-lfb-%Y%m%d
+      ignore_unavailable: False
+      include_global_state: False
+      partial: False
+      wait_for_completion: True
+      skip_repo_fs_check: False
+      disable_action: False
     filters:
       - filtertype: pattern
         kind: regex
-        value: '^(filebeat-|apm-).*$'
+        value: "^(filebeat-|apm-|kube-).*$"
       - filtertype: age
         source: creation_date
         direction: younger
