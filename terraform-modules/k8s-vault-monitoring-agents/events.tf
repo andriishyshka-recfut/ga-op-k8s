@@ -15,7 +15,7 @@ curl -X POST "https://elastic:$ES_PASSWORD@${local.elastic_prefix}-es-http:9200/
 }' &&\
 curl -X PUT "https://elastic:$ES_PASSWORD@${local.elastic_prefix}-es-http:9200/_index_template/kube-events" -H 'Content-Type: application/json' -k -d '
 {
-  "index_patterns" : ["kube-evens*"],
+  "index_patterns" : ["kube-events*"],
   "priority" : 1,
   "template": {
     "settings" : {
