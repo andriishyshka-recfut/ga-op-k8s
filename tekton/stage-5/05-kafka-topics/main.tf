@@ -54,6 +54,10 @@ locals {
       kafka-topics = {
         kustomization_path = "./gitops",
         git_repository     = "kafka-topics"
+      },
+      kafka-init = {
+        kustomization_path = "./kyverno-policies/kafka",
+        git_repository     = "gitops"
       }
     }
   }

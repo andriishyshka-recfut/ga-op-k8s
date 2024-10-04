@@ -88,7 +88,7 @@ spec:
           value: "k8s/tekton/stage-1/01-namespaces"
         - name: branch
           value: "\\#766-prod-dr-2024-09-14"
-          
+
     - name: fluxcd
       taskRef:
         name: tg-run
@@ -129,6 +129,21 @@ spec:
       params:
         - name: path
           value: "k8s/tekton/stage-1/01-monitoring"
+        - name: branch
+          value: "\\#766-prod-dr-2024-09-14"
+
+    - name: kyverno
+      taskRef:
+        name: tg-run
+      runAfter:
+        - namespaces
+        - fluxcd
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-1/01-kyverno"
         - name: branch
           value: "\\#766-prod-dr-2024-09-14"
 
