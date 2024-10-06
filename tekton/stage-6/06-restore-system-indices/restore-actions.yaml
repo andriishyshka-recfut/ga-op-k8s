@@ -6,6 +6,7 @@ actions:
     options:
       repository: "minio"
       # name: monitoring-dr-system-%Y%m%d
+      ignore_unavailable: True
       wait_for_completion: True
       include_global_state: True
       # wait_interval: 20
