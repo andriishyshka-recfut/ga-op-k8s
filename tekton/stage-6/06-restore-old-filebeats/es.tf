@@ -1,9 +1,9 @@
 
-module "backup" {
+module "backup-old-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"
   Namespace            = "monitoring"
   ElasticName          = "monitoring"
-  NamePrefix           = "backup"
+  NamePrefix           = "backup-old-indexes"
   BackupBucketName     = "backup"
   BackupBucketBasePath = "es-backup/monitoring"
   EsService            = "mon-es-http"
@@ -17,11 +17,11 @@ module "backup" {
 }
 
 
-module "restore" {
+module "restore-old-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"
   Namespace            = "monitoring"
   ElasticName          = "monitoring"
-  NamePrefix           = "restore-logs"
+  NamePrefix           = "restore-old-indexes"
   BackupBucketName     = "backup"
   BackupBucketBasePath = "es-backup/monitoring"
   EsService            = "mon-es-http"
