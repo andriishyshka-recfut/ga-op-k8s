@@ -27,4 +27,4 @@ actions:
         source: creation_date
         direction: older
         unit: days
-        unit_count: 3 #temporaly
+        unit_count: 4 #temporaly
