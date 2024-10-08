@@ -39,20 +39,20 @@ module "backup-lfb-indexes" {
 
 
 
-# module "restore-system-indexes" {
-#   source               = "../../../terraform-modules/k8s-es-curator"
-#   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
-#   ElasticName          = local.monitoringEs.elastic_settings.elastic.esName
-#   NamePrefix           = "restore-system-indexes"
-#   BackupBucketName     = "backup"
-#   BackupBucketBasePath = "es-backup/monitoring"
-#   EsService            = "mon-es-http"
-#   EsCreds              = "mon-es-elastic-user"
-#   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
-#   Actions              = file("${path.root}/restore-system.yaml")
-#   Settings             = var.Settings
-#   depends_on           = [module.backup-lfb-indexes]
-# }
+module "restore-system-indexes" {
+  source               = "../../../terraform-modules/k8s-es-curator"
+  Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
+  ElasticName          = local.monitoringEs.elastic_settings.elastic.esName
+  NamePrefix           = "restore-system-indexes"
+  BackupBucketName     = "backup"
+  BackupBucketBasePath = "es-backup/monitoring"
+  EsService            = "mon-es-http"
+  EsCreds              = "mon-es-elastic-user"
+  MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
+  Actions              = file("${path.root}/restore-system.yaml")
+  Settings             = var.Settings
+  depends_on           = [module.backup-lfb-indexes]
+}
 module "restore-lfb-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"
   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
@@ -65,5 +65,5 @@ module "restore-lfb-indexes" {
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
   Actions              = file("${path.root}/restore-lfb.yaml")
   Settings             = var.Settings
-  # depends_on           = [module.restore-system-indexes]
+  depends_on           = [module.restore-system-indexes]
 }
