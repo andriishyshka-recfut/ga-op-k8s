@@ -22,5 +22,8 @@ path "secret/data/mongo/metaMinion" {
 path "secret/data/apm/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/wl/minion/*" {
+  capabilities = ["read","list"]
+}
 EOT
 }

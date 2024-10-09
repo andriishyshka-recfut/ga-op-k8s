@@ -18,6 +18,7 @@ actions:
       wait_for_completion: True
       skip_repo_fs_check: False
       disable_action: False
+      allow_ilm_indices: True
     filters:
       - filtertype: pattern
         kind: regex
@@ -25,5 +26,5 @@ actions:
       - filtertype: age
         source: creation_date
         direction: older
-        unit: days
-        unit_count: 1
+        unit: hours
+        unit_count: 26

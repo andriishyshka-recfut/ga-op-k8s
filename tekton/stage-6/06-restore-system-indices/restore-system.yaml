@@ -1,17 +1,18 @@
 ---
 actions:
-  1: 
+  1:
     action: restore
-    description: "Restore filebeat-7 indices in the most recent snapshot with state SUCCESS"
+    description: "Restore system indices in the most recent snapshot with state SUCCESS"
     options:
       repository: "minio"
-      # name: monitoring-dr-lfb-%Y%m%d
+      # name: monitoring-dr-system-%Y%m%d
+      ignore_unavailable: True
       wait_for_completion: True
-      include_global_state: False
+      include_global_state: True
       # wait_interval: 20
     filters:
       - filtertype: state
         state: SUCCESS
       - filtertype: pattern
         kind: prefix
-        value: monitoring-dr-lfb-
+        value: monitoring-dr-system-
