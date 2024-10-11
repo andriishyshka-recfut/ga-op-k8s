@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
   generateName: red-monitoring-update-
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   taskRef:
     name: tg-run

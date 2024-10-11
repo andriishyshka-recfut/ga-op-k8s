@@ -21,12 +21,3 @@ resource "kubernetes_config_map" "tarantool_dashboard" {
   }
 
 }
-
-data "kubectl_file_documents" "tarantool_yaml" {
-  content = file("${path.module}/tarantool.yaml")
-}
-resource "kubectl_manifest" "tarantool" {
-  # force_new = true
-  count     = 2
-  yaml_body = element(data.kubectl_file_documents.tarantool_yaml.documents, count.index)
-}

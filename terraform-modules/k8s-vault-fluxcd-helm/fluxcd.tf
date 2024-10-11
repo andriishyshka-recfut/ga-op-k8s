@@ -6,6 +6,7 @@ resource "helm_release" "fluxcd" {
   repository = "https://fluxcd-community.github.io/helm-charts"
   chart      = "flux2"
   name       = "flux2"
+  version    = var.Settings.clusters[var.Cluster].versions.fluxcd.helm_version
   namespace  = local.namespace
 }
 

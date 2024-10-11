@@ -18,3 +18,21 @@ module "prometheus-addons-red" {
     module.prometheus
   ]
 }
+
+module "fluxcd-prometheus-main-rules" {
+  source  = "../../../terraform-modules/k8s-vault-fluxcd-resources"
+  Cluster = var.Cluster
+  Color   = var.Color
+  Values  = local.values
+}
+
+locals {
+  values = {
+    kustomizations = {
+      prometheus-main-rules = {
+        kustomization_path = "./monitoring/prometheus-red/main-rules",
+        git_repository     = "gitops"
+      }
+    }
+  }
+}
