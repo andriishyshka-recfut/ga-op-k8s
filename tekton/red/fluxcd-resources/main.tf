@@ -31,6 +31,12 @@ locals {
         url  = "oci://ghcr.io/weaveworks/charts"
       }
     },
+    kustomizations = {
+      k8s-configs = {
+        kustomization_path = "./clusters/${var.Cluster}-${var.Color}",
+        git_repository     = "k8s-configs"
+      }
+    }
     notification-providers = {
       slack = {
         type         = "slack",
