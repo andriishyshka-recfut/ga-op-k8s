@@ -5,7 +5,7 @@ data "vault_generic_secret" "harbor_token" {
 resource "helm_release" "etl_operator" {
   name                = "etl-operator"
   chart               = "oci://harbor.regemini.io/helm/etl-operator"
-  version             = "0.1.1"
+  version             = "0.1.2"
   namespace           = local.namespace
   wait                = true
   atomic              = true
@@ -61,50 +61,3 @@ resource "helm_release" "etl_operator" {
     value = "768Mi"
   }
 }
-
-
-
-
-resource "kubernetes_manifest" "externalsecret_etl_creds" {
-  for_each = local.clients
-  manifest = {
-    "apiVersion" = "external-secrets.io/v1beta1"
-    "kind"       = "ExternalSecret"
-    "metadata" = {
-      "name" = "etl-${each.key}"
-      "namespace" : local.namespace
-    }
-    "spec" = {
-      "data" = [
-        # creates a secret for one entity
-        {
-          "secretKey" = "etl-settings"
-          "remoteRef" = {
-            "key"      = "secret/data/${var.SecretPath}/clients/${each.key}"
-            "property" = ""
-          }
-        },
-        # Creates one mega-secret with entry for each value found
-        # {
-        #   "find" = {
-        #     "path" = "secret/data/etl/clients"
-        #     "name" = {
-        #       "regexp" = ".*"
-        #     }
-        #   }
-        # },
-      ]
-      "refreshInterval" = "1m"
-      "secretStoreRef" = {
-        "kind" = "SecretStore"
-        "name" = "vault-backend"
-      }
-      #   "target" = {
-      #     "name" = "etl-settings-${each.key}"
-      #   }
-    }
-  }
-  depends_on = [helm_release.etl_operator]
-
-}
-
