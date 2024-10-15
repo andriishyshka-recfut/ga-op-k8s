@@ -139,7 +139,7 @@ locals {
     },
     gitlab = {
       webservice = {
-        minReplicas = 1
+        minReplicas = 2
         resources = {
           limits = {
             cpu    = "4"
@@ -192,7 +192,7 @@ locals {
           internalPort = 2224
         }
         annotations = {
-          es_logs_enabled = "true"
+          es_logs_enabled        = "true"
           es_logs_json_error_key = "true"
         }
       }
