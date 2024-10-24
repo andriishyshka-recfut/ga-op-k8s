@@ -62,6 +62,7 @@ onlyone
 osage
 papa
 patrickstash
+pickup24
 pollux
 ponca
 pop3club

@@ -92,5 +92,6 @@ resource "grafana_data_source" "prod-filebeat" {
   })
   secure_json_data_encoded = jsonencode({
     basicAuthPassword = local.elasticPassword
+    disableTLSCertificateValidation = "true"
   })
 }
