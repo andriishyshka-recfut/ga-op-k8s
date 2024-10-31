@@ -1,0 +1,35 @@
+logging:
+    root:
+        level: INFO
+        handlers:
+            - console
+    formatters:
+        brief:
+            format: "%(asctime)s %(levelname)s: %(message)s"
+    handlers:
+        console:
+            class: logging.StreamHandler
+            stream: ext://sys.stdout
+            formatter: brief
+
+targets:
+    - name: 2captcha_balance
+      url: https://api.2captcha.com/getBalance
+      method: POST
+      headers:
+          Content-Type: application/json
+      body: "{\"clientKey\":\"${TWOCAPTCHA_API_KEY}\"}"
+      rules:
+        - name: json_exporter_2captcha_balance
+          metric_path: "balance"
+          metric_type: gauge
+    - name: anticaptcha_balance
+      url: https://api.anti-captcha.com/getBalance
+      method: POST
+      headers:
+          Content-Type: application/json
+      body: "{\"clientKey\":\"${ANTICAPTCHA_API_KEY}\"}"
+      rules:
+        - name: json_exporter_anticaptcha_balance
+          metric_path: "balance"
+          metric_type: gauge
