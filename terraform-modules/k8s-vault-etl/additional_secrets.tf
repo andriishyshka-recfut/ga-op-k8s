@@ -108,3 +108,33 @@ resource "kubernetes_manifest" "externalsecret_ssh" {
   depends_on = [helm_release.etl_operator]
 
 }
+
+resource "kubernetes_manifest" "externalsecret_logstash_creds" {
+  manifest = {
+    "apiVersion" = "external-secrets.io/v1beta1"
+    "kind"       = "ExternalSecret"
+    "metadata" = {
+      "name" = "logstash-creds"
+      "namespace" : local.namespace
+    }
+    "spec" = {
+      "target" = {
+        "name" = "logstash-creds"
+      }
+      "dataFrom" = [
+        {
+          "extract" = {
+            "key" = "secret/data/${var.SecretPath}/logstash-creds"
+          }
+        },
+      ]
+      "refreshInterval" = "1m"
+      "secretStoreRef" = {
+        "kind" = "SecretStore"
+        "name" = "vault-backend"
+      }
+    }
+  }
+  depends_on = [helm_release.etl_operator]
+
+}
