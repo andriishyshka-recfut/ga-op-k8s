@@ -85,7 +85,7 @@ spec:
           labels:
             cluster: ${cluster_label}
             severity: critical
-        - alert: UpsertBirlLagMoreThanATwoThousands
+        - alert: OcrAWS2KafkaLagMoreThanATwoThousands
           annotations:
             description: |
               Something wrong with attachment.ocr.aws2kafka topic
