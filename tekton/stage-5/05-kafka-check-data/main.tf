@@ -1,6 +1,6 @@
 locals {
   namespace   = "kafka"
-  bucket_name = "minio-kafka-backups-orbital-wording-233917"
+  bucket_name = var.Cluster == "production" ? "minio-kafka-backups-orbital-wording-233917" : "minio-kafka-backups-ardent-rarity-239115"
 }
 
 
