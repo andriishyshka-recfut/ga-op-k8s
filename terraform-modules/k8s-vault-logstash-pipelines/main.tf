@@ -141,12 +141,12 @@ resource "random_password" "logstash_api_password" {
   special  = false
 }
 
-# resource "vault_generic_secret" "logstash_etl_creds" {
-#   path     = "secret/wl/etl/logstash-creds"
-#   data_json = jsonencode({
-#    "credentials.json" = {for k, v in var.logstash_list : k  => { "user": local.logstash_user, "password": resource.random_password.logstash_api_password[k].result, "ids": v.pipeline_id }}
-#   })
-# }
+ resource "vault_generic_secret" "logstash_etl_creds" {
+   path     = "secret/wl/etl/logstash-creds"
+   data_json = jsonencode({
+    "credentials.json" = {for k, v in var.logstash_list : k  => { "user": local.logstash_user, "password": resource.random_password.logstash_api_password[k].result, "ids": v.pipeline_id }}
+   })
+ }
 
 resource "vault_generic_secret" "logstash_es_creds" {
   for_each = var.logstash_list
