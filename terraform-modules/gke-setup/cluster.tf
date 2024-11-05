@@ -79,9 +79,7 @@ resource "google_container_cluster" "cluster" {
     enabled = true
   }
 
-  logging_service    = "none"
-  monitoring_service = "none"
-  
+
   monitoring_config {
     managed_prometheus{
       enabled = false
