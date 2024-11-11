@@ -4,21 +4,21 @@ locals {
 }
 
 
-data "vault_generic_secret" "minio_creds" {
-  path = "secret/mw/kafka/kafka-checker/minio"
-}
+# data "vault_generic_secret" "minio_creds" {
+#   path = "secret/mw/kafka/kafka-checker/minio"
+# }
 
 
-resource "kubernetes_secret" "minio_creds" {
-  metadata {
-    name      = "minio-credentials"
-    namespace = local.namespace
-  }
-  data = {
-    ACCESS_KEY = data.vault_generic_secret.minio_creds.data.ACCESS_KEY
-    SECRET_KEY = data.vault_generic_secret.minio_creds.data.SECRET_KEY
-  }
-}
+# resource "kubernetes_secret" "minio_creds" {
+#   metadata {
+#     name      = "minio-credentials"
+#     namespace = local.namespace
+#   }
+#   data = {
+#     ACCESS_KEY = data.vault_generic_secret.minio_creds.data.ACCESS_KEY
+#     SECRET_KEY = data.vault_generic_secret.minio_creds.data.SECRET_KEY
+#   }
+# }
 
 
 
@@ -28,7 +28,7 @@ resource "kubernetes_job" "kafka_collect_stats" {
     name      = "pre-switch-kafka-check"
     namespace = "kafka"
     labels = {
-      app = "kafka-check-stats"
+      app                       = "kafka-check-stats"
       "sidecar.istio.io/inject" = "false"
     }
   }
@@ -37,7 +37,7 @@ resource "kubernetes_job" "kafka_collect_stats" {
     template {
       metadata {
         labels = {
-          app = "kafka-check-stats"
+          app                       = "kafka-check-stats"
           "sidecar.istio.io/inject" = "false"
         }
       }
@@ -47,7 +47,7 @@ resource "kubernetes_job" "kafka_collect_stats" {
           name              = "kafka-checker"
           image             = "harbor.regemini.io/op/kafka-checker:v0.0.1"
           image_pull_policy = "Always"
-          command = ["sh", "-c", "./before_switch.sh"]
+          command           = ["sh", "-c", "./before_switch.sh"]
           # command = ["tail", "-f", "/dev/null"]
 
           env {

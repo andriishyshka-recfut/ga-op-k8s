@@ -28,7 +28,7 @@ resource "kubernetes_job" "kafka_collect_stats" {
     name      = "post-switch-kafka-check"
     namespace = "kafka"
     labels = {
-      app = "kafka-check-stats"
+      app                       = "kafka-check-stats"
       "sidecar.istio.io/inject" = "false"
     }
   }
@@ -37,7 +37,7 @@ resource "kubernetes_job" "kafka_collect_stats" {
     template {
       metadata {
         labels = {
-          app = "kafka-check-stats"
+          app                       = "kafka-check-stats"
           "sidecar.istio.io/inject" = "false"
         }
       }
@@ -47,7 +47,7 @@ resource "kubernetes_job" "kafka_collect_stats" {
           name              = "kafka-checker"
           image             = "harbor.regemini.io/op/kafka-checker:v0.0.1"
           image_pull_policy = "Always"
-          command = ["sh", "-c", "./after_switch.sh"]
+          command           = ["sh", "-c", "./after_switch.sh"]
           # command = ["tail", "-f", "/dev/null"]
 
           env {
