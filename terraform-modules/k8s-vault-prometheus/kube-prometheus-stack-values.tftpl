@@ -204,6 +204,10 @@ alertmanager:
       webhook_configs:
         - send_resolved: false
           url: "http://el-etl-leftovers-webhook-alertmanager-listener.tekton-pipelines:8080"
+    - name: "telegram-session-change-proxy-webhook"
+      webhook_configs:
+        - send_resolved: false
+          url: "http://el-telegram-session-change-proxy-webhook-alertmanager-listener.tekton-pipelines:8080"
     route:
       group_by:
         - alertname
@@ -235,6 +239,9 @@ alertmanager:
         - matchers:
           - alertname=~"ETLLeftOvers"
           receiver: "tekton-etl-leftovers-webhook"
+        - matchers:
+          - alertname=~"TelegramRunTDLibErrors"
+          receiver: "telegram-session-change-proxy-webhook"
         - matchers:
           - severity=~"etl"
           - cluster=~"production"
