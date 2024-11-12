@@ -26,7 +26,7 @@ COPY --from=java /etc/ssl/certs/java/cacerts /etc/ssl/certs/java/cacerts
 ENV JAVA_HOME=/opt/openjdk-18
 
 
-RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git && \
+RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git curl && \
     chmod +x /bin/kubectl && chmod +x /bin/terragrunt && \
     adduser -u 10123 executor -S && \
     mkdir -p /home/runner/workdir && mkdir /home/fake && chmod 777 /home/fake

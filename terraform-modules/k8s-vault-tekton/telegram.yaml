@@ -1,0 +1,162 @@
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: telegram-session-change-proxy-webhook-alertmanager-listener
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-webhook
+  triggers:
+  - name: telegram-session-change-proxy-filter
+    interceptors:
+    - ref:
+        name: "cel"
+      params:
+      - name: "filter"
+        value: body.groupLabels.alertname == 'TelegramRunTDLibErrors'
+      - name: "overlays"
+        value:
+        - key: server
+          expression: "body.alerts.map(x, x.labels).map(y, y.server).join(' ')"                  
+    bindings:
+      - ref: telegram-session-change-proxy-binding
+        kind: TriggerBinding 
+    template:
+      ref: telegram-session-change-proxy-template
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: telegram-session-change-proxy-binding
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: server
+    value: $(extensions.server)
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: telegram-session-change-proxy-template
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: server
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: telegram-session-change-proxy-
+      spec:
+        serviceAccountName: tekton-webhook
+        pipelineRef:
+          name: telegram-session-change-proxy-pipeline
+        params:
+        - name: server
+          value: $(tt.params.server)
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: telegram-session-change-proxy-trigger
+  namespace: tekton-pipelines
+spec:
+  bindings:
+  - ref: telegram-session-change-proxy-binding
+  template:
+    ref: telegram-session-change-proxy-template
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: telegram-session-change-proxy-pipelinerun
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-webhook
+  pipelineRef:
+    name: telegram-session-change-proxy-pipeline
+  params:
+  - name: server
+    value: $(params.server)
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: telegram-session-change-proxy-pipeline
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: server
+  tasks:
+  - name: telegram-session-change-proxy-task
+    taskRef:
+      name: telegram-session-change-proxy-task
+    params:
+    - name: server
+      value: $(params.server)
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: telegram-session-change-proxy-task
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: server
+  steps:
+    - name: telegram-session-change-proxy
+      image: harbor.regemini.io/op/tf:latest
+      env:
+      - name: TF_VAR_Color
+        valueFrom:
+          configMapKeyRef:
+            key: color
+            name: cluster-settings
+      - name: CLUSTER
+        valueFrom:
+          configMapKeyRef:
+            key: cluster
+            name: cluster-settings
+      - name: CONF_PATH
+        valueFrom:
+          configMapKeyRef:
+            key: configPath
+            name: cluster-settings
+      - name: VAULT_ADDR
+        valueFrom:
+          configMapKeyRef:
+            key: vaultAddr
+            name: cluster-settings      
+      script: |
+        #! /bin/bash
+        set -e
+    
+        IFS=' '
+        for SESSION_NAME in $(params.server); do
+          export TELEGRAM_HOST="http://telegram-ui.telegram.svc"
+          export AUTH_HOST="http://auth-ui.auth-ui.svc"
+          export CURL_OPTS="--fail --connect-timeout 10 --max-time 15 --retry 5 --retry-delay 15 --retry-max-time 20 --silent"
+          export SWITCH_PAYLOAD='{"session": "SESSION_NAME", "state": true, "switch": "disabled"}'
+          export SWITCH_PAYLOAD_DISABLE=$(jq ".session = \"${SESSION_NAME}\" | .state = true" <(echo $SWITCH_PAYLOAD))
+          export SWITCH_PAYLOAD_ENABLE=$(jq ".session = \"${SESSION_NAME}\" | .state = false" <(echo $SWITCH_PAYLOAD))
+          curl -XPUT ${CURL_OPTS} ${TELEGRAM_HOST}:3000/api/v1/sessions/switch -H "Content-Type: application/json" -d "${SWITCH_PAYLOAD_DISABLE}"
+          export SESSION_CONFIG=$(curl -XPOST ${CURL_OPTS} ${TELEGRAM_HOST}:3000/api/v1/sessions/search -H "Content-Type: application/json"  -d '{"pageIndex": 0, "pageSize": 50, "sortDirection": "asc", "sortField": "server", "filter": {}}' | jq ".sessions.[] | select(.server==\"${SESSION_NAME}\")")
+          export SESSION_ID=$(jq ."_id" <(echo ${SESSION_CONFIG}) | tr -d '"')
+          export PROXY=$(jq ."proxy" <(echo ${SESSION_CONFIG}) | tr -d '"')
+          export RANDOM_PROXY=$(curl -XPOST ${CURL_OPTS} ${AUTH_HOST}:3000/api/v1/proxies/search -H "Content-Type: application/json"  -d '{"filter":{"alive":true,"key":"","provider":null},"sortField":"key","sortDirection":"asc","pageIndex":0,"pageSize":250}' | jq -r ".proxies.[] | select(.key!=\"${PROXY}\").key" | shuf -n 1)
+          export SESSION_CONFIG_UPD=$(jq ".proxy = \"${RANDOM_PROXY}\"" <(echo $SESSION_CONFIG))
+          curl -XPUT ${CURL_OPTS} "${TELEGRAM_HOST}:3000/api/v1/sessions/${SESSION_ID}" -H "Content-Type: application/json" -d "${SESSION_CONFIG_UPD}"
+          sleep 600
+          curl -XPUT ${CURL_OPTS} ${TELEGRAM_HOST}:3000/api/v1/sessions/switch -H "Content-Type: application/json"  -d "${SWITCH_PAYLOAD_ENABLE}"
+        done
