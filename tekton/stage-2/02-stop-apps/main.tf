@@ -210,6 +210,9 @@ resource "null_resource" "delete_etl_jobs" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.delete_etl_jobs
   }
+  depends_on = [ 
+    null_resource.stop_etl_operator 
+  ]
 }
 
 # resource "null_resource" "stop_maid_services" {
