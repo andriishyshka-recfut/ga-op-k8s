@@ -27,3 +27,22 @@ module "prometheus-addons" {
   Cluster             = var.Cluster
   Color               = var.Color
 }
+
+module "fluxcd-prometheus-post-rules" {
+  source     = "../../../terraform-modules/k8s-vault-fluxcd-resources"
+  Cluster    = var.Cluster
+  Color      = var.Color
+  Values     = local.values
+  depends_on = [module.prometheus-addons]
+}
+
+locals {
+  values = {
+    kustomizations = {
+      prometheus-main-rules = {
+        kustomization_path = "./monitoring/prometheus/post-switching",
+        git_repository     = "gitops"
+      }
+    }
+  }
+}
