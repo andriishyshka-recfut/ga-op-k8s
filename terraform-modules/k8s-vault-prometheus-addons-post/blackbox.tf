@@ -121,9 +121,9 @@ resource "helm_release" "blackbox_exporter" {
 }
 
 
-data "kubectl_file_documents" "blackbox_probes" {
-  content = templatefile("${path.module}/blackbox-probes.yaml.tftpl", { vortex = local.vortex == 1 ? true : false })
-}
+# data "kubectl_file_documents" "blackbox_probes" {
+#   content = templatefile("${path.module}/blackbox-probes.yaml.tftpl", { vortex = local.vortex == 1 ? true : false })
+# }
 
 # resource "kubectl_manifest" "blackbox_probes" {
 #   count              = 5
@@ -134,11 +134,11 @@ data "kubectl_file_documents" "blackbox_probes" {
 #   ]
 # }
 
-resource "kubernetes_manifest" "blackbox_probes" {
-  count      = 3
-  manifest   = yamldecode(element(data.kubectl_file_documents.blackbox_probes.documents, count.index))
-  depends_on = [helm_release.blackbox_exporter]
-}
+# resource "kubernetes_manifest" "blackbox_probes" {
+#   count      = 3
+#   manifest   = yamldecode(element(data.kubectl_file_documents.blackbox_probes.documents, count.index))
+#   depends_on = [helm_release.blackbox_exporter]
+# }
 
 
 data "http" "grafana_dashboard_blackbox" {
