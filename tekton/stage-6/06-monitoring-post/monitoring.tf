@@ -39,7 +39,7 @@ module "fluxcd-prometheus-post-rules" {
 locals {
   values = {
     kustomizations = {
-      prometheus-main-rules = {
+      prometheus-post-rules = {
         kustomization_path = "./monitoring/prometheus/post-switching",
         git_repository     = "gitops"
       }
