@@ -93,8 +93,8 @@ for group in gitlab_groups.items():
             print(f"\tNo {SONAR_FILE} found for {group.name}/{project.name} - {project.web_url}")
             hasSonar = False;
 
-        # if hasSonar:
-        #     continue
+        if hasSonar:
+            continue
 
         hasGitlab = True;
         try:
