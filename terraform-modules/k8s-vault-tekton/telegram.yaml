@@ -152,9 +152,11 @@ spec:
           export SWITCH_PAYLOAD_ENABLE=$(jq ".session = \"${SESSION_NAME}\" | .state = false" <(echo $SWITCH_PAYLOAD))
           curl -XPUT ${CURL_OPTS} ${TELEGRAM_HOST}:3000/api/v1/sessions/switch -H "Content-Type: application/json" -d "${SWITCH_PAYLOAD_DISABLE}"
           export SESSION_CONFIG=$(curl -XPOST ${CURL_OPTS} ${TELEGRAM_HOST}:3000/api/v1/sessions/search -H "Content-Type: application/json"  -d '{"pageIndex": 0, "pageSize": 50, "sortDirection": "asc", "sortField": "server", "filter": {}}' | jq ".sessions.[] | select(.server==\"${SESSION_NAME}\")")
+          test ! -z ${SESSION_CONFIG} || false
           export SESSION_ID=$(jq ."_id" <(echo ${SESSION_CONFIG}) | tr -d '"')
           export PROXY=$(jq ."proxy" <(echo ${SESSION_CONFIG}) | tr -d '"')
           export RANDOM_PROXY=$(curl -XPOST ${CURL_OPTS} ${AUTH_HOST}:3000/api/v1/proxies/search -H "Content-Type: application/json"  -d '{"filter":{"alive":true,"key":"","provider":null},"sortField":"key","sortDirection":"asc","pageIndex":0,"pageSize":250}' | jq -r ".proxies.[] | select(.key!=\"${PROXY}\").key" | shuf -n 1)
+          test ! -z ${RANDOM_PROXY} || false
           export SESSION_CONFIG_UPD=$(jq ".proxy = \"${RANDOM_PROXY}\"" <(echo $SESSION_CONFIG))
           curl -XPUT ${CURL_OPTS} "${TELEGRAM_HOST}:3000/api/v1/sessions/${SESSION_ID}" -H "Content-Type: application/json" -d "${SESSION_CONFIG_UPD}"
           sleep 600
