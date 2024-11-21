@@ -15,9 +15,10 @@ locals {
       kibana_xpack_secrets = "secret/red/kibana"
     },
     recordedfuture = {
-      replicas      = 1,
-      publicBaseUrl = "https://kk.regemini.com"
-      namespace     = "elastic"
+      replicas            = 1,
+      publicBaseUrl       = "https://kk.regemini.com"
+      maxImportExportSize = 105000
+      namespace           = "elastic"
       authorizations = {
         okta = {
           type        = "okta",
