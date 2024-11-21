@@ -1,10 +1,11 @@
 locals {
   KibanaSettings = {
     ga = {
-      basic_auth    = true,
-      replicas      = 3,
-      publicBaseUrl = "https://k.regemini.com"
-      namespace     = "elastic"
+      basic_auth          = true,
+      replicas            = 3,
+      publicBaseUrl       = "https://k.regemini.com"
+      maxImportExportSize = 105000
+      namespace           = "elastic"
       authorizations = {
         geminiadvisory = {
           type  = "saml",
