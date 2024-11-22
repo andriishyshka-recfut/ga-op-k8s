@@ -138,7 +138,6 @@ resource "null_resource" "crds" {
     bots        = md5(file("${path.module}/bots.yaml"))
     crashloop   = md5(file("${path.module}/crashloop.yaml"))
     etl         = md5(file("${path.module}/etl.yaml"))
-    telegram    = md5(file("${path.module}/telegram.yaml"))
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
@@ -167,11 +166,7 @@ resource "null_resource" "crds" {
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/etl.yaml \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/telegram.yaml
+     apply -f ${path.module}/etl.yaml 
 
 COMMAND
   }
