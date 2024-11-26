@@ -12,7 +12,6 @@ arcturus
 aries
 arikara
 authorize
-b1acksstash
 batmarket
 bbmarket
 becrux
@@ -32,7 +31,6 @@ crd2life
 cygni
 deneb
 echo
-eurodollars
 foxtrot
 gemini
 golf
@@ -43,7 +41,6 @@ kfcclub
 kichai
 kilo
 lakota
-larryclub
 leo
 libra
 lukicrown
@@ -65,7 +62,6 @@ patrickstash
 pickup24
 pollux
 ponca
-pop3club
 procyon
 proxima
 quebec
@@ -80,7 +76,6 @@ scuti
 shaula
 shoshone
 sierra
-sigmacc
 siktor
 sirius
 tango
