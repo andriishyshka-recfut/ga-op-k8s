@@ -12,7 +12,6 @@ arcturus
 aries
 arikara
 authorize
-batmarket
 bbmarket
 becrux
 blackbet
@@ -70,7 +69,6 @@ regulus
 rigel
 rigil
 romeo
-russianmarket
 sclass
 scuti
 shaula
