@@ -27,7 +27,4 @@ resource "kubernetes_manifest" "ingress_ip_whitelist" {
       }
     }
   }
-  field_manager {
-    force_conflicts = true
-  }
 }
