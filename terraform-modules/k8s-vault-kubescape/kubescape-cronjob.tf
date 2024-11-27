@@ -36,16 +36,26 @@ resource "kubernetes_cron_job_v1" "nightly_html" {
         metadata {}
           spec {
             service_account_name = "kubescape"
+            init_container {
+              name  = "init-mc"
+              image = "alpine:latest"
+              command = [ "sh", "-c" ]
+              args = [
+                "cd /home/nonroot/results/ && wget https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x ./mc"
+              ]
+              volume_mount {
+                name      = "results"
+                mount_path = "/home/nonroot/results"
+              }
+            }
             container {
               name    = "kubescape"
               image   = "quay.io/kubescape/kubescape-cli:${local.version}"
               command = [ "sh", "-c" ]
               args = [
                  <<-EOT
-                      wget https://dl.min.io/client/mc/release/linux-amd64/mc
-                      chmod +x ./mc
                       kubescape scan framework nsa,mitre,cis-v1.23-t1.0.1,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format html --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).html --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
-                      ./mc cp /home/nonroot/results/*.html minio/${local.minioBucket}
+                      /home/nonroot/results/mc cp /home/nonroot/results/*.html minio/${local.minioBucket}
                   EOT
               ]
               env {
@@ -117,16 +127,26 @@ resource "kubernetes_cron_job_v1" "nightly_json" {
         metadata {}
           spec {
             service_account_name = "kubescape"
+            init_container {
+              name  = "init-mc"
+              image = "alpine:latest"
+              command = [ "sh", "-c" ]
+              args = [
+                "cd /home/nonroot/results/ && wget https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x ./mc"
+              ]
+              volume_mount {
+                name      = "results"
+                mount_path = "/home/nonroot/results"
+              }
+            }
             container {
               name    = "kubescape"
               image   = "quay.io/kubescape/kubescape-cli:${local.version}"
               command = [ "sh", "-c" ]
               args = [
                  <<-EOT
-                      wget https://dl.min.io/client/mc/release/linux-amd64/mc
-                      chmod +x ./mc
                       kubescape scan framework nsa,mitre,cis-v1.23-t1.0.1,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format json --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).json --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
-                      ./mc cp /home/nonroot/results/*.json minio/${local.minioBucket}
+                      /home/nonroot/results/mc cp /home/nonroot/results/*.json minio/${local.minioBucket}
                   EOT
               ]
               env {
