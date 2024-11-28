@@ -80,5 +80,9 @@ resource "helm_release" "gitlab-runner" {
     value = true
     type  = "string"
   }
-
+  set {
+    name  = "metrics.enabled"
+    value = true
+    type  = "string"
+  }
 }

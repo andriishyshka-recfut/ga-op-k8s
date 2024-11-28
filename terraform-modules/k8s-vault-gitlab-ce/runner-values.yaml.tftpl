@@ -12,6 +12,7 @@ runners:
         cpu_limit = "4"
         memory_request = "512Mi"
         memory_limit = "6Gi"
+        pull_policy = "if-not-present"
       [runners.kubernetes.affinity]
         [runners.kubernetes.affinity.node_affinity]
           [runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution]
