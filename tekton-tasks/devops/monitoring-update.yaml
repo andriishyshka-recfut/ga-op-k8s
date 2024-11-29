@@ -13,4 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/stage-1/01-monitoring"
     - name: branch
-      value: "\\#660-production-dr-2024-05-24"
+      value: "main"
