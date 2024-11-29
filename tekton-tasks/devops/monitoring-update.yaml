@@ -13,4 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/stage-1/01-monitoring"
     - name: branch
-      value: "main"
+      value: "master"
