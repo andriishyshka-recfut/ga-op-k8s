@@ -5,7 +5,7 @@ data "vault_generic_secret" "etcd_creds" {
 resource "helm_release" "etcd" {
   name      = "etcd"
   wait      = true
-  atomic    = true
+  atomic    = false
   namespace = local.namespace
   timeout   = 300
   version   = "9.7.5-api-v2"
