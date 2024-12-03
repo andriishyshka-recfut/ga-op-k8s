@@ -30,7 +30,8 @@ runners:
         "job_name" = "$${CI_JOB_NAME}"
         "job_stage" = "$${CI_JOB_STAGE}"
         "pipeline_id" = "$${CI_PIPELINE_IID}"
-        "project" = "$${CI_PROJECT_PATH}"
+        "project_name" = "$${CI_PROJECT_NAME}"
+        "project_namespace" = "$${CI_PROJECT_NAMESPACE}"
       [runners.cache]
         Type = "s3"
         Path = "cache"
