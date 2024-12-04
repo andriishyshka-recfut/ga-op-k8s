@@ -1,0 +1,67 @@
+{
+  "apiVersion": "v1",
+  "kind": "Namespace",
+  "metadata": {
+    "creationTimestamp": "2024-12-04T19:41:21Z",
+    "deletionTimestamp": "2024-12-04T21:30:08Z",
+    "labels": {
+      "k8slens-edit-resource-version": "v1",
+      "kubernetes.io/metadata.name": "tekton-pipelines",
+      "operator.tekton.dev/targetNamespace": "true"
+    },
+    "name": "tekton-pipelines",
+    "ownerReferences": [
+      {
+        "apiVersion": "operator.tekton.dev/v1alpha1",
+        "kind": "TektonConfig",
+        "name": "config",
+        "uid": "ea23657d-db6d-4e0e-bb32-d26dc926e0be"
+      }
+    ],
+    "resourceVersion": "73561343",
+    "uid": "647a6ef2-3f33-48ba-b66b-3831ce1d894d"
+  },
+  "spec": {
+    "finalizers": []
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastTransitionTime": "2024-12-04T21:30:16Z",
+        "message": "All resources successfully discovered",
+        "reason": "ResourcesDiscovered",
+        "status": "False",
+        "type": "NamespaceDeletionDiscoveryFailure"
+      },
+      {
+        "lastTransitionTime": "2024-12-04T21:30:16Z",
+        "message": "All legacy kube types successfully parsed",
+        "reason": "ParsedGroupVersions",
+        "status": "False",
+        "type": "NamespaceDeletionGroupVersionParsingFailure"
+      },
+      {
+        "lastTransitionTime": "2024-12-04T21:30:48Z",
+        "message": "All content successfully deleted, may be waiting on finalization",
+        "reason": "ContentDeleted",
+        "status": "False",
+        "type": "NamespaceDeletionContentFailure"
+      },
+      {
+        "lastTransitionTime": "2024-12-04T21:30:16Z",
+        "message": "Some resources are remaining: pipelineruns.tekton.dev has 102 resource instances, taskruns.tekton.dev has 40 resource instances",
+        "reason": "SomeResourcesRemain",
+        "status": "True",
+        "type": "NamespaceContentRemaining"
+      },
+      {
+        "lastTransitionTime": "2024-12-04T21:30:16Z",
+        "message": "Some content in the namespace has finalizers remaining: chains.tekton.dev in 40 resource instances, chains.tekton.dev/pipelinerun in 102 resource instances",
+        "reason": "SomeFinalizersRemain",
+        "status": "True",
+        "type": "NamespaceFinalizersRemaining"
+      }
+    ],
+    "phase": "Terminating"
+  }
+}
