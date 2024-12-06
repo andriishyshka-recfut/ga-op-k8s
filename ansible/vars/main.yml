@@ -20,6 +20,5 @@ k8s_red_cluster_ca_certificate: "{{ lookup('env','RED_CLUSTER_CA_CERTIFICATE') }
 temp_dir: "{{ lookup('env','HOME') }}/tmp-{{ cluster_name }}"
 vault_addr: "{{ lookup('env','vault_addr') }}"
 bastion_dns: "{{ lookup('env','BASTION_DNS') }}"
-compose_dest: "/etc/bastion-compose"
 letsencrypt_email: "dmitry.chorine@recordedfuture.com"
 letsencrypt_staging: ""
