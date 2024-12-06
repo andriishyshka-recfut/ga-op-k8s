@@ -146,23 +146,23 @@ resource "null_resource" "crds" {
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/task.yaml
+     apply -f ${path.module}/task.yaml && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipeline.yaml
+     apply -f ${path.module}/pipeline.yaml && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipelinerun.yaml \
+     apply -f ${path.module}/pipelinerun.yaml && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/bots.yaml \
+     apply -f ${path.module}/bots.yaml && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/crashloop.yaml \
+     apply -f ${path.module}/crashloop.yaml && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \

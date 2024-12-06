@@ -4,6 +4,7 @@ locals {
       basic_auth    = true
       replicas      = 3,
       publicBaseUrl = "https://k.t.regemini.io"
+      maxImportExportSize = 105000      
       namespace     = "elastic"
       authorizations = {
         geminiadvisory = {
@@ -16,6 +17,7 @@ locals {
     test = {
       replicas      = 1,
       publicBaseUrl = "https://k2.t.regemini.io"
+      maxImportExportSize = 105000
       namespace     = "elastic"
       authorizations = {
         okta = {
