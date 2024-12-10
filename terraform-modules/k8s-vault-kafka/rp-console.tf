@@ -14,6 +14,18 @@ resource "helm_release" "red_panda_console" {
     name  = "image.tag"
     value = local.rp_image_tag
   }
+  set {
+    name  = "image.repository"
+    value = "op/rp"
+  }
+  set {
+    name  = "image.registry"
+    value = "harbor.regemini.io"
+  }
+  set {
+    name  = "imagePullSecrets[0].name"
+    value = "harbor"
+  }
   depends_on = [
     helm_release.kafka_cluster,
     # null_resource.ansible_wait_for_kafka
