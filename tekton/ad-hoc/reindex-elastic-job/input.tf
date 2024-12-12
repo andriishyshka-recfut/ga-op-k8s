@@ -1,6 +1,6 @@
 locals {
-  run_prefix = "index-name-2024062501"
-  imageTag = "v1.4"
+  run_prefix = "telegram-2024030501"
+  imageTag = "v1.5"
 
   workDir = "/opt/reindex/${var.Cluster}"
 

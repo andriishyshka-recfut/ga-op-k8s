@@ -39,7 +39,6 @@ cybercarders
 cweb
 dark2web
 darkclub
-darkmarket
 darkmoney
 darktime
 demonforums
