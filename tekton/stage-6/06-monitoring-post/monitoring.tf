@@ -20,6 +20,16 @@ module "monitoring-agents" {
   depends_on = [module.monitoring-kibana]
 }
 
+module "monitoring-apm" {
+  source                       = "../../../terraform-modules/k8s-vault-monitoring-apm"
+  ElasticSettings              = local.monitoringEs.elastic_settings
+  GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
+  Cluster                      = var.Cluster
+  Color                        = var.Color
+  Settings                     = var.Settings
+  StoreEsPasswordInVault       = false
+  depends_on                   = [module.monitoring-agents]
+}
 module "prometheus-addons" {
   source              = "../../../terraform-modules/k8s-vault-prometheus-addons-post"
   OidcSecretVaultPath = "secret/oidc_google_prod"
@@ -27,6 +37,8 @@ module "prometheus-addons" {
   Cluster             = var.Cluster
   Color               = var.Color
 }
+
+
 
 module "fluxcd-prometheus-post-rules" {
   source     = "../../../terraform-modules/k8s-vault-fluxcd-resources"
