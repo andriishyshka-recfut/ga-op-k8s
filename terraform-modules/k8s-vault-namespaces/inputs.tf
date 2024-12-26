@@ -36,6 +36,10 @@ locals {
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "injectHarborImagePullSecrets", false)
   ]))
 
+  injectHarborUserPassword = toset(flatten([
+    for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "harborUserPassword", false)
+  ]))
+
   injectApmSecrets = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "injectApmCreds", false)
   ]))

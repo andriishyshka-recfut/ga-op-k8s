@@ -29,3 +29,21 @@ DOCKER
   ]
 
 }
+
+resource "kubernetes_secret" "harbor_user_password" {
+  for_each = local.injectHarborUserPassword
+  metadata {
+    name      = "harbor-user-password"
+    namespace = each.key
+  }
+
+  data = {
+    username = data.vault_generic_secret.harbor_token.data.user
+    password = data.vault_generic_secret.harbor_token.data.password
+  }
+
+  depends_on = [
+    kubernetes_namespace.ns
+  ]
+
+}
