@@ -13,7 +13,7 @@ spec:
     - name: path
       value: "k8s/tekton/sandbox"
     - name: branch
-      value: "\\#860-sandbox-dr-30-11-2014"
+      value: "\\#871-Sandbox-DR-20241228"
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -32,7 +32,6 @@ spec:
       value: "k8s/tekton/stage-6/06-postgres"
     - name: branch
       value: "\\#689-postgres"
-
 
 ---
 apiVersion: tekton.dev/v1beta1
