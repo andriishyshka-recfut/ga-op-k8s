@@ -16,7 +16,7 @@ resource "helm_release" "red_panda_console" {
   }
   set {
     name  = "image.repository"
-    value = "op/rp"
+    value = "mirror/rp"
   }
   set {
     name  = "image.registry"
