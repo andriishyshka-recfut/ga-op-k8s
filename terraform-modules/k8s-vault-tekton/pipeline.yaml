@@ -183,6 +183,30 @@ spec:
         - name: branch
           value: "\\#872-prod-dr-04-01-2025"
 
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 02-kafka-collect-stats
+  namespace: tekton-tasks
+spec:
+  workspaces:
+    - name: ws
+  tasks:
+    - name: stop-apps
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-2/02-kafka-collect-stats"
+        - name: branch
+          value: "master"
+
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -286,6 +310,30 @@ spec:
           value: "k8s/tekton/stage-5/05-minio-helm"
         - name: branch
           value: "\\#872-prod-dr-04-01-2025"
+
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 05-kafka-check-data
+  namespace: tekton-tasks
+spec:
+  workspaces:
+    - name: ws
+  tasks:
+    - name: stop-apps
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-5/05-kafka-check-data"
+        - name: branch
+          value: "\\#872-prod-dr-04-01-2025"
+
 
 ---
 apiVersion: tekton.dev/v1beta1
