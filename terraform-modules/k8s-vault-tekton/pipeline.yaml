@@ -194,7 +194,7 @@ spec:
   workspaces:
     - name: ws
   tasks:
-    - name: stop-apps
+    - name: collect-stats
       taskRef:
         name: tg-run
       workspaces:
@@ -322,7 +322,7 @@ spec:
   workspaces:
     - name: ws
   tasks:
-    - name: stop-apps
+    - name: check-stats
       taskRef:
         name: tg-run
       workspaces:
