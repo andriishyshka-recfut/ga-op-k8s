@@ -61,7 +61,7 @@ elastic_settings:
                 order: 1
         storageSize: "1750Gi"
         ES_JAVA_OPTS: -Xms10g -Xmx10g
-        nodesCount: 4
+        nodesCount: 5
         memoryRequests: "12Gi"
         cpuRequests: "2"
         memoryLimit: 14Gi
