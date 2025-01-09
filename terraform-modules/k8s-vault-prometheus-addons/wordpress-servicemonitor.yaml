@@ -8,7 +8,7 @@ metadata:
     release: prometheus
 spec:
   type: ExternalName
-  externalName: 34.150.134.162
+  externalName: 34.86.130.41
   ports:
   - name: metrics
     port: 9100

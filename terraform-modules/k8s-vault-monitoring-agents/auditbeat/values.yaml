@@ -2,7 +2,7 @@
 image: docker.elastic.co/beats/auditbeat
 tag: 7.17.0
 elastic:
-  host: "https://monitoring-es-http"
+  host: "https://mon-es-http"
   port: "9200"
   user: elastic
   password: changeme
