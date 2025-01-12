@@ -240,7 +240,7 @@ alertmanager:
           - alertname=~"ETLLeftOvers"
           receiver: "tekton-etl-leftovers-webhook"
         - matchers:
-          - alertname=~"TelegramRunTDLibErrors"
+          - alertname=~"TelegramRunPrepsServerTotal"
           receiver: "telegram-session-change-proxy-webhook"
         - matchers:
           - severity=~"etl"

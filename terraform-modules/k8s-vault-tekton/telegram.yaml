@@ -154,9 +154,16 @@ spec:
           export SESSION_CONFIG=$(curl -XPOST ${CURL_OPTS} ${TELEGRAM_HOST}:3000/api/v1/sessions/search -H "Content-Type: application/json"  -d '{"pageIndex": 0, "pageSize": 50, "sortDirection": "asc", "sortField": "server", "filter": {}}' | jq ".sessions.[] | select(.server==\"${SESSION_NAME}\")")
           [[ ! -z ${SESSION_CONFIG} ]] || false
           export SESSION_ID=$(jq ."_id" <(echo ${SESSION_CONFIG}) | tr -d '"')
-          export PROXY=$(jq ."proxy" <(echo ${SESSION_CONFIG}) | tr -d '"')
-          export RANDOM_PROXY=$(curl -XPOST ${CURL_OPTS} ${AUTH_HOST}:3000/api/v1/proxies/search -H "Content-Type: application/json"  -d '{"filter":{"alive":true,"key":"","provider":null},"sortField":"key","sortDirection":"asc","pageIndex":0,"pageSize":250}' | jq -r ".proxies.[] | select(.key!=\"${PROXY}\").key" | shuf -n 1)
-          [[ ! -z ${RANDOM_PROXY} ]] || false
+          export CURRENT_PROXY_NAME=$(jq ."proxy" <(echo ${SESSION_CONFIG}) | tr -d '"')
+          while [[  ]];do
+            export RANDOM_PROXY=$(curl -XPOST ${CURL_OPTS} ${AUTH_HOST}:3000/api/v1/proxies/search -H "Content-Type: application/json" -d '{"filter":{"alive":true,"key":"","provider":null},"sortField":"key","sortDirection":"asc","pageIndex":0,"pageSize":250}' | jq -r ".proxies" | jq -c ".[] | select(.key!=\"${CURRENT_PROXY_NAME}\")" | shuf | jq -s '.[1]')
+            export RANDOM_PROXY_NAME=$(echo $RANDOM_PROXY | jq -r .key)
+            export RANDOM_PROXY_ADDRESS=$(echo $RANDOM_PROXY | jq -r .address | cut -d '@' -f2)
+            export RANDOM_PROXY_CONECTION_STR="${PROXY_CREDS}@${RANDOM_PROXY_ADDRESS}"
+            curl ${CURL_OPTS} ${PROXY_CREDS}@${RANDOM_PROXY_ADDRESS}
+
+          done
+          [[ ! -z ${RANDOM_PROXY_NAME} ]] || false
           export SESSION_CONFIG_UPD=$(jq ".proxy = \"${RANDOM_PROXY}\"" <(echo $SESSION_CONFIG))
           curl -XPUT ${CURL_OPTS} "${TELEGRAM_HOST}:3000/api/v1/sessions/${SESSION_ID}" -H "Content-Type: application/json" -d "${SESSION_CONFIG_UPD}"
           sleep 600
