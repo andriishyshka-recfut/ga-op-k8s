@@ -14,7 +14,7 @@ spec:
         name: "cel"
       params:
       - name: "filter"
-        value: body.groupLabels.alertname == 'TelegramRunTDLibErrors'
+        value: body.groupLabels.alertname == 'TelegramRunPrepsServerTotal'
       - name: "overlays"
         value:
         - key: server
@@ -116,7 +116,7 @@ spec:
   - name: server
   steps:
     - name: telegram-session-change-proxy
-      image: harbor.regemini.io/op/tf:latest
+      image: harbor.regemini.io/op/prometheus-tekton:test 
       env:
       - name: TF_VAR_Color
         valueFrom:
@@ -143,29 +143,50 @@ spec:
         set -ex
     
         IFS=' '
+
+        #Prepare config vars and func
+        export TELEGRAM_HOST="http://telegram-ui.telegram.svc"
+        [[ ${CLUSTER} == "production" ]] && export AUTH_HOST="http://auth-ui.core.svc" || export AUTH_HOST="http://auth-ui.auth-ui.svc"
+        export CURL_OPTS="--fail --connect-timeout 10 --max-time 15 --retry 10 --retry-delay 15 --retry-max-time 20 --silent"
+        export SWITCH_PAYLOAD='{"session": "SESSION_NAME", "state": true, "switch": "disabled"}'
+
         for SESSION_NAME in $(params.server); do
-          export TELEGRAM_HOST="http://telegram-ui.telegram.svc"
-          export AUTH_HOST="http://auth-ui.core.svc"
-          export CURL_OPTS="--fail --connect-timeout 10 --max-time 15 --retry 5 --retry-delay 15 --retry-max-time 20 --silent"
-          export SWITCH_PAYLOAD='{"session": "SESSION_NAME", "state": true, "switch": "disabled"}'
           export SWITCH_PAYLOAD_DISABLE=$(jq ".session = \"${SESSION_NAME}\" | .state = true" <(echo $SWITCH_PAYLOAD))
-          export SWITCH_PAYLOAD_ENABLE=$(jq ".session = \"${SESSION_NAME}\" | .state = false" <(echo $SWITCH_PAYLOAD))
-          curl -XPUT ${CURL_OPTS} ${TELEGRAM_HOST}:3000/api/v1/sessions/switch -H "Content-Type: application/json" -d "${SWITCH_PAYLOAD_DISABLE}"
-          export SESSION_CONFIG=$(curl -XPOST ${CURL_OPTS} ${TELEGRAM_HOST}:3000/api/v1/sessions/search -H "Content-Type: application/json"  -d '{"pageIndex": 0, "pageSize": 50, "sortDirection": "asc", "sortField": "server", "filter": {}}' | jq ".sessions.[] | select(.server==\"${SESSION_NAME}\")")
-          [[ ! -z ${SESSION_CONFIG} ]] || false
+
+          #Disable respective session
+          curl -XPUT $(echo ${CURL_OPTS}) ${TELEGRAM_HOST}:3000/api/v1/sessions/switch -H "Content-Type: application/json"  -d "${SWITCH_PAYLOAD_DISABLE}"
+          
+          #Working with session config
+          export SESSION_CONFIG=$(curl -XPOST $(echo ${CURL_OPTS}) ${TELEGRAM_HOST}:3000/api/v1/sessions/search -H "Content-Type: application/json"  -d '{"pageIndex": 0, "pageSize": 50, "sortDirection": "asc", "sortField": "server", "filter": {}}' | jq ".sessions.[] | select(.server==\"${SESSION_NAME}\")")
+          [[ ! -z ${SESSION_CONFIG} ]] || break
           export SESSION_ID=$(jq ."_id" <(echo ${SESSION_CONFIG}) | tr -d '"')
           export CURRENT_PROXY_NAME=$(jq ."proxy" <(echo ${SESSION_CONFIG}) | tr -d '"')
-          while [[  ]];do
-            export RANDOM_PROXY=$(curl -XPOST ${CURL_OPTS} ${AUTH_HOST}:3000/api/v1/proxies/search -H "Content-Type: application/json" -d '{"filter":{"alive":true,"key":"","provider":null},"sortField":"key","sortDirection":"asc","pageIndex":0,"pageSize":250}' | jq -r ".proxies" | jq -c ".[] | select(.key!=\"${CURRENT_PROXY_NAME}\")" | shuf | jq -s '.[1]')
+
+          #Get auth creds from vault
+          export VAULT_ADDR="https://vault.p.regemini.io"
+          export VAULT_TOKEN=$(vault write -field=token auth/k8s-production-${TF_VAR_Color}/login role=tekton jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token))
+          export AUTH_USER="$(vault kv get -field=user  secret/mw/monitoring/prometheus/auth-proxy-credentials)"
+          export AUTH_PASSWORD="$(vault kv get -field=password  secret/mw/monitoring/prometheus/auth-proxy-credentials)"
+
+          #Choose random proxy from list until working with telegram
+          for i in {1..100};do
+            export RANDOM_PROXY=$(curl -XPOST $(echo ${CURL_OPTS}) ${AUTH_HOST}:3000/api/v1/proxies/search -H "Content-Type: application/json" -d '{"filter":{"alive":true,"key":"","provider":null},"sortField":"key","sortDirection":"asc","pageIndex":0,"pageSize":250}' | jq -r ".proxies" | jq -c ".[] | select(.key!=\"${CURRENT_PROXY_NAME}\")" | shuf | jq -s '.[1]')
+            [[ ! -z ${RANDOM_PROXY} ]] || break
             export RANDOM_PROXY_NAME=$(echo $RANDOM_PROXY | jq -r .key)
             export RANDOM_PROXY_ADDRESS=$(echo $RANDOM_PROXY | jq -r .address | cut -d '@' -f2)
-            export RANDOM_PROXY_CONECTION_STR="${PROXY_CREDS}@${RANDOM_PROXY_ADDRESS}"
-            curl ${CURL_OPTS} ${PROXY_CREDS}@${RANDOM_PROXY_ADDRESS}
-
+            curl $(echo ${CURL_OPTS}) --proxy http://${RANDOM_PROXY_ADDRESS} --proxy-user ${AUTH_USER}:${AUTH_PASSWORD} https://web.telegram.org/ && break
           done
-          [[ ! -z ${RANDOM_PROXY_NAME} ]] || false
-          export SESSION_CONFIG_UPD=$(jq ".proxy = \"${RANDOM_PROXY}\"" <(echo $SESSION_CONFIG))
-          curl -XPUT ${CURL_OPTS} "${TELEGRAM_HOST}:3000/api/v1/sessions/${SESSION_ID}" -H "Content-Type: application/json" -d "${SESSION_CONFIG_UPD}"
-          sleep 600
-          curl -XPUT ${CURL_OPTS} ${TELEGRAM_HOST}:3000/api/v1/sessions/switch -H "Content-Type: application/json"  -d "${SWITCH_PAYLOAD_ENABLE}"
+          
+          [[ ! -z ${RANDOM_PROXY} ]] || break
+          #Apply config with new proxy to respective session
+          export SESSION_CONFIG_UPD=$(jq ".proxy = \"${RANDOM_PROXY_NAME}\"" <(echo $SESSION_CONFIG))
+          curl -XPUT $(echo ${CURL_OPTS}) "${TELEGRAM_HOST}:3000/api/v1/sessions/${SESSION_ID}" -H "Content-Type: application/json" -d "${SESSION_CONFIG_UPD}" || break
+        done
+        
+        #Wait 10m and enable all affected sessions
+        sleep 600
+
+        for SESSION_NAME in $(params.server); do
+          export SWITCH_PAYLOAD_ENABLE=$(jq ".session = \"${SESSION_NAME}\" | .state = false" <(echo $SWITCH_PAYLOAD))
+          curl -XPUT $(echo ${CURL_OPTS}) ${TELEGRAM_HOST}:3000/api/v1/sessions/switch -H "Content-Type: application/json"  -d "${SWITCH_PAYLOAD_ENABLE}"
         done
