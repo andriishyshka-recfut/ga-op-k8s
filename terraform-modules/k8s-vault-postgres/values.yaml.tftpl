@@ -1,0 +1,58 @@
+clustername: ${settings.cluster_name}
+namespace: ${settings.namespace}
+tag: ${settings.tag}
+replicas: ${settings.replicas}
+%{ if lookup(settings, "poolers", "nope") != "nope" ~}
+poolers:
+%{ for pooler in settings.poolers ~}
+  - type: ${pooler.type}
+    replicas: ${pooler.replicas}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(users) > 0 ~}
+users:
+%{ for db,user in users ~}
+  - name: ${user.username}
+    login: true
+    superuser: false
+    createdb: false
+    passwordSecret:
+      name: ${settings.cluster_name}-${db}
+%{ endfor ~}
+databases:
+%{ for db,user in users ~}
+  - name: ${db}
+    user: ${user.username}
+%{ endfor ~}
+%{ endif ~}
+%{ if lookup(settings, "resources", "nope") != "nope" ~}
+resources:
+  ${indent(2,yamlencode(settings.resources))}
+%{ endif ~}
+%{ if lookup(settings, "affinity", "nope") != "nope" ~}
+affinity:
+  workloadsType: ${ settings.affinity.workloadsType }
+%{ endif ~}
+pvcTemplate:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1000Gi
+  selector:
+    matchLabels:
+      target: postgres-data
+postgis: true
+backups:
+  enabled: true
+  endpointURL: "${minio.url}"
+  provider: s3
+  s3:
+    bucket: ${minio.bucket}
+    path: ${minio.path}
+    secretName: minio-credentials
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 0 0 * * *"
+      backupOwnerReference: self
+  retentionPolicy: "30d"
