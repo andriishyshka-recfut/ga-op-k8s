@@ -14,7 +14,8 @@ locals {
   kafka_count     = local.kafka_enabled ? local.settings.persistent_resources.permanentDisks.kafka.count : 0
   sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
   # sftp            = local.settings_red.sftp-server
-  minio_count = local.settings.persistent_resources.permanentDisks.minio.count
+  minio_count    = local.settings.persistent_resources.permanentDisks.minio.count
+  postgres_count = local.settings.persistent_resources.permanentDisks.postgres.count
 
   tarantool_storage_count  = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks * 2
   tsc                      = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks
@@ -61,6 +62,11 @@ data "google_compute_snapshot" "kafka_controller_snapshot" {
   count       = local.kafka_count
 }
 
+data "google_compute_snapshot" "postgres_snapshot" {
+  name        = "postgres-data-${count.index}-dr-${local.restoreDate}"
+  most_recent = true
+  count       = local.postgres_count
+}
 
 data "google_compute_snapshot" "tarantool_storage_snapshot" {
   name        = "tarantool-storage-0-0-dr-04122023"
@@ -243,3 +249,18 @@ resource "google_compute_disk" "tarantool_etcd_pv" {
   zone = element([for i in range(local.tarantool_etcd_count) : element(local.zones, i % 3)], count.index)
 }
 
+
+resource "google_compute_disk" "postgres_cluster-pv" {
+  count = local.postgres_count
+
+  name     = "postgres-data-${count.index}"
+  size     = data.google_compute_snapshot.postgres_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.postgres_snapshot[count.index].name
+  type     = "pd-balanced"
+
+  zone = element([for i in range(local.postgres_count) : element(local.zones, i % 3)], count.index)
+
+  labels = {
+    target = "postgres"
+  }
+}

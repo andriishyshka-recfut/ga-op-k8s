@@ -1,0 +1,42 @@
+- hosts: localhost
+  connection: local
+  become: False
+  vars:
+    kubernetes_host: "{{ lookup('env','HOST') }}"
+    kubernetes_ca_cert: "{{ lookup('env','CLUSTER_CA_CERTIFICATE') }}"
+    token_reviewer_jwt: "{{ lookup('env','API_KEY') }}"
+    temp_dir: "{{ lookup('env','HOME') }}/tmp-es-setup"
+    name: "{{ lookup('env','name') }}"
+    namespace: "{{ lookup('env','namespace') }}"
+    kind: "{{ lookup('env','kind') }}"
+    apiVersion: "{{ lookup('env','apiVersion') }}"
+  tasks:
+    - name: Create temp_dir
+      file:
+        path: "{{ temp_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Put cluster_ca_certificate
+      copy:
+        dest: "{{ temp_dir }}/clstr_ca.crt"
+        content: "{{ kubernetes_ca_cert }}"
+
+    - pause:
+        seconds: 10
+
+    - name: "{{ kind }} info"
+      k8s_info:
+        api_key: "{{ token_reviewer_jwt }}"
+        host: "{{ kubernetes_host }}"
+        ca_cert: "{{ temp_dir }}/clstr_ca.crt"
+        api_version: "{{ apiVersion }}"
+        kind: "{{ kind }}"
+        name: "{{ name }}"
+        namespace: "{{ namespace }}"
+      register: info
+      until: info.resources[0].status.phase == "Cluster in healthy state"
+      retries: 20
+      delay: 30
+
+    - debug: msg="{{ info.resources[0].status | to_nice_json }}"
