@@ -1,10 +1,12 @@
 resource "kubernetes_config_map" "minio_endpoints" {
+  for_each = local.minio_endpoints
   metadata {
-    name = "minio-endpoints"
+    name      = "minio-endpoint-${each.key}"
     namespace = local.namespace
   }
 
   data = {
-    endpoints = local.minio_endpoints
+    name = each.value.var_name
+    path = each.value.path
   }
 }
