@@ -156,6 +156,21 @@ COMMAND
     delete pvc -n minio-helm {}
 COMMAND
 
+  stop_postgres_resources = <<COMMAND
+    set -x
+
+    echo "Stop postgres operator"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    scale statefulset -n postgres --replicas=0 cnpg-cloudnative-pg
+    sleep 29
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    scale statefulset -n postgres --replicas=0 --all
+COMMAND
+
 }
 
 
@@ -180,7 +195,7 @@ resource "null_resource" "delete_kafka_resources" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.delete_kafka_resources
   }
-  depends_on = [ null_resource.stop_kafka ]
+  depends_on = [null_resource.stop_kafka]
 }
 
 resource "null_resource" "stop_mongo" {
@@ -225,7 +240,7 @@ resource "null_resource" "delete_mongo_resources" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.delete_mongo_resources
   }
-  depends_on = [ null_resource.stop_mongo ]
+  depends_on = [null_resource.stop_mongo]
 }
 
 
@@ -238,7 +253,7 @@ resource "null_resource" "delete_mongo_auth_resources" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.delete_mongo_auth_resources
   }
-  depends_on = [ null_resource.stop_mongo_auth ]
+  depends_on = [null_resource.stop_mongo_auth]
 }
 
 resource "null_resource" "delete_minio_helm_resources" {
@@ -250,5 +265,16 @@ resource "null_resource" "delete_minio_helm_resources" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.delete_minio_helm_resources
   }
-  depends_on = [ null_resource.stop_minio_helm ]
+  depends_on = [null_resource.stop_minio_helm]
+}
+
+resource "null_resource" "stop_postgres_resources" {
+
+  triggers = {
+    command = md5(local.stop_postgres_resources)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_postgres_resources
+  }
 }

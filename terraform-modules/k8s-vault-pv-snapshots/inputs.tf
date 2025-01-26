@@ -11,30 +11,32 @@ locals {
 
 
   mongo_count       = var.Cluster == "production" ? var.Settings.clusters[var.Cluster].mongo6.main.replicas : var.Settings.clusters[var.Cluster].mongo6.main.replicas
-  mongo_prefix      = var.Cluster == "production" ? var.Settings.clusters[var.Cluster].mongo6.main.pvcPrefix: var.Settings.clusters[var.Cluster].mongo6.main.pvcPrefix
+  mongo_prefix      = var.Cluster == "production" ? var.Settings.clusters[var.Cluster].mongo6.main.pvcPrefix : var.Settings.clusters[var.Cluster].mongo6.main.pvcPrefix
   mongo_auth_count  = var.Settings.clusters[var.Cluster].mongo6.auth.replicas
   mongo_auth_prefix = var.Settings.clusters[var.Cluster].mongo6.auth.pvcPrefix
 
-  kafka_count      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
-  kafka_prefix     = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.kafka_prefix
+  kafka_count  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
+  kafka_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.kafka_prefix
 
   #Uncomment for Prod DR:
   # zookeeper_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.zookeeper_prefix
 
   #Comment for Prod DR:
   controller_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.controller_prefix
-  
-  sonarqube_count  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.sonarqube.count
-  minio_count      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
-  minio_prefix     = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.prefix
+
+  sonarqube_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.sonarqube.count
+  minio_count     = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
+  minio_prefix    = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.prefix
   # mongoDiskSize = trim(var.Settings.clusters[var.Cluster].mongo.magescanner.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(var.Settings.clusters[var.Cluster].mongo.magescanner.volumeSize, "Gi")
+  postgres_count = local.settings.persistent_resources.permanentDisks.postgres.count
 
-  tarantool_storage_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_disks * 2
-  tsc = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_disks 
-  tarantool_storage_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_prefix 
-  tarantool_router_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.router_disks
-  tarantool_router_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.router_prefix 
+
+  tarantool_storage_count  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_disks * 2
+  tsc                      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_disks
+  tarantool_storage_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_prefix
+  tarantool_router_count   = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.router_disks
+  tarantool_router_prefix  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.router_prefix
 
 }
 

@@ -37,9 +37,3 @@ locals {
     namespace               = local.namespace
   })
 }
-
-
-
-output "test" {
-  value = local.db_user_pass
-}
