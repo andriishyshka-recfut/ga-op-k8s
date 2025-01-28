@@ -143,4 +143,3 @@ resource "kubernetes_job" "python_script" {
   wait_for_completion = true
   depends_on          = [kubernetes_secret.python_script, helm_release.beat]
 }
-

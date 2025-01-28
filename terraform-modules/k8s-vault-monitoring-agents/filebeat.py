@@ -111,7 +111,7 @@ for template in work_templates:
     if template not in site_templates:
         print(template)
         new_template = update_template(filebeat_template,template)
-        alias = do_request("alias",name=short_name(template)).json()
+        alias = do_request("alias",name=short_name(template))
         if alias.status_code == 200:
             index = list(alias.json().keys())[0]
             print(index)
