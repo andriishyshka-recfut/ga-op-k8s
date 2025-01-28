@@ -49,7 +49,7 @@ locals {
         replicas      = 3,
         workloadsType = "data",
         roles         = { master = "true" },
-        resources     = { cpuReq = "3", memReq = "4Gi", cpuLimit = "4", memLimit = "5Gi" },
+        resources     = { cpuReq = "2", memReq = "4Gi", cpuLimit = "3", memLimit = "5Gi" },
         storage       = "100Gi",
         esJavaOpts    = "-Xms4g -Xmx4g"
       },
