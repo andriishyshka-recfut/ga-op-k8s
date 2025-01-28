@@ -24,4 +24,3 @@ module "kibana" {
     module.elastic
   ]
 }
-

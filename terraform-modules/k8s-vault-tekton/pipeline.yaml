@@ -17,7 +17,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-namespaces"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: minio
       taskRef:
@@ -31,7 +31,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-minio"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: redis
       taskRef:
@@ -45,7 +45,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-redis"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: external-secrets
       taskRef:
@@ -59,7 +59,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-external-secrets"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: monitoring-elastic
       taskRef:
@@ -73,7 +73,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-monitoring-elastic"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: update-apm-token-in-namespaces
       taskRef:
@@ -87,7 +87,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-namespaces"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: fluxcd
       taskRef:
@@ -101,7 +101,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-fluxcd"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: fluxcd-resources
       taskRef:
@@ -115,7 +115,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-fluxcd-resources"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: monitoring
       taskRef:
@@ -130,7 +130,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-monitoring"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: kyverno
       taskRef:
@@ -145,7 +145,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-kyverno"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: kubescape
       taskRef:
@@ -159,7 +159,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-kubescape"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -181,7 +181,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-2/02-stop-apps"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
 
 ---
@@ -227,7 +227,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-3/03-stop-data-services"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -249,7 +249,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-4/04-disk-snapshots"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -271,7 +271,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-5/05-mongo"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: kafka-topics
       taskRef:
@@ -283,7 +283,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-5/05-clone-kafka-topics"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: kafka
       taskRef:
@@ -297,7 +297,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-5/05-kafka"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: minio-helm
       taskRef:
@@ -309,7 +309,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-5/05-minio-helm"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
 
 ---
@@ -332,7 +332,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-5/05-kafka-check-data"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
 
 ---
@@ -355,7 +355,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-restore-system-indices"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: monitoring-post
       taskRef:
@@ -369,7 +369,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-monitoring-post"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: istio
       taskRef:
@@ -383,7 +383,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-istio"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: tls-proxy
       taskRef:
@@ -397,7 +397,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-tls-proxy"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: static-certs
       taskRef:
@@ -411,7 +411,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-static-certs"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: ingress
       taskRef:
@@ -426,7 +426,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-ingress"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: nfs
       taskRef:
@@ -440,7 +440,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-nfs"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: tor-controller
       taskRef:
@@ -455,7 +455,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-tor-controller"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: fluxcd
       taskRef:
@@ -469,7 +469,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-fluxcd-resources"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: kiali
       taskRef:
@@ -483,7 +483,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-kiali"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: etl-operator
       taskRef:
@@ -497,7 +497,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-etl-operator"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: cvat
       taskRef:
@@ -512,7 +512,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-cvat"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
 
     - name: 06-restore-old-filebeats
       taskRef:
@@ -526,4 +526,4 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-restore-old-filebeats"
         - name: branch
-          value: "\\#872-prod-dr-04-01-2025"
+          value: "\\#890-sandbox-dr-2025-01-25"
