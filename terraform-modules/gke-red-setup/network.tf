@@ -8,13 +8,12 @@ resource "google_compute_subnetwork" "net" {
   network       = data.google_compute_network.vpc.self_link
   // https://cloud.google.com/vpc/docs/configure-private-google-access
   private_ip_google_access = true
-  secondary_ip_range {
-    range_name    = "pods-secondary-range"
-    ip_cidr_range = var.Settings.clusters[var.Cluster][var.Color].subnets.pods_secondary_range
-  }
-  secondary_ip_range {
-    range_name    = "services-secondary-range"
-    ip_cidr_range = var.Settings.clusters[var.Cluster][var.Color].subnets.services_secondary_range
+  dynamic "secondary_ip_range" {
+    for_each = var.Settings.clusters[var.Cluster][var.Color].subnets
+    content {
+      range_name    = replace(secondary_ip_range.key, "_", "-")
+      ip_cidr_range = secondary_ip_range.value
+    }
   }
 }
 

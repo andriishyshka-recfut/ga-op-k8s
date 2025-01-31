@@ -67,7 +67,7 @@ resource "google_container_cluster" "cluster" {
   logging_service    = "none"
   monitoring_service = "none"
   monitoring_config {
-    managed_prometheus{
+    managed_prometheus {
       enabled = false
     }
   }
@@ -150,10 +150,10 @@ resource "google_container_node_pool" "nodepool_additional" {
     ignore_changes = all
   }
 
-  provider = google-beta
-  name     = "${var.Cluster}-${var.Color}-${each.key}"
-  location = local.gkeRegion
-  cluster  = google_container_cluster.cluster.name
+  provider          = google-beta
+  name              = "${var.Cluster}-${var.Color}-${each.key}"
+  location          = local.gkeRegion
+  cluster           = google_container_cluster.cluster.name
   max_pods_per_node = lookup(each.value, "maxPodsPerNode", var.Settings.clusters[var.Cluster].pods_per_node)
 
   autoscaling {
@@ -181,6 +181,18 @@ resource "google_container_node_pool" "nodepool_additional" {
       key    = "workloadsType"
       value  = each.value.taintWorkloadsType
       effect = "NO_SCHEDULE"
+    }
+  }
+  dynamic "network_config" {
+    for_each = lookup(each.value, "pod_ip_subnetwork_name", false) != false ? [0] : []
+    content {
+      pod_range            = local.additionalNodepools[each.key].pod_ip_subnetwork_name
+      enable_private_nodes = true
+      # additional_pod_network_configs {
+      #   subnetwork          = "${var.Cluster}-${var.Color}-subnetwork"
+      #   secondary_pod_range = local.additionalNodepools[each.key].pod_ip_subnetwork_name
+      #   max_pods_per_node   = each.value.maxPodsPerNode
+      # }
     }
   }
   management {
