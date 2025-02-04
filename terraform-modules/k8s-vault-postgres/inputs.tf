@@ -25,6 +25,7 @@ locals {
   disk_count       = var.Settings.clusters[var.Cluster].postgres.replicas
   zones            = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones
   operator_version = var.Settings.clusters[var.Cluster].postgres.operator_chart_version
+  postgres_uri     = "postgres-rw.postgres:5432"
   databases        = nonsensitive(toset(data.vault_kv_secrets_list_v2.db_user_list.names))
   db_user_pass     = { for name in local.databases : name => tomap(data.vault_generic_secret.databases[name].data) }
   minio = {

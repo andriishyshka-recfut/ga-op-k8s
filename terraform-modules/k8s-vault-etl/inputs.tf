@@ -29,7 +29,7 @@ locals {
   elasticSecretsPrefix  = var.Cluster == "production" ? "" : "-ext"
   elasticSecretsPath    = var.Cluster == "production" ? "/secret/data/es-creds-compose-prod/metaCamino" : "/secret/data/elasticsearch-admin/elastic7-v2"
   elasticSecretsPathNew = var.Cluster == "production" ? "secret/data/es-creds-compose-prod/metaCamino" : "secret/data/elasticsearch-admin/elastic7-v2"
-  minio_endpoints       = var.Settings.clusters[var.Cluster].versions.etl.minio_endpoints
+  #minio_endpoints       = var.Settings.clusters[var.Cluster].versions.etl.minio_endpoints
 
 }
 

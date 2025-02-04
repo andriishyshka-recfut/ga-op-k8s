@@ -17,7 +17,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-logs-restore"
         - name: branch
-          value: "\\#890-sandbox-dr-2025-01-25"
+          value: "\\#911-prod-dr-01-02-2025"
       timeout: 7h
 ---
 apiVersion: tekton.dev/v1beta1

@@ -1,3 +1,4 @@
+/*
 resource "kubernetes_config_map" "minio_endpoints" {
   for_each = local.minio_endpoints
   metadata {
@@ -10,3 +11,4 @@ resource "kubernetes_config_map" "minio_endpoints" {
     path = each.value.path
   }
 }
+*/
