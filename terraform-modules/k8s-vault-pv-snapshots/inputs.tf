@@ -29,7 +29,7 @@ locals {
   minio_prefix    = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.prefix
   # mongoDiskSize = trim(var.Settings.clusters[var.Cluster].mongo.magescanner.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(var.Settings.clusters[var.Cluster].mongo.magescanner.volumeSize, "Gi")
-  postgres_count = local.settings.persistent_resources.permanentDisks.postgres.count
+  postgres_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.postgres.count
 
 
   tarantool_storage_count  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_disks * 2

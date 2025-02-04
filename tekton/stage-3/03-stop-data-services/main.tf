@@ -163,12 +163,31 @@ COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
-    scale statefulset -n postgres --replicas=0 cnpg-cloudnative-pg
+    scale deployment -n postgres --replicas=0 cnpg-cloudnative-pg
     sleep 29
+
+    echo "Deleting postgres pods"
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
-    scale statefulset -n postgres --replicas=0 --all
+    get pod -n postgres | grep -e postgres- | awk '{print $1}'\
+    | xargs -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    delete pod -n postgres  {}
+    sleep 29
+
+    echo "Deleting postgres PVCs"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get pvc -n postgres | grep -e postgres- | awk '{print $1}'\
+    | xargs -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    delete pvc -n postgres  {}
 COMMAND
 
 }
