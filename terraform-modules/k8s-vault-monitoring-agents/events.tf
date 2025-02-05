@@ -61,8 +61,8 @@ curl -X PUT "https://elastic:$ES_PASSWORD@${local.elastic_prefix}-es-http:9200/%
       "is_write_index": true
     }
   }
-}'
 %{endif~}
+}'
 EOF
 
 }
