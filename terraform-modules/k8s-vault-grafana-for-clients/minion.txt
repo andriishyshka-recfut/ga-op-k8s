@@ -1,5 +1,4 @@
 00code
-100live
 100usd
 achernar
 acrux
@@ -36,14 +35,11 @@ golf
 hidatsa
 juliet
 kentaurus
-kfcclub
 kichai
-kilo
 lakota
 leo
 libra
 lukicrown
-madfox
 majoris
 mandan
 marioclub
@@ -68,7 +64,6 @@ quebec
 quechan
 regulus
 rigel
-rigil
 romeo
 sclass
 scuti
