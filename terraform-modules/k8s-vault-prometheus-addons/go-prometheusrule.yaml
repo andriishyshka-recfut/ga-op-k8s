@@ -112,7 +112,7 @@ spec:
         cluster: ${cluster_label}
         component: stream-processor
         severity: critical
-    - alert: Os3DebugStuck
+    - alert: os3DebugStuck
       annotations:
         description: |
           os3.debug stuck and topic {{ $labels.topic }} > 2000
@@ -124,3 +124,39 @@ spec:
         cluster: ${cluster_label}
         component: stream-processor
         severity: critical
+    - alert: os3aStuck
+      annotations:
+        description: |
+          os3a stuck and topic {{ $labels.topic }} > 100000
+        summary: os3a stuck and topic {{ $labels.topic }} > 100000
+      expr: |
+        last_over_time(kafka_consumergroup_lag_sum{consumergroup="os3", topic='os3.attachment'}[10m]) > 100000
+      for: 5m
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: critical
+    - alert: Os3tStuck
+      annotations:
+        description: |
+          os3t stuck and topic {{ $labels.topic }} > 25000
+        summary: os3t stuck and topic {{ $labels.topic }} > 25000
+      expr: |
+        last_over_time(kafka_consumergroup_lag_sum{consumergroup="os3", topic='os3t.attachment'}[10m]) > 25000
+      for: 5m
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: critical
+    - alert: Os3cStuck
+      annotations:
+        description: |
+          os3c stuck and topic {{ $labels.topic }} > 2000
+        summary: os3c stuck and topic {{ $labels.topic }} > 2000
+      expr: |
+        last_over_time(kafka_consumergroup_lag_sum{consumergroup="os3", topic='os3c.attachment'}[10m]) > 2000
+      for: 5m
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: critical        
