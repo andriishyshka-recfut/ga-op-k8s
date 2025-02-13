@@ -9,7 +9,6 @@ bhf
 bitcointalk
 blackbiz
 blackbones
-blackhacker
 blackhatprotools
 blackhatworld
 blasthack
