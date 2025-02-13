@@ -38,7 +38,7 @@ elastic_settings:
           xpack.security.authc.realms:
             native:
               native1:
-                order: 1
+                order: 2
         storageSize: "1Gi"
         ES_JAVA_OPTS: -Xms4g -Xmx4g
         nodesCount: 3
@@ -58,7 +58,7 @@ elastic_settings:
           xpack.security.authc.realms:
             native:
               native1:
-                order: 1
+                order: 2
         storageSize: "1900Gi"
         ES_JAVA_OPTS: -Xms10g -Xmx10g
         nodesCount: 5

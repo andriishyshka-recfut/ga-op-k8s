@@ -15,6 +15,20 @@ resource "kubernetes_secret" "oidc" {
   }
 }
 
+data "vault_generic_secret" "okta" {
+  path = "secret/misc/oidc/okta/monitoring_kibana"
+}
+
+resource "kubernetes_secret" "okta" {
+  metadata {
+    name      = "okta"
+    namespace = local.esValues.namespace
+  }
+  data = {
+    "xpack.security.authc.realms.oidc.okta.rp.client_secret" = data.vault_generic_secret.okta.data.client_secret
+  }
+}
+
 locals {
   clientId   = local.oidcSetup == 1 ? data.vault_generic_secret.oidc.0.data.client_id : ""
   config     = <<EOF
@@ -33,6 +47,23 @@ xpack.security.authc.realms.oidc.${local.oidcRealmName}:
           - openid
           - profile
         rp.client_id: ${local.clientId}
+xpack.security.authc.realms.oidc.okta:
+      order: 1
+      rp.response_type: "code" 
+      rp.redirect_uri: https://${var.OidcRedirectUri}/api/security/oidc/callback
+      op.issuer: ${data.vault_generic_secret.okta.data.issuer}
+      op.authorization_endpoint: "${data.vault_generic_secret.okta.data.issuer}/oauth2/v1/authorize"
+      op.jwkset_path: "${data.vault_generic_secret.okta.data.issuer}/oauth2/v1/keys"
+      op.token_endpoint: "${data.vault_generic_secret.okta.data.issuer}/oauth2/v1/token"
+      op.endsession_endpoint: "${data.vault_generic_secret.okta.data.issuer}/oauth2/v1/logout"
+      claims.principal: "email"
+      claims.groups: "groups"
+      rp.requested_scopes:
+        - email
+        - openid
+        - profile
+        - groups
+      rp.client_id: ${data.vault_generic_secret.okta.data.client_id}
 EOF
   oidcConfig = local.oidcSetup == 1 ? { "oidc_config" = local.config } : { "oidc_config" = "" }
 
