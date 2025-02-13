@@ -112,3 +112,15 @@ spec:
         cluster: ${cluster_label}
         component: stream-processor
         severity: critical
+    - alert: Os3DebugStuck
+      annotations:
+        description: |
+          os3.debug stuck and topic {{ $labels.topic }} > 2000
+        summary: os3.debug stuck and topic {{ $labels.topic }} > 2000
+      expr: |
+        last_over_time(kafka_consumergroup_lag_sum{consumergroup="os3", topic='os3.debug'}[10m]) > 2000
+      for: 5m
+      labels:
+        cluster: ${cluster_label}
+        component: stream-processor
+        severity: critical
