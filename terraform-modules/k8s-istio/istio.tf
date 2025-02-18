@@ -85,6 +85,10 @@ resource "helm_release" "istio_ingress" {
     name  = "autoscaling.minReplicas"
     value = 2
   }
+  set {
+    name  = "annotations.co\\.elastic\\.logs/json.add_error_key"
+    value = "true"
+  }
   dynamic "set" {
     for_each = local.ports
     content {
