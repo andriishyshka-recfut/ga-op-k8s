@@ -14,5 +14,5 @@ service:
 %{ endfor ~}
 autoscaling:
   minReplicas: ${settings.minReplicas}
-annotations:
+podAnnotations:
   co.elastic.logs/json.add_error_key: 'true'
