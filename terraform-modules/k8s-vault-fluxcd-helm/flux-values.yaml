@@ -4,7 +4,7 @@ helmController:
      cpu: 400m
      memory: 500Mi
     requests:
-      cpu: 100m
+      cpu: 50m
       memory: 128Mi
 imageAutomationController:
   resources:
@@ -12,7 +12,7 @@ imageAutomationController:
      cpu: 300m
      memory: 400Mi
     requests:
-      cpu: 100m
+      cpu: 50m
       memory: 64Mi
 imageReflectionController:
   resources:
@@ -20,7 +20,7 @@ imageReflectionController:
      cpu: 400m
      memory: 500Mi
     requests:
-      cpu: 100m
+      cpu: 70m
       memory: 128Mi
 kustomizeController:
   resources:
@@ -28,7 +28,7 @@ kustomizeController:
      cpu: 300m
      memory: 400Mi
     requests:
-      cpu: 100m
+      cpu: 50m
       memory: 128Mi
 notificationController:
   resources:
@@ -36,13 +36,13 @@ notificationController:
      cpu: 300m
      memory: 400Mi
     requests:
-      cpu: 100m
+      cpu: 50m
       memory: 64Mi
 sourceController:
   resources:
-    limits: {}
+    limits:
      cpu: 400m
      memory: 500Mi
     requests:
-      cpu: 100m
+      cpu: 50m
       memory: 128Mi
