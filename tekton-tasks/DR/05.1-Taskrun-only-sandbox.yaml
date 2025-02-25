@@ -13,25 +13,7 @@ spec:
     - name: path
       value: "k8s/tekton/sandbox"
     - name: branch
-      value: "\\#890-sandbox-dr-2025-01-25"
-
----
-apiVersion: tekton.dev/v1beta1
-kind: TaskRun
-metadata:
-  generateName: postgres-
-  namespace: tekton-tasks
-spec:
-  taskRef:
-    name: tg-run
-  workspaces:
-    - name: ws # this workspace name must be declared in the Task
-      emptyDir: {}
-  params:
-    - name: path
-      value: "k8s/tekton/stage-6/06-postgres"
-    - name: branch
-      value: "\\#689-postgres"
+      value: "\\#926-Sandbox-DR-2025-02-22"
 
 ---
 apiVersion: tekton.dev/v1beta1

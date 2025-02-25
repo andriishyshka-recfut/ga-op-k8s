@@ -3,6 +3,7 @@ locals {
   events_init      = var.Settings.clusters[var.Cluster][var.Color].k8s-events.init
   events_log_level = var.Settings.clusters[var.Cluster][var.Color].k8s-events.log_level
   events_version   = var.Settings.clusters[var.Cluster].versions.k8s-events.chart_version
+  events_tag       = var.Settings.clusters[var.Cluster].versions.k8s-events.tag
   events_user      = <<EOF
 curl -X POST "https://elastic:$ES_PASSWORD@${local.elastic_prefix}-es-http:9200/_security/role/kube-events" -H 'Content-Type: application/json' -k -d  '
 {
@@ -131,20 +132,24 @@ resource "kubernetes_job" "events_install" {
   }
 }
 
-
+data "vault_generic_secret" "harbor_token" {
+  path = "secret/goharbor/docker_login"
+}
 
 
 resource "helm_release" "k8s_events" {
-  name          = "kubernetes-event-exporter"
-  chart         = "kubernetes-event-exporter"
-  repository    = "oci://registry-1.docker.io/bitnamicharts"
-  version       = local.events_version
-  namespace     = local.namespace
-  wait          = true
-  atomic        = true
-  recreate_pods = true
+  name                = "kubernetes-event-exporter"
+  chart               = "kubernetes-event-exporter"
+  repository          = "oci://harbor.regemini.io/helm"
+  version             = local.events_version
+  namespace           = local.namespace
+  repository_username = data.vault_generic_secret.harbor_token.data.user
+  repository_password = data.vault_generic_secret.harbor_token.data.password
+  wait                = true
+  atomic              = true
+  recreate_pods       = true
   values = [
-    templatefile("${path.module}/events_vaules.yaml.tftpl", { elastic_prefix = local.elastic_prefix, log_level = local.events_log_level })
+    templatefile("${path.module}/events_vaules.yaml.tftpl", { elastic_prefix = local.elastic_prefix, log_level = local.events_log_level, tag = local.events_tag })
   ]
   depends_on = [kubernetes_job.events_install]
 }
