@@ -1,4 +1,13 @@
 extraEnvVarsSecret: events-credentials
+global:
+  security:
+    allowInsecureImages: true
+  imagePullSecrets:
+    - harbor
+image:
+  registry: harbor.regemini.io
+  repository: mirror/kubernetes-event-exporter
+  tag: ${tag}
 config:
   logLevel: ${log_level}
   logFormat: pretty

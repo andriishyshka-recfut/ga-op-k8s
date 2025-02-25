@@ -86,8 +86,8 @@ resource "helm_release" "istio_ingress" {
     value = 2
   }
   set {
-    name  = "annotations.co\\.elastic\\.logs/json.add_error_key"
-    value = "true"
+    name  = "annotations.co\\.elastic\\.logs/json\\.add_error_key"
+    value = " True"
   }
   dynamic "set" {
     for_each = local.ports

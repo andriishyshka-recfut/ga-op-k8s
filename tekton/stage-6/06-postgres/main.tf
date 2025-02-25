@@ -1,5 +1,5 @@
 module "postgres" {
-  source                       = "../../../terraform-modules/k8s-vault-postgres"
+  source                       = "../../../terraform-modules/k8s-vault-postgres-post"
   Cluster                      = var.Cluster
   Color                        = var.Color
   Settings                     = var.Settings
@@ -8,7 +8,3 @@ module "postgres" {
 }
 
 
-output "test" {
-  sensitive = true
-  value     = module.postgres.test
-}
