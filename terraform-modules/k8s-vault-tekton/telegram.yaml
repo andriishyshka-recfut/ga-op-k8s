@@ -167,12 +167,23 @@ spec:
           export VAULT_TOKEN=$(vault write -field=token auth/k8s-production-${TF_VAR_Color}/login role=tekton jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token))
           export AUTH_USER="$(vault kv get -field=user  secret/mw/monitoring/prometheus/auth-proxy-credentials)"
           export AUTH_PASSWORD="$(vault kv get -field=password  secret/mw/monitoring/prometheus/auth-proxy-credentials)"
-
+          
+          #Set proxy range
+          export PROXY_RANGE1=({201..210})
+          export PROXY_RANGE2=({323..365})
+          export PROXY_RANGE3=({501..510})
+          export COMBINED_PROXY_RANGE=("${PROXY_RANGE1[@]}" "${PROXY_RANGE2[@]}" "${PROXY_RANGE3[@]}")
+          
           #Choose random proxy from list until working with telegram
-          for i in {1..100};do
-            export RANDOM_PROXY=$(curl -XPOST $(echo ${CURL_OPTS}) ${AUTH_HOST}:3000/api/v1/proxies/search -H "Content-Type: application/json" -d '{"filter":{"alive":true,"key":"","provider":null},"sortField":"key","sortDirection":"asc","pageIndex":0,"pageSize":250}' | jq -r ".proxies" | jq -c ".[] | select(.key!=\"${CURRENT_PROXY_NAME}\")" | shuf | jq -s '.[1]')
-            [[ ! -z ${RANDOM_PROXY} ]] || break
-            export RANDOM_PROXY_NAME=$(echo $RANDOM_PROXY | jq -r .key)
+          for i in $(echo ${COMBINED_PROXY_RANGE[@]})
+
+            RANDOM_INDEX=$((RANDOM % ${#COMBINED_PROXY_RANGE[@]}))
+            RANDOM_PROXY=${COMBINED_PROXY_RANGE[$RANDOM_INDEX]}
+            export RANDOM_PROXY_NAME="PROXY${RANDOM_PROXY}"
+            [[ "${CURRENT_PROXY_NAME}" == "${RANDOM_PROXY_NAME}" ]] && continue
+
+            export RANDOM_PROXY=$(curl -XPOST $(echo ${CURL_OPTS}) ${AUTH_HOST}:3000/api/v1/proxies/search -H "Content-Type: application/json" -d '{"filter":{"alive":true,"key":"","provider":null},"sortField":"key","sortDirection":"asc","pageIndex":0,"pageSize":250}' | jq -r ".proxies" | jq -c ".[] | select(.key==\"${RANDOM_PROXY_NAME}\")")
+            [[ ! -z ${RANDOM_PROXY} ]] || continue
             export RANDOM_PROXY_ADDRESS=$(echo $RANDOM_PROXY | jq -r .address | cut -d '@' -f2)
             curl $(echo ${CURL_OPTS}) --proxy http://${RANDOM_PROXY_ADDRESS} --proxy-user ${AUTH_USER}:${AUTH_PASSWORD} https://web.telegram.org/ && break
           done
