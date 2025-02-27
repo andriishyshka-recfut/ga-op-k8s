@@ -177,7 +177,7 @@ spec:
           #Choose random proxy from list until working with telegram
           for i in $(echo ${COMBINED_PROXY_RANGE[@]})
 
-            RANDOM_PROXY=${COMBINED_PROXY_RANGE[ RANDOM % ${#COMBINED_PROXY_RANGE[@]} ]}
+            RANDOM_PROXY=$(printf '%s\n' "${COMBINED_PROXY_RANGE[@]}" | shuf | head -1)
             export RANDOM_PROXY_NAME="PROXY${RANDOM_PROXY}"
             [[ "${CURRENT_PROXY_NAME}" == "${RANDOM_PROXY_NAME}" ]] && continue
 
