@@ -218,6 +218,12 @@ alertmanager:
           channel: '#dome-mapping'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
+    - name: "slack-paste"
+      slack_configs:
+        - api_url: ${prometheus_slack_webhooks.url_paste}
+          channel: '#paste'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
     - name: "tekton-webhook-notifications-and-slack"
       webhook_configs:
         - send_resolved: false
@@ -299,6 +305,10 @@ alertmanager:
           - namespace=~"etl"
           - cluster=~"production"
           receiver: "slack-etl"
+        - matchers:
+          - severity=~"paste"
+          - cluster=~"production"
+          receiver: "slack-paste"
         - matchers:
           - alertname=~".*"
           receiver: "tekton-webhook-notifications-and-slack"
