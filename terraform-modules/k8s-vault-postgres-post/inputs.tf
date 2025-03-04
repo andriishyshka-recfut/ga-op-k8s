@@ -21,4 +21,6 @@ data "vault_generic_secret" "root_user" {
 locals {
   vault_path = var.Settings.clusters[var.Cluster].postgres.vault_path
   databases  = nonsensitive(toset(data.vault_kv_secrets_list_v2.db_user_list.names))
+  postgres_uri     = "postgres-rw.postgres:5432"
+
 }
