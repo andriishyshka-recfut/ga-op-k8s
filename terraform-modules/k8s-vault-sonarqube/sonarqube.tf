@@ -23,22 +23,40 @@
 #   }
 # }
 
+resource "random_password" "sonarqube_monitoring" {
+  length  = 32
+  special = false
+}
+
+resource "vault_generic_secret" "sonarqube_monitoring" {
+  path = "secret/mw/sonarqube/monitoring"
+
+  data_json = <<EOT
+{
+  "password":   "${random_password.sonarqube_monitoring.result}"
+}
+EOT
+}
 
 resource "helm_release" "sonarqube" {
-  name              = "sonarqube"
-  repository        = "https://SonarSource.github.io/helm-chart-sonarqube"
-  chart             = "sonarqube"
-  version           = local.chart_version
-  wait              = true
-  atomic            = false
-  namespace         = local.namespace
-  set{
-    name = "postgresql.persistence.size"
+  name       = "sonarqube"
+  repository = "https://SonarSource.github.io/helm-chart-sonarqube"
+  chart      = "sonarqube"
+  version    = local.chart_version
+  wait       = true
+  atomic     = false
+  namespace  = local.namespace
+  set {
+    name  = "postgresql.persistence.size"
     value = local.diskSize
   }
-  set{
-    name = "image.tag"
-    value = local.image_tag
+  set {
+    name  = "monitoringPasscode"
+    value = random_password.sonarqube_monitoring.result
+  }
+  set {
+    name  = "community.enabled"
+    value = true
   }
   # depends_on = [kubernetes_secret.minio_credentials]
 }
@@ -59,21 +77,21 @@ resource "kubernetes_persistent_volume" "sonarqube_postgres_pv" {
     access_modes = ["ReadWriteOnce"]
     claim_ref {
       namespace = local.namespace
-      name = "data-sonarqube-postgresql-${count.index}"
+      name      = "data-sonarqube-postgresql-${count.index}"
     }
-    persistent_volume_source{
+    persistent_volume_source {
       csi {
-        driver = "pd.csi.storage.gke.io"
+        driver        = "pd.csi.storage.gke.io"
         volume_handle = "projects/${var.Settings.gcpProject}/regions/${var.Settings.clusters[var.Cluster].region}/disks/sonarqube-postgres-${count.index}"
       }
     }
-  node_affinity {
+    node_affinity {
       required {
         node_selector_term {
           match_expressions {
-            key = "topology.gke.io/zone"
+            key      = "topology.gke.io/zone"
             operator = "In"
-            values = [ "us-east4-a", "us-east4-b"]            
+            values   = ["us-east4-a", "us-east4-b"]
           }
         }
       }
