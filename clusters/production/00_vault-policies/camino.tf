@@ -1,11 +1,13 @@
 resource "vault_policy" "camino" {
-  name = "camino"
-
+  name   = "camino"
   policy = <<EOT
 path "/secret/data/elasticsearch-admin/*" {
   capabilities = ["read","list"]
 }
-path "/secret/data/camino/*" {
+path "/secret/data/etl/*" {
+  capabilities = ["read","list"]
+}
+path "/secret/data/es-creds-compose-prod/*" {
   capabilities = ["read","list"]
 }
 EOT

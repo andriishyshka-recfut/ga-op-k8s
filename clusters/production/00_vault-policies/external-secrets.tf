@@ -1,12 +1,34 @@
-
 resource "vault_policy" "external_secrets" {
-  name = "external-secrets"
-
+  name   = "external-secrets"
   policy = <<EOT
 path "secret/data/goharbor/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/apm/*" {
+  capabilities = ["read","list"]
+}
+path "secret/data/camel-k/*" {
+  capabilities = ["read","list"]
+}
+path "secret/data/sa/camel-*" {
+  capabilities = ["read","list"]
+}
+path "secret/data/magescanner/similarweb" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/slack-cron-job" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/magescanner" {
+	capabilities = ["read","list"]
+}
+path "secret/data/vortex/*" {
+  capabilities = ["read","list"]
+}
+path "secret/metadata/*" {
+  capabilities = ["read","list"]
+}
+path "secret/data/wl/etl/*" {
   capabilities = ["read","list"]
 }
 EOT

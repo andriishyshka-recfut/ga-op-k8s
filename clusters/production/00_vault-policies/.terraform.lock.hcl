@@ -1,19 +1,19 @@
-# This file is maintained automatically by "terraform init".
+# This file is maintained automatically by "tofu init".
 # Manual edits may be lost in future updates.
 
-provider "registry.terraform.io/hashicorp/vault" {
-  version = "2.18.0"
+provider "registry.opentofu.org/hashicorp/vault" {
+  version = "4.6.0"
   hashes = [
-    "h1:ebkgHY+/QlBAaU/uYSsIidvlsRel80u0lQzsDcKAIeA=",
-    "zh:23d0ae08554839844249689524c8b07195479ee3dd05700e7aa1c4e012e79f72",
-    "zh:33f4ceca11e3d2806d8ff6fc55c43a54402d28a0b3a1bc7fb038ea8f0969601a",
-    "zh:3b1e88302a41fbb4da068a3e809b92689daece97ac1dde3230e9dfe477be8b1f",
-    "zh:422ef259e4a8e171f96e3e21a6c1cf9043c4f6bdcbc0f50b8add5694c65450dd",
-    "zh:7588e76fe7650803f99ab3035e0990c9c865305f3adc693bc09bc5580cb1b97f",
-    "zh:8fe921fcd952597ddd971e0f697ea3f7720789c75abb1b69df497f558e1520be",
-    "zh:9a46a788534c6d8889f05b8f40487d93fab49fa0885e187c06fcb3551d278d28",
-    "zh:a3e9e47a52d763274b0406ec2e12e9963e70c12631676336cd4feb4d9f7e02a3",
-    "zh:ddbaf058988a27ec6ffc8e0d42a6d8a47012064cbe0bec36bb1399f4ac38f63f",
-    "zh:e847e836ab4d8bc451f55025213d184d85b8d3fdf0bc44d9914dae3b3e0d962f",
+    "h1:TXh46Yi4lURS0yUa0p0Oqsa+QKALn8t5MX88y6siJ0w=",
+    "zh:05c3ba3b2e658d6b6d43e2e14291ca8d3b6423540c16828f7f16c27497410967",
+    "zh:3aec8d860bfa31fcf6bb8ec65d51f62ee6b478b747bc25caba9015e10f32d849",
+    "zh:4b7651f5759efe42aa95be447e6ab12c50ead01ce5a96a9be930d278bb6878be",
+    "zh:4bc2ceff195f173641e2611629d362848d73cfc14d4fff5a43b11ba19ef51583",
+    "zh:4f68f9ca133732d46dd8da66ad8910171f238d1e9a7c8a8680c44f5b2a550387",
+    "zh:53a0a43c352784474367c10d3836cab690aaff719af2aa4445cc7311cd9cb7db",
+    "zh:5b2727d7f023fd8f68e183bb944ab1bed9cf99e1f210c111263957a558283536",
+    "zh:7a991319f3a409f6eda7f2b433fb6e8cbc4cad24a9206ab486ad1f0b4f8f1635",
+    "zh:d42d9c27bc8c61ccf765d752c1eaad274b0cc3a9b8f08253657bd2cc1df08b3d",
+    "zh:ddcab8f69724e7513d2f089a8dd9052e3e3b5320cec37ae2a5fef93950cda0ca",
   ]
 }

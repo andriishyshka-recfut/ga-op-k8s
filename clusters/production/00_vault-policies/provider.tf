@@ -1,9 +1,6 @@
-
 provider "vault" {
   address = "https://vault.p.regemini.io"
 }
-
-
 
 terraform {
   backend "gcs" {

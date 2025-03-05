@@ -1,3 +1,6 @@
+resource "vault_policy" "acr" {
+  name   = "acr"
+  policy = <<EOT
 path "secret/data/acr/*" {
   capabilities = ["read","list"]
 }
@@ -21,4 +24,6 @@ path "secret/data/es-creds-compose-prod/_ocr.ms" {
 }
 path "secret/data/telegram/telegram" {
    capabilities = ["read","list"]
+}
+EOT
 }

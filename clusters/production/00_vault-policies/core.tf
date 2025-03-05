@@ -1,6 +1,5 @@
 resource "vault_policy" "core" {
-  name = "core"
-
+  name   = "core"
   policy = <<EOT
 path "secret/data/minio/users" {
   capabilities = ["read","list"]
@@ -17,7 +16,7 @@ path "secret/data/captcha" {
 path "secret/data/challenger" {
   capabilities = ["read","list"]
 }
-path "secret/data/pi/*" {
+path "secret/data/core/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/geo/*" {
@@ -35,10 +34,16 @@ path "secret/data/apm/*" {
 path "secret/data/slack/auth" {
   capabilities = ["read","list"]
 }
+path "secret/data/slack/ka" {
+  capabilities = ["read","list"]
+}
 path "secret/data/ching/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/oidc_google_prod" {
+  capabilities = ["read","list"]
+}
+path "secret/data/vortex/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/core/auth/*" {
