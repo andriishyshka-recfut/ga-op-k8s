@@ -10,9 +10,10 @@ resource "vault_database_secret_backend_connection" "Connection" {
   allowed_roles = ["${each.key}-rw", "${each.key}-ro"]
 
   postgresql {
-    connection_url = "postgres://{{username}}:{{password}}@${local.postgres_uri}/${each.key}"
-    username       = data.vault_generic_secret.root_user.data.username
-    password       = data.vault_generic_secret.root_user.data.password
+    connection_url          = "postgres://{{username}}:{{password}}@${local.postgres_uri}/${each.key}"
+    username                = data.vault_generic_secret.root_user.data.username
+    password                = data.vault_generic_secret.root_user.data.password
+    password_authentication = "scram-sha-256"
   }
 }
 
@@ -24,7 +25,7 @@ resource "vault_database_secret_backend_role" "Postgres_rw_role" {
   default_ttl     = 2592000
   credential_type = "password"
   credential_config = {
-    password_policy = "test"
+    password_policy = "main32"
   }
   creation_statements = [
     "CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}'; GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO \"{{name}}\";"
@@ -43,7 +44,7 @@ resource "vault_database_secret_backend_role" "Postgres_ro_role" {
   default_ttl     = 2592000
   credential_type = "password"
   credential_config = {
-    password_policy = "test"
+    password_policy = "main32"
   }
   creation_statements = [
     "CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}'; GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";"
