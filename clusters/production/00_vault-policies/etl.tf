@@ -13,6 +13,18 @@ path "secret/metadata/wl/etl/*" {
 path "secret/metadata/wl/etl/clients/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/elasticHosts" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/elasticCa" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/elasticCrt" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/elasticKey" {
+  capabilities = ["read","list"]
+}
 path "secret/metadata/es-creds-compose-prod/metaCitsale" {
   capabilities = ["read","list"]
 }
