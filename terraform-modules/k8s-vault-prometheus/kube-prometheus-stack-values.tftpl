@@ -57,6 +57,7 @@ kube-state-metrics:
   customLabels:
     release: prometheus
 
+
 prometheus-node-exporter:
   namespaceOverride: "monitoring"
 
@@ -96,14 +97,62 @@ prometheus:
         spec:
           resources:
             requests:
-              storage: 50Gi
+              storage: 90Gi
     thanos:
       version: ${thanos_version}
       baseImage: quay.io/thanos/thanos
       objectStorageConfig:
         key: thanos.yaml
         name: thanos-objstore-config
-
+    additionalScrapeConfigs:
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+            target_label: __address__
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: kubernetes_pod_name
+      - job_name: 'kubernetes-pods-sp'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape1]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path1]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port1]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+            target_label: __address__
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: kubernetes_pod_name
 
   thanosService:
     enabled: true
@@ -169,6 +218,12 @@ alertmanager:
           channel: '#dome-mapping'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
+    - name: "slack-paste"
+      slack_configs:
+        - api_url: ${prometheus_slack_webhooks.url_paste}
+          channel: '#paste'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
     - name: "tekton-webhook-notifications-and-slack"
       webhook_configs:
         - send_resolved: false
@@ -204,6 +259,10 @@ alertmanager:
       webhook_configs:
         - send_resolved: false
           url: "http://el-etl-leftovers-webhook-alertmanager-listener.tekton-pipelines:8080"
+    - name: "telegram-session-change-proxy-webhook"
+      webhook_configs:
+        - send_resolved: false
+          url: "http://el-telegram-session-change-proxy-webhook-alertmanager-listener.tekton-pipelines:8080"
     route:
       group_by:
         - alertname
@@ -236,6 +295,9 @@ alertmanager:
           - alertname=~"ETLLeftOvers"
           receiver: "tekton-etl-leftovers-webhook"
         - matchers:
+          - alertname=~"TelegramRunPrepsServerTotal"
+          receiver: "telegram-session-change-proxy-webhook"
+        - matchers:
           - severity=~"etl"
           - cluster=~"production"
           receiver: "slack-etl"
@@ -243,6 +305,10 @@ alertmanager:
           - namespace=~"etl"
           - cluster=~"production"
           receiver: "slack-etl"
+        - matchers:
+          - severity=~"paste"
+          - cluster=~"production"
+          receiver: "slack-paste"
         - matchers:
           - alertname=~".*"
           receiver: "tekton-webhook-notifications-and-slack"

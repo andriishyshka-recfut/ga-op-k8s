@@ -2,7 +2,7 @@ variable "Cluster" {}
 variable "Color" {}
 variable "Settings" {}
 variable "SecretPath" {
-  default = "etl"
+  default = "wl/etl"
 }
 
 # data "vault_generic_secret" "clients" {
@@ -18,15 +18,21 @@ data "vault_kv_secrets_list_v2" "etl_clients_list" {
 
 
 locals {
-  clients   = nonsensitive(toset(data.vault_kv_secrets_list_v2.etl_clients_list.names))
-  namespace = "etl"
-  observerTag = var.Settings.clusters[var.Cluster].versions.etl.observer_tag
-  operatorTag = var.Settings.clusters[var.Cluster].versions.etl.operator_tag
-  ansibleScriptsTag = var.Settings.clusters[var.Cluster].versions.etl.ansible_scripts_tag
-  caminoTag = var.Settings.clusters[var.Cluster].versions.etl.camino_tag
-  gs2s3Tag = var.Settings.clusters[var.Cluster].versions.etl.gs2s3_tag
-  elasticCertsPath = "secret/es-creds-compose-prod"
-  elasticSecretsPrefix = var.Cluster == "production" ? "" : "-ext"
-  elasticSecretsPath = var.Cluster == "production" ? "/secret/data/es-creds-compose-prod/metaCamino" : "/secret/data/elasticsearch-admin/elastic7-v2"
+  clients               = nonsensitive(toset(data.vault_kv_secrets_list_v2.etl_clients_list.names))
+  namespace             = "etl"
+  observerTag           = var.Settings.clusters[var.Cluster].versions.etl.observer_tag
+  operatorTag           = var.Settings.clusters[var.Cluster].versions.etl.operator_tag
+  ansibleScriptsTag     = var.Settings.clusters[var.Cluster].versions.etl.ansible_scripts_tag
+  caminoTag             = var.Settings.clusters[var.Cluster].versions.etl.camino_tag
+  gs2s3Tag              = var.Settings.clusters[var.Cluster].versions.etl.gs2s3_tag
+  elasticCertsPath      = "secret/es-creds-compose-prod"
+  elasticSecretsPrefix  = var.Cluster == "production" ? "" : "-ext"
+  elasticSecretsPath    = var.Cluster == "production" ? "/secret/data/es-creds-compose-prod/metaCamino" : "/secret/data/elasticsearch-admin/elastic7-v2"
+  elasticSecretsPathNew = var.Cluster == "production" ? "secret/data/es-creds-compose-prod/metaCamino" : "secret/data/elasticsearch-admin/elastic7-v2"
+  #minio_endpoints       = var.Settings.clusters[var.Cluster].versions.etl.minio_endpoints
+
 }
+
+
+
 

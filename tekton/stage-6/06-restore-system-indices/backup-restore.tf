@@ -2,29 +2,29 @@ locals {
   monitoringEs = yamldecode(file("../../stage-1/01-monitoring/monitoring_elastic_settings.yaml"))
 }
 
-module "backup-service" {
+module "backup-system-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"
   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
   ElasticName          = local.monitoringEs.elastic_settings.elastic.esName
-  NamePrefix           = "backup-service-indexes"
-  BackupBucketName     = "xbackup"
+  NamePrefix           = "backup-system-indexes"
+  BackupBucketName     = "backup"
   BackupBucketBasePath = "es-backup/monitoring"
   EsService            = "mon-es-http"
   EsCreds              = "mon-es-elastic-user"
   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
-  Actions              = file("${path.root}/backup-actions.yaml")
+  Actions              = file("${path.root}/backup-system.yaml")
   Settings             = var.Settings
   providers = {
     kubernetes = kubernetes.kubernetes-inactive
   }
 }
 
-module "backup-lfb" {
+module "backup-lfb-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"
   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
   ElasticName          = local.monitoringEs.elastic_settings.elastic.esName
-  NamePrefix           = "backup-service-indexes"
-  BackupBucketName     = "xbackup"
+  NamePrefix           = "backup-lfb-indexes"
+  BackupBucketName     = "backup"
   BackupBucketBasePath = "es-backup/monitoring"
   EsService            = "mon-es-http"
   EsCreds              = "mon-es-elastic-user"
@@ -34,36 +34,36 @@ module "backup-lfb" {
   providers = {
     kubernetes = kubernetes.kubernetes-inactive
   }
-  depends_on = [module.backup-service]
+  depends_on = [module.backup-system-indexes]
 }
 
 
 
-# module "restore-service-indexes" {
+# module "restore-system-indexes" {
 #   source               = "../../../terraform-modules/k8s-es-curator"
 #   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
 #   ElasticName          = local.monitoringEs.elastic_settings.elastic.esName
-#   NamePrefix           = "restore-service-indexes"
-#   BackupBucketName     = "xbackup"
+#   NamePrefix           = "restore-system-indexes"
+#   BackupBucketName     = "backup"
 #   BackupBucketBasePath = "es-backup/monitoring"
 #   EsService            = "mon-es-http"
 #   EsCreds              = "mon-es-elastic-user"
 #   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
-#   Actions              = file("${path.root}/restore-actions.yaml")
+#   Actions              = file("${path.root}/restore-system.yaml")
 #   Settings             = var.Settings
-#   depends_on           = [module.backup-service]
+#   depends_on           = [module.backup-lfb-indexes]
 # }
 # module "restore-lfb-indexes" {
 #   source               = "../../../terraform-modules/k8s-es-curator"
 #   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
 #   ElasticName          = local.monitoringEs.elastic_settings.elastic.esName
 #   NamePrefix           = "restore-lfb-indexes"
-#   BackupBucketName     = "xbackup"
+#   BackupBucketName     = "backup"
 #   BackupBucketBasePath = "es-backup/monitoring"
 #   EsService            = "mon-es-http"
 #   EsCreds              = "mon-es-elastic-user"
 #   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
-#   Actions              = file("${path.root}/restore-lfb-action.yaml")
+#   Actions              = file("${path.root}/restore-lfb.yaml")
 #   Settings             = var.Settings
-#   depends_on           = [module.restore-service-indexes]
+#   depends_on           = [module.restore-system-indexes]
 # }

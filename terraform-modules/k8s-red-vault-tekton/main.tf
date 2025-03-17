@@ -95,6 +95,7 @@ resource "null_resource" "crds" {
     pipeline    = md5(file("${path.module}/pipeline.yaml"))
     pipelinerun = md5(file("${path.module}/pipelinerun.yaml"))
     webhook     = md5(file("${path.module}/webhook.yaml"))
+    logstash    = md5(file("${path.module}/logstash.yaml"))
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
@@ -119,6 +120,11 @@ resource "null_resource" "crds" {
       --token ${local.gkeBearerToken}  \
       --insecure-skip-tls-verify=true  \
       apply -f ${path.module}/pipelinerun.yaml \
+      --namespace=${local.tektonNs}
+    kubectl --server ${local.gkeClusterEndpoint} \
+      --token ${local.gkeBearerToken}  \
+      --insecure-skip-tls-verify=true  \
+      apply -f ${path.module}/logstash.yaml \
       --namespace=${local.tektonNs}
 
 COMMAND

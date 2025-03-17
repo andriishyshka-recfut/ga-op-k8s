@@ -21,14 +21,14 @@ spec:
           There are unsent files on logstash-pipelines bucket
         summary: ETL has leftovers on bucket
       expr: |
-        sum_over_time ( unsent_etl_files[30m] ) > 0
-      for: 30m
+        unsent_etl_files > 0
+      for: 15m
       labels:
         cluster: ${cluster_label}
         component: stream-processor
         severity: critical
-  - interval: 30m
-    name: Some of ETL jobs are failed
+  - interval: 5m
+    name: Failed etl jobs
     rules:
     - alert: ETLJobsFailed
       annotations:
@@ -43,6 +43,9 @@ spec:
         color: ${cluster_color}
         component: stream-processor
         severity: etl
+  - interval: 30m
+    name: Some of ETL jobs are failed
+    rules:
     - alert: ETLPodsPending
       annotations:
         description: |

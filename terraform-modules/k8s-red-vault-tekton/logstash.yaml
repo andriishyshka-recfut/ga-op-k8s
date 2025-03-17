@@ -1,0 +1,213 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: logstash-inodes-restart-sa
+  namespace: tekton-pipelines
+imagePullSecrets:
+  - name: harbor
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: logstash-inodes-restart-cr
+rules:
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get","list","patch"]
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: logstash-inodes-restart-crb
+subjects:
+  - kind: ServiceAccount
+    name: logstash-inodes-restart-sa
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: logstash-inodes-restart-cr
+  apiGroup: rbac.authorization.k8s.io
+  
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: logstash-inodes-restart-eventlistener-crb-r
+subjects:
+  - kind: ServiceAccount
+    name: logstash-inodes-restart-sa
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: logstash-inodes-restart-eventlistener-crb-cr
+subjects:
+  - kind: ServiceAccount
+    name: logstash-inodes-restart-sa
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-clusterroles
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: logstash-inodes-webhook-alertmanager-listener
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: logstash-inodes-restart-sa
+  triggers:
+  - name: logstash-inodes-restart-filter
+    interceptors:
+    - ref:
+        name: "cel"
+      params:
+      - name: "filter"
+        value: body.groupLabels.alertname == 'LogstashPipelinesRestart'
+      - name: "overlays"
+        value:
+        - key: persistentvolumeclaim
+          expression: "body.alerts.map(x, x.labels).map(y, y.persistentvolumeclaim).join(' ')"                  
+    bindings:
+      - ref: logstash-inodes-restart-binding
+        kind: TriggerBinding 
+    template:
+      ref: logstash-inodes-restart-template
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: logstash-inodes-restart-binding
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: persistentvolumeclaim
+    value: $(extensions.persistentvolumeclaim)
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: logstash-inodes-restart-template
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: persistentvolumeclaim
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: logstash-inodes-restart-
+      spec:
+        serviceAccountName: logstash-inodes-restart-sa
+        pipelineRef:
+          name: logstash-inodes-restart
+        params:
+        - name: persistentvolumeclaim
+          value: $(tt.params.persistentvolumeclaim)
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: logstash-inodes-restart-trigger
+  namespace: tekton-pipelines
+spec:
+  bindings:
+  - ref: logstash-inodes-restart-binding
+  template:
+    ref: logstash-inodes-restart-template
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: logstash-inodes-restart
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: logstash-inodes-restart-sa
+  pipelineRef:
+    name: logstash-inodes-restart
+  params:
+  - name: persistentvolumeclaim
+    value: $(params.persistentvolumeclaim)
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: logstash-inodes-restart
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: persistentvolumeclaim
+  tasks:
+  - name: logstash-inodes-restart
+    taskRef:
+      name: logstash-inodes-restart
+    params:
+    - name: persistentvolumeclaim
+      value: $(params.persistentvolumeclaim)
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: logstash-inodes-restart
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: persistentvolumeclaim
+  steps:
+    - name: logstash-inodes-restart
+      image: harbor.regemini.io/op/tf:latest
+      env:
+      - name: TF_VAR_Color
+        valueFrom:
+          configMapKeyRef:
+            key: color
+            name: cluster-settings
+      - name: CLUSTER
+        valueFrom:
+          configMapKeyRef:
+            key: cluster
+            name: cluster-settings
+      - name: CONF_PATH
+        valueFrom:
+          configMapKeyRef:
+            key: configPath
+            name: cluster-settings
+      - name: VAULT_ADDR
+        valueFrom:
+          configMapKeyRef:
+            key: vaultAddr
+            name: cluster-settings      
+      script: |
+        #! /bin/bash
+        set -x
+        IFS=' '
+        for PVC_NAME in $(params.persistentvolumeclaim); do
+          export LOGSTASH_NAME="$(echo $PVC_NAME | awk -F- '{print $(NF-1)"-"$NF}')"
+          echo "Restarting logstash $LOGSTASH_NAME..."
+          kubectl rollout restart statefulset -n elastic ${LOGSTASH_NAME}
+        done

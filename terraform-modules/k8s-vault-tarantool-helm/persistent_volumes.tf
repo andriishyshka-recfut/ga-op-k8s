@@ -27,7 +27,7 @@ data "google_compute_disk" "tarantool_etcd_pv" {
 resource "kubernetes_persistent_volume" "tarantool_storage_pv" {
   count = local.tarantool_storage_count
   metadata {
-    name = "tarantool-vortex-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}-pv"
+    name = "${local.tarantool_storage_prefix}-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}-pv"
     labels = {
       target = local.tarantool_storage_prefix
     }
@@ -44,7 +44,7 @@ resource "kubernetes_persistent_volume" "tarantool_storage_pv" {
     persistent_volume_source{
       csi {
         driver = "pd.csi.storage.gke.io"
-        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.tarantool_storage_pv[count.index].zone}/disks/tarantool-vortex-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
+        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.tarantool_storage_pv[count.index].zone}/disks/tarantool2-vortex-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
       }
     }
   node_affinity {
@@ -83,7 +83,7 @@ resource "kubernetes_persistent_volume" "tarantool_router_pv" {
     persistent_volume_source{
       csi {
         driver = "pd.csi.storage.gke.io"
-        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.tarantool_router_pv[count.index].zone}/disks/tarantool-vortex-router-${count.index}-0"
+        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.tarantool_router_pv[count.index].zone}/disks/tarantool2-vortex-router-${count.index}-0"
       }
     }
   node_affinity {
@@ -123,7 +123,7 @@ resource "kubernetes_persistent_volume" "tarantool_etcd_pv" {
     persistent_volume_source{
       csi {
         driver = "pd.csi.storage.gke.io"
-        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.tarantool_etcd_pv[count.index].zone}/disks/tarantool-etcd-${count.index}"
+        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.tarantool_etcd_pv[count.index].zone}/disks/tarantool2-etcd-${count.index}"
       }
     }
   node_affinity {

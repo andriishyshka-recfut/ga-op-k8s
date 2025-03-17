@@ -1,8 +1,15 @@
+# data "kubectl_file_documents" "fluxcd2_podmonitor" {
+#   content = file("${path.module}/fluxcd-podmonitor.yaml")
+# }
 
-resource "kubectl_manifest" "fluxcd2_podmonitor" {
-  yaml_body = file("${path.module}/fluxcd-podmonitor.yaml")
-}
+# resource "kubectl_manifest" "fluxcd2_podmonitor" {
+#   yaml_body = file("${path.module}/fluxcd-podmonitor.yaml")
+# }
 
+# resource "kubernetes_manifest" "fluxcd2_podmonitor" {
+#   count    = 1
+#   manifest = yamldecode(element(data.kubectl_file_documents.fluxcd2_podmonitor.documents, count.index))
+# }
 data "http" "grafana_dashboard_fluxcd1" {
   url = "https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/cluster.json"
 

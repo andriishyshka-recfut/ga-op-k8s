@@ -1,9 +1,11 @@
 locals {
   KibanaSettings = {
     ga = {
-      replicas      = 3,
-      publicBaseUrl = "https://k.regemini.com"
-      namespace     = "elastic"
+      basic_auth          = true,
+      replicas            = 3,
+      publicBaseUrl       = "https://k.regemini.com"
+      maxImportExportSize = 105000
+      namespace           = "elastic"
       authorizations = {
         geminiadvisory = {
           type  = "saml",
@@ -11,6 +13,20 @@ locals {
         }
       }
       kibana_xpack_secrets = "secret/red/kibana"
+    },
+    recordedfuture = {
+      replicas            = 1,
+      publicBaseUrl       = "https://kk.regemini.com"
+      maxImportExportSize = 105000
+      namespace           = "elastic"
+      authorizations = {
+        okta = {
+          type        = "okta",
+          realm       = "recordedfuture"
+          description = "Log in with OKTA/RecordedFuture"
+        }
+      }
+      kibana_xpack_secrets = "secret/mw/kibana/xpack_secrets/recordedfuture"
     }
   }
 }

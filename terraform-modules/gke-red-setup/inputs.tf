@@ -27,7 +27,7 @@ locals {
   isPreemptible       = lookup(var.Settings.clusters[var.Cluster], "preemptible", true)
   defaultMachineType  = lookup(var.Settings.clusters[var.Cluster], "defaultMachineType", "e2-standard-4")
   additionalNodepools = var.Settings.clusters[var.Cluster].additionalNodepools
-  redPods             = var.Settings.clusters[var.Cluster]["red"].pods_subnet_range
+  redPods             = var.Settings.clusters[var.Cluster]["red"].subnets.pods_secondary_range
   gkeKmsVolumeKey     = var.Settings.clusters[var.Cluster].persistent_resources.gke_kms_volume_key
   gkeRegion           = var.Settings.clusters[var.Cluster].region
 }

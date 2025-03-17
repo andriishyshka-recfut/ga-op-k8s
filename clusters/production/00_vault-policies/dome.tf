@@ -1,13 +1,16 @@
-
-
 resource "vault_policy" "dome" {
-  name = "dome"
-
+  name   = "dome"
   policy = <<EOT
 path "secret/data/minio/users" {
   capabilities = ["read","list"]
 }
+path "secret/data/wl/threads/sheet" {
+  capabilities = ["read","list"]
+}
 path "secret/data/es-creds-compose-prod/dome" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/elastic*" {
   capabilities = ["read","list"]
 }
 path "secret/data/mongo/production" {

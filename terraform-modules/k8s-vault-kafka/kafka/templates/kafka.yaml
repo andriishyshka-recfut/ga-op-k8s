@@ -3,12 +3,10 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: kafka-cluster
-annotations:
+  annotations:
     strimzi.io/node-pools: enabled
-    strimzi.io/kraft: migration
+    strimzi.io/kraft: enabled
 
-    # Switch during Prod DR migration
-    # strimzi.io/kraft: enabled
 spec:
   kafka:
     template:
@@ -80,40 +78,3 @@ spec:
     topicOperator: {}
     userOperator: {}
 
-
-# Delete Zookeeper after switching to Kraft
-  zookeeper:
-    replicas: {{ .Values.replicas }}
-    template:
-      pod:
-        metadata:
-          annotations:
-            sidecar.istio.io/inject: False
-
-        tolerations:
-          - key: "workloadsType"
-            operator: "Exists"
-            effect: "NoSchedule"
-        affinity:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - matchExpressions:
-                - key: workloadsType
-                  operator: In
-                  values:
-                  - data
-    resources:
-      limits:
-        cpu: 1
-        memory: 2G
-      requests:
-        cpu: 0.1
-        memory: 100M
-    storage:
-      type: persistent-claim
-      size: {{ .Values.zookeeperDiskSize }}
-      selector:
-        target: kafka-zookeeper
-      deleteClaim: true
-      class: ""

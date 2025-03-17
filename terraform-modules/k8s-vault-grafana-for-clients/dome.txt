@@ -1,4 +1,5 @@
 0x00sec
+altcoinstalks
 altenen
 antichat
 antimigalki
@@ -8,7 +9,6 @@ bhf
 bitcointalk
 blackbiz
 blackbones
-blackhacker
 blackhatprotools
 blackhatworld
 blasthack
@@ -37,12 +37,14 @@ cyberbreach
 cybercarders
 cweb
 dark2web
+darkclub
 darkmarket
 darkmoney
 darktime
 demonforums
 dread
 dublikat
+dutyfree
 elhacker
 enclave
 exploit.in
@@ -58,6 +60,7 @@ hacklife
 hak5
 hashkiller
 hpc
+hohekammer
 hydramarket
 imthack
 instanthack
@@ -71,7 +74,6 @@ level23hacktools
 lolzteam
 migalki
 mmgp
-moon
 mpgh
 navigator
 niflheim
@@ -80,6 +82,7 @@ nulledbb
 nohide
 ogusers
 omerta
+opencard
 patched
 piratebuhta
 probiv
@@ -94,8 +97,10 @@ shadowcarders
 sinisterly
 skynetzone
 slivup
+threads
 ufolabs
 underc0de
+v80team
 validmarket
 verified
 veryleaks

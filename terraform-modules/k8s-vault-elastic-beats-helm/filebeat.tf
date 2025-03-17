@@ -18,7 +18,7 @@ resource "helm_release" "filebeat" {
 }
 
 resource "null_resource" "workload_readiness_check" {
-
+  count = length(var.filebeat_groups) > 0 ? 1 : 0
   triggers = {
     filebeats_check = md5(file("${path.module}/${local.filebeat_check_script_path}"))
     workload_readiness = md5(file("${path.module}/${local.workload_check_module_path}"))
@@ -42,6 +42,7 @@ COMMAND
 }
 
 resource "kubernetes_secret" "python_script" {
+  count = length(var.filebeat_groups) > 0 ? 1 : 0
   metadata {
     name      = "${helm_release.filebeat.name}-script"
     namespace = local.elasticSettings.globalSettings.namespace
@@ -52,6 +53,7 @@ resource "kubernetes_secret" "python_script" {
 }
 
 resource "kubernetes_job" "python_script" {
+  count = length(var.filebeat_groups) > 0 ? 1 : 0
   metadata {
     name      = "${helm_release.filebeat.name}-script-job"
     namespace = local.elasticSettings.globalSettings.namespace

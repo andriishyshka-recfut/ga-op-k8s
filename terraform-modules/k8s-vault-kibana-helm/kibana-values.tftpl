@@ -14,13 +14,13 @@ podAnnotations:
   co.elastic.logs/json.expand_keys: "true"
 envFrom:
   - secretRef:
-      name: kibana-credentials
+      name: kibana-${kibana_name}-credentials
 extraEnvs:
   - name: "SERVER_NAME"
     valueFrom:
       fieldRef:
         fieldPath: metadata.name
-replicas: ${replicas}
+replicas: ${settings.replicas}
 fullnameOverride: kb-${kibana_name}
 updateStrategy:
   type: RollingUpdate
@@ -58,28 +58,37 @@ kibanaConfig:
         encryptionKey: ${kibana_xpack_secrets.encryptedSavedObjectsEncryptionKey}
       security:
         encryptionKey: ${kibana_xpack_secrets.securityEncryptionKey}
+        cookieName: sc-${kibana_name}
         session:
           idleTimeout: "1d"
           lifespan: "30d"
+          cleanupInterval: "1d"
         audit:
           enabled: "true"
         authc:
+          selector: 
+            enabled: "true"
           providers:
+%{ if lookup(settings, "basic_auth", false) ~}
             basic:
               basic1:
-                order: 1
-%{ if length(authorizations) > 0 ~}
-%{ for auth_key, auth in authorizations ~}
-            ${auth.type}:
+                order: 0
+%{ endif ~}
+%{ if length(settings.authorizations) > 0 ~}
+%{ for auth_key, auth in settings.authorizations ~}
+            %{ if auth.type == "okta" || auth.type == "oidc" ~}oidc%{ else ~}${auth.type}%{ endif ~}:
               ${auth_key}:
-                order: ${index(keys(authorizations), auth_key) + 2}
+                order: ${index(keys(settings.authorizations), auth_key) + order_counter }
                 realm: ${auth.realm}
+                description: %{if lookup(auth, "description",false) != false} ${auth.description} %{else}Log in with ${auth.type}/${auth.realm} %{ endif }
 %{ endfor ~}
 %{ endif ~}
     server:
       host: "0.0.0.0"
-      publicBaseUrl: ${publicBaseUrl}
+      publicBaseUrl: ${settings.publicBaseUrl}
       ssl:
         supportedProtocols:
         - TLSv1.2
         - TLSv1.3
+    savedObjects:
+      maxImportExportSize: ${settings.maxImportExportSize}

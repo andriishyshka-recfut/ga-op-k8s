@@ -60,37 +60,37 @@ spec:
         component: stream-processor
         severity: warning
 
----
+# ---
 
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
-metadata:
-  namespace: monitoring
-  name: bots.dome.queue-reader-active-workers
-  labels:
-    app: prometheus
-    app.kubernetes.io/instance: prometheus
-    app.kubernetes.io/part-of: prometheus
-    prometheus: k8s
-    release: prometheus
-    role: alert-rules
-spec:
-  groups:
-  - interval: 30m
-    name: Bots dome queue_reader_active_workers
-    rules:
-    - alert: BotsDomeHealthchekQueueReaderActiveWorkers
-      annotations:
-        description: |
-          Something wrong with dome bots queue_reader_active_workers
-        summary: Something wrong with dome bot container {{ $labels.container }} with topic {{ $labels.topic }}
-      expr: |
-        max_over_time(queue_reader_active_workers{topic=~"dome.*"}[12h]) == 0 
-      for: 24h
-      labels:
-        cluster: ${cluster_label}
-        component: stream-processor
-        severity: warning
+# apiVersion: monitoring.coreos.com/v1
+# kind: PrometheusRule
+# metadata:
+#   namespace: monitoring
+#   name: bots.dome.queue-reader-active-workers
+#   labels:
+#     app: prometheus
+#     app.kubernetes.io/instance: prometheus
+#     app.kubernetes.io/part-of: prometheus
+#     prometheus: k8s
+#     release: prometheus
+#     role: alert-rules
+# spec:
+#   groups:
+#   - interval: 30m
+#     name: Bots dome queue_reader_active_workers
+#     rules:
+#     - alert: BotsDomeHealthchekQueueReaderActiveWorkers
+#       annotations:
+#         description: |
+#           Something wrong with dome bots queue_reader_active_workers
+#         summary: Something wrong with dome bot container {{ $labels.container }} with topic {{ $labels.topic }}
+#       expr: |
+#         max_over_time(queue_reader_active_workers{topic=~"dome.*"}[12h]) == 0 
+#       for: 24h
+#       labels:
+#         cluster: ${cluster_label}
+#         component: stream-processor
+#         severity: warning
 
 ---
 

@@ -5,20 +5,6 @@ data "google_compute_disk" "kafka_data_pv" {
   zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
 }
 
-# data "google_compute_disk" "kafka_zookeeper_pv" {
-#   count   = local.kafka_count
-#   name    = "${local.zookeeper_prefix}-${count.index}"
-#   project = var.Settings.gcpProject
-#   zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
-# }
-
-data "google_compute_disk" "kafka_controller_pv" {
-  count   = local.kafka_count
-  name    = "${local.controller_prefix}-${count.index}"
-  project = var.Settings.gcpProject
-  zone    = element([for i in range(local.kafka_count) : element(local.zones, i % 3)], count.index)
-}
-
 data "google_compute_disk" "mongo_data_pv" {
   count   = local.mongo_count
   name    = "${local.mongo_prefix}-${count.index}"
@@ -36,6 +22,13 @@ data "google_compute_disk" "mongo_auth_data_pv" {
 data "google_compute_disk" "minio_data_pv" {
   count   = local.minio_count
   name    = "${local.minio_prefix}-${count.index}"
+  project = var.Settings.gcpProject
+  zone    = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+}
+
+data "google_compute_disk" "postgres_data_pv" {
+  count   = local.postgres_count
+  name    = "postgres-data-${count.index}"
   project = var.Settings.gcpProject
   zone    = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
 }
@@ -83,17 +76,17 @@ resource "google_compute_snapshot" "kafka_snapshot" {
 # }
 
 
-resource "google_compute_snapshot" "kafka_controller_snapshot" {
-  count       = local.kafka_count
-  name        = "${local.controller_prefix}-${count.index}-dr-${local.backupdate}"
-  source_disk = data.google_compute_disk.kafka_controller_pv[count.index].self_link
-  zone        = data.google_compute_disk.kafka_controller_pv[count.index].zone
-  labels = {
-    target = "kafka-controller"
-    id     = "${local.controller_prefix}-${count.index}"
-  }
-  storage_locations = [local.region]
-}
+# resource "google_compute_snapshot" "kafka_controller_snapshot" {
+#   count       = local.kafka_count
+#   name        = "${local.controller_prefix}-${count.index}-dr-${local.backupdate}"
+#   source_disk = data.google_compute_disk.kafka_controller_pv[count.index].self_link
+#   zone        = data.google_compute_disk.kafka_controller_pv[count.index].zone
+#   labels = {
+#     target = "kafka-controller"
+#     id     = "${local.controller_prefix}-${count.index}"
+#   }
+#   storage_locations = [local.region]
+# }
 
 
 
@@ -134,6 +127,18 @@ resource "google_compute_snapshot" "mongo_auth_snapshot" {
   storage_locations = [local.region]
 }
 
+
+resource "google_compute_snapshot" "postgres_snapshot" {
+  count       = local.postgres_count
+  name        = "postgres-data-${count.index}-dr-${local.backupdate}"
+  source_disk = data.google_compute_disk.postgres_data_pv[count.index].self_link
+  zone        = data.google_compute_disk.postgres_data_pv[count.index].zone
+  labels = {
+    target = "postgres"
+    id     = "postgres-data-${count.index}"
+  }
+  storage_locations = [local.region]
+}
 
 resource "google_compute_snapshot" "tarantool_router_snapshot" {
   count       = local.tarantool_router_count

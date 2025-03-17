@@ -33,7 +33,7 @@ provider "kubernetes" {
 terraform {
   backend "gcs" {
     bucket = "terraform-state-production111"
-    prefix = "terraform-production-lb-switch/state-2024-05-25"
+    prefix = "terraform-production-lb-switch/state-2025-03-01"
   }
 }
 

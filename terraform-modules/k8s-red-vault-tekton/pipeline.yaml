@@ -18,24 +18,3 @@ spec:
           value: "k8s/tekton/01-namespaces"
         - name: branch
           value: "master"
----
-apiVersion: tekton.dev/v1
-kind: Pipeline
-metadata:
-  name: logstash-inodes-restart
-  namespace: tekton-tasks
-spec:
-  workspaces:
-    - name: ws
-  tasks:
-    - name: logstash-inodes-stuck-restart
-      taskRef:
-        name: tg-run
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/red/logstash-inodes-stuck-restart"
-        - name: branch
-          value: "master"

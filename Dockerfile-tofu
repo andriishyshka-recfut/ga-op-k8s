@@ -9,9 +9,6 @@ RUN apk add python3 py3-pip unzip py3-virtualenv bash python3-dev libffi-dev bui
 RUN cd / && python3 -m venv ansible && \
     bash -c "source /ansible/bin/activate && pip install --upgrade pip && pip install ansible pyyaml==5.3.1 docker-compose jmespath kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl kafka-python"
 
-
-FROM --platform=linux/amd64 openjdk:18-jdk-alpine as java
-
 FROM --platform=linux/amd64 alpine:latest
 
 
@@ -20,10 +17,6 @@ COPY --from=curl /tmp/kubectl /bin/kubectl
 COPY --from=curl /tmp/terragrunt /bin/terragrunt
 COPY --from=curl /tmp/opentofu.apk /tmp/opentofu.apk
 COPY --from=ansible /ansible /ansible
-COPY --from=java /opt/openjdk-18 /opt/openjdk-18
-COPY --from=java /etc/ssl/certs/java/cacerts /etc/ssl/certs/java/cacerts
-
-ENV JAVA_HOME=/opt/openjdk-18
 
 
 RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git && \

@@ -1,0 +1,11 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: ${ name }
+  namespace: ${ lookup(values ,"namespace", globals.namespace) }
+spec:
+  interval: 30s
+  type: ${ values.type}
+  url: ${ values.url}
+  secretRef:
+    name: ${ lookup(values ,"helm_credentials", globals.helm_credentials) }

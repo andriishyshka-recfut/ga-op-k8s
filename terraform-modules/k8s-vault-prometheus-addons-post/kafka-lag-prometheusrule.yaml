@@ -12,45 +12,86 @@ metadata:
     role: alert-rules
 spec:
   groups:
-  - interval: 1m
-    name: Kafka consumer lag
-    rules:
-    - expr: sum(rate(kafka_consumergroup_current_offset[60m])) by (consumergroup,topic)
-      record: kafka_consumer_rate
-    - expr: sum(kafka_consumergroup_lag{consumergroup=~"mage.*"}) by (consumergroup,topic)
-      record: kafka_consumer_lag
-    - alert: KafkaConsumerLagSeconds
-      annotations:
-        description: |
-          Kafka {{ $labels.topic }} lag is {{ $value }}
-        summary: Kafka consumer lag is increased or more than 100k (instance {{ $labels.instance
-          }})
-      expr: |
-        kafka_consumer_lag > 100000
-        # or
-        # kafka_consumer_rate > 30
-      for: 5m
-      labels:
-        cluster: ${cluster_label}
-        component: stream-processor
-        severity: critical
-    - alert: MinionLagMoreThanAmillion
-      annotations:
-        description: |
-          Something wrong with minion topic
-        summary: Something wrong with minion topic. Probably upsertminion or beat-minion stuck.
-      expr: |
-        sum(kafka_consumergroup_lag{consumergroup="beatMinion",topic=~"minion.beat.*"}) > 1000000
-      labels:
-        cluster: ${cluster_label}
-        severity: critical
-    - alert: DomeLagMoreThanAOneHundredThouthants
-      annotations:
-        description: |
-          Something wrong with minion topic
-        summary: Something wrong with minion topic. Probably upsertdome or beat-dome stuck.
-      expr: |
-        sum(kafka_consumergroup_lag{consumergroup="beat",topic=~"dome.beat.*"}) > 100000
-      labels:
-        cluster: ${cluster_label}
-        severity: critical
+    - interval: 1m
+      name: Kafka consumer lag
+      rules:
+        - expr: sum(rate(kafka_consumergroup_current_offset[60m])) by (consumergroup,topic)
+          record: kafka_consumer_rate
+        - expr: sum(kafka_consumergroup_lag{consumergroup=~"mage.*"}) by (consumergroup,topic)
+          record: kafka_consumer_lag
+        - alert: KafkaConsumerLagSeconds
+          annotations:
+            description: |
+              Kafka {{ $labels.topic }} lag is {{ $value }}
+            summary:
+              Kafka consumer lag is increased or more than 100k (instance {{ $labels.instance
+              }})
+          expr: |
+            kafka_consumer_lag > 100000
+            # or
+            # kafka_consumer_rate > 30
+          for: 5m
+          labels:
+            cluster: ${cluster_label}
+            component: stream-processor
+            severity: critical
+        - alert: MinionLagMoreThanAOneHundredThousands
+          annotations:
+            description: |
+              Something wrong with minion topic
+            summary: Something wrong with minion topic. Probably upsertminion or beat-minion stuck.
+          expr: |
+            sum(kafka_consumergroup_lag{consumergroup="beatMinion",topic=~"minion.beat.*"}) > 100000
+          labels:
+            cluster: ${cluster_label}
+            severity: critical
+        - alert: DomeLagMoreThanAOneHundredThousands
+          annotations:
+            description: |
+              Something wrong with minion topic
+            summary: Something wrong with minion topic. Probably upsertdome or beat-dome stuck.
+          expr: |
+            sum(kafka_consumergroup_lag{consumergroup="beat",topic=~"dome.beat.*"}) > 100000
+          labels:
+            cluster: ${cluster_label}
+            severity: critical
+        - alert: BeatBirlLagMoreThanAOneThousands
+          annotations:
+            description: |
+              Something wrong with birl topic
+            summary: Something wrong with birl topic. Probably upsertbirl or beat-birl stuck.
+          expr: |
+            sum(kafka_consumergroup_lag{consumergroup="beatBirl",topic=~"birl"}) > 1000
+          labels:
+            cluster: ${cluster_label}
+            severity: critical
+        - alert: UpsertBirlLagMoreThanAOneThousands
+          annotations:
+            description: |
+              Something wrong with birl.upsert topic
+            summary: Something wrong with birl.upsert topic. Probably upsertbirl stuck.
+          expr: |
+            sum(kafka_consumergroup_lag{consumergroup="upsertBirl",topic=~"birl.upsert"}) > 1000
+          labels:
+            cluster: ${cluster_label}
+            severity: critical
+        - alert: OcrTelegramLagMoreThanAEigthThousands
+          annotations:
+            description: |
+              Something wrong with attachment.ocr.telegram topic
+            summary: Something wrong with attachment.ocr.telegram topic. Probably telegram or ocr-telegram stuck.
+          expr: |
+            sum(kafka_consumergroup_lag{consumergroup="ocr",topic=~"attachment.ocr.telegram"}) > 8000
+          labels:
+            cluster: ${cluster_label}
+            severity: critical
+        - alert: OcrAWS2KafkaLagMoreThanATwoThousands
+          annotations:
+            description: |
+              Something wrong with attachment.ocr.aws2kafka topic
+            summary: Something wrong with attachment.ocr.aws2kafka topic. Probably telegram or ocr-aws2kafka stuck.
+          expr: |
+            sum(kafka_consumergroup_lag{consumergroup="ocr",topic=~"attachment.ocr.aws2kafka"}) > 2000
+          labels:
+            cluster: ${cluster_label}
+            severity: critical

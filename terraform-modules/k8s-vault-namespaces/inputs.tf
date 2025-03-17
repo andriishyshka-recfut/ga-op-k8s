@@ -24,19 +24,7 @@ locals {
     if can(namespace.admins)
   }
   developers = [
-    "askat.abdikary@geminiadvisory.io",
-    "vladyslav.martynenko@geminiadvisory.io",
-    "anton@geminiadvisory.io",
-    "eugene@geminiadvisory.io",
-    "nikita.leonov@geminiadvisory.io",
-    "valerii.korolov@geminiadvisory.io",
-    "serhii.hutsaliuk@geminiadvisory.io",
-    "mykhailo.kalashnikov@geminiadvisory.io",
-    "oleh.babenko@geminiadvisory.io",
-    "oleh.lialin@geminiadvisory.io",
-    "oleksii.osinnii@geminiadvisory.io",
-    "yehor.dudukin@geminiadvisory.io",
-    "oleksandr.negoda@geminiadvisory.io"
+    "dev@geminiadvisory.io"
   ]
   namespaceDevAccess = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [
@@ -46,6 +34,10 @@ locals {
 
   injectHarborImagePullSecrets = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "injectHarborImagePullSecrets", false)
+  ]))
+
+  injectHarborUserPassword = toset(flatten([
+    for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "harborUserPassword", false)
   ]))
 
   injectApmSecrets = toset(flatten([

@@ -9,8 +9,11 @@ xpack.security.authc.providers:
   oidc.Google:
     order: 1
     realm: google
-  basic.basic1:
+  oidc.okta:
     order: 2
+    realm: okta 
+  basic.basic1:
+    order: 3
 #   saml.gsuite:
 #     order: 0
 #     realm: {{ .Values.saml_provider.realm }}

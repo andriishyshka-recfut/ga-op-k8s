@@ -1,24 +1,22 @@
-resource "kubernetes_service_account" "vault_sa" {
+data "kubernetes_service_account" "cert_manager" {
   metadata {
-    name      = "vault-sa"
+    name      = "${var.Cluster}-cert-manager"
     namespace = "kube-system"
   }
+  depends_on = [
+    kubernetes_secret_v1.cert_manager
+  ]
 }
 
-resource "kubernetes_cluster_role_binding" "vault_sa" {
+resource "kubernetes_secret_v1" "cert_manager" {
   metadata {
-    name = "vault-sa"
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "system:auth-delegator"
-  }
-  subject {
-    kind      = "ServiceAccount"
-    name      = "vault-sa"
     namespace = "kube-system"
+    name      = "sa-${var.Cluster}-cert-manager"
+    annotations = {
+      "kubernetes.io/service-account.name" = "${var.Cluster}-cert-manager"
+    }
   }
+  type = "kubernetes.io/service-account-token"
 }
 
 resource "vault_mount" "pki_elastic_int" {
@@ -47,13 +45,27 @@ resource "vault_pki_secret_backend_root_cert" "elastic_int" {
 }
 
 resource "vault_pki_secret_backend_role" "role" {
-  depends_on         = [vault_pki_secret_backend_root_cert.elastic_int]
-  backend            = vault_mount.pki_elastic_int.path
-  name               = "elastic"
-  max_ttl            = 32832000
-  key_type           = "rsa"
-  key_bits           = 2048
-  allowed_domains    = ["mon-es-http",  "mon-es-http.monitoring.svc", "elastic-es-http", "elastic-es-http.elastic.svc", "elastic-es-http.elastic",  "elasticsearch-coor", "red-coor.elastic.svc", "red-coor", "red-coor.elastic.svc"]
+  depends_on = [vault_pki_secret_backend_root_cert.elastic_int]
+  backend    = vault_mount.pki_elastic_int.path
+  name       = "elastic"
+  max_ttl    = 32832000
+  key_type   = "rsa"
+  key_bits   = 2048
+  allowed_domains = [
+    "mon-es-http",
+    "mon-es-http.monitoring.svc",
+    "elastic-es-http",
+    "elastic-es-http.elastic.svc",
+    "elastic-es-http.elastic",
+    "elasticsearch-coor",
+    "red-coor.elastic.svc",
+    "red-coor",
+    "red-coor.elastic.svc",
+    "*.red-ingest-headless.elastic.svc",
+    "*.red-data-headless.elastic.svc",
+    "*.red-coor-headless.elastic.svc",
+    "*.red-master-headless.elastic.svc"
+  ]
   allow_subdomains   = true
   allow_localhost    = true
   allow_bare_domains = true
@@ -64,26 +76,6 @@ resource "vault_pki_secret_backend_role" "role" {
   province           = ["FL"]
 }
 
-data "kubernetes_service_account" "cert_manager" {
-  metadata {
-    name      = "production-cert-manager"
-    namespace = "kube-system"
-  }
-}
-
-data "kubernetes_secret" "cert_manager" {
-  metadata {
-    name      = data.kubernetes_service_account.cert_manager.default_secret_name
-    namespace = "kube-system"
-  }
-}
-
-data "kubernetes_secret" "vault_sa" {
-  metadata {
-    name      = local.vault_auth_secret_name
-    namespace = "kube-system"
-  }
-}
 
 resource "vault_auth_backend" "k8s_production_red" {
   type = "kubernetes"
@@ -96,20 +88,24 @@ resource "vault_auth_backend" "k8s_production_red" {
 resource "vault_kubernetes_auth_backend_config" "k8s_production_red" {
   backend                = vault_auth_backend.k8s_production_red.path
   kubernetes_host        = vault_generic_secret.cluster_token.data["HOST"]
-  kubernetes_ca_cert     = data.kubernetes_secret.vault_sa.data["ca.crt"]
-  token_reviewer_jwt     = data.kubernetes_secret.vault_sa.data["token"]
+  kubernetes_ca_cert     = data.kubernetes_secret.vault.data["ca.crt"]
+  token_reviewer_jwt     = data.kubernetes_secret.vault.data["token"]
   issuer                 = "kubernetes/serviceaccount"
   disable_local_ca_jwt   = "true"
   disable_iss_validation = "true"
+  depends_on             = [data.kubernetes_secret.vault]
 }
 
-resource "vault_kubernetes_auth_backend_role" "k8s_production_red" {
-  backend                          = vault_auth_backend.k8s_production_red.path
+resource "vault_kubernetes_auth_backend_role" "role_cert-manager" {
+  backend                          = "k8s-${var.Cluster}-${var.Color}"
   role_name                        = "cert-manager"
-  bound_service_account_names      = ["vault-sa"]
+  bound_service_account_names      = ["${var.Cluster}-cert-manager"]
   bound_service_account_namespaces = ["kube-system"]
   token_ttl                        = 0
-  token_policies                   = ["pki", "default"]
+  token_policies                   = ["pki"]
+  depends_on = [
+    vault_kubernetes_auth_backend_config.k8s_production_red
+  ]
 }
 
 resource "vault_jwt_auth_backend" "jwt_red" {

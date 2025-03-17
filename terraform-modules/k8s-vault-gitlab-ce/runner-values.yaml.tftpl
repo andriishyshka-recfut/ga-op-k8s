@@ -12,6 +12,7 @@ runners:
         cpu_limit = "4"
         memory_request = "512Mi"
         memory_limit = "6Gi"
+        pull_policy = "if-not-present"
       [runners.kubernetes.affinity]
         [runners.kubernetes.affinity.node_affinity]
           [runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution]
@@ -24,6 +25,13 @@ runners:
                 ]
       [runners.kubernetes.node_tolerations]
         "workloadsType=gitlab-runners" = "NoSchedule"
+      [runners.kubernetes.pod_labels]
+        "job_id" = "$${CI_JOB_ID}"
+        "job_name" = "$${CI_JOB_NAME}"
+        "job_stage" = "$${CI_JOB_STAGE}"
+        "pipeline_id" = "$${CI_PIPELINE_IID}"
+        "project_name" = "$${CI_PROJECT_NAME}"
+        "project_namespace" = "$${CI_PROJECT_NAMESPACE}"
       [runners.cache]
         Type = "s3"
         Path = "cache"

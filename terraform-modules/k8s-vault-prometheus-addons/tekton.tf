@@ -22,11 +22,16 @@ resource "kubernetes_config_map" "tekton_dashboard" {
 
 }
 
-data "kubectl_file_documents" "tekton_yaml" {
-  content = file("${path.module}/tekton.yaml")
-}
-resource "kubectl_manifest" "tekton" {
-  # force_new = true
-  count     = 2
-  yaml_body = element(data.kubectl_file_documents.tekton_yaml.documents, count.index)
-}
+# data "kubectl_file_documents" "tekton_yaml" {
+#   content = file("${path.module}/tekton.yaml")
+# }
+# resource "kubectl_manifest" "tekton" {
+#   # force_new = true
+#   count     = 2
+#   yaml_body = element(data.kubectl_file_documents.tekton_yaml.documents, count.index)
+# }
+
+# resource "kubernetes_manifest" "tekton" {
+#   count    = 2
+#   manifest = yamldecode(element(data.kubectl_file_documents.tekton_yaml.documents, count.index))
+# }

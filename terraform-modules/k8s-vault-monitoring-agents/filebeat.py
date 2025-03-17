@@ -10,7 +10,7 @@ username = os.getenv('ELASTICSEARCH_USERNAME')
 password = os.getenv('ELASTICSEARCH_PASSWORD')
 elasticurl = os.getenv('ELASTICSEARCH_URL')
 filebeatversion = os.getenv("FILEBEAT_VERSION")
-requests_actions = {"check":"get","save":"put","ilm":"put","index":"put"}
+requests_actions = {"check":"get","alias":"get","delete":"delete","save":"put","ilm":"put","index":"put"}
 basic = HTTPBasicAuth(username,password)
 
 ilm_template = {
@@ -62,6 +62,12 @@ def do_request(request_type,template=None,name=None,ilm=None, index=None):
             if request_type == "check":
                 url = 'https://' + elasticurl + "/_index_template"
                 site_request = requests.get(url, verify=certca, auth=basic)
+            elif request_type == "alias":
+                url = 'https://' + elasticurl + '/' + name
+                site_request = requests.get(url,verify=certca, auth=basic)
+            elif request_type == "delete":
+                url = 'https://' + elasticurl + '/' + index + '/_alias/' + name
+                site_request = requests.delete(url,verify=certca, auth=basic)
             elif request_type == "save":
                 url = 'https://' + elasticurl + "/_index_template/" + name
                 site_request = requests.put(url, json=template, verify=certca, auth=basic)
@@ -76,7 +82,7 @@ def do_request(request_type,template=None,name=None,ilm=None, index=None):
             sys.exit()
         else:
             print ('{"request_type":"',request_type.strip(),'","message":"',http_response(site_request.status_code).strip(),'"}')
-            if site_request.status_code != 200:
+            if site_request.status_code != 200 and request_type != "alias":
                 print('{"message":"',site_request.text.strip(),'"}')
                 sys.exit()
             return site_request
@@ -105,9 +111,14 @@ for template in work_templates:
     if template not in site_templates:
         print(template)
         new_template = update_template(filebeat_template,template)
+        alias = do_request("alias",name=short_name(template))
+        if alias.status_code == 200:
+            index = list(alias.json().keys())[0]
+            print(index)
+            do_request("delete",index=index, name=short_name(template))
+        else:
+            print("Alias was not found")
         do_request("save", new_template, template)
         do_request("ilm", name=template, ilm=ilm_template)
         index_template = {"aliases": {short_name(template): {"is_write_index": 'true' }}}
         do_request("index", name=template, index=index_template)
-        
-

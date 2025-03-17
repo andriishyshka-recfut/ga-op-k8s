@@ -1,0 +1,29 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: kafka
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  replicas: {{ .Values.replicas }}
+  resources:
+    limits:
+      cpu: {{ .Values.cpuLimit }}
+      memory: {{ .Values.memLimit }}
+    requests:
+      cpu: {{ .Values.cpuReuest }}
+      memory: {{ .Values.memReuest }}
+  roles:
+    - broker
+    - controller
+  storage:
+    type: jbod
+    volumes:
+      - class: ""
+        deleteClaim: true
+        id: 0
+        selector:
+          target: kafka-data
+        size: {{ .Values.diskSize }}
+        type: persistent-claim

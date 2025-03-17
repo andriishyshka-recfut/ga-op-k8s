@@ -1,13 +1,13 @@
 locals {
-  ip_count = 13
-  nat_ips = [ for count_name in range(0,local.ip_count,1) : data.google_compute_address.ip_address[count_name].address]
+  ip_count = 14
+  nat_ips  = [for count_name in range(0, local.ip_count, 1) : data.google_compute_address.ip_address[count_name].address]
 }
 
 resource "google_compute_address" "ip_address" {
-  count = local.ip_count
-  name = "nat-${count.index}"
+  count        = local.ip_count
+  name         = "nat-${count.index}"
   address_type = "EXTERNAL"
-  ip_version = "IPV4"
+  ip_version   = "IPV4"
   labels = {
     type = "nat"
   }
@@ -15,7 +15,7 @@ resource "google_compute_address" "ip_address" {
 
 data "google_compute_address" "ip_address" {
   count = local.ip_count
-  name = "nat-${count.index}"
+  name  = "nat-${count.index}"
   depends_on = [
     google_compute_address.ip_address
   ]

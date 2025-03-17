@@ -11,7 +11,7 @@ resource "kubernetes_manifest" "virtualservice_minio_helm_minio_helm_virtualserv
         "istio-ingress/minio-helm-wg",
       ]
       "hosts" = [
-        "minio-helm.t.regemini.io",
+        "${local.minioFqdn}",
       ]
       "http" = [
         {

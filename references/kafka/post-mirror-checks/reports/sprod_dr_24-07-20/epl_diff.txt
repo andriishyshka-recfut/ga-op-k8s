@@ -1,0 +1,79 @@
+Topic: birl.telegram.backlog Group: <not associated> Partition: 0 L-Offset: 50787 -> 0 H-Offset: 51032 -> 0 Size: 245 -> 0 (diff 245) Lag: 
+Topic: birl.telegram.failed Group: <not associated> Partition: 0 L-Offset: 362050 -> 0 H-Offset: 465099 -> 0 Size: 103049 -> 0 (diff 103049) Lag: 
+Topic: checker.out Group: <not associated> Partition: 0 L-Offset: 1429 -> 0 H-Offset: 8952 -> 0 Size: 7523 -> 0 (diff 7523) Lag: 
+Topic: dome.altenen.post_vip_infinite Group: <not associated> Partition: 0 L-Offset: 49690 -> 0 H-Offset: 125053 -> 0 Size: 75363 -> 0 (diff 75363) Lag: 
+Topic: dome.beat. Group: <not associated> Partition: 0 L-Offset: 328 -> 0 H-Offset: 477 -> 0 Size: 149 -> 0 (diff 149) Lag: 
+Topic: dome.blasthack.post Group: <not associated> Partition: 0 L-Offset: 136312 -> 0 H-Offset: 136423 -> 0 Size: 111 -> 0 (diff 111) Lag: 
+Topic: dome.blasthack.profile Group: <not associated> Partition: 0 L-Offset:  H-Offset: 516569 -> 0 Size: 516569 -> 0 (diff 516569) Lag: 
+Topic: dome.cardingworld.post Group: <not associated> Partition: 0 L-Offset: 174584 -> 0 H-Offset: 174701 -> 0 Size: 117 -> 0 (diff 117) Lag: 
+Topic: dome.cebulka.post Group: <not associated> Partition: 0 L-Offset: 6030 -> 0 H-Offset: 7378 -> 0 Size: 1348 -> 0 (diff 1348) Lag: 
+Topic: dome.cebulka.profile Group: <not associated> Partition: 0 L-Offset:  H-Offset: 57185 -> 0 Size: 57185 -> 0 (diff 57185) Lag: 
+Topic: dome.cracked.profile Group: <not associated> Partition: 0 L-Offset:  H-Offset: 4085141 -> 0 Size: 4085141 -> 0 (diff 4085141) Lag: 
+Topic: dome.crackingitaly.post Group: <not associated> Partition: 0 L-Offset:  H-Offset: 59704 -> 0 Size: 59704 -> 0 (diff 59704) Lag: 
+Topic: dome.crackingitaly.post_prime Group: <not associated> Partition: 0 L-Offset:  H-Offset: 6980 -> 0 Size: 6980 -> 0 (diff 6980) Lag: 
+Topic: dome.crackingitaly.post_vip Group: <not associated> Partition: 0 L-Offset:  H-Offset: 612 -> 0 Size: 612 -> 0 (diff 612) Lag: 
+Topic: dome.crackingitaly.profile Group: <not associated> Partition: 0 L-Offset:  H-Offset: 47541 -> 0 Size: 47541 -> 0 (diff 47541) Lag: 
+Topic: dome.crackingitaly.profile_forward Group: <not associated> Partition: 0 L-Offset:  H-Offset: 8863 -> 0 Size: 8863 -> 0 (diff 8863) Lag: 
+Topic: dome.crackingmafia.post Group: <not associated> Partition: 0 L-Offset: 132288 -> 0 H-Offset: 145653 -> 0 Size: 13365 -> 0 (diff 13365) Lag: 
+Topic: dome.crackingmafia.profile Group: <not associated> Partition: 0 L-Offset: 105654 -> 0 H-Offset: 113742 -> 0 Size: 8088 -> 0 (diff 8088) Lag: 
+Topic: dome.crackingpro.profile Group: <not associated> Partition: 0 L-Offset: 345432 -> 0 H-Offset: 345530 -> 0 Size: 98 -> 0 (diff 98) Lag: 
+Topic: dome.crackingx.post_prime Group: <not associated> Partition: 0 L-Offset:  H-Offset: 55842 -> 0 Size: 55842 -> 0 (diff 55842) Lag: 
+Topic: dome.crackx.post Group: <not associated> Partition: 0 L-Offset: 172881 -> 0 H-Offset: 178521 -> 0 Size: 5640 -> 0 (diff 5640) Lag: 
+Topic: dome.crackx.post_vip Group: <not associated> Partition: 0 L-Offset:  H-Offset: 353 -> 0 Size: 353 -> 0 (diff 353) Lag: 
+Topic: dome.crackx.profile Group: <not associated> Partition: 0 L-Offset: 59186 -> 0 H-Offset: 59716 -> 0 Size: 530 -> 0 (diff 530) Lag: 
+Topic: dome.crax.post Group: <not associated> Partition: 0 L-Offset: 96935 -> 0 H-Offset: 254651 -> 0 Size: 157716 -> 0 (diff 157716) Lag: 
+Topic: dome.crax.post_prime Group: <not associated> Partition: 0 L-Offset: 22411 -> 0 H-Offset: 62670 -> 0 Size: 40259 -> 0 (diff 40259) Lag: 
+Topic: dome.crax.profile Group: <not associated> Partition: 0 L-Offset:  H-Offset: 133661 -> 0 Size: 133661 -> 0 (diff 133661) Lag: 
+Topic: dome.crimemarket.post Group: <not associated> Partition: 0 L-Offset: 95850 -> 0 H-Offset: 98100 -> 0 Size: 2250 -> 0 (diff 2250) Lag: 
+Topic: dome.crimemarket.profile Group: <not associated> Partition: 0 L-Offset: 180111 -> 0 H-Offset: 206330 -> 0 Size: 26219 -> 0 (diff 26219) Lag: 
+Topic: dome.crimemarket.profile_forward Group: <not associated> Partition: 0 L-Offset: 9145 -> 0 H-Offset: 44184 -> 0 Size: 35039 -> 0 (diff 35039) Lag: 
+Topic: dome.cryptbb.post_prime Group: <not associated> Partition: 0 L-Offset:  H-Offset: 1 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.cweb.post Group: <not associated> Partition: 0 L-Offset: 50898 -> 0 H-Offset: 51426 -> 0 Size: 528 -> 0 (diff 528) Lag: 
+Topic: dome.cyberbreach.post_prime Group: <not associated> Partition: 0 L-Offset:  H-Offset: 95 -> 0 Size: 95 -> 0 (diff 95) Lag: 
+Topic: dome.cyberbreach.post_vip Group: <not associated> Partition: 0 L-Offset:  H-Offset: 5493 -> 0 Size: 5493 -> 0 (diff 5493) Lag: 
+Topic: dome.dark2web.post_prime Group: <not associated> Partition: 0 L-Offset: 16165 -> 0 H-Offset: 16203 -> 0 Size: 38 -> 0 (diff 38) Lag: 
+Topic: dome.darknet.post Group: <not associated> Partition: 0 L-Offset:  H-Offset: 1 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.darktime.profile Group: <not associated> Partition: 0 L-Offset:  H-Offset: 89928 -> 0 Size: 89928 -> 0 (diff 89928) Lag: 
+Topic: dome.dublikat.post_prime Group: <not associated> Partition: 0 L-Offset: 14509 -> 0 H-Offset: 14545 -> 0 Size: 36 -> 0 (diff 36) Lag: 
+Topic: dome.elhacker.profile Group: <not associated> Partition: 0 L-Offset: 926607 -> 0 H-Offset: 926788 -> 0 Size: 181 -> 0 (diff 181) Lag: 
+Topic: dome.eternia.post Group: <not associated> Partition: 0 L-Offset: 313 -> 0 H-Offset: 314 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.forumteam.post_prime Group: <not associated> Partition: 0 L-Offset:  H-Offset: 398603 -> 0 Size: 398603 -> 0 (diff 398603) Lag: 
+Topic: dome.gerki.post_prime Group: <not associated> Partition: 0 L-Offset: 135 -> 0 H-Offset: 154 -> 0 Size: 19 -> 0 (diff 19) Lag: 
+Topic: dome.hackingfather.post Group: <not associated> Partition: 0 L-Offset:  H-Offset: 11274 -> 0 Size: 11274 -> 0 (diff 11274) Lag: 
+Topic: dome.hackingfather.post_vip Group: <not associated> Partition: 0 L-Offset: 2180 -> 0 H-Offset: 2189 -> 0 Size: 9 -> 0 (diff 9) Lag: 
+Topic: dome.hackingfather.profile Group: <not associated> Partition: 0 L-Offset: 80190 -> 0 H-Offset: 86474 -> 0 Size: 6284 -> 0 (diff 6284) Lag: 
+Topic: dome.hacklife.post Group: <not associated> Partition: 0 L-Offset:  H-Offset: 1 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.hydramarket.chat Group: <not associated> Partition: 0 L-Offset: 86 -> 0 H-Offset: 87 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.hydramarket.post Group: <not associated> Partition: 0 L-Offset: 8947 -> 0 H-Offset: 324733 -> 0 Size: 315786 -> 0 (diff 315786) Lag: 
+Topic: dome.hydramarket.post_prime Group: <not associated> Partition: 0 L-Offset:  H-Offset: 76217 -> 0 Size: 76217 -> 0 (diff 76217) Lag: 
+Topic: dome.hydramarket.profile Group: <not associated> Partition: 0 L-Offset: 34769 -> 0 H-Offset: 370283 -> 0 Size: 335514 -> 0 (diff 335514) Lag: 
+Topic: dome.leakeddatabases.post Group: <not associated> Partition: 0 L-Offset: 34681 -> 0 H-Offset: 35198 -> 0 Size: 517 -> 0 (diff 517) Lag: 
+Topic: dome.leakeddatabases.profile Group: <not associated> Partition: 0 L-Offset: 38946 -> 0 H-Offset: 39876 -> 0 Size: 930 -> 0 (diff 930) Lag: 
+Topic: dome.leakforums.post Group: <not associated> Partition: 0 L-Offset: 610 -> 0 H-Offset: 2657 -> 0 Size: 2047 -> 0 (diff 2047) Lag: 
+Topic: dome.leakforums.post_vip Group: <not associated> Partition: 0 L-Offset:  H-Offset: 313 -> 0 Size: 313 -> 0 (diff 313) Lag: 
+Topic: dome.leakforums.profile Group: <not associated> Partition: 0 L-Offset: 781 -> 0 H-Offset: 2701 -> 0 Size: 1920 -> 0 (diff 1920) Lag: 
+Topic: dome.level23hacktools.post_vip Group: <not associated> Partition: 0 L-Offset: 1 -> 0 H-Offset: 13 -> 0 Size: 12 -> 0 (diff 12) Lag: 
+Topic: dome.mpgh.activity Group: <not associated> Partition: 0 L-Offset: 24 -> 0 H-Offset: 25 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.niflheim.post_vip Group: <not associated> Partition: 0 L-Offset:  H-Offset: 1 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.ogusers.post Group: <not associated> Partition: 0 L-Offset: 228128 -> 0 H-Offset: 228129 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: dome.procrd.profile Group: <not associated> Partition: 0 L-Offset: 34906 -> 0 H-Offset: 56093 -> 0 Size: 21187 -> 0 (diff 21187) Lag: 
+Topic: dome.selkis.post Group: <not associated> Partition: 0 L-Offset: 73327 -> 0 H-Offset: 102067 -> 0 Size: 28740 -> 0 (diff 28740) Lag: 
+Topic: dome.selkis.post_prime Group: <not associated> Partition: 0 L-Offset:  H-Offset: 20581 -> 0 Size: 20581 -> 0 (diff 20581) Lag: 
+Topic: dome.selkis.profile Group: <not associated> Partition: 0 L-Offset:  H-Offset: 107687 -> 0 Size: 107687 -> 0 (diff 107687) Lag: 
+Topic: dome.veryleaks.post Group: <not associated> Partition: 0 L-Offset: 38 -> 0 H-Offset: 14739 -> 0 Size: 14701 -> 0 (diff 14701) Lag: 
+Topic: dome.vlmi.profile_promotion Group: <not associated> Partition: 0 L-Offset:  H-Offset: 11189 -> 0 Size: 11189 -> 0 (diff 11189) Lag: 
+Topic: heartbeats Group: <not associated> Partition: 0 L-Offset:  H-Offset: 75298 -> 0 Size: 75298 -> 0 (diff 75298) Lag: 
+Topic: minion.apus.cnp Group: <not associated> Partition: 0 L-Offset: 351077 -> 0 H-Offset: 354097 -> 0 Size: 3020 -> 0 (diff 3020) Lag: 
+Topic: minion.blackpass.account Group: <not associated> Partition: 0 L-Offset:  H-Offset: 97408 -> 0 Size: 97408 -> 0 (diff 97408) Lag: 
+Topic: minion.bravo.cnp_new Group: <not associated> Partition: 0 L-Offset: 1 -> 0 H-Offset: 2 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: minion.cayuse.cnp Group: <not associated> Partition: 0 L-Offset: 39371 -> 0 H-Offset: 39404 -> 0 Size: 33 -> 0 (diff 33) Lag: 
+Topic: minion.cayuse.cp Group: <not associated> Partition: 0 L-Offset:  H-Offset: 1 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: minion.crd2life.account Group: <not associated> Partition: 0 L-Offset: 76262 -> 0 H-Offset: 76926 -> 0 Size: 664 -> 0 (diff 664) Lag: 
+Topic: minion.jshop.pii Group: <not associated> Partition: 0 L-Offset:  H-Offset: 1 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: minion.kilo.pii Group: <not associated> Partition: 0 L-Offset:  H-Offset: 1 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: minion.osage.cp Group: <not associated> Partition: 0 L-Offset: 2 -> 0 H-Offset: 3 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: minion.pisces.cp Group: <not associated> Partition: 0 L-Offset: 10000 -> 0 H-Offset: 20000 -> 0 Size: 10000 -> 0 (diff 10000) Lag: 
+Topic: minion.recnac.cnp_new Group: <not associated> Partition: 0 L-Offset: 174137 -> 0 H-Offset: 174140 -> 0 Size: 3 -> 0 (diff 3) Lag: 
+Topic: minion.sirius.cnp_new Group: <not associated> Partition: 0 L-Offset:  H-Offset: 1 -> 0 Size: 1 -> 0 (diff 1) Lag: 
+Topic: minion.tucana.cnp Group: <not associated> Partition: 0 L-Offset: 123 -> 0 H-Offset: 145 -> 0 Size: 22 -> 0 (diff 22) Lag: 
+Topic: minion.washoe.account Group: <not associated> Partition: 0 L-Offset: 3 -> 0 H-Offset: 4 -> 0 Size: 1 -> 0 (diff 1) Lag: 

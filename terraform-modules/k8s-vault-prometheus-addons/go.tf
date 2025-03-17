@@ -1,12 +1,12 @@
 
-data "kubectl_file_documents" "go" {
-  content = file("${path.module}/go-podmonitor.yaml")
-}
+# data "kubectl_file_documents" "go" {
+#   content = file("${path.module}/go-podmonitor.yaml")
+# }
 
-resource "kubectl_manifest" "go" {
-  count     = 1
-  yaml_body = element(data.kubectl_file_documents.go.documents, count.index)
-}
+# resource "kubernetes_manifest" "go" {
+#   count     = 1
+#   manifest = yamldecode(element(data.kubectl_file_documents.go.documents, count.index))
+# }
 
 data "http" "grafana_dashboard_go" {
   url = "https://grafana.com/api/dashboards/6671/revisions/2/download"
@@ -33,21 +33,21 @@ resource "kubernetes_config_map" "go_dashboards" {
 }
 
 
-data "kubectl_file_documents" "go_rules" {
-  # content = file("${path.module}/go-prometheusrule.yaml")
-  content = templatefile("${path.module}/go-prometheusrule.yaml", { cluster_label : var.Cluster })
-}
+# data "kubectl_file_documents" "go_rules" {
+#   # content = file("${path.module}/go-prometheusrule.yaml")
+#   content = templatefile("${path.module}/go-prometheusrule.yaml", { cluster_label : var.Cluster })
+# }
 
-resource "kubectl_manifest" "go_rules" {
-  count     = 1
-  yaml_body = element(data.kubectl_file_documents.go_rules.documents, count.index)
-}
+# resource "kubernetes_manifest" "go_rules" {
+#   count     = 1
+#   manifest = yamldecode(element(data.kubectl_file_documents.go_rules.documents, count.index))
+# }
 
-data "kubectl_file_documents" "upsert_rules" {
-  content = templatefile("${path.module}/upsert-rules.yaml", { cluster_label : var.Cluster })
-}
+# data "kubectl_file_documents" "upsert_rules" {
+#   content = templatefile("${path.module}/upsert-rules.yaml", { cluster_label : var.Cluster })
+# }
 
-resource "kubectl_manifest" "upsert_rules" {
-  count     = 1
-  yaml_body = element(data.kubectl_file_documents.upsert_rules.documents, count.index)
-}
+# resource "kubernetes_manifest" "upsert_rules" {
+#   count     = 1
+#   manifest = yamldecode( element(data.kubectl_file_documents.upsert_rules.documents, count.index))
+# }

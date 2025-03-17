@@ -6,7 +6,7 @@ resource "helm_release" "sftp-server" {
   wait         = true
   atomic       = true
   namespace    = try(each.value.namespace, local.namespace)
-  version      = var.sftpgo_version
+  version      = local.chart_version
   reset_values = true
   set {
     name  = "fullnameOverride"
@@ -14,7 +14,7 @@ resource "helm_release" "sftp-server" {
   }
   set {
     name  = "image.tag"
-    value = each.value.image_tag
+    value = try(each.value.image_tag, local.image_tag)
   }
   set {
     name  = "volumes[0].name"
@@ -31,15 +31,7 @@ resource "helm_release" "sftp-server" {
   set {
     name  = "volumes[1].configMap.name"
     value = "sftp-server-${each.key}-config"
-  } /*
-  set {
-    name  = "volumes[2].name"
-    value = "sftpgo"
   }
-  set {
-    name  = "volumes[2].configMap.name"
-    value = "sftpgo-${each.key}-config"
-  }*/
   set {
     name  = "volumeMounts[0].mountPath"
     value = "/var/lib/sftpgo/id_ed25519"
@@ -122,15 +114,15 @@ resource "helm_release" "sftp-server" {
   }
   set {
     name  = "env.SFTPGO_DATA_PROVIDER__NAME"
-    value = "sftpgo"
+    value = data.vault_generic_secret.db_creds["${each.key}"].data["db_name"]
   }
   set {
     name  = "env.SFTPGO_DATA_PROVIDER__HOST"
-    value = "gitlab-postgresql.gitlab.svc"
+    value = try(each.value.postgres_url, local.postgres_url)
   }
   set {
     name  = "env.SFTPGO_DATA_PROVIDER__PORT"
-    value = "5432"
+    value = local.postgres_port
   }
   set {
     name  = "env.SFTPGO_DATA_PROVIDER__USERNAME"
@@ -155,7 +147,7 @@ resource "helm_release" "sftp-server" {
   }
 
   set {
-    name  = "podAnnotations.co\\.elastic\\.logs/json.add_error_key"
+    name  = "podAnnotations.co\\.elastic\\.logs/json\\.add_error_key"
     value = "true"
     type  = "string"
   }
@@ -250,7 +242,7 @@ resource "kubernetes_cron_job_v1" "database_backup" {
     namespace = try(each.value.namespace, local.namespace)
   }
   spec {
-    schedule                      = "0 * * * *"
+    schedule                      = "0 0 * * *"
     concurrency_policy            = "Replace"
     failed_jobs_history_limit     = 5
     starting_deadline_seconds     = 10
@@ -278,19 +270,19 @@ resource "kubernetes_cron_job_v1" "database_backup" {
               command = ["/bin/sh", "-c", "pg_dump -p $POSTGRES_PORT -U $POSTGRES_USERNAME -d $POSTGRES_DB_NAME -h $POSTGRES_HOST > $BACKUP_NAME-$(date '+%Y-%m-%dT%H').sql && aws s3 --endpoint $MINIO_HOST cp $BACKUP_NAME-$(date '+%Y-%m-%dT%H').sql s3://$MINIO_BUCKET/postgres-dump/"]
               env {
                 name  = "POSTGRES_DB_NAME"
-                value = "sftpgo"
+                value = data.vault_generic_secret.db_creds["${each.key}"].data["db_name"]
               }
               env {
                 name  = "POSTGRES_USERNAME"
-                value = "sftpgo"
+                value = data.vault_generic_secret.db_creds["${each.key}"].data["username"]
               }
               env {
                 name  = "POSTGRES_HOST"
-                value = "gitlab-postgresql.gitlab.svc"
+                value = try(each.value.postgres_url, local.postgres_url)
               }
               env {
                 name  = "POSTGRES_PORT"
-                value = "5432"
+                value = local.postgres_port
               }
               env_from {
                 secret_ref {
@@ -303,11 +295,11 @@ resource "kubernetes_cron_job_v1" "database_backup" {
               }
               env {
                 name  = "MINIO_BUCKET"
-                value = "minio-sftpgo-orbital-wording"
+                value = try(each.value.minio_bucket, local.minio_bucket)
               }
               env {
                 name  = "MINIO_HOST"
-                value = "https://minio.p.regemini.io"
+                value = try(each.value.minio_url, local.minio_url)
               }
               env_from {
                 secret_ref {

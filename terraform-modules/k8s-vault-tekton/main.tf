@@ -135,7 +135,10 @@ resource "null_resource" "crds" {
     task        = md5(file("${path.module}/task.yaml"))
     pipeline    = md5(file("${path.module}/pipeline.yaml"))
     pipelinerun = md5(file("${path.module}/pipelinerun.yaml"))
-    webhook     = md5(file("${path.module}/webhook.yaml"))
+    bots        = md5(file("${path.module}/bots.yaml"))
+    crashloop   = md5(file("${path.module}/crashloop.yaml"))
+    etl         = md5(file("${path.module}/etl.yaml"))
+    telegram    = md5(file("${path.module}/telegram.yaml"))
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
@@ -144,19 +147,31 @@ resource "null_resource" "crds" {
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/task.yaml
+     apply -f ${path.module}/task.yaml && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipeline.yaml
+     apply -f ${path.module}/pipeline.yaml && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/webhook.yaml
+     apply -f ${path.module}/pipelinerun.yaml && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipelinerun.yaml
+     apply -f ${path.module}/bots.yaml && \
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     apply -f ${path.module}/crashloop.yaml && \
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     apply -f ${path.module}/etl.yaml && \
+    kubectl --server ${local.gkeClusterEndpoint} \
+     --token ${local.gkeBearerToken}  \
+     --insecure-skip-tls-verify=true  \
+     apply -f ${path.module}/telegram.yaml
 
 COMMAND
   }

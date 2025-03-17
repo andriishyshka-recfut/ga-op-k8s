@@ -131,30 +131,36 @@ resource "kubernetes_secret" "minio_creds" {
 }
 
 resource "random_password" "logstash_es_password" {
-  for_each  = var.logstash_list
-  length    = 32
-  special   = false
+  length  = 32
+  special = false
 }
 
 resource "random_password" "logstash_api_password" {
-  for_each  = var.logstash_list
-  length    = 32
-  special   = false
+  for_each = var.logstash_list
+  length   = 32
+  special  = false
 }
 
+ resource "vault_generic_secret" "logstash_etl_creds" {
+   path     = "secret/wl/etl/logstash-creds"
+   data_json = jsonencode({
+    "credentials.json" = {for k, v in var.logstash_list : k  => { "user": local.logstash_user, "password": resource.random_password.logstash_api_password[k].result, "ids": v.pipeline_id }}
+   })
+ }
+
 resource "vault_generic_secret" "logstash_es_creds" {
-  for_each                = var.logstash_list
-  path                    = "secret/logstash/${each.key}"
-  data_json               = jsonencode({
-    logstash_es_password    = resource.random_password.logstash_es_password[each.key].result
-    logstash_es_username    = local.logstash_user
-    logstash_api_password   = resource.random_password.logstash_api_password[each.key].result
+  for_each = var.logstash_list
+  path     = "secret/logstash/${each.key}"
+  data_json = jsonencode({
+    logstash_es_password  = resource.random_password.logstash_es_password.result
+    logstash_es_username  = local.logstash_user
+    logstash_api_password = resource.random_password.logstash_api_password[each.key].result
   })
 }
 
 data "vault_generic_secret" "logstash_es_creds" {
-  for_each = var.logstash_list
-  path     = "secret/logstash/${each.key}"
+  for_each   = var.logstash_list
+  path       = "secret/logstash/${each.key}"
   depends_on = [vault_generic_secret.logstash_es_creds]
 }
 
@@ -174,10 +180,10 @@ resource "kubernetes_secret" "logstash_es_creds" {
 }
 
 resource "kubernetes_job" "logstash_user" {
-  for_each    = var.logstash_list
+  for_each = var.logstash_list
   metadata {
     name      = "logstash-${each.key}-user-setup"
-    namespace = try(each.value.namespace, local.namespace)
+    namespace = local.namespace
   }
   spec {
     template {
@@ -191,7 +197,7 @@ resource "kubernetes_job" "logstash_user" {
         container {
           name    = "post-install"
           image   = "curlimages/curl"
-          command = ["sh", "-c", var.Cluster == "production" ? templatefile("${path.module}/setup-prod-user.tftpl", { password = random_password.logstash_es_password[each.key].result, es_url = element(split("/", local.es_host), length(split("/", local.es_host)) -1)}) : templatefile("${path.module}/setup-sandbox-user.tftpl", { password = random_password.logstash_es_password[each.key].result, es_url = element(split("/", each.value.es_host), length(split("/", each.value.es_host)) -1)})]
+          command = ["sh", "-c", templatefile("${path.module}/setup-${var.Cluster}-user.tftpl", { password = data.vault_generic_secret.logstash_es_creds[each.key].data.logstash_es_password, es_url = each.value.es_host })]
           env {
             name = "ES_PASSWORD"
             value_from {
@@ -218,4 +224,5 @@ resource "kubernetes_job" "logstash_user" {
     create = "5m"
     update = "5m"
   }
+  depends_on = [kubernetes_secret.logstash_es_creds]
 }

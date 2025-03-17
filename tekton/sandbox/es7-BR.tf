@@ -19,13 +19,14 @@ module "es7-backup" {
   ]
 }
 
+
 # module "es7-restore-system" {
 #   source               = "../../terraform-modules/k8s-es-curator"
 #   Namespace            = "elastic"
 #   ElasticName          = "elastic"
 #   NamePrefix           = "restore-logs"
 #   BackupBucketName     = "elasticsearch-backups"
-#   BackupBucketBasePath = "7"
+#   BackupBucketBasePath = "7-new"
 #   EsService            = "elasticsearch-coor"
 #   EsCreds              = "elastic-credentials"
 #   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress
@@ -43,7 +44,7 @@ module "es7-backup" {
 #   ElasticName          = "elastic"
 #   NamePrefix           = "restore-logs"
 #   BackupBucketName     = "elasticsearch-backups"
-#   BackupBucketBasePath = "7"
+#   BackupBucketBasePath = "7-new"
 #   EsService            = "elasticsearch-coor"
 #   EsCreds              = "elastic-credentials"
 #   MinioAddress         = var.Settings.clusters[var.Cluster].MinioAddress

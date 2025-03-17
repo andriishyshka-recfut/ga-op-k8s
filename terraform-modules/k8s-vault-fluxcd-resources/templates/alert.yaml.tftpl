@@ -1,0 +1,20 @@
+apiVersion: notification.toolkit.fluxcd.io/v1beta2
+kind: Alert
+metadata:
+  name: ${ name }
+  namespace: ${ lookup(values ,"namespace", globals.namespace) }
+spec:
+  providerRef:
+    name: ${ values.provider }
+  eventSeverity: ${ lookup(values, "severity", "info")}
+  eventSources:
+%{ for event in values.event_sources ~}
+    - kind: ${ event }
+      name: '*'
+%{ endfor ~}
+%{ if lookup(values, "exclusion_list",false) != false ~}
+  exclusionList:
+%{ for exclusion in values.exclusion_list ~}
+    - "${ exclusion }"
+%{ endfor ~}
+%{ endif ~}

@@ -7,15 +7,17 @@ locals {
   mongo_prefix      = local.settings.mongo6.main.pvcPrefix
   mongo_auth_count  = local.settings.mongo6.auth.replicas
   mongo_auth_prefix = local.settings.mongo6.auth.pvcPrefix
-  
 
-  mongo6_count       = local.settings.mongo6.main.replicas
-  mongo6_prefix      = local.settings.mongo6.main.pvcPrefix
+
+  mongo6_count  = local.settings.mongo6.main.replicas
+  mongo6_prefix = local.settings.mongo6.main.pvcPrefix
 
   kafka_count     = local.settings.persistent_resources.permanentDisks.kafka.count
   sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
-  sftp            = local.settings.sftp-server
-  minio_count     = local.settings.persistent_resources.permanentDisks.minio.count
+  # sftp            = local.settings.sftp-server
+  sftp           = {}
+  minio_count    = local.settings.persistent_resources.permanentDisks.minio.count
+  postgres_count = local.settings.persistent_resources.permanentDisks.postgres.count
 
   tarantool_storage_count  = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks * 2
   tsc                      = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks
@@ -24,6 +26,8 @@ locals {
   tarantool_router_prefix  = local.settings.persistent_resources.permanentDisks.tarantool.router_prefix
   tarantool_etcd_count     = local.settings.persistent_resources.permanentDisks.tarantool.etcd_disks
   tarantool_etcd_prefix    = local.settings.persistent_resources.permanentDisks.tarantool.etcd_prefix
+
+
 
   # mongoDiskSize = trim(local.settings.mongo6.main.volumeSize, "Gi")
   # mongoAuthDiskSize = trim(local.settings.mongo6.main.volumeSize, "Gi")
@@ -55,12 +59,17 @@ data "google_compute_snapshot" "kafka_snapshot" {
   count       = local.kafka_count
 }
 
-data "google_compute_snapshot" "kafka_zookeeper_snapshot" {
-  name        = "kafka-zookeeper-${count.index}-dr-${local.restoreDate}"
+data "google_compute_snapshot" "kafka_controller_snapshot" {
+  name        = "kafka-controller-${count.index}-dr-${local.restoreDate}"
   most_recent = true
   count       = local.kafka_count
 }
 
+data "google_compute_snapshot" "postgres_snapshot" {
+  name        = "postgres-data-${count.index}-dr-${local.restoreDate}"
+  most_recent = true
+  count       = local.postgres_count
+}
 
 data "google_compute_snapshot" "tarantool_storage_snapshot" {
   name        = "tarantool-vortex-cartridge-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}-bcp-${local.restoreDate}"
@@ -158,26 +167,12 @@ resource "google_compute_disk" "kafka_pv" {
   zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
 }
 
-resource "google_compute_disk" "kafka_zookeeper_pv" {
-  name     = "kafka-zookeeper-${count.index}"
-  count    = local.kafka_count
-  type     = "pd-balanced"
-  size     = data.google_compute_snapshot.kafka_zookeeper_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.kafka_zookeeper_snapshot[count.index].name
-  labels = {
-    target = "kafka-zookeeper"
-    id     = "kafka-zookeeper-${count.index}"
-  }
-  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
-}
-
-
 resource "google_compute_disk" "kafka_controller_pv" {
   name     = "kafka-controller-${count.index}"
   count    = local.kafka_count
   type     = "pd-balanced"
-  size     = data.google_compute_snapshot.kafka_zookeeper_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.kafka_zookeeper_snapshot[count.index].name
+  size     = data.google_compute_snapshot.kafka_controller_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.kafka_controller_snapshot[count.index].name
   labels = {
     target = "kafka-controller"
     id     = "kafka-controller-${count.index}"
@@ -269,6 +264,21 @@ resource "google_compute_disk" "minio_pv" {
 
   labels = {
     target = "minio-tenant"
+  }
+}
+
+resource "google_compute_disk" "postgres_cluster-pv" {
+  count = local.postgres_count
+
+  name     = "postgres-data-${count.index}"
+  size     = data.google_compute_snapshot.postgres_snapshot[count.index].disk_size_gb
+  snapshot = data.google_compute_snapshot.postgres_snapshot[count.index].name
+  type     = "pd-balanced"
+
+  zone = element([for i in range(local.postgres_count) : element(local.zones, i % 3)], count.index)
+
+  labels = {
+    target = "postgres"
   }
 }
 

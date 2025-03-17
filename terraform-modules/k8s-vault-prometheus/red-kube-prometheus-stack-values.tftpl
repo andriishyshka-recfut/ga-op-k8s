@@ -10,6 +10,7 @@ grafana:
   #     secretKeyRef:
   #       name: "monitoring-es-elastic-user"
   #       key: elastic
+  assertNoLeakedSecrets: false
   adminPassword: ${grafana_creds.adminPassword}
   enabled: true
   namespaceOverride: "monitoring"
@@ -76,12 +77,13 @@ prometheus:
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
+    retention: 60d
     storageSpec:
       volumeClaimTemplate:
         spec:
           resources:
             requests:
-              storage: 50Gi
+              storage: 180Gi
     thanos:
       version: ${thanos_version}
       baseImage: quay.io/thanos/thanos

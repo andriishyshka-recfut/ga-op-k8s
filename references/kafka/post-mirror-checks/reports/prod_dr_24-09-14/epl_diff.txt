@@ -1,0 +1,27 @@
+Topic: dome.beat.migalki Group: beat Partition: 0 L-Offset: 44566 -> 45943 H-Offset:  Size: 3742 -> 2365 (diff 1377) Lag: 
+Topic: dome.beat.omerta Group: beat Partition: 0 L-Offset: 246518 -> 246586 H-Offset:  Size: 1921 -> 1853 (diff 68) Lag: 
+Topic: dome.upsert Group: upsertDome Partition: 0 L-Offset: 575533751 -> 575693751 H-Offset:  Size: 3707040 -> 3547040 (diff 160000) Lag: 
+Topic: mage.scan Group: beat Partition: 16 L-Offset: 2744659 -> 2744702 H-Offset:  Size: 79460 -> 79417 (diff 43) Lag: 
+Topic: mage.scan Group: magescanner Partition: 16 L-Offset: 2744659 -> 2744702 H-Offset:  Size: 79460 -> 79417 (diff 43) Lag: 
+Topic: minion.beat.mike Group: <not associated> Partition: 0 L-Offset: 57254841 -> 57737221 H-Offset:  Size: 871956 -> 389576 (diff 482380) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 0 L-Offset: 8245083 -> 8313490 H-Offset:  Size: 216066 -> 147659 (diff 68407) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 8 L-Offset: 8186869 -> 8187188 H-Offset:  Size: 193594 -> 193275 (diff 319) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 10 L-Offset: 8293053 -> 8374910 H-Offset:  Size: 209064 -> 127207 (diff 81857) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 15 L-Offset: 8368508 -> 8371539 H-Offset:  Size: 133727 -> 130696 (diff 3031) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 17 L-Offset: 8201117 -> 8281303 H-Offset:  Size: 198915 -> 118729 (diff 80186) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 18 L-Offset: 8270376 -> 8295157 H-Offset:  Size: 196366 -> 171585 (diff 24781) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 20 L-Offset: 7975233 -> 8010486 H-Offset:  Size: 191367 -> 156114 (diff 35253) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 27 L-Offset: 8151343 -> 8256662 H-Offset:  Size: 237110 -> 131791 (diff 105319) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 34 L-Offset: 8393698 -> 8428207 H-Offset:  Size: 117283 -> 82774 (diff 34509) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 35 L-Offset: 8142089 -> 8207124 H-Offset:  Size: 209540 -> 144505 (diff 65035) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 38 L-Offset: 8322898 -> 8413514 H-Offset:  Size: 198848 -> 108232 (diff 90616) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 41 L-Offset: 8091601 -> 8145866 H-Offset:  Size: 203350 -> 149085 (diff 54265) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 42 L-Offset: 8207948 -> 8239150 H-Offset:  Size: 190823 -> 159621 (diff 31202) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 47 L-Offset: 8319136 -> 8355100 H-Offset:  Size: 183327 -> 147363 (diff 35964) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 48 L-Offset: 8316913 -> 8316938 H-Offset:  Size: 217329 -> 217304 (diff 25) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 49 L-Offset: 8283182 -> 8403589 H-Offset:  Size: 233016 -> 112609 (diff 120407) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 50 L-Offset: 8325167 -> 8327440 H-Offset:  Size: 151376 -> 149103 (diff 2273) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 52 L-Offset: 8306235 -> 8319383 H-Offset:  Size: 190855 -> 177707 (diff 13148) Lag: 
+Topic: os3.attachment Group: <not associated> Partition: 58 L-Offset: 8216297 -> 8272559 H-Offset:  Size: 220436 -> 164174 (diff 56262) Lag: 
+Topic: os3.debug Group: <not associated> Partition: 5 L-Offset: 888683 -> 889353 H-Offset:  Size: 9684 -> 9014 (diff 670) Lag: 
+Topic: paste Group: upsertpaste Partition: 0 L-Offset: 99747127 -> 99748789 H-Offset:  Size: 2755 -> 1093 (diff 1662) Lag: 

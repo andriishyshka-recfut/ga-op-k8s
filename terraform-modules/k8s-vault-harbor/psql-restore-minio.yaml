@@ -37,10 +37,10 @@ spec:
            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database registry";
            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database notarysigner";
            psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON -d template1 -c "create database notaryserver ";
-           ./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup/registry.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=registry -v ON_ERROR_STOP=ON;
-           ./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup/notarysigner.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner -v ON_ERROR_STOP=ON;
-           ./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup/notaryserver.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver -v ON_ERROR_STOP=ON;
-           # ./mc cat backup/minio-xbackup-orbital-wording-233917/harbor-backup.sql | psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON  ;
+           ./mc cat backup/minio-xbackup-orbital-wording/harbor-backup/registry.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=registry -v ON_ERROR_STOP=ON;
+           ./mc cat backup/minio-xbackup-orbital-wording/harbor-backup/notarysigner.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=notarysigner -v ON_ERROR_STOP=ON;
+           ./mc cat backup/minio-xbackup-orbital-wording/harbor-backup/notaryserver.sql | psql --host=harbor-database --port=5432 --username=postgres --dbname=notaryserver -v ON_ERROR_STOP=ON;
+           # ./mc cat backup/minio-xbackup-orbital-wording/harbor-backup.sql | psql --host=harbor-database --port=5432 --username=postgres -v ON_ERROR_STOP=ON  ;
         env:
         - name: MINIO_ACCESS_KEY
           value: jsondecode(data.vault_generic_secret.minio_auth.data.harbor).accessKey

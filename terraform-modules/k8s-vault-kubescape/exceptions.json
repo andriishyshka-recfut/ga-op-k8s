@@ -78,7 +78,7 @@
     ],
     "posturePolicies": [
         {
-            "controlID": "C-0211",
+            "controlID": "C-0211"
         }
     ]
 }

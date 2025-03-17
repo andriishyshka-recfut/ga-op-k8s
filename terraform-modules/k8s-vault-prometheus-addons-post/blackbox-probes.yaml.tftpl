@@ -2,6 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
   name: kibanas
+  namespace: monitoring
   labels:
     release: prometheus
 spec:
@@ -27,6 +28,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
   name: harbor
+  namespace: monitoring
   labels:
     release: prometheus
 spec:
@@ -46,6 +48,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
   name: ssh
+  namespace: monitoring
   labels:
     release: prometheus
 spec:
@@ -66,6 +69,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
   name: vortex
+  namespace: monitoring
   labels:
     release: prometheus
 spec:

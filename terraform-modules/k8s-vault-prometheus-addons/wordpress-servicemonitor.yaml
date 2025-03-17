@@ -8,13 +8,14 @@ metadata:
     release: prometheus
 spec:
   type: ExternalName
-  externalName: 35.186.177.17
+  externalName: 35.236.199.248
   ports:
   - name: metrics
     port: 9100
     protocol: TCP
     targetPort: 9100
 
+---
 
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

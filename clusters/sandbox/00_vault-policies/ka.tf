@@ -5,6 +5,9 @@ resource "vault_policy" "ka" {
 path "secret/data/ka/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/wl/minion/*" {
+  capabilities = ["read","list"]
+}
 path "secret/data/elasticsearch-admin/*" {
   capabilities = ["read","list"]
 }

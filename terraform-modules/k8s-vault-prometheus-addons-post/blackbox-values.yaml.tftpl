@@ -85,7 +85,7 @@ prometheusRule:
   rules:
     - alert: webServiceUnavailible
       annotations:
-        description: 'HTTP response code {{`{{ $value }}`}} rather than 200  for {{`{{ $labels.instance }}`}}.'
+        description: 'HTTP response code {{ $value }} rather than 200  for {{ $labels.instance }}.'
         summary: Service  unavailible
       expr: |-
         probe_http_status_code != 200
@@ -94,7 +94,7 @@ prometheusRule:
         severity: critical
     - alert: sshServiceUnavailible
       annotations:
-        description: 'SSH service unavailble  for {{`{{ $labels.instance }}`}}.'
+        description: 'SSH service unavailble  for {{ $labels.instance }}.'
         summary: Service  unavailible
       expr: |-
         probe_success{module="ssh_banner"} == 0
@@ -103,7 +103,7 @@ prometheusRule:
         severity: critical
     - alert: SSLCertExpiringSoon
       annotations:
-        description: 'SSL Certificate for {{`{{ $labels.instance }}`}} is going to expire in 14 days.'
+        description: 'SSL Certificate for {{ $labels.instance }} is going to expire in 14 days.'
         summary: Action required
       expr: |-
         probe_ssl_earliest_cert_expiry - time() < 86400 * 14
@@ -112,7 +112,7 @@ prometheusRule:
         severity: warning
     - alert: SSLCertExpiringReallySoon
       annotations:
-        description: 'SSL Certificate for {{`{{ $labels.instance }}`}} is going to expire in 7 days.'
+        description: 'SSL Certificate for {{ $labels.instance }} is going to expire in 7 days.'
         summary: Action required
       expr: |-
         probe_ssl_earliest_cert_expiry - time() < 86400 * 7
@@ -121,7 +121,7 @@ prometheusRule:
         severity: warning
     - alert: SSLCertAlmostExpired
       annotations:
-        description: 'SSL Certificate for {{`{{ $labels.instance }}`}} is going to expire in 1 days.'
+        description: 'SSL Certificate for {{ $labels.instance }} is going to expire in 1 days.'
         summary: Action required
       expr: |-
         probe_ssl_earliest_cert_expiry - time() < 86400 * 1

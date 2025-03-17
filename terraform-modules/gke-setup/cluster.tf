@@ -79,13 +79,13 @@ resource "google_container_cluster" "cluster" {
     enabled = true
   }
 
-  logging_service    = "none"
-  monitoring_service = "none"
-  # monitoring_config {
-  #   managed_prometheus{
-  #     enabled = false
-  #   }
-  # }
+
+  monitoring_config {
+    managed_prometheus{
+      enabled = false
+    }
+  }
+
   addons_config {
     network_policy_config {
       disabled = false
@@ -104,8 +104,12 @@ resource "google_container_cluster" "cluster" {
       //disabled = false
       //auth = "AUTH_MUTUAL_TLS"
     }
+
   }
 
+  authenticator_groups_config {
+    security_group = "gke-security-groups@geminiadvisory.io"
+  }
   lifecycle {
     ignore_changes = all
   }

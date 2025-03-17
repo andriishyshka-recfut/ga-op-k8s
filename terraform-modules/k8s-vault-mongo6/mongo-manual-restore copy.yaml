@@ -32,7 +32,7 @@ spec:
           value: "minio-xbackup-ardent-rarity-239115"
         # # Uncomment for Prod
         # - name: BACKUP_BUCKET
-        #   value: "minio-xbackup-orbital-wording-233917"
+        #   value: "minio-xbackup-orbital-wording"
         - name: BACKUP_TARGETS
           value: "artifact beat beep birl dome geo kaching maid minion os3 os3t review sanitizer telegram upsertMinion useragent vortex whirl"
         - name: MINIO_ACCESS_KEY
