@@ -32,6 +32,9 @@ path "secret/data/magescanner/geoip_secret_config" {
 path "secret/data/magescanner/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/wl/magescanner/*" {
+  capabilities = ["read","list"]
+}
 path "secret/data/magescanner/splash_vpn" {
   capabilities = ["read","list"]
 }

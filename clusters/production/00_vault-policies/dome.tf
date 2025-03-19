@@ -25,5 +25,11 @@ path "secret/data/mongo/metaDome" {
 path "secret/data/apm/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/wl/threads/google" {
+  capabilities = ["read","list"]
+}
+path "secret/data/wl/threads/sheet" {
+  capabilities = ["read","list"]
+}
 EOT
 }
