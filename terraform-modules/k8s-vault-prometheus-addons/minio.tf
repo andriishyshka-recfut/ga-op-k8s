@@ -33,7 +33,7 @@ resource "kubernetes_config_map" "minio_dashboards" {
   }
 
   data = {
-    "minio.json" = replace(data.http.grafana_dashboard_minio.body, "$${DS_PROMETHEUS}", "Prometheus")
+    "minio.json" = replace(data.http.grafana_dashboard_minio.response_body, "$${DS_PROMETHEUS}", "Prometheus")
   }
 
 }

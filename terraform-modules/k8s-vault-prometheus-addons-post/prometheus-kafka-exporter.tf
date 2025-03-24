@@ -47,7 +47,7 @@ resource "kubernetes_config_map" "kafka_exporter_dashboard" {
   }
 
   data = {
-    "kafka-exporter-overview.json" = replace(data.http.grafana_dashboard.body, "$${DS_PROMETHEUS_WH211}", "Prometheus")
+    "kafka-exporter-overview.json" = replace(data.http.grafana_dashboard.response_body, "$${DS_PROMETHEUS_WH211}", "Prometheus")
   }
 
 }

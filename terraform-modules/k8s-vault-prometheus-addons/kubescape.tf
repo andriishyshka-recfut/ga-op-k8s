@@ -17,7 +17,7 @@ resource "kubernetes_config_map" "kubescape_dashboard" {
   }
 
   data = {
-    "kubescape.json" = data.http.grafana_dashboard_kubescape.body
+    "kubescape.json" = data.http.grafana_dashboard_kubescape.response_body
   }
 
 }

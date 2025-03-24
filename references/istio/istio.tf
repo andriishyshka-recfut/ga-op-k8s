@@ -1,10 +1,10 @@
 data "kubectl_file_documents" "istio" {
-    content = file("${path.module}/istio.yaml")
+  content = file("${path.module}/istio.yaml")
 }
 
 resource "kubectl_manifest" "istio" {
-    count     = length(data.kubectl_file_documents.istio.documents)
-    yaml_body = element(data.kubectl_file_documents.istio.documents, count.index)
+  count     = length(data.kubectl_file_documents.istio.documents)
+  yaml_body = element(data.kubectl_file_documents.istio.documents, count.index)
 }
 
 
@@ -20,7 +20,7 @@ data "http" "grafana_dashboard_istio1" {
 
 resource "kubernetes_config_map" "istio_dashboards" {
   metadata {
-    name = "istio-dashboard"
+    name      = "istio-dashboard"
     namespace = "monitoring"
     labels = {
       grafana_dashboard = 1
@@ -28,7 +28,7 @@ resource "kubernetes_config_map" "istio_dashboards" {
   }
 
   data = {
-    "istio1.json"             = replace(data.http.grafana_dashboard_istio1.body, "$${DS_PROMETHEUS}","Prometheus")
+    "istio1.json" = replace(data.http.grafana_dashboard_istio1.response_body, "$${DS_PROMETHEUS}", "Prometheus")
 
   }
 

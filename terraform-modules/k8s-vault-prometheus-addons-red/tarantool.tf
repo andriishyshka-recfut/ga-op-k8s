@@ -17,7 +17,7 @@ resource "kubernetes_config_map" "tarantool_dashboard" {
   }
 
   data = {
-    "tarantool.json" = data.http.grafana_dashboard_tarantool.body
+    "tarantool.json" = data.http.grafana_dashboard_tarantool.response_body
   }
 
 }

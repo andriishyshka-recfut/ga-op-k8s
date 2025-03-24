@@ -160,7 +160,7 @@ resource "kubernetes_config_map" "blackbox_dashboards" {
   }
 
   data = {
-    "blackbox.json" = replace(data.http.grafana_dashboard_blackbox.body, "$${DS_SIGNCL-PROMETHEUS}", "Prometheus")
+    "blackbox.json" = replace(data.http.grafana_dashboard_blackbox.response_body, "$${DS_SIGNCL-PROMETHEUS}", "Prometheus")
   }
 
 }

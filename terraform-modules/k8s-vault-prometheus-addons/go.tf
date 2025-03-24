@@ -27,7 +27,7 @@ resource "kubernetes_config_map" "go_dashboards" {
   }
 
   data = {
-    "go.json" = replace(data.http.grafana_dashboard_go.body, "$${DS_PROMETHEUS-APL}", "Prometheus")
+    "go.json" = replace(data.http.grafana_dashboard_go.response_body, "$${DS_PROMETHEUS-APL}", "Prometheus")
   }
 
 }
