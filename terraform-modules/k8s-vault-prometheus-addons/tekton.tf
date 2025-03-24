@@ -17,7 +17,7 @@ resource "kubernetes_config_map" "tekton_dashboard" {
   }
 
   data = {
-    "tekton.json" = data.http.grafana_dashboard_tekton.body
+    "tekton.json" = data.http.grafana_dashboard_tekton.response_body
   }
 
 }

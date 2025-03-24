@@ -1,6 +1,6 @@
 
 locals {
-  monitoringEs = yamldecode(file("../../stage-1/01-monitoring/monitoring_elastic_settings.yaml"))
+  monitoringEs = var.Cluster == "production" ? yamldecode(file("../../stage-1/01-monitoring-elastic/monitoring_elastic_settings.yaml")) : yamldecode(file("../../stage-1/01-monitoring-elastic/monitoring_elastic_sandbox.yaml"))
 }
 
 module "monitoring-kibana" {

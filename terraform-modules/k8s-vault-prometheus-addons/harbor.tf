@@ -10,7 +10,7 @@ data "http" "grafana_dashboard_harbor" {
 
 resource "kubernetes_config_map" "harbor_dashboards" {
   metadata {
-    name = "harbor-dashboard"
+    name      = "harbor-dashboard"
     namespace = "monitoring"
     labels = {
       grafana_dashboard = 1
@@ -18,7 +18,7 @@ resource "kubernetes_config_map" "harbor_dashboards" {
   }
 
   data = {
-    "harbor.json"             = replace(data.http.grafana_dashboard_harbor.body, "$${DS_HARBOR-PROMETHEUS}","Prometheus")
+    "harbor.json" = replace(data.http.grafana_dashboard_harbor.response_body, "$${DS_HARBOR-PROMETHEUS}", "Prometheus")
   }
 
 }

@@ -1,8 +1,3 @@
-
-locals {
-  monitoringEs = yamldecode(file("monitoring_elastic_settings.yaml"))
-}
-
 module "prometheus" {
   source              = "../../../terraform-modules/k8s-vault-prometheus"
   OidcSecretVaultPath = "secret/oidc_google_prod"

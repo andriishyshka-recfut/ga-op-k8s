@@ -38,8 +38,8 @@ resource "kubernetes_config_map" "fluxcd2_dashboards" {
   }
 
   data = {
-    "cluster.json"       = replace(data.http.grafana_dashboard_fluxcd1.body, "$${DS_PROMETHEUS}", "Prometheus")
-    "control-plane.json" = replace(data.http.grafana_dashboard_fluxcd2.body, "$${DS_PROMETHEUS}", "Prometheus")
+    "cluster.json"       = replace(data.http.grafana_dashboard_fluxcd1.response_body, "$${DS_PROMETHEUS}", "Prometheus")
+    "control-plane.json" = replace(data.http.grafana_dashboard_fluxcd2.response_body, "$${DS_PROMETHEUS}", "Prometheus")
   }
 
 }

@@ -1,5 +1,5 @@
 locals {
-  monitoringEs = yamldecode(file("../01-monitoring/monitoring_elastic_settings.yaml"))
+  monitoringEs = var.Cluster == "production" ? yamldecode(file("./monitoring_elastic_settings.yaml")) : yamldecode(file("./monitoring_elastic_sandbox.yaml"))
 }
 
 
