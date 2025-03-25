@@ -1,4 +1,4 @@
-data "kubernetes_secret" "elasticsearch_credentials" {
+data "kubernetes_secret" "reindexer_elasticsearch_credentials" {
   for_each    = var.reindexer
   metadata {
     name      = "elastic-credentials"
@@ -6,17 +6,16 @@ data "kubernetes_secret" "elasticsearch_credentials" {
   }
 }
 
-resource "kubernetes_secret" "elasticsearch_credentials" {
+resource "kubernetes_secret" "reindexer_elasticsearch_credentials" {
   for_each    = var.reindexer
   metadata {
-    name      = "${each.key}-elastic-credentials"
+    name      = "${each.key}-reindexer-elastic-credentials"
     namespace = try(each.value.namespace, local.namespace)
   }
-  data        = data.kubernetes_secret.elasticsearch_credentials[each.key].data
-  depends_on  = [data.kubernetes_secret.elasticsearch_credentials]
+  data        = data.kubernetes_secret.reindexer_elasticsearch_credentials[each.key].data
 }
 
-data "kubernetes_secret" "elasticsearch_certs" {
+data "kubernetes_secret" "reindexer_elasticsearch_certs" {
   for_each    = var.reindexer
   metadata {
     name      = "elastic-https-certs"
@@ -24,14 +23,13 @@ data "kubernetes_secret" "elasticsearch_certs" {
   }
 }
 
-resource "kubernetes_secret" "elasticsearch_certs" {
+resource "kubernetes_secret" "reindexer_elasticsearch_certs" {
   for_each    = var.reindexer
   metadata {
-    name      = "${each.key}-elastic-https-certs"
+    name      = "${each.key}-reindexer-elastic-https-certs"
     namespace = try(each.value.namespace, local.namespace)
   }
-  data        = data.kubernetes_secret.elasticsearch_certs[each.key].data
-  depends_on  = [data.kubernetes_secret.elasticsearch_certs]
+  data        = data.kubernetes_secret.reindexer_elasticsearch_certs[each.key].data
 }
 
 data "vault_generic_secret" "reindexer_slack" {
@@ -49,7 +47,6 @@ resource "kubernetes_secret" "reindexer_slack" {
     token     = data.vault_generic_secret.reindexer_slack.data.token,
     channel     = data.vault_generic_secret.reindexer_slack.data.channel
   }
-  depends_on  = [data.vault_generic_secret.reindexer_slack]
 }
 
 
@@ -103,7 +100,7 @@ resource "kubernetes_deployment_v1" "elasticsearch_reindexer" {
             value_from {
               secret_key_ref {
                 key  = "elastic"
-                name = kubernetes_secret.elasticsearch_credentials[each.key].metadata.0.name
+                name = kubernetes_secret.reindexer_elasticsearch_credentials[each.key].metadata.0.name
               }
             }
           }
