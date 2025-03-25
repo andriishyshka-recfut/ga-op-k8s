@@ -100,7 +100,7 @@ resource "kubernetes_deployment_v1" "elasticsearch_rebalancer" {
           projected {
             sources {
               secret {
-                name = "${each.key}-elastic-https-certs"
+                name = "${each.key}-rebalancer-elastic-https-certs"
                 items {
                   key = "ca.crt"
                   path = "ca.crt"

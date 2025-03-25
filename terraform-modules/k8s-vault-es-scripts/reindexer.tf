@@ -135,7 +135,7 @@ resource "kubernetes_deployment_v1" "elasticsearch_reindexer" {
           projected {
             sources {
               secret {
-                name = "${each.key}-elastic-https-certs"
+                name = "${each.key}-reindexer-elastic-https-certs"
                 items {
                   key = "ca.crt"
                   path = "ca.crt"
