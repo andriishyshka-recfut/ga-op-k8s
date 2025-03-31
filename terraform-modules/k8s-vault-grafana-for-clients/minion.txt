@@ -72,6 +72,7 @@ shoshone
 sierra
 siktor
 sirius
+smackdown
 tango
 taurus
 toxyzen
