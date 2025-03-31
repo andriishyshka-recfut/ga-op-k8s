@@ -1,5 +1,13 @@
 secretConfig: true
 
+resources:
+  requests:
+    memory: 50Mi
+    cpu: 10m
+  limits:
+    memory: 200Mi
+    cpu: 100m
+
 config:
   modules:
     http_2xx:

@@ -6,4 +6,7 @@ resource "helm_release" "cnpg" {
   wait       = true
   atomic     = true
   version    = local.operator_version
+  values = [
+    "${file("${path.module}/cnpg-values.yaml")}"
+  ]
 }

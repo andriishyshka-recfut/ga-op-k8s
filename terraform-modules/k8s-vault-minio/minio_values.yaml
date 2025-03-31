@@ -29,6 +29,7 @@ etcd:
   endpoints: ["http://etcd:2379"]
   pathPrefix: "/"
 
+
 image:
   repository: minio/minio
   tag: RELEASE.2020-10-28T08-16-50Z-20-g38f12c984
