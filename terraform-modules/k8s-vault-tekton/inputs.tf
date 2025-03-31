@@ -12,4 +12,60 @@ locals {
   gkeBearerToken     = var.GkeClusterConnectionSettings.API_KEY
   configPath         = var.Cluster == "production" ? "prod.tfvars.json" : "config.tfvars.json"
   registry_server    = "harbor.regemini.io"
+  resources          = {
+    "tekton-operator"  = {
+      "default"        = {
+        "cpu"          = "150m",
+        "memory"       = "256Mi"
+      }
+      "defaultRequest" = {
+        "cpu"          = "50m",
+        "memory"       = "64Mi"
+      }
+      "max"            = {
+        "cpu"          = "350m",
+        "memory"       = "512Mi"
+      }
+      "min"            = {
+        "cpu"          = "20m",
+        "memory"       = "28Mi"
+      }
+    }
+    "tekton-pipelines" = {
+      "default"        = {
+        "cpu"          = "350m",
+        "memory"       = "512Mi"
+      }
+      "defaultRequest" = {
+        "cpu"          = "50m",
+        "memory"       = "128Mi"
+      }
+      "max"            = {
+        "cpu"          = "700m",
+        "memory"       = "1024Mi"
+      }
+      "min"            = {
+        "cpu"          = "20m",
+        "memory"       = "24Mi"
+      }
+    }
+    "tekton-tasks"     = {
+      "default"        = {
+        "cpu"          = "500m",
+        "memory"       = "512Mi"
+      }
+      "defaultRequest" = {
+        "cpu"          = "50m",
+        "memory"       = "128Mi"
+      }
+      "max"            = {
+        "cpu"          = "1000m",
+        "memory"       = "1500Mi"
+      }
+      "min"            = {
+        "cpu"          = "20m",
+        "memory"       = "24Mi"
+      }
+    }
+  }
 }
