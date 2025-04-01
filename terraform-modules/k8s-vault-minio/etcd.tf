@@ -35,7 +35,7 @@ resource "helm_release" "etcd" {
   }
   set {
     name  = "podAnnotations.sidecar\\.istio\\.io/inject"
-    value = "false"
+    value = " false"
   }
   set {
     name  = "resources.requests.cpu"
