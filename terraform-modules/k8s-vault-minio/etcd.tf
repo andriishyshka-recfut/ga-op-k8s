@@ -35,7 +35,23 @@ resource "helm_release" "etcd" {
   }
   set {
     name  = "podAnnotations.sidecar\\.istio\\.io/inject"
-    value = " false"
+    value = "false"
+  }
+  set {
+    name  = "resources.requests.cpu"
+    value = "20m"
+  }
+  set {
+    name  = "resources.requests.memory"
+    value = "64Mi"
+  }
+  set {
+    name  = "resources.limits.cpu"
+    value = "100m"
+  }
+  set {
+    name  = "resources.limits.memory"
+    value = "256Mi"
   }
   depends_on = [
     data.vault_generic_secret.harbor_token
