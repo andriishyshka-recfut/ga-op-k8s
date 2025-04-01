@@ -64,7 +64,8 @@ kube-state-metrics:
   customLabels:
     release: prometheus
 
-nodeExporter:
+prometheus-node-exporter:
+  namespaceOverride: "monitoring"
   resources:
     requests:
       memory: 30Mi
@@ -72,9 +73,6 @@ nodeExporter:
     limits:
       memory: 100Mi
       cpu: 100m
-
-prometheus-node-exporter:
-  namespaceOverride: "monitoring"
 
 prometheusOperator:
   nodeSelector:
