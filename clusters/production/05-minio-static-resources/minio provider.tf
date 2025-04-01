@@ -40,6 +40,7 @@ resource "minio_iam_user" "user" {
   tags = {
     tag-key = each.key
   }
+  depends_on = [vault_generic_secret.vault_new_users]
 }
 
 resource "minio_iam_policy" "user_policy" {
