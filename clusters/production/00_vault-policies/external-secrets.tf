@@ -31,8 +31,5 @@ path "secret/metadata/*" {
 path "secret/data/wl/etl/*" {
   capabilities = ["read","list"]
 }
-path "secret/data/mw/charts-syncer/*" {
-  capabilities = ["read","list"]
-}
 EOT
 }
