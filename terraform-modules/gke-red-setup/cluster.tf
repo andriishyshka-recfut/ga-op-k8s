@@ -156,11 +156,21 @@ resource "google_container_node_pool" "nodepool_additional" {
   cluster           = google_container_cluster.cluster.name
   max_pods_per_node = lookup(each.value, "maxPodsPerNode", var.Settings.clusters[var.Cluster].pods_per_node)
 
-  autoscaling {
-    min_node_count = each.value.minNodes
-    max_node_count = each.value.maxNodes
+  dynamic "autoscaling" {
+    for_each = lookup(each.value, "totalMinNodes", false) != false ? [0] : []
+    content {
+      total_min_node_count = local.additionalNodepools[each.key].totalMinNodes
+      total_max_node_count = local.additionalNodepools[each.key].totalMaxNodes
+    }
   }
-  node_count = each.value.minNodes
+  dynamic "autoscaling" {
+    for_each = lookup(each.value, "totalMinNodes", false) == false ? [0] : []
+    content {
+      min_node_count = local.additionalNodepools[each.key].minNodes
+      max_node_count = local.additionalNodepools[each.key].maxNodes
+    }
+  }
+  node_count = lookup(each.value, "totalMinNodes", false) == false ? each.value.minNodes : local.additionalNodepools[each.key].totalMinNodes
 
   node_config {
     preemptible     = each.value.preemptible
