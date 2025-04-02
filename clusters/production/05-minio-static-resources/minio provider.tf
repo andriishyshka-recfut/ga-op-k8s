@@ -34,7 +34,8 @@ data "vault_generic_secret" "minio_iam_user" {
 
 resource "minio_iam_user" "user" {
   for_each      = local.clients
-  name          = "${replace(each.key, "/@.*/", "")}_${data.vault_generic_secret.minio_iam_user[each.key].data.accessKey}"
+  # name          = "${replace(each.key, "/@.*/", "")}_${data.vault_generic_secret.minio_iam_user[each.key].data.accessKey}"
+  name          = data.vault_generic_secret.minio_iam_user[each.key].data.accessKey
   secret        = data.vault_generic_secret.minio_iam_user[each.key].data.secretKey
   force_destroy = true
   tags = {
@@ -60,3 +61,4 @@ resource "minio_iam_user_policy_attachment" "developer" {
 #   target_user = minio_iam_user.user[each.key].name
 #   policy   = data.vault_generic_secret.minio_iam_user[each.key].data.serviceAccountNames
 # }
+
