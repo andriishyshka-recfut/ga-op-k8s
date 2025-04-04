@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "minio" {
-  minio_server   = var.Cluster == "production" ? "minio-api.p.regemini.io:443" : "minio-api.t.regemini.io:443"
+  minio_server   = var.Cluster == "production" ? "minio-helm-api.p.regemini.io:443" : "minio-helm-api.t.regemini.io:443"
   minio_user     = data.vault_generic_secret.minio_backup_user.data.accessKey
   minio_password = data.vault_generic_secret.minio_backup_user.data.secretKey
   minio_ssl      = true
@@ -34,7 +34,7 @@ data "vault_generic_secret" "minio_iam_user" {
 
 resource "minio_iam_user" "user" {
   for_each      = local.clients
-  name          = "${replace(each.key, "/@.*/", "")}_${data.vault_generic_secret.minio_iam_user[each.key].data.accessKey}"
+  name          = data.vault_generic_secret.minio_iam_user[each.key].data.accessKey
   secret        = data.vault_generic_secret.minio_iam_user[each.key].data.secretKey
   force_destroy = true
   tags = {
