@@ -7,7 +7,7 @@ resource "kubernetes_secret" "certs" {
   }
 
   data = {
-    "tls.crt" = "${each.value.cert}\n${each.value.intermediate}"
+    "tls.crt" = "${each.value.cert}\n${lookup(each.value, "intermediate", "")}"
     "tls.key" = "${each.value.key}"
   }
 
