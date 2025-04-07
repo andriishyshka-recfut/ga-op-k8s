@@ -28,6 +28,13 @@ grafana:
         basicAuthPassword: "$ELASTIC_PASSWORD"
   enabled: true
   namespaceOverride: "monitoring"
+  resources:
+    requests:
+      memory: 50Mi
+      cpu: 20m
+    limits:
+      memory: 200Mi
+      cpu: 100m
   podAnnotations:
     sidecar.istio.io/inject: "false"
   grafana.ini:
@@ -57,9 +64,15 @@ kube-state-metrics:
   customLabels:
     release: prometheus
 
-
 prometheus-node-exporter:
   namespaceOverride: "monitoring"
+  resources:
+    requests:
+      memory: 30Mi
+      cpu: 10m
+    limits:
+      memory: 100Mi
+      cpu: 100m
 
 prometheusOperator:
   nodeSelector:
@@ -74,6 +87,13 @@ prometheusOperator:
     patch:
       podAnnotations:
         sidecar.istio.io/inject: "false"
+  resources:
+    requests:
+      memory: 50Mi
+      cpu: 10m
+    limits:
+      memory: 1G
+      cpu: 100m
 
 prometheus:
   nodeSelector:
@@ -98,6 +118,13 @@ prometheus:
           resources:
             requests:
               storage: 90Gi
+    resources:
+      requests:
+        memory: 4200Mi
+        cpu: 500m
+      limits:
+        memory: 5G
+        cpu: 1600m
     thanos:
       version: ${thanos_version}
       baseImage: quay.io/thanos/thanos
@@ -183,6 +210,13 @@ alertmanager:
       annotations:
         sidecar.istio.io/inject: "false"
     # listenLocal: true
+    resources:
+      requests:
+        memory: 50Mi
+        cpu: 10m
+      limits:
+        memory: 800Mi
+        cpu: 150m
   config:
     global:
       resolve_timeout: 5m

@@ -8,6 +8,9 @@ resource "helm_release" "fluxcd" {
   name       = "flux2"
   version    = var.Settings.clusters[var.Cluster].versions.fluxcd.helm_version
   namespace  = local.namespace
+  values = [
+    file("${path.module}/flux-values.yaml")
+  ]
 }
 
 # resource "helm_release" "flux-crds" {

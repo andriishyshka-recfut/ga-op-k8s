@@ -149,6 +149,16 @@ resource "kubernetes_cron_job_v1" "nightly_json" {
                       /home/nonroot/results/mc cp /home/nonroot/results/*.json minio/${local.minioBucket}
                   EOT
               ]
+              resources {
+                limits = {
+                  cpu    = "2700m"
+                  memory = "1024Mi"
+                }
+                requests = {
+                  cpu    = "2000m"
+                  memory = "600Mi"
+                }
+              }
               env {
                 name = "MINIO_ACCESS_KEY"
                 value_from {

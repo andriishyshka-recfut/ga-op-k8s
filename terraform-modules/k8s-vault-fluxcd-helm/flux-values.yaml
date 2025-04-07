@@ -1,0 +1,48 @@
+helmController:
+  resources:
+    limits:
+     cpu: 400m
+     memory: 500Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+imageAutomationController:
+  resources:
+    limits:
+     cpu: 300m
+     memory: 400Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+imageReflectionController:
+  resources:
+    limits:
+     cpu: 400m
+     memory: 500Mi
+    requests:
+      cpu: 70m
+      memory: 128Mi
+kustomizeController:
+  resources:
+    limits:
+     cpu: 300m
+     memory: 400Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+notificationController:
+  resources:
+    limits:
+     cpu: 300m
+     memory: 400Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+sourceController:
+  resources:
+    limits:
+     cpu: 400m
+     memory: 500Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi

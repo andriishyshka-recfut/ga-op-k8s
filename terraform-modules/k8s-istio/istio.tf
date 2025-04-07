@@ -64,6 +64,14 @@ resource "helm_release" "istiod" {
     name  = "meshConfig.accessLogEncoding"
     value = "JSON"
   }
+  set {
+    name  = "resources.limits.cpu"
+    value = "1400m"
+  }
+  set {
+    name  = "resources.limits.memory"
+    value = "3500Mi"
+  }
   depends_on = [
     helm_release.istio_base
   ]
