@@ -58,6 +58,12 @@ data "kubernetes_secret" "minio_tenant_ca" {
   depends_on = [kubernetes_manifest.certificate_minio_helm_vault_minio]
 }
 
+resource "time_sleep" "wait_60_seconds" {
+  depends_on = data.kubernetes_secret.minio_tenant_ca
+
+  create_duration = "60s"
+}
+
 resource "kubernetes_secret" "operator_ca_secret" {
   metadata {
     name      = "operator-ca-tls"
@@ -66,5 +72,5 @@ resource "kubernetes_secret" "operator_ca_secret" {
   data = {
     "public.crt" = data.kubernetes_secret.minio_tenant_ca.data["ca.crt"]
   }
-
+  depends_on = [time_sleep.wait_60_seconds]
 }
