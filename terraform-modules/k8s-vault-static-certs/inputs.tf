@@ -6,12 +6,12 @@ variable "VaultAddress" {}
 
 data "vault_kv_secrets_list_v2" "certificates" {
   mount = "secret"
-  name  = "certificates"
+  name  = "misc/certificates"
 }
 
 data "vault_generic_secret" "certificates" {
   for_each = local.certs_vault
-  path     = "secret/certificates/${each.value}"
+  path     = "secret/misc/certificates/${each.value}"
 }
 
 
