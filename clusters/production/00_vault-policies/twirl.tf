@@ -25,5 +25,17 @@ path "secret/data/es-creds-compose-prod/elasticKey" {
 path "secret/data/es-creds-compose-prod/elasticCrt" {
   capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/metaEs2gs-twirlMs" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/_twirlRO.ms" {
+  capabilities = ["read","list"]
+}
+path "secret/data/mongo/metaGs2es" {
+  capabilities = ["read","list"]
+}
+path "secret/data/gs2es/es2gs-twirl" {
+  capabilities = ["read","list"]
+}
 EOT
 }
