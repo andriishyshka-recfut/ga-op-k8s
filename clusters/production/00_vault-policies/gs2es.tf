@@ -1,25 +1,13 @@
 resource "vault_policy" "gs2es" {
   name   = "gs2es"
   policy = <<EOT
-path "secret/data/gs2es/*" {
+path "secret/data/twirl/*" {
   capabilities = ["read","list"]
 }
-path "/secret/data/wl/aws2kafka-check/*" {
+path "secret/data/es-creds-compose-prod/twirl" {
   capabilities = ["read","list"]
 }
-path "secret/data/es-creds-compose-prod/gs2es" {
-  capabilities = ["read","list"]
-}
-path "secret/data/es-creds-compose-prod/metaGs2esCppMs" {
-  capabilities = ["read","list"]
-}
-path "secret/data/es-creds-compose-prod/_gs2es-cpp.ms" {
-  capabilities = ["read","list"]
-}
-path "secret/data/es-creds-compose-prod/metaGs2datafixMs" {
-  capabilities = ["read","list"]
-}
-path "secret/data/es-creds-compose-prod/_gs2datafix.ms" {
+path "secret/data/es-creds-compose-prod/metaTwirl" {
   capabilities = ["read","list"]
 }
 path "secret/data/es-creds-compose-prod/elasticHosts" {
@@ -28,7 +16,7 @@ path "secret/data/es-creds-compose-prod/elasticHosts" {
 path "secret/data/es-creds-compose-prod/elasticCa" {
   capabilities = ["read","list"]
 }
-path "secret/data/es-creds-compose-prod/_gs2es-cpp.ms" {
+path "secret/data/es-creds-compose-prod/_twirl.ms" {
   capabilities = ["read","list"]
 }
 path "secret/data/es-creds-compose-prod/elasticKey" {
@@ -37,31 +25,37 @@ path "secret/data/es-creds-compose-prod/elasticKey" {
 path "secret/data/es-creds-compose-prod/elasticCrt" {
   capabilities = ["read","list"]
 }
-path "secret/data/es-creds-compose-prod/metaGs2esCheckerMs" {
+path "secret/data/es-creds-compose-prod/metaEs2gs-twirlMs" {
   capabilities = ["read","list"]
 }
-path "secret/data/es-creds-compose-prod/checker" {
+path "secret/data/wl/aws2kafka-check/*" {
   capabilities = ["read","list"]
 }
-path "secret/data/es-creds-compose-prod/metaGs2esFraudfinderMs" {
+path "secret/data/gs2es/es2gs-magecart-similarweb/spreadsheet" {
   capabilities = ["read","list"]
 }
-path "secret/data/es-creds-compose-prod/_gs2es-fraudfinder.ms" {
-  capabilities = ["read","list"]
-}
-path "secret/data/es-creds-compose-prod/metaEs2gsMagecart-similarwebMs" {
-  capabilities = ["read","list"]
-}
-path "secret/data/es-creds-compose-prod/_similarweb.ms" {
+path "secret/data/gs2es/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/es-creds-compose-prod/metaEs2mysql-roicalcMs" {
   capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/metaEs2gsMagecart-similarwebMs" {
+  capabilities = ["read","list"]
+}
 path "secret/data/es-creds-compose-prod/roi" {
   capabilities = ["read","list"]
 }
-path "secret/data/wl/clicker/engine-definer" {
+path "secret/data/es-creds-compose-prod/_similarweb.ms" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/metaGs2datafixMs" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/_gs2datafix.ms" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/_twirlRO.ms" {
   capabilities = ["read","list"]
 }
 EOT
