@@ -58,5 +58,8 @@ path "secret/data/es-creds-compose-prod/_gs2datafix.ms" {
 path "secret/data/es-creds-compose-prod/_twirlRO.ms" {
   capabilities = ["read","list"]
 }
+path "secret/data/mongo/metaGs2es" {
+  capabilities = ["read","list"]
+}
 EOT
 }
