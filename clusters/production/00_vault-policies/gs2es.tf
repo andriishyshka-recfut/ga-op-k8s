@@ -61,5 +61,14 @@ path "secret/data/es-creds-compose-prod/_twirlRO.ms" {
 path "secret/data/mongo/metaGs2es" {
   capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/metaGs2esCheckerMs" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/metaGs2esCppMs" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/metaGs2esFraudfinderMs" {
+  capabilities = ["read","list"]
+}
 EOT
 }
