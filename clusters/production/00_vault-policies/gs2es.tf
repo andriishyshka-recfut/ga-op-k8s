@@ -79,6 +79,9 @@ path "secret/data/es-creds-compose-prod/checker" {
 path "secret/data/es-creds-compose-prod/_gs2es-fraudfinder.ms" {
   capabilities = ["read","list"]
 }
+path "secret/data/wl/clicker/engine-definer" {
+  capabilities = ["read","list"]
+}
 EOT
 }
 
