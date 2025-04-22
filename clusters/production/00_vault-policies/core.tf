@@ -49,5 +49,8 @@ path "secret/data/vortex/*" {
 path "secret/data/core/auth/*" {
   capabilities = ["read","list","create","update"]
 }
+path "secret/data/wl/minifier/*" {
+  capabilities = ["read","list"]
+}
 EOT
 }
