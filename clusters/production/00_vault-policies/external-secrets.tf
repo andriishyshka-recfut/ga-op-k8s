@@ -34,5 +34,8 @@ path "secret/data/wl/etl/*" {
 path "secret/data/mw/charts-syncer/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/elastic/mon" {
+  capabilities = ["read","list"]
+}
 EOT
 }

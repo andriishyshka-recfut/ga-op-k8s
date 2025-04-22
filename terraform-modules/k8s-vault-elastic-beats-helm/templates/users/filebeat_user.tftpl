@@ -1,0 +1,5 @@
+curl -X PUT "https://elastic:$ES_PASSWORD@${settings.elastic_service}/_security/user/${settings.filebeat_username}_user" -H 'Content-Type: application/json' -k -d '
+{
+    "roles" : ["kibana_admin","ingest_admin","remote_monitoring_agent","filebeat_role"],
+    "password": "${password}"
+}'

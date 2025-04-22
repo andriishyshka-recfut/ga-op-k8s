@@ -10,7 +10,7 @@ data "kubernetes_secret" "es_password" {
 
 resource "vault_generic_secret" "es_admin_creds" {
   count = local.storeEsPasswordInVault
-  path  = "secret/elasticsearch-admin/${local.esValues.esName}"
+  path  = "secret/mw/elastic/${local.esValues.esName}"
 
   data_json = <<EOT
   {

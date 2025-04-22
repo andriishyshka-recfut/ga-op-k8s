@@ -1,3 +1,5 @@
+labels:
+  log-group-name: workloads
 service:
   type: "${lookup(settings, "type", "NodePort")}"
   externalTrafficPolicy: "Local"
@@ -16,3 +18,4 @@ autoscaling:
   minReplicas: ${settings.minReplicas}
 podAnnotations:
   co.elastic.logs/json.add_error_key: 'true'
+  co.elastic.logs/enabled: 'true'

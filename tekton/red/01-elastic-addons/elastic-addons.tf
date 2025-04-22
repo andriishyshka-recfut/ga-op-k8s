@@ -12,10 +12,10 @@ module "kibana" {
 
 module "beats" {
   source             = "../../../terraform-modules/k8s-vault-elastic-beats-helm"
+  Cluster            = var.Cluster
   ElasticSettings    = local.ElasticSettings
-  BeatKibanaService  = "kb-ga"
-  BeatElasticService = "red-coor.elastic.svc"
+  filebeats_settings = var.Settings.clusters[var.Cluster][var.Color].filebeats
   logstash_list      = var.Settings.clusters[var.Cluster][var.Color].logstash
-  filebeat_groups    = var.Settings.clusters[var.Cluster][var.Color].filebeat.log_groups
   depends_on         = [module.kibana]
 }
+
