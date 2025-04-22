@@ -10,7 +10,7 @@ module "monitoring-elastic" {
   Cluster                      = var.Cluster
   Color                        = var.Color
   Settings                     = var.Settings
-  StoreEsPasswordInVault       = false
+  StoreEsPasswordInVault       = var.Cluster == "production" ? true : false
   BackupBucketName             = "backup"
   BackupBucketBasePath         = "es-backup/monitoring"
   OidcRedirectUri              = var.Settings.MonElasticFQDN

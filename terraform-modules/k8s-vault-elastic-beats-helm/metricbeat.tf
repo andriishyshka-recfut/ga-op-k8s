@@ -6,7 +6,7 @@ resource "helm_release" "metricbeat" {
   timeout   = 7200
   namespace = local.elasticSettings.globalSettings.namespace
   values = [
-    templatefile("${path.module}/metricbeat-values.tftpl", merge(local.elasticSettings, { kibana = var.BeatKibanaService, elastic = var.BeatElasticService, logstash_pipelines_creds = local.logstash_pipelines_creds }))
+    templatefile("${path.module}/templates/helm_values/metricbeat-values.tftpl", merge(local.elasticSettings, { kibana = local.BeatKibanaService, elastic = local.BeatElasticService, logstash_pipelines_creds = local.logstash_pipelines_creds }))
   ]
   depends_on = [
     kubernetes_job.beats_users

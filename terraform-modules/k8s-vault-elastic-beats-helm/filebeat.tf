@@ -1,12 +1,13 @@
 resource "helm_release" "filebeat" {
-  name      = "filebeat"
+  for_each  = var.filebeats_settings
+  name      = each.key
   chart     = "${path.module}/charts/filebeat"
   wait      = true
   atomic    = true
   timeout   = 7200
-  namespace = local.elasticSettings.globalSettings.namespace
+  namespace = each.value.namespace
   values = [
-    templatefile("${path.module}/filebeat-values.tftpl", merge(local.elasticSettings.globalSettings, { kibana = var.BeatKibanaService, elastic = var.BeatElasticService, filebeat_groups = var.filebeat_groups }))
+    templatefile("${path.module}/templates/helm_values/${each.key}-values.tftpl", merge({ settings = each.value, imageTag = local.filebeat_image_tags[each.key] }))
   ]
   depends_on = [
     kubernetes_job.beats_users
@@ -18,9 +19,9 @@ resource "helm_release" "filebeat" {
 }
 
 resource "null_resource" "workload_readiness_check" {
-  count = length(var.filebeat_groups) > 0 ? 1 : 0
+  for_each = var.filebeats_settings
   triggers = {
-    filebeats_check = md5(file("${path.module}/${local.filebeat_check_script_path}"))
+    filebeats_check    = md5(file("${path.module}/${local.filebeat_check_script_path}"))
     workload_readiness = md5(file("${path.module}/${local.workload_check_module_path}"))
   }
   provisioner "local-exec" {
@@ -29,11 +30,11 @@ resource "null_resource" "workload_readiness_check" {
 COMMAND
     environment = {
       WORKLOAD_TYPE        = local.filebeat_workload_type
-      WORKLOAD_NAME        = local.filebeat_workload_name
-      WORKLOAD_NAMESPACE   = local.elasticSettings.globalSettings.namespace
+      WORKLOAD_NAME        = each.value.name
+      WORKLOAD_NAMESPACE   = each.value.namespace
       WORKLOAD_MODULE_PATH = "../${local.workload_check_module_path}"
-      CHECK_TIMEOUT        = "360"
-      CHECK_RETRIES        = "10"
+      CHECK_TIMEOUT        = "60"
+      CHECK_RETRIES        = "15"
     }
   }
   depends_on = [
@@ -42,10 +43,10 @@ COMMAND
 }
 
 resource "kubernetes_secret" "python_script" {
-  count = length(var.filebeat_groups) > 0 ? 1 : 0
+  for_each = local.filebeat_groups_list
   metadata {
-    name      = "${helm_release.filebeat.name}-script"
-    namespace = local.elasticSettings.globalSettings.namespace
+    name      = "${each.key}-script"
+    namespace = each.value.namespace
   }
   data = {
     "filebeat.py" = "${file("${path.module}/filebeat.py")}"
@@ -53,10 +54,10 @@ resource "kubernetes_secret" "python_script" {
 }
 
 resource "kubernetes_job" "python_script" {
-  count = length(var.filebeat_groups) > 0 ? 1 : 0
+  for_each = local.filebeat_groups_list
   metadata {
-    name      = "${helm_release.filebeat.name}-script-job"
-    namespace = local.elasticSettings.globalSettings.namespace
+    name      = "${each.key}-script-job"
+    namespace = each.value.namespace
   }
   spec {
     template {
@@ -72,11 +73,11 @@ resource "kubernetes_job" "python_script" {
           command = ["/ansible/bin/python3", "/opt/filebeat.py"]
           env {
             name  = "TEMPLATES"
-            value = var.filebeat_groups
+            value = each.value.log_groups
           }
           env {
             name  = "FILEBEAT_VERSION"
-            value = local.elasticSettings.globalSettings.imageTag
+            value = local.filebeat_image_tags[each.key]
           }
           env {
             name  = "ELASTICSEARCH_USERNAME"
@@ -86,14 +87,14 @@ resource "kubernetes_job" "python_script" {
             name = "ELASTICSEARCH_PASSWORD"
             value_from {
               secret_key_ref {
-                name = "elastic-credentials"
+                name = each.value.elastic_pass_secretname
                 key  = "elastic"
               }
             }
           }
           env {
             name  = "ELASTICSEARCH_URL"
-            value = "${local.elasticSettings.globalSettings.clusterName}-coor:9200"
+            value = each.value.elastic_service
           }
           volume_mount {
             name       = "ca-cert"
@@ -109,7 +110,7 @@ resource "kubernetes_job" "python_script" {
         volume {
           name = "ca-cert"
           secret {
-            secret_name = "elastic-https-certs"
+            secret_name = each.value.elastic_cert_secretname
             items {
               key  = "ca.crt"
               path = "ca.crt"
@@ -119,7 +120,7 @@ resource "kubernetes_job" "python_script" {
         volume {
           name = "script"
           secret {
-            secret_name = "${helm_release.filebeat.name}-script"
+            secret_name = "${each.key}-script"
           }
         }
         image_pull_secrets {
@@ -143,7 +144,7 @@ resource "kubernetes_priority_class" "beats" {
     name = "beats"
   }
 
-  value = 100000
-  description = "Used to place elasticsearch beats on nodes with higher priority"
+  value             = 100000
+  description       = "Used to place elasticsearch beats on nodes with higher priority"
   preemption_policy = "PreemptLowerPriority"
 }
