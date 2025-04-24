@@ -12,7 +12,7 @@ locals {
   es_cert_secretname  = "elastic-https-certs"
   namespace           = "elastic"
   minio_user          = "logstash-red"
-  minio_endpoint      = "https://minio.regemini.io"
+  minio_endpoint      = "http://minio:9000"
   minio_bucket        = "minio-logstash-pipelines-orbital-wording-233917"
   es_host             = "red-coor.${local.namespace}.svc:9200"
   pipeline_id         = "testing"
