@@ -9,8 +9,8 @@ resource "kubernetes_service" "logstash_1_service" {
     port {
       name        = "logstash"
       protocol    = "TCP"
-      port        = 9601
-      target_port = 9601
+      port        = 9600
+      target_port = 9600
     }
   }
 }
@@ -25,8 +25,8 @@ resource "kubernetes_service" "logstash_2_service" {
     port {
       name        = "logstash"
       protocol    = "TCP"
-      port        = 9602
-      target_port = 9602
+      port        = 9600
+      target_port = 9600
     }
   }
 }
@@ -47,7 +47,7 @@ resource "kubernetes_endpoints" "logstash_1_endpoint" {
 
     port {
       name     = "logstash"
-      port     = 9601
+      port     = 9600
       protocol = "TCP"
     }
   }
@@ -69,7 +69,7 @@ resource "kubernetes_endpoints" "logstash_2_endpoint" {
 
     port {
       name     = "logstash"
-      port     = 9602
+      port     = 9600
       protocol = "TCP"
     }
   }
