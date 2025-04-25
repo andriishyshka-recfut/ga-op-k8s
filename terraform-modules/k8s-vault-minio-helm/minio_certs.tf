@@ -59,8 +59,7 @@ data "kubernetes_secret" "minio_tenant_ca" {
 }
 
 resource "time_sleep" "wait_60_seconds" {
-  depends_on = data.kubernetes_secret.minio_tenant_ca
-
+  depends_on      = [data.kubernetes_secret.minio_tenant_ca]
   create_duration = "60s"
 }
 

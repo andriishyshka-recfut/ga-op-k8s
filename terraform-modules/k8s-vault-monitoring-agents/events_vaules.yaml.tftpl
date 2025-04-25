@@ -8,6 +8,15 @@ image:
   registry: harbor.regemini.io
   repository: mirror/kubernetes-event-exporter
   tag: ${tag}
+resources:
+  limits:
+    cpu: 300m
+    ephemeral-storage: 1Gi
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    ephemeral-storage: 100Mi
+    memory: 256Mi
 config:
   logLevel: ${log_level}
   logFormat: pretty

@@ -1,3 +1,20 @@
+terraform {
+  required_version = ">= 0.13"
+
+  required_providers {
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
+    }
+  }
+}
+
+provider "kubectl" {
+  host                   = var.k8s.HOST
+  cluster_ca_certificate = var.k8s.CLUSTER_CA_CERTIFICATE
+  token                  = var.k8s.API_KEY
+  load_config_file       = false
+}
 resource "null_resource" "pki_enable" {
   for_each = nonsensitive(local.project_setup_pki)
   triggers = {
@@ -69,31 +86,37 @@ resource "null_resource" "pki_installed" {
 }
 
 
-resource "kubernetes_manifest" "vault_certmanager" {
-  for_each = local.projects
-  manifest = {
-    "apiVersion" = "cert-manager.io/v1"
-    "kind"       = "ClusterIssuer"
-    "metadata" = {
-      "name" = "vault-${each.key}-issuer"
-    }
-    "spec" = {
-      "vault" = {
-        "auth" = {
-          "kubernetes" = {
-            "mountPath" = "/v1/auth/k8s-${var.Cluster}-${var.Color}"
-            "role"      = "cert-manager"
-            "secretRef" = {
-              "key"  = "token"
-              "name" = "sa-${var.Cluster}-cert-manager"
-            }
-          }
-        }
-        "path"   = "pki-${each.key}/sign/${each.key}"
-        "server" = var.VaultAddress
-      }
-    }
-  }
+# resource "kubernetes_manifest" "vault_certmanager" {
+#   for_each = local.projects
+#   manifest = {
+#     "apiVersion" = "cert-manager.io/v1"
+#     "kind"       = "ClusterIssuer"
+#     "metadata" = {
+#       "name" = "vault-${each.key}-issuer"
+#     }
+#     "spec" = {
+#       "vault" = {
+#         "auth" = {
+#           "kubernetes" = {
+#             "mountPath" = "/v1/auth/k8s-${var.Cluster}-${var.Color}"
+#             "role"      = "cert-manager"
+#             "secretRef" = {
+#               "key"  = "token"
+#               "name" = "sa-${var.Cluster}-cert-manager"
+#             }
+#           }
+#         }
+#         "path"   = "pki-${each.key}/sign/${each.key}"
+#         "server" = var.VaultAddress
+#       }
+#     }
+#   }
+# }
+
+
+resource "kubectl_manifest" "vault_certmanager" {
+  for_each  = local.projects
+  yaml_body = templatefile("${path.module}/templates/clusterissuer.tftpl", { name = each.key, Cluster = var.Cluster, Color = var.Color, VaultAddress = var.VaultAddress })
 }
 
 resource "tls_private_key" "clients_rsa_key" {
@@ -169,82 +192,96 @@ resource "null_resource" "certs_installed" {
   ]
 }
 
-resource "kubernetes_manifest" "tls_proxy_cert" {
-  for_each = nonsensitive(local.project_data_enabled)
-  manifest = {
-    "apiVersion" = "cert-manager.io/v1"
-    "kind"       = "Certificate"
-    "metadata" = {
-      "name"      = "${each.key}-cert"
-      "namespace" = "istio-ingress"
-    }
-    "spec" = {
-      "commonName" = each.value.domain
-      "dnsNames" = [
-        each.value.domain
-      ]
-      "duration"    = "1080h0m0s"
-      "renewBefore" = "360h0m0s"
-      "issuerRef" = {
-        "kind" = "ClusterIssuer"
-        "name" = lookup(each.value, "cluster_issuer", "vault-${each.key}-issuer")
-      }
-      "secretName" = "${each.key}-cert"
-    }
-  }
+# resource "kubernetes_manifest" "tls_proxy_cert" {
+#   for_each = nonsensitive(local.project_data_enabled)
+#   manifest = {
+#     "apiVersion" = "cert-manager.io/v1"
+#     "kind"       = "Certificate"
+#     "metadata" = {
+#       "name"      = "${each.key}-cert"
+#       "namespace" = "istio-ingress"
+#     }
+#     "spec" = {
+#       "commonName" = each.value.domain
+#       "dnsNames" = [
+#         each.value.domain
+#       ]
+#       "duration"    = "1080h0m0s"
+#       "renewBefore" = "360h0m0s"
+#       "issuerRef" = {
+#         "kind" = "ClusterIssuer"
+#         "name" = lookup(each.value, "cluster_issuer", "vault-${each.key}-issuer")
+#       }
+#       "secretName" = "${each.key}-cert"
+#     }
+#   }
+# }
+
+resource "kubectl_manifest" "tls_proxy_cert" {
+  for_each  = nonsensitive(local.project_data_enabled)
+  yaml_body = templatefile("${path.module}/templates/certificate.tftpl", { name = each.key, settings = each.value })
 }
 
-resource "kubernetes_manifest" "tls_proxy_gateway" {
-  for_each = nonsensitive(local.project_data_enabled)
-  manifest = {
-    "apiVersion" = "networking.istio.io/v1beta1"
-    "kind"       = "Gateway"
-    "metadata" = {
-      "name"      = "${each.key}-gateway"
-      "namespace" = "istio-ingress"
-    }
-    "spec" = {
-      "selector" = {
-        "istio" = lookup(each.value, "ingress", "ingressgateway-lb")
-      }
-      "servers" = [
-        {
-          "hosts" = [
-            each.value.domain
-          ]
-          "port" = {
-            "name"     = "http"
-            "number"   = 80
-            "protocol" = "HTTP"
-          }
-          "tls" = {
-            "httpsRedirect" = "true"
-          }
-        },
-        {
-          "hosts" = [
-            each.value.domain
-          ]
-          "port" = {
-            "name"     = "https"
-            "number"   = 443
-            "protocol" = "HTTPS"
-          }
-          "tls" = {
-            "credentialName"     = "${each.key}-cert"
-            "minProtocolVersion" = lookup(each.value, "minimum_tls_version", "TLSV1_3")
-            "mode"               = "MUTUAL"
-          }
-        }
-      ]
-    }
-  }
+# resource "kubernetes_manifest" "tls_proxy_gateway" {
+#   for_each = nonsensitive(local.project_data_enabled)
+#   manifest = {
+#     "apiVersion" = "networking.istio.io/v1beta1"
+#     "kind"       = "Gateway"
+#     "metadata" = {
+#       "name"      = "${each.key}-gateway"
+#       "namespace" = "istio-ingress"
+#     }
+#     "spec" = {
+#       "selector" = {
+#         "istio" = lookup(each.value, "ingress", "ingressgateway-lb")
+#       }
+#       "servers" = [
+#         {
+#           "hosts" = [
+#             each.value.domain
+#           ]
+#           "port" = {
+#             "name"     = "http"
+#             "number"   = 80
+#             "protocol" = "HTTP"
+#           }
+#           "tls" = {
+#             "httpsRedirect" = "true"
+#           }
+#         },
+#         {
+#           "hosts" = [
+#             each.value.domain
+#           ]
+#           "port" = {
+#             "name"     = "https"
+#             "number"   = 443
+#             "protocol" = "HTTPS"
+#           }
+#           "tls" = {
+#             "credentialName"     = "${each.key}-cert"
+#             "minProtocolVersion" = lookup(each.value, "minimum_tls_version", "TLSV1_3")
+#             "mode"               = "MUTUAL"
+#           }
+#         }
+#       ]
+#     }
+#   }
+# }
+
+resource "kubectl_manifest" "tls_proxy_gateway" {
+  for_each  = nonsensitive(local.project_data_enabled)
+  yaml_body = templatefile("${path.module}/templates/gateway.tftpl", { name = each.key, settings = each.value })
 }
 
-resource "kubernetes_manifest" "tls_proxy_virtualservice" {
-  for_each = nonsensitive(local.project_data_enabled)
-  manifest = yamldecode(templatefile("${path.module}/virtualservice.yaml.tftpl", { "project_name" : each.key, "project_data" : each.value, "basic_auth" : local.auth_user_list }))
+# resource "kubernetes_manifest" "tls_proxy_virtualservice" {
+#   for_each = nonsensitive(local.project_data_enabled)
+#   manifest = yamldecode(templatefile("${path.module}/templates/virtualservice.tftpl", { "project_name" : each.key, "project_data" : each.value, "basic_auth" : local.auth_user_list }))
+# }
+
+
+resource "kubectl_manifest" "tls_proxy_virtualservice" {
+  for_each  = nonsensitive(local.project_data_enabled)
+  yaml_body = templatefile("${path.module}/templates/virtualservice.tftpl", { "project_name" : each.key, "project_data" : each.value, "basic_auth" : local.auth_user_list })
 }
-
-
 

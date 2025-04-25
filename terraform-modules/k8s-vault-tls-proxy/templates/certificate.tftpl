@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "${name}-cert"
+  namespace: istio-ingress
+spec:
+  commonName: ${settings.domain}
+  duration: "1080h0m0s"
+  renewBefore: "360h0m0s"
+  issuerRef:
+    kind: ClusterIssuer
+    name: ${lookup(settings, "cluster_issuer", "vault-${name}-issuer")}
+  secretName: "${name}-cert"
+  dnsNames:
+    - ${settings.domain}

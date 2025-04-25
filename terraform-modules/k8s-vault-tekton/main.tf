@@ -16,7 +16,7 @@ data "vault_generic_secret" "goharbor" {
 
 resource "kubernetes_secret" "harbor_creds_main" {
   metadata {
-    name = "harbor"
+    name      = "harbor"
     namespace = local.tektonMainNs
   }
   type = "kubernetes.io/dockerconfigjson"
@@ -38,7 +38,7 @@ resource "kubernetes_secret" "harbor_creds_main" {
 
 resource "kubernetes_secret" "harbor_creds" {
   metadata {
-    name = "harbor"
+    name      = "harbor"
     namespace = local.tektonNs
   }
   type = "kubernetes.io/dockerconfigjson"
@@ -58,6 +58,20 @@ resource "kubernetes_secret" "harbor_creds" {
   ]
 }
 
+resource "kubernetes_config_map" "cluster-settings" {
+  for_each = toset(local.tekton_ns_list)
+  metadata {
+    name      = "cluster-settings"
+    namespace = each.key
+  }
+  data = {
+    cluster    = var.Cluster
+    color      = var.Color
+    configPath = local.configPath
+    vaultAddr  = var.VaultAddress
+  }
+}
+
 resource "null_resource" "deploy_tekton" {
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
@@ -67,18 +81,6 @@ resource "null_resource" "deploy_tekton" {
      --token ${local.gkeBearerToken} \
      --insecure-skip-tls-verify=true \
      -f https://storage.googleapis.com/tekton-releases/operator/latest/release.yaml && sleep 30 && \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken} \
-     --insecure-skip-tls-verify=true \
-     --namespace=${local.tektonNs} \
-     create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
-     --from-literal=vaultAddr=${var.VaultAddress} && \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken} \
-     --insecure-skip-tls-verify=true  \
-     --namespace=${local.tektonMainNs} \
-     create configmap cluster-settings --from-literal=cluster=${var.Cluster} --from-literal=color=${var.Color} --from-literal=configPath=${local.configPath} \
-     --from-literal=vaultAddr=${var.VaultAddress} && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken} \
      --insecure-skip-tls-verify=true \
@@ -98,7 +100,8 @@ COMMAND
     kubernetes_secret.harbor_creds_main,
     kubernetes_secret.harbor_creds,
     kubernetes_namespace.tekton,
-    kubernetes_namespace.tektonMain    
+    kubernetes_namespace.tektonMain,
+    kubernetes_config_map.cluster-settings
   ]
 }
 
@@ -126,7 +129,7 @@ COMMAND
     kubernetes_secret.harbor_creds_main,
     kubernetes_secret.harbor_creds,
     kubernetes_namespace.tekton,
-    kubernetes_namespace.tektonMain  
+    kubernetes_namespace.tektonMain
   ]
 }
 
@@ -181,7 +184,7 @@ COMMAND
     kubernetes_secret.harbor_creds_main,
     kubernetes_secret.harbor_creds,
     kubernetes_namespace.tekton,
-    kubernetes_namespace.tektonMain  
+    kubernetes_namespace.tektonMain
   ]
 }
 
