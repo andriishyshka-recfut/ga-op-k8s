@@ -261,7 +261,7 @@ alertmanager:
     - name: "tekton-webhook-notifications-and-slack"
       webhook_configs:
         - send_resolved: false
-          url: "http://el-webhook-alertmanager-listener.tekton-pipelines:8080"
+          url: "http://el-crashloopbackoffpod-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
         - api_url: ${prometheus_slack_webhooks.url}
           channel: '#prometheus'

@@ -104,7 +104,39 @@ spec:
     params:
     - name: server
       value: $(params.server)
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-webhook
+  namespace: tekton-pipelines
+---
 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-triggers-controller-webhook
+subjects:
+  - kind: ServiceAccount
+    name: tekton-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-triggers-controller-cluster-webhook
+subjects:
+  - kind: ServiceAccount
+    name: tekton-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-clusterroles
+  apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
