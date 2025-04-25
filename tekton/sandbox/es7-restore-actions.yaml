@@ -1,6 +1,15 @@
 ---
 actions:
   1:
+    action: delete_indices
+    description: "Delete all indices"
+    options:
+      continue_if_exception: True
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: "^.*$"
+  2:
     action: restore
     description: "Restore system"
     options:

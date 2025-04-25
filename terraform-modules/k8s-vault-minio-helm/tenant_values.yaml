@@ -4,8 +4,8 @@
 tenant:
   name: minio-tenant
 
-  configuration:
-    name: minio-cluster
+  ##  configuration:
+  ##    name: minio-cluster
   ## Specification for MinIO Pool(s) in this Tenant.
   pools:
     - servers: 4

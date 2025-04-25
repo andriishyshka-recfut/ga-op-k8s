@@ -7,7 +7,7 @@ resource "helm_release" "red_panda_console" {
   namespace  = local.kafkaNs
   timeout    = 900
   set {
-    name  = "console.config.kafka.brokers[0]"
+    name  = "config.kafka.brokers[0]"
     value = "kafka-cluster-kafka-bootstrap:9092"
   }
   set {

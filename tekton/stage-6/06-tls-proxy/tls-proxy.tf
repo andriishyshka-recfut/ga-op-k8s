@@ -6,4 +6,6 @@ module "tls-proxy" {
   Cluster        = var.Cluster
   Settings       = var.Settings
   VaultAddress   = var.VaultAddress
+  k8s            = local.gkeClusterConnectionSettings
+
 }

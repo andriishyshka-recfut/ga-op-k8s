@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "${name}-cert"
+  namespace: istio-ingress
+  annotations:
+    "kubernetes.io/ingress.class": istio
+spec:
+  commonName: "${element(domains,0)}"
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: "${name}-cert"
+  dnsNames: 
+ %{ for domain in domains ~} 
+  - ${ domain ~}
+ %{ endfor ~}

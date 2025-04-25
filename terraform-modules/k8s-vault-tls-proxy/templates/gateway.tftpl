@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: "${name}-gateway"
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: ${lookup(settings, "ingress", "ingressgateway-lb")}
+  servers:
+    - hosts: 
+        - ${settings.domain}
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+      tls:
+        httpsRedirect: true
+    - hosts:
+        - ${settings.domain}
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        credentialName: "${name}-cert"
+        minProtocolVersion: ${lookup(settings, "minimum_tls_version", "TLSV1_3")}
+        mode: MUTUAL
