@@ -1,0 +1,14 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: "${name}-ip-whitelist"
+  namespace: istio-ingress
+spec:
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            ipBlocks: [${tostring(join(", ",settings.iplist))}]
+  selector:
+    matchLabels:
+      istio: ${settings.ingress}

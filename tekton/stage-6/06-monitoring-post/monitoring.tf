@@ -41,11 +41,12 @@ module "prometheus-addons" {
 
 
 module "fluxcd-prometheus-post-rules" {
-  source     = "../../../terraform-modules/k8s-vault-fluxcd-resources"
-  Cluster    = var.Cluster
-  Color      = var.Color
-  Values     = local.values
-  depends_on = [module.prometheus-addons]
+  source  = "../../../terraform-modules/k8s-vault-fluxcd-resources"
+  Cluster = var.Cluster
+  Color   = var.Color
+  Values  = local.values
+  k8s     = local.gkeClusterConnectionSettings
+  # depends_on = [module.prometheus-addons]
 }
 
 locals {

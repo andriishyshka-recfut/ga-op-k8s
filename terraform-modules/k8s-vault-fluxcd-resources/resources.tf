@@ -1,44 +1,88 @@
 terraform {
+  required_version = ">= 0.13"
+
   required_providers {
     kubectl = {
-      source  = "registry.opentofu.org/gavinbunney/kubectl"
-      version = ">= 1.10.0"
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
     }
   }
 }
 
-resource "kubernetes_manifest" "git_repositories" {
-  for_each = local.git-repositories
-  manifest = yamldecode(templatefile("${path.module}/templates/git-repository.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
+provider "kubectl" {
+  host                   = var.k8s.HOST
+  cluster_ca_certificate = var.k8s.CLUSTER_CA_CERTIFICATE
+  token                  = var.k8s.API_KEY
+  load_config_file       = false
 }
 
-resource "kubernetes_manifest" "helm_repositories" {
-  for_each = local.helm-repositories
-  manifest = yamldecode(templatefile("${path.module}/templates/helm-repository.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
+resource "kubectl_manifest" "git_repositories" {
+  for_each  = local.git-repositories
+  yaml_body = templatefile("${path.module}/templates/git-repository.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals })
 }
 
-resource "kubernetes_manifest" "helm_releases" {
+resource "kubectl_manifest" "helm_repositories" {
+  for_each  = local.helm-repositories
+  yaml_body = templatefile("${path.module}/templates/helm-repository.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals })
+}
+
+resource "kubectl_manifest" "helm_releases" {
   for_each   = local.helm-releases
-  manifest   = yamldecode(templatefile("${path.module}/templates/helm-release.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
-  depends_on = [kubernetes_manifest.helm_repositories]
+  yaml_body  = templatefile("${path.module}/templates/helm-release.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals })
+  depends_on = [kubectl_manifest.helm_repositories]
 }
 
-resource "kubernetes_manifest" "kustomizations" {
+resource "kubectl_manifest" "kustomizations" {
   for_each   = local.kustomizations
-  manifest   = yamldecode(templatefile("${path.module}/templates/kustomization.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
-  depends_on = [kubernetes_manifest.git_repositories]
+  yaml_body  = templatefile("${path.module}/templates/kustomization.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals })
+  depends_on = [kubectl_manifest.git_repositories]
 }
 
-resource "kubernetes_manifest" "notification-providers" {
-  for_each = local.notification-providers
-  manifest = yamldecode(templatefile("${path.module}/templates/notification-provider.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
+resource "kubectl_manifest" "notification-providers" {
+  for_each  = local.notification-providers
+  yaml_body = templatefile("${path.module}/templates/notification-provider.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals })
 }
 
-resource "kubernetes_manifest" "alerts" {
+resource "kubectl_manifest" "alerts" {
   for_each   = local.alerts
-  manifest   = yamldecode(templatefile("${path.module}/templates/alert.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
-  depends_on = [kubernetes_manifest.notification-providers]
+  yaml_body  = templatefile("${path.module}/templates/alert.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals })
+  depends_on = [kubectl_manifest.notification-providers]
 }
+
+# resource "kubernetes_manifest" "git_repositories" {
+#   for_each = local.git-repositories
+#   manifest = yamldecode(templatefile("${path.module}/templates/git-repository.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
+# }
+
+
+
+# resource "kubernetes_manifest" "helm_repositories" {
+#   for_each = local.helm-repositories
+#   manifest = yamldecode(templatefile("${path.module}/templates/helm-repository.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
+# }
+
+# resource "kubernetes_manifest" "helm_releases" {
+#   for_each   = local.helm-releases
+#   manifest   = yamldecode(templatefile("${path.module}/templates/helm-release.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
+#   depends_on = [kubernetes_manifest.helm_repositories]
+# }
+
+# resource "kubernetes_manifest" "kustomizations" {
+#   for_each   = local.kustomizations
+#   manifest   = yamldecode(templatefile("${path.module}/templates/kustomization.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
+#   depends_on = [kubernetes_manifest.git_repositories]
+# }
+
+# resource "kubernetes_manifest" "notification-providers" {
+#   for_each = local.notification-providers
+#   manifest = yamldecode(templatefile("${path.module}/templates/notification-provider.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
+# }
+
+# resource "kubernetes_manifest" "alerts" {
+#   for_each   = local.alerts
+#   manifest   = yamldecode(templatefile("${path.module}/templates/alert.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals }))
+#   depends_on = [kubernetes_manifest.notification-providers]
+# }
 
 
 # resource "local_file" "alert" {

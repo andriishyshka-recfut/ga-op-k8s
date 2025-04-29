@@ -1,4 +1,21 @@
 
+terraform {
+  required_version = ">= 0.13"
+
+  required_providers {
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
+    }
+  }
+}
+
+provider "kubectl" {
+  host                   = var.k8s.HOST
+  cluster_ca_certificate = var.k8s.CLUSTER_CA_CERTIFICATE
+  token                  = var.k8s.API_KEY
+  load_config_file       = false
+}
 data "vault_generic_secret" "minio_default_settings" {
   path = "secret/${var.SecretPath}/minio"
 }
@@ -34,8 +51,8 @@ resource "kubernetes_secret" "minio_default_settings" {
   }
 
   data = {
-    "endpoint" = data.vault_generic_secret.minio_default_settings.data.ENDPOINT
-    "minio-bucket"    = data.vault_generic_secret.minio_default_settings.data.MINIO_BUCKET
+    "endpoint"     = data.vault_generic_secret.minio_default_settings.data.ENDPOINT
+    "minio-bucket" = data.vault_generic_secret.minio_default_settings.data.MINIO_BUCKET
   }
 }
 
@@ -49,7 +66,7 @@ resource "kubernetes_secret" "api_keys" {
   data = {
     "vault" = jsonencode(data.vault_generic_secret.api_keys.data)
   }
-  
+
 }
 
 
@@ -79,62 +96,72 @@ resource "kubernetes_secret" "elastic_certs" {
 
 }
 
-resource "kubernetes_manifest" "externalsecret_ssh" {
-  manifest = {
-    "apiVersion" = "external-secrets.io/v1beta1"
-    "kind"       = "ExternalSecret"
-    "metadata" = {
-      "name" = "ssh"
-      "namespace" : local.namespace
-    }
-    "spec" = {
-      "target" = {
-        "name" = "ssh"
-      }
-      "dataFrom" = [
-        {
-          "extract" = {
-            "key" = "secret/data/${var.SecretPath}/ssh"
-          }
-        },
-      ]
-      "refreshInterval" = "1m"
-      "secretStoreRef" = {
-        "kind" = "SecretStore"
-        "name" = "vault-backend"
-      }
-    }
-  }
+resource "kubectl_manifest" "externalsecret_ssh" {
+  yaml_body  = templatefile("${path.module}/ext_ssh.tftpl", { namespace = local.namespace, vault_path = var.SecretPath })
   depends_on = [helm_release.etl_operator]
-
 }
 
-resource "kubernetes_manifest" "externalsecret_logstash_creds" {
-  manifest = {
-    "apiVersion" = "external-secrets.io/v1beta1"
-    "kind"       = "ExternalSecret"
-    "metadata" = {
-      "name" = "logstash-creds"
-      "namespace" : local.namespace
-    }
-    "spec" = {
-      "target" = {
-        "name" = "logstash-creds"
-      }
-      "dataFrom" = [
-        {
-          "extract" = {
-            "key" = "secret/data/${var.SecretPath}/logstash-creds"
-          }
-        },
-      ]
-      "refreshInterval" = "1m"
-      "secretStoreRef" = {
-        "kind" = "SecretStore"
-        "name" = "vault-backend"
-      }
-    }
-  }
+resource "kubectl_manifest" "externalsecret_logstash_creds" {
+  yaml_body  = templatefile("${path.module}/ext_logstash.tftpl", { namespace = local.namespace, vault_path = var.SecretPath })
   depends_on = [helm_release.etl_operator]
-
 }
+
+# resource "kubernetes_manifest" "externalsecret_ssh" {
+#   manifest = {
+#     "apiVersion" = "external-secrets.io/v1beta1"
+#     "kind"       = "ExternalSecret"
+#     "metadata" = {
+#       "name" = "ssh"
+#       "namespace" : local.namespace
+#     }
+#     "spec" = {
+#       "target" = {
+#         "name" = "ssh"
+#       }
+#       "dataFrom" = [
+#         {
+#           "extract" = {
+#             "key" = "secret/data/${var.SecretPath}/ssh"
+#           }
+#         },
+#       ]
+#       "refreshInterval" = "1m"
+#       "secretStoreRef" = {
+#         "kind" = "SecretStore"
+#         "name" = "vault-backend"
+#       }
+#     }
+#   }
+#   depends_on = [helm_release.etl_operator]
+
+# }
+
+# resource "kubernetes_manifest" "externalsecret_logstash_creds" {
+#   manifest = {
+#     "apiVersion" = "external-secrets.io/v1beta1"
+#     "kind"       = "ExternalSecret"
+#     "metadata" = {
+#       "name" = "logstash-creds"
+#       "namespace" : local.namespace
+#     }
+#     "spec" = {
+#       "target" = {
+#         "name" = "logstash-creds"
+#       }
+#       "dataFrom" = [
+#         {
+#           "extract" = {
+#             "key" = "secret/data/${var.SecretPath}/logstash-creds"
+#           }
+#         },
+#       ]
+#       "refreshInterval" = "1m"
+#       "secretStoreRef" = {
+#         "kind" = "SecretStore"
+#         "name" = "vault-backend"
+#       }
+#     }
+#   }
+#   depends_on = [helm_release.etl_operator]
+
+# }
