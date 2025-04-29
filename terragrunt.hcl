@@ -1,4 +1,7 @@
 
+# locals {
+#   additional_providers = try(input.additional_providers, [])
+# }
 terraform {
 
   extra_arguments "custom_vars" {
@@ -25,7 +28,8 @@ retryable_errors = [
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
-  contents  = <<EOF
+  # contents = templatefile("terragrunt.tftpl",{additional_providers = local.additional_providers })
+contents  = <<EOF
 variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
@@ -67,7 +71,6 @@ provider "kubernetes" {
   token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
 
 }
-
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "kubernetes" {

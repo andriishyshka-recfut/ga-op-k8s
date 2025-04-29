@@ -1,6 +1,6 @@
 variable "Settings" {}
 variable "Cluster" {}
-
+variable "k8s" {}
 locals {
   ipWhiteListCheck = lookup(var.Settings.clusters[var.Cluster], "ip_white_list", {})
   # ipWhiteList      = { for whitelist, data in local.ipWhiteListCheck : whitelist => data }

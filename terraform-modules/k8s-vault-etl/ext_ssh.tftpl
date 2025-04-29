@@ -1,0 +1,15 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: ssh
+  namespace: ${namespace}
+spec:
+  dataFrom:
+    - extract:
+        key: secret/data/${vault_path}/ssh
+  refreshInterval: 1m
+  secretStoreRef:
+    kind: SecretStore
+    name: vault-backend
+  target:
+    name: ssh
