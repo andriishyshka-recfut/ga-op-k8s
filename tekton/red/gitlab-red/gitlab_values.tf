@@ -2,6 +2,7 @@ locals {
   domain    = "gitlab.regemini.com"
   namespace = "gitlab"
   gitlab_values = {
+    log-group-name = "workloads"
     global = {
       common = {
         labels = {
