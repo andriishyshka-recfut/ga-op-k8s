@@ -4,17 +4,6 @@ locals {
   gitlab_values = {
     log-group-name = "workloads"
     global = {
-      common = {
-        labels = {
-          log-group-name = "workloads"
-        }
-      }
-      deployment = {
-        annotations = {
-          "co.elastic.logs/enabled"            = true
-          "co.elastic.logs/json.add_error_key" = true
-        }
-      }
       edition = "ce"
       shell = {
         port = 2224

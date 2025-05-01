@@ -182,6 +182,11 @@ gitlab:
   sidekiq:
     enabled: ${gitlab.sidekiq.enabled}
     minReplicas: ${gitlab.sidekiq.minReplicas}
+    podLabels:
+      log-group-name: ${log-group-name}
+    annotations:
+      co.elastic.logs/enabled: true
+      co.elastic.logs/json.add_error_key: true
     resources:
       limits:
         cpu: ${gitlab.sidekiq.resources.limits.cpu}
