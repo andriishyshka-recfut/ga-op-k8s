@@ -143,7 +143,7 @@ resource "vault_pki_secret_backend_sign" "clients" {
   for_each    = nonsensitive(local.projects_setup_csr)
   backend     = "pki-${each.key}"
   name        = each.key
-  ttl         = 31522440
+  ttl         = lookup(each.value, "expiration", 31522440)
   csr         = tls_cert_request.clients_csr[each.key].cert_request_pem
   common_name = each.value.domain
   depends_on = [
