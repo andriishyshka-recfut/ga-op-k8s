@@ -22,6 +22,7 @@ module "fluxcd-prometheus-main-rules" {
   Cluster = var.Cluster
   Color   = var.Color
   Values  = local.values
+  k8s     = local.gkeClusterConnectionSettings
 }
 
 locals {
