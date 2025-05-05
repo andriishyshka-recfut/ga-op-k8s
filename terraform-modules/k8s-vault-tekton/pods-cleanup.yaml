@@ -25,9 +25,9 @@ metadata:
   name: tekton-crashloopbackoffpod-clusterroles
   namespace: tekton-pipelines
 rules:
-- apiGroups: ["apps"]
-  resources: ["namespaces", "deployments", "pods"]
-  verbs: ["get", "list", "delete"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["delete"]
   
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -75,14 +75,18 @@ spec:
     - ref:
         name: "cel"
       params:
-      - name: "filter"
+      - name: "filter0"
         value: body.groupLabels.alertname == 'KubePodCrashLooping'
-      - name: "filter"
+      - name: "filter1"
         value: body.groupLabels.alertname == 'PodPhaseFailed'
+      - name: "filter2"
+        value: body.groupLabels.alertname == 'KubePodNotReady'
       - name: "overlays"
         value:
-        - key: pod_name
-          expression: "body.alerts.map(x, x.labels).map(y, y.pod_name).join(' ')"               
+        - key: name
+          expression: "body.alerts.map(x, x.labels).map(y, y.name).join(' ')"
+        - key: namespace
+          expression: "body.alerts.map(x, x.labels).map(y, y.namespace).join(' ')"
     bindings:
       - ref: crashloopbackoffpod-binding
         kind: TriggerBinding 
@@ -98,8 +102,10 @@ metadata:
   namespace: tekton-pipelines
 spec:
   params:
-  - name: pod_name
-    value: $(extensions.pod_name)
+  - name: name
+    value: $(extensions.name)
+  - name: namespace
+    value: $(extensions.namespace)
 ---
 
 apiVersion: triggers.tekton.dev/v1beta1
@@ -109,7 +115,8 @@ metadata:
   namespace: tekton-pipelines
 spec:
   params:
-  - name: pod_name
+  - name: name
+  - name: namespace
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -120,8 +127,10 @@ spec:
         pipelineRef:
           name: crashloopbackoffpod-pipeline
         params:
-        - name: pod_name
-          value: $(tt.params.pod_name)
+        - name: name
+          value: $(tt.params.name)
+        - name: namespace
+          value: $(tt.params.namespace)
 
 ---
 
@@ -137,39 +146,6 @@ spec:
     ref: crashloopbackoffpod-template
 
 ---
-
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: crashloopbackoffpod-pipelinerun
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-crashloopbackoffpod-webhook
-  pipelineRef:
-    name: crashloopbackoffpod-pipeline
-  params:
-  - name: pod_name
-    value: $(params.pod_name)
-
----
-
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: crashloopbackoffpod-pipeline
-  namespace: tekton-pipelines
-spec:
-  params:
-  - name: pod_name
-  tasks:
-  - name: crashloopbackoffpod-cleanup
-    taskRef:
-      name: crashloopbackoffpod-cleanup
-    params:
-    - name: pod_name
-      value: $(params.pod_name)
-
----
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
@@ -177,7 +153,8 @@ metadata:
   namespace: tekton-pipelines
 spec:
   params:
-  - name: pod_name
+  - name: name
+  - name: namespace
   steps:
     - name: crashloopbackoffpod-cleanup
       image: harbor.regemini.io/op/tf:latest
@@ -205,11 +182,47 @@ spec:
       script: |
         #! /bin/bash
         set -x
-        echo $(params.pod_name)
-    
-        [[ $(kubectl get pods -A -o=custom-columns='STATE:status.containerStatuses[*].state.waiting.reason' | egrep 'CrashLoopBackOff|Evicted') ]] && \
-         kubectl delete po $(kubectl get pods -A -o=custom-columns='NAME:metadata.name, NAMERSPACE:metadata.namespace , STATE:status.containerStatuses[*].state.waiting.reason ' \
-          | egrep 'CrashLoopBackOff|Evicted' | awk '{print "-n "$2" "$1}') || echo "There is no CrashLoopBackOff pods to delete"
-        [[ $(kubectl get pods -A -o=custom-columns='STATE:status.phase, STATE:status.reason' | grep Failed | egrep -v '<none>') ]] && \
-         kubectl delete po $(kubectl get pods -A -o=custom-columns='NAME:metadata.name, NAMERSPACE:metadata.namespace, STATE:status.phase, STATE:status.reason' | grep Failed | egrep -v '<none>' \
-          | grep CrashLoopBackOff | awk '{print "-n "$2" "$1}') || echo "There is no Failed pods to delete"
+        [[ -z "$(params.name)" ]] && exit 0
+        echo "$(params.name) $(params.namespace)"
+        
+        IFS=' '
+        read -ra PODS <<< "$(params.name)"
+        read -ra NAMESPACES <<< "$(params.namespace)"    
+        for ((i=0; i<${#PODS[@]}; i++)); do kubectl delete pod ${PODS[i]} -n ${NAMESPACES[i]}; done
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: crashloopbackoffpod-pipeline
+  namespace: tekton-pipelines
+spec:
+  params:
+    - name: name
+    - name: namespace
+  tasks:
+    - name: crashloopbackoffpod-cleanup
+      taskRef:
+        name: crashloopbackoffpod-cleanup
+      params:
+        - name: name
+          value: $(params.name)
+        - name: namespace
+          value: $(params.namespace)
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: crashloopbackoffpod-pipelinerun
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-crashloopbackoffpod-webhook
+  pipelineRef:
+    name: crashloopbackoffpod-pipeline
+  params:
+    - name: name
+      value: $(params.name)
+    - name: namespace
+      value: $(params.namespace)
