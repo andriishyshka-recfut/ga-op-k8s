@@ -1,0 +1,215 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-crashloopbackoffpod-webhook
+  namespace: tekton-pipelines
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: crashloopbackoffpod-crb
+  namespace: tekton-pipelines
+subjects:
+  - kind: ServiceAccount
+    name: tekton-crashloopbackoffpod-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-crashloopbackoffpod-clusterroles
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tekton-crashloopbackoffpod-clusterroles
+  namespace: tekton-pipelines
+rules:
+- apiGroups: ["apps"]
+  resources: ["namespaces", "deployments", "pods"]
+  verbs: ["get", "list", "delete"]
+  
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-crashloopbackoffpod-triggers-controller-webhook
+  namespace: tekton-pipelines
+subjects:
+  - kind: ServiceAccount
+    name: tekton-crashloopbackoffpod-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-crashloopbackoffpod-triggers-controller-cluster-webhook
+  namespace: tekton-pipelines
+subjects:
+  - kind: ServiceAccount
+    name: tekton-crashloopbackoffpod-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-clusterroles
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: crashloopbackoffpod-webhook-alertmanager-listener
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-crashloopbackoffpod-webhook
+  triggers:
+  - name: crashloopbackoffpod-filter
+    interceptors:
+    - ref:
+        name: "cel"
+      params:
+      - name: "filter"
+        value: body.groupLabels.alertname == 'KubePodCrashLooping'
+      - name: "filter"
+        value: body.groupLabels.alertname == 'PodPhaseFailed'
+      - name: "overlays"
+        value:
+        - key: pod_name
+          expression: "body.alerts.map(x, x.labels).map(y, y.pod_name).join(' ')"               
+    bindings:
+      - ref: crashloopbackoffpod-binding
+        kind: TriggerBinding 
+    template:
+      ref: crashloopbackoffpod-template
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: crashloopbackoffpod-binding
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: pod_name
+    value: $(extensions.pod_name)
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: crashloopbackoffpod-template
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: pod_name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: crashloopbackoffpod-
+      spec:
+        serviceAccountName: tekton-crashloopbackoffpod-webhook
+        pipelineRef:
+          name: crashloopbackoffpod-pipeline
+        params:
+        - name: pod_name
+          value: $(tt.params.pod_name)
+
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: crashloopbackoffpod-trigger
+  namespace: tekton-pipelines
+spec:
+  bindings:
+  - ref: crashloopbackoffpod-binding
+  template:
+    ref: crashloopbackoffpod-template
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: crashloopbackoffpod-pipelinerun
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-crashloopbackoffpod-webhook
+  pipelineRef:
+    name: crashloopbackoffpod-pipeline
+  params:
+  - name: pod_name
+    value: $(params.pod_name)
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: crashloopbackoffpod-pipeline
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: pod_name
+  tasks:
+  - name: crashloopbackoffpod-cleanup
+    taskRef:
+      name: crashloopbackoffpod-cleanup
+    params:
+    - name: pod_name
+      value: $(params.pod_name)
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: crashloopbackoffpod-cleanup
+  namespace: tekton-pipelines
+spec:
+  params:
+  - name: pod_name
+  steps:
+    - name: crashloopbackoffpod-cleanup
+      image: harbor.regemini.io/op/tf:latest
+      env:
+      - name: TF_VAR_Color
+        valueFrom:
+          configMapKeyRef:
+            key: color
+            name: cluster-settings
+      - name: CLUSTER
+        valueFrom:
+          configMapKeyRef:
+            key: cluster
+            name: cluster-settings
+      - name: CONF_PATH
+        valueFrom:
+          configMapKeyRef:
+            key: configPath
+            name: cluster-settings
+      - name: VAULT_ADDR
+        valueFrom:
+          configMapKeyRef:
+            key: vaultAddr
+            name: cluster-settings      
+      script: |
+        #! /bin/bash
+        set -x
+        echo $(params.pod_name)
+    
+        [[ $(kubectl get pods -A -o=custom-columns='STATE:status.containerStatuses[*].state.waiting.reason' | egrep 'CrashLoopBackOff|Evicted') ]] && \
+         kubectl delete po $(kubectl get pods -A -o=custom-columns='NAME:metadata.name, NAMERSPACE:metadata.namespace , STATE:status.containerStatuses[*].state.waiting.reason ' \
+          | egrep 'CrashLoopBackOff|Evicted' | awk '{print "-n "$2" "$1}') || echo "There is no CrashLoopBackOff pods to delete"
+        [[ $(kubectl get pods -A -o=custom-columns='STATE:status.phase, STATE:status.reason' | grep Failed | egrep -v '<none>') ]] && \
+         kubectl delete po $(kubectl get pods -A -o=custom-columns='NAME:metadata.name, NAMERSPACE:metadata.namespace, STATE:status.phase, STATE:status.reason' | grep Failed | egrep -v '<none>' \
+          | grep CrashLoopBackOff | awk '{print "-n "$2" "$1}') || echo "There is no Failed pods to delete"
