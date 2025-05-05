@@ -73,38 +73,6 @@ spec:
     ref: telegram-session-change-proxy-template
 
 ---
-
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: telegram-session-change-proxy-pipelinerun
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-webhook
-  pipelineRef:
-    name: telegram-session-change-proxy-pipeline
-  params:
-  - name: server
-    value: $(params.server)
-
----
-
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: telegram-session-change-proxy-pipeline
-  namespace: tekton-pipelines
-spec:
-  params:
-  - name: server
-  tasks:
-  - name: telegram-session-change-proxy-task
-    taskRef:
-      name: telegram-session-change-proxy-task
-    params:
-    - name: server
-      value: $(params.server)
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -232,3 +200,35 @@ spec:
           export SWITCH_PAYLOAD_ENABLE=$(jq ".session = \"${SESSION_NAME}\" | .state = false" <(echo $SWITCH_PAYLOAD))
           curl -XPUT $(echo ${CURL_OPTS}) ${TELEGRAM_HOST}:3000/api/v1/sessions/switch -H "Content-Type: application/json"  -d "${SWITCH_PAYLOAD_ENABLE}"
         done
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: telegram-session-change-proxy-pipeline
+  namespace: tekton-pipelines
+spec:
+  params:
+    - name: server
+  tasks:
+    - name: telegram-session-change-proxy-task
+      taskRef:
+        name: telegram-session-change-proxy-task
+      params:
+        - name: server
+          value: $(params.server)
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: telegram-session-change-proxy-pipelinerun
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-webhook
+  pipelineRef:
+    name: telegram-session-change-proxy-pipeline
+  params:
+    - name: server
+      value: $(params.server)

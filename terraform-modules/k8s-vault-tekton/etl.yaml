@@ -138,39 +138,6 @@ spec:
     ref: etl-leftovers-template
 
 ---
-
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: etl-leftovers-pipelinerun
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-etl-leftovers-webhook
-  pipelineRef:
-    name: etl-leftovers-pipeline
-  params:
-  - name: job_name
-    value: $(params.job_name)
-
----
-
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: etl-leftovers-pipeline
-  namespace: tekton-pipelines
-spec:
-  params:
-  - name: job_name
-  tasks:
-  - name: etl-leftovers-rerun
-    taskRef:
-      name: etl-leftovers-rerun
-    params:
-    - name: job_name
-      value: $(params.job_name)
-
----
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
@@ -214,6 +181,37 @@ spec:
           CRONJOB_NAME=$(kubectl get cronjob -n etl | grep ${MINIO_PATH} | grep etl | awk '{print $1}')
           kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tekton$(date '+%S')-$((0 + RANDOM % 9)))
         done
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: etl-leftovers-pipeline
+  namespace: tekton-pipelines
+spec:
+  params:
+    - name: job_name
+  tasks:
+    - name: etl-leftovers-rerun
+      taskRef:
+        name: etl-leftovers-rerun
+      params:
+        - name: job_name
+          value: $(params.job_name)
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: etl-leftovers-pipelinerun
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-etl-leftovers-webhook
+  pipelineRef:
+    name: etl-leftovers-pipeline
+  params:
+    - name: job_name
+      value: $(params.job_name)
+
 
 ---
 
@@ -292,38 +290,6 @@ spec:
 ---
 
 apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: failed-etl-jobs-pipelinerun
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-etl-leftovers-webhook
-  pipelineRef:
-    name: failed-etl-jobs-pipeline
-  params:
-  - name: job_name
-    value: $(params.job_name)
-
----
-
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: failed-etl-jobs-pipeline
-  namespace: tekton-pipelines
-spec:
-  params:
-  - name: job_name
-  tasks:
-  - name: failed-etl-jobs-rerun
-    taskRef:
-      name: failed-etl-jobs-rerun
-    params:
-    - name: job_name
-      value: $(params.job_name)
-
----
-apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: failed-etl-jobs-rerun
@@ -366,3 +332,33 @@ spec:
           kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tekton$(date '+%S')-$((0 + RANDOM % 9)))
           kubectl delete job -n etl  $JOB_NAME
         done
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: failed-etl-jobs-pipeline
+  namespace: tekton-pipelines
+spec:
+  params:
+    - name: job_name
+  tasks:
+    - name: failed-etl-jobs-rerun
+      taskRef:
+        name: failed-etl-jobs-rerun
+      params:
+        - name: job_name
+          value: $(params.job_name)
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: failed-etl-jobs-pipelinerun
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-etl-leftovers-webhook
+  pipelineRef:
+    name: failed-etl-jobs-pipeline
+  params:
+    - name: job_name
+      value: $(params.job_name)
