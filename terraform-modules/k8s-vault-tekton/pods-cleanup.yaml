@@ -84,7 +84,7 @@ spec:
       - name: "overlays"
         value:
         - key: name
-          expression: "body.alerts.map(x, x.labels).map(y, y.name).join(' ')"
+          expression: "body.alerts.map(x, x.labels).map(y, y.pod).join(' ')"
         - key: namespace
           expression: "body.alerts.map(x, x.labels).map(y, y.namespace).join(' ')"
     bindings:
