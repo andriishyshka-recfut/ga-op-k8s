@@ -148,6 +148,15 @@ resource "random_password" "logstash_api_password" {
    })
  }
 
+resource "kubernetes_config_map" "vandelay_reload" {
+  metadata {
+    name = "reload"
+  }
+  data = {
+    date = timestamp()
+  }
+}
+
 resource "vault_generic_secret" "vandelay_logstash_3_creds" {
    path      = "secret/wl/vandelay/logstash"
    data_json = jsonencode({
