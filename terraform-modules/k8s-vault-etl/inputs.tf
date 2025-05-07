@@ -1,7 +1,6 @@
 variable "Cluster" {}
 variable "Color" {}
 variable "Settings" {}
-variable "k8s" {}
 variable "SecretPath" {
   default = "wl/etl"
 }

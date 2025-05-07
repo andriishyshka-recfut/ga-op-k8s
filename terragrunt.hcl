@@ -1,7 +1,9 @@
 
-# locals {
-#   additional_providers = try(input.additional_providers, [])
-# }
+locals {
+  additional_providers_path = "${get_terragrunt_dir()}/additional_providers.hcl"
+  additional_providers_check = can(read_terragrunt_config(local.additional_providers_path)) ? read_terragrunt_config(local.additional_providers_path) : null
+  additional_providers = local.additional_providers_check != null && can(local.additional_providers_check.locals.additional_providers) ? local.additional_providers_check.locals.additional_providers : []
+}
 terraform {
 
   extra_arguments "custom_vars" {
@@ -28,59 +30,6 @@ retryable_errors = [
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
-  # contents = templatefile("terragrunt.tftpl",{additional_providers = local.additional_providers })
-contents  = <<EOF
-variable "Settings" {}
-variable "Cluster" {}
-variable "Color" {}
-variable "VaultAddress" {}
-
-
-provider "vault" {
-  address = var.VaultAddress
+  contents = templatefile("terragrunt.tftpl",{additional_providers = local.additional_providers, dir = "${element(split("/", get_terragrunt_dir()), length(split("/", get_terragrunt_dir())) - 1)}-state", path = local.additional_providers_path})
 }
 
-locals {
-
-  activeCluster          = var.Color
-  inactiveCluster        = local.activeCluster == "blue" ? "green" : "blue"
-  activeClusterVaultPath = "secret/kubernetes-$${var.Cluster}-$${local.activeCluster}"
-  inactiveClusterVaultPath = "secret/kubernetes-$${var.Cluster}-$${local.inactiveCluster}"
-  gkeClusterConnectionSettings = {
-    HOST                   = data.vault_generic_secret.k8s_auth.data.HOST
-    API_KEY                = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
-    CLUSTER_CA_CERTIFICATE = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
-  }
-}
-
-data "vault_generic_secret" "k8s_auth" {
-  path = local.activeClusterVaultPath
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = data.vault_generic_secret.k8s_auth.data.HOST
-    cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
-    token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
-  }
-}
-
-provider "kubernetes" {
-  host                   = data.vault_generic_secret.k8s_auth.data.HOST
-  cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
-  token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
-
-}
-terraform {
-  # The configuration for this backend will be filled in by Terragrunt
-  backend "kubernetes" {
-    secret_suffix    = "${element(split("/", get_terragrunt_dir()), length(split("/", get_terragrunt_dir())) - 1)}-state"
-    namespace = "tekton-pipelines"
-    config_path = "./kubeconfig" 
-  }
-}
-
-provider "random" {}
-
-EOF
-}

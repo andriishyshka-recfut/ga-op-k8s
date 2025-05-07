@@ -4,5 +4,4 @@ module "etl_operator" {
   Cluster  = var.Cluster
   Color    = var.Color
   Settings = var.Settings
-  k8s      = local.gkeClusterConnectionSettings
 }

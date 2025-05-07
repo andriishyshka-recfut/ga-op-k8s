@@ -1,6 +1,5 @@
 variable "Settings" {}
 variable "Cluster" {}
-variable "k8s" {}
 
 data "vault_generic_secret" "basic_auth" {
   for_each = local.ingress_basic_auth
