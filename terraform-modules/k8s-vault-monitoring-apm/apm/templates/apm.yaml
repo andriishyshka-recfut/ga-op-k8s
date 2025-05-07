@@ -10,6 +10,10 @@ metadata:
 spec:
   version: {{ .Values.appVersion }}
   count: 1
+  config:
+    apm-server:
+      ilm:
+        enabled: true
   elasticsearchRef:
     name: {{ .Values.esName }}
   podTemplate:
