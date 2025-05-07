@@ -1,21 +1,3 @@
-terraform {
-  required_version = ">= 0.13"
-
-  required_providers {
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.7.0"
-    }
-  }
-}
-
-provider "kubectl" {
-  host                   = var.k8s.HOST
-  cluster_ca_certificate = var.k8s.CLUSTER_CA_CERTIFICATE
-  token                  = var.k8s.API_KEY
-  load_config_file       = false
-}
-
 resource "kubectl_manifest" "git_repositories" {
   for_each  = local.git-repositories
   yaml_body = templatefile("${path.module}/templates/git-repository.yaml.tftpl", { values = each.value, name = each.key, globals = local.globals })

@@ -4,7 +4,6 @@ module "fluxcd" {
   Cluster = var.Cluster
   Color   = var.Color
   Values  = local.values
-  k8s     = local.gkeClusterConnectionSettings
 }
 
 locals {

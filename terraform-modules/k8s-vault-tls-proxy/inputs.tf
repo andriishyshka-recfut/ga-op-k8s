@@ -4,7 +4,6 @@ variable "Color" {}
 variable "Cluster" {}
 variable "Settings" {}
 variable "VaultAddress" {}
-variable "k8s" {}
 
 data "vault_generic_secret" "clients" {
   # for_each = nonsensitive(local.projects)

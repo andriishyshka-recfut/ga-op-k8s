@@ -1,7 +1,6 @@
 variable "Cluster" {}
 variable "Color" {}
 variable "Values" {}
-variable "k8s" {}
 
 locals {
   namespace = "flux-system"
