@@ -15,7 +15,7 @@ provider "minio" {
 }
 
 data "vault_generic_secret" "minio_backup_user" {
-  path = "secret/minio/root"
+  path = "secret/minio/root-helm"
 }
 
 data "vault_kv_secrets_list_v2" "minio_iam_user" {
@@ -41,7 +41,7 @@ resource "minio_iam_user" "user" {
   tags = {
     tag-key = each.key
   }
-  depends_on = [vault_generic_secret.vault_new_users]
+  # depends_on = [vault_generic_secret.vault_new_users]
 }
 
 resource "minio_iam_policy" "user_policy" {
