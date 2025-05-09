@@ -24,6 +24,7 @@ xpack.security.encryptionKey: "${data.vault_generic_secret.xpackSecurity.0.data.
 xpack.reporting.encryptionKey: "${data.vault_generic_secret.xpackSecurity.0.data.reportingEncryptionKey}"
 xpack.encryptedSavedObjects.encryptionKey: "${data.vault_generic_secret.xpackSecurity.0.data.encryptedSavedObjectsEncryptionKey}"
 xpack.security.cookieName: "${local.kibanaValues.name}"
+xpack.security.sameSiteCookies: "true"
 xpack.security.session.idleTimeout: "10h"
 xpack.security.session.lifespan: "7d"
 xpack.security.session.cleanupInterval: "1d"
