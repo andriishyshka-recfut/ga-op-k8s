@@ -39,6 +39,7 @@ xpack.reporting.index: ".reporting-re"
 xpack.task_manager.index: ".kibana_task_manager-re"
 monitoring.kibana.collection.enabled: "false"
 monitoring.ui.container.elasticsearch.enabled: "true"
+csp.strict: "true"
 EOF
   xpackConfig = local.xpackSecurity == 1 ? { "xpack_config" = local.configXpack } : { "xpack_config" = "" }
 }
