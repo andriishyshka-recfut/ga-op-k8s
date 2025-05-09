@@ -42,7 +42,7 @@ kibanaConfig:
           elasticsearch:
             enabled: "true"
     csp:
-      strict: "true"
+      strict: "false"
     xpack:
       license_management:
         ui:
@@ -61,7 +61,6 @@ kibanaConfig:
       security:
         encryptionKey: ${kibana_xpack_secrets.securityEncryptionKey}
         cookieName: sc-${kibana_name}
-        sameSiteCookies: "Strict"
         session:
           idleTimeout: "1d"
           lifespan: "30d"
