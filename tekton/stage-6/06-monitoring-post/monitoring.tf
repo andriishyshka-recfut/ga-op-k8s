@@ -45,7 +45,7 @@ module "fluxcd-prometheus-post-rules" {
   Cluster = var.Cluster
   Color   = var.Color
   Values  = local.values
-  k8s     = local.gkeClusterConnectionSettings
+  # k8s     = local.gkeClusterConnectionSettings
   # depends_on = [module.prometheus-addons]
 }
 
