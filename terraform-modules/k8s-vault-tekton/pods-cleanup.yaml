@@ -76,10 +76,8 @@ spec:
         name: "cel"
       params:
       - name: "filter0"
-        value: body.groupLabels.alertname == 'KubePodCrashLooping'
-      - name: "filter1"
         value: body.groupLabels.alertname == 'PodPhaseFailed'
-      - name: "filter2"
+      - name: "filter1"
         value: body.groupLabels.alertname == 'KubePodNotReady'
       - name: "overlays"
         value:
