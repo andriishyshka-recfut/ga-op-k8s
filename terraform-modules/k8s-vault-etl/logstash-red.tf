@@ -1,4 +1,5 @@
 resource "kubernetes_service" "logstash_1_service" {
+  count = var.Cluster == "production" ? 1 : 0
   metadata {
     name      = "logstash-1"
     namespace = local.namespace
@@ -15,6 +16,7 @@ resource "kubernetes_service" "logstash_1_service" {
   }
 }
 resource "kubernetes_service" "logstash_2_service" {
+  count = var.Cluster == "production" ? 1 : 0
   metadata {
     name      = "logstash-2"
     namespace = local.namespace
@@ -32,11 +34,12 @@ resource "kubernetes_service" "logstash_2_service" {
 }
 
 resource "kubernetes_endpoints" "logstash_1_endpoint" {
+  count = var.Cluster == "production" ? 1 : 0
   metadata {
-    name      = kubernetes_service.logstash_1_service.metadata[0].name
+    name      = kubernetes_service.logstash_1_service[0].metadata[0].name
     namespace = local.namespace
     labels = {
-      "kubernetes.io/service-name" = kubernetes_service.logstash_1_service.metadata[0].name
+      "kubernetes.io/service-name" = kubernetes_service.logstash_1_service[0].metadata[0].name
     }
   }
 
@@ -54,11 +57,12 @@ resource "kubernetes_endpoints" "logstash_1_endpoint" {
 }
 
 resource "kubernetes_endpoints" "logstash_2_endpoint" {
+  count = var.Cluster == "production" ? 1 : 0
   metadata {
-    name      = kubernetes_service.logstash_2_service.metadata[0].name
+    name      = kubernetes_service.logstash_2_service[0].metadata[0].name
     namespace = local.namespace
     labels = {
-      "kubernetes.io/service-name" = kubernetes_service.logstash_2_service.metadata[0].name
+      "kubernetes.io/service-name" = kubernetes_service.logstash_2_service[0].metadata[0].name
     }
   }
 
