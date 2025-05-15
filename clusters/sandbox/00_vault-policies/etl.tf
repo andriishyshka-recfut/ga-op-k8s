@@ -8,5 +8,8 @@ path "secret/data/etl/*" {
 path "secret/data/etl/clients/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/logstash/logstash-*" {
+  capabilities = ["read","list"]
+}
 EOT
 }
