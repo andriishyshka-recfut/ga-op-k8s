@@ -1,3 +1,4 @@
+
 resource "kubernetes_manifest" "clusterissuer_vault_minio" {
   manifest = {
     "apiVersion" = "cert-manager.io/v1"
@@ -45,6 +46,7 @@ resource "kubernetes_manifest" "certificate_minio_helm_vault_minio" {
         "name" = "vault-minio"
       }
       "secretName" = "tls-ssl-minio"
+      "duration" = "1160h"
     }
   }
   depends_on = [kubernetes_manifest.clusterissuer_vault_minio]

@@ -5,7 +5,7 @@ data "vault_generic_secret" "harbor_token" {
 resource "helm_release" "etl_operator" {
   name                = "etl-operator"
   chart               = "oci://harbor.regemini.io/helm/etl-operator"
-  version             = "0.1.2"
+  version             = "0.1.3"
   namespace           = local.namespace
   wait                = true
   atomic              = true

@@ -16,6 +16,7 @@ resource "kubernetes_service" "minio_service" {
 }
 
 resource "kubernetes_endpoints" "minio_endpoint" {
+  count = var.Cluster == "production" ? 1 : 0
   metadata {
     name      = kubernetes_service.minio_service.metadata[0].name
     namespace = local.namespace

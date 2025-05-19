@@ -139,7 +139,7 @@ resource "null_resource" "crds" {
     pipeline    = md5(file("${path.module}/pipeline.yaml"))
     pipelinerun = md5(file("${path.module}/pipelinerun.yaml"))
     bots        = md5(file("${path.module}/bots.yaml"))
-    crashloop   = md5(file("${path.module}/crashloop.yaml"))
+    crashloop   = md5(file("${path.module}/pods-cleanup.yaml"))
     etl         = md5(file("${path.module}/etl.yaml"))
     telegram    = md5(file("${path.module}/telegram.yaml"))
   }
@@ -166,7 +166,7 @@ resource "null_resource" "crds" {
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/crashloop.yaml && \
+     apply -f ${path.module}/pods-cleanup.yaml && \
     kubectl --server ${local.gkeClusterEndpoint} \
      --token ${local.gkeBearerToken}  \
      --insecure-skip-tls-verify=true  \

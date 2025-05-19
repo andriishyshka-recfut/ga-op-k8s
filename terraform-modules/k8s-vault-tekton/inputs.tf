@@ -24,8 +24,8 @@ locals {
         "memory" = "64Mi"
       }
       "max" = {
-        "cpu"    = "350m",
-        "memory" = "512Mi"
+        "cpu"    = "1",
+        "memory" = "2Gi"
       }
       "min" = {
         "cpu"    = "20m",

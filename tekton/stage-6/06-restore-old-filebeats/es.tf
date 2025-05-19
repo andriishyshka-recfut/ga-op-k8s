@@ -1,4 +1,4 @@
-
+/*
 module "backup-old-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"
   Namespace            = "monitoring"
@@ -30,4 +30,4 @@ module "restore-old-indexes" {
   Actions              = file("${path.root}/es-restore-actions.yaml")
   Settings             = var.Settings
   depends_on           = [module.backup-old-indexes]
-}
+}*/
