@@ -23,7 +23,7 @@ resource "kubernetes_persistent_volume" "kafka_data_pv" {
   }
   spec {
     capacity = {
-      storage = data.google_compute_disk.kafka_data_pv[count.index].size
+      storage = "${data.google_compute_disk.kafka_data_pv[count.index].size}Gi"
     }
     access_modes = ["ReadWriteOnce"]
     claim_ref {

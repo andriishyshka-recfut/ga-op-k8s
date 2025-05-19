@@ -158,6 +158,7 @@ resource "kubernetes_config_map" "vandelay_reload" {
 }
 
 resource "vault_generic_secret" "vandelay_logstash_3_creds" {
+  count = var.Cluster == "production" ? 1 : 0
    path      = "secret/wl/vandelay/logstash"
    data_json = jsonencode({
     "hosts"    = "http://logstash-3.elastic:9600"
