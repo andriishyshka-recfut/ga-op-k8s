@@ -17,10 +17,13 @@ spec:
   elasticsearchRef:
     name: {{ .Values.esName }}
   podTemplate:
-    spec:
-      metadata:
-        annotations:
-          sidecar.istio.io/inject: "false"    
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+        traffic.sidecar.istio.io/excludeInboundPorts: "9300"
+        traffic.sidecar.istio.io/excludeOutboundPorts: "9300"
+      creationTimestamp: null
+    spec: 
       containers:
       - name: apm-server
         resources:
