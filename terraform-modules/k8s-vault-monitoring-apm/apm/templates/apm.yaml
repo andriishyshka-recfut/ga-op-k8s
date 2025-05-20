@@ -18,6 +18,9 @@ spec:
     name: {{ .Values.esName }}
   podTemplate:
     spec:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "false"    
       containers:
       - name: apm-server
         resources:
