@@ -67,6 +67,7 @@ rigel
 romeo
 sclass
 scuti
+shadecard
 shaula
 shoshone
 sierra
