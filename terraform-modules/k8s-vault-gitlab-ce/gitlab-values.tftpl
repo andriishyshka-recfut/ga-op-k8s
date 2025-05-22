@@ -134,6 +134,8 @@ gitaly:
     tolerationSeconds: 300
 
 gitlab:
+  migrations:
+    enabled: false
   webservice:
     minReplicas: ${gitlab.webservice.minReplicas}
     resources:
