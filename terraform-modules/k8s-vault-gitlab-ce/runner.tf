@@ -65,11 +65,6 @@ resource "helm_release" "gitlab-runner" {
     value = "https://gitlab.regemini.com/"
     type  = "string"
   }
-  # set {
-  #   name  = "runnerRegistrationToken"
-  #   value = data.kubernetes_secret.gitlab-runner-registration[each.key].data["runner-registration-token"]
-  #   type  = "string"
-  # }
   set {
     name  = "runnerToken"
     value = data.kubernetes_secret.gitlab-runner-auth[each.key].data["authentication_token"]
