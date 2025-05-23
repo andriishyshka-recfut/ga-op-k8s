@@ -151,6 +151,7 @@ resource "random_password" "logstash_api_password" {
 resource "kubernetes_config_map" "vandelay_reload" {
   metadata {
     name = "reload"
+    namespace = "vandelay"
   }
   data = {
     date = timestamp()
