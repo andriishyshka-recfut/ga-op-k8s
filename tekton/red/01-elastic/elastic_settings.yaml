@@ -24,7 +24,7 @@ ElasticSettings:
           vault_path: "secret/red/elastic-notification-accounts"
       authorizations:
         ga:
-          vault_path: "secret/red/saml/geminiadvisory"
+          vault_path: "secret/red/misc/google/saml"
           saml_realm_name: "geminiadvisory"
           secret_name: "saml-geminiadvisory"
           type: "saml"
