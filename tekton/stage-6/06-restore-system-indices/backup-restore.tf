@@ -1,7 +1,7 @@
 locals {
   monitoringEs = var.Cluster == "production" ? yamldecode(file("../../stage-1/01-monitoring-elastic/monitoring_elastic_settings.yaml")) : yamldecode(file("../../stage-1/01-monitoring-elastic/monitoring_elastic_sandbox.yaml"))
 }
-/*
+
 module "backup-system-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"
   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace
@@ -67,4 +67,3 @@ module "restore-lfb-indexes" {
   Settings             = var.Settings
   depends_on           = [module.restore-system-indexes]
 }
-*/
