@@ -133,6 +133,10 @@ COMMAND
   ]
 }
 
+resource "local_file" "pipeline" {
+  content  = templatefile("${path.module}/pipeline.yaml.tftpl", { branch = var.Settings.DRBranch })
+  filename = "${path.module}/pipeline.yaml"
+}
 resource "null_resource" "crds" {
   triggers = {
     task        = md5(file("${path.module}/task.yaml"))
@@ -184,7 +188,8 @@ COMMAND
     kubernetes_secret.harbor_creds_main,
     kubernetes_secret.harbor_creds,
     kubernetes_namespace.tekton,
-    kubernetes_namespace.tektonMain
+    kubernetes_namespace.tektonMain,
+    local_file.pipeline
   ]
 }
 

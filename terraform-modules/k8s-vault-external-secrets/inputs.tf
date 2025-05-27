@@ -2,5 +2,6 @@ variable "Cluster" {}
 variable "Color" {}
 
 locals {
-  namespaces = ["magescanner"]
+  namespaces     = ["magescanner"]
+  red_namespaces = []
 }

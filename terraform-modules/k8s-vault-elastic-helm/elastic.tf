@@ -17,9 +17,6 @@ resource "kubernetes_secret" "elastic_secret" {
 }
 
 resource "helm_release" "elastic" {
-  depends_on = [
-    kubernetes_secret.elastic_secret, kubernetes_persistent_volume_claim.elsticsearch, kubernetes_secret.keystores
-  ]
   for_each  = local.nodePools
   name      = each.key
   chart     = "${path.module}/charts/elasticsearch"
@@ -42,5 +39,11 @@ resource "helm_release" "elastic" {
     name  = "minimumMasterNodes"
     value = 1
   }
+  depends_on = [
+    kubernetes_secret.elastic_secret,
+    kubernetes_persistent_volume_claim.elsticsearch,
+    kubernetes_secret.keystores,
+    kubernetes_config_map.reboot_date
+  ]
 }
 
