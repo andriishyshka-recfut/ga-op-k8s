@@ -10,7 +10,7 @@ path "secret/data/es-creds-compose-prod/*" {
 path "secret/data/oidc/*" {
   capabilities = ["read","list"]
 }
-path "misc/sa/google/datafix" {
+path "secret/data/misc/sa/google/datafix" {
   capabilities = ["read","list"]
 }
 path "secret/data/wl/datafix/datafix/*" {
