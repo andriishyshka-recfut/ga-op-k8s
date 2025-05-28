@@ -8,7 +8,7 @@ path "secret/data/elasticsearch-admin/*" {
 path "secret/data/mongo/*" {
   capabilities = ["read","list"]
 }
-path "/secret/data/gs2es/*" {
+path "secret/data/gs2es/*" {
   capabilities = ["read","list"]
 }
 path "pki/cert/1c-c6-8d-a3-37-93-da-f1-98-f9-e1-5c-fc-11-0e-36-5e-56-b4-7b" {
