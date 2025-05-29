@@ -19,6 +19,9 @@ path "secret/data/challenger" {
 path "secret/data/core/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/wl/core/*" {
+  capabilities = ["read","list"]
+}
 path "secret/data/geo/*" {
   capabilities = ["read","list"]
 }
