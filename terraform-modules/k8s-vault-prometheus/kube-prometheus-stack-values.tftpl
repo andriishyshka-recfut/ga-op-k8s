@@ -259,18 +259,12 @@ alertmanager:
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "tekton-webhook-notifications-and-slack"
-      webhook_configs:
-        - send_resolved: false
-          url: "http://el-crashloopbackoffpod-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
         - api_url: ${prometheus_slack_webhooks.url}
           channel: '#prometheus'
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     - name: "tekton-and-slack-woresolve"
-      webhook_configs:
-        - send_resolved: false
-          url: "http://el-crashloopbackoffpod-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
         - api_url: ${prometheus_slack_webhooks.url}
           channel: '#prometheus'
@@ -297,6 +291,10 @@ alertmanager:
       webhook_configs:
         - send_resolved: false
           url: "http://el-telegram-session-change-proxy-webhook-alertmanager-listener.tekton-pipelines:8080"
+    - name: "failed-pods-cleanup-webhook"
+      webhook_configs:
+        - send_resolved: false
+          url: "http://el-crashloopbackoffpod-webhook-alertmanager-listener.tekton-pipelines:8080"
     route:
       group_by:
         - alertname
@@ -322,6 +320,8 @@ alertmanager:
         - matchers:
           - alertname=~"BotsMinionHealthchekScraperRunRequests|BotsMinionHealthchekQueueReaderActiveWorkers"
           receiver: "slack-minion-bots"
+        - matchers:
+          - alertname=~"PodPhaseFailed|KubePodNotReady"
         - matchers:
           - alertname=~"ETLJobsFailed"
           receiver: "tekton-failed-etl-jobs-webhook-notifications-and-slack"
