@@ -155,7 +155,7 @@ spec:
   - name: namespace
   steps:
     - name: crashloopbackoffpod-cleanup
-      image: harbor.regemini.io/op/tf:latest
+      image: harbor.regemini.io/op/prometheus-tekton:v1.2.0
       env:
       - name: TF_VAR_Color
         valueFrom:

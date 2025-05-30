@@ -205,7 +205,7 @@ spec:
   - name: container  
   steps:
     - name: fail-bots-restart
-      image: harbor.regemini.io/op/tf:latest
+      image: harbor.regemini.io/op/prometheus-tekton:v1.2.0
       env:
       - name: TF_VAR_Color
         valueFrom:

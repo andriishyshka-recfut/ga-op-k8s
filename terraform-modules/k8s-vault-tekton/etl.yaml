@@ -148,7 +148,7 @@ spec:
   - name: job_name
   steps:
     - name: etl-leftovers-rerun
-      image: harbor.regemini.io/op/tf:latest
+      image: harbor.regemini.io/op/prometheus-tekton:v1.2.0
       env:
       - name: TF_VAR_Color
         valueFrom:
@@ -299,7 +299,7 @@ spec:
   - name: job_name
   steps:
     - name: failed-etl-jobs-rerun
-      image: harbor.regemini.io/op/tf:latest
+      image: harbor.regemini.io/op/prometheus-tekton:v1.2.0
       env:
       - name: TF_VAR_Color
         valueFrom:
