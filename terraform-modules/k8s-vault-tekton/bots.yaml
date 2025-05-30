@@ -95,27 +95,6 @@ spec:
 ---
 
 apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: fail-bots-pipelinerun
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-bots-webhook
-  pipelineRef:
-    name: fail-bots-pipeline
-  params:
-  - name: id
-    value: $(params.id)
-  - name: mode
-    value: $(params.mode)
-  - name: container
-    value: $(params.container)      
-  - name: namespace
-    value: $(params.namespace)   
-
----
-
-apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: fail-bots-pipeline
@@ -149,6 +128,27 @@ spec:
       value: $(params.namespace)      
     runAfter:
       - fail-bots-mongo
+
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: fail-bots-pipelinerun
+  namespace: tekton-pipelines
+spec:
+  serviceAccountName: tekton-bots-webhook
+  pipelineRef:
+    name: fail-bots-pipeline
+  params:
+    - name: id
+      value: $(params.id)
+    - name: mode
+      value: $(params.mode)
+    - name: container
+      value: $(params.container)
+    - name: namespace
+      value: $(params.namespace)
 
 ---
 
