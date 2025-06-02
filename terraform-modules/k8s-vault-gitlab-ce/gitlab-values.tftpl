@@ -280,3 +280,9 @@ gitlab-runner:
 
 extraEnv:
   PLANTUML_ENCODING: deflate
+
+postgresql:
+  install: true
+  primary:
+    extendedConfiguration: |
+      max_connections = 200
