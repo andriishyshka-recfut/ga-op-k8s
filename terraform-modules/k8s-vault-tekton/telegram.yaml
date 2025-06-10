@@ -8,22 +8,22 @@ metadata:
 spec:
   serviceAccountName: tekton-webhook
   triggers:
-  - name: telegram-session-change-proxy-filter
-    interceptors:
-    - ref:
-        name: "cel"
-      params:
-      - name: "filter"
-        value: body.groupLabels.alertname == 'TelegramRunPrepsServerTotal'
-      - name: "overlays"
-        value:
-        - key: server
-          expression: "body.alerts.map(x, x.labels).map(y, y.server).join(' ')"                  
-    bindings:
-      - ref: telegram-session-change-proxy-binding
-        kind: TriggerBinding 
-    template:
-      ref: telegram-session-change-proxy-template
+    - name: telegram-session-change-proxy-filter
+      interceptors:
+        - ref:
+            name: "cel"
+          params:
+            - name: "filter"
+              value: body.groupLabels.alertname == 'TelegramRunPrepsServerTotal'
+            - name: "overlays"
+              value:
+                - key: server
+                  expression: "body.alerts.map(x, x.labels).map(y, y.server).join(' ')"
+      bindings:
+        - ref: telegram-session-change-proxy-binding
+          kind: TriggerBinding
+      template:
+        ref: telegram-session-change-proxy-template
 
 ---
 
@@ -34,8 +34,8 @@ metadata:
   namespace: tekton-pipelines
 spec:
   params:
-  - name: server
-    value: $(extensions.server)
+    - name: server
+      value: $(extensions.server)
 ---
 
 apiVersion: triggers.tekton.dev/v1beta1
@@ -45,7 +45,7 @@ metadata:
   namespace: tekton-pipelines
 spec:
   params:
-  - name: server
+    - name: server
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -56,8 +56,8 @@ spec:
         pipelineRef:
           name: telegram-session-change-proxy-pipeline
         params:
-        - name: server
-          value: $(tt.params.server)
+          - name: server
+            value: $(tt.params.server)
 
 ---
 
@@ -68,7 +68,7 @@ metadata:
   namespace: tekton-pipelines
 spec:
   bindings:
-  - ref: telegram-session-change-proxy-binding
+    - ref: telegram-session-change-proxy-binding
   template:
     ref: telegram-session-change-proxy-template
 
@@ -113,84 +113,88 @@ metadata:
   namespace: tekton-pipelines
 spec:
   params:
-  - name: server
+    - name: server
   steps:
     - name: telegram-session-change-proxy
-      image: harbor.regemini.io/op/prometheus-tekton:test 
+      image: harbor.regemini.io/op/prometheus-tekton:v1.2.0
       env:
-      - name: TF_VAR_Color
-        valueFrom:
-          configMapKeyRef:
-            key: color
-            name: cluster-settings
-      - name: CLUSTER
-        valueFrom:
-          configMapKeyRef:
-            key: cluster
-            name: cluster-settings
-      - name: CONF_PATH
-        valueFrom:
-          configMapKeyRef:
-            key: configPath
-            name: cluster-settings
-      - name: VAULT_ADDR
-        valueFrom:
-          configMapKeyRef:
-            key: vaultAddr
-            name: cluster-settings      
+        - name: TF_VAR_Color
+          valueFrom:
+            configMapKeyRef:
+              key: color
+              name: cluster-settings
+        - name: CLUSTER
+          valueFrom:
+            configMapKeyRef:
+              key: cluster
+              name: cluster-settings
+        - name: CONF_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: configPath
+              name: cluster-settings
+        - name: VAULT_ADDR
+          valueFrom:
+            configMapKeyRef:
+              key: vaultAddr
+              name: cluster-settings
       script: |
         #! /bin/bash
         set -ex
-    
+        
         IFS=' '
 
         #Prepare config vars and func
         export TELEGRAM_HOST="http://telegram-ui.telegram.svc"
-        [[ ${CLUSTER} == "production" ]] && export AUTH_HOST="http://auth-ui.core.svc" || export AUTH_HOST="http://auth-ui.auth-ui.svc"
+        export AUTH_HOST="http://auth-ui.core.svc"
         export CURL_OPTS="--fail --connect-timeout 10 --max-time 15 --retry 10 --retry-delay 15 --retry-max-time 20 --silent"
         export SWITCH_PAYLOAD='{"session": "SESSION_NAME", "state": true, "switch": "disabled"}'
 
+        #Get auth creds from vault
+        export VAULT_ADDR="https://vault.p.regemini.io"
+        export VAULT_TOKEN=$(vault write -field=token auth/k8s-production-${TF_VAR_Color}/login role=tekton jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token))
+        export AUTH_USER="$(vault kv get -field=user  secret/mw/monitoring/prometheus/auth-proxy-credentials)"
+        export AUTH_PASSWORD="$(vault kv get -field=password  secret/mw/monitoring/prometheus/auth-proxy-credentials)"
+
+        #Set proxy list to choose from
+        PROXY_RANGE1=({201..210})
+        PROXY_RANGE2=({323..365})
+        PROXY_RANGE3=({501..510})
+        NUMBERS_LIST=("${PROXY_RANGE1[@]}" "${PROXY_RANGE2[@]}" "${PROXY_RANGE3[@]}")
+        RANDOM_PROXY_LIST=()
+        for NUMBER in "${NUMBERS_LIST[@]}"; do RANDOM_PROXY_LIST+=("PROXY${NUMBER}"); done
+        ACTIVE_PROXY_JSON=$(curl -XPOST $(echo ${CURL_OPTS}) ${TELEGRAM_HOST}:3000/api/v1/sessions/search -H "Content-Type: application/json"  -d '{"pageIndex":0,"pageSize":50,"sortDirection":"asc","sortField":"server","filter":{}}' | jq -r '.sessions[].proxy')
+        ACTIVE_PROXY_LIST=()
+        while IFS= read -r line; do ACTIVE_PROXY_LIST+=("$line"); done < <(echo $ACTIVE_PROXY_JSON )
+        for i in "${RANDOM_PROXY_LIST[@]}"; do [[ ! " ${ACTIVE_PROXY_LIST[*]} " =~ " $i " ]] && APPLY_PROXY_LIST+=("$i"); done
+        
+        #Handle each stuck session
         for SESSION_NAME in $(params.server); do
           export SWITCH_PAYLOAD_DISABLE=$(jq ".session = \"${SESSION_NAME}\" | .state = true" <(echo $SWITCH_PAYLOAD))
 
           #Disable respective session
           curl -XPUT $(echo ${CURL_OPTS}) ${TELEGRAM_HOST}:3000/api/v1/sessions/switch -H "Content-Type: application/json"  -d "${SWITCH_PAYLOAD_DISABLE}"
-          
+        
           #Working with session config
           export SESSION_CONFIG=$(curl -XPOST $(echo ${CURL_OPTS}) ${TELEGRAM_HOST}:3000/api/v1/sessions/search -H "Content-Type: application/json"  -d '{"pageIndex": 0, "pageSize": 50, "sortDirection": "asc", "sortField": "server", "filter": {}}' | jq ".sessions.[] | select(.server==\"${SESSION_NAME}\")")
           [[ ! -z ${SESSION_CONFIG} ]] || break
           export SESSION_ID=$(jq ."_id" <(echo ${SESSION_CONFIG}) | tr -d '"')
-          export CURRENT_PROXY_NAME=$(jq ."proxy" <(echo ${SESSION_CONFIG}) | tr -d '"')
 
-          #Get auth creds from vault
-          export VAULT_ADDR="https://vault.p.regemini.io"
-          export VAULT_TOKEN=$(vault write -field=token auth/k8s-production-${TF_VAR_Color}/login role=tekton jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token))
-          export AUTH_USER="$(vault kv get -field=user  secret/mw/monitoring/prometheus/auth-proxy-credentials)"
-          export AUTH_PASSWORD="$(vault kv get -field=password  secret/mw/monitoring/prometheus/auth-proxy-credentials)"
+          #Choose proxy from list until working with telegram.org
           
-          #Set proxy range
-          export PROXY_RANGE1=({201..210})
-          export PROXY_RANGE2=({323..365})
-          export PROXY_RANGE3=({501..510})
-          export COMBINED_PROXY_RANGE=("${PROXY_RANGE1[@]}" "${PROXY_RANGE2[@]}" "${PROXY_RANGE3[@]}")
-          
-          #Choose random proxy from list until working with telegram
-          for i in $(echo ${COMBINED_PROXY_RANGE[@]});do
-
-            RANDOM_PROXY=$(printf '%s\n' "${COMBINED_PROXY_RANGE[@]}" | shuf | head -1)
-            export RANDOM_PROXY_NAME="PROXY${RANDOM_PROXY}"
-            [[ "${CURRENT_PROXY_NAME}" == "${RANDOM_PROXY_NAME}" ]] && continue
-
-            export RANDOM_PROXY=$(curl -XPOST $(echo ${CURL_OPTS}) ${AUTH_HOST}:3000/api/v1/proxies/search -H "Content-Type: application/json" -d '{"filter":{"alive":true,"key":"","provider":null},"sortField":"key","sortDirection":"asc","pageIndex":0,"pageSize":250}' | jq -r ".proxies" | jq -c ".[] | select(.key==\"${RANDOM_PROXY_NAME}\")")
-            [[ ! -z ${RANDOM_PROXY} ]] || continue
-            export RANDOM_PROXY_ADDRESS=$(echo $RANDOM_PROXY | jq -r .address | cut -d '@' -f2)
-            curl $(echo ${CURL_OPTS}) --proxy http://${RANDOM_PROXY_ADDRESS} --proxy-user ${AUTH_USER}:${AUTH_PASSWORD} https://web.telegram.org/ && break
+          for i in ${!APPLY_PROXY_LIST[@]};do
+            export NEW_PROXY_NAME="${APPLY_PROXY_LIST[$i]}"
+            export NEW_PROXY_CONFIG=$(curl -XPOST ${AUTH_HOST}:3000/api/v1/proxies/search -H "Content-Type: application/json" -d '{"filter":{"alive":true,"key":"","provider":null},"sortField":"key","sortDirection":"asc","pageIndex":0,"pageSize":250}' | jq -r ".proxies" | jq --arg P "$NEW_PROXY_NAME" -c '.[] | select(.key==$P)')
+            echo "NEW_PROXY_CONFIG ${NEW_PROXY_CONFIG}"
+            [[ ! -z ${NEW_PROXY_CONFIG} ]] || continue
+            export NEW_PROXY_ADDRESS=$(echo $NEW_PROXY_CONFIG | jq -r .address | cut -d '@' -f2)
+            curl $(echo ${CURL_OPTS}) --proxy http://${NEW_PROXY_ADDRESS} --proxy-user ${AUTH_USER}:${AUTH_PASSWORD} https://web.telegram.org/ && export APPLY_PROXY_INDEX=${i}; break;
           done
-          
-          [[ ! -z ${RANDOM_PROXY} ]] || break
+        
+          [[ ! -z ${NEW_PROXY_CONFIG} ]] || break
           #Apply config with new proxy to respective session
-          export SESSION_CONFIG_UPD=$(jq ".proxy = \"${RANDOM_PROXY_NAME}\"" <(echo $SESSION_CONFIG))
-          curl -XPUT $(echo ${CURL_OPTS}) "${TELEGRAM_HOST}:3000/api/v1/sessions/${SESSION_ID}" -H "Content-Type: application/json" -d "${SESSION_CONFIG_UPD}" || break
+          export SESSION_CONFIG_UPD=$(jq --arg P "$NEW_PROXY_NAME" '.proxy = $P' <(echo $SESSION_CONFIG))
+          curl -XPUT $(echo ${CURL_OPTS}) "${TELEGRAM_HOST}:3000/api/v1/sessions/${SESSION_ID}" -H "Content-Type: application/json" -d "${SESSION_CONFIG_UPD}" && unset 'APPLY_PROXY_LIST[$APPLY_PROXY_INDEX]'; APPLY_PROXY_LIST=("${APPLY_PROXY_LIST[@]}");
         done
         
         #Wait 10m and enable all affected sessions
@@ -226,7 +230,7 @@ metadata:
   name: telegram-session-change-proxy-pipelinerun
   namespace: tekton-pipelines
 spec:
-  serviceAccountName: tekton-webhook
+  serviceAccountName: default
   pipelineRef:
     name: telegram-session-change-proxy-pipeline
   params:

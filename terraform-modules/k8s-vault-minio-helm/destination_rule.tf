@@ -1,9 +1,9 @@
 resource "kubernetes_manifest" "destinationrule_minio_helm_minio_helm_tls" {
   manifest = {
     "apiVersion" = "networking.istio.io/v1alpha3"
-    "kind" = "DestinationRule"
+    "kind"       = "DestinationRule"
     "metadata" = {
-      "name" = "minio-helm-tls"
+      "name"      = "minio-helm-tls"
       "namespace" = local.minioNs
     }
     "spec" = {
@@ -16,14 +16,14 @@ resource "kubernetes_manifest" "destinationrule_minio_helm_minio_helm_tls" {
             }
             "tls" = {
               "insecureSkipVerify" = true
-              "mode" = "SIMPLE"
+              "mode"               = "SIMPLE"
             }
           },
         ]
       }
     }
   }
-  depends_on = [ helm_release.minio_tenant ]
+  depends_on = [helm_release.minio_tenant]
 }
 
 
@@ -31,13 +31,13 @@ resource "kubernetes_manifest" "destinationrule_minio_helm_minio_helm_tls" {
 resource "kubernetes_manifest" "destinationrule_minio_helm_minio_helm_tls_api" {
   manifest = {
     "apiVersion" = "networking.istio.io/v1alpha3"
-    "kind" = "DestinationRule"
+    "kind"       = "DestinationRule"
     "metadata" = {
-      "name" = "minio-helm-tls-api"
+      "name"      = "minio-helm-tls-api"
       "namespace" = local.minioNs
     }
     "spec" = {
-      "host" = "minio-tenant-hl.minio-helm.svc.cluster.local"
+      "host" = "minio.minio-helm.svc.cluster.local"
       "trafficPolicy" = {
         "portLevelSettings" = [
           {
@@ -46,12 +46,12 @@ resource "kubernetes_manifest" "destinationrule_minio_helm_minio_helm_tls_api" {
             }
             "tls" = {
               "insecureSkipVerify" = true
-              "mode" = "SIMPLE"
+              "mode"               = "SIMPLE"
             }
           },
         ]
       }
     }
   }
-  depends_on = [ helm_release.minio_tenant ]
+  depends_on = [helm_release.minio_tenant]
 }

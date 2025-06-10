@@ -20,7 +20,6 @@ elastic:
   pollInterval: 5s
   cluster_uuid:
 
-
 service:
   annotations: {}
   type: ClusterIP
@@ -34,6 +33,10 @@ mountCaCert:
   enabled: true
   volumeName: elastic-credentials-cert
   mountPath: /ssl-es
+mountCaMinio:
+  enabled: true
+  volumeName: minio-cert
+  mountPath: /ssl-minio
 
 extraEnvs: {}
 
@@ -102,7 +105,6 @@ volumeClaimTemplate:
     requests:
       storage: 1Gi
 
-
 extraContainers:
   []
   # - name: do-something
@@ -145,7 +147,6 @@ securityContext:
       - ALL
   # readOnlyRootFilesystem: true
 
-
 # How long to wait for logstash to stop gracefully
 terminationGracePeriod: 180
 
@@ -160,10 +161,15 @@ fullnameOverride: ""
 lifecycle:
   postStart:
     exec:
-      command: ["/bin/sh", "-c", "/opt/logstash/jdk/bin/keytool -import -noprompt -trustcacerts -alias CA_ES -file /ssl-es/ca.crt -keystore /opt/logstash/jdk/lib/security/cacerts -storepass changeit"]
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "/opt/logstash/jdk/bin/keytool -import -noprompt -trustcacerts -alias CA_ES -file /ssl-es/ca.crt -keystore /opt/logstash/jdk/lib/security/cacerts -storepass changeit && /opt/logstash/jdk/bin/keytool -import -noprompt -trustcacerts -alias CA_MINIO -file /ssl-minio/ca.crt -keystore /opt/logstash/jdk/lib/security/cacerts -storepass changeit",
+        ]
 extraVolumes:
   - name: tmp-logstash
-    persistentVolumeClaim: 
+    persistentVolumeClaim:
       claimName: tmp-logstash
 extraVolumeMounts:
   - name: tmp-logstash

@@ -37,3 +37,59 @@ resource "kubernetes_endpoints" "minio_endpoint" {
     }
   }
 }
+
+
+resource "kubernetes_service" "minio_helm_service" {
+  metadata {
+    name      = "minio"
+    namespace = "minio-helm"
+  }
+  spec {
+    cluster_ip       = "None"
+    session_affinity = "None"
+    port {
+      name        = "minio"
+      protocol    = "TCP"
+      port        = 9000
+      target_port = 9000
+    }
+  }
+}
+
+resource "kubernetes_endpoints" "minio_helm_endpoint" {
+  count = var.Cluster == "production" ? 1 : 0
+  metadata {
+    name      = kubernetes_service.minio_helm_service.metadata[0].name
+    namespace = "minio-helm"
+    labels = {
+      "kubernetes.io/service-name" = kubernetes_service.minio_helm_service.metadata[0].name
+    }
+  }
+
+  subset {
+    address {
+      ip = var.Settings.internal_static_ips.minio-helm.ip
+    }
+
+    port {
+      name     = "minio"
+      port     = 9000
+      protocol = "TCP"
+    }
+  }
+}
+
+data "vault_pki_secret_backend_issuer" "pki_minio" {
+  backend    = "pki-minio"
+  issuer_ref = "default"
+}
+resource "kubernetes_secret" "minio_ca_cert" {
+  metadata {
+    name      = "minio-ca-certs"
+    namespace = local.namespace
+  }
+  data = {
+    "ca.crt" = data.vault_pki_secret_backend_issuer.pki_minio.certificate
+  }
+  depends_on = [data.vault_pki_secret_backend_issuer.pki_minio]
+}

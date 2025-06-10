@@ -70,6 +70,15 @@ spec:
                 path: ca.crt
             secretName: {{ template "logstash.fullname" . }}-logstash-https-certs
         {{- end }}
+        {{- if .Values.mountCaMinio.enabled }}
+        - name: {{ .Values.mountCaMinio.volumeName }}
+          secret:
+            defaultMode: 420
+            items:
+              - key: ca.crt
+                path: ca.crt
+            secretName: minio-ca-certs
+        {{- end }}
         {{- range .Values.secretMounts }}
         - name: {{ .name }}
           secret:
@@ -155,6 +164,10 @@ spec:
           {{- if .Values.mountCaCert.enabled }}
           - name: {{ .Values.mountCaCert.volumeName }}
             mountPath: {{ .Values.mountCaCert.mountPath}}
+          {{- end }}
+          {{- if .Values.mountCaMinio.enabled }}
+          - name: {{ .Values.mountCaMinio.volumeName }}
+            mountPath: {{ .Values.mountCaMinio.mountPath}}
           {{- end }}
           {{- if .Values.persistence.enabled }}
           - name: "{{ template "logstash.fullname" . }}"
