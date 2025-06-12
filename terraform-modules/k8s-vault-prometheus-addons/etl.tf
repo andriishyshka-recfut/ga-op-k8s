@@ -8,7 +8,7 @@ data "vault_generic_secret" "etl_minio_exporter_config" {
 
 resource "kubernetes_config_map" "etl_minio_exporter_config" {
   metadata {
-    name      = "etl-minio-exporter-creds"
+    name      = "etl-minio-exporter-config"
     namespace = local.prometheusNs
   }
 
