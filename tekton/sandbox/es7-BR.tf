@@ -1,4 +1,4 @@
-/*
+
 module "es7-backup" {
   source               = "../../terraform-modules/k8s-es-curator"
   Namespace            = "elastic"
@@ -17,9 +17,9 @@ module "es7-backup" {
   depends_on = [
     module.elastic
   ]
-}*/
+}
 
-/*
+
 module "es7-restore-system" {
   source               = "../../terraform-modules/k8s-es-curator"
   Namespace            = "elastic"
@@ -53,4 +53,4 @@ module "es7-restore-other" {
   depends_on = [
     module.es7-restore-system
   ]
-}*/
+}

@@ -17,6 +17,7 @@ actions:
       # name: monitoring-dr-%Y%m%d
       wait_for_completion: True
       include_global_state: True
+      partial: True
       # wait_interval: 20
     filters:
       - filtertype: state
