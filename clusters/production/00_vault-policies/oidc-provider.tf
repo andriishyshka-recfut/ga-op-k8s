@@ -21,6 +21,7 @@ resource "vault_jwt_auth_backend_role" "okta" {
   role_name             = "okta_default_role"
   oidc_scopes           = ["openid", "email", "profile", "groups"]
   bound_audiences       = [data.vault_kv_secret_v2.okta.data.client_id]
+  bound_claims          = { groups = join(",", keys(local.vault_groups)) }
   groups_claim          = "groups"
   user_claim            = "sub"
   role_type             = "oidc"
