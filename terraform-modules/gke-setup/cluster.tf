@@ -81,7 +81,7 @@ resource "google_container_cluster" "cluster" {
 
 
   monitoring_config {
-    managed_prometheus{
+    managed_prometheus {
       enabled = false
     }
   }
@@ -160,7 +160,7 @@ resource "google_container_node_pool" "nodepool_default" {
   }
   management {
     auto_repair  = "true"
-    auto_upgrade = "true"
+    auto_upgrade = "false"
   }
 
   timeouts {
@@ -222,7 +222,7 @@ resource "google_container_node_pool" "nodepool_additional" {
   }
   management {
     auto_repair  = "true"
-    auto_upgrade = "true"
+    auto_upgrade = "false"
   }
 
   timeouts {
