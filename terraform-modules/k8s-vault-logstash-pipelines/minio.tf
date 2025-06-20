@@ -1,4 +1,5 @@
 resource "kubernetes_service" "minio_service" {
+  count = var.Cluster == "production" ? 1 : 0
   metadata {
     name      = "minio"
     namespace = local.namespace
@@ -18,10 +19,10 @@ resource "kubernetes_service" "minio_service" {
 resource "kubernetes_endpoints" "minio_endpoint" {
   count = var.Cluster == "production" ? 1 : 0
   metadata {
-    name      = kubernetes_service.minio_service.metadata[0].name
+    name      = kubernetes_service.minio_service[0].metadata[0].name
     namespace = local.namespace
     labels = {
-      "kubernetes.io/service-name" = kubernetes_service.minio_service.metadata[0].name
+      "kubernetes.io/service-name" = kubernetes_service.minio_service[0].metadata[0].name
     }
   }
 
@@ -40,6 +41,7 @@ resource "kubernetes_endpoints" "minio_endpoint" {
 
 
 resource "kubernetes_service" "minio_helm_service" {
+  count = var.Cluster == "production" ? 1 : 0
   metadata {
     name      = "minio"
     namespace = "minio-helm"
@@ -59,10 +61,10 @@ resource "kubernetes_service" "minio_helm_service" {
 resource "kubernetes_endpoints" "minio_helm_endpoint" {
   count = var.Cluster == "production" ? 1 : 0
   metadata {
-    name      = kubernetes_service.minio_helm_service.metadata[0].name
+    name      = kubernetes_service.minio_helm_service[0].metadata[0].name
     namespace = "minio-helm"
     labels = {
-      "kubernetes.io/service-name" = kubernetes_service.minio_helm_service.metadata[0].name
+      "kubernetes.io/service-name" = kubernetes_service.minio_helm_service[0].metadata[0].name
     }
   }
 
@@ -84,6 +86,7 @@ data "vault_pki_secret_backend_issuer" "pki_minio" {
   issuer_ref = "default"
 }
 resource "kubernetes_secret" "minio_ca_cert" {
+  count = var.Cluster == "production" ? 1 : 0
   metadata {
     name      = "minio-ca-certs"
     namespace = local.namespace

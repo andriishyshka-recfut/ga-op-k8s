@@ -5,12 +5,13 @@ actions:
     description: >-
       delete .kibana_7 indices
     options:
+      allow_ilm_indices: true
       ignore_empty_list: True
       disable_action: False
     filters:
     - filtertype: pattern
       kind: prefix
-      value: .kiabana
+      value: .kibana
   2:
     action: restore
     description: "Restore all indices in the most recent snapshot with state SUCCESS"
@@ -24,5 +25,4 @@ actions:
       # wait_interval: 20
     filters:
       - filtertype: state
-        state: SUCCESS
         state: SUCCESS

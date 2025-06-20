@@ -1,6 +1,6 @@
 resource "kubernetes_config_map" "reboot_date" {
  metadata {
-   name = "reboot_date"
+   name = "reboot-date"
    namespace = local.globalSettings.namespace
  }  
   data = {
