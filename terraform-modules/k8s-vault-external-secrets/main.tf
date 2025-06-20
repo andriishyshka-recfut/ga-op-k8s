@@ -32,31 +32,42 @@ resource "helm_release" "external_secret_secretstore" {
   depends_on = [helm_release.external_secrets]
 }
 
-resource "kubernetes_manifest" "external_secrets_store" {
-  for_each = toset(var.Color == "red" ? local.red_namespaces : local.namespaces)
-  manifest = {
-    "apiVersion" = "external-secrets.io/v1alpha1"
-    "kind"       = "SecretStore"
-    "metadata" = {
-      "name"      = "vault-backend"
-      "namespace" = each.key
-    }
-    "spec" = {
-      "provider" = {
-        "vault" = {
-          "auth" = {
-            "kubernetes" = {
-              "mountPath" = "k8s-${var.Cluster}-${var.Color}"
-              "role"      = "external-secrets"
-            }
-          }
-          "server"  = "http://vault-active.vault:8200"
-          "version" = "v2"
-        }
-      }
-    }
-  }
-  depends_on = [
-    time_sleep.wait_180_seconds
-  ]
+resource "kubectl_manifest" "external_secrets_store" {
+  for_each   = toset(var.Color == "red" ? local.red_namespaces : local.namespaces)
+  yaml_body  = templatefile("${path.module}/templates/SecretStore.tftpl", { namespace = each.key, cluster = var.Cluster, color = var.Color })
+  depends_on = [time_sleep.wait_180_seconds]
+}
+
+# resource "kubernetes_manifest" "external_secrets_store" {
+#   for_each = toset(var.Color == "red" ? local.red_namespaces : local.namespaces)
+#   manifest = {
+#     "apiVersion" = "external-secrets.io/v1"
+#     "kind"       = "SecretStore"
+#     "metadata" = {
+#       "name"      = "vault-backend"
+#       "namespace" = each.key
+#     }
+#     "spec" = {
+#       "provider" = {
+#         "vault" = {
+#           "auth" = {
+#             "kubernetes" = {
+#               "mountPath" = "k8s-${var.Cluster}-${var.Color}"
+#               "role"      = "external-secrets"
+#             }
+#           }
+#           "server"  = "http://vault-active.vault:8200"
+#           "version" = "v2"
+#         }
+#       }
+#     }
+#   }
+#   depends_on = [
+#     time_sleep.wait_180_seconds
+#   ]
+# }
+
+
+resource "time_sleep" "wait_180_seconds" {
+  create_duration = "180s"
 }

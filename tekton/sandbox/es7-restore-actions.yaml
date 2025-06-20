@@ -5,6 +5,7 @@ actions:
     description: "Delete all indices"
     options:
       continue_if_exception: True
+      allow_ilm_indices: true
     filters:
       - filtertype: pattern
         kind: prefix

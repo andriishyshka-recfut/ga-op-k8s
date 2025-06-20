@@ -56,6 +56,10 @@ resource "helm_release" "logstash" {
     value = "${each.key}-logstash-https-certs"
   }
   set {
+    name  = "mountCaMinio.enabled"
+    value = var.Cluster == "production" ? true : false
+  } 
+  set {
     name  = "extraVolumes[0].name"
     value = "tmp-logstash-${each.key}"
   }
