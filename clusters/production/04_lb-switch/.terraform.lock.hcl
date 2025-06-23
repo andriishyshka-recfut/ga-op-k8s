@@ -19,24 +19,25 @@ provider "registry.opentofu.org/hashicorp/external" {
 }
 
 provider "registry.opentofu.org/hashicorp/google" {
-  version = "6.36.1"
+  version = "6.40.0"
   hashes = [
-    "h1:ncFqhQJbyE7yVqx9esYRWLItAKmEXBX2uibgu6tJ0XM=",
-    "zh:025871a77e52ece3dc81eba273e19fa10470f3be93885832a7ebfb49b8804616",
-    "zh:24902de3a45233b8c1c695c71c93968b3957f87cb54bd30b5ba05be9ce4ebc74",
-    "zh:2c92db6161ba58f23042d7431f41ad4637c918292a3179a510b3a47c87c64206",
-    "zh:5bab9af4cc59d3636250bc7ffcc6337f7d3dda9fd0082605c07aebf893120153",
-    "zh:79d8ae31c0f81de4043f0a2197324b594700b58e14e84794760901a7c2ffe649",
-    "zh:867bc6fa1b8f010fe6ebc5718a96ccbb6a41338d1fd4ca60849751eb2b0e4527",
-    "zh:92434c7568a891f0c7d51335b7ece4896704f0ad30e923e905a738e272e51232",
-    "zh:d017e5811ec185cc979268074a5bdab190c8d7f66882518da5f52396e510c40c",
-    "zh:ec46b9b629c202ee5737e3a498d06c5d47d8baaec9f41bf5f6be27d251011dac",
-    "zh:f9b3c5ab770b252af4c4714aa1a86801d29482a8f7c9c37de9309953b5d30aeb",
+    "h1:drtWZ1Dcg0Jzh1Ymn3VttZYWxWgMQxryDiMlMUo3K0k=",
+    "zh:032641790e63b6b506666b3e95adcaa9bc1535682b12f6339886b50d31a834fc",
+    "zh:1ac6f9812a497f7a43604faa5dfb79da009148a9b70225513a933e35bb7010c1",
+    "zh:2e4a9ec58c42a5d460fc3109029ab7b45ae970de72fb9d9e3b21aaa0a30784b8",
+    "zh:45a22415505f85f526c250729957f33674f647ffd477bdb781171cc3e663f3ee",
+    "zh:47a36ae3b62ce6262a5a95c7c59e57f3df29477e0a22107752b09bb67f801f14",
+    "zh:4eb8dcb4514d6c1b0e27984c0548b25d1f1a473481b6b60961bbcb910da1d7f3",
+    "zh:609861c3c79f872e68b87e41efa69545f4a8c425cc7b8d67dc24f0fe25467170",
+    "zh:6890d5117808a448cb76b846c9a161f42cb015cb7a2aaf89666b50a85bb7519e",
+    "zh:7fb03390786ac37267d72719b6bde06ca0f068bdf45dcc8bc7fe15d9efe53e51",
+    "zh:9e17021227aacbc48f4e40d683513e6d0c30b55c78cef42d19ea46f7aac533a3",
   ]
 }
 
 provider "registry.opentofu.org/hashicorp/helm" {
-  version = "2.17.0"
+  version     = "2.17.0"
+  constraints = "2.17.0"
   hashes = [
     "h1:69PnHoYrrDrm7C8+8PiSvRGPI55taqL14SvQR/FGM+g=",
     "zh:02690815e35131a42cb9851f63a3369c216af30ad093d05b39001d43da04b56b",

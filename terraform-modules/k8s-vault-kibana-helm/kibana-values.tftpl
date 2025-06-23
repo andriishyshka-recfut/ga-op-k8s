@@ -42,7 +42,22 @@ kibanaConfig:
           elasticsearch:
             enabled: "true"
     csp:
-      strict: "false"
+      strict: "true"
+      script_src:
+        - "'self'"
+        - https://accounts.google.com
+        - https://apis.google.com
+        - https://oauth2.googleapis.com
+        - https://1rf.okta.com
+      frame_src:
+        - "'self'"
+        - https://accounts.google.com
+        - https://1rf.okta.com
+      connect_src:
+        - "'self'"
+        - https://accounts.google.com
+        - https://oauth2.googleapis.com
+        - https://1rf.okta.com
     xpack:
       license_management:
         ui:
@@ -61,6 +76,7 @@ kibanaConfig:
       security:
         encryptionKey: ${kibana_xpack_secrets.securityEncryptionKey}
         cookieName: sc-${kibana_name}
+        sameSiteCookies: Lax
         session:
           idleTimeout: "1d"
           lifespan: "30d"

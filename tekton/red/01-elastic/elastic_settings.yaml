@@ -23,12 +23,6 @@ ElasticSettings:
         email:
           vault_path: "secret/red/elastic-notification-accounts"
       authorizations:
-        ga:
-          vault_path: "secret/red/misc/google/saml"
-          saml_realm_name: "geminiadvisory"
-          secret_name: "saml-geminiadvisory"
-          type: "saml"
-          domain: "k.regemini.com"
         recordedfuture:
           vault_path: "secret/misc/oidc/okta/recordedfuture"
           oidc_realm_name: "recordedfuture"

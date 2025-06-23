@@ -1,17 +1,12 @@
 locals {
   KibanaSettings = {
     ga = {
-      basic_auth          = true,
-      replicas            = 3,
-      publicBaseUrl       = "https://k.regemini.com"
-      maxImportExportSize = 105000
-      namespace           = "elastic"
-      authorizations = {
-        geminiadvisory = {
-          type  = "saml",
-          realm = "geminiadvisory"
-        }
-      }
+      basic_auth           = true,
+      replicas             = 3,
+      publicBaseUrl        = "https://k.regemini.com"
+      maxImportExportSize  = 105000
+      namespace            = "elastic"
+      authorizations       = {}
       kibana_xpack_secrets = "secret/red/kibana"
     },
     recordedfuture = {
