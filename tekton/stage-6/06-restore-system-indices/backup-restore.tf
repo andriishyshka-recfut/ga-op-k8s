@@ -38,7 +38,6 @@ module "backup-lfb-indexes" {
 }
 
 
-
 module "restore-system-indexes" {
   source               = "../../../terraform-modules/k8s-es-curator"
   Namespace            = local.monitoringEs.elastic_settings.elastic.namespace

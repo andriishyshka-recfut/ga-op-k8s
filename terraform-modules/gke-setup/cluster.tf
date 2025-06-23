@@ -10,7 +10,7 @@ resource "google_container_cluster" "cluster" {
   default_max_pods_per_node = var.Settings.clusters[var.Cluster].pods_per_node
   #min_master_version = data.google_container_engine_versions.version.latest_master_version
   release_channel {
-    channel = "REGULAR"
+    channel = "UNSPECIFIED"
   }
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
