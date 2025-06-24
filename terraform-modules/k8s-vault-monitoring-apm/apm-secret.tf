@@ -5,9 +5,9 @@ data "kubernetes_secret" "apm_token" {
     name      = "apm-${local.esValues.esName}-apm-token"
     namespace = local.esValues.namespace
   }
-  depends_on = [null_resource.ansible_validate_resources]
+  depends_on = [vault_generic_secret.apm_creds]
 }
-/*
+
 resource "kubernetes_secret" "apm_token" {
   for_each = local.injectApmCreds
   metadata {
@@ -15,7 +15,8 @@ resource "kubernetes_secret" "apm_token" {
     namespace = each.key
   }
 
-  data = { "secret-token" = lookup(data.kubernetes_secret.apm_token[0].data, "secret-token") }
+  data       = { "secret-token" = lookup(data.kubernetes_secret.apm_token[0].data, "secret-token") }
+  depends_on = [data.kubernetes_secret.apm_token]
 
 }
-*/
+
