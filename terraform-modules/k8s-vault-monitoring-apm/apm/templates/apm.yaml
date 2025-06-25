@@ -9,7 +9,7 @@ metadata:
     "helm.sh/hook": post-install
 spec:
   version: {{ .Values.appVersion }}
-  count: 1
+  count: {{ .Values.count }}
   config:
     apm-server:
       ilm:
@@ -45,9 +45,9 @@ spec:
                     min_age: "90d"
                     actions:
                       delete: {}
-      logging:
-        to_stderr: true
-        level: info
+    logging:
+      to_stderr: true
+      level: info
   elasticsearchRef:
     name: {{ .Values.esName }}
   podTemplate:
