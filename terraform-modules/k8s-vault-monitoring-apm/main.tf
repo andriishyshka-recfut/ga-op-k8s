@@ -11,6 +11,10 @@ resource "helm_release" "apm" {
     name  = "appVersion"
     value = local.version
   }
+  set {
+    name  = "count"
+    value = 2
+  }
 }
 
 resource "null_resource" "ansible_validate_resources" {
