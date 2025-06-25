@@ -4,8 +4,3 @@ tolerations:
   - key: "workloadsType"
     operator: "Exists"
     effect: "NoSchedule"
-
-serviceMonitor:
-  enabled: true
-  namespace: monitoring
-  telemetryPath: "/metrics"
