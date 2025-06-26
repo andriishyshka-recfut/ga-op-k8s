@@ -31,5 +31,8 @@ path "secret/data/mongo/metaOcr" {
 path "secret/data/mongo/metaOS3c" {
    capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

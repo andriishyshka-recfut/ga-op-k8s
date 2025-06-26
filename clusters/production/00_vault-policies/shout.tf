@@ -16,5 +16,8 @@ path "secret/data/es-creds-compose-prod/metaShout" {
 path "secret/data/es-creds-compose-prod/elastic*" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

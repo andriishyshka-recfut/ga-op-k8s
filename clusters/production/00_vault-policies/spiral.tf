@@ -31,5 +31,8 @@ path "secret/data/wl/chatgpt/*" {
 path "secret/metadata/wl/chatgpt*" {
   capabilities = ["read","list","update","delete"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

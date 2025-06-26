@@ -34,5 +34,8 @@ path "secret/data/es-creds-compose-prod/_ka.ms" {
 path "secret/data/wl/minion/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

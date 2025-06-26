@@ -11,5 +11,8 @@ path "secret/data/etl/clients/*" {
 path "secret/data/logstash/logstash-*" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

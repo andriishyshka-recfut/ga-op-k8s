@@ -28,5 +28,8 @@ path "secret/data/oidc/vault_token" {
 path "secret/data/misc/oidc/okta/maid" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

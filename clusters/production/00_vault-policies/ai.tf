@@ -13,5 +13,8 @@ path "secret/data/wl/grok.ai/*" {
 path "secret/metadata/wl/grok.ai/*" {
 	capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

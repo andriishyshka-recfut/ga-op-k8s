@@ -31,5 +31,8 @@ path "secret/data/wl/threads/google" {
 path "secret/data/wl/threads/sheet" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

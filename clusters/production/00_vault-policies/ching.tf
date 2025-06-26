@@ -4,5 +4,8 @@ resource "vault_policy" "ching" {
 path "secret/data/core/ching/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

@@ -44,5 +44,8 @@ path "secret/data/oidc_google_test" {
 path "secret/data/core/auth/*" {
   capabilities = ["read","list","create","update"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

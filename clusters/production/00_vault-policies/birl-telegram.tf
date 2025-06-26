@@ -46,7 +46,9 @@ path "secret/data/es-creds-compose-prod/datafix"{
 path "secret/data/wl/birl/*"{
   capabilities = ["read","list"]
 }
-
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 path "postgres/creds/*" {
   capabilities = ["read","list","create","update"]
 }

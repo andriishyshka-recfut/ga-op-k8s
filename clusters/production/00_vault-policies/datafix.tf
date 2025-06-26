@@ -22,5 +22,8 @@ path "secret/data/minion-pan-upload/*" {
 path "secret/data/mw/postgres/db-users/birl" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

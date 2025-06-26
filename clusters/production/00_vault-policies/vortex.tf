@@ -23,5 +23,8 @@ path "sys/leases/renew" {
 path "secret/data/mongo/metaVortex" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

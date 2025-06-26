@@ -42,6 +42,9 @@ path "secret/data/wl/etl/observer/minio/old" {
 }  
 path "secret/data/wl/etl/observer/minio/new" {
   capabilities = ["read","list"]
-} 
+}
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

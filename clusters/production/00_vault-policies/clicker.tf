@@ -25,5 +25,8 @@ path "secret/data/apm/*" {
 path "secret/data/oidc_google_prod" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

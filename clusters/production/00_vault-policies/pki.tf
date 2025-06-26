@@ -34,5 +34,8 @@ path "pki*/tidy" {
 path "pki*" {
 	capabilities = [ "create", "read", "update", "delete", "list", "sudo" ]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

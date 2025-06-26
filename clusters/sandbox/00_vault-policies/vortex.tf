@@ -17,5 +17,8 @@ path "database/creds/*" {
 path "sys/leases/renew" {
   capabilities = ["read","list","create","update"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

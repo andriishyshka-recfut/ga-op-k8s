@@ -65,5 +65,8 @@ path "secret/magescanner/splash_vpn" {
 path "secret/magescanner/surfshark_creds" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

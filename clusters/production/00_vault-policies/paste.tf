@@ -19,5 +19,8 @@ path "auth/token/renew*" {
 path "secret/data/mongo/*" {
  capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

@@ -31,5 +31,8 @@ path "secret/data/es-creds-compose-prod/elasticCrt" {
 path "secret/data/mongo/metaSanitizer" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

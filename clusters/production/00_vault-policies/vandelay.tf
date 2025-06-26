@@ -37,5 +37,8 @@ path "auth/k8s-production-red/login" {
 path "secret/data/mongo/metaVandelay" {
   capabilities=["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

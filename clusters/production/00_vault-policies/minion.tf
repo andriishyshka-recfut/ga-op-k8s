@@ -25,5 +25,8 @@ path "secret/data/apm/*" {
 path "secret/data/wl/minion/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }

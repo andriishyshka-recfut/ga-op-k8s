@@ -37,5 +37,8 @@ path "secret/data/mongo/metaGs2es" {
 path "secret/data/gs2es/es2gs-twirl" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
 EOT
 }
