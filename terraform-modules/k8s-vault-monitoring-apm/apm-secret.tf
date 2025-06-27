@@ -5,7 +5,6 @@ data "kubernetes_secret" "apm_token" {
     name      = "apm-${local.esValues.esName}-apm-token"
     namespace = local.esValues.namespace
   }
-  depends_on = [vault_generic_secret.apm_creds]
 }
 
 resource "kubernetes_secret" "apm_token" {
