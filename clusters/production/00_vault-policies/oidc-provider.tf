@@ -25,7 +25,7 @@ resource "vault_jwt_auth_backend_role" "okta" {
   groups_claim          = "groups"
   user_claim            = "sub"
   role_type             = "oidc"
-  allowed_redirect_uris = ["https://vault.p.regemini.io/ui/vault/auth/okta/oidc/callback"]
+  allowed_redirect_uris = ["https://vault.p.regemini.io/ui/vault/auth/okta/oidc/callback", "http://localhost:8250/oidc/callback"]
   token_ttl             = 86400
   depends_on            = [vault_jwt_auth_backend.okta]
 }
