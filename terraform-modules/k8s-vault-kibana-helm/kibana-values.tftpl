@@ -45,18 +45,15 @@ kibanaConfig:
       strict: "true"
       script_src:
         - "'self'"
-        - https://accounts.google.com
-        - https://apis.google.com
-        - https://oauth2.googleapis.com
+        - https://*.elastic.co
         - https://1rf.okta.com
       frame_src:
         - "'self'"
-        - https://accounts.google.com
+        - https://*.elastic.co
         - https://1rf.okta.com
       connect_src:
         - "'self'"
-        - https://accounts.google.com
-        - https://oauth2.googleapis.com
+        - https://*.elastic.co
         - https://1rf.okta.com
     xpack:
       license_management:
