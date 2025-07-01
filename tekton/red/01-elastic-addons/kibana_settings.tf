@@ -10,7 +10,7 @@ locals {
       kibana_xpack_secrets = "secret/red/kibana"
     },
     recordedfuture = {
-      replicas            = 1,
+      replicas            = 3,
       publicBaseUrl       = "https://kk.regemini.com"
       maxImportExportSize = 105000
       namespace           = "elastic"
