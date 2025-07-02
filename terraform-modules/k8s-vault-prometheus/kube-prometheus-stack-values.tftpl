@@ -10,6 +10,10 @@ grafana:
       secretKeyRef:
         name: "mon-es-elastic-user"
         key: elastic
+    GF_AUTH_OKTA_CLIENT_SECRET:
+      secretKeyRef:
+        name: "grafana-okta-client-secret"
+        key: client_secret
   additionalDataSources:
     - name: "elastic"
       type:  "elasticsearch"
@@ -47,6 +51,21 @@ grafana:
       allow_sign_up: true
       client_id: ${grafana_auth_google.oidc_client_id}
       client_secret: ${grafana_auth_google.oidc_client_secret}
+    auth.okta:
+      enabled: true
+      name: Okta
+      icon: okta
+      scopes: openid profile email groups
+      auth_url: ${okta.issuer}/oauth2/v1/authorize
+      token_url:  ${okta.issuer}/oauth2/v1/token
+      api_url:  ${okta.issuer}/oauth2/v1/userinfo
+      client_id:  ${okta.client_id}
+      client_secret:  "$OKTA_CLIENT_SECRET"
+      org_attribute_path: groups
+      org_mapping:  ${okta.org_mapping}
+      role_attribute_path:  ${okta.role_attribute_path}
+      allow_assign_grafana_admin: true
+      allowed_groups: ${okta.allowed_groups}
     users:
       auto_assign_org_role: ${grafana_users_auto_assign_org_role}
     server:

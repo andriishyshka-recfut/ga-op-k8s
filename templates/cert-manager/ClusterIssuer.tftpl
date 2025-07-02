@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: vault-issuer
+spec:
+  vault:
+    auth:
+      kubernetes:
+        mountPath: {{ $.Values.mountPath }}
+        role: {{ $.Values.vaultRole }}
+        secretRef:
+          key: "token"
+          name: {{ $.Values.secretName }}
+    server: {{ $.Values.vaultAddress }}
+    path: {{ $.Values.pkiPath }}/sign/{{ $.Values.pkiRole }}
