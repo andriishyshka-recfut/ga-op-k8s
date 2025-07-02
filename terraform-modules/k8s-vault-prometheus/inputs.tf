@@ -6,6 +6,9 @@ variable "OidcSecretVaultPath" {
   default = "secret/oidc_google_prod"
 }
 
+data "vault_generic_secret" "okta_oidc" {
+  path = "secret/misc/oidc/okta/grafana"
+}
 
 locals {
   helmVersion             = lookup(var.Settings.clusters[var.Cluster].versions.prometheus, "helm_version", "17.0.0")
@@ -19,6 +22,14 @@ locals {
   slackSecretPath         = var.Color == "red" ? "secret/red/slack/prometheus" : "secret/slack/prometheus"
   thanosMinioUser         = "thanos"
   prometheusSlackWebHooks = data.vault_generic_secret.prometheus.data
+  grafana_okta = {
+    enabled             = true
+    client_id           = data.vault_generic_secret.okta_oidc.data.client_id
+    issuer              = data.vault_generic_secret.okta_oidc.data.issuer
+    org_mapping         = "\"*:1:Viewer\""
+    role_attribute_path = "contains(groups[*], 'APP-GA-OP') && 'GrafanaAdmin'",
+    allowed_groups      = "APP-GA-OP,APP-GA-DEV"
+  }
 }
 
 terraform {

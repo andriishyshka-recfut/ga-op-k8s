@@ -91,7 +91,7 @@ resource "grafana_data_source" "prod-filebeat" {
     timeInterval               = "10s"
   })
   secure_json_data_encoded = jsonencode({
-    basicAuthPassword = local.elasticPassword
+    basicAuthPassword               = local.elasticPassword
     disableTLSCertificateValidation = "true"
   })
 }

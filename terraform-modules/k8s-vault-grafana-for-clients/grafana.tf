@@ -7,10 +7,16 @@ data "vault_generic_secret" "elastic" {
 data "vault_generic_secret" "grafana" {
   path = local.grafanaSecretpath
 }
-data "vault_generic_secret" "oidc_secrets" {
-  path = "secret/oidc_google_prod"
-}
 
+resource "kubernetes_secret" "grafana_okta_client_secret" {
+  metadata {
+    name      = "grafana-okta-client-secret"
+    namespace = local.grafanaNs
+  }
+  data = {
+    client_secret = data.vault_generic_secret.okta_oidc.data.client_secret
+  }
+}
 resource "helm_release" "grafana-clients" {
   name       = "grafana-clients"
   chart      = "grafana"
@@ -20,34 +26,5 @@ resource "helm_release" "grafana-clients" {
   atomic     = true
   # force_update  = true
   namespace = local.grafanaNs
-  # values = [
-  #   yamlencode(local.grafanaValues)
-  # ]
-  values = [
-    "${file("${path.module}/values.yaml")}"
-  ]
-  set {
-    name  = "adminPassword"
-    value = data.vault_generic_secret.grafana.data.password
-  }
-  set {
-    name  = "grafana\\.ini.server.root_url"
-    value = data.vault_generic_secret.grafana.data.root_url
-  }
-  set_sensitive {
-    name  = "grafana\\.ini.auth\\.google.client_id"
-    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
-  }
-  set_sensitive {
-    name  = "grafana\\.ini.auth\\.google.client_secret"
-    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret
-  }
-  set {
-    name  = "grafana\\.ini.users.auto_assign_org_role"
-    value = local.grafanaRole
-  }
-  set {
-    name  = "assertNoLeakedSecrets"
-    value = false
-  }
+  values    = [templatefile("${path.module}/templates/grafana.tftpl", { grafana = local.grafanaSettings })]
 }

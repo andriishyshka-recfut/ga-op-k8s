@@ -31,7 +31,15 @@ config:
 EOF
 
   }
-
+}
+resource "kubernetes_secret" "grafana_okta_client_secret" {
+  metadata {
+    name      = "grafana-okta-client-secret"
+    namespace = local.prometheusNs
+  }
+  data = {
+    client_secret = data.vault_generic_secret.okta_oidc.data.client_secret
+  }
 }
 
 resource "helm_release" "prometheus" {
@@ -51,7 +59,8 @@ resource "helm_release" "prometheus" {
       grafana_users_auto_assign_org_role = local.grafanaRole,
       prometheus_external_url            = local.prometheusExtUrl,
       additional_rule_labels             = var.Cluster,
-      thanos_version                     = local.thanosSidecarVersion
+      thanos_version                     = local.thanosSidecarVersion,
+      okta                               = local.grafana_okta
     })
   ]
 }
