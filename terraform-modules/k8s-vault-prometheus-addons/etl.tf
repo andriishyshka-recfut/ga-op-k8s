@@ -226,21 +226,3 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
     }
   }
 }
-
-# data "kubectl_file_documents" "etl_minio_exporter_servicemonitor" {
-#   content = file("${path.module}/etl-minio-exporter-servicemonitor.yaml")
-# }
-
-# resource "kubernetes_manifest" "etl_minio_exporter_servicemonitor" {
-#   count     = 2
-#   manifest = yamldecode(element(data.kubectl_file_documents.etl_minio_exporter_servicemonitor.documents, count.index))
-# }
-
-# data "kubectl_file_documents" "etl_minio_exporter_rules" {
-#   content = templatefile("${path.module}/etl-prometheusrule.yaml", { cluster_label : var.Cluster, cluster_color : var.Color })
-# }
-
-# resource "kubernetes_manifest" "etl_minio_exporter_rules" {
-#   count     = 1
-#   manifest = yamldecode(element(data.kubectl_file_documents.etl_minio_exporter_rules.documents, count.index))
-# }
