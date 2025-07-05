@@ -31,7 +31,7 @@ ElasticSettings:
           domain: "kk.regemini.com"
     license:
       vault_path: "secret/red/misc/elasticsearch/license"
-      name: "recorded-future-ab-production-0e020930-282b-48b1-9296-988677dc9c5f-v5.json"
+      name: "recorded-future-ab-production-8dfd88a7-11b1-4567-87d3-d41831a65fe5-v5.json"
     clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
   nodePools:
     master:
