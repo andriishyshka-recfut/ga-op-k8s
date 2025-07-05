@@ -40,7 +40,7 @@ locals {
       },
       license = {
         vault_path = "secret/misc/elasticsearch/license"
-        name       = "recorded-future-ab-non_production-1ec84997-99e6-4bfc-ad59-4fe0115f371b-v5.json"
+        name       = "recorded-future-ab-non_production-b3d2ba33-a0df-4cf6-9a5b-941d2bb9952c-v5.json"
       },
       clusterHealthCheckParams = "wait_for_status=green&timeout=1s"
     },
