@@ -8,7 +8,7 @@ resource "kubernetes_namespace" "ns" {
     }
   }
 }
-
+ 
 resource "kubernetes_limit_range" "limit" {
   for_each = local.namespaceNames
   metadata {
