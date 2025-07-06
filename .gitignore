@@ -28,3 +28,4 @@ __pycache__
 ansible/files/bastion-compose/*
 .vscode/settings.json
 **/.idea/
+.DS_Store

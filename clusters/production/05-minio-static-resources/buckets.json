@@ -1,0 +1,5 @@
+{
+    "buckets": {     
+        "tier-sbx-test": {"expiration": ["30"]}     
+        }
+}
