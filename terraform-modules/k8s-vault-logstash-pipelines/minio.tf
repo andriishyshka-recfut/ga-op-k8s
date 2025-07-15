@@ -86,7 +86,6 @@ data "vault_pki_secret_backend_issuer" "pki_minio" {
   issuer_ref = "default"
 }
 resource "kubernetes_secret" "minio_ca_cert" {
-  count = var.Cluster == "production" ? 1 : 0
   metadata {
     name      = "minio-ca-certs"
     namespace = local.namespace

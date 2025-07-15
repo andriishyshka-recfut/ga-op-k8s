@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name:  "${name}-internal-ingress"
   namespace: ${settings.namespace}
+  labels:
+    ingress-type: internal-ingress
   annotations:
     networking.gke.io/load-balancer-type: Internal
     networking.gke.io/internal-load-balancer-subnet: ${static_ip.subnet}

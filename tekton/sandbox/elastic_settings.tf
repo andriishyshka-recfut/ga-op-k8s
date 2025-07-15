@@ -22,19 +22,12 @@ locals {
           }
         },
         authorizations = {
-          ga = {
-            vault_path      = "secret/elasticsearch-admin/saml_geminiadvisory_sandbox"
-            saml_realm_name = "geminiadvisory"
-            secret_name     = "saml-geminiadvisory"
-            type            = "saml"
-            domain          = "k.t.regemini.io"
-          },
           okta = {
-            vault_path      = "secret/misc/oidc/okta/test"
+            vault_path      = "secret/misc/oidc/okta/elastic"
             oidc_realm_name = "okta"
             secret_name     = "oidc-okta"
             type            = "okta"
-            domain          = "k2.t.regemini.io"
+            domain          = "k.t.regemini.io"
           }
         }
       },

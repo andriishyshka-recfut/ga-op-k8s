@@ -13,22 +13,21 @@ spec:
     - name: path
       value: "k8s/tekton/sandbox"
     - name: branch
-      value: "\\#969_sbx_dr_20250614"
-
----
-apiVersion: tekton.dev/v1beta1
-kind: TaskRun
-metadata:
-  generateName: airflow-
-  namespace: tekton-tasks
-spec:
-  taskRef:
-    name: tg-run
-  workspaces:
-    - name: ws # this workspace name must be declared in the Task
-      emptyDir: {}
-  params:
-    - name: path
-      value: "k8s/tekton/stage-6/06-airflow"
-    - name: branch
-      value: "airflow"
+      value: "\\#981-Sandbox-DR-20250712"
+# ---
+# apiVersion: tekton.dev/v1beta1
+# kind: TaskRun
+# metadata:
+#   generateName: airflow-
+#   namespace: tekton-tasks
+# spec:
+#   taskRef:
+#     name: tg-run
+#   workspaces:
+#     - name: ws # this workspace name must be declared in the Task
+#       emptyDir: {}
+#   params:
+#     - name: path
+#       value: "k8s/tekton/stage-6/06-airflow"
+#     - name: branch
+#       value: "airflow"
