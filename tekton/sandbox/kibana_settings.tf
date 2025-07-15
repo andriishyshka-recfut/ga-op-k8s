@@ -1,24 +1,11 @@
 locals {
   KibanaSettings = {
-    ga = {
-      basic_auth    = true
-      replicas      = 3,
-      publicBaseUrl = "https://k.t.regemini.io"
-      maxImportExportSize = 105000      
-      namespace     = "elastic"
-      authorizations = {
-        geminiadvisory = {
-          type  = "saml",
-          realm = "geminiadvisory"
-        }
-      }
-      kibana_xpack_secrets = "secret/kibana"
-    },
-    test = {
-      replicas      = 1,
-      publicBaseUrl = "https://k2.t.regemini.io"
+    okta = {
+      basic_auth          = true,
+      replicas            = 2,
+      publicBaseUrl       = "https://k.t.regemini.io"
       maxImportExportSize = 105000
-      namespace     = "elastic"
+      namespace           = "elastic"
       authorizations = {
         okta = {
           type  = "okta",

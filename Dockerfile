@@ -1,8 +1,8 @@
-FROM vault:1.13.3 as vault
-FROM hashicorp/terraform:1.11.4 as terraform
+FROM vault:1.20.0 as vault
+FROM hashicorp/terraform:1.12.2 as terraform
 FROM curlimages/curl as curl
 RUN curl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /tmp/kubectl &&\
-    curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.77.22/terragrunt_linux_amd64 --output /tmp/terragrunt
+    curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.83.1/terragrunt_linux_amd64 --output /tmp/terragrunt
 
 FROM alpine:latest as ansible
 RUN apk add python3 py3-pip unzip py3-virtualenv bash python3-dev libffi-dev build-base rust rustup cargo openssl-dev musl-dev

@@ -14,7 +14,7 @@ data "vault_generic_secret" "k8s_auth" {
   path = local.activeClusterVaultPath
 }
 locals {
-  activeCluster          = "green"
+  activeCluster          = "blue"
   activeClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
 }
 provider "helm" {
@@ -33,7 +33,13 @@ provider "kubernetes" {
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-lb-switch/state-2025-06-15"
+    prefix = "tf-lb-switch/state-2025-07-12"
+  }
+  required_providers {
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.17.0"
+    }
   }
 
 }

@@ -57,8 +57,8 @@ resource "helm_release" "logstash" {
   }
   set {
     name  = "mountCaMinio.enabled"
-    value = var.Cluster == "production" ? true : false
-  } 
+    value = true
+  }
   set {
     name  = "extraVolumes[0].name"
     value = "tmp-logstash-${each.key}"
@@ -145,16 +145,16 @@ resource "random_password" "logstash_api_password" {
   special  = false
 }
 
- resource "vault_generic_secret" "logstash_etl_creds" {
-   path     = "secret/wl/etl/logstash-creds"
-   data_json = jsonencode({
-    "credentials.json" = {for k, v in var.logstash_list : k  => { "user": local.logstash_user, "password": resource.random_password.logstash_api_password[k].result, "ids": v.pipeline_id }}
-   })
- }
+resource "vault_generic_secret" "logstash_etl_creds" {
+  path = "secret/wl/etl/logstash-creds"
+  data_json = jsonencode({
+    "credentials.json" = { for k, v in var.logstash_list : k => { "user" : local.logstash_user, "password" : resource.random_password.logstash_api_password[k].result, "ids" : v.pipeline_id } }
+  })
+}
 
 resource "kubernetes_config_map" "vandelay_reload" {
   metadata {
-    name = "reload"
+    name      = "reload"
     namespace = "vandelay"
   }
   data = {
@@ -164,13 +164,13 @@ resource "kubernetes_config_map" "vandelay_reload" {
 
 resource "vault_generic_secret" "vandelay_logstash_3_creds" {
   count = var.Cluster == "production" ? 1 : 0
-   path      = "secret/wl/vandelay/logstash"
-   data_json = jsonencode({
+  path  = "secret/wl/vandelay/logstash"
+  data_json = jsonencode({
     "hosts"    = "http://logstash-3.elastic:9600"
     "password" = resource.random_password.logstash_api_password["logstash-3"].result
     "username" = local.logstash_user
-   })
- }
+  })
+}
 
 resource "vault_generic_secret" "logstash_es_creds" {
   for_each = var.logstash_list

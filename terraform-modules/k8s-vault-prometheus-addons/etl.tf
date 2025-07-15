@@ -73,8 +73,9 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
 
       spec {
         container {
-          image = "harbor.regemini.io/op/etl-minio-exporter:${local.etl_minio_exporter_version}"
-          name  = "etl-minio-exporter"
+          image             = "harbor.regemini.io/op/etl-minio-exporter:${local.etl_minio_exporter_version}"
+          image_pull_policy = "Always"
+          name              = "etl-minio-exporter"
 
           resources {
             limits = {
