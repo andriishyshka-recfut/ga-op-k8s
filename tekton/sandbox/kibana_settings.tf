@@ -8,8 +8,9 @@ locals {
       namespace           = "elastic"
       authorizations = {
         okta = {
-          type  = "okta",
-          realm = "okta"
+          type        = "okta",
+          realm       = "okta",
+          description = "Log in with OKTA/RecordedFuture"
         }
       }
       kibana_xpack_secrets = "secret/mw/kibana/xpack_secrets/test"
