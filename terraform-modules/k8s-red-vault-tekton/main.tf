@@ -115,7 +115,7 @@ resource "null_resource" "crds" {
       --token ${local.gkeBearerToken}  \
       --insecure-skip-tls-verify=true  \
       apply -f ${path.module}/webhook.yaml \
-      --namespace=${local.tektonNs}
+      --namespace=${local.tektonMainNs}
     kubectl --server ${local.gkeClusterEndpoint} \
       --token ${local.gkeBearerToken}  \
       --insecure-skip-tls-verify=true  \
@@ -125,7 +125,7 @@ resource "null_resource" "crds" {
       --token ${local.gkeBearerToken}  \
       --insecure-skip-tls-verify=true  \
       apply -f ${path.module}/logstash.yaml \
-      --namespace=${local.tektonNs}
+      --namespace=${local.tektonMainNs}
 
 COMMAND
   }

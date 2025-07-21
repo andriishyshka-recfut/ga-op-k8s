@@ -37,5 +37,8 @@ path "secret/data/wl/minion/*" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/wl/ka/*" {
+   capabilities = ["read","list"]
+}
 EOT
 }
