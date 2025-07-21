@@ -49,6 +49,23 @@ resource "kubernetes_secret" "reindexer_slack" {
   }
 }
 
+data "vault_generic_secret" "reindexer_rf_es_creds" {
+  path        = "secret/misc/elastic/fraud"
+}
+
+resource "kubernetes_secret" "reindexer_rf_es_creds" {
+  for_each    = var.reindexer
+  metadata {
+    name      = "${each.key}-reindexer-rf-es-creds"
+    namespace = try(each.value.namespace, local.namespace)
+  }
+
+  data = {
+    username     = data.vault_generic_secret.reindexer_rf_es_creds.data.username,
+    password     = data.vault_generic_secret.reindexer_rf_es_creds.data.password,
+    host         = data.vault_generic_secret.reindexer_rf_es_creds.data.host
+  }
+}
 
 resource "kubernetes_deployment_v1" "elasticsearch_reindexer" {
   for_each    = var.reindexer
@@ -122,20 +139,60 @@ resource "kubernetes_deployment_v1" "elasticsearch_reindexer" {
               }
             }
           }
+          env {
+            name  = "RF_ES_HOST"
+            value_from {
+              secret_key_ref {
+                key  = "host"
+                name = kubernetes_secret.reindexer_rf_es_creds[each.key].metadata.0.name
+              }
+            }
+          }
+          env {
+            name  = "RF_ES_USER"
+            value_from {
+              secret_key_ref {
+                key  = "username"
+                name = kubernetes_secret.reindexer_rf_es_creds[each.key].metadata.0.name
+              }
+            }
+          }
+          env {
+            name  = "RF_ES_PASS"
+            value_from {
+              secret_key_ref {
+                key  = "password"
+                name = kubernetes_secret.reindexer_rf_es_creds[each.key].metadata.0.name
+              }
+            }
+          }
           volume_mount {
             mount_path = "/opt/reindex/certs"
             name       = "elasticsearch-certs"
           }
+          volume_mount {
+            mount_path = "/opt/reindex/rf_certs"
+            name       = "rf-es-ca"
+          }
         }
         image_pull_secrets {
           name = "harbor"
+        }
+        node_selector = {
+          workloadsType = "recorded-future"
+        }
+        toleration {
+          key = "workloadsType"
+          operator = "Equal"
+          value = "recorded-future"
+          effect = "NoSchedule"
         }
         volume {
           name = "elasticsearch-certs"
           projected {
             sources {
               secret {
-                name = "${each.key}-reindexer-elastic-https-certs"
+                name = kubernetes_secret.reindexer_elasticsearch_certs[each.key].metadata.0.name
                 items {
                   key = "ca.crt"
                   path = "ca.crt"
@@ -155,6 +212,21 @@ resource "kubernetes_deployment_v1" "elasticsearch_reindexer" {
             }
           }
         }
+        volume {
+          name = "rf-es-ca"
+          projected {
+            sources {
+              secret {
+                name = kubernetes_secret.reindexer_rf_es_creds[each.key].metadata.0.name
+                items {
+                  key = "ca.crt"
+                  path = "ca.crt"
+                  mode = "0600"
+                }
+                }
+              }
+            }
+          }
       }
     }
   }
