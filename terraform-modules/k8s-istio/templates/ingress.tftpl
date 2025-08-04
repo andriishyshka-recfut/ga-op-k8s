@@ -1,0 +1,18 @@
+service:
+  type: NodePort
+autoscaling:
+  minReplicas: 2
+annotations:
+  "co.elastic.logs/json.add_error_key": "true"
+  "co.elastic.logs/enabled": "true"
+labels:
+  log-group-name: workloads
+service:
+  ports:
+%{ for port_name,port_values in ports ~}
+    - name: ${port_values.name}
+      protocol: ${port_values.protocol}
+      port: ${port_values.port}
+      targetPort: ${port_values.port}
+      nodePort: ${port_values.nodePort}
+%{ endfor ~}

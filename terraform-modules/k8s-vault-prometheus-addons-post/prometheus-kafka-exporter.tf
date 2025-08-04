@@ -7,22 +7,24 @@ resource "helm_release" "prometheus_kafka_exporter" {
   atomic            = true
   namespace         = local.prometheusNs
   dependency_update = true
-  set {
-    name  = "kafkaServer.0"
-    value = "kafka-cluster-kafka-bootstrap.kafka:9092"
-  }
-  set {
-    name  = "prometheus.serviceMonitor.namespace"
-    value = "monitoring"
-  }
-  set {
-    name  = "prometheus.serviceMonitor.enabled"
-    value = "true"
-  }
-  set {
-    name  = "prometheus.serviceMonitor.additionalLabels.release"
-    value = "prometheus"
-  }
+  set = [
+    {
+      name  = "kafkaServer.0"
+      value = "kafka-cluster-kafka-bootstrap.kafka:9092"
+    },
+    {
+      name  = "prometheus.serviceMonitor.namespace"
+      value = "monitoring"
+    },
+    {
+      name  = "prometheus.serviceMonitor.enabled"
+      value = "true"
+    },
+    {
+      name  = "prometheus.serviceMonitor.additionalLabels.release"
+      value = "prometheus"
+    }
+  ]
 }
 
 #

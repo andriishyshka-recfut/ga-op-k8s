@@ -1,0 +1,28 @@
+image: quay.io/spotahome/redis-operator
+tag: latest
+pullPolicy: Always
+redisCrd:
+  enabled: ${lookup(Settings, "redis-crd", true)}
+  sentinel:
+    replicas: ${lookup(Settings, "sentinel-repl", 3)}
+    resources:
+      requests:
+        cpu: lookup(Settings, "sentinel-req-cpu", "100m")
+      limits:
+        memory: lookup(Settings, "sentinel-lim-mem", "100Mi")
+  redis:
+    replicas: ${lookup(Settings, "redis-repl", 3)}
+    podAnnotations: {}
+    resources:
+      requests:
+        cpu: lookup(Settings, "redis-req-cpu", "100m")
+        memory: lookup(Settings, "redis-req-mem", "100Mi")
+      limits:
+        cpu: lookup(Settings, "redis-lim-cpu", "400m")
+        memory: lookup(Settings, "redis-lim-mem", "500Mi")
+redisService:
+  enabled: ${lookup(Settings, "redis-service", true)}
+  clusterIP: None
+  portNname: port1
+  port: 6379
+  targetPort: 6379

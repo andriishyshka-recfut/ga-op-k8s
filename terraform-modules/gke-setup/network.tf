@@ -1,6 +1,3 @@
-
-
-
 resource "google_compute_subnetwork" "net" {
   name          = "${var.Cluster}-${var.Color}-subnetwork"
   ip_cidr_range = var.Settings.clusters[var.Cluster][var.Color].nodes_subnet_range
@@ -16,11 +13,6 @@ resource "google_compute_subnetwork" "net" {
     }
   }
 }
-
-
-
-
-#https://istio.io/docs/setup/platform-setup/gke/
 resource "google_compute_firewall" "master_to_cluster" {
   name          = "master-to-${var.Cluster}-${var.Color}"
   network       = data.google_compute_network.vpc.self_link
@@ -37,8 +29,6 @@ resource "google_compute_firewall" "master_to_cluster" {
   }
 
 }
-
-
 
 resource "google_compute_firewall" "bastion_to_cluster" {
   name        = "bastion-to-${var.Cluster}-${var.Color}"

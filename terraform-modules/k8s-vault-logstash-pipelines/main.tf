@@ -9,92 +9,95 @@ resource "helm_release" "logstash" {
   force_update = true
   replace      = true
   values = [
-    file("${path.module}/logstash/values.yaml")
+    templatefile("${path.module}/templates/logstash.tftpl",{
+      name = each.key
+      values = merge(local.valuesDefault, each.value)
+    })
   ]
-  set {
-    name  = "fullnameOverride"
-    value = each.key
-  }
-  set {
-    name  = "elastic.namespace"
-    value = try(each.value.namespace, local.namespace)
-  }
-  set {
-    name  = "imageTag"
-    value = try(each.value.logstash_version, var.logstash_version)
-  }
-  set {
-    name  = "elastic.host"
-    value = try(each.value.es_host, local.es_host)
-  }
-  set {
-    name  = "elastic.pipelineID"
-    value = try(each.value.pipeline_id, local.pipeline_id)
-  }
-  set {
-    name  = "elastic.pollInterval"
-    value = try(each.value.poll_interval, local.poll_interval)
-  }
-  set {
-    name  = "elastic.cluster_uuid"
-    value = try(each.value.cluster_uuid, local.cluster_uuid)
-  }
-  set {
-    name  = "minio.user"
-    value = try(each.value.minio_user, local.minio_user)
-  }
-  set {
-    name  = "minio.endpoint"
-    value = try(each.value.minio_endpoint, local.minio_endpoint)
-  }
-  set {
-    name  = "minio.bucket"
-    value = try(each.value.minio_bucket, local.minio_bucket)
-  }
-  set {
-    name  = "mountCaCert.volumeName"
-    value = "${each.key}-logstash-https-certs"
-  }
-  set {
-    name  = "mountCaMinio.enabled"
-    value = true
-  }
-  set {
-    name  = "extraVolumes[0].name"
-    value = "tmp-logstash-${each.key}"
-  }
-  set {
-    name  = "extraVolumes[0].persistentVolumeClaim.claimName"
-    value = "tmp-logstash-${each.key}"
-  }
-  set {
-    name  = "extraVolumeMounts[0].name"
-    value = "tmp-logstash-${each.key}"
-  }
-  set {
-    name  = "log_level"
-    value = try(each.value.log_level, local.log_level)
-  }
-  set {
-    name  = "resources.requests.cpu"
-    value = try(each.value.cpu_request, local.cpu_request)
-  }
-  set {
-    name  = "resources.requests.memory"
-    value = try(each.value.mem_request, local.mem_request)
-  }
-  set {
-    name  = "resources.limits.cpu"
-    value = try(each.value.cpu_limit, local.cpu_limit)
-  }
-  set {
-    name  = "resources.limits.memory"
-    value = try(each.value.mem_limit, local.mem_limit)
-  }
-  set {
-    name  = "logstashJavaOpts"
-    value = try(each.value.java_opts, local.java_opts)
-  }
+  # set {
+  #   name  = "fullnameOverride"
+  #   value = each.key
+  # }
+  # set {
+  #   name  = "elastic.namespace"
+  #   value = try(each.value.namespace, local.namespace)
+  # # }
+  # set {
+  #   name  = "imageTag"
+  #   value = try(each.value.logstash_version, var.logstash_version)
+  # }
+  # set {
+  #   name  = "elastic.host"
+  #   value = try(each.value.es_host, local.es_host)
+  # }
+  # set {
+  #   name  = "elastic.pipelineID"
+  #   value = try(each.value.pipeline_id, local.pipeline_id)
+  # }
+  # set {
+  #   name  = "elastic.pollInterval"
+  #   value = try(each.value.poll_interval, local.poll_interval)
+  # }
+  # set {
+  #   name  = "elastic.cluster_uuid"
+  #   value = try(each.value.cluster_uuid, local.cluster_uuid)
+  # }
+  # set {
+  #   name  = "minio.user"
+  #   value = try(each.value.minio_user, local.minio_user)
+  # }
+  # set {
+  #   name  = "minio.endpoint"
+  #   value = try(each.value.minio_endpoint, local.minio_endpoint)
+  # }
+  # set {
+  #   name  = "minio.bucket"
+  #   value = try(each.value.minio_bucket, local.minio_bucket)
+  # }
+  # set {
+  #   name  = "mountCaCert.volumeName"
+  #   value = "${each.key}-logstash-https-certs"
+  # }
+  # set {
+  #   name  = "mountCaMinio.enabled"
+  #   value = true
+  # }
+  # set {
+  #   name  = "extraVolumes[0].name"
+  #   value = "tmp-logstash-${each.key}"
+  # }
+  # set {
+  #   name  = "extraVolumes[0].persistentVolumeClaim.claimName"
+  #   value = "tmp-logstash-${each.key}"
+  # }
+  # set {
+  #   name  = "extraVolumeMounts[0].name"
+  #   value = "tmp-logstash-${each.key}"
+  # }
+  # set {
+  #   name  = "log_level"
+  #   value = try(each.value.log_level, local.log_level)
+  # }
+  # set {
+  #   name  = "resources.requests.cpu"
+  #   value = try(each.value.cpu_request, local.cpu_request)
+  # }
+  # set {
+  #   name  = "resources.requests.memory"
+  #   value = try(each.value.mem_request, local.mem_request)
+  # }
+  # set {
+  #   name  = "resources.limits.cpu"
+  #   value = try(each.value.cpu_limit, local.cpu_limit)
+  # }
+  # set {
+  #   name  = "resources.limits.memory"
+  #   value = try(each.value.mem_limit, local.mem_limit)
+  # }
+  # set {
+  #   name  = "logstashJavaOpts"
+  #   value = try(each.value.java_opts, local.java_opts)
+  # }
 
   depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds, kubernetes_manifest.tmp_logstash, kubernetes_job.logstash_user]
 }

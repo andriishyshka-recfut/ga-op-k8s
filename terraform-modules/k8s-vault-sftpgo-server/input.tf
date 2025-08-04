@@ -19,4 +19,9 @@ locals {
   image_tag = lookup(var.Settings.clusters[var.Cluster].versions.sftpgo, "image_tag", "v2.5.6")
   postgresql_chart_version = "15.5.7"
   postgresql_version = "14.8.0"
+  default_values = {
+    postgres_url = local.postgres_url
+    postgres_port = local.postgres_port
+    image_tag = local.image_tag
+  }
 }

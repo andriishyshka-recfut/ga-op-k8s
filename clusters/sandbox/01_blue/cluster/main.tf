@@ -7,7 +7,7 @@ variable "OidcClientId" { default = "SAMPLE" }
 variable "OidcClientSecret" { default = "SAMPLE" }
 
 
-module "gke-setup-green" {
+module "gke-setup-blue" {
   source        = "../../../../terraform-modules/gke-setup"
   Settings      = var.Settings
   Cluster       = "sandbox"
@@ -16,6 +16,6 @@ module "gke-setup-green" {
 }
 
 output "GkeClusterConnectionSettings" {
-  value     = module.gke-setup-green.GkeClusterConnectionSettings
+  value     = module.gke-setup-blue.GkeClusterConnectionSettings
   sensitive = true
 }

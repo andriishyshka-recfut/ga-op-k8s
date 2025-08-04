@@ -13,25 +13,23 @@ resource "helm_release" "etcd" {
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
 
-  set {
-    name  = "auth.rbac.rootPassword"
-    value = data.vault_generic_secret.etcd_creds.data.password
-  }
-
-
-  set {
-    name  = "replicaCount"
-    value = local.tarantool_etcd_count
-  }
-
-  set {
-    name  = "initialClusterState"
-    value = "new"
-  }
-  set {
-    name  = "removeMemberOnContainerTermination"
-    value = "false"
-  }
-
+  set =[
+    {
+      name  = "auth.rbac.rootPassword"
+      value = data.vault_generic_secret.etcd_creds.data.password
+    },
+    {
+      name  = "replicaCount"
+      value = local.tarantool_etcd_count
+    },
+    {
+      name  = "initialClusterState"
+      value = "new"
+    },
+    {
+      name  = "removeMemberOnContainerTermination"
+      value = "false"
+    }
+  ]
   depends_on = [kubernetes_persistent_volume_claim.tarantool_etcd_pvc]
 }

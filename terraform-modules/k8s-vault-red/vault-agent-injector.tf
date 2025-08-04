@@ -7,8 +7,8 @@ resource "helm_release" "vault_agent_injector" {
   values = [
     file("${path.module}/values-agent-injector.yaml")
   ]
-  set {
+  set = [{
     name  = "injector.externalVaultAddr"
     value = "https://${local.vaultFqdn}"
-  }
+  }]
 }

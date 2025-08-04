@@ -1,0 +1,35 @@
+kubescape:
+  enabled: "true"
+  submit: "false"
+  enableHostScan: "false"
+  image:
+    tag: ${values.tag}
+  prometheusAnnotation:
+    enabled: "true"
+  serviceMonitor:
+    enabled: "true"
+    namespace: "monitoring"
+  resources:
+    requests:
+      cpu: "600m"
+      memory: "1Gi"
+  minioBucket: ${values.minioBucket}
+  skipUpdateCheck: "true"
+
+kubescapeScheduler:
+  image:
+    tag: ${values.schedulerTag}
+  enabled: "false"
+
+capabilities:
+  continuousScan: "enable"
+  prometheusExporter: "enable"
+  nodeScan": "disable"
+  relevancy: "disable"
+  vulnerabilityScan: "disable"
+
+cloudProviderEngine: "gke"
+clusterName: ${values.clusterName}
+
+prometheusExporter:
+  name: "prometheus-kubescape"

@@ -7,14 +7,16 @@ resource "helm_release" "apm" {
   values = [
     yamlencode(local.esValues)
   ]
-  set {
-    name  = "appVersion"
-    value = local.version
-  }
-  set {
-    name  = "count"
-    value = 2
-  }
+  set = [
+    {
+      name  = "appVersion"
+      value = local.version
+    },
+    {
+      name  = "count"
+      value = 2
+    }
+  ]
 }
 
 resource "null_resource" "ansible_validate_resources" {

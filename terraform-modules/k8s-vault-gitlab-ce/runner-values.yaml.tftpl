@@ -42,3 +42,9 @@ runners:
           BucketName = "minio-gitlab-runner-cache-orbital-wording"
   cache:
       secretName: ${name}-runner-minio-creds
+gitlabUrl: ${values.gitlabUrl}
+rbac:
+  create: ${lookup(values,"rbacCreate",false)}
+metrics:
+  enabled: ${lookup(values,"metricsEnabled",false)}
+runnerToken: ${runnerToken}

@@ -35,59 +35,52 @@ resource "helm_release" "tarantool_cartridge" {
 
   values = [file("${path.module}/cartridge-values.yaml")]
 
-  set {
-    name  = "tarantool.image.repository"
-    value = "harbor.regemini.io/dev/tarantool"
-  }
-  set {
-    name  = "tarantool.image.tag"
-    value = local.cartridgeTag
-  }
-  set {
-    name  = "tarantool.auth.password"
-    value = jsondecode(data.vault_generic_secret.cartridge_creds.data["credentials"]).password
-  }
-  set {
-    name  = "tarantool.roles[0].replicasets"
-    value = local.tsc
-  }
-
-  set {
-    name  = "tarantool.roles[0].persistence.spec.resources.requests.storage"
-    value = "20Gi"
-  }
-
-  set {
-    name  = "tarantool.roles[0].resources.requests.cpu"
-    value = local.storage_request_cpu
-  }
-
-  set {
-    name  = "tarantool.roles[0].resources.requests.memory"
-    value = local.storage_request_mem
-  }
-
-  set {
-    name  = "tarantool.roles[0].resources.limits.cpu"
-    value = local.storage_limit_cpu
-  }
-
-  set {
-    name  = "tarantool.roles[0].resources.limits.memory"
-    value = local.storage_limit_mem
-  }
-
-  set {
-    name  = "tarantool.roles[0].memtxMemory"
-    value = local.storage_memtx_memory
-  }
-
-  set {
-    name  = "tarantool.failover.etcd2.password"
-    value = data.vault_generic_secret.etcd_creds.data.password
-  }
-
-
+  set  [
+    {
+      name  = "tarantool.image.repository"
+      value = "harbor.regemini.io/dev/tarantool"
+    },
+    {
+      name  = "tarantool.image.tag"
+      value = local.cartridgeTag
+    },
+    {
+      name  = "tarantool.auth.password"
+      value = jsondecode(data.vault_generic_secret.cartridge_creds.data["credentials"]).password
+    },
+    {
+      name  = "tarantool.roles[0].replicasets"
+      value = local.tsc
+    },
+    {
+      name  = "tarantool.roles[0].persistence.spec.resources.requests.storage"
+      value = "20Gi"
+    },
+    {
+      name  = "tarantool.roles[0].resources.requests.cpu"
+      value = local.storage_request_cpu
+    },
+    {
+      name  = "tarantool.roles[0].resources.requests.memory"
+      value = local.storage_request_mem
+    },
+    {
+      name  = "tarantool.roles[0].resources.limits.cpu"
+      value = local.storage_limit_cpu
+    },
+    {
+      name  = "tarantool.roles[0].resources.limits.memory"
+      value = local.storage_limit_mem
+    },
+    {
+      name  = "tarantool.roles[0].memtxMemory"
+      value = local.storage_memtx_memory
+    },
+    {
+      name  = "tarantool.failover.etcd2.password"
+      value = data.vault_generic_secret.etcd_creds.data.password
+    }
+  ]
   depends_on = [
     helm_release.tarantool_operator,
     helm_release.etcd,

@@ -29,4 +29,22 @@ locals {
   namespaces  = toset(distinct([for k, v in var.logstash_list : lookup(v, "namespace", local.namespace)]))
 
   logstash_user = "logstash"
+
+  valuesDefault = {
+    namespace = local.namespace
+    logstash_version = var.logstash_version
+    es_host = local.es_host
+    pipeline_id = local.pipeline_id
+    poll_interval = local.poll_interval
+    cluster_uuid = local.cluster_uuid
+    minio_user = local.minio_user
+    minio_endpoint = local.minio_endpoint
+    minio_bucket = local.minio_bucket
+    log_level = local.log_level
+    cpu_request = local.cpu_request
+    mem_request = local.mem_request
+    cpu_limit = local.cpu_limit
+    mem_limit = local.mem_limit
+    java_opts = local.java_opts
+  }
 }

@@ -25,8 +25,8 @@ data "vault_generic_secret" "k8s_auth" {
   path = local.activeClusterVaultPath
 }
 
-provider "helm" {
-  kubernetes {
+provider "helm"  {
+  kubernetes = {
     host                   = data.vault_generic_secret.k8s_auth.data.HOST
     cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
     token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
@@ -56,19 +56,14 @@ terraform {
     namespace = "tekton-pipelines"
     config_path = "./kubeconfig" 
   }
-  required_providers {
-    helm = {
-      source = "hashicorp/helm"
-      version = "2.17.0"
-    }
 %{ if contains(additional_providers,"kubectl") ~}
-
+  required_providers {
     kubectl = {
       source  = "gavinbunney/kubectl"
       version = ">= 1.7.0"
     }
-%{ endif ~}
   }
+%{ endif ~}
 }
 
 provider "random" {}

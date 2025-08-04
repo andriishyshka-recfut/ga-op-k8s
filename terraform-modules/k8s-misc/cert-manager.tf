@@ -4,16 +4,16 @@ resource "helm_release" "cert_manager" {
   chart      = "cert-manager"
   version    = var.Settings.clusters[var.Cluster].versions.cert_manager.version
   namespace  = "kube-system"
-  set {
-    name  = "installCRDs"
-    value = "true"
-  }
-  // Configure cert-manager to cleanup secrets on delete
-  // https://github.com/jetstack/cert-manager/pull/819
-  set {
-    name  = "extraArgs[0]"
-    value = "--enable-certificate-owner-ref=true"
-  }
+  set = [
+    {
+      name  = "installCRDs"
+      value = "true"
+    },
+    {
+      name  = "extraArgs[0]"
+      value = "--enable-certificate-owner-ref=true"
+    }
+  ]
 }
 
 resource "null_resource" "kubectl_letsencrypt_issuers" {

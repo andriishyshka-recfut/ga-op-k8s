@@ -36,39 +36,40 @@ resource "helm_release" "minio" {
   values = [
     file("${path.module}/minio_values.yaml")
   ]
-  set {
-    name  = "gcsgateway.replicas"
-    value = local.replicas
-  }
-  set {
-    name  = "podAnnotations.sidecar\\.istio\\.io/inject"
-    value = " False"
-  }
-  set {
-    name  = "environment.MINIO_IDENTITY_OPENID_CLIENT_ID"
-    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
-  }
-  set {
-    name  = "environment.MINIO_IDENTITY_OPENID_CONFIG_URL"
-    value = "${data.vault_generic_secret.oidc_secrets.data.oidc_discovery_url}/.well-known/openid-configuration"
-  }
-  set {
-    name  = "environment.MINIO_DOMAIN"
-    value = local.minioFqdn
-  }
-  set {
-    name  = "environment.MINIO_BROWSER_REDIRECT_URL"
-    value = local.minioConsoleFqdn
-  }
-  set {
-    name  = "gcsgateway.projectId"
-    value = local.currentProject
-  }
-  set {
-    name  = "image.tag"
-    value = local.imageTag
-  }
-
+  set = [
+    {
+      name  = "gcsgateway.replicas"
+      value = local.replicas
+    },
+    {
+      name  = "podAnnotations.sidecar\\.istio\\.io/inject"
+      value = " False"
+    },
+    {
+      name  = "environment.MINIO_IDENTITY_OPENID_CLIENT_ID"
+      value = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
+    },
+    {
+      name  = "environment.MINIO_IDENTITY_OPENID_CONFIG_URL"
+      value = "${data.vault_generic_secret.oidc_secrets.data.oidc_discovery_url}/.well-known/openid-configuration"
+    },
+    {
+      name  = "environment.MINIO_DOMAIN"
+      value = local.minioFqdn
+    },
+    {
+      name  = "environment.MINIO_BROWSER_REDIRECT_URL"
+      value = local.minioConsoleFqdn
+    },
+    {
+      name  = "gcsgateway.projectId"
+      value = local.currentProject
+    },
+    {
+      name  = "image.tag"
+      value = local.imageTag
+    }
+  ]
   depends_on = [
     kubernetes_secret.minio_credentials_kubernetes_secret,
     helm_release.etcd

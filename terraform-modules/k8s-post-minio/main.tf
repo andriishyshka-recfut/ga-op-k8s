@@ -4,16 +4,5 @@ resource "helm_release" "minio-subdomains" {
   chart     = "${path.module}/charts/minio-buckets"
   wait      = true
   atomic    = true
-  values = [
-    yamlencode(local.istioIngressValues)
-  ]
-  set {
-    name  = "domain"
-    value = local.minioFQDN
-  }
-  set {
-    name  = "buckets"
-    value = "{${join(",", local.subDomains)}}"
-    type  = "auto"
-  }
+  values    = [templatefile("${path.module}/templates/ingress.tftl", { Settings = local.values })]
 }

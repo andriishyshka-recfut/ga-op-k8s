@@ -10,10 +10,10 @@ resource "helm_release" "vault_agent_injector" {
   values = [
     file("${path.module}/values-agent-injector.yaml")
   ]
-  set {
+  set = [{
     name  = "injector.externalVaultAddr"
     value = "https://${local.vaultFqdn}"
-  }
+  }]
   depends_on = [
     kubernetes_secret.kms_creds,
     kubernetes_namespace.vault,
@@ -32,15 +32,16 @@ resource "helm_release" "vault" {
   values = [
     file("${path.module}/values-vault.yaml")
   ]
-  set {
+  set = [
+  {
     name  = "server.extraEnvironmentVars.GOOGLE_PROJECT"
     value = local.currentProject
-  }
-  set {
+  },
+  {
     name  = "server.ha.replicas"
     value = local.replicasCount
-  }
-  set {
+  },
+  {
     name = "server.ha.config"
     value = templatefile("${path.module}/vault_config.tmpl", {
       key_ring   = local.vaultKeyName,
@@ -49,6 +50,7 @@ resource "helm_release" "vault" {
       project    = local.currentProject
     })
   }
+  ]
   depends_on = [
     kubernetes_secret.kms_creds,
     kubernetes_namespace.vault,
@@ -74,7 +76,7 @@ resource "kubernetes_secret" "kms_creds" {
     "credentials.json" = base64decode(google_service_account_key.vault_key.private_key)
   }
   depends_on = [
-    kubernetes_namespace.vault,
+    google_service_account_key.vault_key,
 
   ]
 }

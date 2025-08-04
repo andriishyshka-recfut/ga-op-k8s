@@ -19,43 +19,40 @@ resource "helm_release" "kafka_cluster" {
   wait      = false
   atomic    = false
   timeout   = 900
-  set {
-    name  = "kafkaVersion"
-    value = local.kafkaVersion
-  }
-  set {
-    name  = "subdomain"
-    value = "${var.Settings.clusters[var.Cluster].subdomain}.${var.Settings.clusters[var.Cluster].domain}"
-  }
-  set {
-    name  = "diskSize"
-    value = "${data.google_compute_disk.kafka_data_pv[0].size}Gi"
-  }
-
-  # set {
-  #   name  = "controllerDiskSize"
-  #   value = "${data.google_compute_disk.kafka_controller_pv[0].size}Gi"
-  # }
-  set {
-    name  = "cpuReuest"
-    value = local.request.cpu
-  }
-  set {
-    name  = "memReuest"
-    value = local.request.memory
-  }
-  set {
-    name  = "memLimit"
-    value = local.limit.memory
-  }
-  set {
-    name  = "cpuLimit"
-    value = local.limit.cpu
-  }
-  set {
-    name  = "replicas"
-    value = local.replicas
-  }
+  set = [
+    {
+      name  = "kafkaVersion"
+      value = local.kafkaVersion
+    },
+    {
+      name  = "subdomain"
+      value = "${var.Settings.clusters[var.Cluster].subdomain}.${var.Settings.clusters[var.Cluster].domain}"
+    },
+    {
+      name  = "diskSize"
+      value = "${data.google_compute_disk.kafka_data_pv[0].size}Gi"
+    },
+    {
+      name  = "cpuReuest"
+      value = local.request.cpu
+    },
+    {
+      name  = "memReuest"
+      value = local.request.memory
+    },
+    {
+      name  = "memLimit"
+      value = local.limit.memory
+    },
+    {
+      name  = "cpuLimit"
+      value = local.limit.cpu
+    },
+    {
+      name  = "replicas"
+      value = local.replicas
+    }
+  ]
   depends_on = [
     helm_release.kafka_operator,
   ]
