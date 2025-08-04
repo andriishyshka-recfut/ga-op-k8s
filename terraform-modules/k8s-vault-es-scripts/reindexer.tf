@@ -63,7 +63,8 @@ resource "kubernetes_secret" "reindexer_rf_es_creds" {
   data = {
     username     = data.vault_generic_secret.reindexer_rf_es_creds.data.username,
     password     = data.vault_generic_secret.reindexer_rf_es_creds.data.password,
-    host         = data.vault_generic_secret.reindexer_rf_es_creds.data.host
+    host         = data.vault_generic_secret.reindexer_rf_es_creds.data.host,
+    "ca.crt"  = data.vault_generic_secret.reindexer_rf_es_creds.data["ca.crt"]
   }
 }
 
