@@ -1,0 +1,177 @@
+---
+replicas: 1
+
+command: "/usr/local/bin/docker-entrypoint"
+
+minio:
+  endpoint: ${values.minio_endpoint}
+  bucket: ${values.minio_bucket}
+  user: ${values.minio_user}
+
+logstash:
+  auth: basic
+  user: logstash
+  password:
+
+elastic:
+  namespace: ${values.namespace}
+  host: ${values.es_host}
+  pipelineID: ${values.pipeline_id}
+  pollInterval: ${values.poll_interval}
+  cluster_uuid: ${values.cluster_uuid}
+
+service:
+  annotations: {}
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9600
+      protocol: TCP
+      targetPort: 9600
+
+mountCaCert:
+  enabled: true
+  volumeName: "${name}-logstash-https-certs"
+  mountPath: /ssl-es
+mountCaMinio:
+  enabled: true
+  volumeName: minio-cert
+  mountPath: /ssl-minio
+
+extraEnvs: {}
+
+# Allows you to load environment variables from kubernetes secret or config map
+envFrom: []
+# - secretRef:
+#     name: env-secret
+# - configMapRef:
+#     name: config-map
+
+# Add sensitive data to k8s secrets
+secrets: []
+#  - name: "env"
+#    value:
+#      ELASTICSEARCH_PASSWORD: "LS1CRUdJTiBgUFJJVkFURSB"
+#      api_key: ui2CsdUadTiBasRJRkl9tvNnw
+#  - name: "tls"
+#    value:
+#      ca.crt: |
+#        LS0tLS1CRUdJT0K
+#        LS0tLS1CRUdJT0K
+#        LS0tLS1CRUdJT0K
+#        LS0tLS1CRUdJT0K
+#      cert.crt: "LS0tLS1CRUdJTiBlRJRklDQVRFLS0tLS0K"
+#      cert.key.filepath: "secrets.crt" # The path to file should be relative to the `values.yaml` file.
+
+# A list of secrets and their paths to mount inside the pod
+secretMounts: []
+
+hostAliases: []
+#- ip: "127.0.0.1"
+#  hostnames:
+#  - "foo.local"
+#  - "bar.local"
+
+image: "harbor.regemini.io/op/logstash-custom"
+imageTag: ${values.logstash_version}
+imagePullPolicy: "Always"
+imagePullSecrets:
+  - name: harbor
+httpPort: 9600
+
+podAnnotations:
+  co.elastic.logs/enabled: "true"
+
+# additionals labels
+labels: {}
+
+logstashJavaOpts: "${values.java_opts}"
+
+resources:
+  requests:
+    cpu: "${values.cpu_request}"
+    memory: "${values.mem_request}"
+  limits:
+    cpu: "${values.cpu_limit}"
+    memory: "${valuse.mem_limit}"
+
+persistence:
+  enabled: true
+  annotations: {}
+
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
+
+extraContainers:
+  []
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
+
+extraInitContainers:
+  []
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
+
+# This is the PriorityClass settings as defined in
+# https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+priorityClassName: ""
+
+# The default is to deploy all pods serially. By setting this to parallel all pods are started at
+# the same time when bootstrapping the cluster
+podManagementPolicy: "Parallel"
+
+updateStrategy: RollingUpdate
+
+# This is the max unavailable setting for the pod disruption budget
+# The default value of 1 will make sure that kubernetes won't allow more than 1
+# of your pods to be unavailable during maintenance
+maxUnavailable: 1
+
+podSecurityContext:
+  runAsGroup: 1000
+  runAsUser: 1000
+  fsGroup: 1000
+  runAsNonRoot: true
+
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - ALL
+  # readOnlyRootFilesystem: true
+
+# How long to wait for logstash to stop gracefully
+terminationGracePeriod: 180
+
+schedulerName: ""
+
+nodeSelector: {}
+tolerations: []
+
+nameOverride: ""
+fullnameOverride: ${name}
+
+lifecycle:
+  postStart:
+    exec:
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "/opt/logstash/jdk/bin/keytool -import -noprompt -trustcacerts -alias CA_ES -file /ssl-es/ca.crt -keystore /opt/logstash/jdk/lib/security/cacerts -storepass changeit && /opt/logstash/jdk/bin/keytool -import -noprompt -trustcacerts -alias CA_MINIO -file /ssl-minio/ca.crt -keystore /opt/logstash/jdk/lib/security/cacerts -storepass changeit",
+        ]
+extraVolumes:
+  - name: "tmp-logstash-${name}"
+    persistentVolumeClaim:
+      claimName: "tmp-logstash-${name}"
+extraVolumeMounts:
+  - name: "tmp-logstash-${name}"
+    mountPath: /tmp/logstash
+log_level: ${values.log_level}

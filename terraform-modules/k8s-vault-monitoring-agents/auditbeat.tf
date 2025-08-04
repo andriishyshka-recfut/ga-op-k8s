@@ -11,16 +11,18 @@ resource "helm_release" "auditbeat" {
   wait      = true
   atomic    = true
   namespace = "monitoring"
-  set {
-    name  = "elastic.password"
-    value = data.kubernetes_secret.es_pass.data.elastic
-  }
-  set {
-    name  = "tag"
-    value = local.version
-  }
-  set {
-    name  = "priorityClassName"
-    value = kubernetes_priority_class.monitoring_beats.metadata.0.name
-  }
+  set = [
+    {
+      name  = "elastic.password"
+      value = data.kubernetes_secret.es_pass.data.elastic
+    },
+    {
+      name  = "tag"
+      value = local.version
+    },
+    {
+      name  = "priorityClassName"
+      value = kubernetes_priority_class.monitoring_beats.metadata.0.name
+    }
+  ]
 }

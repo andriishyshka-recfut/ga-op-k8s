@@ -43,4 +43,13 @@ locals {
   replicasCount  = 0
   vaultVersion   = var.Settings.clusters[var.Cluster].versions.vault.version
   currentProject = data.google_client_config.current.project
+  vaultIssuer = {
+    name  = "vault-issuer"
+    mountPath = "/v1/auth/k8s-${var.Cluster}-${var.Color}"
+    vaultRole = "cert-manager"
+    secretName = "sa-${var.Cluster}-cert-manager"
+    vaultAddress = var.VaultAddress
+    pkiRole = "elastic"
+    pkiPath = "pki-elastic-int"
+  }
 }

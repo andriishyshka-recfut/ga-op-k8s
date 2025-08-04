@@ -27,18 +27,20 @@ resource "helm_release" "elastic" {
   values = [
     templatefile("${path.module}/elastic-values.tftpl", merge(each.value, { globalSettings = local.globalSettings }, local.combineSettings, { nodePool = each.key }))
   ]
-  set {
+  set = [
+  {
     name  = "imageTag"
     value = local.globalSettings.imageTag
-  }
-  set {
+  },
+  {
     name  = "nodeGroup"
     value = each.key
-  }
-  set {
+  },
+  {
     name  = "minimumMasterNodes"
     value = 1
   }
+  ]
   depends_on = [
     kubernetes_secret.elastic_secret,
     kubernetes_persistent_volume_claim.elsticsearch,

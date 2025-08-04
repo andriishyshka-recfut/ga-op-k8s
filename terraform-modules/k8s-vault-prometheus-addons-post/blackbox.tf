@@ -74,49 +74,13 @@ resource "helm_release" "blackbox_exporter" {
   namespace         = local.prometheusNs
   dependency_update = true
   values = [
-    templatefile("${path.module}/blackbox-values.yaml.tftpl", { vortex = local.vortex == 1 ? true : false })
+    templatefile("${path.module}/blackbox-values.yaml.tftpl", { 
+      vortex = local.vortex == 1 ? true : false
+      cluster = var.Cluster
+      harbor = data.vault_generic_secret.harbor_token.data
+      elastic = data.vault_generic_secret.es_access.data
+    })
   ]
-  set {
-    name  = "config.modules.harbor.http.basic_auth.username"
-    value = data.vault_generic_secret.harbor_token.data.user
-  }
-  set {
-    name  = "config.modules.harbor.http.basic_auth.password"
-    value = data.vault_generic_secret.harbor_token.data.password
-  }
-  set {
-    name  = "config.modules.elastic.http.basic_auth.username"
-    value = data.vault_generic_secret.es_access.data.USERNAME
-  }
-  set {
-    name  = "config.modules.elastic.http.basic_auth.password"
-    value = data.vault_generic_secret.es_access.data.PASSWORD
-  }
-  set {
-    name  = "prometheusRule.rules[0].labels.cluster"
-    value = var.Cluster
-  }
-  set {
-    name  = "prometheusRule.rules[1].labels.cluster"
-    value = var.Cluster
-  }
-  set {
-    name  = "prometheusRule.rules[2].labels.cluster"
-    value = var.Cluster
-  }
-  set {
-    name  = "prometheusRule.rules[3].labels.cluster"
-    value = var.Cluster
-  }
-  set {
-    name  = "prometheusRule.rules[4].labels.cluster"
-    value = var.Cluster
-  }
-  set {
-    name  = "pod.labels.sidecar\\.istio\\.io/inject"
-    value = "false"
-    type  = "string"
-  }
   depends_on = [kubernetes_secret.vortex_basic_auth_creds]
 }
 

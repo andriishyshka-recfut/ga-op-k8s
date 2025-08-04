@@ -53,31 +53,11 @@ resource "helm_release" "gitlab-runner" {
   # force_update = true
   atomic    = true
   namespace = lookup(each.value, "namespace", local.namespace)
-  version   = each.value.runner_version
+  version   = var.Settings.clusters[var.Cluster].versions.gitlab.runner_version
   values = [
-    templatefile("${path.module}/runner-values.yaml.tftpl", merge({ values = each.value }, { name = each.key }))
+    templatefile("${path.module}/runner-values.yaml.tftpl", { values = each.value, name = each.key, runnerToken = data.kubernetes_secret.gitlab-runner-auth[each.key].data["authentication_token"]})
   ]
   depends_on = [
     data.kubernetes_secret.gitlab-runner-auth
   ]
-  set {
-    name  = "gitlabUrl"
-    value = "https://gitlab.regemini.com/"
-    type  = "string"
-  }
-  set {
-    name  = "runnerToken"
-    value = data.kubernetes_secret.gitlab-runner-auth[each.key].data["authentication_token"]
-    type  = "string"
-  }
-  set {
-    name  = "rbac.create"
-    value = true
-    type  = "string"
-  }
-  set {
-    name  = "metrics.enabled"
-    value = true
-    type  = "string"
-  }
 }

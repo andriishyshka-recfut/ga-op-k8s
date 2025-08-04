@@ -1,0 +1,42 @@
+fullnameOverride: "sftp-server-${name}"
+image:
+  tag: ${values.image_tag}
+volumes:
+  - name: "host-keys"
+    configMap:
+      name: "sftp-server-${name}-host-keys"
+  - name: "sftp-config"
+    configMap:
+      name: "sftp-server-${name}-config"
+volumeMounts:
+  - mountPath: "/var/lib/sftpgo/id_ed25519"
+    subPath: "id_ed25519"
+    name: "host-keys"
+  - mountPath: "/var/lib/sftpgo/id_ed25519.pub"
+    subPath: "id_ed25519.pub"
+    name: "host-keys"
+  - mountPath: "/var/lib/sftpgo/id_rsa"
+    subPath: "id_rsa"
+    name: "host-keys"
+  - mountPath: "/var/lib/sftpgo/id_rsa.pub"
+    subPath: "id_rsa.pub"
+    name: "host-keys"
+  - name: "sftp-config"
+    mountPath: "/var/lib/sftpgo/config.json"
+    subPath: "config.json"
+env:
+  SFTPGO_LOADDATA_FROM: "/var/lib/sftpgo/config.json"
+  SFTPGO_DATA_PROVIDER__DRIVER: "postgresql"
+  SFTPGO_DATA_PROVIDER__NAME: ${vaultValues.db_name}
+  SFTPGO_DATA_PROVIDER__HOST: ${values.postgres_url}
+  SFTPGO_DATA_PROVIDER__PORT: ${values.postgres_port}
+  SFTPGO_DATA_PROVIDER__USERNAME: ${vaultValues.username}
+envVars:
+  - name: "SFTPGO_DATA_PROVIDER__PASSWORD"
+    valueFrom:
+      secretKeyRef:
+        name: "sftp-server-${name}-db-creds"
+        key: "PGPASSWORD"
+podAnnotations:
+  "co.elastic.logs/enabled": "true"
+  "co.elastic.logs/json.add_error_key": "true"

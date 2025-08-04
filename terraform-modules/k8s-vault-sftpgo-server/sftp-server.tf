@@ -8,94 +8,102 @@ resource "helm_release" "sftp-server" {
   namespace    = try(each.value.namespace, local.namespace)
   version      = local.chart_version
   reset_values = true
-  set {
-    name  = "fullnameOverride"
-    value = "sftp-server-${each.key}"
-  }
-  set {
-    name  = "image.tag"
-    value = try(each.value.image_tag, local.image_tag)
-  }
-  set {
-    name  = "volumes[0].name"
-    value = "host-keys"
-  }
-  set {
-    name  = "volumes[0].configMap.name"
-    value = "sftp-server-${each.key}-host-keys"
-  }
-  set {
-    name  = "volumes[1].name"
-    value = "sftp-config"
-  }
-  set {
-    name  = "volumes[1].configMap.name"
-    value = "sftp-server-${each.key}-config"
-  }
-  set {
-    name  = "volumeMounts[0].mountPath"
-    value = "/var/lib/sftpgo/id_ed25519"
-  }
-  set {
-    name  = "volumeMounts[0].subPath"
-    value = "id_ed25519"
-  }
-  set {
-    name  = "volumeMounts[0].name"
-    value = "host-keys"
-  }
-  set {
-    name  = "volumeMounts[1].mountPath"
-    value = "/var/lib/sftpgo/id_ed25519.pub"
-  }
-  set {
-    name  = "volumeMounts[1].subPath"
-    value = "id_ed25519.pub"
-  }
-  set {
-    name  = "volumeMounts[1].name"
-    value = "host-keys"
-  }
-  set {
-    name  = "volumeMounts[2].mountPath"
-    value = "/var/lib/sftpgo/id_rsa"
-  }
-  set {
-    name  = "volumeMounts[2].subPath"
-    value = "id_rsa"
-  }
-  set {
-    name  = "volumeMounts[2].name"
-    value = "host-keys"
-  }
-  set {
-    name  = "volumeMounts[3].mountPath"
-    value = "/var/lib/sftpgo/id_rsa.pub"
-  }
-  set {
-    name  = "volumeMounts[3].subPath"
-    value = "id_rsa.pub"
-  }
-  set {
-    name  = "volumeMounts[3].name"
-    value = "host-keys"
-  }
-  set {
-    name  = "volumeMounts[4].name"
-    value = "sftp-config"
-  }
-  set {
-    name  = "volumeMounts[4].mountPath"
-    value = "/var/lib/sftpgo/config.json"
-  }
-  set {
-    name  = "volumeMounts[4].subPath"
-    value = "config.json"
-  }
-  set {
-    name  = "env.SFTPGO_LOADDATA_FROM"
-    value = "/var/lib/sftpgo/config.json"
-  } /*
+  values = [
+    templatefile("${path.module}/templates/sftp.tftpl",{
+      name = each.key
+      values = merge(local.default_values, each.value)
+      vaultValues = data.vault_generic_secret.db_creds["${each.key}"].data
+    })
+  ]
+  # set {
+  #   name  = "fullnameOverride"
+  #   value = "sftp-server-${each.key}"
+  # }
+  # set {
+  #   name  = "image.tag"
+  #   value = try(each.value.image_tag, local.image_tag)
+  # }
+  # set {
+  #   name  = "volumes[0].name"
+  #   value = "host-keys"
+  # }
+  # set {
+  #   name  = "volumes[0].configMap.name"
+  #   value = "sftp-server-${each.key}-host-keys"
+  # }
+  # set {
+  #   name  = "volumes[1].name"
+  #   value = "sftp-config"
+  # }
+  # set {
+  #   name  = "volumes[1].configMap.name"
+  #   value = "sftp-server-${each.key}-config"
+  # }
+  # set {
+  #   name  = "volumeMounts[0].mountPath"
+  #   value = "/var/lib/sftpgo/id_ed25519"
+  # }
+  # set {
+  #   name  = "volumeMounts[0].subPath"
+  #   value = "id_ed25519"
+  # }
+  # set {
+  #   name  = "volumeMounts[0].name"
+  #   value = "host-keys"
+  # }
+  # set {
+  #   name  = "volumeMounts[1].mountPath"
+  #   value = "/var/lib/sftpgo/id_ed25519.pub"
+  # }
+  # set {
+  #   name  = "volumeMounts[1].subPath"
+  #   value = "id_ed25519.pub"
+  # }
+  # set {
+  #   name  = "volumeMounts[1].name"
+  #   value = "host-keys"
+  # }
+  # set {
+  #   name  = "volumeMounts[2].mountPath"
+  #   value = "/var/lib/sftpgo/id_rsa"
+  # }
+  # set {
+  #   name  = "volumeMounts[2].subPath"
+  #   value = "id_rsa"
+  # }
+  # set {
+  #   name  = "volumeMounts[2].name"
+  #   value = "host-keys"
+  # }
+  # set {
+  #   name  = "volumeMounts[3].mountPath"
+  #   value = "/var/lib/sftpgo/id_rsa.pub"
+  # }
+  # set {
+  #   name  = "volumeMounts[3].subPath"
+  #   value = "id_rsa.pub"
+  # }
+  # set {
+  #   name  = "volumeMounts[3].name"
+  #   value = "host-keys"
+  # }
+  # set {
+  #   name  = "volumeMounts[4].name"
+  #   value = "sftp-config"
+  # }
+  # set {
+  #   name  = "volumeMounts[4].mountPath"
+  #   value = "/var/lib/sftpgo/config.json"
+  # }
+  # set {
+  #   name  = "volumeMounts[4].subPath"
+  #   value = "config.json"
+  # }
+  # set {
+  #   name  = "env.SFTPGO_LOADDATA_FROM"
+  #   value = "/var/lib/sftpgo/config.json"
+  # } 
+  /*
   set {
     name  = "volumeMounts[5].name"
     value = "sftpgo"
@@ -108,49 +116,49 @@ resource "helm_release" "sftp-server" {
     name  = "volumeMounts[5].subPath"
     value = "sftpgo.json"
   }*/
-  set {
-    name  = "env.SFTPGO_DATA_PROVIDER__DRIVER"
-    value = "postgresql"
-  }
-  set {
-    name  = "env.SFTPGO_DATA_PROVIDER__NAME"
-    value = data.vault_generic_secret.db_creds["${each.key}"].data["db_name"]
-  }
-  set {
-    name  = "env.SFTPGO_DATA_PROVIDER__HOST"
-    value = try(each.value.postgres_url, local.postgres_url)
-  }
-  set {
-    name  = "env.SFTPGO_DATA_PROVIDER__PORT"
-    value = local.postgres_port
-  }
-  set {
-    name  = "env.SFTPGO_DATA_PROVIDER__USERNAME"
-    value = data.vault_generic_secret.db_creds["${each.key}"].data["username"]
-  }
-  set {
-    name  = "envVars[0].name"
-    value = "SFTPGO_DATA_PROVIDER__PASSWORD"
-  }
-  set {
-    name  = "envVars[0].valueFrom.secretKeyRef.name"
-    value = "sftp-server-${each.key}-db-creds"
-  }
-  set {
-    name  = "envVars[0].valueFrom.secretKeyRef.key"
-    value = "PGPASSWORD"
-  }
-  set {
-    name  = "podAnnotations.co\\.elastic\\.logs/enabled"
-    value = "true"
-    type  = "string"
-  }
+  # set {
+  #   name  = "env.SFTPGO_DATA_PROVIDER__DRIVER"
+  #   value = "postgresql"
+  # }
+  # set {
+  #   name  = "env.SFTPGO_DATA_PROVIDER__NAME"
+  #   value = data.vault_generic_secret.db_creds["${each.key}"].data["db_name"]
+  # }
+  # set {
+  #   name  = "env.SFTPGO_DATA_PROVIDER__HOST"
+  #   value = try(each.value.postgres_url, local.postgres_url)
+  # }
+  # set {
+  #   name  = "env.SFTPGO_DATA_PROVIDER__PORT"
+  #   value = local.postgres_port
+  # }
+  # set {
+  #   name  = "env.SFTPGO_DATA_PROVIDER__USERNAME"
+  #   value = data.vault_generic_secret.db_creds["${each.key}"].data["username"]
+  # }
+  # set {
+  #   name  = "envVars[0].name"
+  #   value = "SFTPGO_DATA_PROVIDER__PASSWORD"
+  # }
+  # set {
+  #   name  = "envVars[0].valueFrom.secretKeyRef.name"
+  #   value = "sftp-server-${each.key}-db-creds"
+  # }
+  # set {
+  #   name  = "envVars[0].valueFrom.secretKeyRef.key"
+  #   value = "PGPASSWORD"
+  # }
+  # set {
+  #   name  = "podAnnotations.co\\.elastic\\.logs/enabled"
+  #   value = "true"
+  #   type  = "string"
+  # }
 
-  set {
-    name  = "podAnnotations.co\\.elastic\\.logs/json\\.add_error_key"
-    value = "true"
-    type  = "string"
-  }
+  # set {
+  #   name  = "podAnnotations.co\\.elastic\\.logs/json\\.add_error_key"
+  #   value = "true"
+  #   type  = "string"
+  # }
 
   depends_on = [kubernetes_config_map.ssh_host_keys, kubernetes_config_map.config, kubernetes_secret.db_creds]
 }

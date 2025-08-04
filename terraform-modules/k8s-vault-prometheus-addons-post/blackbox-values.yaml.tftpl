@@ -1,5 +1,7 @@
 secretConfig: true
-
+pod:
+  labels:
+    "sidecar.istio.io/inject" : false
 resources:
   requests:
     memory: 50Mi
@@ -25,6 +27,9 @@ config:
         follow_redirects: true
         preferred_ip_protocol: "ip4"
         method: GET
+        basic_auth:
+          username: ${harbor.user}
+          password: ${harbor.password}
     elastic:
       prober: http
       timeout: 5s
@@ -33,9 +38,9 @@ config:
         follow_redirects: true
         preferred_ip_protocol: "ip4"
         method: GET
-        # basic_auth:
-        #   username:
-        #   password:
+        basic_auth:
+          username: ${elastic.USERNAME}
+          password: ${elastic.PASSWORD}
         tls_config:
           ca_file: "/etc/secrets/ca_crt"
           cert_file: "/etc/secrets/client_crt"
@@ -100,6 +105,7 @@ prometheusRule:
       for: 10m
       labels:
         severity: critical
+        cluster: ${cluster}
     - alert: sshServiceUnavailible
       annotations:
         description: 'SSH service unavailble  for {{ $labels.instance }}.'
@@ -109,6 +115,7 @@ prometheusRule:
       for: 10m
       labels:
         severity: critical
+        cluster: ${cluster}
     - alert: SSLCertExpiringSoon
       annotations:
         description: 'SSL Certificate for {{ $labels.instance }} is going to expire in 14 days.'
@@ -118,6 +125,7 @@ prometheusRule:
       for: 10m
       labels:
         severity: warning
+        cluster: ${cluster}
     - alert: SSLCertExpiringReallySoon
       annotations:
         description: 'SSL Certificate for {{ $labels.instance }} is going to expire in 7 days.'
@@ -127,6 +135,7 @@ prometheusRule:
       for: 10m
       labels:
         severity: warning
+        cluster: ${cluster}
     - alert: SSLCertAlmostExpired
       annotations:
         description: 'SSL Certificate for {{ $labels.instance }} is going to expire in 1 days.'
@@ -136,3 +145,4 @@ prometheusRule:
       for: 10m
       labels:
         severity: critical
+        cluster: ${cluster}

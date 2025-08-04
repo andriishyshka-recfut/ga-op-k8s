@@ -11,18 +11,20 @@ resource "helm_release" "sftp-server" {
   namespace    = try(each.value.namespace, local.namespace)
   reset_values = true
 
-  set {
-    name  = "nameOverride"
-    value = "${each.key}"
-  }
-  set {
-    name = "users"
-    value = jsonencode({for k, v in data.vault_generic_secret.users[each.key].data: k => v})
-  }
-  set {
-    name  = "keys"
-    value = jsonencode({ for k,v in data.vault_generic_secret.keys[each.key].data: k => ""})
-  }
+  set = [
+    {
+      name  = "nameOverride"
+      value = "${each.key}"
+    },
+    {
+      name = "users"
+      value = jsonencode({for k, v in data.vault_generic_secret.users[each.key].data: k => v})
+    },
+    {
+      name  = "keys"
+      value = jsonencode({ for k,v in data.vault_generic_secret.keys[each.key].data: k => ""})
+    }
+  ]
   depends_on = [kubernetes_secret.ssh_host_keys,kubernetes_secret.keys]
 }
 

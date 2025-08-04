@@ -9,10 +9,10 @@ resource "helm_release" "kibana" {
     yamlencode(local.kibanaValues),
     yamlencode(local.xpackConfig)
   ]
-  set {
+  set = [{
     name  = "kibanaVersion"
     value = local.version
-  }
+  }]
 }
 
 

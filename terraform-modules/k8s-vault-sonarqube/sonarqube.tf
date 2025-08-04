@@ -46,18 +46,20 @@ resource "helm_release" "sonarqube" {
   wait       = true
   atomic     = false
   namespace  = local.namespace
-  set {
-    name  = "postgresql.persistence.size"
-    value = local.diskSize
-  }
-  set {
-    name  = "monitoringPasscode"
-    value = random_password.sonarqube_monitoring.result
-  }
-  set {
-    name  = "community.enabled"
-    value = true
-  }
+  set = [
+    {
+      name  = "postgresql.persistence.size"
+      value = local.diskSize
+    },
+    {
+      name  = "monitoringPasscode"
+      value = random_password.sonarqube_monitoring.result
+    },
+    {
+      name  = "community.enabled"
+      value = true
+    }
+  ]
   # depends_on = [kubernetes_secret.minio_credentials]
 }
 

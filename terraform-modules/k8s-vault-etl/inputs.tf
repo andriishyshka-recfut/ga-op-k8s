@@ -30,6 +30,17 @@ locals {
   elasticSecretsPath    = var.Cluster == "production" ? "/secret/data/es-creds-compose-prod/metaCamino" : "/secret/data/elasticsearch-admin/elastic7-v2"
   elasticSecretsPathNew = var.Cluster == "production" ? "secret/data/es-creds-compose-prod/metaCamino" : "secret/data/elasticsearch-admin/elastic7-v2"
   #minio_endpoints       = var.Settings.clusters[var.Cluster].versions.etl.minio_endpoints
+  operatorValues = {
+    operatorTag = local.operatorTag
+    ansibleScriptsTag = local.ansibleScriptsTag
+    caminoTag = local.caminoTag
+    gs2s3Tag = local.gs2s3Tag
+    Cluster = var.Cluster
+    Color = var.Color
+    vaultRole = local.namespace
+    monNS = local.namespace
+    elasticSecretsPath = local.elasticSecretsPath
+  }
 
 }
 

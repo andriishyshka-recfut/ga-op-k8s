@@ -11,8 +11,10 @@ resource "helm_release" "nfs" {
   version             = "1.0.0"
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
-  set {
-    name  = "diskzone"
-    value = "us-east4-a"
-  }
+  set = [
+    {
+      name  = "diskzone"
+      value = "us-east4-a"
+    }
+  ]
 }

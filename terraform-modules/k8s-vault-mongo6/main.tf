@@ -84,47 +84,48 @@ resource "helm_release" "mongo_cluster" {
     "${file("${path.module}/values.yaml")}"
   ]
 
-  set {
-    name  = "fullnameOverride"
-    value = local.full_name
-  }
-  set {
-    name  = "image.tag"
-    value = var.ImageTag
-  }
-  set {
-    name  = "image.repository"
-    value = var.Repository
-  }
-  set {
-    name  = "backup.storages.minio.s3.bucket"
-    value = var.BackupBucket
-  }
-  set {
-    name  = "replsets[0].volumeSpec.pvc.resources.requests.storage"
-    value = var.VolumeSize
-  }
-
-  set {
-    name  = "replsets[0].size"
-    value = var.Replicas
-  }
-  set {
-    name  = "replsets[0].resources.requests.cpu"
-    value = local.request.cpu
-  }
-  set {
-    name  = "replsets[0].resources.requests.memory"
-    value = local.request.memory
-  }
-  set {
-    name  = "replsets[0].resources.limits.memory"
-    value = local.limit.memory
-  }
-  set {
-    name  = "replsets[0].resources.limits.cpu"
-    value = local.limit.cpu
-  }
+  set = [
+    {
+      name  = "fullnameOverride"
+      value = local.full_name
+    },
+    {
+      name  = "image.tag"
+      value = var.ImageTag
+    },
+    {
+      name  = "image.repository"
+      value = var.Repository
+    },
+    {
+      name  = "backup.storages.minio.s3.bucket"
+      value = var.BackupBucket
+    },
+    {
+      name  = "replsets[0].volumeSpec.pvc.resources.requests.storage"
+      value = var.VolumeSize
+    },
+    {
+      name  = "replsets[0].size"
+      value = var.Replicas
+    },
+    {
+      name  = "replsets[0].resources.requests.cpu"
+      value = local.request.cpu
+    },
+    {
+      name  = "replsets[0].resources.requests.memory"
+      value = local.request.memory
+    },
+    {
+      name  = "replsets[0].resources.limits.memory"
+      value = local.limit.memory
+    },
+    {
+      name  = "replsets[0].resources.limits.cpu"
+      value = local.limit.cpu
+    }
+  ]
   depends_on = [
     helm_release.psmdb_operator,
     kubernetes_secret.mongo,
@@ -166,10 +167,12 @@ resource "helm_release" "mongo_express" {
   namespace = var.MongoNs
   wait      = true
   atomic    = true
-  set {
-    name  = "fullName"
-    value = local.full_name
-  }
+  set = [
+    {
+      name  = "fullName"
+      value = local.full_name
+    }
+  ]
   # depends_on = [
   #   null_resource.ansible_wait_for_mongo
   # ]

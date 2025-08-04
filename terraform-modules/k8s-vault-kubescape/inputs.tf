@@ -8,6 +8,12 @@ locals {
   minioBucket = "${var.Settings.clusters[var.Cluster].kubescapeReportsBucket}"
   namespace   = "kubescape"
   version     = lookup(var.Settings.clusters[var.Cluster].versions.kubescape, "image_tag", "3.0.8")
+  values = {
+    tag = local.version
+    minioBucket = local.minioBucket
+    schedulerTag = "v0.2.2"
+    clusterName = "${var.Cluster}-${var.Color}"
+  }
 }
 
 terraform {

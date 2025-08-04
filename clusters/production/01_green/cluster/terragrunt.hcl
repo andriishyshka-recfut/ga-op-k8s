@@ -18,57 +18,13 @@ terraform {
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
-  contents  = <<EOF
-
-provider "google" {
-}
-
-provider "google-beta" {
-}
-
-provider "vault" {
-  address = "https://vault.p.regemini.io"
-}
-
-locals {
-  gkeClusterEndpoint   = module.gke-setup-green.GkeClusterConnectionSettings.HOST
-  gkeBearerToken       = module.gke-setup-green.GkeClusterConnectionSettings.API_KEY
-  clusterCaCertificate = module.gke-setup-green.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
-
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = local.gkeClusterEndpoint
-    token                  = local.gkeBearerToken
-    cluster_ca_certificate = local.clusterCaCertificate
-  }
-}
-
-provider "kubernetes" {
-  host                   = local.gkeClusterEndpoint
-  token                  = local.gkeBearerToken
-  cluster_ca_certificate = local.clusterCaCertificate
-
-}
-
-provider "kubectl" {
-  # alias = "kube"
-  cluster_ca_certificate = local.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
-  host                   = local.GkeClusterConnectionSettings.HOST
-  token                  = local.GkeClusterConnectionSettings.API_KEY
-  load_config_file       = false
-}
-terraform {
-  backend "gcs" {
-    bucket = "terraform-state-production111"
-    prefix = "terraform-prod-green/state-cluster"
-  }
-  required_providers {
-    kubectl = {
-      source = "gavinbunney/kubectl"
+  contents = templatefile("${get_parent_terragrunt_dir()}/../../../../terragrunt-cluster.tftpl",
+    { 
+      Color = get_env("TF_VAR_Color")
+      Cluster = get_env("CLUSTER")
+      Vault = get_env("VAULT_ADDR")
+      Bucket = "terraform-state-production111"
+      Folder = basename(get_terragrunt_dir())
     }
-  }
-}
-EOF
+  )
 }

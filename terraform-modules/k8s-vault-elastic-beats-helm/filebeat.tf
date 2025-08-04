@@ -12,10 +12,10 @@ resource "helm_release" "filebeat" {
   depends_on = [
     kubernetes_job.beats_users
   ]
-  set {
+  set =[{
     name  = "priorityClassName"
     value = kubernetes_priority_class.beats.metadata.0.name
-  }
+  }]
 }
 
 resource "null_resource" "workload_readiness_check" {

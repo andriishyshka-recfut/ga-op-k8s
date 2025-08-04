@@ -1,0 +1,9 @@
+Deployment:
+  enabled: true
+  replicas: 1
+  configMapName: ${lookup(Settings, "configMapName", "redis-commander-sentinels")}
+Service:
+  enabled: true
+  portNname: port1
+  port: 8081
+  targetPort: 8081

@@ -1,0 +1,19 @@
+image:
+  tag: ${Values.operatorTag}
+ansibleGit:
+  tag: ${Values.ansibleScriptsTag}
+camino:
+  tag: ${Values.caminoTag}
+gs2s3:
+  tag: ${Values.gs2s3Tag}
+vaultPath: "k8s-${Values.Cluster}-${Values.Color}"
+vaultRole: ${Values.vaultRole}
+monitoredNamespace: ${Values.monNS}
+elasticSecretsPath: ${Values.elasticSecretsPath}
+resources:
+  requests:
+    cpu: "200m"
+    memory: "512Mi"
+  limits:
+    cpu: "1200m"
+    memory: "768Mi"

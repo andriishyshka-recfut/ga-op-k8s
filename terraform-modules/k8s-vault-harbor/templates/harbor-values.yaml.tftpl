@@ -1,0 +1,118 @@
+expose:
+  type: ClusterIP
+  clusterIP:
+    name: harbor
+  tls:
+    enabled: false
+
+externalURL: "https://harbor.regemini.io"
+logLevel: debug
+harborAdminPassword: ${values.harborAdminPassword}
+
+persistence:
+  imageChartStorage:
+    type: gcs
+    # type: s3
+    # disableredirect: true
+    # s3:
+    #   region: minio
+    #   bucket: harbor-orbital-wording-233917
+    #   regionendpoint: https://minio.p.regemini.io
+    #   encrypt: false
+    #   secure: false
+    #   v4auth: true
+    #   rootdirectory: /
+    #   multipartcopychunksize: "5242880"
+    #   multipartcopymaxconcurrency: 5
+    #   multipartcopythresholdsize: "10485760"
+    #   accesskey: ${values.s3Accesskey}
+    #   secretkey: ${values.s3Secretkey}
+    gcs:
+      bucket: harbor-orbital-wording-233917
+      # The base64 encoded json file which contains the key
+      encodedkey: ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAib3JiaXRhbC13b3JkaW5nLTIzMzkxNyIsCiAgInByaXZhdGVfa2V5X2lkIjogIjcwN2U3NGE0NDVhNGE2ZTI5MzUyOWVhMjk4ZmY5YmJiZDUyZGY2ODUiLAogICJwcml2YXRlX2tleSI6ICItLS0tLUJFR0lOIFBSSVZBVEUgS0VZLS0tLS1cbk1JSUV2UUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktjd2dnU2pBZ0VBQW9JQkFRQ2ZyeXRnMStJOVY4dTZcbjdHUEJMVk9aTy9MRFh5SThaNUR1a0R1eThxazZaU2xUM1dZdDZHSFh6dERVdFc3UVZ0cCt5bksrRlp4aER1Y0dcbjdCSjFEU0NLWXd5MkpNaU5sbGs0TGQwdmFkamN2SlAxL2I1TnBENjAxTWVkRzFnQ1pmczNHVGhDV0ZIZjFXVkZcbnNUVjdOV3dPSzc5TU50RGsyQVEwdWZmajBBS1pvY2pKTFloVFQvSWp5eW04UUVxcnR4MmMvZlZkL0VQSXZ0aERcbllnV0ZUWUZFR1lYMVVrNHMzQW1QcC9QcHlGMTZHemJRNGxLQXVGSjlrdzNqN0V0STJwY3hTdUtzNC9SYi9WTEFcbkhlNWNLRG5FUzFWTjZGTlc3US9yTG1sbUVNakF5ZE5PdnBzSlVUVm9VVUFlS0RGM2FjTzhDTHd0YW16OG5IeDlcblVUbDdrVDVUQWdNQkFBRUNnZ0VBTVZBNFZqVDFRanB0eVRFZGNWZmRIRkplR3lXeS9mS0IySnFrUlJRWlhOWkdcbjJBWmtlc0xzREdockozVk1YbnlrQjBuZis0SFRCRXBFNEdkaEg5TEkvTk92NWtRZngxSHFCYVpzU3lzbDlLMHNcbkNHaXZMMjBNakcyMW8zZ0JTdVJSbTJkbmIxMjFFeW5rbDR3dFZ2cGRmMWJWUWVVZng3eEtPRHBDS3BGZmJEQUVcbkVwcHhyVDdzVSsrWVlZTFN4dVVET0N1cWZhNW9ubVd2RVE2dzh6enJPSTNFeDFoNW9JM0V4dUtQS1V5MHY5ckNcblhnd1hEbjQrenNYOElDTFFvUWc4ZEVWMzBMMCswaUQ2TDZLbEF4OC9oQUxSODhaL1RLemxuYlJLN2RlQWlramRcbmlZZ01rZVNmSEFwczAzSXJPU3JPeE5kcGEvbUdWSjE0NzFBZnZ1U1lVUUtCZ1FEWXVwZkVDRXFvTENUZ2NWaDhcbmNIME4yYkpWaTlDTUNraXYzQ0wvM3Y4YjI5VmEvSzBaaGRMMWVndzROSndsVnltSkR6bGNkWXVlUUtiZkNrakJcbk9ScWovNHNUSW1Bd29TNXdwNjU0eUI3ZlNaZWFsN214TTBleVZwTmloV1hsVnUyZFlQaXJ5VXdLQzdmWG8yc0hcbkdXQ0YyV1lFd0E0MUplcWZPa0FMUDByZitRS0JnUUM4bm5KTHZhWko4YUV5akhNQW8veTUwd1Qxb0ZrbUMxemFcbnNTdEtMcFlvN1Z1SjZYMGliTlZHK1ovMUZhd21Ld1V1TWdCVFM5VHEwVWlWaUM1V2kzSFAyTmRzelRMYS83Vitcbk15T2xoVFZ6cjJmUzl2QkdDbkpzeWhsRVdXdXRYaUVzcHZVZ1NsYlh5NGtYd1pLUmdIUUdLK3UxclVBTzFFNkFcbkswL1VZTGw3cXdLQmdBbDdLRGFBTWx2bkNubnpHMjdlTU9wUk1yY0JWYzg2aC9HQmpOcHFzL2hSQnFWalZtTStcbmNuc2dxcll1dndIM0xTNzh4b0tmOWNxbmcyVlFldHhSRmpSRWNwNFVxK2FVdG9aaEg0WFRJMTZiUnBHUnY2TGJcbjNuQVR6NERJMnl0TVFUcllTaWlodHJ6ZHhGNGZuUWdEZVRDQjBTKzJBeWthRG9pR3NOU05JVVpwQW9HQkFMbkZcbkNHY21vM2ZpZnRSTlZoc0VhQzRROHFxRXdpamhPaE8rT1JlMzZIYm94NlorQzV2ek90L0xqY3FTRE5vT3R1eDNcbm5MQnRXSWZwbGlhSVdMTXVaZXJDOC9HWjdJT2JKQUxtbFM0NWs1cWI0Skw4V1V0eWtKNHJNbFdLQ0s1WXJpM1BcblJsQUdSNkFFTzhMbENOazdmWXB5aVpXR3pEZU96TDRaYW1lTzJFQS9Bb0dBRnloMGdNV25OcUFIR2RvUlU0MnVcblR5U29lZE1FWUtGQ2VNNlJmMmpEMnFlZjJNY1cxNGN6WXBtYklCWlpXaTM4VmdPZUdFM1l1QzgrazNPdmllTnRcblNSaTZ3WTZVeXRyK29XZC84Q3VHbTFlNkJscStJTHNWZER0dkkzSmZqZm53SmRYalpVd3FKWjBkUWJLTTBwNXRcbmU0MGRRenoxYTg3Mi9aWjZ0QXN2bHY4PVxuLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLVxuIiwKICAiY2xpZW50X2VtYWlsIjogInMzaGFyYm9yQG9yYml0YWwtd29yZGluZy0yMzM5MTcuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLAogICJjbGllbnRfaWQiOiAiMTA2ODE5NDI0ODE5NTA3NDUwNTQyIiwKICAiYXV0aF91cmkiOiAiaHR0cHM6Ly9hY2NvdW50cy5nb29nbGUuY29tL28vb2F1dGgyL2F1dGgiLAogICJ0b2tlbl91cmkiOiAiaHR0cHM6Ly9vYXV0aDIuZ29vZ2xlYXBpcy5jb20vdG9rZW4iLAogICJhdXRoX3Byb3ZpZGVyX3g1MDlfY2VydF91cmwiOiAiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vb2F1dGgyL3YxL2NlcnRzIiwKICAiY2xpZW50X3g1MDlfY2VydF91cmwiOiAiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vcm9ib3QvdjEvbWV0YWRhdGEveDUwOS9zM2hhcmJvciU0MG9yYml0YWwtd29yZGluZy0yMzM5MTcuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLAogICJ1bml2ZXJzZV9kb21haW4iOiAiZ29vZ2xlYXBpcy5jb20iCn0K
+      rootdirectory: /
+      chunksize: "5242880"
+      # To use existing secret, the key must be GCS_KEY_DATA
+      # existingSecret: ""
+      useWorkloadIdentity: false
+
+nginx:
+  replicas: 0
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+
+database:
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  internal:
+    password: ${values.dbIntPassword}
+    tolerations:
+    - key: "workloadsType"
+      operator: "Exists"
+      effect: "NoSchedule"
+    nodeSelector:
+      workloadsType: data
+  external:
+    password: ${values.dbExtPassword}
+redis:
+  internal:
+     tolerations:
+     - key: "workloadsType"
+       operator: "Exists"
+       effect: "NoSchedule"
+     nodeSelector:
+       workloadsType: data
+
+
+core:
+  replicas: 2
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
+  nodeSelector:
+    workloadsType: data
+portal:
+  replicas: 2
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
+  nodeSelector:
+    workloadsType: data
+jobservice:
+  replicas: 1
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
+  nodeSelector:
+    workloadsType: data
+registry:
+  credentials:
+    username: ${values.regUsername}
+    password: ${values.regPassword}
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  replicas: 3
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
+  nodeSelector:
+    workloadsType: data
+trivy:
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+  tolerations:
+  - key: "workloadsType"
+    operator: "Exists"
+    effect: "NoSchedule"
+  nodeSelector:
+    workloadsType: data
+
+metrics:
+  enabled: true
