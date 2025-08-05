@@ -15,5 +15,5 @@ resource "helm_release" "auditbeat" {
   set = [{
     name  = "priorityClassName"
     value = kubernetes_priority_class.beats.metadata.0.name
-  }
-}]
+  }]
+}
