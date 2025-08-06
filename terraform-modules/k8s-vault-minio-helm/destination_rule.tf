@@ -1,57 +1,24 @@
-resource "kubernetes_manifest" "destinationrule_minio_helm_minio_helm_tls" {
-  manifest = {
-    "apiVersion" = "networking.istio.io/v1alpha3"
-    "kind"       = "DestinationRule"
-    "metadata" = {
-      "name"      = "minio-helm-tls"
-      "namespace" = local.minioNs
+locals {
+  destination_rules = {
+    minio-helm-tls = {
+      host               = "minio-tenant-console.minio-helm.svc.cluster.local"
+      port               = 9443
+      insecureSkipVerify = true
     }
-    "spec" = {
-      "host" = "minio-tenant-console.minio-helm.svc.cluster.local"
-      "trafficPolicy" = {
-        "portLevelSettings" = [
-          {
-            "port" = {
-              "number" = 9443
-            }
-            "tls" = {
-              "insecureSkipVerify" = true
-              "mode"               = "SIMPLE"
-            }
-          },
-        ]
-      }
+    minio-helm-tls-api = {
+      host               = "minio-tenant-hl.minio-helm.svc.cluster.local"
+      port               = 9000
+      insecureSkipVerify = true
+    }
+    minio-helm-tls-api-ingress = {
+      host               = "minio.minio-helm.svc.cluster.local"
+      port               = 9000
+      insecureSkipVerify = true
     }
   }
-  depends_on = [helm_release.minio_tenant]
 }
-
-
-
-resource "kubernetes_manifest" "destinationrule_minio_helm_minio_helm_tls_api" {
-  manifest = {
-    "apiVersion" = "networking.istio.io/v1alpha3"
-    "kind"       = "DestinationRule"
-    "metadata" = {
-      "name"      = "minio-helm-tls-api"
-      "namespace" = local.minioNs
-    }
-    "spec" = {
-      "host" = "minio.minio-helm.svc.cluster.local"
-      "trafficPolicy" = {
-        "portLevelSettings" = [
-          {
-            "port" = {
-              "number" = 9000
-            }
-            "tls" = {
-              "insecureSkipVerify" = true
-              "mode"               = "SIMPLE"
-            }
-          },
-        ]
-      }
-    }
-  }
+resource "kubectl_manifest" "minio_helm" {
+  for_each   = local.destination_rules
+  yaml_body  = templatefile("../../../templates/istio/DestinationRule.tftpl", { values = each.value, name = each.key, namespace = local.minioNs })
   depends_on = [helm_release.minio_tenant]
 }

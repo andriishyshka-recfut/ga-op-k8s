@@ -19,10 +19,10 @@ resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {
 
   data = {
     "config.env" = join("\n",
-    [
-      "export MINIO_ROOT_USER=${data.vault_generic_secret.root_credentials_from_vault.data.accessKey}",
-      "export MINIO_ROOT_PASSWORD=${data.vault_generic_secret.root_credentials_from_vault.data.secretKey}"
-    ]
+      [
+        "export MINIO_ROOT_USER=${data.vault_generic_secret.root_credentials_from_vault.data.accessKey}",
+        "export MINIO_ROOT_PASSWORD=${data.vault_generic_secret.root_credentials_from_vault.data.secretKey}"
+      ]
     )
 
   }
@@ -40,8 +40,8 @@ resource "helm_release" "minio_operator" {
   values = [
     file("${path.module}/operator_values.yaml")
   ]
-  timeout = 120
-  depends_on = [   kubernetes_persistent_volume_claim.minio_tenant_pvc ]
+  timeout    = 120
+  depends_on = [kubernetes_persistent_volume_claim.minio_tenant_pvc]
 }
 
 resource "helm_release" "minio_tenant" {
@@ -52,44 +52,11 @@ resource "helm_release" "minio_tenant" {
   # atomic            = "true"
   dependency_update = "true"
   values = [
-    file("${path.module}/tenant_values.yaml")
+    templatefile("${path.module}/templates/tenant.tftpl", { values = local.minioSettings })
   ]
-
-  set {
-    name  = "tenant.env[5].name"
-    value = "MINIO_IDENTITY_OPENID_CLIENT_ID"
-  }
-  set_sensitive {
-    name  = "tenant.env[5].value"
-    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_id
-  }
-  set {
-    name = "tenant.env[6].name"
-    value = "MINIO_IDENTITY_OPENID_CONFIG_URL"
-  }
-  set {
-    name = "tenant.env[6].value"
-    value = "${data.vault_generic_secret.oidc_secrets.data.oidc_discovery_url}/.well-known/openid-configuration"
-  }
-  set {
-    name = "tenant.env[7].name"
-    value = "MINIO_IDENTITY_OPENID_CLIENT_SECRET"
-  }
-  set_sensitive {
-    name = "tenant.env[7].value"
-    value = data.vault_generic_secret.oidc_secrets.data.oidc_client_secret
-  }
-  set_sensitive {
-    name = "tenant.env[8].name"
-    value = "MINIO_BROWSER_REDIRECT_URL"
-  }
-  set_sensitive {
-    name = "tenant.env[8].value"
-    value = "https://${local.minioFqdn}"
-  }
-
-  # timeout           = 120
-  depends_on = [helm_release.minio_operator, 
-  kubernetes_secret.minio_credentials_kubernetes_secret, 
-  kubernetes_manifest.certificate_minio_helm_vault_minio]
+  depends_on = [
+    helm_release.minio_operator,
+    kubernetes_secret.minio_credentials_kubernetes_secret,
+    kubectl_manifest.certificate_vault_minio
+  ]
 }

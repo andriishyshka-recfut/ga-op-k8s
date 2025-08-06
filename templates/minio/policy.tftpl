@@ -1,0 +1,49 @@
+{
+  "Version":"2012-10-17",
+  "Statement": [
+
+%{ for bucket,action_list in values ~}
+%{ if bucket == "admin" ~}
+    {
+        "Effect": "Allow",
+        "Action": [
+            "admin:*"
+        ]
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "kms:*"
+        ]
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "s3:*"
+        ],
+        "Resource": [
+            "arn:aws:s3:::*"
+        ]
+    },
+%{ else ~}
+    {
+      "Sid":"${uuid()}",
+      "Effect": "Allow",
+      "Action": [%{ for action in action_list ~}"s3:${action}"%{if index(action_list,action) != length(action_list)-1},%{ endif } %{ endfor ~}],
+      "Principal":"*",
+      "Resource": "arn:aws:s3:::${bucket}*/*"
+    },
+%{ endif ~}
+%{ endfor ~}
+    {
+      "Sid":"DenyAll",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteBucket",
+        "s3:CreateBucket"
+      ],
+      "Principal":"*",
+      "Resource": "arn:aws:s3:::*"
+    }
+  ]
+}
