@@ -95,6 +95,10 @@
       "minio-xdebug": ["GetObject", "ListBucket"],
       "minio-datafix": ["GetObject", "ListBucket"]
     },
+    "APP-GA-PM":{
+      "etl-logstash-feeds": ["GetObject", "ListBucket"],
+      "vandelay": ["GetObject", "ListBucket"]
+    },
     "telegram-rw": {"minio-telegram": ["*"]},
     "maid-rw": {"minio-maid": ["*"]},
     "clicker-rw": {"minio-clicker": ["*"]},
