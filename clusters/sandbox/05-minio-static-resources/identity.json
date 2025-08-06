@@ -1,21 +1,35 @@
 {
-    "users": {     
-        "anton.moliavko@geminiadvisory.io": {"groups": ["op"]},
-        "dmytro.kubov@geminiadvisory.io": {"groups": ["op"]},
-        "bohdan.havrysh@geminiadvisory.io": {"groups": ["op"]},
-        "dc@geminiadvisory.io": {"groups": ["op"]},
-                  
-        "oleh.babenko@geminiadvisory.io": {"groups": ["dev"]},
-        "oleh.lialin@geminiadvisory.io": {"groups": ["dev"]},
-
-
-        "telegram": {"groups": ["telegram-rw"], "sa": ["birl", "birl-api", "os3c", "os3t", "telegram-rw", "upsertbirl", "whirl-telegram"]}
-        },
-    
-    "groups": {       
-        "op": {"birl-test": ["GetObject", "ListBucket"]}, 
-        "jasonBrittt": {"minio-telegram": ["GetObject", "ListBucket"]},
-        "devv": {"minio-dome-attachements": ["GetObject", "ListBucket"], "minio-xdebug": ["GetObject", "ListBucket"], "minio-maid": ["GetObject"], "minio-telegram": ["GetObject", "ListBucket"], "minio-os3-attachements": ["GetObject", "ListBucket"], "minio-datafix": ["GetObject", "ListBucket"], "minio-birl-images-rw": ["GetObject", "ListBucket"], "minio-mycop-images": ["GetObject", "ListBucket"]}
-}
+  "users": {
+    "telegram": {
+      "groups": ["telegram-rw"],
+      "sa": [
+        "birl",
+        "birl-api",
+        "os3c",
+        "os3t",
+        "telegram-rw",
+        "upsertbirl",
+        "whirl-telegram"
+      ]
     }
-    
+  },
+
+  "groups": {
+    "telegram-rw": ["telegram-rw"]
+  },
+  "policies": {
+    "op": {"admin": ["*"]},
+    "APP-GA-OP": {"admin": ["*"]},
+    "APP-GA-DEV": {
+      "minio-dome-attachements": ["GetObject", "ListBucket"],
+      "minio-xdebug": ["GetObject", "ListBucket"],
+      "minio-maid": ["GetObject"],
+      "minio-telegram": ["GetObject", "ListBucket"],
+      "minio-os3-attachements": ["GetObject", "ListBucket"],
+      "minio-datafix": ["GetObject", "ListBucket"],
+      "minio-birl-images-rw": ["GetObject", "ListBucket"],
+      "minio-mycop-images": ["GetObject", "ListBucket"]
+    },
+    "telegram-rw": {"minio-telegram": ["*"]}
+  }
+}

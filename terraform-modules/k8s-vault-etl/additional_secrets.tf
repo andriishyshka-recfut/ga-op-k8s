@@ -147,3 +147,4 @@ resource "kubectl_manifest" "externalsecret_logstash_creds" {
 #   depends_on = [helm_release.etl_operator]
 
 # }
+

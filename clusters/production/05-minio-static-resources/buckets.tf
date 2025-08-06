@@ -11,17 +11,17 @@ resource "minio_ilm_tier" "tier" {
 
 resource "minio_ilm_policy" "comprehensive-rules" {
   for_each = local.bucketsMap
-  bucket = minio_s3_bucket.bucket[each.key].id
+  bucket   = minio_s3_bucket.bucket[each.key].id
   # Rule with transition and expiration
   rule {
     id     = each.key
     status = "Enabled"
     transition {
       days          = "1d"
-      storage_class = minio_ilm_tier.tier[each.key].id
+      storage_class = lookup(each.value, "gcs_bucket_name", minio_ilm_tier.tier[each.key].id)
     }
   }
-  depends_on = [ minio_s3_bucket.bucket, minio_ilm_tier.tier ]
+  depends_on = [minio_s3_bucket.bucket, minio_ilm_tier.tier]
 }
 
 resource "minio_s3_bucket" "bucket" {

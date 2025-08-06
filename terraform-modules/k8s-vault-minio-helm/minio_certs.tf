@@ -1,55 +1,16 @@
-
-resource "kubernetes_manifest" "clusterissuer_vault_minio" {
-  manifest = {
-    "apiVersion" = "cert-manager.io/v1"
-    "kind"       = "ClusterIssuer"
-    "metadata" = {
-      "name" = "vault-minio"
-    }
-    "spec" = {
-      "vault" = {
-        "auth" = {
-          "kubernetes" = {
-            "mountPath" = "/v1/auth/k8s-${var.Cluster}-${var.Color}"
-            "role"      = "cert-manager"
-            "secretRef" = {
-              "key"  = "token"
-              "name" = "sa-${var.Cluster}-cert-manager"
-            }
-          }
-        }
-        "path"   = "pki-minio/sign/minio"
-        "server" = "${local.vaultFqdn}"
-      }
-    }
-  }
+resource "kubectl_manifest" "clusterissuer_vault_minio" {
+  yaml_body = templatefile("${path.module}/templates/clusterissuer.tftpl", { cluster = var.Cluster, color = var.Color, vault_addr = local.vaultFqdn })
 }
 
-resource "kubernetes_manifest" "certificate_minio_helm_vault_minio" {
-  manifest = {
-    "apiVersion" = "cert-manager.io/v1"
-    "kind"       = "Certificate"
-    "metadata" = {
-      "name"      = "vault-minio"
-      "namespace" = "minio-helm"
-    }
-    "spec" = {
-      "commonName" = "minio.minio-helm.svc.cluster.local"
-      "dnsNames" = [
-        "*.minio-helm.svc.cluster.local",
-        "*.minio.minio-helm.svc.cluster.local",
-        "*.minio-tenant-console.minio-helm.svc.cluster.local",
-        "*.minio-tenant-hl.minio-helm.svc.cluster.local"
-      ]
-      "issuerRef" = {
-        "kind" = "ClusterIssuer"
-        "name" = "vault-minio"
-      }
-      "secretName" = "tls-ssl-minio"
-      "duration" = "1160h"
-    }
-  }
-  depends_on = [kubernetes_manifest.clusterissuer_vault_minio]
+resource "kubectl_manifest" "certificate_vault_minio" {
+  yaml_body  = templatefile("${path.module}/templates/certificate.tftpl", { name = "vault-minio", namespace = local.minioNs, domain_list = local.cert_dns_names })
+  depends_on = [kubectl_manifest.clusterissuer_vault_minio]
+}
+
+
+resource "time_sleep" "wait_60_seconds" {
+  create_duration = "60s"
+  depends_on      = [kubectl_manifest.certificate_vault_minio]
 }
 
 data "kubernetes_secret" "minio_tenant_ca" {
@@ -57,12 +18,7 @@ data "kubernetes_secret" "minio_tenant_ca" {
     name      = "tls-ssl-minio"
     namespace = "minio-helm"
   }
-  depends_on = [kubernetes_manifest.certificate_minio_helm_vault_minio]
-}
-
-resource "time_sleep" "wait_60_seconds" {
-  depends_on      = [data.kubernetes_secret.minio_tenant_ca]
-  create_duration = "60s"
+  depends_on = [time_sleep.wait_60_seconds]
 }
 
 resource "kubernetes_secret" "operator_ca_secret" {
@@ -73,5 +29,5 @@ resource "kubernetes_secret" "operator_ca_secret" {
   data = {
     "public.crt" = data.kubernetes_secret.minio_tenant_ca.data["ca.crt"]
   }
-  depends_on = [time_sleep.wait_60_seconds]
+  depends_on = [data.kubernetes_secret.minio_tenant_ca]
 }

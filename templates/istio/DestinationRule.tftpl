@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: ${name}
+  namespace: ${namespace}
+spec:
+  host: ${values.host}
+  trafficPolicy:
+    portLevelSettings:
+      - port:
+          number: ${values.port}
+        tls:
+          insecureSkipVerify: ${lookup(values, "insecureSkipVerify", false)}
+          mode: SIMPLE
