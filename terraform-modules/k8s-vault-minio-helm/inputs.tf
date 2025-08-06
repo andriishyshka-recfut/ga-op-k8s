@@ -3,6 +3,20 @@ variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
 
+data "vault_generic_secret" "okta" {
+  path = "secret/misc/oidc/okta/minio"
+}
+
+resource "kubernetes_secret" "okta-oidc" {
+  metadata {
+    name      = "okta-oidc"
+    namespace = local.minioNs
+  }
+  data = {
+    "client_id"     = data.vault_generic_secret.okta.data["client_id"]
+    "client_secret" = data.vault_generic_secret.okta.data["client_secret"]
+  }
+}
 
 locals {
   minioNs = "minio-helm"
@@ -22,4 +36,16 @@ locals {
   pv_disk_count             = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
   diskSize                  = "20Gi"
   runUserAccess             = 0
+  cert_dns_names            = ["minio.minio-helm.svc.cluster.local", "*.minio-helm.svc.cluster.local", "*.minio.minio-helm.svc.cluster.local", "*.minio-tenant-console.minio-helm.svc.cluster.local", "*.minio-tenant-hl.minio-helm.svc.cluster.local"]
+  minioSettings = {
+    redirect_url = local.minioFqdn
+    oidc = {
+      issuer        = data.vault_generic_secret.okta.data["issuer"]
+      secretName    = "okta-oidc"
+      claimName     = "groups"
+      scopes        = "openid,profile,email,groups"
+      client_id     = data.vault_generic_secret.okta.data["client_id"]
+      client_secret = data.vault_generic_secret.okta.data["client_secret"]
+    }
+  }
 }

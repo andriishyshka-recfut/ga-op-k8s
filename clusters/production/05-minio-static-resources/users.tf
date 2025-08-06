@@ -59,7 +59,8 @@ resource "minio_iam_group_user_attachment" "group_user_attachment" {
   group_name = each.value.name
   user_name  = each.value.user
   depends_on = [
-    minio_iam_user.users
+    minio_iam_user.users,
+    minio_iam_policy.action_policy
   ]
 }
 
