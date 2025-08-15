@@ -58,6 +58,10 @@ resource "helm_release" "sonarqube" {
     {
       name  = "community.enabled"
       value = true
+    },
+    {
+      name = "plugins.install[0]"
+      value = "https://github.com/sonar-auth-oidc/sonar-auth-oidc/releases/download/v3.0.0/sonar-auth-oidc-plugin-3.0.0.jar"
     }
   ]
   # depends_on = [kubernetes_secret.minio_credentials]
