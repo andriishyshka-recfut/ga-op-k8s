@@ -4,5 +4,5 @@ resource "helm_release" "minio-subdomains" {
   chart     = "${path.module}/charts/minio-buckets"
   wait      = true
   atomic    = true
-  values    = [templatefile("${path.module}/templates/ingress.tftl", { Settings = local.values })]
+  values    = [templatefile("${path.module}/templates/ingress.tftpl", { Settings = local.values })]
 }

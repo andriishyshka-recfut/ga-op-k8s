@@ -13,6 +13,7 @@ locals {
 
 
 
+
 module "k8s-istio" {
   source                       = "../../../../terraform-modules/k8s-istio"
   GkeClusterConnectionSettings = local.GkeClusterConnectionSettings
@@ -41,7 +42,7 @@ module "k8s-vault" {
   OidcClientId                 = var.OidcClientId
   OidcClientSecret             = var.OidcClientSecret
   VaultAddress                 = var.VaultAddress
-  depends_on                   = [module.k8s-istio, module.k8s-misc-operators]
+  # depends_on                   = [module.k8s-istio, module.k8s-misc-operators]
 }
 
 module "k8s-vault-tekton" {
@@ -51,5 +52,5 @@ module "k8s-vault-tekton" {
   Color                        = "green"
   Settings                     = var.Settings
   VaultAddress                 = var.VaultAddress
-  depends_on                   = [module.k8s-vault]
+  # depends_on                   = [module.k8s-vault]
 }

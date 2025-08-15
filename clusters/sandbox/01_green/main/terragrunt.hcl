@@ -33,4 +33,5 @@ generate "provider" {
       Bucket = "terraform-state-222"
       Folder = basename(get_terragrunt_dir())
     }
-  )}
+  )
+}

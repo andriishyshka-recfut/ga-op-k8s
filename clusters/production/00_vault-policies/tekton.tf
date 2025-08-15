@@ -64,5 +64,8 @@ path "postgres/*" {
 path "secret/data/mw/elastic/mon" {
   capabilities = ["create","update","read","list","delete"]
 }
+path "secret/data/misc/gitlab/token/read_repo" {
+  capabilities = ["read","list"]
+}
 EOT
 }

@@ -25,12 +25,23 @@ data "vault_generic_secret" "k8s_auth" {
   path = local.activeClusterVaultPath
 }
 
+data "vault_generic_secret" "harbor_token" {
+  path = "secret/goharbor/docker_login"
+}
+
 provider "helm"  {
   kubernetes = {
     host                   = data.vault_generic_secret.k8s_auth.data.HOST
     cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
     token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
   }
+  registries = [
+    {
+      url      = "oci://harbor.regemini.io"
+      username = data.vault_generic_secret.harbor_token.data.user
+      password = data.vault_generic_secret.harbor_token.data.password
+    }
+  ]
 }
 
 provider "kubernetes" {

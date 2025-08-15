@@ -46,8 +46,8 @@ spec:
        export KUBE_TOKEN=$(vault kv get -field=k8s_sa_token secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
        export KUBE_HOST=$(vault kv get -field=HOST secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
        export KUBE_CLUSTER_CA_CERT_DATA=$(vault kv get -field=CLUSTER_CA_CERTIFICATE secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
-       export GIT_USER=$(vault kv get -field=username secret/gitlab )
-       export GIT_TOKEN=$(vault kv get -field=token_read_repo secret/gitlab )
+       export GIT_USER=$(vault kv get -field=username secret/misc/gitlab/token/read_repo )
+       export GIT_TOKEN=$(vault kv get -field=token secret/misc/gitlab/token/read_repo )
 
        cd $(workspaces.ws.path)
        git clone --single-branch --branch $(params.branch) https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git

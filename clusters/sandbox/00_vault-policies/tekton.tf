@@ -27,5 +27,8 @@ path "auth/k8s-sandbox-blue/role/*" {
 path "sys/auth" {
   capabilities = ["read","list"]
 }
+path "secret/data/misc/gitlab/token/read_repo" {
+  capabilities = ["read","list"]
+}
 EOT
 }
