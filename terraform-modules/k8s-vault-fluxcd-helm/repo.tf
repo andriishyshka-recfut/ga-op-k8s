@@ -1,6 +1,6 @@
 
 data "vault_generic_secret" "gitlab_token" {
-  path = "secret/gitlab"
+  path = "secret/misc/gitlab/token/read_repo"
 }
 
 resource "kubernetes_secret" "gitlab_token" {
@@ -11,7 +11,7 @@ resource "kubernetes_secret" "gitlab_token" {
 
   data = {
     "username" = data.vault_generic_secret.gitlab_token.data.username
-    "password" = data.vault_generic_secret.gitlab_token.data.fluxcd
+    "password" = data.vault_generic_secret.gitlab_token.data.token
   }
 
 }

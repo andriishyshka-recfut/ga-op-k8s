@@ -1,14 +1,19 @@
 locals {
   ElasticSettings = {
     globalSettings = {
-      namespace            = "elastic",
-      imageTag             = var.Settings.clusters[var.Cluster].versions.elasticsearch.cluster.elastic
-      clusterName          = "elasticsearch",
-      remotecerts          = ["remote.ca.crt", "remote2.ca.crt"],
-      remoteCertsVaultPath = "secret/elasticsearch-admin/remote-certs",
-      plugins              = ["repository-s3"]
-      gcsVaultPath         = "secret/sa/prod-transfer"
-      volumeExt            = false
+      namespace             = "elastic",
+      imageTag              = var.Settings.clusters[var.Cluster].versions.elasticsearch.cluster.elastic
+      clusterName           = "elasticsearch",
+      remotecerts           = ["remote.ca.crt", "remote2.ca.crt"],
+      remoteCertsVaultPath  = "secret/elasticsearch-admin/remote-certs",
+      plugins               = ["repository-s3"]
+      gcsVaultPath          = "secret/sa/prod-transfer"
+      volumeExt             = false
+      patchVaultEnabled     = true
+      patchVaultPath        = "secret/elasticsearch-admin/elastic7-v2"
+      patchVaultKey         = "CREDENTIALS"
+      patchVaultInternalKey = "password"
+
       podAnnotations = {
         "co.elastic.logs/enabled" : "true",
         "co.elastic.logs/module" : "elasticsearch",

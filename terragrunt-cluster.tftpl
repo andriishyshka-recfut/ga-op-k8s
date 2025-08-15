@@ -39,6 +39,13 @@ provider "kubectl" {
   token                  = local.gkeBearerToken
   load_config_file       = false
 }
+data "vault_generic_secret" "gitlab" {
+  path = "secret/misc/gitlab/token/terraform"
+}
+provider "gitlab" {
+  base_url = "https://gitlab.regemini.com/api/v4/"
+  token = data.vault_generic_secret.gitlab.data["token"]
+}
 %{ endif ~}
 
 terraform {

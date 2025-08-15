@@ -2,5 +2,8 @@ namespace: minio
 service: minio
 port: 9000
 domain: ${Settings.domain}
-buckets: ${Settings.buckets}
+buckets: 
+%{ for bucket in split(",",Settings.buckets)~}
+ - ${bucket}
+%{ endfor ~}
 issuer: letsencrypt-prod

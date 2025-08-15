@@ -10,10 +10,10 @@ resource "helm_release" "elasticsearch" {
     yamlencode(local.esValues),
     yamlencode(local.oidcConfig)
   ]
-  set{
+  set =[{
     name = "appVersion"
     value = local.version
-  }
+  }]
   depends_on = [
   ]
 }

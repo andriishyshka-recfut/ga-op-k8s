@@ -20,4 +20,5 @@ locals {
   trial_licenses = var.Color == "red" ? 0 : 1
   eck_installs = var.Color == "red" ? 0 : 1
   eckVersion =  var.Color == "red" ? "" : var.Settings.clusters[var.Cluster].versions.elasticsearch.eck_version
+  dateNow = formatdate("YYYYMMDD",timestamp())
 }
