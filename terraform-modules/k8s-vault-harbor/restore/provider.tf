@@ -26,12 +26,23 @@ data "vault_generic_secret" "k8s_auth" {
   path = local.activeClusterVaultPath
 }
 
-provider "helm" {
-  kubernetes {
+data "vault_generic_secret" "harbor_token" {
+  path = "secret/goharbor/docker_login"
+}
+
+provider "helm"  {
+  kubernetes = {
     host                   = data.vault_generic_secret.k8s_auth.data.HOST
     cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
     token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
   }
+  registries = [
+    {
+      url      = "oci://harbor.regemini.io"
+      username = data.vault_generic_secret.harbor_token.data.user
+      password = data.vault_generic_secret.harbor_token.data.password
+    }
+  ]
 }
 
 provider "kubernetes" {
@@ -41,30 +52,13 @@ provider "kubernetes" {
 
 }
 
-provider "kubectl" {
-    # alias = "kube"
-    cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
-    host                   = data.vault_generic_secret.k8s_auth.data.HOST
-    token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
-    load_config_file       = false
-  }
 
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "kubernetes" {
     secret_suffix    = "restore-state"
     namespace = "tekton-pipelines"
-    config_path = "./kubeconfig"
-  }
-  required_providers {
-    kubectl = {
-      source  = "registry.terraform.io/gavinbunney/kubectl"
-      version = ">= 1.14.0"
-    }
-    flux = {
-      source  = "registry.terraform.io/fluxcd/flux"
-      version = ">= 0.0.13"
-    }    
+    config_path = "./kubeconfig" 
   }
 }
 
