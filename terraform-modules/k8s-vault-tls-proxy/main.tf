@@ -115,6 +115,7 @@ resource "local_file" "tmp_json" {
     "ca"         = vault_pki_secret_backend_sign.clients[each.key].issuing_ca,
     "serial"     = vault_pki_secret_backend_sign.clients[each.key].serial_number,
     "expiration" = tostring(vault_pki_secret_backend_sign.clients[each.key].expiration)
+    "expiration_human" = tostring(formatdate("YYYY-MM-DD", timeadd("1970-01-01T00:00:00Z","${vault_pki_secret_backend_sign.clients[each.key].expiration}s")))
   })
   depends_on = [
     vault_pki_secret_backend_sign.clients
