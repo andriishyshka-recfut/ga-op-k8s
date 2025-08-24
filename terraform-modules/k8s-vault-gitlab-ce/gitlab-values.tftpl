@@ -104,8 +104,7 @@ global:
         secret: ${global.appConfig.object_store.connection.secret}
         key: ${global.appConfig.object_store.connection.key}
 
-certmanager:
-  install: ${certmanager.install}
+installCertmanager: ${certmanager.install}
 nginx-ingress:
   enabled: ${nginx-ingress.enabled}
 registry:
