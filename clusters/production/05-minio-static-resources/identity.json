@@ -84,7 +84,8 @@
       "minio-os3-attachements": ["GetObject", "ListBucket"],
       "minio-maid": ["GetObject", "ListBucket"],
       "minio-telegram": ["GetObject", "ListBucket"],
-      "minio-clicker": ["GetObject", "ListBucket"]
+      "minio-clicker": ["GetObject", "ListBucket"],
+      "orbital-wording-tox": ["GetObject", "ListBucket"]
     },
     "APP-GA-COLLECTIONS": {
       "minio-os3-attachements": ["GetObject", "ListBucket"],
