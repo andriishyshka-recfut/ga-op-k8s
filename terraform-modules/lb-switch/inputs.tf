@@ -84,4 +84,9 @@ locals {
      --insecure-skip-tls-verify=true  \
      delete svc ${local.old_ingresses} -n istio-ingress 
   COMMAND
+  delete_internal_ingress = <<COMMAND
+  kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     delete svc -l ingress-type=internal-ingress --all-namespaces
+  COMMAND
 }

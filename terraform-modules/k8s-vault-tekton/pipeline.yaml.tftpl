@@ -438,6 +438,21 @@ spec:
         - name: branch
           value: "\\${branch}"
 
+    - name: internal-ingress
+      taskRef:
+        name: tg-run
+      runAfter:
+        - istio
+        - static-certs
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-6/06-ingress-internal"
+        - name: branch
+          value: "\\${branch}"
+
     - name: post-postgres
       taskRef:
         name: tg-run
