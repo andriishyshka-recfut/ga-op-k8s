@@ -17,7 +17,7 @@ resource "minio_ilm_policy" "comprehensive-rules" {
     id     = each.key
     status = "Enabled"
     transition {
-      days          = "1d"
+      days          = "0d"
       storage_class = lookup(each.value, "gcs_bucket_name", minio_ilm_tier.tier[each.key].id)
     }
   }

@@ -1,3 +1,5 @@
 {
-    "buckets": {}
+    "buckets": {
+        "mon": {"gcs_bucket_name": "mon-orbital-wording-233917"}            
+    }
 }

@@ -22,7 +22,7 @@
     "kubescape": {"groups": ["kubescape-reports-rw"]},
     "kafka-checker": {"groups": ["kafka-backups-rw"]},
     "logstash_red": {
-      "groups": ["logstash-rw", "etl-logstash-feeds-rw", "vandelay-rw"],
+      "groups": ["logstash-rw", "etl-logstash-feeds-rw", "vandelay-rw", "mon-rw"],
       "sa": [
         "logstash_red"
       ]
@@ -100,6 +100,7 @@
       "etl-logstash-feeds": ["GetObject", "ListBucket"],
       "vandelay": ["GetObject", "ListBucket"]
     },
+    "mon-rw": {"mon-rw": ["*"]},
     "telegram-rw": {"minio-telegram": ["*"]},
     "maid-rw": {"minio-maid": ["*"]},
     "clicker-rw": {"minio-clicker": ["*"]},
@@ -129,6 +130,7 @@
     "thanos-rw": {"thanos": ["*"]}
   },
   "groups": {
+    "mon-rw": ["mon-rw"],
     "telegram-rw": ["telegram-rw"],
     "maid-rw": ["maid-rw"],
     "clicker-rw": ["clicker-rw"],
