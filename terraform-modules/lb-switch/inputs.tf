@@ -79,14 +79,15 @@ locals {
 
   old_ingresses     = join(" ", [for ingress, ingress_data in var.Settings.clusters[var.Cluster][local.inActiveCluster].istio : "istio-ingressgateway-${ingress}" if lookup(ingress_data, "external_ip", false) != false])
   delete_lb_service = <<COMMAND
-      kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
      delete svc ${local.old_ingresses} -n istio-ingress 
   COMMAND
   delete_internal_ingress = <<COMMAND
-  kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
      delete svc -l ingress-type=internal-ingress --all-namespaces
   COMMAND
 }

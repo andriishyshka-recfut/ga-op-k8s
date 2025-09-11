@@ -48,6 +48,12 @@ locals {
         event_sources  = ["HelmRelease", "HelmRepository"]
         exclusion_list = ["Fetched revision", "failed to download repository index"]
       }
+    },
+    kustomizations = {
+      cvat = {
+        kustomization_path = "./kyverno-policies/cvat",
+        git_repository     = "gitops"
+      }
     }
   }
 }
