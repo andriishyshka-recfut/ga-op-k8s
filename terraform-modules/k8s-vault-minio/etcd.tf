@@ -11,6 +11,10 @@ resource "helm_release" "etcd" {
 
   set = [
     {
+      name = "image.tag"
+      value = "3.5.16-debian-12-r4"
+    },
+    {
       name  = "persistence.size"
       value = "1Gi"
     },
