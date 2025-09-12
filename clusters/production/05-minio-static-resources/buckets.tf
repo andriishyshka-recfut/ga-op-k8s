@@ -11,7 +11,7 @@ resource "minio_ilm_tier" "tier" {
 
 resource "minio_ilm_policy" "comprehensive-rules" {
   for_each = local.bucketsMap
-  bucket   = minio_s3_bucket.bucket[each.key].id
+  bucket   = each.key
   # Rule with transition and expiration
   rule {
     id     = each.key
