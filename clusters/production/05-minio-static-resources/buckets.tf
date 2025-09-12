@@ -1,7 +1,7 @@
 resource "minio_ilm_tier" "tier" {
   for_each = local.bucketsMap
-  bucket   = each.key
-  name     = "GCS_${upper(each.key)}"
+  bucket   = lookup(each.value, "gcs_bucket_name", each.key)
+  name     = "GCS_${upper(each.key)}_TIER"
   type     = "gcs"
   endpoint = "https://storage.googleapis.com/"
   gcs_config {
@@ -18,7 +18,7 @@ resource "minio_ilm_policy" "comprehensive-rules" {
     status = "Enabled"
     transition {
       days          = "0d"
-      storage_class = lookup(each.value, "gcs_bucket_name", minio_ilm_tier.tier[each.key].id)
+      storage_class = minio_ilm_tier.tier[each.key].id
     }
   }
   depends_on = [minio_s3_bucket.bucket, minio_ilm_tier.tier]
