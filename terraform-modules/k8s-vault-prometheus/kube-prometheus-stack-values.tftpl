@@ -148,8 +148,9 @@ prometheus:
       version: ${thanos_version}
       baseImage: quay.io/thanos/thanos
       objectStorageConfig:
-        key: thanos.yaml
-        name: thanos-objstore-config
+        existingSecret:
+          key: thanos.yaml
+          name: thanos-objstore-config
     additionalScrapeConfigs:
       - job_name: 'kubernetes-pods'
         kubernetes_sd_configs:
