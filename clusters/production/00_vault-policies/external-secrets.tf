@@ -40,5 +40,8 @@ path "secret/data/mw/elastic/mon" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/misc/gitlab/token/read_repo" {
+   capabilities = ["read","list"]
+}
 EOT
 }

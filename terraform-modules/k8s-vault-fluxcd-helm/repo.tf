@@ -1,19 +1,13 @@
-
-data "vault_generic_secret" "gitlab_token" {
-  path = "secret/misc/gitlab/token/read_repo"
+resource "kubectl_manifest" "gitlab_secretstore" {
+  yaml_body  = templatefile("${path.module}/../../templates/external-secrets/SecretStore.tftpl", 
+  {  values = { namespace = "flux-system", cluster = var.Cluster, color = var.Color ,vault_url = "https://vault.p.regemini.io" }}
+  )
 }
 
-resource "kubernetes_secret" "gitlab_token" {
-  metadata {
-    name      = "gitlab-token"
-    namespace = local.namespace
-  }
-
-  data = {
-    "username" = data.vault_generic_secret.gitlab_token.data.username
-    "password" = data.vault_generic_secret.gitlab_token.data.token
-  }
-
+resource "kubectl_manifest" "gitlab_secret" {
+  yaml_body  = templatefile("${path.module}/../../templates/external-secrets/ExternalSecret.tftpl", 
+  { values = { namespace = "flux-system", name = "gitlab-token", secret_name = "gitlab-token",vault_path = "misc/gitlab/token/read_repo" }}
+  )
 }
 
 data "vault_generic_secret" "helm_creds" {
