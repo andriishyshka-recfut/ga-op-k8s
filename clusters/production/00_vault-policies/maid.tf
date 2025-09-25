@@ -16,7 +16,7 @@ path "secret/data/es-creds-compose-prod/elastic*" {
 path "secret/data/oidc_google_prod" {
   capabilities = ["read","list"]
 }
-path "secret/data/maid/*" {
+path "secret/data/wl/maid/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/mongo/metaBeat" {
