@@ -6,6 +6,9 @@ resource "vault_policy" "magescanner" {
 path "secret/data/magescanner/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/wl/magescanner/*" {
+  capabilities = ["read","list"]
+}
 path "secret/data/mongo/magescanner" {
   capabilities = ["read","list"]
 }
