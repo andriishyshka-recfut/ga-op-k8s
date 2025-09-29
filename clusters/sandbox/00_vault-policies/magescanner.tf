@@ -9,7 +9,7 @@ path "secret/data/magescanner/*" {
 path "secret/data/wl/magescanner/*" {
   capabilities = ["read","list"]
 }
-path "secret/data/mongo/magescanner" {
+path "secret/data/mongo/sandbox" {
   capabilities = ["read","list"]
 }
 path "secret/data/elasticsearch-admin/*" {
