@@ -1,6 +1,6 @@
 resource "kubectl_manifest" "gitlab_secretstore" {
   yaml_body  = templatefile("${path.module}/../../templates/external-secrets/SecretStore.tftpl", 
-  {  values = { namespace = "flux-system", cluster = var.Cluster, color = var.Color ,vault_url = "https://vault.p.regemini.io" }}
+  {  values = { namespace = "flux-system", cluster = var.Cluster, color = var.Color ,vault_url = local.vault_url }}
   )
 }
 
