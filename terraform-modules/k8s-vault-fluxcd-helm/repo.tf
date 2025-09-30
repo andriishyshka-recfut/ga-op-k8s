@@ -6,7 +6,7 @@ resource "kubectl_manifest" "gitlab_secretstore" {
 
 resource "kubectl_manifest" "gitlab_secret" {
   yaml_body  = templatefile("${path.module}/../../templates/external-secrets/ExternalSecret.tftpl", 
-  { values = { namespace = "flux-system", name = "gitlab-token", secret_name = "gitlab-token",vault_path = "misc/gitlab/token/read_repo" }}
+  { values = { namespace = "flux-system", name = "gitlab-token", secret_name = "gitlab-token",vault_path = "misc/gitlab/token/read_repo",template_data = local.gitlab_secret_template }}
   )
 }
 
