@@ -257,7 +257,7 @@ alertmanager:
     - name: "slack-ccr"
       slack_configs:
         - api_url: ${prometheus_slack_webhooks.url_ccr}
-          channel: '#ccr'
+          channel: '#_ccr'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true         
     - name: "slack-dome-bots"
