@@ -343,7 +343,7 @@ alertmanager:
         - matchers:
           - alertname=~"CCRReplicationLag|CCRReadExceptions|CCRIndexPaused"
           - cluster=~"production"
-          - component=~"stream-processor
+          - component=~"stream-processor"
           - severity=~"critical"
           receiver: "slack-ccr"
         - matchers:
