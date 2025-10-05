@@ -41,7 +41,13 @@ mountCaMinio:
 extraEnvs: {}
 
 # Allows you to load environment variables from kubernetes secret or config map
+%{ if lookup(values, "mongo_secret", false) != false ~}
+envFrom:
+  - secretRef:
+      name: ${values.mongo_secret}
+%{ else ~}
 envFrom: []
+%{ endif ~}
 # - secretRef:
 #     name: env-secret
 # - configMapRef:

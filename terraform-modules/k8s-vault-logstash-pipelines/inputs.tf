@@ -29,6 +29,7 @@ locals {
   namespaces  = toset(distinct([for k, v in var.logstash_list : lookup(v, "namespace", local.namespace)]))
 
   logstash_user = "logstash"
+  vault_url = var.Color == "red" ? "https://vault.p.regemini.io" : "http://vault-active.vault:8200"   
 
   valuesDefault = {
     namespace = local.namespace
@@ -47,4 +48,9 @@ locals {
     mem_limit = local.mem_limit
     java_opts = local.java_opts
   }
+  mongo_secret_template = [
+    { k8s_key = "username", vault_key = "username"},
+    { k8s_key = "password", vault_key = "token"}
+  ]
 }
+
