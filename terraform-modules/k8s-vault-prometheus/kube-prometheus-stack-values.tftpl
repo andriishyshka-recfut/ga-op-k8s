@@ -343,8 +343,6 @@ alertmanager:
         - matchers:
           - alertname=~"CCRReplicationLag|CCRReadExceptions|CCRIndexPaused"
           - cluster=~"production"
-          - component=~"stream-processor"
-          - severity=~"critical"
           receiver: "slack-ccr"
         - matchers:
           - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"
