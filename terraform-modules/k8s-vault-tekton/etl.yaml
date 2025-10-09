@@ -4,17 +4,19 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: tekton-etl-leftovers-webhook
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
+
+# ClusterRole/ClusterRoleBinding section
+# undepended from namespace 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: tekton-etl-leftovers-triggers-controller-cluster-workloads
-  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-webhook
-    namespace: tekton-pipelines
+    namespace: tekton-tasks
 roleRef:
   kind: ClusterRole
   name: tekton-etl-leftovers-clusterroles
@@ -24,7 +26,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: tekton-etl-leftovers-clusterroles
-  namespace: tekton-pipelines
 rules:
 - apiGroups: ["apps"]
   resources: ["namespaces", "deployments", "pods"]
@@ -33,17 +34,15 @@ rules:
   resources: ["jobs", "cronjobs"]
   verbs: ["get", "list", "delete", "create"]
 
-# Role section
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: tekton-etl-leftovers-triggers-controller-webhook
-  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-webhook
-    namespace: tekton-pipelines
+    namespace: tekton-tasks
 roleRef:
   kind: ClusterRole
   name: tekton-triggers-eventlistener-roles
@@ -55,11 +54,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: tekton-etl-leftovers-triggers-controller-cluster-webhook
-  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-webhook
-    namespace: tekton-pipelines
+    namespace: tekton-tasks
 roleRef:
   kind: ClusterRole
   name: tekton-triggers-eventlistener-clusterroles
@@ -72,7 +70,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
   name: etl-leftovers-webhook-alertmanager-listener
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   serviceAccountName: tekton-etl-leftovers-webhook
   triggers:
@@ -99,7 +97,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: etl-leftovers-binding
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   params:
   - name: job_name
@@ -110,7 +108,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
   name: etl-leftovers-template
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   params:
   - name: job_name
@@ -133,7 +131,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: Trigger
 metadata:
   name: etl-leftovers-trigger
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   bindings:
   - ref: etl-leftovers-binding
@@ -145,7 +143,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: etl-leftovers-rerun
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   params:
   - name: job_name
@@ -194,7 +192,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
   name: failed-etl-jobs-webhook-alertmanager-listener
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   serviceAccountName: tekton-etl-leftovers-webhook
   triggers:
@@ -221,7 +219,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: failed-etl-jobs-binding
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   params:
   - name: job_name
@@ -232,7 +230,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
   name: failed-etl-jobs-template
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   params:
   - name: job_name
@@ -255,7 +253,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: Trigger
 metadata:
   name: failed-etl-jobs-trigger
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   bindings:
   - ref: failed-etl-jobs-binding
@@ -268,7 +266,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: failed-etl-jobs-rerun
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   params:
   - name: job_name
