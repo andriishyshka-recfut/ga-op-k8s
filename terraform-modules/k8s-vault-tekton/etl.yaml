@@ -1,3 +1,4 @@
+# SA section
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -31,7 +32,8 @@ rules:
 - apiGroups: ["batch"]
   resources: ["jobs", "cronjobs"]
   verbs: ["get", "list", "delete", "create"]
-  
+
+# Role section
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -63,6 +65,7 @@ roleRef:
   name: tekton-triggers-eventlistener-clusterroles
   apiGroup: rbac.authorization.k8s.io
 
+# ETL etl-leftovers section
 ---
 
 apiVersion: triggers.tekton.dev/v1beta1
@@ -113,13 +116,13 @@ spec:
   - name: job_name
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
-      kind: PipelineRun
+      kind: TaskRun
       metadata:
         generateName: etl-leftovers-
       spec:
         serviceAccountName: tekton-etl-leftovers-webhook
-        pipelineRef:
-          name: etl-leftovers-pipeline
+        taskRef:
+          name: etl-leftovers-rerun
         params:
         - name: job_name
           value: $(tt.params.job_name)
@@ -184,37 +187,7 @@ spec:
           fi
         done
 
----
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: etl-leftovers-pipeline
-  namespace: tekton-pipelines
-spec:
-  params:
-    - name: job_name
-  tasks:
-    - name: etl-leftovers-rerun
-      taskRef:
-        name: etl-leftovers-rerun
-      params:
-        - name: job_name
-          value: $(params.job_name)
----
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: etl-leftovers-pipelinerun
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-etl-leftovers-webhook
-  pipelineRef:
-    name: etl-leftovers-pipeline
-  params:
-    - name: job_name
-      value: $(params.job_name)
-
-
+# ETL failed-etl-jobs section
 ---
 
 apiVersion: triggers.tekton.dev/v1beta1
@@ -265,13 +238,13 @@ spec:
   - name: job_name
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
-      kind: PipelineRun
+      kind: TaskRun
       metadata:
         generateName: failed-etl-jobs-
       spec:
         serviceAccountName: tekton-etl-leftovers-webhook
-        pipelineRef:
-          name: failed-etl-jobs-pipeline
+        taskRef:
+          name: failed-etl-jobs-rerun
         params:
         - name: job_name
           value: $(tt.params.job_name)
@@ -336,33 +309,3 @@ spec:
             kubectl delete job -n etl  $JOB_NAME
           fi
         done
-
----
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: failed-etl-jobs-pipeline
-  namespace: tekton-pipelines
-spec:
-  params:
-    - name: job_name
-  tasks:
-    - name: failed-etl-jobs-rerun
-      taskRef:
-        name: failed-etl-jobs-rerun
-      params:
-        - name: job_name
-          value: $(params.job_name)
----
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: failed-etl-jobs-pipelinerun
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-etl-leftovers-webhook
-  pipelineRef:
-    name: failed-etl-jobs-pipeline
-  params:
-    - name: job_name
-      value: $(params.job_name)
