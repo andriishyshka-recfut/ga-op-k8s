@@ -4,6 +4,12 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: tekton-etl-leftovers-webhook
+  namespace: tekton-pipelines
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-etl-leftovers-tasks
   namespace: tekton-tasks
 
 # ClusterRole/ClusterRoleBinding section
@@ -16,7 +22,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-webhook
-    namespace: tekton-tasks
+    namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
   name: tekton-etl-leftovers-clusterroles
@@ -42,7 +48,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-webhook
-    namespace: tekton-tasks
+    namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
   name: tekton-triggers-eventlistener-roles
@@ -57,7 +63,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-webhook
-    namespace: tekton-tasks
+    namespace: tekton-pipelines
 roleRef:
   kind: ClusterRole
   name: tekton-triggers-eventlistener-clusterroles
@@ -70,7 +76,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
   name: etl-leftovers-webhook-alertmanager-listener
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   serviceAccountName: tekton-etl-leftovers-webhook
   triggers:
@@ -97,7 +103,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: etl-leftovers-binding
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   params:
   - name: job_name
@@ -108,7 +114,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
   name: etl-leftovers-template
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   params:
   - name: job_name
@@ -117,8 +123,9 @@ spec:
       kind: TaskRun
       metadata:
         generateName: etl-leftovers-
+        namespace: tekton-tasks
       spec:
-        serviceAccountName: tekton-etl-leftovers-webhook
+        serviceAccountName: tekton-etl-leftovers-tasks
         taskRef:
           name: etl-leftovers-rerun
         params:
@@ -131,7 +138,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: Trigger
 metadata:
   name: etl-leftovers-trigger
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   bindings:
   - ref: etl-leftovers-binding
@@ -192,7 +199,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
   name: failed-etl-jobs-webhook-alertmanager-listener
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   serviceAccountName: tekton-etl-leftovers-webhook
   triggers:
@@ -219,7 +226,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: failed-etl-jobs-binding
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   params:
   - name: job_name
@@ -230,7 +237,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
   name: failed-etl-jobs-template
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   params:
   - name: job_name
@@ -239,8 +246,9 @@ spec:
       kind: TaskRun
       metadata:
         generateName: failed-etl-jobs-
+        namespace: tekton-tasks
       spec:
-        serviceAccountName: tekton-etl-leftovers-webhook
+        serviceAccountName: tekton-etl-leftovers-tasks
         taskRef:
           name: failed-etl-jobs-rerun
         params:
@@ -253,7 +261,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: Trigger
 metadata:
   name: failed-etl-jobs-trigger
-  namespace: tekton-tasks
+  namespace: tekton-pipelines
 spec:
   bindings:
   - ref: failed-etl-jobs-binding
