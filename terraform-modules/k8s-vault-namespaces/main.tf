@@ -139,3 +139,19 @@ resource "kubernetes_role_binding" "developers_groups_binding" {
     kubernetes_cluster_role.developers_access_role
   ]
 }
+
+resource "kubernetes_cluster_role_binding" "op_recordedfuture_cluster_admin_binding" {
+  metadata {
+    name = "op-cluster-admin"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+  subject {
+    kind = "Group"
+    api_group = "rbac.authorization.k8s.io"
+    name = "gke-security-groups-rf-op@geminiadvisory.io"
+  }
+}
