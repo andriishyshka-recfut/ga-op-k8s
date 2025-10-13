@@ -11,5 +11,8 @@ path "secret/data/elasticsearch-admin/*" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/wl/clicker/engine-definer" {
+  capabilities = ["read","list"]
+}
 EOT
 }
