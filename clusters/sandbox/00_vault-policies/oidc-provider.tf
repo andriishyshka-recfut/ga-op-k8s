@@ -35,7 +35,7 @@ locals {
   vault_groups = {
     APP-GA-OP  = ["admin"],
     APP-GA-DEV = ["default", "db-reader", "tekton"],
-    APP-GA-VaultT-ETL = ["oidc-recordedfuture"]
+    APP-GA-VaultP-ETL = ["oidc-recordedfuture"]
   }
 }
 
