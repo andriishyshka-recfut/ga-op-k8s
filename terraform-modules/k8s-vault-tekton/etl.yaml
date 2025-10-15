@@ -15,6 +15,7 @@ metadata:
 # Role|ClusterRole
 # RoleBinding|ClusterRoleBinding
 #
+
 ---
 # access to ns: etl for jobs/cronjobs
 apiVersion: rbac.authorization.k8s.io/v1
@@ -31,19 +32,32 @@ rules:
 # webhook
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
-  name: tekton-etl-leftovers-triggers-controller-cluster-workloads-webhook
-  namespace: etl
+  name: tekton-etl-leftovers-triggers-controller-cluster-workloads
+  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-webhook
     namespace: tekton-pipelines
 roleRef:
-  kind: Role
-  name: tekton-etl-leftovers-roles-job
-  namespace: etl
+  kind: ClusterRole
+  name: tekton-etl-leftovers-clusterroles
   apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tekton-etl-leftovers-clusterroles
+  namespace: tekton-pipelines
+rules:
+- apiGroups: ["apps"]
+  resources: ["namespaces", "deployments", "pods"]
+  verbs: ["get", "list"]
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "delete", "create"]
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
