@@ -35,7 +35,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: tekton-etl-leftovers-triggers-controller-cluster-workloads
-  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-webhook
@@ -50,7 +49,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: tekton-etl-leftovers-clusterroles
-  namespace: tekton-pipelines
 rules:
 - apiGroups: ["apps"]
   resources: ["namespaces", "deployments", "pods"]
@@ -94,6 +92,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: tekton-etl-leftovers-triggers-controller-cluster-workloads-tasks
+  namespace: etl
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-tasks
