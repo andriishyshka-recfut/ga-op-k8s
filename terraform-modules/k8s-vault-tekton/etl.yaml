@@ -241,7 +241,7 @@ spec:
             name: cluster-settings      
       script: |
         #! /bin/bash
-        set -x
+        set +x
         echo $(params.job_name)
     
         IFS=' '
@@ -367,7 +367,7 @@ spec:
             name: cluster-settings      
       script: |
         #! /bin/bash
-        set -x
+        set +x
     
         IFS=' '
         for JOB_NAME in $(params.job_name); do
