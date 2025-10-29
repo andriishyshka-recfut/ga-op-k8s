@@ -42,7 +42,7 @@ reportsController:
   resources:
     limits:
       cpu: 250m
-      memory: 320Mi
+      memory: 448Mi
     requests:
       cpu: 200m
-      memory: 256Mi
+      memory: 384Mi
