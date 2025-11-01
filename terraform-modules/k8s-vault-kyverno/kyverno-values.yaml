@@ -41,8 +41,8 @@ reportsController:
   replicas: 2
   resources:
     limits:
-      cpu: 350m
-      memory: 448Mi
+      cpu: 550m
+      memory: 512Mi
     requests:
-      cpu: 300m
-      memory: 384Mi
+      cpu: 500m
+      memory: 448Mi
