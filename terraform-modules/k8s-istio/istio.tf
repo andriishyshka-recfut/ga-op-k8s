@@ -62,6 +62,20 @@ resource "helm_release" "istiod" {
   ]
 }
 
+resource "helm_release" "istio_cni" {
+  name       = "istio-cni"
+  chart      = "istio-cni"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+  version    = var.Settings.clusters[var.Cluster].versions.istio.helm_version
+  wait       = true
+  atomic     = true
+  namespace  = "kube-system"
+  values     = [templatefile("${path.module}/templates/istio-cni.tftpl", {})]
+  depends_on = [
+    helm_release.istiod
+  ]
+}
+
 resource "helm_release" "istio_ingress" {
   name       = "istio-ingressgateway"
   chart      = "gateway"
@@ -72,7 +86,7 @@ resource "helm_release" "istio_ingress" {
   namespace  = "istio-ingress"
   values     = [templatefile("${path.module}/templates/ingress.tftpl", { ports = local.ports })]
   depends_on = [
-    helm_release.istiod
+    helm_release.istio_cni
   ]
 }
 

@@ -1,5 +1,10 @@
 global:
   logAsJson: true
+  cni:
+    enabled: true
+    excludeNamespaces:
+      - kube-system
+      - istio-system
 meshConfig:
   accessLogEncoding: JSON
 resources:
