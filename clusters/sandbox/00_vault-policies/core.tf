@@ -17,6 +17,9 @@ path "secret/data/captcha" {
 path "secret/data/challenger" {
   capabilities = ["read","list"]
 }
+path "secret/data/wl/core/*" {
+  capabilities = ["read","list"]
+}
 path "secret/data/pi/*" {
   capabilities = ["read","list"]
 }
