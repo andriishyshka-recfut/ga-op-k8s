@@ -64,7 +64,7 @@ resource "helm_release" "istiod" {
 
 resource "helm_release" "istio_cni" {
   name       = "istio-cni"
-  chart      = "istio-cni"
+  chart      = "cni"
   repository = "https://istio-release.storage.googleapis.com/charts"
   version    = var.Settings.clusters[var.Cluster].versions.istio.helm_version
   wait       = true

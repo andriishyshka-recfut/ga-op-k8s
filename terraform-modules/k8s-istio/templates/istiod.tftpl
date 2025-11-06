@@ -1,13 +1,10 @@
 global:
   logAsJson: true
-  cni:
-    enabled: true
-    excludeNamespaces:
-      - kube-system
-      - istio-system
 meshConfig:
   accessLogEncoding: JSON
 resources:
   limits:
     cpu: "1400m"
     memory: "3500Mi"
+cni:
+  enabled: true
