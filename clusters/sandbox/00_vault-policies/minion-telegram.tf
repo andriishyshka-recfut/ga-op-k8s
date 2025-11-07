@@ -1,4 +1,4 @@
-resource "vault_policy" "minion-telegram" {
+resource "vault_policy" "minion_telegram" {
   name = "minion-telegram"
 
   policy = <<EOT
