@@ -76,6 +76,16 @@ resource "kubernetes_cluster_role" "developers_access_role" {
     resources  = ["pods/exec"]
     verbs      = ["create", "delete"]
   }
+    rule {
+    api_groups = ["batch"]
+    resources  = ["cronjobs"]
+    verbs      = ["get","list"]
+  }
+  rule {
+    api_groups = ["batch"]
+    resources  = ["jobs"]
+    verbs      = ["create","get","list"]
+  }
 }
 
 resource "kubernetes_cluster_role" "list_ns_role" {
