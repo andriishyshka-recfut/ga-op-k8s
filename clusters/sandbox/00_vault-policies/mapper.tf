@@ -11,5 +11,8 @@ path "/secret/data/mw/monitoring/otel" {
 path "/secret/data/elasticsearch-admin/elastic7-v2" {
   capabilities = ["read","list"]
 }
+path "/secret/data/mongo/sandbox" {
+  capabilities = ["read"]
+}
 EOT
 }
