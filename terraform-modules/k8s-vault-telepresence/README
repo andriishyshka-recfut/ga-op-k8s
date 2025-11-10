@@ -1,0 +1,26 @@
+# Install client
+brew install telepresenceio/telepresence/telepresence-os
+brew install gromgit/fuse/sshfs-mac
+
+# Connect
+telepresence connect --manager-namespace telepresence --namespace ...
+
+# Disconnect
+telepresence quit
+
+
+https://telepresence.io/docs/howtos/engage
+https://telepresence.io/docs/reference/engagements/cli
+https://telepresence.io/docs/reference/cli/telepresence
+
+
+telepresence connect --manager-namespace telepresence --namespace telepresence
+telepresence list
+telepresence intercept nginx-deployment --service nginx-svc -p 8888
+telepresence intercept nginx-deployment -p 8888
+telepresence leave nginx-deployment
+telepresence quit
+
+curl 127.0.0.1:8888
+
+telepresence intercept nginx-deployment --http-header 'x-user=margret' --http-path-prefix '/api' --port 8080
