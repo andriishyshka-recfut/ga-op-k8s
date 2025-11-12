@@ -33,6 +33,14 @@ locals {
     sleep 29
   COMMAND
 
+  delete_zero_cronjobs = <<COMMAND
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     delete cronjobs -l zero=true --all-namespaces
+    sleep 29
+  COMMAND
+
   stop_etl_operator = <<COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
@@ -101,6 +109,17 @@ resource "null_resource" "stop_zero_services" {
   depends_on = [null_resource.stop_flux]
 }
 
+resource "null_resource" "delete_zero_cronjobs" {
+
+  triggers = {
+    command = md5(local.delete_zero_cronjobs)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.delete_zero_cronjobs
+  }
+  depends_on = [null_resource.stop_flux]
+}
 
 resource "null_resource" "stop_etl_operator" {
 
