@@ -7,7 +7,7 @@ resource "helm_release" "plantuml" {
   timeout    = 600
   wait       = true
   atomic     = true
-  version    = "3.37.0"
+  version    = "3.41.0"
   values = [
     templatefile("${path.module}/plantuml-values.tftpl", merge(local.plantuml_values, { plantuml-name = each.key }))
   ]

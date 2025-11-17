@@ -46,5 +46,8 @@ path "secret/data/misc/gitlab/token/read_repo" {
 path "secret/data/red/mw/logstash/*" {
    capabilities = ["read","list"]
 }
+path "secret/data/wl/reports/minio"{
+   capabilities = ["read","list"]
+}
 EOT
 }

@@ -33,7 +33,7 @@ provider "kubernetes" {
 terraform {
   backend "gcs" {
     bucket = "terraform-state-production111"
-    prefix = "terraform-production-lb-switch/state-2025-08-16"
+    prefix = "terraform-production-lb-switch/state-2025-11-08"
   }
   required_providers {
     helm = {

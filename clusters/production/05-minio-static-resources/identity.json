@@ -1,6 +1,7 @@
 {
   "users": {
     "backup": {"groups": ["backup-rw", "xbackup-rw"]},
+    "busta": {"groups": ["xdebug-rw", "clicker-rw"]},    
     "elastic-backup": {"groups": ["backup-rw", "minio-es7-rw"]},
     "etherpad": {"groups": ["xbackup-rw"]},
     "etl": {

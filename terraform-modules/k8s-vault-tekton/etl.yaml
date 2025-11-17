@@ -1,3 +1,4 @@
+# SA
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -5,11 +6,35 @@ metadata:
   name: tekton-etl-leftovers-webhook
   namespace: tekton-pipelines
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-etl-leftovers-tasks
+  namespace: tekton-tasks
+
+# Role|ClusterRole
+# RoleBinding|ClusterRoleBinding
+#
+
+---
+# access to ns: etl for jobs/cronjobs
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tekton-etl-leftovers-roles-job
+  namespace: etl
+rules:
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "delete", "create"]
+
+#
+# webhook
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: tekton-etl-leftovers-triggers-controller-cluster-workloads
-  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-webhook
@@ -18,12 +43,12 @@ roleRef:
   kind: ClusterRole
   name: tekton-etl-leftovers-clusterroles
   apiGroup: rbac.authorization.k8s.io
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: tekton-etl-leftovers-clusterroles
-  namespace: tekton-pipelines
 rules:
 - apiGroups: ["apps"]
   resources: ["namespaces", "deployments", "pods"]
@@ -31,29 +56,12 @@ rules:
 - apiGroups: ["batch"]
   resources: ["jobs", "cronjobs"]
   verbs: ["get", "list", "delete", "create"]
-  
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: tekton-etl-leftovers-triggers-controller-webhook
-  namespace: tekton-pipelines
-subjects:
-  - kind: ServiceAccount
-    name: tekton-etl-leftovers-webhook
-    namespace: tekton-pipelines
-roleRef:
-  kind: ClusterRole
-  name: tekton-triggers-eventlistener-roles
-  apiGroup: rbac.authorization.k8s.io
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: tekton-etl-leftovers-triggers-controller-cluster-webhook
-  namespace: tekton-pipelines
 subjects:
   - kind: ServiceAccount
     name: tekton-etl-leftovers-webhook
@@ -63,6 +71,66 @@ roleRef:
   name: tekton-triggers-eventlistener-clusterroles
   apiGroup: rbac.authorization.k8s.io
 
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-etl-leftovers-triggers-controller-webhook
+subjects:
+  - kind: ServiceAccount
+    name: tekton-etl-leftovers-webhook
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+  apiGroup: rbac.authorization.k8s.io
+
+#
+# tasks
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tekton-etl-leftovers-triggers-controller-cluster-workloads-tasks
+  namespace: etl
+subjects:
+  - kind: ServiceAccount
+    name: tekton-etl-leftovers-tasks
+    namespace: tekton-tasks
+roleRef:
+  kind: Role
+  name: tekton-etl-leftovers-roles-job
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-etl-leftovers-triggers-controller-cluster-webhook-tasks
+subjects:
+  - kind: ServiceAccount
+    name: tekton-etl-leftovers-tasks
+    namespace: tekton-tasks
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-clusterroles
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-etl-leftovers-triggers-controller-webhook-tasks
+subjects:
+  - kind: ServiceAccount
+    name: tekton-etl-leftovers-tasks
+    namespace: tekton-tasks
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+  apiGroup: rbac.authorization.k8s.io
+
+# ETL etl-leftovers section
 ---
 
 apiVersion: triggers.tekton.dev/v1beta1
@@ -113,13 +181,14 @@ spec:
   - name: job_name
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
-      kind: PipelineRun
+      kind: TaskRun
       metadata:
         generateName: etl-leftovers-
+        namespace: tekton-tasks
       spec:
-        serviceAccountName: tekton-etl-leftovers-webhook
-        pipelineRef:
-          name: etl-leftovers-pipeline
+        serviceAccountName: tekton-etl-leftovers-tasks
+        taskRef:
+          name: etl-leftovers-rerun
         params:
         - name: job_name
           value: $(tt.params.job_name)
@@ -142,7 +211,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: etl-leftovers-rerun
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   params:
   - name: job_name
@@ -172,47 +241,21 @@ spec:
             name: cluster-settings      
       script: |
         #! /bin/bash
-        set -x
+        set +x
         echo $(params.job_name)
     
         IFS=' '
         for MINIO_PATH in $(params.job_name); do
-          echo "Creating job $MINIO_PATH..."
           CRONJOB_NAME=$(kubectl get cronjob -n etl | grep ${MINIO_PATH} | grep etl | awk '{print $1}')
-          kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tekton$(date '+%S')-$((0 + RANDOM % 9)))
+          if [[ $(kubectl get cronjobs $CRONJOB_NAME -n etl -o jsonpath='{.spec.suspend}') == "false" ]]; then
+            echo "Creating job $CRONJOB_NAME ..."
+            kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tekton$(date '+%S')-$((0 + RANDOM % 9)))
+          else
+            echo "Job $CRONJOB_NAME is suspended."
+          fi
         done
 
----
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: etl-leftovers-pipeline
-  namespace: tekton-pipelines
-spec:
-  params:
-    - name: job_name
-  tasks:
-    - name: etl-leftovers-rerun
-      taskRef:
-        name: etl-leftovers-rerun
-      params:
-        - name: job_name
-          value: $(params.job_name)
----
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: etl-leftovers-pipelinerun
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-etl-leftovers-webhook
-  pipelineRef:
-    name: etl-leftovers-pipeline
-  params:
-    - name: job_name
-      value: $(params.job_name)
-
-
+# ETL failed-etl-jobs section
 ---
 
 apiVersion: triggers.tekton.dev/v1beta1
@@ -263,13 +306,14 @@ spec:
   - name: job_name
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
-      kind: PipelineRun
+      kind: TaskRun
       metadata:
         generateName: failed-etl-jobs-
+        namespace: tekton-tasks
       spec:
-        serviceAccountName: tekton-etl-leftovers-webhook
-        pipelineRef:
-          name: failed-etl-jobs-pipeline
+        serviceAccountName: tekton-etl-leftovers-tasks
+        taskRef:
+          name: failed-etl-jobs-rerun
         params:
         - name: job_name
           value: $(tt.params.job_name)
@@ -293,7 +337,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: failed-etl-jobs-rerun
-  namespace: tekton-pipelines
+  namespace: tekton-tasks
 spec:
   params:
   - name: job_name
@@ -323,42 +367,16 @@ spec:
             name: cluster-settings      
       script: |
         #! /bin/bash
-        set -x
+        set +x
     
         IFS=' '
         for JOB_NAME in $(params.job_name); do
           export CRONJOB_NAME=${JOB_NAME%-*}
-          echo "Creating job $CRONJOB_NAME..."
-          kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tekton$(date '+%S')-$((0 + RANDOM % 9)))
-          kubectl delete job -n etl  $JOB_NAME
+          if [[ $(kubectl get cronjobs $CRONJOB_NAME -n etl -o jsonpath='{.spec.suspend}') == "false" ]]; then
+            echo "Creating job $CRONJOB_NAME ..."
+            kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tekton$(date '+%S')-$((0 + RANDOM % 9)))
+            kubectl delete job -n etl  $JOB_NAME
+          else
+            echo "Job $CRONJOB_NAME is suspended."
+          fi
         done
-
----
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: failed-etl-jobs-pipeline
-  namespace: tekton-pipelines
-spec:
-  params:
-    - name: job_name
-  tasks:
-    - name: failed-etl-jobs-rerun
-      taskRef:
-        name: failed-etl-jobs-rerun
-      params:
-        - name: job_name
-          value: $(params.job_name)
----
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: failed-etl-jobs-pipelinerun
-  namespace: tekton-pipelines
-spec:
-  serviceAccountName: tekton-etl-leftovers-webhook
-  pipelineRef:
-    name: failed-etl-jobs-pipeline
-  params:
-    - name: job_name
-      value: $(params.job_name)

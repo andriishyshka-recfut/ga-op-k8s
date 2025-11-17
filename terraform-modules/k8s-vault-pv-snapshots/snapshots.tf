@@ -63,32 +63,6 @@ resource "google_compute_snapshot" "kafka_snapshot" {
   storage_locations = [local.region]
 }
 
-# resource "google_compute_snapshot" "kafka_zookeeper_snapshot" {
-#   count       = local.kafka_count
-#   name        = "${local.zookeeper_prefix}-${count.index}-dr-${local.backupdate}"
-#   source_disk = data.google_compute_disk.kafka_zookeeper_pv[count.index].self_link
-#   zone        = data.google_compute_disk.kafka_zookeeper_pv[count.index].zone
-#   labels = {
-#     target = "kafka-zookeeper"
-#     id     = "${local.zookeeper_prefix}-${count.index}"
-#   }
-#   storage_locations = [local.region]
-# }
-
-
-# resource "google_compute_snapshot" "kafka_controller_snapshot" {
-#   count       = local.kafka_count
-#   name        = "${local.controller_prefix}-${count.index}-dr-${local.backupdate}"
-#   source_disk = data.google_compute_disk.kafka_controller_pv[count.index].self_link
-#   zone        = data.google_compute_disk.kafka_controller_pv[count.index].zone
-#   labels = {
-#     target = "kafka-controller"
-#     id     = "${local.controller_prefix}-${count.index}"
-#   }
-#   storage_locations = [local.region]
-# }
-
-
 
 resource "google_compute_snapshot" "minio_snapshot" {
   count       = local.minio_count

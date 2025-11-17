@@ -76,6 +76,16 @@ resource "kubernetes_cluster_role" "developers_access_role" {
     resources  = ["pods/exec"]
     verbs      = ["create", "delete"]
   }
+    rule {
+    api_groups = ["batch"]
+    resources  = ["cronjobs"]
+    verbs      = ["get","list"]
+  }
+  rule {
+    api_groups = ["batch"]
+    resources  = ["jobs"]
+    verbs      = ["create","get","list"]
+  }
 }
 
 resource "kubernetes_cluster_role" "list_ns_role" {
@@ -138,4 +148,20 @@ resource "kubernetes_role_binding" "developers_groups_binding" {
     kubernetes_namespace.ns,
     kubernetes_cluster_role.developers_access_role
   ]
+}
+
+resource "kubernetes_cluster_role_binding" "op_recordedfuture_cluster_admin_binding" {
+  metadata {
+    name = "op-cluster-admin"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+  subject {
+    kind = "Group"
+    api_group = "rbac.authorization.k8s.io"
+    name = "gke-security-groups-rf-op@geminiadvisory.io"
+  }
 }

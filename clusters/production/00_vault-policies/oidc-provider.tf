@@ -13,6 +13,9 @@ resource "vault_jwt_auth_backend" "okta" {
   default_role       = "okta_default_role"
   tune {
     listing_visibility = "unauth"
+    default_lease_ttl  = "768h"
+    max_lease_ttl      = "768h"
+    token_type         = "default-service"
   }
 }
 
@@ -32,7 +35,8 @@ resource "vault_jwt_auth_backend_role" "okta" {
 
 locals {
   vault_groups = {
-    APP-GA-OP = ["admin"]
+    APP-GA-OP         = ["admin"],
+    APP-GA-VaultP-ETL = ["oidc-recordedfuture"]
   }
 }
 

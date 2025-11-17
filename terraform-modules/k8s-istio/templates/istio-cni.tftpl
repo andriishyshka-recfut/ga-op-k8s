@@ -1,0 +1,15 @@
+cni:
+  logLevel: info
+  chained: true # add istio-cni network rules to existing
+  excludeNamespaces: # do not use in this ns istio-cni network rules (general recommendation)
+    - istio-system
+    - kube-system
+  repair:
+    enabled: true
+
+istio_cni:
+  enabled: true
+
+global:
+  platform: gke
+  logAsJson: true

@@ -34,7 +34,8 @@ resource "vault_jwt_auth_backend_role" "okta" {
 locals {
   vault_groups = {
     APP-GA-OP  = ["admin"],
-    APP-GA-DEV = ["default", "db-reader", "tekton"]
+    APP-GA-DEV = ["default", "db-reader", "tekton"],
+    APP-GA-VaultP-ETL = ["oidc-recordedfuture"]
   }
 }
 

@@ -254,6 +254,14 @@ alertmanager:
           channel: '#prometheus-etl'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
+%{ if additional_rule_labels == "production" ~}
+    - name: "slack-ccr"
+      slack_configs:
+        - api_url: ${prometheus_slack_webhooks.url_ccr}
+          channel: '#_ccr'
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true         
+%{ endif ~}
     - name: "slack-dome-bots"
       slack_configs:
         - api_url: ${prometheus_slack_webhooks.url_bots_dome}
@@ -334,6 +342,10 @@ alertmanager:
         - matchers:
           - alertname=~"DomeMappingChanged"
           receiver: "slack-dome-mapping"
+        - matchers:
+          - alertname=~"CCRReplicationLag|CCRReadExceptions|CCRIndexPaused"
+          - cluster=~"production"
+          receiver: "slack-ccr"
         - matchers:
           - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"
           receiver: "slack-dome-bots"
