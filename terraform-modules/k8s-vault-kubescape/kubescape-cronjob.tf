@@ -54,7 +54,7 @@ resource "kubernetes_cron_job_v1" "nightly_html" {
               command = [ "sh", "-c" ]
               args = [
                  <<-EOT
-                      kubescape scan framework nsa,mitre,cis-v1.23-t1.0.1,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format html --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).html --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
+                      kubescape scan framework nsa,mitre,cis-v1.10.0,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format html --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).html --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
                       /home/nonroot/results/mc cp /home/nonroot/results/*.html minio/${local.minioBucket}
                   EOT
               ]
@@ -145,7 +145,7 @@ resource "kubernetes_cron_job_v1" "nightly_json" {
               command = [ "sh", "-c" ]
               args = [
                  <<-EOT
-                      kubescape scan framework nsa,mitre,cis-v1.23-t1.0.1,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format json --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).json --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
+                      kubescape scan framework nsa,mitre,cis-v1.10.0,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format json --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).json --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
                       /home/nonroot/results/mc cp /home/nonroot/results/*.json minio/${local.minioBucket}
                   EOT
               ]
