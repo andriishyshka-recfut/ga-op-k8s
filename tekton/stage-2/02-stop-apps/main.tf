@@ -40,16 +40,6 @@ locals {
      scale deploy -n etl --replicas=0 --all
   COMMAND
 
-  delete_etl_jobs = <<COMMAND
-    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-      --insecure-skip-tls-verify=true  \
-      delete cronjobs `kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-      --insecure-skip-tls-verify=true  \
-      get cronjobs -o custom-columns=:.metadata.name -n etl` -n etl
-  COMMAND
-
   delete_zero_cronjobs = <<COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
