@@ -13,6 +13,9 @@ path "secret/data/es-creds-compose-prod/_lumberjack.ms" {
 path "secret/data/es-creds-compose-prod/elastic*" {
   capabilities = ["read","list"]
 }
+path "secret/data/logstash/*" {
+    capabilities = ["read","list"]
+}
 path "secret/data/mongo/metaLumberjack" {
     capabilities = ["read","list"]
 }
