@@ -1,35 +1,33 @@
 {
   "users": {
-    "telegram": {
-      "groups": ["telegram-rw"],
+    "backup": {
+      "groups": ["backup-rw"], 
       "sa": [
-        "birl",
-        "birl-api",
-        "os3c",
-        "os3t",
-        "telegram-rw",
-        "upsertbirl",
-        "whirl-telegram"
+        {"name": "ns", "bucket":"backup", "template": "int"}
+        ]},
+    "telegram": {
+      "groups": ["debug-rw","telegram-sessions-rw"],
+      "sa": [
+        {"name": "minion","bucket": "debug", "template": "int"}
       ]
     }
   },
 
   "groups": {
-    "telegram-rw": ["telegram-rw"]
+    "backup-rw": ["backup-rw"],
+    "telegram-rw": ["telegram-rw"],
+    "debug-rw": ["debug-rw"],
+    "telegram-sessions-rw": ["telegram-sessions-rw"]
   },
   "policies": {
-    "op": {"admin": ["*"]},
-    "APP-GA-OP": {"admin": ["*"]},
-    "APP-GA-DEV": {
-      "minio-dome-attachements": ["GetObject", "ListBucket"],
-      "minio-xdebug": ["GetObject", "ListBucket"],
-      "minio-maid": ["GetObject"],
-      "minio-telegram": ["GetObject", "ListBucket"],
-      "minio-os3-attachements": ["GetObject", "ListBucket"],
-      "minio-datafix": ["GetObject", "ListBucket"],
-      "minio-birl-images-rw": ["GetObject", "ListBucket"],
-      "minio-mycop-images": ["GetObject", "ListBucket"]
-    },
-    "telegram-rw": {"minio-telegram": ["*"]}
+    "APP-GA-OP": [{"type": "admin"}],
+    "APP-GA-DEV": [
+      {"bucket":"debug", "access": ["GetObject", "ListBucket","GetObjectTagging"]},
+      {"bucket": "telegram", "access": ["*"]}
+    ],
+    "backup-rw": [{"bucket": "backup", "access": ["*"]}],
+    "telegram-rw": [{"bucket": "telegram", "access": ["*"]}],
+    "debug-rw": [{"bucket": "debug", "access": ["*"]}],
+    "telegram-sessions-rw": [{"bucket": "telegram", "access": ["*"], "folder": "sessions"}]
   }
 }

@@ -32,6 +32,8 @@ RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git cur
     mkdir -p /home/runner/workdir && mkdir /home/fake && chmod 777 /home/fake
 
 USER 10123
+RUN mkdir /home/fake/.terraform.d/plugins/registry.terraform.io/aminueza/minio/3.6.5/linux_amd64/
+COPY ./references/minio-provider/terraform-provider-minio /home/fake/.terraform.d/plugins/registry.terraform.io/aminueza/minio/3.6.5/linux_amd64/
 WORKDIR /home/runner/workdir
 COPY ./dummy-kubecfg /.kubeconfig
 COPY ./docker-entrypoint.sh /
