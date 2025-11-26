@@ -3,7 +3,10 @@
 
 tenant:
   name: minio-tenant
-
+  configSecret: 
+    name: myminio-env-configuration
+    accessKey: ${values.accessKey}
+    secretKey: ${values.secretKey}
   ##  configuration:
   ##    name: minio-cluster
   ## Specification for MinIO Pool(s) in this Tenant.

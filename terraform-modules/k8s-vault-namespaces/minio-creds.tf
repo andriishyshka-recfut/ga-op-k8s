@@ -1,6 +1,7 @@
 
 data "vault_generic_secret" "users_credentials_from_vault" {
-  path = local.vaultUsersCredentialsPath
+  for_each = local.minioCreds
+  path = "${local.vaultUsersCredentialsPath}/${each.value}"
 }
 
 resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {
@@ -11,8 +12,8 @@ resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {
   }
 
   data = {
-    "accesskey" = jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[each.value[0]]).accessKey
-    "secretkey" = jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[each.value[0]]).secretKey
+    "accesskey" = data.vault_generic_secret.users_credentials_from_vault[each.key].data.access_key
+    "secretkey" = data.vault_generic_secret.users_credentials_from_vault[each.key].data.secret_key
   }
   depends_on = [
     kubernetes_namespace.ns

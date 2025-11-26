@@ -114,7 +114,7 @@ resource "kubernetes_cluster_role_binding" "developers_groups_binding" {
   dynamic "subject" {
     for_each = toset(flatten(local.developers))
     content {
-      kind      = "User"
+      kind      = "Group"
       name      = subject.key
       api_group = "rbac.authorization.k8s.io"
     }
