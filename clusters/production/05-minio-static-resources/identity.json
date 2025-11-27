@@ -1,6 +1,25 @@
 {
   "users": {
+    "acr": {
+      "groups": ["telegram-attachments-rw","telegram-yolo-rw"],
+      "sa": [
+        {"name": "ocr", "bucket":"telegram", "template": "int"},
+        {"name": "swirl", "bucket":"telegram", "template": "int"},
+        {"name": "os3", "bucket":"telegram", "template": "int"}
+      ]
+    },
     "backup": {"groups": ["backup-rw", "xbackup-rw"]},
+    "birl": {
+      "groups": ["telegram-attachments-rw"],
+      "sa":[
+        {"name": "draft", "bucket":"telegram", "template": "int"},
+        {"name": "base", "bucket":"telegram", "template": "int"},
+        {"name": "plastic", "bucket":"telegram", "template": "int"},
+        {"name": "mbase", "bucket":"telegram", "template": "int"},
+        {"name": "slip", "bucket":"telegram", "template": "int"},
+        {"name": "upsert", "bucket":"telegram", "template": "int"}
+      ]
+    },
     "busta": {"groups": ["xdebug-rw", "clicker-rw"]},    
     "elastic-backup": {"groups": ["backup-rw", "minio-es7-rw"]},
     "etherpad": {"groups": ["xbackup-rw"]},
@@ -11,6 +30,10 @@
     "etl_exporter": {"groups": ["logstash-rw", "kubescape-reports-rw"]},
     "gitlab": {"groups": ["gitlab-rw"]},
     "gitlab-runner": {"groups": ["gitlab-runner-rw"]},
+    "gs2es": {
+      "groups": ["telegram-images-rw"],
+      "sa": [{"name": "gs2es", "bucket":"telegram", "template": "int"}]
+    },
     "sftpgo": {"groups": ["sftpgo-rw"]},
     "harbor": {"groups": ["harbor-rw", "xbackup-rw"]},
     "kubescape": {"groups": ["kubescape-reports-rw"]},
@@ -18,9 +41,6 @@
     "logstash_red": {
       "groups": [ "logstash-rw", "etl-logstash-feeds-rw", "vandelay-rw" ],
       "sa": [{"name": "logstash_red", "bucket":"etl-logstash-feeds", "template": "int"}]
-    },
-    "telegram": {
-      "groups": ["telegram-rw"]
     },
     "xdebug": {"groups": ["xdebug-rw"]},
     "maid": {"groups": ["maid-rw"]},
@@ -32,6 +52,10 @@
     "minifier": {
       "groups": [ "telegram-rw", "birl-images-rw", "mycop-images-rw", "xdebug-rw" ]
     },
+    "minion-telegram": {
+      "groups": ["telegram-sessions-rw"],
+      "sa": [{"name": "unitedfullz","bucket":"telegram", "template": "int"}]
+    },
     "attachements": {"groups": ["dome-attachements-rw"]},
     "tarantool": {"groups": ["tarantool-rw"]},
     "thanos": {"groups": ["thanos-rw"]},
@@ -39,6 +63,13 @@
       "groups": ["datafix-rw", "telegram-rw", "xdebug-rw", "mycop-images-rw"]
     },
     "aws2kafka": {"groups": ["telegram-rw"]},
+    "telegram": {
+      "groups": ["telegram-rw"],
+      "sa": [
+        {"name": "telegram","bucket":"telegram", "template": "int"},
+        {"name": "os3","bucket":"telegram", "template": "int"}
+      ]
+    },
     "vandelay": {
       "groups": ["vandelay-rw", "logstash-ro", "xdebug-rw"],
       "sa": [{"name": "vandelay", "bucket":"vandelay", "template": "int", "port": 9000}]
@@ -46,7 +77,6 @@
   },
   "groups": {
     "mon-rw": ["mon-rw"],
-    "telegram-rw": ["telegram-rw"],
     "maid-rw": ["maid-rw"],
     "clicker-rw": ["clicker-rw"],
     "magescanner-rw": ["magescanner-rw"],
@@ -74,6 +104,11 @@
     "datafix-rw": ["datafix-rw"],
     "tarantool-rw": ["tarantool-rw"],
     "vandelay-rw": ["vandelay-rw"],
+    "telegram-rw": ["telegram-rw"],
+    "telegram-attachments-rw":["telegram-attachments-rw"],
+    "telegram-images-rw": ["telegram-images-rw"],
+    "telegram-sessions-rw": ["telegram-sessions-rw"],
+    "telegram-yolo-rw": ["telegram-yolo-rw"],
     "thanos-rw": ["thanos-rw"]
   },
   "policies": {
@@ -110,7 +145,6 @@
       { "bucket": "vandelay", "access": ["GetObject", "ListBucket"] }
     ],
     "mon-rw": [{ "bucket": "mon-rw", "access": ["*"] }],
-    "telegram-rw": [{ "bucket": "minio-telegram", "access": ["*"] }],
     "maid-rw": [{ "bucket": "minio-maid", "access": ["*"] }],
     "clicker-rw": [{ "bucket": "minio-clicker", "access": ["*"] }],
     "magescanner-rw": [{ "bucket": "minio-magescanner", "access": ["*"] }],
@@ -136,6 +170,11 @@
     "datafix-rw": [{ "bucket": "minio-datafix", "access": ["*"] }],
     "tarantool-rw": [{ "bucket": "tarantool-backup", "access": ["*"] }],
     "vandelay-rw": [{ "bucket": "vandelay", "access": ["*"] }],
+    "telegram-rw": [{ "bucket": "telegram", "access": ["*"] }],
+    "telegram-attachments-rw": [{"bucket": "telegram", "access": ["*"], "folder": "attachments"}],
+    "telegram-images-rw": [{"bucket": "telegram", "access": ["*"], "folder": "ds_check_images"}],
+    "telegram-sessions-rw": [{"bucket": "telegram", "access": ["*"], "folder": "sessions"}],
+    "telegram-yolo-rw": [{"bucket": "telegram", "access": ["*"], "folder": "yolo_models"}],
     "thanos-rw": [{ "bucket": "thanos", "access": ["*"] }]
   }
 }
