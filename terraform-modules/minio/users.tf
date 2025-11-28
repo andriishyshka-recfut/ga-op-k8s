@@ -35,6 +35,12 @@ resource "minio_iam_group_user_attachment" "group_user_attachment" {
   ]
 }
 
+resource "minio_iam_user_policy_attachment" "user_policy_attachment" {
+  for_each    = local.usersPolicies
+  user_name   = each.value.user
+  policy_name = each.value.name
+}
+
 resource "minio_iam_service_account" "service_account" {
   for_each    = local.usersSa
   name        = "${each.value.name}-${each.value.user}"
@@ -48,8 +54,8 @@ resource "vault_kv_secret_v2" "sa_secret" {
   mount               = "secret"
   name                = "mw/minio/sa/${each.value.name}_${each.value.user}"
   delete_all_versions = true
-  data_json = templatefile("${path.module}/../../templates/minio/vault_sa_secret.tftpl",{
-    creds = minio_iam_service_account.service_account[each.key],
+  data_json = templatefile("${path.module}/../../templates/minio/vault_sa_secret.tftpl", {
+    creds  = minio_iam_service_account.service_account[each.key],
     ca_crt = local.minioCa,
     values = each.value
   })
