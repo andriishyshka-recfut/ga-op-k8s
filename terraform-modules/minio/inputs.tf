@@ -3,16 +3,18 @@ variable "Values" {}
 
 
 locals {
-  groupsMap = var.Values.groupsMap
-  usersMap = var.Values.usersMap
-  bucketsMap = var.Values.bucketsMap
-  policiesMap = var.Values.policiesMap
-  groupPolicy = var.Values.groupPolicy
-  usersGroups = var.Values.usersGroups
-  usersSa = var.Values.usersSa
-  usersList = var.Values.usersList
-  bucketsIlm = var.Values.bucketsIlm
-  minioCa = var.Values.minioCa
+  groupsMap     = var.Values.groupsMap
+  usersMap      = var.Values.usersMap
+  bucketsMap    = var.Values.bucketsMap
+  policiesMap   = var.Values.policiesMap
+  groupPolicy   = var.Values.groupPolicy
+  usersGroups   = var.Values.usersGroups
+  usersSa       = var.Values.usersSa
+  usersList     = var.Values.usersList
+  usersPolicies = var.Values.usersPolicies
+  bucketsIlm    = var.Values.bucketsIlm
+  minioCa       = var.Values.minioCa
+
 }
 
 
