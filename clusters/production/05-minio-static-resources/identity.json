@@ -115,9 +115,9 @@
     "APP-GA-OP": [{"type": "admin"}],
     "APP-GA-DEV": [
       { "bucket": "minio-dome-attachements", "access": ["GetObject", "ListBucket"] },
-      { "bucket": "minio-xdebug", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "debug", "access": ["GetObject", "ListBucket"] },
       { "bucket": "minio-maid", "access": ["GetObject", "ListBucket"] },
-      { "bucket": "minio-telegram", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "telegram", "access": ["GetObject", "ListBucket","GetObjectTagging"] },
       { "bucket": "minio-os3-attachements", "access": ["GetObject", "ListBucket"] },
       { "bucket": "minio-datafix", "access": ["GetObject", "ListBucket"] },
       { "bucket": "minio-birl-images-rw", "access": ["GetObject", "ListBucket"] },
