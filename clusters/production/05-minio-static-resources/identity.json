@@ -1,7 +1,7 @@
 {
   "users": {
     "acr": {
-      "groups": ["telegram-attachments-rw","telegram-yolo-rw"],
+      "policies": ["telegram-attachments-rw","telegram-yolo-rw"],
       "sa": [
         {"name": "ocr", "bucket":"telegram", "template": "int"},
         {"name": "swirl", "bucket":"telegram", "template": "int"},
@@ -10,7 +10,7 @@
     },
     "backup": {"groups": ["backup-rw", "xbackup-rw"]},
     "birl": {
-      "groups": ["telegram-attachments-rw"],
+      "policies": ["telegram-attachments-rw"],
       "sa":[
         {"name": "draft", "bucket":"telegram", "template": "int"},
         {"name": "base", "bucket":"telegram", "template": "int"},
@@ -31,7 +31,7 @@
     "gitlab": {"groups": ["gitlab-rw"]},
     "gitlab-runner": {"groups": ["gitlab-runner-rw"]},
     "gs2es": {
-      "groups": ["telegram-images-rw"],
+      "policies": ["telegram-images-rw"],
       "sa": [{"name": "gs2es", "bucket":"telegram", "template": "int"}]
     },
     "sftpgo": {"groups": ["sftpgo-rw"]},
@@ -53,7 +53,7 @@
       "groups": [ "telegram-rw", "birl-images-rw", "mycop-images-rw", "xdebug-rw" ]
     },
     "minion-telegram": {
-      "groups": ["telegram-sessions-rw"],
+      "policies": ["telegram-sessions-rw"],
       "sa": [{"name": "unitedfullz","bucket":"telegram", "template": "int"}]
     },
     "attachements": {"groups": ["dome-attachements-rw"]},
@@ -64,7 +64,7 @@
     },
     "aws2kafka": {"groups": ["telegram-rw"]},
     "telegram": {
-      "groups": ["telegram-rw"],
+      "policies": ["telegram-rw"],
       "sa": [
         {"name": "telegram","bucket":"telegram", "template": "int"},
         {"name": "os3","bucket":"telegram", "template": "int"}
@@ -104,11 +104,6 @@
     "datafix-rw": ["datafix-rw"],
     "tarantool-rw": ["tarantool-rw"],
     "vandelay-rw": ["vandelay-rw"],
-    "telegram-rw": ["telegram-rw"],
-    "telegram-attachments-rw":["telegram-attachments-rw"],
-    "telegram-images-rw": ["telegram-images-rw"],
-    "telegram-sessions-rw": ["telegram-sessions-rw"],
-    "telegram-yolo-rw": ["telegram-yolo-rw"],
     "thanos-rw": ["thanos-rw"]
   },
   "policies": {
