@@ -1,10 +1,19 @@
 {
   "users": {
     "backup": {
-      "groups": ["backup-rw"], 
-      "sa": [
-        {"name": "ns", "bucket":"backup", "template": "int"}
-        ]},
+      "policies": ["backup-rw"], 
+      "sa": [{"name": "ns", "bucket":"backup", "template": "int"}]
+    },
+    "etl": {
+      "policies": ["etl-logstash-feeds-rw"],
+      "sa": [{"name": "etl", "bucket":"etl-logstash-feeds", "template": "int"}]
+    },
+    "magescanner": {
+      "sa": [{"name": "ns", "bucket":"backup", "template": "int"}]
+    },
+    "sftpgo": {
+      "sa": [{"name": "ns", "bucket":"backup", "template": "int"}]
+    },
     "telegram": {
       "groups": ["debug-rw","telegram-sessions-rw"],
       "sa": [
@@ -14,7 +23,6 @@
   },
 
   "groups": {
-    "backup-rw": ["backup-rw"],
     "telegram-rw": ["telegram-rw"],
     "debug-rw": ["debug-rw"],
     "telegram-sessions-rw": ["telegram-sessions-rw"]
@@ -26,8 +34,9 @@
       {"bucket": "telegram", "access": ["*"]}
     ],
     "backup-rw": [{"bucket": "backup", "access": ["*"]}],
-    "telegram-rw": [{"bucket": "telegram", "access": ["*"]}],
     "debug-rw": [{"bucket": "debug", "access": ["*"]}],
+    "etl-logstash-feeds-rw": [{ "bucket": "etl-logstash-feeds", "access": ["*"] }],
+    "telegram-rw": [{"bucket": "telegram", "access": ["*"]}],
     "telegram-sessions-rw": [{"bucket": "telegram", "access": ["*"], "folder": "sessions"}]
   }
 }

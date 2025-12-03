@@ -39,6 +39,7 @@ resource "minio_iam_user_policy_attachment" "user_policy_attachment" {
   for_each    = local.usersPolicies
   user_name   = each.value.user
   policy_name = each.value.name
+  depends_on = [ minio_iam_user.users ]
 }
 
 resource "minio_iam_service_account" "service_account" {
