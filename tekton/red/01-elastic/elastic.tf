@@ -10,5 +10,6 @@ module "elastic" {
   BackupBucketName       = "es7"
   BackupBucketBasePath   = "7"
   OidcRedirectUri        = "k.regemini.com"
+  VaultAddress           = var.VaultAddress
 }
 
