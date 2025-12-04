@@ -38,7 +38,7 @@ locals {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host                   = local.gkeClusterEndpoint
     token                  = local.gkeBearerToken
     cluster_ca_certificate = local.clusterCaCertificate

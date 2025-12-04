@@ -20,6 +20,11 @@ locals {
         "sidecar.istio.io/inject" : "false",
         "co.elastic.logs/exclude_lines" : "^.*\"event.type\":\"transport\""
       }
+      transport = {
+        certs    = ["monthly"]
+        active   = "monthly"
+        duration = "1080h"
+      }
       addons = {
         notifications = {
           slack = {

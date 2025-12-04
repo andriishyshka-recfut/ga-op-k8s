@@ -84,53 +84,26 @@ extraInitContainers:
       - name: elastic-plugins-local
         mountPath: /usr/share/elasticsearch/plugins
 %{ endif ~}
-  - name: setup-tls-cert
-    image: "docker.elastic.co/elasticsearch/elasticsearch:${globalSettings.imageTag}"
-    command:
-      - sh
-      - -c
-      - |
-        #!/usr/bin/env bash
-        set -euo pipefail
-        elasticsearch-certutil cert \
-          --pem \
-          --name transportcert \
-          --days 1000 \
-          --ip $POD_IP \
-          --dns $NODE_NAME,$POD_SERVICE_NAME,$POD_SERVICE_NAME_HEADLESS,$NODE_NAME.$POD_SERVICE_NAME,$NODE_NAME.$POD_SERVICE_NAME_HEADLESS \
-          --ca-cert /usr/share/elasticsearch/config/transport-ca/tls.crt \
-          --ca-key /usr/share/elasticsearch/config/transport-ca/tls.key  \
-          --out /usr/share/elasticsearch/config/transport-certs/certs.zip
-          unzip /usr/share/elasticsearch/config/transport-certs/certs.zip -d /usr/share/elasticsearch/config/transport-certs 
-    env:
-      - name: NODE_NAME
-        valueFrom:
-          fieldRef:
-            fieldPath: metadata.name
-      - name: POD_IP
-        valueFrom:
-          fieldRef:
-            fieldPath: status.podIP
-      - name: POD_SERVICE_NAME
-        value: "${nodePool}"
-      - name: POD_SERVICE_NAME_HEADLESS
-        value: "${nodePool}-headless"
-    volumeMounts:
-    - name: elastic-transport-certificates
-      mountPath: /usr/share/elasticsearch/config/transport-certs
-    - name: elastic-transport-ca
-      mountPath: /usr/share/elasticsearch/config/transport-ca
 extraEnvs:
   - name: ELASTIC_PASSWORD
     valueFrom:
       secretKeyRef:
         name: elastic-credentials
         key: elastic
-secretMounts: 
+secretMounts:
+%{ for cert in globalSettings.transport.certs ~}
+%{ if cert == globalSettings.transport.active ~}
   - name: elastic-transport-ca
-    secretName: elastic-transport-certs
-    path: /usr/share/elasticsearch/config/ca
+    secretName: elastic-transport-certs-${cert}
+    path: /usr/share/elasticsearch/config/transport-certs/active
     defaultMode: 0755
+%{ else ~}
+  - name: elastic-transport-ca-${cert}
+    secretName: elastic-transport-certs-${cert}
+    path: /usr/share/elasticsearch/config/transport-certs/${cert}
+    defaultMode: 0755
+%{ endif ~}
+%{ endfor ~}
   - name: elastic-https-certs
     secretName: elastic-https-certs
     path: /usr/share/elasticsearch/config/https-certs
@@ -138,7 +111,7 @@ secretMounts:
 %{ if length(globalSettings.remotecerts) > 0 ~}
   - name: elastic-remote-certs
     secretName: elastic-remote-certs
-    path: /usr/share/elasticsearch/config/remote-certs
+    path: /usr/share/elasticsearch/config/transport-certs/remote
     defaultMode: 0755
 %{ endif ~}
 %{ if lookup(globalSettings.addons, "authorizations", 0) != 0 ~}
@@ -182,13 +155,18 @@ esConfig:
     xpack.security.enabled: true
     xpack.security.transport.ssl.enabled: true
     xpack.security.transport.ssl.verification_mode : certificate
-    xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/transport-certs/transportcert/transportcert.key
-    xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/transport-certs/transportcert/transportcert.crt
+    xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/transport-certs/active/tls.key
+    xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/transport-certs/active/tls.crt
     xpack.security.transport.ssl.certificate_authorities:
-      - /usr/share/elasticsearch/config/ca/ca.crt
+      - /usr/share/elasticsearch/config/transport-certs/active/ca.crt
+%{ for cert in globalSettings.transport.certs ~}
+%{ if cert != globalSettings.transport.active ~}
+      - /usr/share/elasticsearch/config/transport-certs/${cert}/ca.crt
+%{ endif ~}
+%{ endfor ~}   
 %{ if length(globalSettings.remotecerts) > 0 ~}
 %{ for cert in globalSettings.remotecerts ~}
-      - /usr/share/elasticsearch/config/remote-certs/${cert}
+      - /usr/share/elasticsearch/config/transport-certs/remote/${cert}
 %{ endfor ~}
 %{ endif ~}
     xpack.security.http.ssl.enabled: true

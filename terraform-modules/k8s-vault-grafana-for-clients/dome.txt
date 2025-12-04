@@ -28,6 +28,7 @@ cryptbb
 cyberbreach
 cweb
 dark2web
+darkforums
 darkmarket
 darkmoney
 darktime

@@ -16,6 +16,12 @@ ElasticSettings:
       co.elastic.logs/module: "elasticsearch"
       sidecar.istio.io/inject: "false"
       co.elastic.logs/exclude_lines: '^.*"event.type":"transport",^.*metricbeat_user,^.*filebeat_user'
+    transport:
+      certs:
+        - "2025"
+        - "migration"
+      active: "migration"
+      duration: "8880h"
     addons:
       notifications:
         slack:

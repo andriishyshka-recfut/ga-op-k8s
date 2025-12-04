@@ -46,10 +46,10 @@ locals {
 
   minioCreds = {
     for namespace in var.Settings.clusters[var.Cluster].namespaces :
-    namespace.name => namespace.minioCreds...
+    namespace.name => namespace.minioCreds
     if can(namespace.minioCreds)
   }
-  vaultUsersCredentialsPath = "${var.Settings.clusters[var.Cluster][var.Color].minio.vault_users_config_path}/users"
+  vaultUsersCredentialsPath = var.Settings.clusters[var.Cluster][var.Color].minio.vault_mng_users_config_path
 
   devAccessAllowed      = var.Cluster == "production" ? 0 : 1
   appSpecificVaultRoles = var.Color == "red" ? 0 : 1

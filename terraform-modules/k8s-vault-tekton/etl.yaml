@@ -249,7 +249,7 @@ spec:
           CRONJOB_NAME=$(kubectl get cronjob -n etl | grep ${MINIO_PATH} | grep etl | awk '{print $1}')
           if [[ $(kubectl get cronjobs $CRONJOB_NAME -n etl -o jsonpath='{.spec.suspend}') == "false" ]]; then
             echo "Creating job $CRONJOB_NAME ..."
-            kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tekton$(date '+%S')-$((0 + RANDOM % 9)))
+            kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}-tekton$(date '+%S')-$((0 + RANDOM % 9)))
           else
             echo "Job $CRONJOB_NAME is suspended."
           fi
@@ -374,7 +374,7 @@ spec:
           export CRONJOB_NAME=${JOB_NAME%-*}
           if [[ $(kubectl get cronjobs $CRONJOB_NAME -n etl -o jsonpath='{.spec.suspend}') == "false" ]]; then
             echo "Creating job $CRONJOB_NAME ..."
-            kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}--tekton$(date '+%S')-$((0 + RANDOM % 9)))
+            kubectl create job -n etl --from=cronjob/$CRONJOB_NAME $([[ $(echo ${CRONJOB_NAME} | wc -c | xargs ) > 52 ]] && echo ${CRONJOB_NAME::-11}-tekton$(date '+%S')-$((0 + RANDOM % 9)) || echo ${CRONJOB_NAME}-tekton$(date '+%S')-$((0 + RANDOM % 9)))
             kubectl delete job -n etl  $JOB_NAME
           else
             echo "Job $CRONJOB_NAME is suspended."
