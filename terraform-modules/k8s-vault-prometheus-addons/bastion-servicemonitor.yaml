@@ -44,10 +44,8 @@ metadata:
     k8s-app: bastion-exporter
 subsets:
   - addresses:
-    - ip: 172.19.0.5
+    - ip: 172.23.0.4
     ports:
       - name: metrics
         port: 9100
         protocol: TCP
-
-# (node_filesystem_avail_bytes{instance="172.19.0.5:9100"}*100) /node_filesystem_size_bytes{instance="172.19.0.5:9100"}
