@@ -4,17 +4,17 @@ resource "vault_policy" "lumberjack" {
 path "secret/data/wl/lumberjack/*" {
     capabilities = ["read","list"]
 }
-path "secret/data/es-creds-compose-prod/metaLumberjack" {
-    capabilities = ["read","list"]
-}
-path "secret/data/mongo/metaLumberjack" {
-    capabilities = ["read","list"]
-}
-path "secret/data/red/mw/monitoring/otel" {
+path "secret/data/logstash/*" {
     capabilities = ["read","list"]
 }
 path "secret/data/elasticsearch-admin/*" {
   capabilities = ["read","list"]
+}
+path "secret/data/mongo/*" {
+  capabilities = ["read","list"]
+}
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
 }
 EOT
 }
