@@ -8,7 +8,10 @@
         {"name": "os3", "bucket":"telegram", "template": "int"}
       ]
     },
-    "backup": {"groups": ["backup-rw", "xbackup-rw"]},
+    "backup": {
+      "policies": ["backup-rw"], 
+      "sa": [{"name": "ns", "bucket":"backup", "template": "int"}]
+    },
     "birl": {
       "policies": ["telegram-attachments-rw"],
       "sa":[
@@ -45,7 +48,10 @@
     "xdebug": {"groups": ["xdebug-rw"]},
     "maid": {"groups": ["maid-rw"]},
     "clicker": {"groups": ["clicker-rw"]},
-    "magescanner": {"groups": ["magescanner-rw"]},
+    "magescanner": {
+      "policies": ["backup-rw"],
+      "sa": [{"name": "ns", "bucket":"backup", "template": "int"}]
+    },
     "ocr": {"groups": ["telegram-rw", "dome-attachements-rw"]},
     "swirl": {"groups": ["telegram-rw", "dome-attachements-rw"]},
     "similarweb": {"groups": ["similarweb-rw"]},
@@ -88,7 +94,6 @@
     "etl-logstash-feeds-rw": ["etl-logstash-feeds-rw"],
     "birl-images-rw": ["birl-images-rw"],
     "mycop-images-rw": ["mycop-images-rw"],
-    "backup-rw": ["backup-rw"],
     "xbackup-rw": ["xbackup-rw"],
     "minio-es7-rw": ["minio-es7-rw"],
     "kubescape-reports-rw": ["kubescape-reports-rw"],
@@ -139,6 +144,7 @@
       { "bucket": "etl-logstash-feeds", "access": ["GetObject", "ListBucket"] },
       { "bucket": "vandelay", "access": ["GetObject", "ListBucket"] }
     ],
+    "backup-rw": [{ "bucket": "minio-backup", "access": ["*"] }],
     "mon-rw": [{ "bucket": "mon-rw", "access": ["*"] }],
     "maid-rw": [{ "bucket": "minio-maid", "access": ["*"] }],
     "clicker-rw": [{ "bucket": "minio-clicker", "access": ["*"] }],
@@ -151,7 +157,6 @@
     "etl-logstash-feeds-rw": [{ "bucket": "etl-logstash-feeds", "access": ["*"] }],
     "birl-images-rw": [{ "bucket": "minio-birl-images", "access": ["*"] }],
     "mycop-images-rw": [{ "bucket": "minio-mycop-images", "access": ["*"] }],
-    "backup-rw": [{ "bucket": "minio-backup", "access": ["*"] }],
     "xbackup-rw": [{ "bucket": "minio-xbackup", "access": ["*"] }],
     "minio-es7-rw": [{ "bucket": "minio-es7", "access": ["*"] }],
     "kubescape-reports-rw": [{ "bucket": "kubescape-reports", "access": ["*"] }],
