@@ -118,7 +118,7 @@ resource "null_resource" "delete_zero_cronjobs" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.delete_zero_cronjobs
   }
-  depends_on = [null_resource.stop_flux]
+  depends_on = [null_resource.stop_flux, null_resource.stop_etl_operator]
 }
 
 resource "null_resource" "stop_etl_operator" {
@@ -130,20 +130,6 @@ resource "null_resource" "stop_etl_operator" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_etl_operator
   }
-}
-
-resource "null_resource" "delete_etl_jobs" {
-
-  triggers = {
-    command = md5(local.delete_etl_jobs)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.delete_etl_jobs
-  }
-  depends_on = [
-    null_resource.stop_etl_operator
-  ]
 }
 
 resource "null_resource" "stop_cvat" {
