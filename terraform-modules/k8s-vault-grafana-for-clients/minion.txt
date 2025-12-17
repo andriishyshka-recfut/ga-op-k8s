@@ -9,7 +9,6 @@ centauri
 cygni
 kichai
 leo
-majoris
 mike
 osage
 pollux
