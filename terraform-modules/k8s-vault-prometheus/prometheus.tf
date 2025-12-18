@@ -51,6 +51,8 @@ resource "helm_release" "prometheus" {
   namespace         = local.prometheusNs
   dependency_update = true
   version           = local.helmVersion
+  take_ownership    = false
+  upgrade_install   = false
   values = [
     templatefile("${path.module}/${local.prometheusConfigFile}", {
       prometheus_slack_webhooks          = local.prometheusSlackWebHooks,
