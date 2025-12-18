@@ -2,11 +2,13 @@ achernar
 acrux
 adhara
 altair
+athna
 becrux
 bravo
 carinae
 centauri
 cygni
+fullcard
 kichai
 leo
 mike
