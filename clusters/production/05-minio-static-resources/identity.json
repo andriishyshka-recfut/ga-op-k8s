@@ -42,7 +42,7 @@
     "kubescape": {"groups": ["kubescape-reports-rw"]},
     "kafka-checker": {"groups": ["kafka-backups-rw"]},
     "logstash_red": {
-      "groups": [ "logstash-rw", "etl-logstash-feeds-rw", "vandelay-rw" ],
+      "policies": ["mon-rw","logstash-rw","etl-logstash-feeds-rw","vandelay-rw"],
       "sa": [{"name": "logstash_red", "bucket":"etl-logstash-feeds", "template": "int"}]
     },
     "xdebug": {"groups": ["xdebug-rw"]},
@@ -145,7 +145,7 @@
       { "bucket": "vandelay", "access": ["GetObject", "ListBucket"] }
     ],
     "backup-rw": [{ "bucket": "minio-backup", "access": ["*"] }],
-    "mon-rw": [{ "bucket": "mon-rw", "access": ["*"] }],
+    "mon-rw": [{ "bucket": "mon", "access": ["*"] }],
     "maid-rw": [{ "bucket": "minio-maid", "access": ["*"] }],
     "clicker-rw": [{ "bucket": "minio-clicker", "access": ["*"] }],
     "magescanner-rw": [{ "bucket": "minio-magescanner", "access": ["*"] }],
