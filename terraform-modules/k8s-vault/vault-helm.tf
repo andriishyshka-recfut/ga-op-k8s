@@ -30,7 +30,7 @@ resource "helm_release" "vault" {
   namespace         = "vault"
   dependency_update = "true"
   values = [
-    file("${path.module}/values-vault.yaml")
+    templatefile("${path.module}/templates/values-vault.tftpl", {values={google_project = local.currentProject,replicas = local.replicasCount, image = local.vaultImage}})
   ]
   set = [
   {

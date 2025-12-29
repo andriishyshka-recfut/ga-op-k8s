@@ -10,6 +10,7 @@ variable "GkeClusterConnectionSettings" {}
 
 locals {
   GkeClusterConnectionSettings = jsondecode(var.GkeClusterConnectionSettings)
+  tektonResources              = ["task.yaml", "pipeline.yaml", "pipelinerun.yaml", "bots.yaml", "pods-cleanup.yaml", "telegram.yaml"]
 }
 
 module "k8s-istio" {
@@ -49,4 +50,11 @@ module "k8s-vault-tekton" {
   Settings                     = var.Settings
   VaultAddress                 = var.VaultAddress
   depends_on                   = [module.k8s-vault]
+}
+
+module "k8s-vault-tekton-resources" {
+  source     = "../../../../terraform-modules/k8s-vault-tekton-resources"
+  Settings   = var.Settings
+  Resources  = local.tektonResources
+  depends_on = [module.k8s-vault-tekton]
 }

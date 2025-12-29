@@ -17,7 +17,21 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-namespaces"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
+
+    - name: tekton-resources
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      runAfter:
+        - namespaces
+      params:
+        - name: path
+          value: "k8s/tekton/stage-1/01-tekton-resources"
+        - name: branch
+          value: "\\${branch}"
 
     - name: minio
       taskRef:
@@ -31,7 +45,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-minio"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: redis
       taskRef:
@@ -45,7 +59,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-redis"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: external-secrets
       taskRef:
@@ -59,7 +73,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-external-secrets"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: monitoring-elastic
       taskRef:
@@ -73,7 +87,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-monitoring-elastic"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: stakater-reloader
       taskRef:
@@ -87,7 +101,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-stakater"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: fluxcd
       taskRef:
@@ -101,7 +115,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-fluxcd"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: fluxcd-resources
       taskRef:
@@ -115,7 +129,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-fluxcd-resources"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: monitoring
       taskRef:
@@ -131,7 +145,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-monitoring"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: kyverno
       taskRef:
@@ -146,7 +160,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-kyverno"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: kubescape
       taskRef:
@@ -160,7 +174,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-kubescape"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -182,7 +196,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-2/02-stop-apps"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -226,7 +240,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-3/03-stop-data-services"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -248,7 +262,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-4/04-disk-snapshots"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -270,7 +284,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-5/05-mongo"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: kafka-topics
       taskRef:
@@ -282,7 +296,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-5/05-clone-kafka-topics"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: kafka
       taskRef:
@@ -296,7 +310,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-5/05-kafka"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: minio-helm
       taskRef:
@@ -308,7 +322,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-5/05-minio-helm"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -330,7 +344,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-5/05-kafka-check-data"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -352,7 +366,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-restore-system-indices"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: monitoring-post
       taskRef:
@@ -366,7 +380,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-monitoring-post"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: apply-apm-secrets
       taskRef:
@@ -380,7 +394,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-1/01-namespaces"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: istio
       taskRef:
@@ -394,7 +408,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-istio"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: tls-proxy
       taskRef:
@@ -408,7 +422,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-tls-proxy"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: static-certs
       taskRef:
@@ -422,7 +436,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-static-certs"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: ingress
       taskRef:
@@ -437,7 +451,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-ingress"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: internal-ingress
       taskRef:
@@ -452,7 +466,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-internal-ingress"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: post-postgres
       taskRef:
@@ -466,7 +480,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-postgres"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: nfs
       taskRef:
@@ -480,7 +494,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-nfs"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: tor-controller
       taskRef:
@@ -495,7 +509,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-tor-controller"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: fluxcd
       taskRef:
@@ -509,7 +523,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-fluxcd-resources"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: kiali
       taskRef:
@@ -523,7 +537,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-kiali"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: etl-operator
       taskRef:
@@ -537,7 +551,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-etl-operator"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: cvat
       taskRef:
@@ -552,7 +566,7 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-cvat"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"
 
     - name: 06-restore-old-filebeats
       taskRef:
@@ -566,4 +580,4 @@ spec:
         - name: path
           value: "k8s/tekton/stage-6/06-restore-old-filebeats"
         - name: branch
-          value: "\\#1020-prod-dr-2025-05-11"
+          value: "\\${branch}"

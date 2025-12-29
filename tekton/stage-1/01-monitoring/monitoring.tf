@@ -12,9 +12,7 @@ module "prometheus-addons" {
   Settings            = var.Settings
   Cluster             = var.Cluster
   Color               = var.Color
-  depends_on = [
-    module.prometheus
-  ]
+  depends_on = [ module.prometheus ]
 }
 
 module "fluxcd-prometheus-main-rules" {
@@ -22,6 +20,7 @@ module "fluxcd-prometheus-main-rules" {
   Cluster = var.Cluster
   Color   = var.Color
   Values  = local.values
+  depends_on = [ module.prometheus ]
 }
 
 locals {

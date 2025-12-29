@@ -5,7 +5,7 @@ resource "kubectl_manifest" "ingress_internal" {
 
 resource "kubectl_manifest" "endpoints" {
   for_each  = local.services
-  yaml_body = templatefile("${path.module}/endpoint.tftpl", merge({ settings = each.value }, { name = each.key }, { static_ip = local.internalStaticIps[each.key] }))
+  yaml_body = templatefile("${path.module}/endpoint.tftpl", merge({ settings = each.value }, { name = each.key }, { static_ip = lookup(each.value,"ip", local.internalStaticIps[each.key]) }))
 }
 
 resource "kubectl_manifest" "service_internal" {
