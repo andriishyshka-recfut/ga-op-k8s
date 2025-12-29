@@ -42,14 +42,15 @@ locals {
   # istioExposeToggle         = var.Settings.clusters[var.Cluster][var.Color].vault.istio_expose ? 1 : 0
   replicasCount  = 0
   vaultVersion   = var.Settings.clusters[var.Cluster].versions.vault.version
+  vaultImage     = lookup(var.Settings.clusters[var.Cluster].versions.vault, "image", false)
   currentProject = data.google_client_config.current.project
   vaultIssuer = {
-    name  = "vault-issuer"
-    mountPath = "/v1/auth/k8s-${var.Cluster}-${var.Color}"
-    vaultRole = "cert-manager"
-    secretName = "sa-${var.Cluster}-cert-manager"
+    name         = "vault-issuer"
+    mountPath    = "/v1/auth/k8s-${var.Cluster}-${var.Color}"
+    vaultRole    = "cert-manager"
+    secretName   = "sa-${var.Cluster}-cert-manager"
     vaultAddress = var.VaultAddress
-    pkiRole = "elastic"
-    pkiPath = "pki-elastic-int"
+    pkiRole      = "elastic"
+    pkiPath      = "pki-elastic-int"
   }
 }

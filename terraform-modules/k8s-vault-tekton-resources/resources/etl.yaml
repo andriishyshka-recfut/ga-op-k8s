@@ -1,5 +1,3 @@
-# SA
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -11,10 +9,6 @@ kind: ServiceAccount
 metadata:
   name: tekton-etl-leftovers-tasks
   namespace: tekton-tasks
-
-# Role|ClusterRole
-# RoleBinding|ClusterRoleBinding
-#
 
 ---
 # access to ns: etl for jobs/cronjobs
@@ -28,8 +22,7 @@ rules:
   resources: ["jobs", "cronjobs"]
   verbs: ["get", "list", "delete", "create"]
 
-#
-# webhook
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
