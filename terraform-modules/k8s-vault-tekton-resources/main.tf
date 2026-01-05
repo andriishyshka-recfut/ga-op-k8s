@@ -11,4 +11,5 @@ resource "kubectl_manifest" "tekton_resource_pipeline" {
 resource "kubectl_manifest" "tekton_resource" {
   for_each  = local.not_pipeline_yaml
   yaml_body = each.value
+  depends_on = [ kubectl_manifest.tekton_resource_pipeline ]
 }
