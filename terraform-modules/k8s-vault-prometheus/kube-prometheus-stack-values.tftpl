@@ -34,11 +34,11 @@ grafana:
   namespaceOverride: "monitoring"
   resources:
     requests:
-      memory: 50Mi
-      cpu: 20m
+      memory: 1024Mi
+      cpu: 500m
     limits:
-      memory: 200Mi
-      cpu: 100m
+      memory: 1200Mi
+      cpu: 600m
   podAnnotations:
     sidecar.istio.io/inject: "false"
   grafana.ini:
