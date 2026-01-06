@@ -28,7 +28,7 @@ locals {
     issuer              = data.vault_generic_secret.okta_oidc.data.issuer
     org_mapping         = "\"*:1:Viewer\""
     role_attribute_path = "contains(groups[*], 'APP-GA-OP') && 'GrafanaAdmin'",
-    allowed_groups      = "APP-GA-OP,APP-GA-DEV"
+    allowed_groups      = "APP-GA-OP,APP-GA-DEV,APP-GA-PM,APP-GA-GRAFANA"
   }
 }
 
