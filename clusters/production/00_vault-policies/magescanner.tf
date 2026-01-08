@@ -41,7 +41,7 @@ path "secret/data/mongo/similarweb" {
 path "secret/data/mongo/metaBeat" {
 	capabilities = ["read","list"]
 }
-path "secret/magescanner/splash_vpn" {
+path "secret/magescanner/whoer_vpn" {
   capabilities = ["read","list"]
 }
 path "secret/magescanner/surfshark_creds" {
