@@ -7,7 +7,7 @@ data "vault_generic_secret" "grafana" {
 }
 
 data "vault_generic_secret" "prometheus" {
-  path = "secret/slack/prometheus"
+  path = local.slackSecretPath
 }
 
 data "vault_generic_secret" "minio" {
@@ -63,6 +63,7 @@ resource "helm_release" "prometheus" {
       additional_rule_labels             = var.Cluster,
       thanos_version                     = local.thanosSidecarVersion,
       okta                               = local.grafana_okta
+      cluster                            = var.Cluster
     })
   ]
 }
