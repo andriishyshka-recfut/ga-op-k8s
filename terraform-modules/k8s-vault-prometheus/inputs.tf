@@ -19,7 +19,7 @@ locals {
   prometheusExtUrl        = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus, "prometheusExtUrl", "http://localhost:9090")
   prometheusConfigFile    = var.Color == "red" ? "red-kube-prometheus-stack-values.tftpl" : "kube-prometheus-stack-values.tftpl"
   grafanaSecretpath       = var.Color == "red" ? "secret/red/grafana" : "secret/grafana"
-  slackSecretPath         = var.Color == "red" ? "secret/red/slack/prometheus" : "secret/slack/prometheus"
+  slackSecretPath         = var.Color == "red" ? "secret/red/slack/prometheus" : "secret/misc/slack/app/AlertManager"
   thanosMinioUser         = "thanos"
   prometheusSlackWebHooks = data.vault_generic_secret.prometheus.data
   grafana_okta = {

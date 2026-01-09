@@ -244,58 +244,58 @@ alertmanager:
     - name: "null"
     - name: "slack-critical"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_critical}
-          channel: '#prometheus-critical'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-critical}
+          channel: '#gemini_prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-etl"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_etl}
-          channel: '#prometheus-etl'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-critical}
+          channel: '#gemini_prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
 %{ if additional_rule_labels == "production" ~}
     - name: "slack-ccr"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_ccr}
-          channel: '#_ccr'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-critical}
+          channel: '#gemini_prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true         
 %{ endif ~}
     - name: "slack-dome-bots"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_bots_dome}
-          channel: '#prometheus-dome'
+        - api_url: ${prometheus_slack_webhooks.gemini-dome}
+          channel: '#gemini-dome'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true         
     - name: "slack-minion-bots"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_bots_minion}
-          channel: '#prometheus-minion'
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-live'" : "'#gemini_prometheus-test'" }
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-dome-mapping"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_dome_mapping}
-          channel: '#dome-mapping'
+        - api_url: ${prometheus_slack_webhooks.gemini-dome}
+          channel: '#gemini-dome'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-paste"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_paste}
-          channel: '#paste'
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-live'" : "'#gemini_prometheus-test'" }
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "tekton-webhook-notifications-and-slack"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url}
-          channel: '#prometheus'
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-live'" : "'#gemini_prometheus-test'" }
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     - name: "tekton-and-slack-woresolve"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url}
-          channel: '#prometheus'
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-live'" : "'#gemini_prometheus-test'" }
           send_resolved: false
           text: '{{ template "slack.custom.text" . }}'
     - name: "tekton-fail-bots-webhook-notifications-and-slack"
@@ -303,8 +303,8 @@ alertmanager:
         - send_resolved: false
           url: "http://el-fail-bots-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url}
-          channel: '#prometheus'
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-live'" : "'#gemini_prometheus-test'" }
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     - name: "tekton-failed-etl-jobs-webhook-notifications-and-slack"
