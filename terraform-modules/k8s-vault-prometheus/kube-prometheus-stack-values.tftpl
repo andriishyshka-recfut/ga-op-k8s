@@ -254,14 +254,6 @@ alertmanager:
           channel: '#gemini_prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
-%{ if additional_rule_labels == "production" ~}
-    - name: "slack-ccr"
-      slack_configs:
-        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-critical}
-          channel: '#gemini_prometheus-critical'
-          text: '{{ template "slack.custom.text" . }}'
-          send_resolved: true         
-%{ endif ~}
     - name: "slack-dome-bots"
       slack_configs:
         - api_url: ${prometheus_slack_webhooks.gemini-dome}
@@ -342,10 +334,6 @@ alertmanager:
         - matchers:
           - alertname=~"DomeMappingChanged"
           receiver: "slack-dome-mapping"
-        - matchers:
-          - alertname=~"CCRReplicationLag|CCRReadExceptions|CCRIndexPaused"
-          - cluster=~"production"
-          receiver: "slack-ccr"
         - matchers:
           - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"
           receiver: "slack-dome-bots"
