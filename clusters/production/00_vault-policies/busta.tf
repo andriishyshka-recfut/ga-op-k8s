@@ -4,6 +4,9 @@ resource "vault_policy" "busta" {
 path "secret/data/wl/busta/*" {
   capabilities = ["read","list"]
 }
+path "secret/metadata/wl/busta/*" {
+  capabilities = ["read","list"]
+}
 path "secret/data/wl/clicker/engine-definer" {
   capabilities = ["read","list"]
 }
@@ -22,5 +25,9 @@ path "secret/data/es-creds-compose-prod/_busta.ms" {
 path "secret/data/es-creds-compose-prod/elastic*" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/monitoring/otel" {
+  capabilities = ["read","list"]
+}
 EOT
 }
+
