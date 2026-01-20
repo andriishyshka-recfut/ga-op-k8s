@@ -40,5 +40,8 @@ path "secret/data/mw/monitoring/otel" {
 path "secret/data/wl/ka/*" {
    capabilities = ["read","list"]
 }
+path "secret/data/misc/slack/app/MINION" {
+   capabilities = ["read","list"]
+}
 EOT
 }
