@@ -27,7 +27,7 @@
     "elastic-backup": {"groups": ["backup-rw", "minio-es7-rw"]},
     "etherpad": {"groups": ["xbackup-rw"]},
     "etl": {
-      "groups": [ "logstash-rw", "etl-logstash-feeds-rw", "birl-images-rw", "mycop-images-rw" ],
+      "policies": [ "logstash-rw", "etl-logstash-feeds-rw", "birl-images-rw", "mycop-images-rw", "mon-rw" ],
       "sa": [{"name": "etl", "bucket":"etl-logstash-feeds", "template": "int", "port": 9000}]
     },
     "etl_exporter": {"groups": ["logstash-rw", "kubescape-reports-rw"]},
