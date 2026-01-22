@@ -20,7 +20,6 @@ ElasticSettings:
       verification_mode: certificate
       certs:
         - "2026"
-        - "migration"
       active: "2026"
 #default 8880h
       duration: "3600h"
