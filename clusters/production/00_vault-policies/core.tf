@@ -58,5 +58,8 @@ path "secret/data/wl/minifier/*" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/misc/slack/app/ms-auth" {
+   capabilities = ["read","list"]
+}
 EOT
 }
