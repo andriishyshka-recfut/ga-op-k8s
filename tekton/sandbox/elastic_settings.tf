@@ -21,9 +21,10 @@ locals {
         "co.elastic.logs/exclude_lines" : "^.*\"event.type\":\"transport\""
       }
       transport = {
-        certs    = ["monthly"]
-        active   = "monthly"
-        duration = "1080h"
+        verification_mode = "certificate"
+        certs             = ["monthly"]
+        active            = "monthly"
+        duration          = "1080h"
       }
       addons = {
         notifications = {

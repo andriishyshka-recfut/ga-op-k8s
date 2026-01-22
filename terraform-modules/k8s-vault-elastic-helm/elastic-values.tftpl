@@ -154,7 +154,7 @@ esConfig:
   elasticsearch.yml: |
     xpack.security.enabled: true
     xpack.security.transport.ssl.enabled: true
-    xpack.security.transport.ssl.verification_mode : certificate
+    xpack.security.transport.ssl.verification_mode : ${ globalSettings.transport.verification_mode }
     xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/transport-certs/active/tls.key
     xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/transport-certs/active/tls.crt
     xpack.security.transport.ssl.certificate_authorities:

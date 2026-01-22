@@ -17,15 +17,17 @@ ElasticSettings:
       sidecar.istio.io/inject: "false"
       co.elastic.logs/exclude_lines: '^.*"event.type":"transport",^.*metricbeat_user,^.*filebeat_user'
     transport:
+      verification_mode: certificate
       certs:
-        - "2025"
+        - "2026"
         - "migration"
-      active: "migration"
-      duration: "8880h"
+      active: "2026"
+#default 8880h
+      duration: "3600h"
     addons:
       notifications:
         slack:
-          vault_path: "secret/red/elastic-notification-accounts"
+          vault_path: "secret/misc/slack/app/X-Pack"
         email:
           vault_path: "secret/red/elastic-notification-accounts"
       authorizations:

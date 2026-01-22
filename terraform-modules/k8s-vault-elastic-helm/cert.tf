@@ -98,24 +98,24 @@ resource "kubernetes_manifest" "certificate_elastic_elastic_transport_certs" {
       "namespace" = local.globalSettings.namespace
     }
     "spec" = {
-      "commonName" = "elasticsearch-coor.elastic.svc"
+      "commonName" = "${local.globalSettings.clusterName}-coor.elastic.svc"
       "dnsNames" = [
-        "elasticsearch-coor.elastic.svc",
-        "elasticsearch-coor.elastic.svc.cluster.local",
-        "*.elasticsearch-coor.elastic.svc",
-        "*.elasticsearch-coor.elastic.svc.cluster.local",
-        "elasticsearch-master.elastic.svc",
-        "elasticsearch-master.elastic.svc.cluster.local",
-        "*.elasticsearch-master.elastic.svc",
-        "*.elasticsearch-master.elastic.svc.cluster.local",
-        "elasticsearch-data.elastic.svc",
-        "elasticsearch-data.elastic.svc.cluster.local",
-        "*.elasticsearch-data.elastic.svc",
-        "*.elasticsearch-data.elastic.svc.cluster.local",
-        "elasticsearch-ingest.elastic.svc",
-        "elasticsearch-ingest.elastic.svc.cluster.local",
-        "*.elasticsearch-ingest.elastic.svc",
-        "*.elasticsearch-ingest.elastic.svc.cluster.local",
+        "${local.globalSettings.clusterName}-coor.elastic.svc",
+        "${local.globalSettings.clusterName}-coor.elastic.svc.cluster.local",
+        "*.${local.globalSettings.clusterName}-coor.elastic.svc",
+        "*.${local.globalSettings.clusterName}-coor.elastic.svc.cluster.local",
+        "${local.globalSettings.clusterName}-master.elastic.svc",
+        "${local.globalSettings.clusterName}-master.elastic.svc.cluster.local",
+        "*.${local.globalSettings.clusterName}-master.elastic.svc",
+        "*.${local.globalSettings.clusterName}-master.elastic.svc.cluster.local",
+        "${local.globalSettings.clusterName}-data.elastic.svc",
+        "${local.globalSettings.clusterName}-data.elastic.svc.cluster.local",
+        "*.${local.globalSettings.clusterName}-data.elastic.svc",
+        "*.${local.globalSettings.clusterName}-data.elastic.svc.cluster.local",
+        "${local.globalSettings.clusterName}-ingest.elastic.svc",
+        "${local.globalSettings.clusterName}-ingest.elastic.svc.cluster.local",
+        "*.${local.globalSettings.clusterName}-ingest.elastic.svc",
+        "*.${local.globalSettings.clusterName}-ingest.elastic.svc.cluster.local",
       ]
       "duration" = "${local.globalSettings.transport.duration}"
       "issuerRef" = {
