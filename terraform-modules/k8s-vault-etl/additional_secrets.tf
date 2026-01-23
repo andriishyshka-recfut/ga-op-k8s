@@ -10,7 +10,9 @@ data "vault_generic_secret" "api_keys" {
   path = "secret/${var.SecretPath}/vault"
 }
 
-
+data "vault_generic_secret" "slack" {
+  path = "secret/misc/slack/app/Ansible"
+}
 data "vault_generic_secret" "elastic_ca" {
   path = "${local.elasticCertsPath}/elasticCa${local.elasticSecretsPrefix}"
 }
@@ -46,7 +48,7 @@ resource "kubernetes_secret" "api_keys" {
   }
 
   data = {
-    "vault" = jsonencode(data.vault_generic_secret.api_keys.data)
+    "vault" = jsonencode(local.etlVault)
   }
 
 }
@@ -88,63 +90,4 @@ resource "kubectl_manifest" "externalsecret_logstash_creds" {
   depends_on = [helm_release.etl_operator]
 }
 
-# resource "kubernetes_manifest" "externalsecret_ssh" {
-#   manifest = {
-#     "apiVersion" = "external-secrets.io/v1beta1"
-#     "kind"       = "ExternalSecret"
-#     "metadata" = {
-#       "name" = "ssh"
-#       "namespace" : local.namespace
-#     }
-#     "spec" = {
-#       "target" = {
-#         "name" = "ssh"
-#       }
-#       "dataFrom" = [
-#         {
-#           "extract" = {
-#             "key" = "secret/data/${var.SecretPath}/ssh"
-#           }
-#         },
-#       ]
-#       "refreshInterval" = "1m"
-#       "secretStoreRef" = {
-#         "kind" = "SecretStore"
-#         "name" = "vault-backend"
-#       }
-#     }
-#   }
-#   depends_on = [helm_release.etl_operator]
-
-# }
-
-# resource "kubernetes_manifest" "externalsecret_logstash_creds" {
-#   manifest = {
-#     "apiVersion" = "external-secrets.io/v1beta1"
-#     "kind"       = "ExternalSecret"
-#     "metadata" = {
-#       "name" = "logstash-creds"
-#       "namespace" : local.namespace
-#     }
-#     "spec" = {
-#       "target" = {
-#         "name" = "logstash-creds"
-#       }
-#       "dataFrom" = [
-#         {
-#           "extract" = {
-#             "key" = "secret/data/${var.SecretPath}/logstash-creds"
-#           }
-#         },
-#       ]
-#       "refreshInterval" = "1m"
-#       "secretStoreRef" = {
-#         "kind" = "SecretStore"
-#         "name" = "vault-backend"
-#       }
-#     }
-#   }
-#   depends_on = [helm_release.etl_operator]
-
-# }
 
