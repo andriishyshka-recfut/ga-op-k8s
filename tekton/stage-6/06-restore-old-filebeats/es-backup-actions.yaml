@@ -28,3 +28,7 @@ actions:
         direction: older
         unit: hours
         unit_count: 26
+      - filtertype: pattern
+        kind: regex
+        value: "^apm-.*-profile-000001"
+        exclude: True
