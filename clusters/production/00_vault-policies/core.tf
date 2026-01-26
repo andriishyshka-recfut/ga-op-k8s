@@ -61,5 +61,8 @@ path "secret/data/mw/monitoring/otel" {
 path "secret/data/misc/slack/app/ms-auth" {
    capabilities = ["read","list"]
 }
+path "secret/data/misc/slack/app/ms-w8" {
+   capabilities = ["read","list"]
+}
 EOT
 }
