@@ -85,6 +85,9 @@ path "secret/data/wl/clicker/engine-definer" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/misc/slack/app/gs2es" {
+   capabilities = ["read","list"]
+}
 EOT
 }
 
