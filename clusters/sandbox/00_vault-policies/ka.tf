@@ -5,9 +5,6 @@ resource "vault_policy" "ka" {
 path "secret/data/ka/*" {
   capabilities = ["read","list"]
 }
-path "secret/data/wl/minion/*" {
-  capabilities = ["read","list"]
-}
 path "secret/data/elasticsearch-admin/*" {
   capabilities = ["read","list"]
 }
@@ -24,6 +21,9 @@ path "sys/leases/renew" {
   capabilities = ["read","list","create","update"]
 }
 path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
+path "secret/data/misc/slack/app/SANDBOX" {
    capabilities = ["read","list"]
 }
 EOT

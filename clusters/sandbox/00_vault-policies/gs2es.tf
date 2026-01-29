@@ -14,5 +14,8 @@ path "secret/data/mw/monitoring/otel" {
 path "secret/data/wl/clicker/engine-definer" {
   capabilities = ["read","list"]
 }
+path "secret/data/misc/slack/app/SANDBOX" {
+   capabilities = ["read","list"]
+}
 EOT
 }
