@@ -64,5 +64,8 @@ path "secret/data/misc/slack/app/ms-auth" {
 path "secret/data/misc/slack/app/ms-w8" {
    capabilities = ["read","list"]
 }
+path "secret/data/misc/slack/app/ms-beep" {
+   capabilities = ["read","list"]
+}
 EOT
 }
