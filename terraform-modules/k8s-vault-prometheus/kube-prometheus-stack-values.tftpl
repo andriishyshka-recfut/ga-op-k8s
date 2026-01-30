@@ -274,8 +274,8 @@ alertmanager:
           send_resolved: true
     - name: "slack-paste"
       slack_configs:
-        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
-          channel: ${ cluster == "production" ? "'#gemini_prometheus-live'" : "'#gemini_prometheus-test'" }
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini-artifact : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini-artifact'" : "'#gemini_prometheus-test'" }
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "tekton-webhook-notifications-and-slack"
