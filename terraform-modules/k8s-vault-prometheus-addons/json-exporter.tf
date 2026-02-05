@@ -77,16 +77,16 @@ resource "kubernetes_deployment_v1" "json_exporter" {
           }
           volume_mount {
             mount_path = "/workspace"
-            name       = kubernetes_secret.json_exporter_config[1].metadata[0].name
+            name       = kubernetes_secret.json_exporter_config[0].metadata[0].name
           }
         }
         image_pull_secrets {
           name = "harbor"
         }
         volume {
-          name = kubernetes_secret.json_exporter_config[1].metadata[0].name
+          name = kubernetes_secret.json_exporter_config[0].metadata[0].name
           secret {
-            secret_name = kubernetes_secret.json_exporter_config[1].metadata[0].name
+            secret_name = kubernetes_secret.json_exporter_config[0].metadata[0].name
             items {
               key  = "json-exporter-config.yaml"
               path = "json-exporter-config.yaml"
@@ -111,6 +111,6 @@ resource "kubernetes_secret" "json_exporter_config" {
   }
 
   data = {
-    "json-exporter-config.yaml" = templatefile("${path.module}/json-exporter-config.tftpl", { TWOCAPTCHA_API_KEY = data.vault_generic_secret.captcha_creds[1].data.TWOCAPTCHA_API_KEY , ANTICAPTCHA_API_KEY = data.vault_generic_secret.captcha_creds[1].data.ANTICAPTCHA_API_KEY })
+    "json-exporter-config.yaml" = templatefile("${path.module}/json-exporter-config.tftpl", { TWOCAPTCHA_API_KEY = data.vault_generic_secret.captcha_creds[0].data.TWOCAPTCHA_API_KEY , ANTICAPTCHA_API_KEY = data.vault_generic_secret.captcha_creds[0].data.ANTICAPTCHA_API_KEY })
   }
 }

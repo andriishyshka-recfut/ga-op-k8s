@@ -55,7 +55,7 @@ resource "kubernetes_cron_job_v1" "nightly_html" {
               args = [
                  <<-EOT
                       kubescape scan framework nsa,mitre,cis-v1.10.0,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format html --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).html --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
-                      /home/nonroot/results/mc cp /home/nonroot/results/*.html minio/${local.minioBucket}
+                      /home/nonroot/results/mc cp /home/nonroot/results/*.html minio/${local.minioBucket}/
                   EOT
               ]
               env {
@@ -146,7 +146,7 @@ resource "kubernetes_cron_job_v1" "nightly_json" {
               args = [
                  <<-EOT
                       kubescape scan framework nsa,mitre,cis-v1.10.0,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format json --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).json --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
-                      /home/nonroot/results/mc cp /home/nonroot/results/*.json minio/${local.minioBucket}
+                      /home/nonroot/results/mc cp /home/nonroot/results/*.json minio/${local.minioBucket}/
                   EOT
               ]
               resources {

@@ -104,6 +104,9 @@ resource "google_container_cluster" "cluster" {
       //disabled = false
       //auth = "AUTH_MUTUAL_TLS"
     }
+    dns_cache_config {
+      enabled = true
+    }
 
   }
 
@@ -130,7 +133,7 @@ resource "google_container_node_pool" "nodepool_default" {
   }
 
   provider = google-beta
-  name     = "${var.Cluster}-${var.Color}-default"
+  name     = "default"
   location = local.gkeRegion
   cluster  = google_container_cluster.cluster.name
   autoscaling {
@@ -176,7 +179,7 @@ resource "google_container_node_pool" "nodepool_additional" {
   }
 
   provider          = google-beta
-  name              = "${var.Cluster}-${var.Color}-${each.key}"
+  name              = "${each.key}"
   location          = local.gkeRegion
   cluster           = google_container_cluster.cluster.name
   max_pods_per_node = lookup(each.value, "maxPodsPerNode", var.Settings.clusters[var.Cluster].pods_per_node)
