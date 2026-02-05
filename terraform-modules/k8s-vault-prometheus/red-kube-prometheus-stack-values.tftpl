@@ -145,8 +145,8 @@ alertmanager:
     - name: "null"
     - name: "slack-critical"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_critical}
-          channel: '#prometheus-critical'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-critical}
+          channel: '#gemini_prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "tekton-logstash-inodes-webhook-notifications-and-slack"
@@ -154,14 +154,14 @@ alertmanager:
         - send_resolved: false
           url: "http://el-logstash-inodes-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_critical}
-          channel: '#prometheus'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-live}
+          channel: '#emini_prometheus-live'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-notifications"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url}
-          channel: '#prometheus'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-live}
+          channel: '#gemini_prometheus-live'
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     route:

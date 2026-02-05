@@ -19,7 +19,7 @@ locals {
   prometheusExtUrl        = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus, "prometheusExtUrl", "http://localhost:9090")
   prometheusConfigFile    = var.Color == "red" ? "red-kube-prometheus-stack-values.tftpl" : "kube-prometheus-stack-values.tftpl"
   grafanaSecretpath       = var.Color == "red" ? "secret/red/grafana" : "secret/grafana"
-  slackSecretPath         = var.Color == "red" ? "secret/red/slack/prometheus" : "secret/misc/slack/app/AlertManager"
+  slackSecretPath         = "secret/misc/slack/app/AlertManager"
   thanosMinioUser         = "thanos"
   prometheusSlackWebHooks = data.vault_generic_secret.prometheus.data
   grafana_okta = {
@@ -28,7 +28,7 @@ locals {
     issuer              = data.vault_generic_secret.okta_oidc.data.issuer
     org_mapping         = "\"*:1:Viewer\""
     role_attribute_path = "contains(groups[*], 'APP-GA-OP') && 'GrafanaAdmin'",
-    allowed_groups      = "APP-GA-OP,APP-GA-DEV,APP-GA-PM,APP-GA-GRAFANA"
+    allowed_groups      = "APP-GA-OP,APP-GA-DEV,APP-GA-PM,APP-GA-GRAFANA,APP-GA-HUNT"
   }
 }
 

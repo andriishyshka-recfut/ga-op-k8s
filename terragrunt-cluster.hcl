@@ -14,8 +14,10 @@ terraform {
   }
 }
 
-retryable_errors = [
-  "isn't valid for cluster, check the APIVersion and Kind fields are valid",
-  "'dict object' has no .* attribute 'status'",
-  "Provider produced inconsistent final plan"
-]
+errors {
+  retry "transient_errors" {
+    retryable_errors     = ["isn't valid for cluster, check the APIVersion and Kind fields are valid","'dict object' has no .* attribute 'status'","Provider produced inconsistent final plan","Failed to resolve provider packages"]
+    max_attempts         = 3
+    sleep_interval_sec   = 5
+  }
+}

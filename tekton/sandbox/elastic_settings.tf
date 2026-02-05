@@ -29,7 +29,7 @@ locals {
       addons = {
         notifications = {
           slack = {
-            vault_path = "secret/elastic-notification-accounts"
+            vault_path = "secret/misc/slack/app/X-Pack"
           }
         },
         authorizations = {
