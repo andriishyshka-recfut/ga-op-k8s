@@ -10,6 +10,7 @@ metadata:
     prometheus: k8s
     release: prometheus
     role: alert-rules
+    ruler: thanos
 spec:
   groups:
     - interval: 1m

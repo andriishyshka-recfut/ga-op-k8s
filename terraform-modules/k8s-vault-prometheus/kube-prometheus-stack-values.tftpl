@@ -3,6 +3,13 @@ nameOverride: "prometheus"
 fullnameOverride: "prometheus"
 
 grafana:
+
+  sidecar:
+    datasources:
+      enabled: true
+      defaultDatasourceEnabled: true
+      isDefaultDatasource: false
+  
   assertNoLeakedSecrets: false
   adminPassword: ${grafana_creds.adminPassword}
   envValueFrom:
@@ -30,6 +37,15 @@ grafana:
         tlsSkipVerify: true
       secureJsonData:
         basicAuthPassword: "$ELASTIC_PASSWORD"
+    - name: "ThanosQueryFrontend"
+      type:  "prometheus"
+      url: "http://thanos-query-frontend.monitoring:9090/query"
+      isDefault: true
+      access: proxy
+      jsonData:
+        "tlsSkipVerify": true
+        "timeInterval": "5s"
+      editable: false
   enabled: true
   namespaceOverride: "monitoring"
   resources:
@@ -122,7 +138,18 @@ prometheus:
       operator: "Exists"
       effect: "NoSchedule"
   prometheusSpec:
+    replicas: 2
     prometheusRulesExcludedFromEnforce: false
+    terminationGracePeriodSeconds: 1800
+    ruleSelector:
+      matchLabels:
+        release: prometheus
+      matchExpressions:
+        - key: ruler
+          operator: NotIn
+          values:
+            - thanos
+
     ###  Url for replace internal cluster domain name for generated url in slack messages
     # externalUrl: "https://prometheus.t.regemini.io"
     # externalUrl: "http://localhost:9090"
@@ -131,6 +158,8 @@ prometheus:
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
+    retention: 7d
+    retentionSize: 100GB
     storageSpec:
       volumeClaimTemplate:
         spec:
@@ -220,7 +249,33 @@ prometheus:
 
   thanosServiceMonitor:
     enabled: false
-    
+
+thanosRuler:
+  enabled: true
+
+  thanosRulerSpec:
+    ruleSelector:
+      matchLabels:
+        ruler: thanos
+
+    replicas: 2
+
+    objectStorageConfig:
+      existingSecret:
+        key: thanos.yaml
+        name: thanos-objstore-config
+
+    queryEndpoints:
+      - http://thanos-query-frontend.monitoring.svc:9090/query
+  
+    alertmanagersConfig:
+      secret:
+        alertmanagers:
+        - api_version: v2
+          static_configs:
+            - alertmanager-operated.monitoring.svc:9093
+
+    alertQueryUrl: ${prometheus_query_url}
 
 # Fix for used with istio
 alertmanager:
@@ -403,6 +458,8 @@ defaultRules:
     kubernetesResources: false
     kubeApiserver: false
     kubeProxy: false
+  labels:
+    ruler: thanos
   additionalRuleLabels:
     cluster: ${additional_rule_labels}
 
