@@ -12,7 +12,7 @@ data "vault_generic_secret" "okta_oidc" {
 
 locals {
   helmVersion             = lookup(var.Settings.clusters[var.Cluster].versions.prometheus, "helm_version", "17.0.0")
-  thanosSidecarVersion    = lookup(var.Settings.clusters[var.Cluster].versions.prometheus.thanos, "sidecar_version", "0.28.1")
+  thanosSidecarVersion    = lookup(var.Settings.clusters[var.Cluster].versions.thanos, "app_version", "0.28.1")
   thanosBucket            = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus.thanos, "storage_bucket", "minio-prometheus-thanos-ardent-rarity-239115")
   prometheusNs            = "monitoring"
   grafanaRole             = var.Cluster == "production" ? "Viewer" : "Editor"
@@ -21,6 +21,7 @@ locals {
   grafanaSecretpath       = var.Color == "red" ? "secret/red/grafana" : "secret/grafana"
   slackSecretPath         = "secret/misc/slack/app/AlertManager"
   thanosMinioUser         = "thanos"
+  prometheusQueryUrl      = var.Cluster == "production" ? "https://prometheus.p.regemini.io/query" : "https://prometheus.t.regemini.io/query"
   prometheusSlackWebHooks = data.vault_generic_secret.prometheus.data
   grafana_okta = {
     enabled             = true

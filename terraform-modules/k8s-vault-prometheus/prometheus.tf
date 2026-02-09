@@ -20,7 +20,8 @@ resource "kubernetes_secret" "thanos-objstore-config" {
     namespace = local.prometheusNs
   }
 
-  data = { "thanos.yaml" = <<EOF
+  data = { 
+    "thanos.yaml" = <<EOF
 type: s3
 config:
   bucket: ${local.thanosBucket}
@@ -30,6 +31,15 @@ config:
   secret_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).secretKey}
 EOF
 
+    "objstore.yml" = <<EOF
+type: s3
+config:
+  bucket: ${local.thanosBucket}
+  endpoint: minio.minio:9000
+  insecure: true
+  access_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).accessKey}
+  secret_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).secretKey}
+EOF
   }
 }
 resource "kubernetes_secret" "grafana_okta_client_secret" {
@@ -62,6 +72,7 @@ resource "helm_release" "prometheus" {
       prometheus_external_url            = local.prometheusExtUrl,
       additional_rule_labels             = var.Cluster,
       thanos_version                     = local.thanosSidecarVersion,
+      prometheus_query_url               = local.prometheusQueryUrl
       okta                               = local.grafana_okta
       cluster                            = var.Cluster
     })
