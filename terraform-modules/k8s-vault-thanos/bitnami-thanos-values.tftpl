@@ -30,17 +30,18 @@ query:
     prometheus.io/scrape: "true"
     prometheus.io/port: "10902"
   replicaLabel:
-    - replica
     - prometheus_replica
   extraFlags:
     - --query.max-concurrent=20
+    - --query.max-concurrent-select=32
     - --query.partial-response
     - --query.auto-downsampling
+    - --store.response-timeout=60s
     - --web.route-prefix=/query/
     - --web.external-prefix=/query/
   extraEnvVars:
     - name: GOMEMLIMIT
-      value: 5000MiB
+      value: 5500MiB
   resources:
     requests:
       cpu: 1500m
@@ -63,6 +64,9 @@ storegateway:
 #  sharded: "true"
 #  shardIndex: 0
 #  shards: 2
+  extraFlags:
+    - --max-time=-7d
+    - --min-time=-365d
   podManagementPolicy: "Parallel"
   persistence:
     enabled: true
@@ -104,7 +108,8 @@ ruler:
       matchLabels:
         ruler: thanos
 
-  queryURL: http://thanos-query-frontend.monitoring.svc:9090/query/
+# strange, but used by thanos query with --alert.query-url switch
+  queryURL: http://thanos-query.monitoring.svc:9090/query/
 
   queryEndpoints:
     - http://thanos-query.monitoring.svc:9090/query/

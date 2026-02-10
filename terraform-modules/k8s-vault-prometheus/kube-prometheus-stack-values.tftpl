@@ -168,11 +168,11 @@ prometheus:
               storage: 120Gi
     resources:
       requests:
-        memory: 5G
-        cpu: 500m
+        memory: ${prometheus_resources.RAMreq}
+        cpu: ${prometheus_resources.CPUreq}
       limits:
-        memory: 5G
-        cpu: 1600m
+        memory: ${prometheus_resources.RAMlim}
+        cpu: ${prometheus_resources.CPUlim}
     thanos:
       version: ${thanos_version}
       baseImage: quay.io/thanos/thanos
@@ -266,7 +266,7 @@ thanosRuler:
         name: thanos-objstore-config
 
     queryEndpoints:
-      - http://thanos-query-frontend.monitoring.svc:9090/query/
+      - http://thanos-query.monitoring.svc:9090/query/
   
     alertmanagersConfig:
       secret:
