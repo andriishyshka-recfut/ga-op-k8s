@@ -29,7 +29,7 @@ locals {
   vaultOidcConfigPath       = var.Settings.clusters[var.Cluster][var.Color].minio.vault_oidc_config_path
   minioFqdn                 = var.Cluster == "production" ? "minio.regemini.io" : "minio.t.regemini.io"
   vaultFqdn                 = var.Cluster == "production" ? "https://vault.p.regemini.io" : "https://vault.t.regemini.io"
-  minioConsoleFqdn          = var.Settings.clusters[var.Cluster].pv_disk_count.minio.console_fqdn
+  minioConsoleFqdn          = var.Settings.clusters[var.Cluster][var.Color].minio.console_fqdn
   currentProject            = var.Settings.gcpProject
   pv_disk_count             = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
   diskSize                  = "500Gi"
