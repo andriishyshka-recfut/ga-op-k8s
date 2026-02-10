@@ -15,6 +15,7 @@ locals {
   sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
   # sftp            = local.settings_red.sftp-server
   minio_count    = local.settings.persistent_resources.permanentDisks.minio.count
+  minio_red_count    = local.settings_red.persistent_resources.permanentDisks.minio.count
   postgres_count = local.settings.persistent_resources.permanentDisks.postgres.count
 
   tarantool_storage_count  = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks * 2
@@ -219,6 +220,18 @@ resource "google_compute_disk" "sonarqube_postgres_pv" {
 #   zone = each.value.zone
 # }
 
+resource "google_compute_disk" "minio_red_pv" {
+  count = local.minio_red_count
+
+  name     = "minio-red-pv-${count.index}"
+  size     = 500
+  type     = "pd-balanced"
+  zone = element([for i in range(local.minio_red_count) : element(local.zones, i % 3)], count.index)
+
+  labels = {
+    target = "minio-red-tenant"
+  }
+}
 
 
 resource "google_compute_disk" "minio_pv" {
