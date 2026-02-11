@@ -11,10 +11,10 @@ path "/secret/data/mw/monitoring/otel" {
 path "/secret/data/es-creds-compose-prod/metaGrouper" {
   capabilities = ["read","list"]
 }
-path "path "secret/data/es-creds-compose-prod/elastic*" {
+path "secret/data/es-creds-compose-prod/elastic*" {
   capabilities = ["read","list"]
 }"
-path "path "secret/data/es-creds-compose-prod/_grouper.ms" {
+path "secret/data/es-creds-compose-prod/_grouper.ms" {
   capabilities = ["read","list"]
 }
 EOT
