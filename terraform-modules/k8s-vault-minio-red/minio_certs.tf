@@ -16,7 +16,7 @@ resource "time_sleep" "wait_60_seconds" {
 data "kubernetes_secret" "minio_tenant_ca" {
   metadata {
     name      = "tls-ssl-minio"
-    namespace = "minio-helm"
+    namespace = "minio"
   }
   depends_on = [time_sleep.wait_60_seconds]
 }

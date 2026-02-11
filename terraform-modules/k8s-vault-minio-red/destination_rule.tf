@@ -1,17 +1,17 @@
 locals {
   destination_rules = {
-    minio-helm-tls = {
-      host               = "minio-tenant-console.minio-helm.svc.cluster.local"
+    minio-tls = {
+      host               = "minio-tenant-console.minio.svc.cluster.local"
       port               = 9443
       insecureSkipVerify = true
     }
-    minio-helm-tls-api = {
-      host               = "minio-tenant-hl.minio-helm.svc.cluster.local"
+    minio-tls-api = {
+      host               = "minio-tenant-hl.minio.svc.cluster.local"
       port               = 9000
       insecureSkipVerify = true
     }
-    minio-helm-tls-api-ingress = {
-      host               = "minio.minio-helm.svc.cluster.local"
+    minio-tls-api-ingress = {
+      host               = "minio.minio.svc.cluster.local"
       port               = 9000
       insecureSkipVerify = true
     }

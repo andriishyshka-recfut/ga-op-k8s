@@ -34,7 +34,7 @@ locals {
   pv_disk_count             = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
   diskSize                  = "500Gi"
   runUserAccess             = 0
-  cert_dns_names            = ["minio.minio-helm.svc.cluster.local", "*.minio-helm.svc.cluster.local", "*.minio.minio-helm.svc.cluster.local", "*.minio-tenant-console.minio-helm.svc.cluster.local", "*.minio-tenant-hl.minio-helm.svc.cluster.local"]
+  cert_dns_names            = ["minio.minio.svc.cluster.local", "*.minio.svc.cluster.local", "*.minio.minio.svc.cluster.local", "*.minio-tenant-console.minio.svc.cluster.local", "*.minio-tenant-hl.minio.svc.cluster.local"]
   minioSettings = {
     redirect_url = local.minioFqdn
     oidc = {
