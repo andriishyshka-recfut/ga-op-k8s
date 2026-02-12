@@ -32,7 +32,8 @@ elasticsearch:
     QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"upsertminion"}},{"term":{"json.err": "action [indices:data/write/bulk[s]] is unauthorized for user [_upsertMinion.ms]"}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
     [query_dome_mapping]
     QueryJson = {"query":{"bool":{"filter":[{"terms":{"json.err":["mapping group not found"]}},{"range":{"@timestamp":{"gte":"now-24h"}}}]}},"aggs":{"langs" : { "terms" : { "field" : "json.sourceId",  "size" : 500 }}}}    
-
+    [query_logstash_exception]
+    QueryJson = {"query":{"bool":{"filter":[{"multi_match":{"type":"best_fields","query":"exception","lenient":true}},{"range":{"@timestamp":{"gte":"now-5m"}}},{"match_phrase":{"kubernetes.namespace":"elastic"}},{"match_phrase":{"kubernetes.labels.chart":"logstash"}}]}}}
 
 container:
   extraEnv:
