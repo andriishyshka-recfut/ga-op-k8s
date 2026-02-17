@@ -25,3 +25,8 @@ module "kibana" {
     module.es7-restore-system
   ]
 }
+
+
+output "test" {
+  value = module.elastic.test
+}
