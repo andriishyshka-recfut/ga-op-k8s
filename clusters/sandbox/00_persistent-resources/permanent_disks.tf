@@ -18,6 +18,7 @@ locals {
   sftp           = {}
   minio_count    = local.settings.persistent_resources.permanentDisks.minio.count
   postgres_count = local.settings.persistent_resources.permanentDisks.postgres.count
+  elastic_disks = { for new_name in flatten([ for nodepool in local.settings.persistent_resources.permanentDisks.elastic : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count} ]]): "${new_name.name}-${new_name.index}" => new_name } 
 
   tarantool_storage_count  = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks * 2
   tsc                      = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks
@@ -40,7 +41,11 @@ locals {
 #   Set "restoreDate" (yyyy-mm-dd) to recover data as of that day
 ########
 
-
+data "google_compute_snapshot" "elastic_snapshot" {
+  for_each = local.elastic_disks
+  name        = "elastic-${each.key}-${local.restoreDate}"
+  most_recent = true
+}
 data "google_compute_snapshot" "mongo_snapshot" {
   name        = "${local.mongo_prefix}-${count.index}-dr-${local.restoreDate}"
   most_recent = true
@@ -153,6 +158,18 @@ resource "google_compute_disk" "mongo6_pv" {
   zone = element([for i in range(local.mongo_count) : element(local.zones, i % 3)], count.index)
 }
 
+resource "google_compute_disk" "elastic_pv" {
+  for_each = local.elastic_disks
+  name     = "elastic-${each.key}"
+  type     = "pd-balanced"
+  size     = each.value.size
+  snapshot = data.google_compute_snapshot.elastic_snapshot[each.key].name
+  labels = {
+    target = "elastic-${each.value.name}"
+    id     = "elastic-${each.key}"
+  }
+  zone = element([for i in range(each.value.count) : element(local.zones, i % 3)], each.value.index)
+}
 
 resource "google_compute_disk" "kafka_pv" {
   name     = "kafka-data-${count.index}"

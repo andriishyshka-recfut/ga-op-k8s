@@ -43,7 +43,7 @@ resource "helm_release" "elastic" {
   ]
   depends_on = [
     kubernetes_secret.elastic_secret,
-    kubernetes_persistent_volume_claim.elsticsearch,
+    kubernetes_persistent_volume_claim.elasticsearch,
     kubernetes_secret.keystores,
     kubernetes_config_map.reboot_date
   ]
