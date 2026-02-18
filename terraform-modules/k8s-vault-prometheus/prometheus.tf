@@ -21,16 +21,6 @@ resource "kubernetes_secret" "thanos-objstore-config" {
   }
 
   data = { 
-    "thanos.yaml" = <<EOF
-type: s3
-config:
-  bucket: ${local.thanosBucket}
-  endpoint: minio.minio:9000
-  insecure: true
-  access_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).accessKey}
-  secret_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).secretKey}
-EOF
-
     "objstore.yml" = <<EOF
 type: s3
 config:
