@@ -43,8 +43,19 @@ grafana:
       isDefault: true
       access: proxy
       jsonData:
-        "tlsSkipVerify": true
-        "timeInterval": "5s"
+        tlsSkipVerify: true
+        timeInterval: "15s"
+        queryTimeout: "60s"
+        defaultEditor: "code"
+        disableMetricsLookup: true 
+        prometheusType: "Thanos"
+        prometheusVersion: "0.31.0"
+        cacheLevel: "None"
+        incrementalQuerying: true
+        incrementalQueryOverlapWindow: "15m"
+        disableRecordingRules: true
+        httpMethod: POST
+        useSeriesEndpoint: true
       editable: false
   enabled: true
   namespaceOverride: "monitoring"
@@ -131,12 +142,6 @@ prometheusOperator:
       cpu: 100m
 
 prometheus:
-  nodeSelector:
-    workloadsType: data
-  tolerations:
-    - key: "workloadsType"
-      operator: "Exists"
-      effect: "NoSchedule"
   prometheusSpec:
     replicas: 2
     prometheusRulesExcludedFromEnforce: false
@@ -149,6 +154,13 @@ prometheus:
           operator: NotIn
           values:
             - thanos
+
+    nodeSelector:
+      workloadsType: data
+    tolerations:
+      - key: "workloadsType"
+        operator: "Exists"
+        effect: "NoSchedule"
 
     ###  Url for replace internal cluster domain name for generated url in slack messages
     # externalUrl: "https://prometheus.t.regemini.io"
@@ -178,8 +190,15 @@ prometheus:
       baseImage: quay.io/thanos/thanos
       objectStorageConfig:
         existingSecret:
-          key: thanos.yaml
+          key: objstore.yml
           name: thanos-objstore-config
+      resources:
+        requests:
+          memory: 0.75Gi
+          cpu: 500m
+        limits:
+          memory: 1Gi
+          cpu: 1
     additionalScrapeConfigs:
       - job_name: 'kubernetes-pods'
         kubernetes_sd_configs:
@@ -262,9 +281,16 @@ thanosRuler:
 
     objectStorageConfig:
       existingSecret:
-        key: thanos.yaml
+        key: objstore.yml
         name: thanos-objstore-config
-
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 1Gi
+        cpu: 2
+  
     queryEndpoints:
       - http://thanos-query.monitoring.svc:9090/query/
   

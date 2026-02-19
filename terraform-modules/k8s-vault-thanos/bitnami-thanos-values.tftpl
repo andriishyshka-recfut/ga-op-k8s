@@ -13,10 +13,12 @@ image:
   tag: ${thanos_version}
   pullPolicy: IfNotPresent
 
-#objstoreConfig:
-#  existingSecret: thanos-objstore-config
-#  existingSecretKey: thanos.yml
 existingObjstoreSecret: "thanos-objstore-config"
+# next one is optional because defined by default 
+# and can/need to be redefined in Arg/ExtraArg
+#existingObjstoreSecretItems:
+# next one is optional becaus by default
+#  key: objstore.yml
 
 query:
   enabled: true
@@ -56,7 +58,20 @@ queryFrontend:
   cache:
     enabled: true
   extraFlags:
-    - --query-range.split-interval=24h
+    - --query-range.max-retries-per-request=5
+    - --query-range.split-interval=6h
+    - --labels.default-time-range=6h
+    - --labels.split-interval=15m
+    - --labels.max-query-parallelism=32
+  resources:
+    limits:
+      cpu: 400m
+      ephemeral-storage: 2Gi
+      memory: 1Gi
+    requests:
+      cpu: 300m
+      ephemeral-storage: 50Mi
+      memory: 1Gi
 
 storegateway:
   enabled: true
@@ -64,9 +79,9 @@ storegateway:
 #  sharded: "true"
 #  shardIndex: 0
 #  shards: 2
-  extraFlags:
-    - --max-time=-7d
-    - --min-time=-365d
+#  extraFlags:
+#    - --max-time=-7d
+#    - --min-time=-365d
   podManagementPolicy: "Parallel"
   persistence:
     enabled: true
