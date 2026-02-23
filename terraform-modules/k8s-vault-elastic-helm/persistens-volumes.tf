@@ -4,6 +4,7 @@ resource "kubernetes_persistent_volume" "elastic_pv" {
     name = "elastic-${each.key}-pv"
     labels = {
       target = "elastic-${each.key}"
+      elastic = local.globalSettings.clusterName
     }
   }
   spec {

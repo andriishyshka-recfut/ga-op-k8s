@@ -11,9 +11,8 @@ module "elastic" {
   BackupBucketBasePath   = "7-new"
   OidcRedirectUri        = "k.t.regemini.io"
   VaultAddress           = var.VaultAddress
+  depends_on = [ null_resource.rm_elastic_pv ]
 }
-
-
 module "kibana" {
   source          = "../../terraform-modules/k8s-vault-kibana-helm"
   ElasticSettings = local.ElasticSettings
@@ -21,12 +20,5 @@ module "kibana" {
   Cluster         = var.Cluster
   Color           = var.Color
   Settings        = var.Settings
-  depends_on = [
-    module.es7-restore-system
-  ]
-}
-
-
-output "test" {
-  value = module.elastic.test
+  depends_on = [ module.elastic ]
 }
