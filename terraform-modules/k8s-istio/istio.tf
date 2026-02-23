@@ -14,7 +14,7 @@
 # #     environment = local.ansibleEnvs
 # #   }
 # # }
-resource "kubernetes_namespace" "istio_system" {
+resource "kubernetes_namespace_v1" "istio_system" {
   metadata {
     name = "istio-system"
   }
@@ -44,7 +44,7 @@ resource "helm_release" "istio_base" {
   namespace  = "istio-system"
 
   depends_on = [
-    kubernetes_namespace.istio_system
+    kubernetes_namespace_v1.istio_system
   ]
 }
 
