@@ -1,3 +1,6 @@
+variable "Cluster" {}
+variable "Color" {}
+
 provider "google" {
 }
 
