@@ -10,7 +10,7 @@ locals {
       gcsVaultPath          = "secret/sa/prod-transfer"
       volumeExt             = false
       patchVaultEnabled     = true
-      patchVaultPath        = "secret/elasticsearch-admin/elastic7-v2"
+      patchVaultPath        = "secret/elasticsearch-admin/elastic"
       patchVaultKey         = "CREDENTIALS"
       patchVaultInternalKey = "password"
 
