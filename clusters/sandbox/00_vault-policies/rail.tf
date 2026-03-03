@@ -1,11 +1,11 @@
-resource "vault_policy" "mule" {
-  name = "mule"
+resource "vault_policy" "rail" {
+  name = "rail"
 
   policy = <<EOT
 path "secret/data/elasticsearch-admin/elastic7-v2" {
   capabilities = ["read","list"]
 }
-path "secret/data/wl/mule*" {
+path "secret/data/wl/rail*" {
   capabilities = ["read","list"]
 }
 path "/secret/data/misc/cybera/gemini" {
