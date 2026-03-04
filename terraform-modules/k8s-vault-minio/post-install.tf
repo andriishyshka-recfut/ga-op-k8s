@@ -12,8 +12,11 @@ locals {
   set -e
   %{for user in keys(data.vault_generic_secret.users_credentials_from_vault.data)~}
   mc admin policy add minio ${user} /tmp/${replace(user, "@", "-")}_policy.json
+  read -t 2
   mc admin user add minio ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).accessKey} ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).secretKey}
+  read -t 2
   mc admin policy set minio  ${user} user=${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).accessKey}
+  read -t 2
   %{endfor~}
 
 EOF
