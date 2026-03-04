@@ -12,15 +12,10 @@ locals {
   set -e
   %{for user in keys(data.vault_generic_secret.users_credentials_from_vault.data)~}
   mc admin policy add minio ${user} /tmp/${replace(user, "@", "-")}_policy.json
-  read -t 2
   mc admin user add minio ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).accessKey} ${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).secretKey}
-  read -t 2
   mc admin policy set minio  ${user} user=${jsondecode(data.vault_generic_secret.users_credentials_from_vault.data[user]).accessKey}
-  read -t 2
   %{endfor~}
-
 EOF
-
 }
 
 resource "kubernetes_config_map" "policy" {
@@ -56,6 +51,7 @@ resource "kubernetes_job" "configure_users_access" {
         }
       }
       spec {
+        active_deadline_seconds = 900
         container {
           name    = "mc"
           image   = "minio/mc:${local.mcImageTag}"
@@ -117,13 +113,13 @@ resource "kubernetes_job" "configure_users_access" {
         restart_policy = "Never"
       }
     }
-    backoff_limit = 1
+    backoff_limit = 4
   }
   wait_for_completion = true
-  timeouts {
-    create = "15m"
-    update = "15m"
-  }
+  # timeouts {
+  #   create = "15m"
+  #   update = "15m"
+  # }
   depends_on = [
     helm_release.minio,
     kubernetes_config_map.policy
