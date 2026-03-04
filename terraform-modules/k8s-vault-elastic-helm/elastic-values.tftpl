@@ -20,16 +20,6 @@ resources:
 %{ endif ~}
     memory: ${ resources.memLimit }
 esJavaOpts: ${esJavaOpts}
-%{ if  globalSettings.volumeExt ~}
-persistence:
-  enabled: false
-%{ else ~}
-volumeClaimTemplate:
-  accessModes: ["ReadWriteOnce"]
-  resources:
-    requests:
-      storage: ${storage}
-%{ endif ~}
 roles:
   master: "${ lookup(roles, "master","false")}"
   ingest: "${ lookup(roles, "ingest","false")}"
@@ -55,11 +45,6 @@ readinessProbe:
   successThreshold: 3
   timeoutSeconds: 5
 extraVolumes:
-%{ if  globalSettings.volumeExt ~}
-  - name: ${globalSettings.clusterName}-${nodePool}
-    persistentVolumeClaim:
-      claimName: ${globalSettings.clusterName}-${nodePool}
-%{ endif ~}
   - name: elastic-plugins-local
     emptyDir: {}
   - name: elastic-transport-certificates

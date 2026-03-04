@@ -1,15 +1,15 @@
 resource "kubernetes_persistent_volume" "elastic_pv" {
   for_each = local.persistentVolumesDisks
   metadata {
-    name = "elastic-${each.key}-pv"
+    name = "${local.pvName}-${each.key}-pv"
     labels = {
-      target = "elastic-${each.key}"
+      target = "${local.pvName}-${each.key}"
       elastic = local.globalSettings.clusterName
     }
   }
   spec {
     capacity = {
-      storage = each.value.size
+      storage = "${each.value.size}Gi"
     }
     access_modes = ["ReadWriteOnce"]
     claim_ref {
@@ -19,7 +19,7 @@ resource "kubernetes_persistent_volume" "elastic_pv" {
     persistent_volume_source {
       csi {
         driver        = "pd.csi.storage.gke.io"
-        volume_handle = "projects/${var.Settings.gcpProject}/zones/${element([for i in range(each.value.count) : element(["us-east4-a", "us-east4-b", "us-east4-c"], i % 3)], each.value.index)}/disks/elastic-${each.key}"
+        volume_handle = "projects/${var.Settings.gcpProject}/zones/${element([for i in range(each.value.count) : element(["us-east4-a", "us-east4-b", "us-east4-c"], i % 3)], each.value.index)}/disks/${local.pvName}-${each.key}"
       }
     }
     node_affinity {
@@ -46,13 +46,9 @@ resource "kubernetes_persistent_volume_claim" "elasticsearch" {
     access_modes = ["ReadWriteOnce"]
     resources {
       requests = {
-        storage = each.value.size
+        storage = "${each.value.size}Gi"
       }
     }
   }
   depends_on = [ kubernetes_persistent_volume.elastic_pv ]
-}
-
-output "test" {
-  value = zipmap(flatten([for item in local.persistentVolumes : keys(item)]), flatten([for item in local.persistentVolumes : values(item)]))
 }

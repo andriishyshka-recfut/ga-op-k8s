@@ -17,7 +17,7 @@ locals {
   minio_count    = local.settings.persistent_resources.permanentDisks.minio.count
   postgres_count = local.settings.persistent_resources.permanentDisks.postgres.count
 
-  elastic_disks = { for new_name in flatten([ for nodepool in local.settings.persistent_resources.permanentDisks.elastic : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count} ]]): "${new_name.name}-${new_name.index}" => new_name }
+  elastic_disks = { for new_name in flatten([ for nodepool in local.settings_red.persistent_resources.permanentDisks.elastic : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count} ]]): "${new_name.name}-${new_name.index}" => new_name }
 
   tarantool_storage_count  = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks * 2
   tsc                      = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks
