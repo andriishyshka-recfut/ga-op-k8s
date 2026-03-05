@@ -2,9 +2,6 @@ resource "vault_policy" "rail" {
   name = "rail"
 
   policy = <<EOT
-path "secret/data/elasticsearch-admin/elastic7-v2" {
-  capabilities = ["read","list"]
-}
 path "secret/data/wl/rail*" {
   capabilities = ["read","list"]
 }
@@ -23,8 +20,11 @@ path "secret/data/es-creds-compose-prod/elastic*" {
 path "secret/data/es-creds-compose-prod/metaMule" {
     capabilities = ["read","list"]
 }
-path "secret/data/es-creds-compose-prod/_ms.mule" {
+path "secret/data/es-creds-compose-prod/_mule.ms" {
     capabilities = ["read","list"]
+}
+path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
 }
 EOT
 }
