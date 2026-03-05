@@ -8,7 +8,7 @@ path "secret/data/wl/rail*" {
 path "/secret/data/misc/cybera/gemini" {
   capabilities = ["read","list"]
 }
-path "secret/data/mongo/production" {
+path "secret/data/mongo/metaBeat" {
   capabilities = ["read","list"]
 }
 path "secret/data/mongo/metaRail" {
