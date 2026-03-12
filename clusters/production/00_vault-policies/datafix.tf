@@ -25,5 +25,8 @@ path "secret/data/mw/postgres/db-users/birl" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/datafix_datafix" {
+   capabilities = ["read","list"]
+}
 EOT
 }
