@@ -34,5 +34,8 @@ path "secret/data/mw/monitoring/otel" {
 path "secret/data/misc/slack/app/MAID" {
    capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/clean_maid" {
+   capabilities = ["read","list"]
+}
 EOT
 }
