@@ -78,7 +78,7 @@ resource "kubernetes_cron_job_v1" "nightly_html" {
               }
               env {
                 name  = "MC_HOST_minio"
-                value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
+                value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio-red.minio-mng:9000"
               }
               volume_mount {
                 name       = "results"
@@ -179,7 +179,7 @@ resource "kubernetes_cron_job_v1" "nightly_json" {
               }
               env {
                 name  = "MC_HOST_minio"
-                value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
+                value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio-red.minio-mng:9000"
               }
               volume_mount {
                 name       = "results"
