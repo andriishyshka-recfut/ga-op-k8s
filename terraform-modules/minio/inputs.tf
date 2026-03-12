@@ -1,4 +1,5 @@
 variable "Cluster" {}
+variable "Color" {}
 variable "Values" {}
 
 

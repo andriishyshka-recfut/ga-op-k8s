@@ -22,7 +22,7 @@ ElasticSettings:
         - "2026"
       active: "2026"
 #default 8880h
-      duration: "3600h"
+      duration: "2740h"
     addons:
       notifications:
         slack:

@@ -16,7 +16,8 @@ resource "vault_auth_backend" "auth_kubernetes" {
     max_lease_ttl = "3628800s"
   }
   depends_on = [
-    null_resource.auth_kubernetes_disable
+    null_resource.auth_kubernetes_disable,
+    helm_release.vault
   ]
 }
 

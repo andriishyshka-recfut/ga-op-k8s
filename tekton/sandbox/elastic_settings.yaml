@@ -1,0 +1,86 @@
+ElasticSettings:
+  globalSettings:
+    namespace: elastic8
+    imageTag: "7.17.29"
+    clusterName: elastic8
+    plugins:
+      - "repository-s3"
+    keystores:
+      - aws
+    podAnnotations:
+      sidecar.istio.io/inject: "false"
+    transport:
+      verification_mode: certificate
+      certs:
+        - "monthly"
+      active: "monthly"
+      duration: "1080h"
+    remoteCertsVaultPath: "secret/elasticsearch-admin/remote-certs"
+    remotecerts: 
+      - remote.ca.crt
+      - remote2.ca.crt
+    pvName: "elastic8"
+    addons:
+      notifications:
+        slack:
+          vault_path: "secret/misc/slack/app/X-Pack"
+      authorizations:
+        okta:
+          vault_path: "secret/misc/oidc/okta/elastic8"
+          oidc_realm_name: "okta"
+          secret_name: "oidc-okta"
+          type: "okta"
+          domain: "k8.t.regemini.io"
+    license:
+      vault_path: "secret/misc/elasticsearch/license"
+      name: "recorded-future-ab-non_production-b3d2ba33-a0df-4cf6-9a5b-941d2bb9952c-v5.json"
+    clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
+  nodePools:
+    master:
+      replicas: 3
+      workloadsType: data
+      roles:
+        master: "true"
+      resources:
+        cpuReq: "2"
+        cpuLimit: "3"
+        memReq: "4Gi"
+        memLimit: "5Gi"
+      storage: "100Gi"
+      esJavaOpts: "-Xms4g -Xmx4g"
+    data:
+      replicas: 2
+      workloadsType: data
+      roles:
+        data: "true"
+      resources:
+        cpuReq: "3"
+        cpuLimit: "4"
+        memReq: "4Gi"
+        memLimit: "5Gi"
+      storage: "170Gi"
+      esJavaOpts: "-Xms4g -Xmx4g"
+    coor:
+      replicas: 2
+      workloadsType: data
+      roles:
+        remote_cluster_client: "true"
+      resources:
+        cpuReq: "1"
+        cpuLimit: "2"
+        memReq: "4Gi"
+        memLimit: "5Gi"
+      storage: "100Gi"
+      esJavaOpts: "-Xms4g -Xmx4g"
+    ingest:
+      replicas: 1
+      workloadsType: data
+      roles:
+        ingest: "true"
+      resources:
+        cpuReq: "1"
+        cpuLimit: "2"
+        memReq: "4Gi"
+        memLimit: "5Gi"
+      storage: "100Gi"
+      esJavaOpts: "-Xms4g -Xmx4g"

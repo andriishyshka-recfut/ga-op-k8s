@@ -33,6 +33,26 @@ locals {
     sleep 29
   COMMAND
 
+  stop_prometheus_thanos = <<COMMAND
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     get deployment -l app.kubernetes.io/name=thanos -n monitoring |awk 'NR>1 {print $1,$2}'| xargs -n 2 \
+     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     scale deploy --replicas=0 -n $1 && \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     get statefulset -l 'app.kubernetes.io/name in (prometheus, thanos, thanos-ruler)' -n monitoring |awk 'NR>1 {print $1,$2}'| xargs -n 2 \
+     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     scale statefulset --replicas=0 -n $1 
+    sleep 29
+  COMMAND
+
   delete_zero_cronjobs = <<COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
@@ -105,6 +125,18 @@ resource "null_resource" "stop_zero_services" {
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_zero_services
+  }
+  depends_on = [null_resource.stop_flux]
+}
+
+resource "null_resource" "stop_prometheus_thanos" {
+
+  triggers = {
+    command = md5(local.stop_prometheus_thanos)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_prometheus_thanos
   }
   depends_on = [null_resource.stop_flux]
 }
