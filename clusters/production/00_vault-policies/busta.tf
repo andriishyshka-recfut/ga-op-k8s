@@ -28,6 +28,9 @@ path "secret/data/es-creds-compose-prod/elastic*" {
 path "secret/data/mw/monitoring/otel" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/busta_clicker" {
+  capabilities = ["read","list"]
+}
 EOT
 }
 

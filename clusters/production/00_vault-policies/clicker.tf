@@ -28,5 +28,8 @@ path "secret/data/oidc_google_prod" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/clicker_clicker" {
+  capabilities = ["read","list"]
+}
 EOT
 }
