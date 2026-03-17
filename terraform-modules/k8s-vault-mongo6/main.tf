@@ -124,6 +124,10 @@ resource "helm_release" "mongo_cluster" {
     {
       name  = "replsets[0].resources.limits.cpu"
       value = local.limit.cpu
+    },
+    {
+      name  = "replsets[0].sidecars[0].image"
+      value = local.exporterImage
     }
   ]
   depends_on = [
