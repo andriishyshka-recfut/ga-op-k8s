@@ -22,22 +22,3 @@ module "prometheus-addons" {
   depends_on = [ module.prometheus ]
 }
 
-module "fluxcd-prometheus-main-rules" {
-  source  = "../../../terraform-modules/k8s-vault-fluxcd-resources"
-  Cluster = var.Cluster
-  Color   = var.Color
-  Values  = local.values
-  depends_on = [ module.prometheus ]
-}
-
-locals {
-  values = {
-    kustomizations = {
-      prometheus-main-rules = {
-        kustomization_path = "./monitoring/prometheus/main-rules",
-        git_repository     = "gitops"
-      }
-    }
-  }
-}
-
