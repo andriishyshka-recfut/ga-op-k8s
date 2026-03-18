@@ -36,7 +36,8 @@ resource "vault_jwt_auth_backend_role" "okta" {
 locals {
   vault_groups = {
     APP-GA-OP         = ["admin"],
-    APP-GA-VaultP-ETL = ["oidc-recordedfuture"]
+    APP-GA-VaultP-ETL = ["oidc-recordedfuture"],
+    APP-GA-PM         = ["oidc-pm"]
   }
 }
 

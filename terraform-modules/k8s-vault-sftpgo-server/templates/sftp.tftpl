@@ -8,6 +8,12 @@ volumes:
   - name: "sftp-config"
     configMap:
       name: "sftp-server-${name}-config"
+  - name: "minio-ca-certs"
+    secret:
+      secretName: "minio-ca-certs"
+      items:
+        - key: ca.crt
+          path: ca.crt
 volumeMounts:
   - mountPath: "/var/lib/sftpgo/id_ed25519"
     subPath: "id_ed25519"
@@ -24,6 +30,9 @@ volumeMounts:
   - name: "sftp-config"
     mountPath: "/var/lib/sftpgo/config.json"
     subPath: "config.json"
+  - name: minio-ca-certs
+    mountPath: /etc/ssl/custom-ca
+    readOnly: true
 env:
   SFTPGO_LOADDATA_FROM: "/var/lib/sftpgo/config.json"
   SFTPGO_DATA_PROVIDER__DRIVER: "postgresql"
@@ -31,6 +40,7 @@ env:
   SFTPGO_DATA_PROVIDER__HOST: ${values.postgres_url}
   SFTPGO_DATA_PROVIDER__PORT: ${values.postgres_port}
   SFTPGO_DATA_PROVIDER__USERNAME: ${vaultValues.username}
+  SSL_CERT_DIR: "/etc/ssl/custom-ca"
 envVars:
   - name: "SFTPGO_DATA_PROVIDER__PASSWORD"
     valueFrom:
