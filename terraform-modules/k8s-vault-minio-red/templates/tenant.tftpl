@@ -46,11 +46,11 @@ tenant:
       ## Configure resource requests and limits for MinIO containers
       resources:
         limits:
-          cpu: 3900m
-          memory: 13000Mi
-        requests:
-          cpu: 2000m
+          cpu: 1600m
           memory: 5000Mi
+        requests:
+          cpu: 150m
+          memory: 512Mi
       ## This VolumeClaimTemplate is used across all the volumes provisioned for MinIO Tenant in this Pool.
 
       volumeClaimTemplate:
