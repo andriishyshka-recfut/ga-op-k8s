@@ -35,6 +35,9 @@ path "secret/data/oidc_google_prod" {
 path "secret/data/minio/similarweb" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/similarweb_similarweb" {
+  capabilities = ["read","list"]
+}
 path "secret/data/mongo/similarweb" {
 	capabilities = ["read","list"]
 }
