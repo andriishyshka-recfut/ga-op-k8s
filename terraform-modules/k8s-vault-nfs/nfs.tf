@@ -15,6 +15,10 @@ resource "helm_release" "nfs" {
     {
       name  = "diskzone"
       value = "us-east4-a"
+    },
+    {
+      name = "diskname"
+      value = "nfs-pv-0"
     }
   ]
 }

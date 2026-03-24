@@ -11,8 +11,8 @@ locals {
   })
   limit         = var.Cluster == "production" ? { "memory" : "8G", "cpu" : "5" } : { "memory" : "2G", "cpu" : "1" }
   request       = var.Cluster == "production" ? { "memory" : "7G", "cpu" : "3" } : { "memory" : "1G", "cpu" : "250m" }
-  pv_disk_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
-  replicas      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.kafka.count
+  pv_disk_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.kafka.data.count
+  replicas      = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.kafka.data.count
   zones         = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones
   rp_image_tag  = var.Settings.clusters[var.Cluster].versions.red-panda.image_tag
 

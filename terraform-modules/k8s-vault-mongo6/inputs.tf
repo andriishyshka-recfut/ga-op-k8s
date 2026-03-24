@@ -31,10 +31,9 @@ locals {
   limit   = local.profile.limit
   request = local.profile.request
 
-  pv_disk_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.mongo6.count
+  pv_disk_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.mongo[var.InstanceName].count
 
   claim_prefix = "mongod-data-mongo-${var.InstanceName}"
-  target_label = var.PvcPrefix
   full_name    = "mongo-${var.InstanceName}"
 
   zones = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones

@@ -14,7 +14,7 @@ resource "kubernetes_persistent_volume" "minio_tenant_pv" {
     access_modes = ["ReadWriteOnce"]
     claim_ref {
       namespace = local.minioNs
-      name = "data-minio-tenant-pool-0-${count.index}"
+      name = "data-minio-tenant-pool-1-${count.index}"
     }
     persistent_volume_source{
       csi {
@@ -41,7 +41,7 @@ resource "kubernetes_persistent_volume_claim" "minio_tenant_pvc" {
     count = local.pv_disk_count
 
   metadata {
-    name = "data-minio-tenant-pool-0-${count.index}"
+    name = "data0-minio-tenant-pool-1-${count.index}"
     namespace = local.minioNs
   }
   spec {
@@ -60,6 +60,6 @@ resource "kubernetes_persistent_volume_claim" "minio_tenant_pvc" {
     # volume_name = "minio-tenant-data-${count.index}-pv"
     volume_name = "${kubernetes_persistent_volume.minio_tenant_pv[count.index].metadata.0.name}"
   }
-  # depends_on = [ kubernetes_persistent_volume.minio_tenant_pv ]
+  depends_on = [ kubernetes_persistent_volume.minio_tenant_pv ]
 }
 
