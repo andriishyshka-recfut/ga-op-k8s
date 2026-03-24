@@ -15,5 +15,6 @@ mike
 osage
 pollux
 regulus
+ronaldo
 sirius
 victor
