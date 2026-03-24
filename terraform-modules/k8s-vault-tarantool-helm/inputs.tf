@@ -7,13 +7,13 @@ variable "Color" {}
 locals {
   namespace = "tarantool"
 
-  tarantool_storage_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_disks * 2
-  tsc = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_disks 
-  tarantool_storage_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.storage_prefix 
-  tarantool_router_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.router_disks
-  tarantool_router_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.router_prefix 
-  tarantool_etcd_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.etcd_disks
-  tarantool_etcd_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.tarantool.etcd_prefix 
+  tarantool_storage_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.tarantool.storage.count * 2
+  tsc = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.tarantool.storage.count 
+  tarantool_storage_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.tarantool.storage.prefix 
+  tarantool_router_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.tarantool.router.count
+  tarantool_router_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.tarantool.router.prefix 
+  tarantool_etcd_count = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.tarantool.etcd.count
+  tarantool_etcd_prefix = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.tarantool.etcd.prefix 
 
   storage_request_cpu = var.Cluster == "production" ?  "500m" : "300m"
   storage_request_mem = "2G" 

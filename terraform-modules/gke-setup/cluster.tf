@@ -55,6 +55,18 @@ resource "google_container_cluster" "cluster" {
         cidr_block   = var.Settings.clusters[var.Cluster][cidr_blocks.value].subnets.pods_secondary_range
       }
     }
+
+    dynamic "cidr_blocks" {
+      for_each = {
+        for idx, cidr in lookup(var.Settings, "zscalerIP", []) :
+        idx => cidr
+      }
+
+      content {
+        display_name = "zscaler-${cidr_blocks.key}"
+        cidr_block   = cidr_blocks.value
+      }
+    }
     # cidr_blocks {
     #   display_name = "blue-pods"
     #   cidr_block   = local.bluePods

@@ -190,6 +190,28 @@ COMMAND
     delete pvc -n postgres  {}
 COMMAND
 
+  stop_elastic_resources = <<COMMAND
+    set -x
+
+    echo "Stopping elastic replicas"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    scale statefulset -n elastic --replicas=0 --all
+
+    echo "Deleting elastic PVCs"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get pvc -n elastic | awk '{print $1}'\
+    | xargs -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    delete pvc -n elastic  {}
+  
+COMMAND
+
 }
 
 
@@ -295,5 +317,15 @@ resource "null_resource" "stop_postgres_resources" {
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_postgres_resources
+  }
+}
+resource "null_resource" "stop_elastic_resources" {
+  count = var.Cluster == "sandbox" ? 1 : 0
+  triggers = {
+    command = md5(local.stop_elastic_resources)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_elastic_resources
   }
 }

@@ -31,8 +31,8 @@ locals {
   vaultFqdn                 = var.Cluster == "production" ? "https://vault.p.regemini.io" : "https://vault.t.regemini.io"
   minioConsoleFqdn          = var.Settings.clusters[var.Cluster][var.Color].minio.console_fqdn
   currentProject            = var.Settings.gcpProject
-  pv_disk_count             = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
-  diskSize                  = "500Gi"
+  pv_disk_count             = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.minio.data.count
+  diskSize                  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.minio.data.size
   runUserAccess             = 0
   cert_dns_names            = ["minio.minio.svc.cluster.local", "*.minio.svc.cluster.local", "*.minio.minio.svc.cluster.local", "*.minio-tenant-console.minio.svc.cluster.local", "*.minio-tenant-hl.minio.svc.cluster.local"]
   minioSettings = {

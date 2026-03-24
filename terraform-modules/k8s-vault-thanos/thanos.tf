@@ -6,11 +6,11 @@ resource "helm_release" "thanos" {
   name              = "thanos"
   chart             = "thanos"
 #  repository        = "https://charts.bitnami.com/bitnami"
-  repository        = "oci://registry-1.docker.io/bitnamicharts"
+#  repository        = "oci://registry-1.docker.io/bitnamicharts"
 #  waiting to resync 
-#  repository        = "oci://harbor.regemini.io/helm"
-#  repository_username = data.vault_generic_secret.harbor_token.data.user
-#  repository_password = data.vault_generic_secret.harbor_token.data.password
+  repository        = "oci://harbor.regemini.io/helm"
+  repository_username = data.vault_generic_secret.harbor_token.data.user
+  repository_password = data.vault_generic_secret.harbor_token.data.password
   wait              = true
   atomic            = true
   namespace         = local.prometheusNs

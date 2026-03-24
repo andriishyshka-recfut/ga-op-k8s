@@ -22,7 +22,7 @@ locals {
   cluster_name     = var.Settings.clusters[var.Cluster].postgres.cluster_name
   namespace        = var.Settings.clusters[var.Cluster].postgres.namespace
   vault_path       = var.Settings.clusters[var.Cluster].postgres.vault_path
-  disk_count       = var.Settings.clusters[var.Cluster].postgres.replicas
+  disk_count       = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.postgres.postgres.count
   zones            = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones
   operator_version = var.Settings.clusters[var.Cluster].postgres.operator_chart_version
   postgres_uri     = "postgres-rw.postgres:5432"

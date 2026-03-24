@@ -33,8 +33,8 @@ locals {
   currentProject            = var.Settings.gcpProject
   imageTag                  = var.Settings.clusters[var.Cluster].versions.minio.image_tag
   mcImageTag                = "RELEASE.2023-09-13T23-08-58Z"
-  pv_disk_count             = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.minio.count
-  diskSize                  = "100Gi"
+  pv_disk_count             = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.minio.data.count
+  diskSize                  = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.minio.data.size
   runUserAccess             = 0
   cert_dns_names            = ["minio.minio-helm.svc.cluster.local", "*.minio-helm.svc.cluster.local", "*.minio.minio-helm.svc.cluster.local", "*.minio-tenant-console.minio-helm.svc.cluster.local", "*.minio-tenant-hl.minio-helm.svc.cluster.local"]
   minioSettings = {
