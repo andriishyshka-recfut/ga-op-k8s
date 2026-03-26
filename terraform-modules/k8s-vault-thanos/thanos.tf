@@ -8,7 +8,7 @@ resource "helm_release" "thanos" {
 #  repository        = "https://charts.bitnami.com/bitnami"
 #  repository        = "oci://registry-1.docker.io/bitnamicharts"
 #  waiting to resync 
-  repository        = "oci://harbor.regemini.io/helm"
+  repository        = "oci://harbor.regemini.io/helm/charts"
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
   wait              = true
