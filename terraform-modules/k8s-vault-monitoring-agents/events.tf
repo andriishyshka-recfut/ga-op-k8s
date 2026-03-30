@@ -140,7 +140,7 @@ data "vault_generic_secret" "harbor_token" {
 resource "helm_release" "k8s_events" {
   name                = "kubernetes-event-exporter"
   chart               = "kubernetes-event-exporter"
-  repository          = "oci://harbor.regemini.io/helm"
+  repository          = "oci://harbor.regemini.io/helm/charts"
   version             = local.events_version
   namespace           = local.namespace
   repository_username = data.vault_generic_secret.harbor_token.data.user
