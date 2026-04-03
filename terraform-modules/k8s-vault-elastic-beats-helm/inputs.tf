@@ -2,6 +2,7 @@ variable "ElasticSettings" {}
 variable "logstash_list" {}
 variable "filebeats_settings" {}
 variable "Cluster" {}
+variable "Color" {}
 
 locals {
   filebeat_workload_type     = "daemonset"
@@ -12,7 +13,21 @@ locals {
   filebeat_image_tags        = { for name, data in var.filebeats_settings : name => lookup(var.filebeats_settings[name], "imageTag", var.ElasticSettings.globalSettings.imageTag) }
   filebeat_groups_list       = { for name, data in var.filebeats_settings : name => data if data.log_groups != "" }
   BeatKibanaService          = "kb-ga"
-  BeatElasticService         = "red-coor.elastic.svc"
+  BeatElasticService         = "red-coor.elastic.svc.cluster.local"
   filebeats_jobs             = { for name, data in var.filebeats_settings : name => templatefile("${path.module}/templates/users/filebeat_user.tftpl", { settings = data, password = random_password.filebeat_password[name].result }) }
+  headless_cert              = {
+    name = "elastic-headless"
+    namespace = var.ElasticSettings.globalSettings.namespace
+    pki = {
+      name = "pki-elastic-int"
+      role = "headless"
+    }
+    vault_addr = "https://vault.p.regemini.io"
+    kube_auth = {
+      role = "elastic"
+    }
+    cluster = var.Cluster
+    color  = var.Color
+  }
 }
 

@@ -7,6 +7,10 @@ extraEnvs:
         name: metricbeat-credentials
         key: password
 secretMounts: 
+  - name: elastic-headless-certs
+    secretName: elastic-headless-certs
+    path: /usr/share/elasticsearch/config/headless-certs
+    defaultMode: 0755
   - name: elastic-https-certs
     secretName: elastic-https-certs
     path: /usr/share/elasticsearch/config/https-certs
@@ -51,16 +55,16 @@ deployment:
                     hosts: 
 %{ for nodepool,nodepooldata in nodePools ~}
 %{ for counter in range(nodepooldata.replicas) ~}
-                      - https://${globalSettings.clusterName}-${nodepool}-${counter}.${globalSettings.clusterName}-${nodepool}-headless.${globalSettings.namespace}.svc:9200
+                      - https://${globalSettings.clusterName}-${nodepool}-${counter}.${globalSettings.clusterName}-${nodepool}-headless.${globalSettings.namespace}.svc.cluster.local:9200
 %{ endfor ~}
 %{ endfor ~}
                     username: metricbeat_user
                     password: $${METRICBEAT_PASSWORD}
                     # WARNING: disables TLS as the default certificate is not valid for the pod FQDN
                     # TODO: switch this to "certificate" when available: https://github.com/elastic/beats/issues/8164
-                    #ssl.certificate_authorities: [ "/usr/share/elasticsearch/config/https-certs/ca.crt" ]
+                    ssl.certificate_authorities: [ "/usr/share/elasticsearch/config/https-certs/ca.crt", "/usr/share/elasticsearch/config/headless-certs/ca.crt" ]
                     #protocol: https
-                    ssl.verification_mode: "none"
+                    ssl.verification_mode: "full"
                     scope: node
                     xpack.enabled: true
               - condition:

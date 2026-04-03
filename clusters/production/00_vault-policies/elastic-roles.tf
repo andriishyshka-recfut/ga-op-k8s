@@ -24,7 +24,7 @@ resource "vault_pki_secret_backend_role" "transport" {
   key_type           = "rsa"
   key_bits           = 2048
   allow_localhost    = false
-  allowed_domains    = ["*.red*.*.svc.cluster.local","red*.svc.cluster.local"]
+  allowed_domains    = ["*.red*.*.svc.cluster.local", "red*.svc.cluster.local"]
   allow_subdomains   = true
   allow_bare_domains = true
   allow_glob_domains = true
@@ -41,7 +41,7 @@ resource "vault_pki_secret_backend_role" "headless" {
   key_type           = "rsa"
   key_bits           = 2048
   allow_localhost    = false
-  allowed_domains    = ["*.*-headless.*.svc.cluster.local, *.*-headless.*.svc"]
+  allowed_domains    = ["*-headless.*.svc.cluster.local", "*-headless.*.svc"]
   allow_subdomains   = true
   allow_bare_domains = true
   allow_glob_domains = true
