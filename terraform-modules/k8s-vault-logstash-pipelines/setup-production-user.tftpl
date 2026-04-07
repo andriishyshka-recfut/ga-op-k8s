@@ -30,6 +30,6 @@ curl -X PUT "https://elastic:$ES_PASSWORD@${es_url}/_security/role/logstash_admi
 } ' &&\
 curl -X PUT "https://elastic:$ES_PASSWORD@${es_url}/_security/user/logstash" -H 'Content-Type: application/json' -k -d '
 {
-    "roles" : ["_birlRO_","_minionRO_","_domeRO_","_pansRO_","_cryptoRO_","gForum","_cppRO_","_magecartRO_","_maidRO_","_checkerRO_","logstash_writer","logstash_reader","logstash_admin"],
+    "roles" : ["_birlRO_","_minionRO_","_domeRO_","_pansRO_","_cryptoRO_","gForum","_cppRO_","_mageRO_","_maidRO_","_checkerRO_","logstash_writer","logstash_reader","logstash_admin"],
     "password": "${password}"
 }'
