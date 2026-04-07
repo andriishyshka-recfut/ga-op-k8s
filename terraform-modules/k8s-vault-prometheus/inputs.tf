@@ -23,10 +23,10 @@ locals {
   thanosMinioUser         = "thanos"
   prometheusQueryUrl      = var.Cluster == "production" ? "https://prometheus.p.regemini.io/query/" : "https://prometheus.t.regemini.io/query/"
   prometheusResources     = {
-    RAMreq                = var.Cluster == "production" ? "5.5Gi" : "4.5Gi"
-    RAMlim                = var.Cluster == "production" ? "6.0Gi" : "5.0Gi"
-    CPUreq                = var.Cluster == "production" ? "1500m" : "1300m"
-    CPUlim                = var.Cluster == "production" ? "1600m" : "1400m"
+    RAMreq                = var.Cluster == "production" ? "5.5Gi" : "3.5Gi"
+    RAMlim                = var.Cluster == "production" ? "6.0Gi" : "4.0Gi"
+    CPUreq                = var.Cluster == "production" ? "1500m" : "1100m"
+    CPUlim                = var.Cluster == "production" ? "1600m" : "1300m"
   }  
   prometheusSlackWebHooks = data.vault_generic_secret.prometheus.data
   grafana_okta = {

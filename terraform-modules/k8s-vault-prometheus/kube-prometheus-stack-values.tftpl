@@ -144,6 +144,7 @@ prometheusOperator:
 prometheus:
   prometheusSpec:
     replicas: 2
+    shards: 2
     prometheusRulesExcludedFromEnforce: false
     terminationGracePeriodSeconds: 1800
     ruleSelector:
@@ -186,6 +187,35 @@ prometheus:
       limits:
         memory: ${prometheus_resources.RAMlim}
         cpu: ${prometheus_resources.CPUlim}
+
+    containers:
+      - name: prometheus
+        startupProbe:
+          httpGet:
+            path: /-/ready
+            port: http-web
+            scheme: HTTP
+          timeoutSeconds: 15
+          periodSeconds: 10
+          failureThreshold: 360
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /-/healthy
+            port: http-web
+            scheme: HTTP
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+        readinessProbe:
+          httpGet:
+            path: /-/ready
+            port: http-web
+            scheme: HTTP
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+
     thanos:
       version: ${thanos_version}
       baseImage: quay.io/thanos/thanos
