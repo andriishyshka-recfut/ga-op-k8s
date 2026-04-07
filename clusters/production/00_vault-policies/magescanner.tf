@@ -53,5 +53,8 @@ path "secret/magescanner/surfshark_creds" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/magescanner_mgscn" {
+   capabilities = ["read","list"]
+}
 EOT
 }
