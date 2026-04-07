@@ -20,7 +20,7 @@ path "/secret/data/es-creds-compose-prod/_grouper.ms" {
 path "/secret/data/mongo/metaGrouper" {
   capabilities = ["read","list"]
 }
-path "/secret/data/misc/slack/app/grouper {
+path "/secret/data/misc/slack/app/grouper" {
   capabilities = ["read","list"]
 }
 EOT
