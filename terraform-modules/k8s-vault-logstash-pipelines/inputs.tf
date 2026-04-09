@@ -31,6 +31,8 @@ locals {
   logstash_user = "logstash"
   vault_url = var.Color == "red" ? "https://vault.p.regemini.io" : "http://vault-active.vault:8200"   
 
+  logstash_list = { for name, value  in var.logstash_list : name => merge(local.valuesDefault, value)}
+
   valuesDefault = {
     namespace = local.namespace
     logstash_version = var.logstash_version

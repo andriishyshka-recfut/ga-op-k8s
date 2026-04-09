@@ -1,5 +1,5 @@
 resource "helm_release" "logstash" {
-  for_each     = var.logstash_list
+  for_each     = local.logstash_list
   name         = "logstash-${each.key}"
   namespace    = try(each.value.namespace, local.namespace)
   chart        = "${path.module}/logstash"
@@ -11,16 +11,16 @@ resource "helm_release" "logstash" {
   values = [
     templatefile("${path.module}/templates/logstash.tftpl",{
       name = each.key
-      values = merge(local.valuesDefault, each.value)
+      values = each.value
     })
   ]
   
 
-  #depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds, kubernetes_manifest.tmp_logstash, kubernetes_job.logstash_user]
+  depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds, kubernetes_manifest.tmp_logstash, kubernetes_job.logstash_user]
 }
 
 data "kubernetes_secret" "logstash_elastic_ca" {
-  for_each = var.logstash_list
+  for_each = local.logstash_list
   metadata {
     name      = try(each.value.es_cert_secretname, local.es_cert_secretname)
     namespace = try(each.value.es_namespace, local.namespace)
@@ -28,7 +28,7 @@ data "kubernetes_secret" "logstash_elastic_ca" {
 }
 
 resource "kubernetes_secret" "logstash_elastic_ca" {
-  for_each = var.logstash_list
+  for_each = local.logstash_list
   metadata {
     name      = "${each.key}-logstash-https-certs"
     namespace = each.value.namespace
@@ -42,7 +42,7 @@ data "vault_generic_secret" "minio_creds" {
 }
 
 resource "kubernetes_secret" "minio_creds" {
-  for_each = var.logstash_list
+  for_each = local.logstash_list
   metadata {
     name      = "${each.key}-logstash-minio-creds"
     namespace = each.value.namespace
@@ -60,7 +60,7 @@ resource "random_password" "logstash_es_password" {
 }
 
 resource "random_password" "logstash_api_password" {
-  for_each = var.logstash_list
+  for_each = local.logstash_list
   length   = 32
   special  = false
 }
@@ -73,6 +73,7 @@ resource "vault_generic_secret" "logstash_etl_creds" {
 }
 
 resource "kubernetes_config_map" "vandelay_reload" {
+  count = var.Cluster == "production" ? 1 : 0
   metadata {
     name      = "reload"
     namespace = "vandelay"
@@ -93,7 +94,7 @@ resource "vault_generic_secret" "vandelay_logstash_3_creds" {
 }
 
 resource "vault_generic_secret" "logstash_es_creds" {
-  for_each = var.logstash_list
+  for_each = local.logstash_list
   path     = "secret/logstash/${each.key}"
   data_json = jsonencode({
     logstash_es_password  = resource.random_password.logstash_es_password.result
@@ -103,13 +104,13 @@ resource "vault_generic_secret" "logstash_es_creds" {
 }
 
 data "vault_generic_secret" "logstash_es_creds" {
-  for_each   = var.logstash_list
+  for_each   = local.logstash_list
   path       = "secret/logstash/${each.key}"
   depends_on = [vault_generic_secret.logstash_es_creds]
 }
 
 resource "kubernetes_secret" "logstash_es_creds" {
-  for_each = var.logstash_list
+  for_each = local.logstash_list
   metadata {
     name      = "${each.key}-logstash-es-creds"
     namespace = each.value.namespace
@@ -124,10 +125,10 @@ resource "kubernetes_secret" "logstash_es_creds" {
 }
 
 resource "kubernetes_job" "logstash_user" {
-  for_each = var.logstash_list
+  for_each = local.logstash_list
   metadata {
     name      = "logstash-${each.key}-user-setup"
-    namespace = local.namespace
+    namespace = each.value.namespace
   }
   spec {
     template {

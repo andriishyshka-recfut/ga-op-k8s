@@ -1,5 +1,5 @@
 resource "kubernetes_manifest" "tmp_logstash" {
-  for_each = var.logstash_list
+  for_each = local.logstash_list
   manifest = {
     "apiVersion" = "v1"
     "kind"       = "PersistentVolumeClaim"

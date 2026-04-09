@@ -5,7 +5,7 @@ data "vault_generic_secret" "kibana_xpack_secrets_vault" {
 resource "helm_release" "kibana" {
   for_each  = local.kibanaSettings
   name      = "kibana-${each.key}"
-  chart     = "${path.module}/charts/kibana"
+  chart     = "${path.module}/charts/kibana8"
   wait      = true
   atomic    = true
   timeout   = 2000
