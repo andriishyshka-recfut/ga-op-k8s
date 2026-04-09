@@ -30,7 +30,8 @@ locals {
   elasticSecretsPath    = var.Cluster == "production" ? "/secret/data/es-creds-compose-prod/metaCamino" : "/secret/data/elasticsearch-admin/elastic7-v2"
   elasticSecretsPathNew = var.Cluster == "production" ? "secret/data/es-creds-compose-prod/metaCamino" : "secret/data/elasticsearch-admin/elastic7-v2"
   slackKey              = var.Cluster == "production" ? "gemini_etl-live" : "gemini_etl-test"
-  etlVault              = merge(data.vault_generic_secret.api_keys.data, { slacktoken = data.vault_generic_secret.slack.data[local.slackKey] })
+  slackToken            = replace(data.vault_generic_secret.slack.data[local.slackKey], "https://hooks.slack.com/services/", "")
+  etlVault              = merge(data.vault_generic_secret.api_keys.data, { slacktoken = local.slackToken })
   #minio_endpoints       = var.Settings.clusters[var.Cluster].versions.etl.minio_endpoints
   operatorValues = {
     operatorTag        = local.operatorTag

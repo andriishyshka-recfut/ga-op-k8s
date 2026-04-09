@@ -167,5 +167,10 @@ ${ emailNotification }
 %{ if lookup(globalSettings.addons, "authorizations", 0) != 0 ~}
 ${ configAuth }
 %{ endif ~}
+%{ if lookup(globalSettings, "newCCR", 0) != 0 ~}
+    remote_cluster_server.enabled: true
+    remote_cluster.host: 0.0.0.0
+    remote_cluster.port: 9443
+%{ endif ~}
     xpack.security.audit.enabled: true
     xpack.security.audit.logfile.events.include: "access_denied, access_granted, anonymous_access_denied, authentication_success, authentication_failed"

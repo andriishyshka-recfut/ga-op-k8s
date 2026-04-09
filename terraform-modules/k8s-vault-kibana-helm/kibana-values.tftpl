@@ -1,6 +1,9 @@
 imageTag: ${imageTag}
-elasticsearchHosts: "https://elasticsearch-coor.elastic.svc:9200"
+elasticsearchHosts: "https://elasticsearch-coor.elastic.svc.cluster.local:9200"
 protocol: http
+elasticsearchCredentialSecret: kibana-${kibana_name}-es-credentials
+elasticsearchCertificateSecret: elastic-https-certs
+elasticsearchCertificateAuthoritiesFile: ca.crt
 secretMounts: 
   - name: elastic-https-certs
     secretName: elastic-https-certs
@@ -65,7 +68,6 @@ kibanaConfig:
             chromium:
               disableSandbox: "true"
         encryptionKey: ${kibana_xpack_secrets.reportingEncryptionKey}
-        index: .reporting-re
         roles:
           enabled: false
       encryptedSavedObjects:

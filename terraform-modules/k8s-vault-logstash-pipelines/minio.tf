@@ -86,9 +86,10 @@ data "vault_pki_secret_backend_issuer" "pki_minio" {
   issuer_ref = "default"
 }
 resource "kubernetes_secret" "minio_ca_cert" {
+  for_each = local.logstash_list
   metadata {
     name      = "minio-ca-certs"
-    namespace = local.namespace
+    namespace = each.value.namespace
   }
   data = {
     "ca.crt" = data.vault_pki_secret_backend_issuer.pki_minio.certificate

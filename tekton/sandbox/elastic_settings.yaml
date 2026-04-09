@@ -1,8 +1,9 @@
 ElasticSettings:
   globalSettings:
     namespace: elastic8
-    imageTag: "7.17.29"
+    imageTag: 8.18.0
     clusterName: elastic8
+    newCCR: true
     plugins:
       - "repository-s3"
     keystores:
@@ -19,6 +20,7 @@ ElasticSettings:
     remotecerts: 
       - remote.ca.crt
       - remote2.ca.crt
+      - remote-migr.ca.crt
     pvName: "elastic8"
     addons:
       notifications:
