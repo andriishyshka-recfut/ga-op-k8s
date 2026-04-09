@@ -13,6 +13,9 @@ path "secret/data/mongo/metaBeat" {
 path "secret/data/es-creds-compose-prod/metaBirl" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/birl_telegram-attachments" {
+  capabilities = ["read","list"]
+}
 path "secret/data/es-creds-compose-prod/metaBirlApi" {
   capabilities = ["read","list"]
 }

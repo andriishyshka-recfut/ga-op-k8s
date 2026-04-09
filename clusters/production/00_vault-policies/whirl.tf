@@ -7,6 +7,12 @@ path "secret/data/whirl/*" {
 path "secret/data/telegram/os3/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/os3_telegram-attachments" {
+   capabilities = ["read","list"]
+}
+path "secret/data/mw/minio/sa/whirl_telegram-attachments" {
+   capabilities = ["read","list"]
+}
 path "secret/data/es-creds-compose-prod/whirl" {
   capabilities = ["read","list"]
 }

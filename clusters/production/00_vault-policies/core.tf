@@ -55,6 +55,9 @@ path "secret/data/core/auth/*" {
 path "secret/data/wl/minifier/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/minifier_minifier" {
+  capabilities = ["read","list"]
+}
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
