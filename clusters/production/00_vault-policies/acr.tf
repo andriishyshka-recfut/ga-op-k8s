@@ -7,6 +7,9 @@ path "secret/data/acr/*" {
 path "secret/data/mw/minio/sa/swirl_telegram-yolo_models" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/ocr_telegram-attachments" {
+  capabilities = ["read","list"]
+}
 path "secret/data/es-creds-compose-prod/metaOcr" {
   capabilities = ["read","list"]
 }
