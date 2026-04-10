@@ -31,7 +31,9 @@ path "secret/data/es-creds-compose-prod/metaEs2gs-twirlMs" {
 path "secret/data/wl/aws2kafka-check/*" {
   capabilities = ["read","list"]
 }
-
+path "secret/data/mw/minio/sa/aws2kafka-check_telegram-images" {
+   capabilities = ["read","list"]
+}
 path "secret/data/gs2es/es2gs-magecart-similarweb/spreadsheet" {
   capabilities = ["read","list"]
 }
