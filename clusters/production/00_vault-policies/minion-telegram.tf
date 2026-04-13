@@ -14,5 +14,8 @@ path "secret/data/wl/minion/+/telegram-creds" {
 path "secret/data/mw/minio/sa/unitedfullz_telegram-sessions" {
   capabilities = ["read", "list"]
 }
+path "secret/data/wl/minion/circinus/telegram-creds" {
+  capabilities = ["read", "list"]
+}
 EOT
 }
