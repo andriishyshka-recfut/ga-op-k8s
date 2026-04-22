@@ -72,7 +72,6 @@ spec:
         corsPolicy = settings.cors
       }))}
 %{ endif ~}
-
 %{ if lookup(basic_auth, name, false) != false ~}
     - match:
       - uri:
