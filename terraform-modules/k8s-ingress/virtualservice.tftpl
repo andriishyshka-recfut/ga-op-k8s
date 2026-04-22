@@ -67,6 +67,12 @@ spec:
             response:
               set:
                 Strict-Transport-Security: max-age=31536000; includeSubDomains
+%{ if lookup(settings, "cors", null) != null ~}
+      ${indent(6, yamlencode({
+        corsPolicy = settings.cors
+      }))}
+%{ endif ~}
+
 %{ if lookup(basic_auth, name, false) != false ~}
     - match:
       - uri:
