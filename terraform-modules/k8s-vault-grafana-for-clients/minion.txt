@@ -12,6 +12,7 @@ fullcard
 kichai
 leo
 mike
+oceanmarket
 osage
 pollux
 regulus
