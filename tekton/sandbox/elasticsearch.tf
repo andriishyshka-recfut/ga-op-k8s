@@ -1,7 +1,7 @@
 
 module "elastic" {
   source                 = "../../terraform-modules/k8s-vault-elastic-helm"
-  ElasticSettings        = local.ElasticSettings
+  ElasticSettings        =  yamldecode(file("${path.module}/elastic_settings.yaml")).ElasticSettings
   Cluster                = var.Cluster
   Color                  = var.Color
   Settings               = var.Settings
@@ -11,7 +11,7 @@ module "elastic" {
   BackupBucketBasePath   = "7-new"
   OidcRedirectUri        = "k.t.regemini.io"
   VaultAddress           = var.VaultAddress
-  # depends_on = [ null_resource.rm_elastic_pv ]
+  depends_on = [ null_resource.rm_elastic_pv ]
 }
 module "kibana" {
   source          = "../../terraform-modules/k8s-vault-kibana-helm"
@@ -22,3 +22,4 @@ module "kibana" {
   Settings        = var.Settings
   depends_on = [ module.elastic ]
 }
+

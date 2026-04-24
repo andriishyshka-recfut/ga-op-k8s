@@ -1,8 +1,8 @@
 ElasticSettings:
   globalSettings:
-    namespace: elastic8
+    namespace: elastic
     imageTag: 8.18.0
-    clusterName: elastic8
+    clusterName: elasticsearch
     newCCR: true
     plugins:
       - "repository-s3"
@@ -21,18 +21,17 @@ ElasticSettings:
       - remote.ca.crt
       - remote2.ca.crt
       - remote-migr.ca.crt
-    pvName: "elastic8"
     addons:
       notifications:
         slack:
           vault_path: "secret/misc/slack/app/X-Pack"
       authorizations:
         okta:
-          vault_path: "secret/misc/oidc/okta/elastic8"
+          vault_path: "secret/misc/oidc/okta/elastic"
           oidc_realm_name: "okta"
           secret_name: "oidc-okta"
           type: "okta"
-          domain: "k8.t.regemini.io"
+          domain: "k.t.regemini.io"
     license:
       vault_path: "secret/misc/elasticsearch/license"
       name: "recorded-future-ab-non_production-b3d2ba33-a0df-4cf6-9a5b-941d2bb9952c-v5.json"

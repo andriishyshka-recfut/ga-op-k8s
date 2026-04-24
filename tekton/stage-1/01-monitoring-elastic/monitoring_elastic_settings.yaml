@@ -34,7 +34,8 @@ elastic_settings:
           node.ml: true
           node.store.allow_mmap: false
           index.store.type: niofs
-          xpack.monitoring.collection.enabled: true
+          ingest.geoip.downloader.enabled: false
+          xpack.monitoring.collection.enabled: false
           xpack.security.authc.realms:
             native:
               native1:
@@ -54,7 +55,8 @@ elastic_settings:
           node.ml: false
           node.store.allow_mmap: false
           index.store.type: niofs
-          xpack.monitoring.collection.enabled: true
+          ingest.geoip.downloader.enabled: false
+          xpack.monitoring.collection.enabled: false
           xpack.security.authc.realms:
             native:
               native1:

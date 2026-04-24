@@ -32,5 +32,5 @@ COMMAND
     environment = local.ansibleEnvs
 
   }
-
+  depends_on = [ google_os_login_ssh_public_key.cache ]
 }
