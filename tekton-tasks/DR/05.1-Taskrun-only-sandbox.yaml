@@ -13,7 +13,7 @@ spec:
     - name: path
       value: "k8s/tekton/sandbox"
     - name: branch
-      value: "\\#1040-SandboxDR-20260321"
+      value: "\\#1045-Sandbox-DR-20260418"
 # ---
 # apiVersion: tekton.dev/v1beta1
 # kind: TaskRun

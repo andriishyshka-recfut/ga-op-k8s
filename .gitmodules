@@ -1,4 +1,4 @@
 [submodule "ansible/files/bastion-compose"]
 	path = ansible/files/bastion-compose
-	url = ssh://git@gitlab.regemini.com:2224/op/aha.git
+	url = https://gitlab.regemini.com/op/aha.git
 	branch = "master"
