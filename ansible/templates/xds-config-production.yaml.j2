@@ -1,34 +1,31 @@
 lds:
   - !lds/range
-    cluster_prefix: tor
-    range: 30000..30120
-  - !lds/range
     cluster_prefix: kafka-brokers
     range: 32200..32204
 cds:
   - name: k8s-active-https
     k8s_master: {{ k8s_host_url }}
     endpoint_port: {{ nodePort }}
-    ca_cert: {{ ca_cert }}
+    ca_cert: {{ ca_cert | replace('\n', '\\n')}}
     token: {{ token }}
   - name: k8s-active-http
     k8s_master: {{ k8s_host_url }}
     endpoint_port: {{ nodePortHttp }}
-    ca_cert: {{ ca_cert }}
+    ca_cert: {{ ca_cert | replace('\n', '\\n')}}
     token: {{ token }}
   - name: k8s-red-https
     k8s_master: {{ k8s_red_host_url }}
     endpoint_port: {{ nodePortRed }}
-    ca_cert: {{ ca_cert_red }}
+    ca_cert: {{ ca_cert_red | replace('\n', '\\n') }}
     token: {{ token_red }}
   - name: k8s-red-http
     k8s_master: {{ k8s_red_host_url }}
     endpoint_port: {{ nodePortHttpRed }}
-    ca_cert: {{ ca_cert_red }}
+    ca_cert: {{ ca_cert_red | replace('\n', '\\n')}}
     token: {{ token_red }}
   - !cds/range
     range: "32200..32204"
     name_prefix: "kafka-brokers"
     k8s_master_url: {{ k8s_host_url }}
-    ca_cert: {{ ca_cert }}
+    ca_cert: {{ ca_cert | replace('\n', '\\n')}}
     token: {{ token }}
