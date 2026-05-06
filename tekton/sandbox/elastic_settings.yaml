@@ -37,6 +37,8 @@ ElasticSettings:
       name: "recorded-future-ab-non_production-b3d2ba33-a0df-4cf6-9a5b-941d2bb9952c-v5.json"
     clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
     patchVaultPath: "secret/elasticsearch-admin/elastic7-v2"
+    patchVaultKey: "CREDENTIALS"
+    patchVaultInternalKey: "password"    
   nodePools:
     master:
       replicas: 3
