@@ -29,5 +29,8 @@ path "secret/data/misc/oidc/vault_token" {
 path "secret/data/wl/datafix/datafix/birl" {
    capabilities = ["read","list"]
 }
+path "secret/data/mw/postgres/db-users/birl" {
+   capabilities = ["read","list"]
+}
 EOT
 }
