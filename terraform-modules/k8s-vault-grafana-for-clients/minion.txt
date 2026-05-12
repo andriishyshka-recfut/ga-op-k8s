@@ -4,6 +4,7 @@ adhara
 altair
 athna
 becrux
+bosscards
 bravo
 carinae
 centauri
@@ -13,6 +14,7 @@ kichai
 leo
 mike
 oceanmarket
+ohuennie
 osage
 pollux
 regulus
