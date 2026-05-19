@@ -13,6 +13,9 @@ runners:
         memory_request = "512Mi"
         memory_limit = "6Gi"
         pull_policy = "if-not-present"
+        poll_interval = 5
+        poll_timeout = 1200
+        print_pod_warning_events = true             
       [runners.kubernetes.affinity]
         [runners.kubernetes.affinity.node_affinity]
           [runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution]
