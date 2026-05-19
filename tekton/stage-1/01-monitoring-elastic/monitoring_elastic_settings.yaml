@@ -61,7 +61,7 @@ elastic_settings:
             native:
               native1:
                 order: 2
-        storageSize: "1900Gi"
+        storageSize: "2000Gi"
         ES_JAVA_OPTS: -Xms10g -Xmx10g
         nodesCount: 5
         memoryRequests: "10Gi"
