@@ -19,5 +19,8 @@ resource "kubernetes_config_map" "custom_dashboards" {
     "k8s-views-namespaces.json" = file("${path.module}/dashboards/k8s-views-namespaces.json")
     "k8s-views-nodes.json" = file("${path.module}/dashboards/k8s-views-nodes.json")
     "k8s-views-pods.json" = file("${path.module}/dashboards/k8s-views-pods.json")
+    "k8s-volumes-cluster.json" = file("${path.module}/dashboards/k8s-volumes-cluster.json")
+    "k8s-volumes-namespace.json" = file("${path.module}/dashboards/k8s-volumes-namespace.json")
+
   }
 }
