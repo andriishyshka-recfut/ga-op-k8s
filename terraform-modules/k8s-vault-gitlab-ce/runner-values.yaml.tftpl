@@ -1,21 +1,49 @@
 runners:
   config: |
     concurrent = 12
-    check_interval = 0
+    check_interval = 3
     [session_server]
       session_timeout = 1800
     [[runners]]
+      executor = "kubernetes"
+
+      # Max jobs for this runner entry.
+      # Keep this aligned with chart-level concurrent and node pool capacity.
+      limit = 12
+
+      # Avoid GitLab long-polling/request bottlenecks under load.
+      request_concurrency = 4
+      environment = ["FF_USE_ADAPTIVE_REQUEST_CONCURRENCY=true"]
+          
       [runners.kubernetes]
         image = "alpine:3.19.0"
         image_pull_secrets = ["${name}-harbor"]
-        cpu_request = "1"
+        cpu_request = "3"
         cpu_limit = "4"
-        memory_request = "512Mi"
+        memory_request = "2Mi"
         memory_limit = "6Gi"
+        ephemeral_storage_request = "5Gi"
+        ephemeral_storage_limit = "20Gi"
+        # Helper container: clone, cache, artifacts.
+        helper_cpu_request = "100m"
+        helper_cpu_limit = "500m"
+        helper_memory_request = "256Mi"
+        helper_memory_limit = "512Mi"
+        helper_ephemeral_storage_request = "1Gi"
+        helper_ephemeral_storage_limit = "2Gi"
+        # Service containers, if jobs use services: postgres, redis, docker:dind, etc.
+        service_cpu_request = "250m"
+        service_cpu_limit = "1"
+        service_memory_request = "512Mi"
+        service_memory_limit = "2Gi"
+        service_ephemeral_storage_request = "2Gi"
+        service_ephemeral_storage_limit = "10Gi"             
         pull_policy = "if-not-present"
         poll_interval = 5
         poll_timeout = 1200
-        print_pod_warning_events = true             
+        print_pod_warning_events = true
+        cleanup_grace_period_seconds = 60
+        pod_termination_grace_period_seconds = 60                 
       [runners.kubernetes.affinity]
         [runners.kubernetes.affinity.node_affinity]
           [runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution]
