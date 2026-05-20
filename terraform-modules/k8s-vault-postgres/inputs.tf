@@ -19,15 +19,21 @@ data "vault_generic_secret" "root_user" {
 }
 
 locals {
-  cluster_name     = var.Settings.clusters[var.Cluster].postgres.cluster_name
-  namespace        = var.Settings.clusters[var.Cluster].postgres.namespace
-  vault_path       = var.Settings.clusters[var.Cluster].postgres.vault_path
-  disk_count       = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services.postgres.postgres.count
-  zones            = var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.zones
-  operator_version = var.Settings.clusters[var.Cluster].postgres.operator_chart_version
-  postgres_uri     = "postgres-rw.postgres:5432"
-  databases        = nonsensitive(toset(data.vault_kv_secrets_list_v2.db_user_list.names))
-  db_user_pass     = { for name in local.databases : name => tomap(data.vault_generic_secret.databases[name].data) }
+  cluster_settings    = var.Settings.clusters[var.Cluster]
+  postgres_settings   = local.cluster_settings.postgres
+  persistent_postgres = local.cluster_settings.persistent_resources.permanentDisks.services.postgres.postgres
+  zones               = local.cluster_settings.persistent_resources.permanentDisks.zones
+
+  cluster_name      = local.postgres_settings.cluster_name
+  namespace         = local.postgres_settings.namespace
+  vault_path        = local.postgres_settings.vault_path
+  disk_count        = local.persistent_postgres.count
+  disk_prefix       = local.persistent_postgres.prefix
+  pv_selector_label = local.disk_prefix
+  operator_version  = local.postgres_settings.operator_chart_version
+  postgres_uri      = "postgres-rw.postgres:5432"
+  databases         = nonsensitive(toset(data.vault_kv_secrets_list_v2.db_user_list.names))
+  db_user_pass      = { for name in local.databases : name => tomap(data.vault_generic_secret.databases[name].data) }
   minio = {
     url    = "http://minio.minio:9000"
     bucket = "minio-backup-${var.Settings.gcpProject}"

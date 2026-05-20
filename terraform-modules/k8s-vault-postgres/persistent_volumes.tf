@@ -1,6 +1,6 @@
 data "google_compute_disk" "postgres_pv" {
   count   = local.disk_count
-  name    = "postgres-data-${count.index}"
+  name    = "${local.disk_prefix}-${count.index}"
   project = var.Settings.gcpProject
   zone    = element([for i in range(local.disk_count) : element(local.zones, i % 3)], count.index)
 }
@@ -10,7 +10,7 @@ resource "kubernetes_persistent_volume" "postgres_pv" {
   metadata {
     name = "${local.cluster_name}-${count.index}-pv"
     labels = {
-      target = "postgres-data"
+      target = local.pv_selector_label
     }
   }
   spec {
@@ -25,7 +25,7 @@ resource "kubernetes_persistent_volume" "postgres_pv" {
     persistent_volume_source {
       csi {
         driver        = "pd.csi.storage.gke.io"
-        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.postgres_pv[count.index].zone}/disks/postgres-data-${count.index}"
+        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.postgres_pv[count.index].zone}/disks/${data.google_compute_disk.postgres_pv[count.index].name}"
       }
     }
     node_affinity {
@@ -42,7 +42,7 @@ resource "kubernetes_persistent_volume" "postgres_pv" {
   }
 }
 
-
+# CNPG creates and manages its PVCs itself, so we only prebind the backing PVs here.
 # resource "kubernetes_persistent_volume_claim" "postgres_pvc" {
 #   count = local.disk_count
 
@@ -67,7 +67,7 @@ resource "kubernetes_persistent_volume" "postgres_pv" {
 #     }
 #     selector {
 #       match_labels = {
-#         target = "postgres-data"
+#         target = local.pv_selector_label
 #       }
 #     }
 #     storage_class_name = ""

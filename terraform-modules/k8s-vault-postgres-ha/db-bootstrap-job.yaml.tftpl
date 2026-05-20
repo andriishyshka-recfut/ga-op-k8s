@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${job_name}
+  namespace: ${namespace}
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: bootstrap
+          image: ${image}:${tag}
+          imagePullPolicy: Always
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              export PGUSER="$(cat /etc/postgres/root/username)"
+              export PGPASSWORD="$(cat /etc/postgres/root/password)"
+              export PGHOST="${host}"
+              export PGPORT="${port}"
+              export PGDATABASE="${database}"
+
+              until psql -v ON_ERROR_STOP=1 -c "SELECT 1" >/dev/null 2>&1; do
+                sleep 5
+              done
+
+              psql -v ON_ERROR_STOP=1 -f /etc/postgres/bootstrap/bootstrap.sql
+          volumeMounts:
+            - name: root-secret
+              readOnly: true
+              mountPath: /etc/postgres/root
+            - name: bootstrap-sql
+              readOnly: true
+              mountPath: /etc/postgres/bootstrap
+      imagePullSecrets:
+        - name: harbor
+      volumes:
+        - name: root-secret
+          secret:
+            secretName: ${root_secret_name}
+        - name: bootstrap-sql
+          secret:
+            secretName: ${bootstrap_secret_name}
+  backoffLimit: 1

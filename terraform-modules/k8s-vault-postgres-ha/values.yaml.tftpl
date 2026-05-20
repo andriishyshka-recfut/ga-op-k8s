@@ -1,0 +1,84 @@
+fullnameOverride: "${cluster_name}"
+
+global:
+  postgresql:
+    username: "${root_username}"
+    database: "${database}"
+    repmgrUsername: "repmgr"
+    repmgrDatabase: "repmgr"
+    existingSecret: "${auth_secret_name}"
+  pgpool:
+    adminUsername: "admin"
+    existingSecret: "${auth_secret_name}"
+    srCheckUsername: "repmgr"
+
+postgresql:
+  replicaCount: ${postgres_replicas}
+%{ if postgresql_image_repository != "" || postgresql_image_tag != "" }
+  image:
+%{ if postgresql_image_registry != "" }
+    registry: "${postgresql_image_registry}"
+%{ endif }
+%{ if postgresql_image_repository != "" }
+    repository: "${postgresql_image_repository}"
+%{ endif }
+%{ if postgresql_image_tag != "" }
+    tag: "${postgresql_image_tag}"
+%{ endif }
+%{ endif }
+  persistence:
+    storageClass: ""
+    selector:
+      matchLabels:
+        target: "${pv_selector_label}"
+    size: "${storage_size}"
+%{ if postgresql_resources != null }
+  resources:
+    ${replace(yamlencode(postgresql_resources), "\n", "\n    ")}
+%{ endif }
+  podAntiAffinityPreset: "${postgresql_pod_anti_affinity_preset}"
+  # Keep this block as a fallback when preset-based anti-affinity is too simple
+  # and we need custom topology keys or label selectors for postgres pods.
+  # Example fallback:
+  # affinity:
+  #   podAntiAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution: []
+  pdb:
+    create: ${postgresql_pdb_create}
+    minAvailable: ${postgresql_pdb_min_available}
+
+pgpool:
+  replicaCount: ${pgpool_replicas}
+  srCheckUsername: "repmgr"
+%{ if pgpool_custom_users_secret_name != "" }
+  customUsersSecret: "${pgpool_custom_users_secret_name}"
+%{ endif }
+%{ if pgpool_image_repository != "" || pgpool_image_tag != "" }
+  image:
+%{ if pgpool_image_registry != "" }
+    registry: "${pgpool_image_registry}"
+%{ endif }
+%{ if pgpool_image_repository != "" }
+    repository: "${pgpool_image_repository}"
+%{ endif }
+%{ if pgpool_image_tag != "" }
+    tag: "${pgpool_image_tag}"
+%{ endif }
+%{ endif }
+%{ if pgpool_resources != null }
+  resources:
+    ${replace(yamlencode(pgpool_resources), "\n", "\n    ")}
+%{ endif }
+  podAntiAffinityPreset: "${pgpool_pod_anti_affinity_preset}"
+  # Keep this block as a fallback when preset-based anti-affinity is too simple
+  # and we need custom topology keys or label selectors for pgpool pods.
+  # Example fallback:
+  # affinity:
+  #   podAntiAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution: []
+  pdb:
+    create: ${pgpool_pdb_create}
+    minAvailable: ${pgpool_pdb_min_available}
+
+service:
+  type: ClusterIP
