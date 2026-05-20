@@ -11,9 +11,9 @@ provider "vault" {
 
 locals {
 
-  activeCluster          = var.Color
-  inactiveCluster        = local.activeCluster == "blue" ? "green" : "blue"
-  activeClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
+  activeCluster            = var.Color
+  inactiveCluster          = local.activeCluster == "blue" ? "green" : "blue"
+  activeClusterVaultPath   = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
   inactiveClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.inactiveCluster}"
   gkeClusterConnectionSettings = {
     HOST                   = data.vault_generic_secret.k8s_auth.data.HOST
@@ -30,7 +30,7 @@ data "vault_generic_secret" "harbor_token" {
   path = "secret/goharbor/docker_login"
 }
 
-provider "helm"  {
+provider "helm" {
   kubernetes = {
     host                   = data.vault_generic_secret.k8s_auth.data.HOST
     cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
@@ -56,9 +56,9 @@ provider "kubernetes" {
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "kubernetes" {
-    secret_suffix    = "k8s-state"
-    namespace = "tekton-pipelines"
-    config_path = "./kubeconfig" 
+    secret_suffix = "k8s-state"
+    namespace     = "tekton-pipelines"
+    config_path   = "./kubeconfig"
   }
 }
 

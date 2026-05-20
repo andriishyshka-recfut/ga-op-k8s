@@ -42,6 +42,17 @@ resource "kubernetes_secret" "grafana_okta_client_secret" {
   }
 }
 
+resource "kubernetes_priority_class" "monitoring_high" {
+  metadata {
+    name = "monitoring-high"
+  }
+
+  value              = 1000000
+  description        = "High priority for monitoring exporters"
+  global_default     = false
+  preemption_policy  = "PreemptLowerPriority"
+}
+
 resource "helm_release" "prometheus" {
   name              = "prometheus"
   repository        = "https://prometheus-community.github.io/helm-charts"
@@ -64,6 +75,7 @@ resource "helm_release" "prometheus" {
       thanos_version                     = local.thanosSidecarVersion,
       prometheus_query_url               = local.prometheusQueryUrl,
       prometheus_resources               = local.prometheusResources,
+      priority_class                     = kubernetes_priority_class.monitoring_high.metadata.0.name,
       okta                               = local.grafana_okta,
       cluster                            = var.Cluster
     })

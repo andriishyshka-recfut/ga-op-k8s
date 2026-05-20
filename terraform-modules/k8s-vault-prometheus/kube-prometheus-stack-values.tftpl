@@ -112,6 +112,7 @@ kube-state-metrics:
 
 prometheus-node-exporter:
   namespaceOverride: "monitoring"
+  priorityClassName: ${priority_class}
   resources:
     requests:
       memory: 30Mi
