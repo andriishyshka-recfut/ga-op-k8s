@@ -64,6 +64,7 @@ kube-state-metrics:
 
 prometheus-node-exporter:
   namespaceOverride: "monitoring"
+#  priorityClassName: ${priority_class}
 
 prometheusOperator:
   # nodeSelector:
