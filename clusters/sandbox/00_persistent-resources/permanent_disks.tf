@@ -1,5 +1,6 @@
 locals {
-  settings = jsondecode(file("${path.module}/../../../config.tfvars.json")).Settings.clusters["sandbox"]
+  settings    = jsondecode(file("${path.module}/../../../config.tfvars.json")).Settings.clusters["sandbox"]
+  gcp_project = jsondecode(file("${path.module}/../../../config.tfvars.json")).Settings.gcpProject
 
   zones = local.settings.persistent_resources.permanentDisks.zones
 
@@ -12,21 +13,26 @@ locals {
   mongo6_count  = local.settings.mongo6.main.replicas
   mongo6_prefix = local.settings.mongo6.main.pvcPrefix
 
-  kafka_count     = local.settings.persistent_resources.permanentDisks.kafka.count
-  sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
+  kafka_count     = try(local.settings.persistent_resources.permanentDisks.services.kafka.data.count, 0)
+  sonarqube_count = try(local.settings.persistent_resources.permanentDisks.sonarqube.count, 0)
   # sftp            = local.settings.sftp-server
-  sftp           = {}
-  minio_count    = local.settings.persistent_resources.permanentDisks.minio.count
-  postgres_count = local.settings.persistent_resources.permanentDisks.postgres.count
-  elastic_disks = { for new_name in flatten([ for nodepool in local.settings.persistent_resources.permanentDisks.elastic.elasticsearch : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count} ]]): "${new_name.name}-${new_name.index}" => new_name } 
-  elastic8_disks = { for new_name in flatten([ for nodepool in local.settings.persistent_resources.permanentDisks.elastic.elastic8 : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count} ]]): "${new_name.name}-${new_name.index}" => new_name } 
-  tarantool_storage_count  = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks * 2
-  tsc                      = local.settings.persistent_resources.permanentDisks.tarantool.storage_disks
-  tarantool_storage_prefix = local.settings.persistent_resources.permanentDisks.tarantool.storage_prefix
-  tarantool_router_count   = local.settings.persistent_resources.permanentDisks.tarantool.router_disks
-  tarantool_router_prefix  = local.settings.persistent_resources.permanentDisks.tarantool.router_prefix
-  tarantool_etcd_count     = local.settings.persistent_resources.permanentDisks.tarantool.etcd_disks
-  tarantool_etcd_prefix    = local.settings.persistent_resources.permanentDisks.tarantool.etcd_prefix
+  sftp                     = {}
+  minio_count              = try(local.settings.persistent_resources.permanentDisks.services.minio.data.count, 0)
+  postgres_count           = try(local.settings.persistent_resources.permanentDisks.services.postgres.postgres.count, 0)
+  postgres_prefix          = local.settings.persistent_resources.permanentDisks.services.postgres.postgres.prefix
+  postgresql_ha_count      = try(local.settings.persistent_resources.permanentDisks.services["postgresql-ha"]["postgresql-ha"].count, 0)
+  postgresql_ha_prefix     = try(local.settings.persistent_resources.permanentDisks.services["postgresql-ha"]["postgresql-ha"].prefix, "postgresql-ha-data")
+  postgresql_ha_size       = try(local.settings.persistent_resources.permanentDisks.services["postgresql-ha"]["postgresql-ha"].size, 0)
+  postgresql_ha_restore    = try(local.settings["postgresql-ha"].restore_from_snapshot, true)
+  elastic_disks            = { for new_name in flatten([for nodepool in local.settings.persistent_resources.permanentDisks.elastic.elasticsearch : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count }]]) : "${new_name.name}-${new_name.index}" => new_name }
+  elastic8_disks           = { for new_name in flatten([for nodepool in local.settings.persistent_resources.permanentDisks.elastic.elastic8 : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count }]]) : "${new_name.name}-${new_name.index}" => new_name }
+  tarantool_storage_count  = try(local.settings.persistent_resources.permanentDisks.tarantool.storage_disks, 0) * 2
+  tsc                      = max(try(local.settings.persistent_resources.permanentDisks.tarantool.storage_disks, 0), 1)
+  tarantool_storage_prefix = try(local.settings.persistent_resources.permanentDisks.tarantool.storage_prefix, "tarantool-storage-unused")
+  tarantool_router_count   = try(local.settings.persistent_resources.permanentDisks.tarantool.router_disks, 0)
+  tarantool_router_prefix  = try(local.settings.persistent_resources.permanentDisks.tarantool.router_prefix, "tarantool-router-unused")
+  tarantool_etcd_count     = try(local.settings.persistent_resources.permanentDisks.tarantool.etcd_disks, 0)
+  tarantool_etcd_prefix    = try(local.settings.persistent_resources.permanentDisks.tarantool.etcd_prefix, "tarantool-etcd-unused")
 
 
 
@@ -42,7 +48,7 @@ locals {
 ########
 
 data "google_compute_snapshot" "elastic_snapshot" {
-  for_each = local.elastic_disks
+  for_each    = local.elastic_disks
   name        = "elastic-${each.key}-${local.restoreDate}"
   most_recent = true
 }
@@ -71,9 +77,16 @@ data "google_compute_snapshot" "kafka_controller_snapshot" {
 }
 
 data "google_compute_snapshot" "postgres_snapshot" {
-  name        = "postgres-data-${count.index}-dr-${local.restoreDate}"
+  name        = "${local.postgres_prefix}-${count.index}-dr-${local.restoreDate}"
   most_recent = true
   count       = local.postgres_count
+}
+
+data "google_compute_snapshot" "postgresql_ha_snapshot" {
+  count       = local.postgresql_ha_restore ? local.postgresql_ha_count : 0
+  name        = "${local.postgresql_ha_prefix}-${count.index}-dr-${local.restoreDate}"
+  most_recent = true
+  project     = local.gcp_project
 }
 
 data "google_compute_snapshot" "tarantool_storage_snapshot" {
@@ -298,7 +311,7 @@ resource "google_compute_disk" "minio_pv" {
 resource "google_compute_disk" "postgres_cluster-pv" {
   count = local.postgres_count
 
-  name     = "postgres-data-${count.index}"
+  name     = "${local.postgres_prefix}-${count.index}"
   size     = data.google_compute_snapshot.postgres_snapshot[count.index].disk_size_gb
   snapshot = data.google_compute_snapshot.postgres_snapshot[count.index].name
   type     = "pd-balanced"
@@ -306,7 +319,24 @@ resource "google_compute_disk" "postgres_cluster-pv" {
   zone = element([for i in range(local.postgres_count) : element(local.zones, i % 3)], count.index)
 
   labels = {
-    target = "postgres"
+    target = local.postgres_prefix
+    id     = "${local.postgres_prefix}-${count.index}"
+  }
+}
+
+resource "google_compute_disk" "postgresql_ha_cluster_pv" {
+  count = local.postgresql_ha_count
+
+  name     = "${local.postgresql_ha_prefix}-${count.index}"
+  size     = local.postgresql_ha_restore ? max(local.postgresql_ha_size, data.google_compute_snapshot.postgresql_ha_snapshot[count.index].disk_size_gb) : local.postgresql_ha_size
+  snapshot = local.postgresql_ha_restore ? data.google_compute_snapshot.postgresql_ha_snapshot[count.index].name : null
+  type     = "pd-balanced"
+
+  zone = element([for i in range(local.postgresql_ha_count) : element(local.zones, i % 3)], count.index)
+
+  labels = {
+    target = local.postgresql_ha_prefix
+    id     = "${local.postgresql_ha_prefix}-${count.index}"
   }
 }
 

@@ -11,22 +11,23 @@ locals {
 
   kafka_enabled = true
 
-  kafka_count     = local.kafka_enabled ? local.settings.persistent_resources.permanentDisks.kafka.count : 0
-  sonarqube_count = local.settings.persistent_resources.permanentDisks.sonarqube.count
+  kafka_count     = local.kafka_enabled ? try(local.settings.persistent_resources.permanentDisks.services.kafka.data.count, 0) : 0
+  sonarqube_count = try(local.settings.persistent_resources.permanentDisks.sonarqube.count, 0)
   # sftp            = local.settings_red.sftp-server
-  minio_count    = local.settings.persistent_resources.permanentDisks.minio.count
-  minio_red_count    = local.settings_red.persistent_resources.permanentDisks.minio.count
-  postgres_count = local.settings.persistent_resources.permanentDisks.postgres.count
+  minio_count          = try(local.settings.persistent_resources.permanentDisks.services.minio.data.count, 0)
+  minio_red_count      = try(local.settings_red.persistent_resources.permanentDisks.services.minio.data.count, 0)
+  postgres_count       = try(local.settings.persistent_resources.permanentDisks.services.postgres.postgres.count, 0)
+  postgres_prefix      = local.settings.persistent_resources.permanentDisks.services.postgres.postgres.prefix
 
-  elastic_disks = { for new_name in flatten([ for nodepool in local.settings_red.persistent_resources.permanentDisks.elastic : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count} ]]): "${new_name.name}-${new_name.index}" => new_name }
+  elastic_disks = { for new_name in flatten([for nodepool in local.settings_red.persistent_resources.permanentDisks.elastic : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count }]]) : "${new_name.name}-${new_name.index}" => new_name }
 
-  tarantool_storage_count  = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks * 2
-  tsc                      = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks
-  tarantool_storage_prefix = local.settings_red.persistent_resources.permanentDisks.tarantool.storage_prefix
-  tarantool_router_count   = local.settings_red.persistent_resources.permanentDisks.tarantool.router_disks
-  tarantool_router_prefix  = local.settings_red.persistent_resources.permanentDisks.tarantool.router_prefix
-  tarantool_etcd_count     = local.settings_red.persistent_resources.permanentDisks.tarantool.etcd_disks
-  tarantool_etcd_prefix    = local.settings_red.persistent_resources.permanentDisks.tarantool.etcd_prefix
+  tarantool_storage_count  = try(local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks, 0) * 2
+  tsc                      = max(try(local.settings_red.persistent_resources.permanentDisks.tarantool.storage_disks, 0), 1)
+  tarantool_storage_prefix = try(local.settings_red.persistent_resources.permanentDisks.tarantool.storage_prefix, "tarantool-storage-unused")
+  tarantool_router_count   = try(local.settings_red.persistent_resources.permanentDisks.tarantool.router_disks, 0)
+  tarantool_router_prefix  = try(local.settings_red.persistent_resources.permanentDisks.tarantool.router_prefix, "tarantool-router-unused")
+  tarantool_etcd_count     = try(local.settings_red.persistent_resources.permanentDisks.tarantool.etcd_disks, 0)
+  tarantool_etcd_prefix    = try(local.settings_red.persistent_resources.permanentDisks.tarantool.etcd_prefix, "tarantool-etcd-unused")
 
 
   # mongoDiskSize = trim(local.settings.mongo.magescanner.volumeSize, "Gi")
@@ -41,7 +42,7 @@ locals {
 ########
 
 data "google_compute_snapshot" "elastic_snapshot" {
-  for_each = local.elastic_disks
+  for_each    = local.elastic_disks
   name        = "elastic-${each.key}-${local.restoreDate}"
   most_recent = true
 }
@@ -71,7 +72,7 @@ data "google_compute_snapshot" "kafka_controller_snapshot" {
 }
 
 data "google_compute_snapshot" "postgres_snapshot" {
-  name        = "postgres-data-${count.index}-dr-${local.restoreDate}"
+  name        = "${local.postgres_prefix}-${count.index}-dr-${local.restoreDate}"
   most_recent = true
   count       = local.postgres_count
 }
@@ -242,9 +243,9 @@ resource "google_compute_disk" "sonarqube_postgres_pv" {
 resource "google_compute_disk" "minio_red_pv" {
   count = local.minio_red_count
 
-  name     = "minio-red-pv-${count.index}"
-  size     = 500
-  type     = "pd-balanced"
+  name = "minio-red-pv-${count.index}"
+  size = 500
+  type = "pd-balanced"
   zone = element([for i in range(local.minio_red_count) : element(local.zones, i % 3)], count.index)
 
   labels = {
@@ -285,7 +286,7 @@ resource "google_compute_disk" "tarantool_etcd_pv" {
 resource "google_compute_disk" "postgres_cluster-pv" {
   count = local.postgres_count
 
-  name     = "postgres-data-${count.index}"
+  name     = "${local.postgres_prefix}-${count.index}"
   size     = data.google_compute_snapshot.postgres_snapshot[count.index].disk_size_gb
   snapshot = data.google_compute_snapshot.postgres_snapshot[count.index].name
   type     = "pd-balanced"
@@ -293,6 +294,7 @@ resource "google_compute_disk" "postgres_cluster-pv" {
   zone = element([for i in range(local.postgres_count) : element(local.zones, i % 3)], count.index)
 
   labels = {
-    target = "postgres"
+    target = local.postgres_prefix
+    id     = "${local.postgres_prefix}-${count.index}"
   }
 }

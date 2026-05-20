@@ -41,7 +41,7 @@ pvcTemplate:
       storage: 1000Gi
   selector:
     matchLabels:
-      target: postgres-data
+      target: ${pv_selector_label}
 postgis: true
 backups:
   enabled: true
