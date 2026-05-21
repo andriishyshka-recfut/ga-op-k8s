@@ -391,6 +391,12 @@ alertmanager:
           channel: ${ cluster == "production" ? "'#gemini-artifact'" : "'#gemini_prometheus-test'" }
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
+    - name: "slack-devs"
+      slack_configs:
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-dev : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-dev'" : "'#gemini_prometheus-test'" }
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
     - name: "tekton-webhook-notifications-and-slack"
       slack_configs:
         - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
@@ -477,6 +483,9 @@ alertmanager:
           - cluster=~"production"
           receiver: "slack-paste"
         - matchers:
+          - severity=~"devs"
+          receiver: "slack-devs"
+        - matchers:
           - alertname=~".*"
           receiver: "tekton-webhook-notifications-and-slack"
           routes:
@@ -486,6 +495,7 @@ alertmanager:
           - matchers:
             - severity=~"critical"
             - severity!~"etl"
+            - severity!~"devs"
             - cluster=~"production"
             receiver: "slack-critical"
     templates:
