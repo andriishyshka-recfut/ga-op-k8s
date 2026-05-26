@@ -17,7 +17,7 @@ module "postgres" {
 }
 
 module "postgres_ha" {
-#  count                        = local.enable_postgres_ha ? 1 : 0
+  count                        = var.Cluster == "sandbox" ? 1 : 0
   source                       = "../../../terraform-modules/k8s-vault-postgres-ha"
   Cluster                      = var.Cluster
   Color                        = var.Color
