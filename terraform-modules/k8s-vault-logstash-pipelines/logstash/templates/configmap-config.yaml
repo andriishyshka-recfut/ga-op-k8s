@@ -19,6 +19,7 @@ data:
     xpack.management.elasticsearch.ssl.certificate_authority: {{ .Values.mountCaCert.mountPath}}/ca.crt
     xpack.management.pipeline.id: [{{ .Values.elastic.pipelineID | replace " " ","}}]
     xpack.monitoring.enabled: false
+    pipeline.ecs_compatibility: disabled
     monitoring.cluster_uuid: {{ .Values.elastic.cluster_uuid }}
     api.auth.type: {{ .Values.logstash.auth }}
     api.auth.basic.username: {{ .Values.logstash.user }}

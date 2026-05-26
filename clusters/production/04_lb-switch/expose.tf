@@ -14,7 +14,7 @@ data "vault_generic_secret" "k8s_auth" {
   path = local.activeClusterVaultPath
 }
 locals {
-  activeCluster          = "blue" # Change color!!!!
+  activeCluster          = "green" # Change color!!!!
   activeClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
 }
 provider "helm" {
