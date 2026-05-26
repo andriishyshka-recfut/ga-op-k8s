@@ -14,8 +14,6 @@ resource "helm_release" "elasticsearch" {
     name = "appVersion"
     value = local.version
   }]
-  depends_on = [
-  ]
 }
 
 resource "null_resource" "ansible_validate_resources" {
