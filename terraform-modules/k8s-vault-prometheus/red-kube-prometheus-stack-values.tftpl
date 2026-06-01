@@ -97,13 +97,13 @@ prometheus:
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
-    retention: 60d
+    retention: 30d
     storageSpec:
       volumeClaimTemplate:
         spec:
           resources:
             requests:
-              storage: 200Gi
+              storage: 250Gi
     thanos:
       version: ${thanos_version}
       baseImage: quay.io/thanos/thanos
