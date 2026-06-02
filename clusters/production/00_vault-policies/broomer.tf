@@ -19,5 +19,8 @@ path "/secret/data/mw/minio/sa/attachments_broomer" {
 path "/secret/data/wl/broomer/*" {
   capabilities = ["read","list"]
 }
+path "/secret/data/mw/monitoring/otel" {
+  capabilities = ["read","list"]
+}
 EOT
 }
