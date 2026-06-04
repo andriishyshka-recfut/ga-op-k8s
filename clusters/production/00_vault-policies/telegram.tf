@@ -49,5 +49,8 @@ path "secret/data/es-creds-compose-prod/telegram" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/wl/telegram/*" {
+   capabilities = ["read","list"]
+}
 EOT
 }
