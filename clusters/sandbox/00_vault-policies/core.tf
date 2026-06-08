@@ -35,9 +35,6 @@ path "secret/data/apm/*" {
 path "sys/leases/renew" {
   capabilities = ["read","list","create","update"]
 }
-path "secret/data/ching/*" {
-  capabilities = ["read","list"]
-}
 path "secret/data/oidc_google_test" {
   capabilities = ["read","list"]
 }

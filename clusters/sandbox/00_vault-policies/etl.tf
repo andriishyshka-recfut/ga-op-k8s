@@ -5,7 +5,7 @@ path "secret/data/wl/etl/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/wl/etl/clients/*" {
-  capabilities = ["read","list"]
+  capabilities = ["read","list","create","update"]
 }
 path "secret/metadata/wl/etl/*" {
   capabilities = ["read","list"]
