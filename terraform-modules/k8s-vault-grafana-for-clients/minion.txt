@@ -7,9 +7,11 @@ becrux
 bosscards
 bravo
 carinae
+ccexpress
 centauri
 cygni
 fullcard
+houseofcards
 kichai
 leo
 mike
