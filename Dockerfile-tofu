@@ -1,17 +1,8 @@
-FROM --platform=linux/amd64 vault:1.13.3 as vault
-FROM --platform=linux/amd64 curlimages/curl as curl
-COPY ./references/zscaler/ZscalerRootCertificate-2048-SHA256-Feb2025.crt /tmp/zscaler.crt
-RUN test -f /etc/ssl/certs/ca-certificates.crt; \
-    cat /etc/ssl/certs/ca-certificates.crt /tmp/zscaler.crt > /tmp/ca.crt; \
-    curl --cacert /tmp/ca.crt https://storage.googleapis.com/kubernetes-release/release/$(curl --cacert /tmp/ca.crt -fsSL https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /tmp/kubectl &&\
-    curl -L --cacert /tmp/ca.crt https://github.com/gruntwork-io/terragrunt/releases/download/v0.99.1/terragrunt_linux_amd64 --output /tmp/terragrunt &&\
-    curl -L --cacert /tmp/ca.crt https://github.com/opentofu/opentofu/releases/download/v1.11.4/tofu_1.11.4_amd64.apk --output /tmp/opentofu.apk
-
-FROM --platform=linux/amd64 alpine:latest as ansible
+FROM --platform=linux/amd64 hashicorp/vault:1.21.0 AS vault
+FROM --platform=linux/amd64 alpine:latest AS ansible
 
 COPY ./references/zscaler/ZscalerRootCertificate-2048-SHA256-Feb2025.crt /usr/local/share/ca-certificates/zscaler-root.crt
 RUN apk add --no-cache ca-certificates && update-ca-certificates
-RUN update-ca-certificates
 
 RUN apk add python3 py3-pip unzip py3-virtualenv bash python3-dev libffi-dev build-base rust rustup cargo openssl-dev musl-dev
 RUN cd / && python3 -m venv ansible && \
@@ -19,14 +10,19 @@ RUN cd / && python3 -m venv ansible && \
 
 FROM --platform=linux/amd64 alpine:latest
 
+COPY ./references/zscaler/ZscalerRootCertificate-2048-SHA256-Feb2025.crt /usr/local/share/ca-certificates/zscaler-root.crt
+RUN apk add --no-cache ca-certificates && update-ca-certificates
+
+RUN apk add --no-cache curl
+RUN curl -fsSL https://storage.googleapis.com/kubernetes-release/release/$(curl -fsSL https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /bin/kubectl && \
+    curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v0.99.1/terragrunt_linux_amd64 --output /bin/terragrunt && \
+    curl -fsSL https://github.com/opentofu/opentofu/releases/download/v1.11.4/tofu_1.11.4_amd64.apk --output /tmp/opentofu.apk
 
 COPY --from=vault /bin/vault /bin/vault
-COPY --from=curl /tmp/kubectl /bin/kubectl
-COPY --from=curl /tmp/terragrunt /bin/terragrunt
-COPY --from=curl /tmp/opentofu.apk /tmp/opentofu.apk
 COPY --from=ansible /ansible /ansible
 
-
+RUN curl -L https://dl.min.io/client/mc/release/linux-amd64/mc -o /bin/mc && \
+    chmod +x /bin/mc
 
 RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git && \
     apk add --allow-untrusted /tmp/opentofu.apk && \
@@ -38,9 +34,6 @@ RUN mkdir -p /usr/share/terraform/plugins/registry.terraform.io/aminueza/minio/3
 COPY ./references/minio-provider/terraform-provider-minio /usr/share/terraform/plugins/registry.terraform.io/aminueza/minio/3.6.5/linux_amd64/terraform-provider-minio_v.3.6.5
 COPY ./references/minio-provider/.tofurc /etc/tofurc
 
-COPY ./references/zscaler/ZscalerRootCertificate-2048-SHA256-Feb2025.crt /usr/local/share/ca-certificates/zscaler-root.crt
-RUN apk add --no-cache ca-certificates && update-ca-certificates
-RUN update-ca-certificates
 
 USER 10123:10123
 
