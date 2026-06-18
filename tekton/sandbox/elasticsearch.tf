@@ -11,7 +11,7 @@ module "elastic" {
   BackupBucketBasePath   = "7-new"
   OidcRedirectUri        = "k.t.regemini.io"
   VaultAddress           = var.VaultAddress
-  # depends_on = [ null_resource.rm_elastic_pv ]
+  depends_on = [ null_resource.rm_elastic_pv ]
 }
 module "kibana" {
   source          = "../../terraform-modules/k8s-vault-kibana-helm"
