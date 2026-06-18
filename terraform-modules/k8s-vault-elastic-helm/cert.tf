@@ -25,7 +25,7 @@ locals {
   certificates = toset(["elastic", "transport"])
   certIssuerValues = {
     namespace  = local.globalSettings.namespace
-    vault_addr = var.Color == "red" ? "https://vault.p.regemini.io" : "http://vault-active.vault:8200"
+    vault_addr = var.Cluster == "sandbox" ? "https://vault.t.regemini.io" : "https://vault.p.regemini.io"
     pki = {
       name = "pki-elastic-int"
     }
