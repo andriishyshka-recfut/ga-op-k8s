@@ -1,0 +1,58 @@
+githubConfigUrl: "https://github.com/recfut"
+githubConfigSecret: ${values.githubConfigSecret}
+runnerScaleSetName: ga-github-runner
+
+minRunners: 1
+maxRunners: 3
+
+containerMode:
+  type: "kubernetes"
+  kubernetesModeWorkVolumeClaim:
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: "kms-encrypted"
+    resources:
+      requests:
+        storage: 1Gi
+
+template:
+  spec:
+    nodeSelector:
+      workloadsType: github-runners
+    tolerations:
+      - key: workloadsType
+        operator: Equal
+        value: github-runners
+        effect: NoSchedule
+    securityContext:
+      fsGroup: 1001
+    containers:
+      - name: runner
+        image: ghcr.io/actions/actions-runner:latest
+        command:
+          - /home/runner/run.sh
+        env:
+          - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+            value: "false"
+    volumes:
+      - name: work
+        ephemeral:
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              storageClassName: "kms-encrypted"
+              resources:
+                requests:
+                  storage: 1Gi
+listenerTemplate:
+  spec:
+    nodeSelector:
+      workloadsType: github-runners
+    tolerations:
+      - key: workloadsType
+        operator: Equal
+        value: github-runners
+        effect: NoSchedule
+    containers:
+      - name: listener
