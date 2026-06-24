@@ -1,0 +1,82 @@
+{
+  "defaults": {
+    "server_group": "sandbox-zpa-server-group",
+    "segment_group": "sandbox-www",
+    "tcp_port_range": [
+      {
+        "from": "80",
+        "to": "80"
+      },
+      {
+        "from": "443",
+        "to": "443"
+      },
+      {
+        "from": "8080",
+        "to": "8080"
+      },
+      {
+        "from": "22",
+        "to": "22"
+      }
+    ],
+    "udp_port_range": []
+  },
+  "app_connector_groups": {
+    "sandbox-zpa-connector": {
+      "city_country": "Ashburn, US",
+      "country_code": "US",
+      "latitude": "39.0438",
+      "longitude": "-77.4874",
+      "location": "Ashburn, VA, US"
+    }
+  },
+  "server_groups": {
+    "sandbox-zpa-server-group": {
+      "app_connector_group": "sandbox-zpa-connector"
+    }
+  },
+  "segment_groups": [
+    "sandbox-www",
+    "sandbox-k8s"
+  ],
+  "provisioning_keys": {
+    "enrollment_cert_name": "Connector",
+    "vault_path": "secret/misc/zscaler/server-keys",
+    "keys": {
+      "key": {
+        "name": "sandbox-zpa-key",
+        "app_connector_group": "sandbox-zpa-connector",
+        "association_type": "CONNECTOR_GRP",
+        "max_usage": "10"
+      }
+    }
+  },
+  "applications": {
+    "sandbox-kubernetes-cluster": {
+      "domain": "172.26.0.0/24",
+      "segment_group": "sandbox-k8s",
+      "policies": [
+        "sandbox-k8s"
+      ],
+      "tcp_port_range": [
+        {
+          "from": "443",
+          "to": "443"
+        }
+      ]
+    },
+    "sandbox-cluster-info": {
+      "domain": "cluster-info.t.regemini.io",
+      "policies": [
+        "sandbox-www"
+      ]
+    },
+    "sandbox-logs": {
+      "domain": "logs.t.regemini.io",
+      "policies": [
+        "sandbox-www"
+      ]
+    }
+  }
+}
