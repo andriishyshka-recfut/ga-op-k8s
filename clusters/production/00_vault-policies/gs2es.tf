@@ -91,6 +91,15 @@ path "secret/data/mw/monitoring/otel" {
 path "secret/data/misc/slack/app/gs2es" {
    capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/metaGs2esTtdMs" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/_gs2es-ttd.ms" {
+  capabilities = ["read","list"]
+}
+path "secret/data/misc/sa/google/ttd" {
+  capabilities = ["read","list"]
+}
 EOT
 }
 

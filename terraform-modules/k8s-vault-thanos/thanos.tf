@@ -12,6 +12,7 @@ resource "helm_release" "thanos" {
   repository_username = data.vault_generic_secret.harbor_token.data.user
   repository_password = data.vault_generic_secret.harbor_token.data.password
   wait              = true
+  timeout           = 900
   atomic            = true
   namespace         = local.prometheusNs
   dependency_update = true

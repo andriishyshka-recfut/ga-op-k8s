@@ -56,5 +56,8 @@ path "secret/data/mw/monitoring/otel" {
 path "secret/data/mw/minio/sa/magescanner_mgscn" {
    capabilities = ["read","list"]
 }
+path "pki-minio/cert/ca" {
+  capabilities = ["read"]
+}
 EOT
 }

@@ -153,7 +153,7 @@ resource "google_container_node_pool" "nodepool_default" {
   cluster  = google_container_cluster.cluster.name
   autoscaling {
     min_node_count  = 1
-    max_node_count  = 6
+    max_node_count  = 7
     location_policy = "BALANCED"
   }
   node_count = 1

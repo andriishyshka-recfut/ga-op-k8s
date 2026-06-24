@@ -83,6 +83,14 @@ storegateway:
 #    - --max-time=-7d
 #    - --min-time=-365d
   podManagementPolicy: "Parallel"
+
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 60
+
   persistence:
     enabled: true
     size: 200Gi
