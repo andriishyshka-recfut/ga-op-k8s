@@ -1,0 +1,13 @@
+{
+  "production-www": {
+    "scim_groups": [
+      "APP-GA-DEV",
+      "APP-GA-OP"
+    ]
+  },
+  "production-k8s": {
+    "scim_groups": [
+      "APP-GA-OP"
+    ]
+  }
+}
