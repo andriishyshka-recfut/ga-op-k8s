@@ -10,18 +10,6 @@ locals {
 }
 
 
-resource "kubernetes_secret" "minio_credentials" {
-  metadata {
-    name      = "minio-credentials"
-    namespace = "kubescape"
-  }
-
-  data = {
-    "accesskey" = local.accessKey
-    "secretkey" = local.secretKey
-  }
-}
-
 
 resource "helm_release" "kubescape" {
   name              = "kubescape"
@@ -33,6 +21,5 @@ resource "helm_release" "kubescape" {
   values = [templatefile("${path.module}/templates/values.tftpl",{values = local.values})]
   timeout = 60
 
-  depends_on = [kubernetes_secret.minio_credentials]
 }
 
