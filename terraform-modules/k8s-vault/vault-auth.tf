@@ -64,3 +64,4 @@ resource "vault_kubernetes_auth_backend_role" "role_cert-manager" {
     vault_auth_backend.auth_kubernetes
   ]
 }
+
