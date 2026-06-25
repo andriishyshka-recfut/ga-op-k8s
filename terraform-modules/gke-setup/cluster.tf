@@ -61,7 +61,19 @@ resource "google_container_cluster" "cluster" {
 
     dynamic "cidr_blocks" {
       for_each = {
-        for idx, cidr in lookup(var.Settings, "zscalerIP", []) :
+        for idx, cidr in concat(
+          flatten([
+            for ip in try(var.Settings.zscaler.predefined_private_ip_address, []) :
+            # predefined_private_ip_address holds already existing Zscaler host IPs; GKE consumes each value as /32 CIDR.
+            "${ip}/32"
+          ]),
+          flatten([
+            for _, vm in try(var.Settings.zscaler.instances, {}) :
+            # private_ip_address list is the source of truth for Terraform-managed Zscaler host IPs;
+            # GKE consumes each value as /32 CIDR.
+            [for ip in try(vm.private_ip_address, []) : "${ip}/32"]
+          ])
+        ) :
         idx => cidr
       }
 
@@ -194,7 +206,7 @@ resource "google_container_node_pool" "nodepool_additional" {
   }
 
   provider          = google-beta
-  name              = "${each.key}"
+  name              = each.key
   location          = local.gkeRegion
   cluster           = google_container_cluster.cluster.name
   max_pods_per_node = lookup(each.value, "maxPodsPerNode", var.Settings.clusters[var.Cluster].pods_per_node)

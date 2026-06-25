@@ -14,10 +14,10 @@ locals {
   kafka_count     = local.kafka_enabled ? try(local.settings.persistent_resources.permanentDisks.services.kafka.data.count, 0) : 0
   sonarqube_count = try(local.settings.persistent_resources.permanentDisks.sonarqube.count, 0)
   # sftp            = local.settings_red.sftp-server
-  minio_count          = try(local.settings.persistent_resources.permanentDisks.services.minio.data.count, 0)
-  minio_red_count      = try(local.settings_red.persistent_resources.permanentDisks.services.minio.data.count, 0)
-  postgres_count       = try(local.settings.persistent_resources.permanentDisks.services.postgres.postgres.count, 0)
-  postgres_prefix      = local.settings.persistent_resources.permanentDisks.services.postgres.postgres.prefix
+  minio_count     = try(local.settings.persistent_resources.permanentDisks.services.minio.data.count, 0)
+  minio_red_count = try(local.settings_red.persistent_resources.permanentDisks.services.minio.data.count, 0)
+  postgres_count  = try(local.settings.persistent_resources.permanentDisks.services.postgres.postgres.count, 0)
+  postgres_prefix = local.settings.persistent_resources.permanentDisks.services.postgres.postgres.prefix
 
   elastic_disks = { for new_name in flatten([for nodepool in local.settings_red.persistent_resources.permanentDisks.elastic : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count }]]) : "${new_name.name}-${new_name.index}" => new_name }
 

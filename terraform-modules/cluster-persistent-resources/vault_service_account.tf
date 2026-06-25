@@ -9,19 +9,11 @@ resource "google_service_account" "vault_server" {
   # }
 }
 
-variable "VaultServiceAccountIamRoles" {
-  type = list(string)
-  default = [
-    "roles/storage.objectAdmin",
-  ]
-  description = "List of storage bucket roles."
-}
-
-# Add the service account to the project
+# Add the service account roles to the project
 resource "google_project_iam_member" "vault_service_account" {
-  count   = length(var.VaultServiceAccountIamRoles)
+  count   = length(local.vaultServiceAccountIamRoles)
   project = data.google_project.current.project_id
-  role    = element(var.VaultServiceAccountIamRoles, count.index)
+  role    = element(local.vaultServiceAccountIamRoles, count.index)
   member  = "serviceAccount:${google_service_account.vault_server.email}"
   # lifecycle {
   #   prevent_destroy = true
@@ -33,22 +25,19 @@ resource "google_service_account_key" "vault_key" {
   service_account_id = google_service_account.vault_server.name
 }
 
+resource "google_service_account_iam_member" "vault_service_account_self" {
+  count = length(local.vaultServiceAccountSelfIamRoles)
 
-variable "VaultServiceAccountKeyIamRoles" {
-  type = list(string)
-  default = [
-    "roles/cloudkms.cryptoKeyEncrypterDecrypter",
-    "roles/cloudkms.admin",
-  ]
-  description = "List of storage bucket roles."
+  service_account_id = google_service_account.vault_server.name
+  role               = element(local.vaultServiceAccountSelfIamRoles, count.index)
+  member             = "serviceAccount:${google_service_account.vault_server.email}"
 }
-
 
 # Grant service account access to the key
 resource "google_kms_crypto_key_iam_member" "vault_init" {
-  count         = length(var.VaultServiceAccountKeyIamRoles)
+  count         = length(local.vaultServiceAccountKeyIamRoles)
   crypto_key_id = google_kms_crypto_key.vault_unseal_key.id
-  role          = element(var.VaultServiceAccountKeyIamRoles, count.index)
+  role          = element(local.vaultServiceAccountKeyIamRoles, count.index)
   member        = "serviceAccount:${google_service_account.vault_server.email}"
   # lifecycle {
   #   prevent_destroy = true

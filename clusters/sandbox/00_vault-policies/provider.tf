@@ -1,4 +1,3 @@
-
 provider "vault" {
   address = "https://vault.t.regemini.io"
 }
