@@ -10,10 +10,8 @@ labels:
 elasticNodeSets:
   - name: master
     config: |
-      node.master: true
-      node.data: false
-      node.ingest: false
-      node.ml: false
+      node.roles: 
+        - data
       node.store.allow_mmap: false
       index.store.type: niofs
       network.bind_host: 127.0.0.1
@@ -27,8 +25,8 @@ elasticNodeSets:
     nodesCount: 1
   - name: data-node
     config: |
-      node.data: true
-      node.master: false
+      node.roles: 
+        - data
       node.store.allow_mmap: false
       index.store.type: niofs
       network.bind_host: 127.0.0.1

@@ -21,18 +21,11 @@ resources:
     memory: ${ resources.memLimit }
 esJavaOpts: ${esJavaOpts}
 roles:
-%{ if lookup(roles, "master", "false") == "true" ~}
-  - master
-%{ endif ~}
-%{ if lookup(roles, "ingest", "false") == "true" ~}
-  - ingest
-%{ endif ~}
-%{ if lookup(roles, "data", "false") == "true" ~}
-  - data
-%{ endif ~}
-%{ if lookup(roles, "remote_cluster_client", "false") == "true" ~}
-  - remote_cluster_client
-%{ endif ~}
+  master: "${ lookup(roles, "master","false")}"
+  ingest: "${ lookup(roles, "ingest","false")}"
+  data: "${ lookup(roles, "data","false")}"
+  remote_cluster_client: "${ lookup(roles, "remote_cluster_client","false")}"
+  ml: "false"
 nodeSelector:
   workloadsType: "${workloadsType}"
 tolerations:
@@ -76,15 +69,22 @@ extraInitContainers:
       - name: elastic-plugins-local
         mountPath: /usr/share/elasticsearch/plugins
 %{ endif ~}
+%{ if globalSettings.volumeExt ~}
+persistence:
+  enabled: false
+%{ else ~}
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: ${storage}
+%{ endif ~}
 extraEnvs:
   - name: ELASTIC_PASSWORD
     valueFrom:
       secretKeyRef:
         name: elastic-credentials
         key: elastic
-secret:
-  enabled: false
-createCert: false
 secretMounts:
 %{ for cert in globalSettings.transport.certs ~}
 %{ if cert == globalSettings.transport.active ~}
@@ -177,20 +177,10 @@ ${ emailNotification }
 %{ if lookup(globalSettings.addons, "authorizations", 0) != 0 ~}
 ${ configAuth }
 %{ endif ~}
-%{ if lookup(globalSettings, "newCCR", false) ~}
+%{ if lookup(globalSettings, "newCCR", 0) != 0 ~}
     remote_cluster_server.enabled: true
     remote_cluster.host: 0.0.0.0
     remote_cluster.port: 9443
-    xpack.security.remote_cluster_server.ssl.enabled: true
-    xpack.security.remote_cluster_server.ssl.key: /usr/share/elasticsearch/config/transport-certs/active/tls.key
-    xpack.security.remote_cluster_server.ssl.certificate: /usr/share/elasticsearch/config/transport-certs/active/tls.crt
-    xpack.security.remote_cluster_server.ssl.certificate_authorities:
-      - /usr/share/elasticsearch/config/transport-certs/active/ca.crt
-%{ for cert in globalSettings.transport.certs ~}
-%{ if cert != globalSettings.transport.active ~}
-      - /usr/share/elasticsearch/config/transport-certs/${cert}/ca.crt
-%{ endif ~}
-%{ endfor ~}
 %{ endif ~}
     xpack.security.audit.enabled: true
     xpack.security.audit.logfile.events.include: "access_denied, access_granted, anonymous_access_denied, authentication_success, authentication_failed"

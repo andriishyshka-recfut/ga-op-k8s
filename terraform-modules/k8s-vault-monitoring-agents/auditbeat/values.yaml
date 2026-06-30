@@ -1,6 +1,6 @@
 ---
 image: docker.elastic.co/beats/auditbeat
-tag: 7.17.0
+tag: 8.16.6
 elastic:
   host: "https://mon-es-http"
   port: "9200"

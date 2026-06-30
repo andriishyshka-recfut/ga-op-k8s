@@ -28,10 +28,8 @@ elastic_settings:
     elasticNodeSets:
       - name: master
         config: |
-          node.master: true
-          node.data: false
-          node.ingest: true
-          node.ml: true
+          node.roles: 
+            - master
           node.store.allow_mmap: false
           index.store.type: niofs
           ingest.geoip.downloader.enabled: false
@@ -49,10 +47,8 @@ elastic_settings:
         cpuLimit: 2
       - name: data
         config: |
-          node.master: false
-          node.data: true
-          node.ingest: false
-          node.ml: false
+          node.roles: 
+            - data
           node.store.allow_mmap: false
           index.store.type: niofs
           ingest.geoip.downloader.enabled: false
