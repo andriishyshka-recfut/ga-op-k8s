@@ -17,19 +17,19 @@ spec:
         setup:
           enabled: true
           overwrite: true
-          mapping:
-            - event_type: "error"
-              policy_name: "apm-ilm"
-              index_suffix: "%{+yyyy.MM.dd}"
-            - event_type: "span"
-              policy_name: "apm-ilm"
-              index_suffix: "%{+yyyy.MM.dd}"
-            - event_type: "transaction"
-              policy_name: "apm-ilm"
-              index_suffix: "%{+yyyy.MM.dd}"
-            - event_type: "metric"
-              policy_name: "apm-ilm"
-              index_suffix: "%{+yyyy.MM.dd}"
+          # mapping:
+          #   - event_type: "error"
+          #     policy_name: "apm-ilm"
+          #     index_suffix: "%{+yyyy.MM.dd}"
+          #   - event_type: "span"
+          #     policy_name: "apm-ilm"
+          #     index_suffix: "%{+yyyy.MM.dd}"
+          #   - event_type: "transaction"
+          #     policy_name: "apm-ilm"
+          #     index_suffix: "%{+yyyy.MM.dd}"
+          #   - event_type: "metric"
+          #     policy_name: "apm-ilm"
+          #     index_suffix: "%{+yyyy.MM.dd}"
           policies:
             - name: "apm-ilm"
               policy:

@@ -25,7 +25,7 @@ resource "helm_release" "elastic" {
   timeout   = 28800
   namespace = local.globalSettings.namespace
   values = [
-    templatefile("${path.module}/elastic8-values.tftpl", merge(each.value, { globalSettings = local.globalSettings }, local.combineSettings, { nodePool = each.key }))
+    templatefile("${path.module}/elastic-values.tftpl", merge(each.value, { globalSettings = local.globalSettings }, local.combineSettings, { nodePool = each.key }))
   ]
   set = [
   {

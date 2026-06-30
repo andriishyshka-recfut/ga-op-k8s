@@ -1,7 +1,7 @@
 ElasticSettings:
   globalSettings:
     namespace: elastic
-    imageTag: "7.17.29"
+    imageTag: "8.16.6"
     clusterName: red
     remotecerts:
       - "remote.ca.crt"
@@ -19,10 +19,10 @@ ElasticSettings:
     transport:
       verification_mode: certificate
       certs:
-        - "2026"
-      active: "2026"
+        - "2027"
+      active: "2027"
 #default 8880h
-      duration: "2740h"
+      duration: "8800h"
     addons:
       notifications:
         slack:

@@ -31,6 +31,11 @@ spec:
           runAsUser: 0
         containers:
         - name: filebeat
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           resources:
             requests:
               cpu: 10m
@@ -55,3 +60,4 @@ spec:
         - name: varlibdockercontainers
           hostPath:
             path: /var/lib/docker/containers
+            

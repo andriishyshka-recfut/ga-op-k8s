@@ -1,4 +1,4 @@
-beatsVersion: "7.13.13"
+beatsVersion: "8.16.6"
 namespace: "monitoring"
 esName: "mon"
 metricbeat:
@@ -15,7 +15,7 @@ filebeat:
   config: |
     filebeat.autodiscover:
       providers:
-        - host: $${HOSTNAME}
+        - node: $${NODE_NAME}
           type: kubernetes
           hints.enabled: true
           hints.default_config.enabled: true
@@ -23,16 +23,27 @@ filebeat:
             type: container
             paths:
               - /var/log/containers/*$${data.kubernetes.container.id}.log
+
+    setup.ilm.enabled: false
+    setup.template.enabled: true
+    setup.template.name: "filebeat-%%{[agent.version]}"
+    setup.template.pattern: "filebeat-%%{[agent.version]}*"
+
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            cluster:
+              color: ${color}
+              stage: ${cluster}
+
     output.elasticsearch:
-      index: "filebeat-%%{[beat.version]}-%%{+yyyy.MM.dd}"
-%{ if length(filebeat_groups) > 0 ~}      
+      index: "filebeat-%%{[agent.version]}"
+%{ if length(filebeat_groups) > 0 ~}
       indices:
 %{ for group in tolist(split(",", filebeat_groups)) ~}
-        - index: "filebeat-${group}"
-          when.contains:
+        - index: "filebeat-%%{[agent.version]}-${group}"
+          when.equals:
             kubernetes.labels.log-group-name: "${group}"
 %{ endfor ~}
 %{ endif ~}
-    setup.template.enable: true
-    setup.template.name: "filebeat-%%{[beat.version]}"
-    setup.template.pattern: "filebeat-%%{[beat.version]}-*" 
