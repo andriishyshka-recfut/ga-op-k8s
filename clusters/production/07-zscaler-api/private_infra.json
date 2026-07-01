@@ -36,10 +36,6 @@
       "app_connector_group": "production-zpa-connector"
     }
   },
-  "segment_groups": [
-    "production-www",
-    "production-k8s"
-  ],
   "provisioning_keys": {
     "enrollment_cert_name": "Connector",
     "vault_path": "secret/misc/zscaler/server-keys",
@@ -50,21 +46,6 @@
         "association_type": "CONNECTOR_GRP",
         "max_usage": "10"
       }
-    }
-  },
-  "applications": {
-    "production-kubernetes-cluster": {
-      "domain": "172.28.0.0/28",
-      "segment_group": "production-k8s",
-      "tcp_port_range": [
-        {
-          "from": "443",
-          "to": "443"
-        }
-      ]
-    },
-    "production-logs": {
-      "domain": "mon.p.regemini.io"
     }
   }
 }

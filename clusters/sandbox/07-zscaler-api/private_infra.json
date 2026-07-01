@@ -36,10 +36,6 @@
       "app_connector_group": "sandbox-zpa-connector"
     }
   },
-  "segment_groups": [
-    "sandbox-www",
-    "sandbox-k8s"
-  ],
   "provisioning_keys": {
     "enrollment_cert_name": "Connector",
     "vault_path": "secret/misc/zscaler/server-keys",
@@ -50,24 +46,6 @@
         "association_type": "CONNECTOR_GRP",
         "max_usage": "10"
       }
-    }
-  },
-  "applications": {
-    "sandbox-kubernetes-cluster": {
-      "domain": "172.26.0.0/24",
-      "segment_group": "sandbox-k8s",
-      "tcp_port_range": [
-        {
-          "from": "443",
-          "to": "443"
-        }
-      ]
-    },
-    "sandbox-cluster-info": {
-      "domain": "cluster-info.t.regemini.io"
-    },
-    "sandbox-logs": {
-      "domain": "logs.t.regemini.io"
     }
   }
 }
