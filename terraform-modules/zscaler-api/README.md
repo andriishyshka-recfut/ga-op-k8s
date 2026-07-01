@@ -6,12 +6,13 @@
 Environment configs live in `clusters/<env>/07-zscaler-api/`.
 
 - Run OpenTofu from the environment root, for example `clusters/sandbox/07-zscaler-api`. Use `otf` for sandbox and `otfprod` for production.
-- `private_infra.json` defines ZPA connector groups, server groups, segment groups, provisioning keys, and application segments.
+- `private_infra.json` defines ZPA connector groups, server groups, provisioning keys.
+- `apps.json` defines ZPA segment groups and application segments.
 - `app_policies.json` defines access policies. Each policy lists SCIM groups and targets application keys through `apps` or segment group names through `groups`.
 
 To add a new application entity (web domain, IP, CIDR range):
 
-1. Add an application under `applications` in `private_infra.json`.
+1. Add an application under `applications` in `apps.json`.
 2. Set `domain`, and only override default `segment_group`, `server_group`, or port ranges when needed.
 3. Add the application key to a policy `apps` list, or add its segment group to a policy `groups` list in `app_policies.json`.
 
