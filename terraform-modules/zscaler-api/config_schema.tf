@@ -132,8 +132,8 @@ variable "Config_infra" {
 variable "Config_app_policies" {
   type = map(object({
     scim_groups = list(string)
-    apps        = list(string)
-    groups      = list(string)
+    apps        = optional(list(string), [])
+    groups      = optional(list(string), [])
   }))
 
   validation {
