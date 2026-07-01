@@ -12,7 +12,6 @@ locals {
     for app_name, app in local.applications :
     app_name => {
       name           = app_name
-      policies       = app.policies
       domain_names   = [app.domain]
       server_group   = app.server_group == null ? local.defaults.server_group : app.server_group
       segment_group  = app.segment_group == null ? local.defaults.segment_group : app.segment_group
@@ -21,27 +20,68 @@ locals {
     }
   }
 
-  used_access_policy_names = toset(flatten([
-    for app in values(local.application_segments) :
-    app.policies
+  policy_app_names = toset(flatten([
+    for policy in values(local.access_policies) :
+    policy.apps
   ]))
 
-  missing_access_policies = setsubtract(
-    local.used_access_policy_names,
-    toset(keys(local.access_policies))
+  policy_group_names = toset(flatten([
+    for policy in values(local.access_policies) :
+    policy.groups
+  ]))
+
+  missing_policy_apps = setsubtract(
+    local.policy_app_names,
+    toset(keys(local.application_segments))
   )
 
-  access_policy_rules = {
+  missing_policy_groups = setsubtract(
+    local.policy_group_names,
+    local.segment_groups
+  )
+
+  access_policy_targets = {
     for policy_name, policy in local.access_policies :
     policy_name => {
       scim_groups = toset(policy.scim_groups)
-      applications = toset([
-        for app_name, app in local.application_segments :
-        app_name if contains(app.policies, policy_name)
+      apps = toset([
+        for app_name in policy.apps :
+        app_name if contains(keys(local.application_segments), app_name)
+      ])
+      groups = toset([
+        for group_name in policy.groups :
+        group_name if contains(tolist(local.segment_groups), group_name)
       ])
     }
-    if contains(local.used_access_policy_names, policy_name)
   }
+
+  access_policy_rules = {
+    for policy_name, policy in local.access_policy_targets :
+    policy_name => policy if length(policy.apps) + length(policy.groups) > 0
+  }
+
+  policies_without_targets = setsubtract(
+    toset(keys(local.access_policies)),
+    toset(keys(local.access_policy_rules))
+  )
+
+  applications_with_access_policy = toset(concat(
+    [
+      for app_name in local.policy_app_names :
+      app_name if contains(keys(local.application_segments), app_name)
+    ],
+    flatten([
+      for policy in values(local.access_policies) : [
+        for app_name, app in local.application_segments :
+        app_name if contains(policy.groups, app.segment_group)
+      ]
+    ])
+  ))
+
+  applications_without_access_policy = setsubtract(
+    toset(keys(local.application_segments)),
+    local.applications_with_access_policy
+  )
 
   used_scim_groups = toset(flatten([
     for policy in values(local.access_policy_rules) :
@@ -49,6 +89,9 @@ locals {
   ]))
 
   access_policy_config_valid = (
-    length(local.missing_access_policies) == 0
+    length(local.missing_policy_apps) == 0 &&
+    length(local.missing_policy_groups) == 0 &&
+    length(local.policies_without_targets) == 0 &&
+    length(local.applications_without_access_policy) == 0
   )
 }

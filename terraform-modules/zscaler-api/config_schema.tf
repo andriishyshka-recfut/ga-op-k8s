@@ -42,7 +42,6 @@ variable "Config_infra" {
       domain         = string
       server_group   = optional(string)
       segment_group  = optional(string)
-      policies       = list(string)
       tcp_port_range = optional(list(object({
         from = string
         to   = string
@@ -53,15 +52,6 @@ variable "Config_infra" {
       })))
     }))
   })
-
-  validation {
-    condition = alltrue([
-      for _, app in var.Config_infra.applications :
-      length(app.policies) > 0
-    ])
-
-    error_message = "Every application must define at least one policy."
-  }
 
   validation {
     condition = alltrue([
@@ -142,6 +132,8 @@ variable "Config_infra" {
 variable "Config_app_policies" {
   type = map(object({
     scim_groups = list(string)
+    apps        = optional(list(string), [])
+    groups      = optional(list(string), [])
   }))
 
   validation {
@@ -154,6 +146,30 @@ variable "Config_app_policies" {
     ])
 
     error_message = "Every access policy must define at least one scim_groups entry."
+  }
+
+  validation {
+    condition = alltrue([
+      for _, policy in var.Config_app_policies :
+      length(policy.apps) + length(policy.groups) > 0
+    ])
+
+    error_message = "Every access policy must define at least one apps or groups entry."
+  }
+
+  validation {
+    condition = alltrue([
+      for _, policy in var.Config_app_policies :
+      alltrue([
+        for app_name in policy.apps :
+        app_name != ""
+      ]) && alltrue([
+        for group_name in policy.groups :
+        group_name != ""
+      ])
+    ])
+
+    error_message = "Access policy apps and groups entries cannot be empty."
   }
 }
 
