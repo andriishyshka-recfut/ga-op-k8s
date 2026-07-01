@@ -56,6 +56,8 @@ filebeatConfig:
       template.pattern: "filebeat-%%{[agent.version]}*"
       username: ${settings.filebeat_username}_user
       password: $${FILEBEAT_PASSWORD}
+      template.settings:
+        index.lifecycle.name: filebeat
     logging:
       json: true
     processors:
