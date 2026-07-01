@@ -3,11 +3,19 @@
     "scim_groups": [
       "APP-GA-DEV",
       "APP-GA-OP"
+    ],
+    "apps": [],
+    "groups": [
+      "production-www"
     ]
   },
   "production-k8s": {
     "scim_groups": [
       "APP-GA-OP"
+    ],
+    "apps": [],
+    "groups": [
+      "production-k8s"
     ]
   }
 }

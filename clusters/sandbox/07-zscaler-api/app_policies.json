@@ -3,12 +3,20 @@
     "scim_groups": [
       "APP-GA-DEV",
       "APP-GA-OP"
+    ],
+    "apps": [],
+    "groups": [
+      "sandbox-www"
     ]
   },
   "sandbox-k8s": {
     "scim_groups": [
       "APP-GA-DEV",
       "APP-GA-OP"
+    ],
+    "apps": [],
+    "groups": [
+      "sandbox-k8s"
     ]
   }
 }

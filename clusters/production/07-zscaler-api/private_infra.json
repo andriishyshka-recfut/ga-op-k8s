@@ -56,9 +56,6 @@
     "production-kubernetes-cluster": {
       "domain": "172.28.0.0/28",
       "segment_group": "production-k8s",
-      "policies": [
-        "production-k8s"
-      ],
       "tcp_port_range": [
         {
           "from": "443",
@@ -67,10 +64,7 @@
       ]
     },
     "production-logs": {
-      "domain": "mon.p.regemini.io",
-      "policies": [
-        "production-www"
-      ]
+      "domain": "mon.p.regemini.io"
     }
   }
 }

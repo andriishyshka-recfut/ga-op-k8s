@@ -56,9 +56,6 @@
     "sandbox-kubernetes-cluster": {
       "domain": "172.26.0.0/24",
       "segment_group": "sandbox-k8s",
-      "policies": [
-        "sandbox-k8s"
-      ],
       "tcp_port_range": [
         {
           "from": "443",
@@ -67,16 +64,10 @@
       ]
     },
     "sandbox-cluster-info": {
-      "domain": "cluster-info.t.regemini.io",
-      "policies": [
-        "sandbox-www"
-      ]
+      "domain": "cluster-info.t.regemini.io"
     },
     "sandbox-logs": {
-      "domain": "logs.t.regemini.io",
-      "policies": [
-        "sandbox-www"
-      ]
+      "domain": "logs.t.regemini.io"
     }
   }
 }
