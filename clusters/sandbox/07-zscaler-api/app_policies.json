@@ -18,5 +18,9 @@
     "groups": [
       "sandbox-k8s"
     ]
+  },
+  "APP-GA-HUNT": {
+    "scim_groups": ["APP-GA-HUNT"],
+    "apps": ["sandbox-elastic-data"]
   }
 }

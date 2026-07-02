@@ -16,6 +16,9 @@
     },
     "sandbox-logs": {
       "domain": "logs.t.regemini.io"
+    },
+    "sandbox-elastic-data": {
+      "domain": "k.t.regemini.io"
     }
   }
 }
