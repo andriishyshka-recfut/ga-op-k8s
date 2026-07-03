@@ -1,4 +1,7 @@
 {
+  "APP-GA-OP": {
+    "groups": [ "production-www", "production-k8s" ]
+  },
   "production-www": {
     "scim_groups": [
       "APP-GA-DEV",

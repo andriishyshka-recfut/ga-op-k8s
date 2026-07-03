@@ -13,7 +13,9 @@
     },
     "production-logs": {
       "domain": "mon.p.regemini.io"
+    },
+    "production-red-prometheus" :{
+      "domain": "prometheus.regemini.io"
     }
-    "production-elastik"
   }
 }
