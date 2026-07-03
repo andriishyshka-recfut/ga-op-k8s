@@ -1,7 +1,8 @@
 {
   "segment_groups": [
     "production-www",
-    "production-k8s"
+    "production-k8s",
+    "production-red"
   ],
   "applications": {
     "kubernetes-cluster": {
@@ -11,11 +12,142 @@
         { "from": "443", "to": "443" }
       ]
     },
-    "logs": {
+    "auth": {
+      "domain": "auth.p.regemini.io"
+    },
+    "beep": {
+      "domain": "beep.p.regemini.io"
+    },
+    "bnp-api": {
+      "domain": "bnp-api.regemini.com"
+    },
+    "clicker": {
+      "domain": "clicker.p.regemini.io"
+    },
+    "datafix": {
+      "domain": "datafix.p.regemini.io"
+    },
+    "etl-observer": {
+      "domain": "etl-observer.p.regemini.io"
+    },
+    "flow": {
+      "domain": "flow.p.regemini.io"
+    },
+    "grafana": {
+      "domain": "grafana.p.regemini.io"
+    },
+    "jupyter": {
+      "domain": "jupyter.regemini.com"
+    },
+    "ka": {
+      "domain": "ka.p.regemini.io"
+    },
+    "kiali": {
+      "domain": "kiali.p.regemini.io"
+    },
+    "lookup": {
+      "domain": "lookup.p.regemini.io"
+    },
+    "mage": {
+      "domain": "mage.regemini.io"
+    },
+    "mageui": {
+      "domain": "mageui.p.regemini.io"
+    },
+    "maid": {
+      "domain": "maid.p.regemini.io, minio-helm.p.regemini.io"
+    },
+    "minio-helm-api": {
+      "domain": "minio-helm-api.p.regemini.io"
+    },
+    "mon": {
       "domain": "mon.p.regemini.io"
     },
-    "red-prometheus" :{
-      "domain": "prometheus.regemini.io"
+    "mongo-auth": {
+      "domain": "mongo-auth.p.regemini.io"
+    },
+    "mongo-express": {
+      "domain": "mongo-express.p.regemini.io"
+    },
+    "prometheus": {
+      "domain": "prometheus.p.regemini.io"
+    },
+    "rp": {
+      "domain": "rp.p.regemini.io"
+    },
+    "sanitizer": {
+      "domain": "sanitizer.p.regemini.io"
+    },
+    "shout": {
+      "domain": "shout.p.regemini.io"
+    },
+    "tekton": {
+      "domain": "tekton.p.regemini.io"
+    },
+    "telegram": {
+      "domain": "telegram.p.regemini.io"
+    },
+    "telesrcr": {
+      "domain": "telesrcr.p.regemini.io"
+    },
+    "tile": {
+      "domain": "tile.p.regemini.io"
+    },
+    "red-epl": {
+      "domain": "epl.regemini.io",
+      "segment_group": "production-red"
+    },
+    "red-g": {
+      "domain": "g.regemini.com",
+      "segment_group": "production-red"
+    },
+    "red-grafana": {
+      "domain": "grafana.regemini.io",
+      "segment_group": "production-red"
+    },
+    "red-harbor": {
+      "domain": "harbor.regemini.io",
+      "segment_group": "production-red"
+    },
+    "red-k": {
+      "domain": "k.regemini.com",
+      "segment_group": "production-red"
+    },
+    "red-kk": {
+      "domain": "kk.regemini.com",
+      "segment_group": "production-red"
+    },
+    "red-minio-api-red": {
+      "domain": "minio-red.regemini.io,minio-api-red.regemini.io",
+      "segment_group": "production-red"
+    },
+    "red-pfi": {
+      "domain": "pfi.regemini.com",
+      "segment_group": "production-red"
+    },
+    "red-prometheus": {
+      "domain": "prometheus.regemini.io",
+      "segment_group": "production-red"
+    },
+    "red-sftp": {
+      "domain": "sftp.regemini.com",
+      "segment_group": "production-red"
+    },
+    "red-sonar": {
+      "domain": "sonar.regemini.io",
+      "segment_group": "production-red"
+    },
+    "red-tarantool": {
+      "domain": "tarantool.regemini.io",
+      "segment_group": "production-red"
+    },
+    "red-tekton": {
+      "domain": "tekton.regemini.io",
+      "segment_group": "production-red"
+    },
+    "red-vandelay": {
+      "domain": "vandelay.regemini.com",
+      "segment_group": "production-red"
     }
   }
 }

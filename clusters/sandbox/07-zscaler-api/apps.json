@@ -11,14 +11,95 @@
         { "from": "443", "to": "443" }
       ]
     },
+    "auth": {
+      "domain": "auth.t.regemini.io"
+    },
+    "beep": {
+      "domain": "beep.t.regemini.io"
+    },
     "cluster-info": {
       "domain": "cluster-info.t.regemini.io"
+    },
+    "cvat": {
+      "domain": "cvat.t.regemini.io"
+    },
+    "datafix": {
+      "domain": "datafix.t.regemini.io"
+    },
+    "etl-observer": {
+      "domain": "etl-observer.t.regemini.io"
+    },
+    "flow": {
+      "domain": "flow.t.regemini.io"
+    },
+    "grafana": {
+      "domain": "grafana.t.regemini.io"
+    },
+    "elastic-data": {
+      "domain": "k.t.regemini.io"
+    },
+    "ka": {
+      "domain": "ka.t.regemini.io"
+    },
+    "kiali": {
+      "domain": "kiali.t.regemini.io"
     },
     "logs": {
       "domain": "logs.t.regemini.io"
     },
-    "elastic-data": {
-      "domain": "k.t.regemini.io"
+    "lookup": {
+      "domain": "lookup.t.regemini.io"
+    },
+    "mageui": {
+      "domain": "mageui.t.regemini.io"
+    },
+    "minio-helm": {
+      "domain": "minio-helm.t.regemini.io,minio-helm-api.t.regemini.io"
+    },
+    "mongo-auth": {
+      "domain": "mongo-auth.t.regemini.io"
+    },
+    "mongo-express": {
+      "domain": "mongo-express.t.regemini.io"
+    },
+    "prometheus": {
+      "domain": "prometheus.t.regemini.io"
+    },
+    "rp": {
+      "domain": "rp.t.regemini.io"
+    },
+    "sanitizer": {
+      "domain": "sanitizer.t.regemini.io"
+    },
+    "sftp": {
+      "domain": "sftp.t.regemini.io"
+    },
+    "shout": {
+      "domain": "shout.t.regemini.io"
+    },
+    "sonar": {
+      "domain": "sonar.t.regemini.io"
+    },
+    "swirl": {
+      "domain": "swirl.t.regemini.io"
+    },
+    "tekton": {
+      "domain": "tekton.t.regemini.io"
+    },
+    "telegram": {
+      "domain": "telegram.t.regemini.io"
+    },
+    "telesrcr": {
+      "domain": "telesrcr.t.regemini.io"
+    },
+    "tile": {
+      "domain": "tile.t.regemini.io"
+    },
+    "vandelay": {
+      "domain": "vandelay.t.regemini.io"
+    },
+    "vault": {
+      "domain": "vault.t.regemini.io"
     }
   }
 }
