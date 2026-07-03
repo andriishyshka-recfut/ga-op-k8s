@@ -10,7 +10,7 @@ resource "zpa_segment_group" "group" {
 resource "zpa_application_segment" "segment" {
   for_each = local.application_segments
 
-  name              = each.value.name
+  name              = "${local.prefix}-${each.value.name}"
   enabled           = true
   health_reporting  = "ON_ACCESS"
   bypass_type       = "NEVER"

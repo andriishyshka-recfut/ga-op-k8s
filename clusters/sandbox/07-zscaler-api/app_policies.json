@@ -1,5 +1,5 @@
 {
-  "sandbox-www": {
+  "www": {
     "scim_groups": [
       "APP-GA-DEV",
       "APP-GA-OP"
@@ -9,7 +9,7 @@
       "sandbox-www"
     ]
   },
-  "sandbox-k8s": {
+  "k8s": {
     "scim_groups": [
       "APP-GA-DEV",
       "APP-GA-OP"

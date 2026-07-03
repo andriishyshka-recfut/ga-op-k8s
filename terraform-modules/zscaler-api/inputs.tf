@@ -1,3 +1,4 @@
+variable "Prefix" {}
 locals {
   defaults             = var.Config_infra.defaults
   app_connector_groups = var.Config_infra.app_connector_groups
@@ -7,6 +8,7 @@ locals {
   provisioning_keys    = var.Config_infra.provisioning_keys
   access_policies      = var.Config_app_policies
   idp_name             = "GEM_ZPA_Users"
+  prefix               = var.Prefix
 
   application_segments = {
     for app_name, app in local.applications :

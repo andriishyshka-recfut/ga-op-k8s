@@ -28,7 +28,7 @@ data "zpa_scim_groups" "policy" {
 resource "zpa_policy_access_rule" "rule" {
   for_each = local.access_policy_rules
 
-  name     = each.key
+  name     = "${local.prefix}-${each.key}"
   action   = "ALLOW"
   operator = "AND"
 
