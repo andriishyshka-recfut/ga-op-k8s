@@ -1,7 +1,7 @@
 {
   "APP-GA-OP": {
     "scim_groups": [ "APP-GA-OP" ],
-    "groups": [ "production-www", "production-k8s" ]
+    "groups": [ "production-www", "production-k8s", "production-red" ]
   },
   "www": {
     "scim_groups": [

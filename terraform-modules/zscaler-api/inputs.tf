@@ -14,7 +14,7 @@ locals {
     for app_name, app in local.applications :
     app_name => {
       name           = app_name
-      domain_names   = [app.domain]
+      domain_names   = split(",",app.domain) 
       server_group   = app.server_group == null ? local.defaults.server_group : app.server_group
       segment_group  = app.segment_group == null ? local.defaults.segment_group : app.segment_group
       tcp_port_range = app.tcp_port_range == null ? local.defaults.tcp_port_range : app.tcp_port_range

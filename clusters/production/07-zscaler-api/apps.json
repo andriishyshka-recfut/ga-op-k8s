@@ -55,10 +55,10 @@
       "domain": "mageui.p.regemini.io"
     },
     "maid": {
-      "domain": "maid.p.regemini.io, minio-helm.p.regemini.io"
+      "domain": "maid.p.regemini.io"
     },
     "minio-helm-api": {
-      "domain": "minio-helm-api.p.regemini.io"
+      "domain": "minio-helm-api.p.regemini.io,minio-helm.p.regemini.io"
     },
     "mon": {
       "domain": "mon.p.regemini.io"

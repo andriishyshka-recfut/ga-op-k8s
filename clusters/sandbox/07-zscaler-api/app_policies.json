@@ -1,26 +1,10 @@
 {
-  "www": {
-    "scim_groups": [
-      "APP-GA-DEV",
-      "APP-GA-OP"
-    ],
-    "apps": [],
-    "groups": [
-      "sandbox-www"
-    ]
-  },
-  "k8s": {
-    "scim_groups": [
-      "APP-GA-DEV",
-      "APP-GA-OP"
-    ],
-    "apps": [],
-    "groups": [
-      "sandbox-k8s"
-    ]
+  "APP-GA-OP": {
+    "scim_groups": [ "APP-GA-OP" ],
+    "groups": [ "sandbox-www", "sandbox-k8s" ]
   },
   "APP-GA-HUNT": {
     "scim_groups": ["APP-GA-HUNT"],
-    "apps": ["sandbox-elastic-data"]
+    "apps": ["elastic-data"]
   }
 }
