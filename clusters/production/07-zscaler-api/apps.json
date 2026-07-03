@@ -93,6 +93,9 @@
     "tile": {
       "domain": "tile.p.regemini.io"
     },
+    "vault": {
+      "domain": "vault.p.regemini.io"
+    },
     "red-epl": {
       "domain": "epl.regemini.io",
       "segment_group": "production-red"
