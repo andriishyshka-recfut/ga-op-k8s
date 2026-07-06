@@ -104,6 +104,10 @@
       "domain": "g.regemini.com",
       "segment_group": "production-red"
     },
+    "red-gitlab": {
+      "domain": "gitlab.regemini.com",
+      "segment_group": "production-red"
+    },
     "red-grafana": {
       "domain": "grafana.regemini.io",
       "segment_group": "production-red"

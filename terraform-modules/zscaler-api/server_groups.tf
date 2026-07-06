@@ -10,6 +10,7 @@ resource "zpa_app_connector_group" "group" {
   location                 = each.value.location
   upgrade_day              = "SUNDAY"
   dns_query_type           = "IPV4"
+  lss_app_connector_group  =  true
 }
 
 resource "zpa_server_group" "group" {
