@@ -49,6 +49,7 @@ elastic_settings:
         config: |
           node.roles: 
             - data
+            - ingest
           node.store.allow_mmap: false
           index.store.type: niofs
           ingest.geoip.downloader.enabled: false
