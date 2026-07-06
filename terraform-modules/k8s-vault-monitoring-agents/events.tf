@@ -16,13 +16,18 @@ curl -X POST "https://elastic:$ES_PASSWORD@${local.elastic_prefix}-es-http:9200/
 }' &&\
 curl -X PUT "https://elastic:$ES_PASSWORD@${local.elastic_prefix}-es-http:9200/_index_template/kube-events" -H 'Content-Type: application/json' -k -d '
 {
-  "index_patterns" : ["kube-events*"],
-  "priority" : 1,
+  "index_patterns": ["kube-events*"],
+  "data_stream": {},
+  "priority": 1,
   "template": {
-    "settings" : {
-      "lifecycle": {
-          "name": "kube-events",
-          "rollover_alias": "kube-events"
+    "settings": {
+      "index.lifecycle.name": "kube-events"
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        }
       }
     }
   }
@@ -53,16 +58,6 @@ curl -X PUT "https://elastic:$ES_PASSWORD@${local.elastic_prefix}-es-http:9200/_
             }
         }
     }
-%{if local.events_init == "true"~}
-}' &&\
-curl -X PUT "https://elastic:$ES_PASSWORD@${local.elastic_prefix}-es-http:9200/%3Ckube-events-%7Bnow%2Fd%7D-000001%3E" -H 'Content-Type: application/json' -k -d '
-{
-  "aliases": {
-    "kube-events": {
-      "is_write_index": true
-    }
-  }
-%{endif~}
 }'
 EOF
 
