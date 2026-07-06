@@ -106,7 +106,11 @@
     },
     "red-gitlab": {
       "domain": "gitlab.regemini.com",
-      "segment_group": "production-red"
+      "segment_group": "production-red",
+      "tcp_port_range": [
+        { "from": "443", "to": "443" },
+        { "from": "2224", "to": "2224" }
+      ]
     },
     "red-grafana": {
       "domain": "grafana.regemini.io",
