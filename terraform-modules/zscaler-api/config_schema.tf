@@ -13,6 +13,11 @@ variable "Config_infra" {
       }))
     })
 
+    timeout_policy = object({
+      reauth_timeout_hours      = number
+      reauth_idle_timeout_hours = number
+    })
+
     app_connector_groups = map(object({
       city_country = string
       country_code = string
@@ -39,9 +44,9 @@ variable "Config_infra" {
     })
 
     applications = map(object({
-      domain         = string
-      server_group   = optional(string)
-      segment_group  = optional(string)
+      domain        = string
+      server_group  = optional(string)
+      segment_group = optional(string)
       tcp_port_range = optional(list(object({
         from = string
         to   = string
@@ -60,6 +65,15 @@ variable "Config_infra" {
     ])
 
     error_message = "Application names may only contain letters, numbers, periods, hyphens, and underscores."
+  }
+
+  validation {
+    condition = (
+      var.Config_infra.timeout_policy.reauth_timeout_hours >= -1 &&
+      var.Config_infra.timeout_policy.reauth_idle_timeout_hours >= -1
+    )
+
+    error_message = "timeout_policy reauth_timeout_hours and reauth_idle_timeout_hours must be greater than or equal to -1. For reauth_timeout_hours, -1 means never reauthenticate. For reauth_idle_timeout_hours, -1 means use the ZPA default idle timeout."
   }
 
   validation {
@@ -163,7 +177,7 @@ variable "Config_app_policies" {
       alltrue([
         for app_name in policy.apps :
         app_name != ""
-      ]) && alltrue([
+        ]) && alltrue([
         for group_name in policy.groups :
         group_name != ""
       ])
