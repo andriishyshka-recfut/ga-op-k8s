@@ -1,20 +1,34 @@
 variable "Prefix" {}
 locals {
-  defaults             = var.Config_infra.defaults
-  app_connector_groups = var.Config_infra.app_connector_groups
-  applications         = var.Config_infra.applications
-  server_groups        = var.Config_infra.server_groups
-  segment_groups       = toset(var.Config_infra.segment_groups)
-  provisioning_keys    = var.Config_infra.provisioning_keys
-  access_policies      = var.Config_app_policies
-  idp_name             = "GEM_ZPA_Users"
-  prefix               = var.Prefix
+  defaults              = var.Config_infra.defaults
+  app_connector_groups  = var.Config_infra.app_connector_groups
+  applications          = var.Config_infra.applications
+  server_groups         = var.Config_infra.server_groups
+  segment_groups        = toset(var.Config_infra.segment_groups)
+  provisioning_keys     = var.Config_infra.provisioning_keys
+  access_policies       = var.Config_app_policies
+  timeout_policy_config = var.Config_infra.timeout_policy
+  idp_name              = "GEM_ZPA_Users"
+  prefix                = var.Prefix
+
+  timeout_policy = {
+    reauth_timeout = (
+      local.timeout_policy_config.reauth_timeout_hours == -1
+      ? "-1"
+      : tostring(local.timeout_policy_config.reauth_timeout_hours * 3600)
+    )
+    reauth_idle_timeout = (
+      local.timeout_policy_config.reauth_idle_timeout_hours == -1
+      ? "-1"
+      : tostring(local.timeout_policy_config.reauth_idle_timeout_hours * 3600)
+    )
+  }
 
   application_segments = {
     for app_name, app in local.applications :
     app_name => {
       name           = app_name
-      domain_names   = split(",",app.domain) 
+      domain_names   = split(",", app.domain)
       server_group   = app.server_group == null ? local.defaults.server_group : app.server_group
       segment_group  = app.segment_group == null ? local.defaults.segment_group : app.segment_group
       tcp_port_range = app.tcp_port_range == null ? local.defaults.tcp_port_range : app.tcp_port_range
