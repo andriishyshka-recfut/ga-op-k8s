@@ -12,10 +12,13 @@ resource "helm_release" "gitlab" {
     templatefile("${path.module}/gitlab-values.tftpl", merge(local.gitlab_values, { gitlab-name = each.key, gitlab-version = var.Settings.clusters[var.Cluster].versions.gitlab.gitlab_version }))
   ]
   depends_on = [kubernetes_secret.rails_gcs, kubernetes_secret.smtp, kubernetes_secret.ssh_host_keys, kubernetes_secret.storage_config]
-  set {
-    name  = "certmanager-issuer.email"
-    value = var.Settings.clusters[var.Cluster].versions.gitlab.certmanager_issuer_email
-  }  
+  set = [
+    {
+      name  = "certmanager-issuer.email"
+      value = var.Settings.clusters[var.Cluster].versions.gitlab.certmanager_issuer_email
+      type  = "string"
+    }
+  ]
 }
 
 data "vault_generic_secret" "ssh_host_keys" {
