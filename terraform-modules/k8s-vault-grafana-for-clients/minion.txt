@@ -3,6 +3,7 @@ acrux
 adhara
 altair
 athna
+banditcc
 becrux
 bosscards
 bravo
