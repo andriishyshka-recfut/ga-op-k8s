@@ -57,6 +57,9 @@
     "mageui": {
       "domain": "mageui.t.regemini.io"
     },
+    "minio-old": {
+      "domain": "minio.t.regemini.io"
+    },
     "minio-helm": {
       "domain": "minio-helm.t.regemini.io,minio-helm-api.t.regemini.io"
     },

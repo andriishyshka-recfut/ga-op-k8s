@@ -3,6 +3,25 @@
     "scim_groups": [ "APP-GA-OP" ],
     "groups": [ "production-www", "production-k8s", "production-red" ]
   },
+  "APP-GA-DEV": {
+    "scim_groups": ["APP-GA-DEV"],
+    "apps": [
+      "beep",
+      "clicker",
+      "datafix",
+      "flow",
+      "grafana",
+      "minio-helm-api",
+      "mongo-express",
+      "prometheus",
+      "red-gitlab",
+      "red-grafana",
+      "red-harbor",
+      "red-kk",
+      "red-sonar",
+      "rp"
+    ]
+  },
   "www": {
     "scim_groups": [
       "APP-GA-DEV",

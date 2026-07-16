@@ -57,6 +57,9 @@
     "maid": {
       "domain": "maid.p.regemini.io"
     },
+    "minio-old": {
+      "domain": "minio.p.regemini.io,minio.regemini.io"
+    },
     "minio-helm-api": {
       "domain": "minio-helm-api.p.regemini.io,minio-helm.p.regemini.io"
     },
@@ -130,6 +133,10 @@
     },
     "red-minio-api-red": {
       "domain": "minio-red.regemini.io,minio-api-red.regemini.io",
+      "segment_group": "production-red"
+    },
+    "red-mon-elastic": {
+      "domain": "mon.regemini.io",
       "segment_group": "production-red"
     },
     "red-pfi": {

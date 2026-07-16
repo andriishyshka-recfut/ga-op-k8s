@@ -3,6 +3,24 @@
     "scim_groups": [ "APP-GA-OP" ],
     "groups": [ "sandbox-www", "sandbox-k8s","sandbox-bastion" ]
   },
+  "APP-GA-DEV": {
+    "scim_groups": ["APP-GA-DEV"],
+    "apps": [
+      "auth",
+      "beep",
+      "datafix",
+      "elastic-data",
+      "flow",
+      "grafana",
+      "logs",
+      "minio-helm",
+      "mongo-express",
+      "prometheus",
+      "rp",
+      "sonar"
+    ],
+    "groups": [ "sandbox-k8s" ]
+  },
   "APP-GA-HUNT": {
     "scim_groups": ["APP-GA-HUNT"],
     "apps": ["elastic-data"]
