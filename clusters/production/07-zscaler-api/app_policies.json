@@ -22,6 +22,27 @@
       "rp"
     ]
   },
+  "APP-GA-COLLECT": {
+    "scim_groups": ["APP-GA-COLLECT"],
+    "apps": [
+      "auth",
+      "beep",
+      "clicker",
+      "grafana",
+      "ka",
+      "mageui",
+      "maid",
+      "minio-helm-api",
+      "prometheus",
+      "red-gitlab",
+      "red-grafana",
+      "red-kk",
+      "rp",
+      "sanitizer",
+      "telegram",
+      "tile"
+    ]
+  },
   "www": {
     "scim_groups": [
       "APP-GA-DEV",

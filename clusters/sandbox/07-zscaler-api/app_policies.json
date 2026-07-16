@@ -21,6 +21,24 @@
     ],
     "groups": [ "sandbox-k8s" ]
   },
+  "APP-GA-COLLECT": {
+    "scim_groups": ["APP-GA-COLLECT"],
+    "apps": [
+      "auth",
+      "beep",
+      "elastic-data",
+      "grafana",
+      "ka",
+      "logs",
+      "mageui",
+      "minio-helm",
+      "prometheus",
+      "rp",
+      "sanitizer",
+      "telegram",
+      "tile"
+    ]
+  },
   "APP-GA-HUNT": {
     "scim_groups": ["APP-GA-HUNT"],
     "apps": ["elastic-data"]
