@@ -41,6 +41,17 @@
   },
   "APP-GA-HUNT": {
     "scim_groups": ["APP-GA-HUNT"],
-    "apps": ["elastic-data"]
+    "apps": [
+      "auth",
+      "beep",
+      "datafix",
+      "elastic-data",
+      "logs",
+      "mageui",
+      "minio-helm",
+      "mongo-auth",
+      "prometheus",
+      "telegram"
+    ]
   }
 }

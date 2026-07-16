@@ -43,6 +43,22 @@
       "tile"
     ]
   },
+  "APP-GA-HUNT": {
+    "scim_groups": ["APP-GA-HUNT"],
+    "apps": [
+      "auth",
+      "beep",
+      "clicker",
+      "datafix",
+      "mageui",
+      "minio-helm-api",
+      "mongo-auth",
+      "prometheus",
+      "red-gitlab",
+      "red-kk",
+      "telegram"
+    ]
+  },
   "www": {
     "scim_groups": [
       "APP-GA-DEV",
