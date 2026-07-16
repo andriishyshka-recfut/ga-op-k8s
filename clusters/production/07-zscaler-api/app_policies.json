@@ -18,6 +18,7 @@
       "red-grafana",
       "red-harbor",
       "red-kk",
+      "red-mon-elastic",
       "red-sonar",
       "rp"
     ]
