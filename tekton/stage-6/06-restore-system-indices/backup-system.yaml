@@ -19,6 +19,8 @@ actions:
       skip_repo_fs_check: False
       disable_action: False
     filters:
-      - filtertype: pattern
-        kind: regex
-        value: ^\..*$
+      - filtertype: none
+    # filters:
+    #   - filtertype: pattern
+    #     kind: regex
+    #     value: ^\..*$

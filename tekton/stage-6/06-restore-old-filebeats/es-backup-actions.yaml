@@ -22,13 +22,7 @@ actions:
     filters:
       - filtertype: pattern
         kind: regex
-        value: "^(filebeat-|apm-|kube-).*$"
-      - filtertype: age
-        source: creation_date
-        direction: older
-        unit: hours
-        unit_count: 26
+        value: "^filebeat-8.16.6$"
       - filtertype: pattern
         kind: regex
-        value: "^apm-.*-profile-000001"
-        exclude: True
+        value: "^(apm-|kube-).*$"

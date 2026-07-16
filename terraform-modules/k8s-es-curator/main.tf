@@ -14,19 +14,39 @@ curator --config /curator/config.yml /curator/actions.yml ;
 EOT
 }
 
-resource "kubernetes_config_map" "curator" {
+# resource "kubernetes_config_map" "curator" {
+#   metadata {
+#     name      = local.cm
+#     namespace = var.Namespace
+#   }
+
+#   data = {
+#     "config.yml"     = "${file("${path.module}/config.yaml")}"
+#     "actionfile.yml" = var.Actions
+#   }
+# }
+data "kubernetes_secret" "es_creds" {
+  metadata {
+    name = var.EsCreds
+    namespace = var.Namespace
+  }
+  
+}
+
+resource "kubernetes_secret" "curator_config" {
   metadata {
     name      = local.cm
     namespace = var.Namespace
   }
 
   data = {
-    "config.yml"     = "${file("${path.module}/config.yaml")}"
+    "config.yml" = templatefile("${path.module}/config.yaml", {
+      ES_HOST      = local.es_host
+      ES_PASSWORD = data.kubernetes_secret.es_creds.data["elastic"]
+    })
     "actionfile.yml" = var.Actions
   }
 }
-
-
 
 resource "kubernetes_job" "es_backup_and_restore" {
   metadata {
@@ -43,32 +63,19 @@ resource "kubernetes_job" "es_backup_and_restore" {
       spec {
         volume {
           name = "curator"
-          config_map {
-            name = local.cm
+          secret {
+            secret_name = local.cm
           }
         }
         container {
           name  = "curator"
-          image = "untergeek/curator:7.0.1"
+          image = "untergeek/curator:8.0.21"
           # command = ["bash", "-c", local.backupCommand]
           args = ["--config", "/.curator/config.yml", "/.curator/actionfile.yml"]
           volume_mount {
             name       = "curator"
             mount_path = "/.curator"
 
-          }
-          env {
-            name = "ES_PASSWORD"
-            value_from {
-              secret_key_ref {
-                name = var.EsCreds
-                key  = "elastic"
-              }
-            }
-          }
-          env {
-            name  = "ES_HOST"
-            value = var.EsService
           }
         }
         restart_policy = "Never"

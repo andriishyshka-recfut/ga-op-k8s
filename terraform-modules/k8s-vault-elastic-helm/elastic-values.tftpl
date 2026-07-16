@@ -33,7 +33,7 @@ roles:
 %{ if lookup(roles, "remote_cluster_client", "false") == "true" ~}
   - remote_cluster_client
 %{ endif ~}
-%{ if globalSettings.volumeExt ~}
+%{ if lookup(globalSettings, "volumeExt", false) ~}
 persistence:
   enabled: false
 %{ else ~}

@@ -1,7 +1,8 @@
 {
   "segment_groups": [
     "sandbox-www",
-    "sandbox-k8s"
+    "sandbox-k8s",
+    "sandbox-bastion"
   ],
   "applications": {
     "kubernetes-cluster": {
@@ -10,6 +11,9 @@
       "tcp_port_range": [
         { "from": "443", "to": "443" }
       ]
+    },
+    "bastion": {
+      "domain": "34.86.176.12/32"
     },
     "auth": {
       "domain": "auth.t.regemini.io"
