@@ -1,7 +1,7 @@
 {
   "APP-GA-OP": {
     "scim_groups": [ "APP-GA-OP" ],
-    "groups": [ "sandbox-www", "sandbox-k8s" ]
+    "groups": [ "sandbox-www", "sandbox-k8s","sandbox-bastion" ]
   },
   "APP-GA-HUNT": {
     "scim_groups": ["APP-GA-HUNT"],

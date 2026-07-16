@@ -7,6 +7,13 @@ data "vault_generic_secret" "k8s_auth_active" {
 }
 
 locals {
+  cluster_settings = var.Settings.clusters[var.Cluster]
+
+  postgres_ha_settings   = try(local.cluster_settings["postgresql-ha"], {})
+  postgres_ha_enabled    = try(local.postgres_ha_settings.enabled, false)
+  postgres_ha_namespace  = try(local.postgres_ha_settings.namespace, "postgres")
+  postgres_ha_cluster_name = try(local.postgres_ha_settings.cluster_name, "postgresql-ha")
+  postgres_ha_pvc_prefix = "data-${local.postgres_ha_cluster_name}-postgresql"
 
   stop_kafka = <<COMMAND
     set -x
@@ -190,6 +197,56 @@ COMMAND
     delete pvc -n postgres  {}
 COMMAND
 
+  stop_postgres_ha_resources = <<COMMAND
+    set -x
+
+    echo "Stopping postgres-ha statefulsets"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get statefulset -n ${local.postgres_ha_namespace} -l app.kubernetes.io/instance=${local.postgres_ha_cluster_name} -o name \
+    | xargs -r -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    scale -n ${local.postgres_ha_namespace} --replicas=0 {}
+
+    echo "Stopping postgres-ha deployments"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get deployment -n ${local.postgres_ha_namespace} -l app.kubernetes.io/instance=${local.postgres_ha_cluster_name} -o name \
+    | xargs -r -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    scale -n ${local.postgres_ha_namespace} --replicas=0 {}
+    sleep 29
+
+    echo "Deleting postgres-ha pods"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get pod -n ${local.postgres_ha_namespace} -l app.kubernetes.io/instance=${local.postgres_ha_cluster_name} -o name \
+    | xargs -r -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    delete -n ${local.postgres_ha_namespace} {}
+    sleep 29
+
+    echo "Deleting postgres-ha PVCs"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get pvc -n ${local.postgres_ha_namespace} | grep -e ${local.postgres_ha_pvc_prefix}- | awk '{print $1}' \
+    | xargs -r -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    delete pvc -n ${local.postgres_ha_namespace} {}
+COMMAND
+
   stop_elastic_resources = <<COMMAND
     set -x
 
@@ -319,6 +376,19 @@ resource "null_resource" "stop_postgres_resources" {
     command     = local.stop_postgres_resources
   }
 }
+
+resource "null_resource" "stop_postgres_ha_resources" {
+  count = var.Cluster == "sandbox" && local.postgres_ha_enabled ? 1 : 0
+
+  triggers = {
+    command = md5(local.stop_postgres_ha_resources)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_postgres_ha_resources
+  }
+}
+
 resource "null_resource" "stop_elastic_resources" {
   count = var.Cluster == "sandbox" ? 1 : 0
   triggers = {

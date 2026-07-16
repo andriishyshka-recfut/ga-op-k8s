@@ -28,4 +28,5 @@ variable "EsCreds" {}
 
 locals {
   currentProject = var.Settings.gcpProject
+  es_host = "mon-es-http.monitoring.svc"
 }
