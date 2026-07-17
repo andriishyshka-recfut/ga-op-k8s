@@ -34,7 +34,7 @@ ElasticSettings:
           domain: "k.t.regemini.io"
     license:
       vault_path: "secret/misc/elasticsearch/license"
-      name: "recorded-future-ab-non_production-b3d2ba33-a0df-4cf6-9a5b-941d2bb9952c-v5.json"
+      name: "recorded-future-ab-non_production-ee68f410-7007-48dd-a811-52064cf289fd-v5.json"
     clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
     patchVaultPath: "secret/elasticsearch-admin/elastic7-v2"
     patchVaultKey: "CREDENTIALS"

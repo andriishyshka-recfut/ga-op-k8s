@@ -39,7 +39,7 @@ locals {
 
 resource "kubectl_manifest" "vault_issuer" {
   for_each  = local.certificates
-  yaml_body = templatefile("${path.module}../../../templates/cert-manager/Issuer.tftpl", { values = merge(local.certIssuerValues, { pki = { role = each.value , name = local.certIssuerValues.pki.name}, name = "vault-${each.value}", kube_auth = { role = local.globalSettings.namespace} }) })
+  yaml_body = templatefile("${path.module}/../../templates/cert-manager/Issuer.tftpl", { values = merge(local.certIssuerValues, { pki = { role = each.value , name = local.certIssuerValues.pki.name}, name = "vault-${each.value}", kube_auth = { role = local.globalSettings.namespace} }) })
 }
 
 # resource "kubernetes_manifest" "clusterissuer_vault_elastic_transport" {

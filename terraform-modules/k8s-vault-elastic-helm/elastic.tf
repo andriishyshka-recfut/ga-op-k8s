@@ -45,7 +45,9 @@ resource "helm_release" "elastic" {
     kubernetes_secret.elastic_secret,
     kubernetes_persistent_volume_claim.elasticsearch,
     kubernetes_secret.keystores,
-    kubernetes_config_map.reboot_date
+    kubernetes_config_map.reboot_date,
+    kubernetes_manifest.certificate_elastic_es_cert,
+    kubernetes_manifest.certificate_elastic_elastic_transport_certs
   ]
 }
 

@@ -358,23 +358,10 @@ spec:
   workspaces:
     - name: ws
   tasks:
-    - name: restore-system-indices
-      taskRef:
-        name: tg-run
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/stage-6/06-restore-system-indices"
-        - name: branch
-          value: "\\${branch}"
 
     - name: monitoring-post
       taskRef:
         name: tg-run
-      runAfter:
-        - restore-system-indices
       workspaces:
         - name: ws
           workspace: ws
@@ -384,25 +371,9 @@ spec:
         - name: branch
           value: "\\${branch}"
 
-    - name: apply-apm-secrets
-      taskRef:
-        name: tg-run
-      runAfter:
-        - monitoring-post
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/stage-1/01-namespaces"
-        - name: branch
-          value: "\\${branch}"
-
     - name: istio
       taskRef:
         name: tg-run
-      runAfter:
-        - restore-system-indices
       workspaces:
         - name: ws
           workspace: ws
@@ -581,19 +552,5 @@ spec:
       params:
         - name: path
           value: "k8s/tekton/stage-6/06-cvat"
-        - name: branch
-          value: "\\${branch}"
-
-    - name: 06-restore-old-filebeats
-      taskRef:
-        name: tg-run
-      runAfter:
-        - fluxcd
-      workspaces:
-        - name: ws
-          workspace: ws
-      params:
-        - name: path
-          value: "k8s/tekton/stage-6/06-restore-old-filebeats"
         - name: branch
           value: "\\${branch}"

@@ -2,37 +2,53 @@ locals {
   settings    = jsondecode(file("${path.module}/../../../config.tfvars.json")).Settings.clusters["sandbox"]
   gcp_project = jsondecode(file("${path.module}/../../../config.tfvars.json")).Settings.gcpProject
 
-  zones = local.settings.persistent_resources.permanentDisks.zones
+  zones  = local.settings.persistent_resources.permanentDisks.zones
+  region = "us-east4"
+  services = merge([
+    for service_name, groups in var.Settings.clusters[var.Cluster].persistent_resources.permanentDisks.services : merge([
+      for group_name, group_cfg in groups : {
+        for idx in range(group_cfg.count) :
+        "${service_name}-${group_name}-${idx}" => merge(
+          group_cfg,
+          {
+            service = service_name
+            role    = group_name
+            index   = idx
+          }
+        )
+      }
+    ]...)
+  ]...)
 
-  mongo_count       = local.settings.mongo6.main.replicas
-  mongo_prefix      = local.settings.mongo6.main.pvcPrefix
-  mongo_auth_count  = local.settings.mongo6.auth.replicas
-  mongo_auth_prefix = local.settings.mongo6.auth.pvcPrefix
+  # mongo_count       = local.settings.mongo6.main.replicas
+  # mongo_prefix      = local.settings.mongo6.main.pvcPrefix
+  # mongo_auth_count  = local.settings.mongo6.auth.replicas
+  # mongo_auth_prefix = local.settings.mongo6.auth.pvcPrefix
 
 
-  mongo6_count  = local.settings.mongo6.main.replicas
-  mongo6_prefix = local.settings.mongo6.main.pvcPrefix
+  # mongo6_count  = local.settings.mongo6.main.replicas
+  # mongo6_prefix = local.settings.mongo6.main.pvcPrefix
 
-  kafka_count     = try(local.settings.persistent_resources.permanentDisks.services.kafka.data.count, 0)
-  sonarqube_count = try(local.settings.persistent_resources.permanentDisks.sonarqube.count, 0)
-  # sftp            = local.settings.sftp-server
-  sftp                     = {}
-  minio_count              = try(local.settings.persistent_resources.permanentDisks.services.minio.data.count, 0)
-  postgres_count           = try(local.settings.persistent_resources.permanentDisks.services.postgres.postgres.count, 0)
-  postgres_prefix          = local.settings.persistent_resources.permanentDisks.services.postgres.postgres.prefix
-  postgresql_ha_count      = try(local.settings.persistent_resources.permanentDisks.services["postgresql-ha"]["postgresql-ha"].count, 0)
-  postgresql_ha_prefix     = try(local.settings.persistent_resources.permanentDisks.services["postgresql-ha"]["postgresql-ha"].prefix, "postgresql-ha-data")
-  postgresql_ha_size       = try(local.settings.persistent_resources.permanentDisks.services["postgresql-ha"]["postgresql-ha"].size, 0)
-  postgresql_ha_restore    = try(local.settings["postgresql-ha"].restore_from_snapshot, true)
-  elastic_disks            = { for new_name in flatten([for nodepool in local.settings.persistent_resources.permanentDisks.elastic.elasticsearch : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count }]]) : "${new_name.name}-${new_name.index}" => new_name }
-  elastic8_disks           = { for new_name in flatten([for nodepool in local.settings.persistent_resources.permanentDisks.elastic.elastic8 : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count }]]) : "${new_name.name}-${new_name.index}" => new_name }
-  tarantool_storage_count  = try(local.settings.persistent_resources.permanentDisks.tarantool.storage_disks, 0) * 2
-  tsc                      = max(try(local.settings.persistent_resources.permanentDisks.tarantool.storage_disks, 0), 1)
-  tarantool_storage_prefix = try(local.settings.persistent_resources.permanentDisks.tarantool.storage_prefix, "tarantool-storage-unused")
-  tarantool_router_count   = try(local.settings.persistent_resources.permanentDisks.tarantool.router_disks, 0)
-  tarantool_router_prefix  = try(local.settings.persistent_resources.permanentDisks.tarantool.router_prefix, "tarantool-router-unused")
-  tarantool_etcd_count     = try(local.settings.persistent_resources.permanentDisks.tarantool.etcd_disks, 0)
-  tarantool_etcd_prefix    = try(local.settings.persistent_resources.permanentDisks.tarantool.etcd_prefix, "tarantool-etcd-unused")
+  # kafka_count     = try(local.settings.persistent_resources.permanentDisks.services.kafka.data.count, 0)
+  # sonarqube_count = try(local.settings.persistent_resources.permanentDisks.sonarqube.count, 0)
+  # # sftp            = local.settings.sftp-server
+  # sftp                     = {}
+  # minio_count              = try(local.settings.persistent_resources.permanentDisks.services.minio.data.count, 0)
+  # postgres_count           = try(local.settings.persistent_resources.permanentDisks.services.postgres.postgres.count, 0)
+  # postgres_prefix          = local.settings.persistent_resources.permanentDisks.services.postgres.postgres.prefix
+  # postgresql_ha_count      = try(local.settings.persistent_resources.permanentDisks.services["postgresql-ha"]["postgresql-ha"].count, 0)
+  # postgresql_ha_prefix     = try(local.settings.persistent_resources.permanentDisks.services["postgresql-ha"]["postgresql-ha"].prefix, "postgresql-ha-data")
+  # postgresql_ha_size       = try(local.settings.persistent_resources.permanentDisks.services["postgresql-ha"]["postgresql-ha"].size, 0)
+  # postgresql_ha_restore    = try(local.settings["postgresql-ha"].restore_from_snapshot, true)
+  # elastic_disks            = { for new_name in flatten([for nodepool in local.settings.persistent_resources.permanentDisks.elastic.elasticsearch : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count }]]) : "${new_name.name}-${new_name.index}" => new_name }
+  # elastic8_disks           = { for new_name in flatten([for nodepool in local.settings.persistent_resources.permanentDisks.elastic.elastic8 : [for disk in range(nodepool.count) : { name = nodepool.name, size = nodepool.size, index = disk, count = nodepool.count }]]) : "${new_name.name}-${new_name.index}" => new_name }
+  # tarantool_storage_count  = try(local.settings.persistent_resources.permanentDisks.tarantool.storage_disks, 0) * 2
+  # tsc                      = max(try(local.settings.persistent_resources.permanentDisks.tarantool.storage_disks, 0), 1)
+  # tarantool_storage_prefix = try(local.settings.persistent_resources.permanentDisks.tarantool.storage_prefix, "tarantool-storage-unused")
+  # tarantool_router_count   = try(local.settings.persistent_resources.permanentDisks.tarantool.router_disks, 0)
+  # tarantool_router_prefix  = try(local.settings.persistent_resources.permanentDisks.tarantool.router_prefix, "tarantool-router-unused")
+  # tarantool_etcd_count     = try(local.settings.persistent_resources.permanentDisks.tarantool.etcd_disks, 0)
+  # tarantool_etcd_prefix    = try(local.settings.persistent_resources.permanentDisks.tarantool.etcd_prefix, "tarantool-etcd-unused")
 
 
 
@@ -47,307 +63,324 @@ locals {
 #   Set "restoreDate" (yyyy-mm-dd) to recover data as of that day
 ########
 
-data "google_compute_snapshot" "elastic_snapshot" {
-  for_each    = local.elastic_disks
-  name        = "elastic-${each.key}-${local.restoreDate}"
-  most_recent = true
-}
-data "google_compute_snapshot" "mongo_snapshot" {
-  name        = "${local.mongo_prefix}-${count.index}-dr-${local.restoreDate}"
-  most_recent = true
-  count       = local.mongo_count
-}
-
-data "google_compute_snapshot" "mongo_auth_snapshot" {
-  name        = "${local.mongo_auth_prefix}-${count.index}-dr-${local.restoreDate}"
-  most_recent = true
-  count       = local.mongo_auth_count
-}
-
-data "google_compute_snapshot" "kafka_snapshot" {
-  name        = "kafka-data-${count.index}-dr-${local.restoreDate}"
-  most_recent = true
-  count       = local.kafka_count
-}
-
-data "google_compute_snapshot" "kafka_controller_snapshot" {
-  name        = "kafka-controller-${count.index}-dr-${local.restoreDate}"
-  most_recent = true
-  count       = local.kafka_count
-}
-
-data "google_compute_snapshot" "postgres_snapshot" {
-  name        = "${local.postgres_prefix}-${count.index}-dr-${local.restoreDate}"
-  most_recent = true
-  count       = local.postgres_count
-}
-
-data "google_compute_snapshot" "postgresql_ha_snapshot" {
-  count       = local.postgresql_ha_restore ? local.postgresql_ha_count : 0
-  name        = "${local.postgresql_ha_prefix}-${count.index}-dr-${local.restoreDate}"
-  most_recent = true
-  project     = local.gcp_project
-}
-
-data "google_compute_snapshot" "tarantool_storage_snapshot" {
-  name        = "tarantool-vortex-cartridge-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}-bcp-${local.restoreDate}"
-  most_recent = true
-  count       = local.tarantool_storage_count
-}
-
-data "google_compute_snapshot" "tarantool_router_snapshot" {
-  name        = "tarantool-vortex-cartridge-router-${count.index}-0-bcp-${local.restoreDate}"
-  most_recent = true
-  count       = local.tarantool_router_count
-}
-
-data "google_compute_snapshot" "tarantool_etcd_snapshot" {
-  name        = "tarantool-etcd-${count.index}-dr-${local.restoreDate}"
-  most_recent = true
-  count       = local.tarantool_etcd_count
-}
-
-data "google_compute_snapshot" "sonarqube_postgres_snapshot" {
-  name        = "sonarqube-postgres-${count.index}-adhoc"
-  most_recent = true
-  count       = local.sonarqube_count
-}
-
-data "google_compute_snapshot" "sftp_snapshot" {
-  for_each    = local.sftp
-  name        = "${each.key}-config-dr-${local.restoreDate}"
+data "google_compute_snapshot" "snapshot" {
+  for_each = {
+    for key, disk in local.services : key => disk
+    if lookup(disk, "restoreFromSnapshot", false)
+  }
+  name        = "${each.value.prefix}-${each.value.index}-dr-${local.restoreDate}"
   most_recent = true
 }
 
-data "google_compute_snapshot" "minio_tenant_snapshot" {
-  name        = "minio-tenant-bcp2-${count.index}"
-  most_recent = true
-  count       = local.minio_count
-}
-
-
-
-
-resource "google_compute_disk" "mongo_pv" {
-  name     = "${local.mongo_prefix}-${count.index}"
-  count    = local.mongo_count
-  type     = "pd-balanced"
-  size     = data.google_compute_snapshot.mongo_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.mongo_snapshot[count.index].name
+resource "google_compute_disk" "disk" {
+  for_each = local.services
+  name     = "${each.value.prefix}-${each.value.index}"
+  type     = lookup(each.value, "type", "pd-balanced")
+  size     = lookup(each.value, "restoreFromSnapshot", false) ? data.google_compute_snapshot.snapshot[each.key].disk_size_gb : lookup(each.value, "size", null)
+  snapshot = lookup(each.value, "restoreFromSnapshot", false) ? data.google_compute_snapshot.snapshot[each.key].name : null
   labels = {
-    target = local.mongo_prefix
-    id     = "${local.mongo_prefix}-${count.index}"
+    target = each.value.prefix
+    id     = "${each.value.prefix}-${each.value.index}"
   }
 
-  zone = element([for i in range(local.mongo_count) : element(local.zones, i % 3)], count.index)
-}
-
-resource "google_compute_disk" "mongo_auth_pv" {
-  name     = "${local.mongo_auth_prefix}-${count.index}"
-  count    = local.mongo_count
-  type     = "pd-balanced"
-  size     = data.google_compute_snapshot.mongo_auth_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.mongo_auth_snapshot[count.index].name
-  labels = {
-    target = local.mongo_auth_prefix
-    id     = "${local.mongo_auth_prefix}-${count.index}"
-  }
-
-  zone = element([for i in range(local.mongo_count) : element(local.zones, i % 3)], count.index)
-}
-
-
-resource "google_compute_disk" "mongo6_pv" {
-  name     = "${local.mongo6_prefix}-${count.index}"
-  count    = local.mongo_count
-  type     = "pd-balanced"
-  size     = data.google_compute_snapshot.mongo_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.mongo_snapshot[count.index].name
-  labels = {
-    target = local.mongo6_prefix
-    id     = "${local.mongo6_prefix}-${count.index}"
-  }
-
-  zone = element([for i in range(local.mongo_count) : element(local.zones, i % 3)], count.index)
-}
-
-resource "google_compute_disk" "elastic_pv" {
-  for_each = local.elastic_disks
-  name     = "elastic-${each.key}"
-  type     = "pd-balanced"
-  size     = each.value.size
-  snapshot = data.google_compute_snapshot.elastic_snapshot[each.key].name
-  labels = {
-    target = "elastic-${each.value.name}"
-    id     = "elastic-${each.key}"
-  }
-  zone = element([for i in range(each.value.count) : element(local.zones, i % 3)], each.value.index)
-}
-resource "google_compute_disk" "elastic8_pv" {
-  for_each = local.elastic_disks
-  name     = "elastic8-${each.key}"
-  type     = "pd-balanced"
-  size     = each.value.size
-  labels = {
-    target = "elastic8-${each.value.name}"
-    id     = "elastic8-${each.key}"
-  }
   zone = element([for i in range(each.value.count) : element(local.zones, i % 3)], each.value.index)
 }
 
-resource "google_compute_disk" "kafka_pv" {
-  name     = "kafka-data-${count.index}"
-  count    = local.kafka_count
-  type     = "pd-balanced"
-  size     = data.google_compute_snapshot.kafka_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.kafka_snapshot[count.index].name
-  labels = {
-    target = "kafka-data"
-    id     = "kafka-data-${count.index}"
-  }
-  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
-}
 
-resource "google_compute_disk" "kafka_controller_pv" {
-  name     = "kafka-controller-${count.index}"
-  count    = local.kafka_count
-  type     = "pd-balanced"
-  size     = data.google_compute_snapshot.kafka_controller_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.kafka_controller_snapshot[count.index].name
-  labels = {
-    target = "kafka-controller"
-    id     = "kafka-controller-${count.index}"
-  }
-  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
-}
+# data "google_compute_snapshot" "mongo_snapshot" {
+#   name        = "${local.mongo_prefix}-${count.index}-dr-${local.restoreDate}"
+#   most_recent = true
+#   count       = local.mongo_count
+# }
 
-resource "google_compute_disk" "tarantool_storage_pv" {
-  name     = "tarantool-vortex-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
-  count    = local.tarantool_storage_count
-  type     = "pd-balanced"
-  size     = data.google_compute_snapshot.tarantool_storage_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.tarantool_storage_snapshot[count.index].name
-  labels = {
-    target = local.tarantool_storage_prefix
-    id     = "${local.tarantool_storage_prefix}-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
-  }
-  zone = element([for i in range(local.tarantool_storage_count) : element(local.zones, i % 3)], count.index)
-}
+# data "google_compute_snapshot" "mongo_auth_snapshot" {
+#   name        = "${local.mongo_auth_prefix}-${count.index}-dr-${local.restoreDate}"
+#   most_recent = true
+#   count       = local.mongo_auth_count
+# }
 
+# data "google_compute_snapshot" "kafka_snapshot" {
+#   name        = "kafka-data-${count.index}-dr-${local.restoreDate}"
+#   most_recent = true
+#   count       = local.kafka_count
+# }
 
-resource "google_compute_disk" "tarantool_router_pv" {
-  name     = "tarantool-vortex-router-${count.index}-0"
-  count    = local.tarantool_router_count
-  type     = "pd-balanced"
-  size     = data.google_compute_snapshot.tarantool_router_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.tarantool_router_snapshot[count.index].name
-  labels = {
-    target = local.tarantool_router_prefix
-    id     = "${local.tarantool_router_prefix}-${count.index}"
-  }
-  zone = element([for i in range(local.tarantool_router_count) : element(local.zones, i % 3)], count.index)
-}
+# data "google_compute_snapshot" "kafka_controller_snapshot" {
+#   name        = "kafka-controller-${count.index}-dr-${local.restoreDate}"
+#   most_recent = true
+#   count       = local.kafka_count
+# }
 
-resource "google_compute_disk" "tarantool_etcd_pv" {
-  name     = "${local.tarantool_etcd_prefix}-${count.index}"
-  count    = local.tarantool_etcd_count
-  type     = "pd-ssd"
-  size     = data.google_compute_snapshot.tarantool_etcd_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.tarantool_etcd_snapshot[count.index].name
-  labels = {
-    target = local.tarantool_etcd_prefix
-    id     = "${local.tarantool_etcd_prefix}-${count.index}"
-  }
-  zone = element([for i in range(local.tarantool_etcd_count) : element(local.zones, i % 3)], count.index)
-}
+# data "google_compute_snapshot" "postgres_snapshot" {
+#   name        = "${local.postgres_prefix}-${count.index}-dr-${local.restoreDate}"
+#   most_recent = true
+#   count       = local.postgres_count
+# }
 
+# data "google_compute_snapshot" "postgresql_ha_snapshot" {
+#   count       = local.postgresql_ha_restore ? local.postgresql_ha_count : 0
+#   name        = "${local.postgresql_ha_prefix}-${count.index}-dr-${local.restoreDate}"
+#   most_recent = true
+#   project     = local.gcp_project
+# }
 
-resource "google_compute_disk" "sonarqube_postgres_pv" {
-  name  = "sonarqube-postgres-${count.index}"
-  count = local.sonarqube_count
-  type  = "pd-balanced"
-  # size     = 20
-  size     = data.google_compute_snapshot.sonarqube_postgres_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.sonarqube_postgres_snapshot[count.index].name
-  labels = {
-    target = "sonarqube-postgres"
-    id     = "sonarqube-postgres-${count.index}"
-  }
+# data "google_compute_snapshot" "tarantool_storage_snapshot" {
+#   name        = "tarantool-vortex-cartridge-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}-bcp-${local.restoreDate}"
+#   most_recent = true
+#   count       = local.tarantool_storage_count
+# }
 
-  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
-}
+# data "google_compute_snapshot" "tarantool_router_snapshot" {
+#   name        = "tarantool-vortex-cartridge-router-${count.index}-0-bcp-${local.restoreDate}"
+#   most_recent = true
+#   count       = local.tarantool_router_count
+# }
 
-resource "google_compute_disk" "sftp_pv" {
-  for_each = local.sftp
-  name     = "sftp-server-${each.key}-config"
-  type     = "pd-balanced"
-  size     = data.google_compute_snapshot.sftp_snapshot[each.key].disk_size_gb
-  snapshot = data.google_compute_snapshot.sftp_snapshot[each.key].name
-  labels = {
-    target = "sftp-server-${each.key}-config"
-    id     = "sftp-server-${each.key}-config"
-  }
+# data "google_compute_snapshot" "tarantool_etcd_snapshot" {
+#   name        = "tarantool-etcd-${count.index}-dr-${local.restoreDate}"
+#   most_recent = true
+#   count       = local.tarantool_etcd_count
+# }
 
-  zone = each.value.zone
-}
+# data "google_compute_snapshot" "sonarqube_postgres_snapshot" {
+#   name        = "sonarqube-postgres-${count.index}-adhoc"
+#   most_recent = true
+#   count       = local.sonarqube_count
+# }
+
+# data "google_compute_snapshot" "sftp_snapshot" {
+#   for_each    = local.sftp
+#   name        = "${each.key}-config-dr-${local.restoreDate}"
+#   most_recent = true
+# }
+
+# data "google_compute_snapshot" "minio_tenant_snapshot" {
+#   name        = "minio-tenant-bcp2-${count.index}"
+#   most_recent = true
+#   count       = local.minio_count
+# }
 
 
 
-resource "google_compute_disk" "minio_pv" {
-  count = local.minio_count
 
-  name     = "minio-pv-${count.index}"
-  size     = data.google_compute_snapshot.minio_tenant_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.minio_tenant_snapshot[count.index].name
-  type     = "pd-balanced"
+# resource "google_compute_disk" "mongo_pv" {
+#   name     = "${local.mongo_prefix}-${count.index}"
+#   count    = local.mongo_count
+#   type     = "pd-balanced"
+#   size     = data.google_compute_snapshot.mongo_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.mongo_snapshot[count.index].name
+#   labels = {
+#     target = local.mongo_prefix
+#     id     = "${local.mongo_prefix}-${count.index}"
+#   }
 
-  zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+#   zone = element([for i in range(local.mongo_count) : element(local.zones, i % 3)], count.index)
+# }
 
-  labels = {
-    target = "minio-tenant"
-  }
-}
+# resource "google_compute_disk" "mongo_auth_pv" {
+#   name     = "${local.mongo_auth_prefix}-${count.index}"
+#   count    = local.mongo_count
+#   type     = "pd-balanced"
+#   size     = data.google_compute_snapshot.mongo_auth_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.mongo_auth_snapshot[count.index].name
+#   labels = {
+#     target = local.mongo_auth_prefix
+#     id     = "${local.mongo_auth_prefix}-${count.index}"
+#   }
 
-resource "google_compute_disk" "postgres_cluster-pv" {
-  count = local.postgres_count
+#   zone = element([for i in range(local.mongo_count) : element(local.zones, i % 3)], count.index)
+# }
 
-  name     = "${local.postgres_prefix}-${count.index}"
-  size     = data.google_compute_snapshot.postgres_snapshot[count.index].disk_size_gb
-  snapshot = data.google_compute_snapshot.postgres_snapshot[count.index].name
-  type     = "pd-balanced"
 
-  zone = element([for i in range(local.postgres_count) : element(local.zones, i % 3)], count.index)
+# resource "google_compute_disk" "mongo6_pv" {
+#   name     = "${local.mongo6_prefix}-${count.index}"
+#   count    = local.mongo_count
+#   type     = "pd-balanced"
+#   size     = data.google_compute_snapshot.mongo_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.mongo_snapshot[count.index].name
+#   labels = {
+#     target = local.mongo6_prefix
+#     id     = "${local.mongo6_prefix}-${count.index}"
+#   }
 
-  labels = {
-    target = local.postgres_prefix
-    id     = "${local.postgres_prefix}-${count.index}"
-  }
-}
+#   zone = element([for i in range(local.mongo_count) : element(local.zones, i % 3)], count.index)
+# }
 
-resource "google_compute_disk" "postgresql_ha_cluster_pv" {
-  count = local.postgresql_ha_count
+# resource "google_compute_disk" "elastic_pv" {
+#   for_each = local.elastic_disks
+#   name     = "elastic-${each.key}"
+#   type     = "pd-balanced"
+#   size     = each.value.size
+#   snapshot = data.google_compute_snapshot.elastic_snapshot[each.key].name
+#   labels = {
+#     target = "elastic-${each.value.name}"
+#     id     = "elastic-${each.key}"
+#   }
+#   zone = element([for i in range(each.value.count) : element(local.zones, i % 3)], each.value.index)
+# }
+# resource "google_compute_disk" "elastic8_pv" {
+#   for_each = local.elastic_disks
+#   name     = "elastic8-${each.key}"
+#   type     = "pd-balanced"
+#   size     = each.value.size
+#   labels = {
+#     target = "elastic8-${each.value.name}"
+#     id     = "elastic8-${each.key}"
+#   }
+#   zone = element([for i in range(each.value.count) : element(local.zones, i % 3)], each.value.index)
+# }
 
-  name     = "${local.postgresql_ha_prefix}-${count.index}"
-  size     = local.postgresql_ha_restore ? max(local.postgresql_ha_size, data.google_compute_snapshot.postgresql_ha_snapshot[count.index].disk_size_gb) : local.postgresql_ha_size
-  snapshot = local.postgresql_ha_restore ? data.google_compute_snapshot.postgresql_ha_snapshot[count.index].name : null
-  type     = "pd-balanced"
+# resource "google_compute_disk" "kafka_pv" {
+#   name     = "kafka-data-${count.index}"
+#   count    = local.kafka_count
+#   type     = "pd-balanced"
+#   size     = data.google_compute_snapshot.kafka_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.kafka_snapshot[count.index].name
+#   labels = {
+#     target = "kafka-data"
+#     id     = "kafka-data-${count.index}"
+#   }
+#   zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+# }
 
-  zone = element([for i in range(local.postgresql_ha_count) : element(local.zones, i % 3)], count.index)
+# resource "google_compute_disk" "kafka_controller_pv" {
+#   name     = "kafka-controller-${count.index}"
+#   count    = local.kafka_count
+#   type     = "pd-balanced"
+#   size     = data.google_compute_snapshot.kafka_controller_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.kafka_controller_snapshot[count.index].name
+#   labels = {
+#     target = "kafka-controller"
+#     id     = "kafka-controller-${count.index}"
+#   }
+#   zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+# }
 
-  labels = {
-    target = local.postgresql_ha_prefix
-    id     = "${local.postgresql_ha_prefix}-${count.index}"
-  }
-}
+# resource "google_compute_disk" "tarantool_storage_pv" {
+#   name     = "tarantool-vortex-storage-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
+#   count    = local.tarantool_storage_count
+#   type     = "pd-balanced"
+#   size     = data.google_compute_snapshot.tarantool_storage_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.tarantool_storage_snapshot[count.index].name
+#   labels = {
+#     target = local.tarantool_storage_prefix
+#     id     = "${local.tarantool_storage_prefix}-${element(range(local.tsc), floor(count.index / 2))}-${count.index % 2}"
+#   }
+#   zone = element([for i in range(local.tarantool_storage_count) : element(local.zones, i % 3)], count.index)
+# }
 
-# We use it now for cvat 
-resource "google_compute_disk" "nfs_pv" {
-  name  = "nfs-pv"
-  count = local.tarantool_etcd_count
-  type  = "pd-balanced"
-  size  = "20"
-  labels = {
-    type = "nfs"
-  }
-  zone = "us-east4-a"
-}
+
+# resource "google_compute_disk" "tarantool_router_pv" {
+#   name     = "tarantool-vortex-router-${count.index}-0"
+#   count    = local.tarantool_router_count
+#   type     = "pd-balanced"
+#   size     = data.google_compute_snapshot.tarantool_router_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.tarantool_router_snapshot[count.index].name
+#   labels = {
+#     target = local.tarantool_router_prefix
+#     id     = "${local.tarantool_router_prefix}-${count.index}"
+#   }
+#   zone = element([for i in range(local.tarantool_router_count) : element(local.zones, i % 3)], count.index)
+# }
+
+# resource "google_compute_disk" "tarantool_etcd_pv" {
+#   name     = "${local.tarantool_etcd_prefix}-${count.index}"
+#   count    = local.tarantool_etcd_count
+#   type     = "pd-ssd"
+#   size     = data.google_compute_snapshot.tarantool_etcd_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.tarantool_etcd_snapshot[count.index].name
+#   labels = {
+#     target = local.tarantool_etcd_prefix
+#     id     = "${local.tarantool_etcd_prefix}-${count.index}"
+#   }
+#   zone = element([for i in range(local.tarantool_etcd_count) : element(local.zones, i % 3)], count.index)
+# }
+
+
+# resource "google_compute_disk" "sonarqube_postgres_pv" {
+#   name  = "sonarqube-postgres-${count.index}"
+#   count = local.sonarqube_count
+#   type  = "pd-balanced"
+#   # size     = 20
+#   size     = data.google_compute_snapshot.sonarqube_postgres_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.sonarqube_postgres_snapshot[count.index].name
+#   labels = {
+#     target = "sonarqube-postgres"
+#     id     = "sonarqube-postgres-${count.index}"
+#   }
+
+#   zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+# }
+
+# resource "google_compute_disk" "sftp_pv" {
+#   for_each = local.sftp
+#   name     = "sftp-server-${each.key}-config"
+#   type     = "pd-balanced"
+#   size     = data.google_compute_snapshot.sftp_snapshot[each.key].disk_size_gb
+#   snapshot = data.google_compute_snapshot.sftp_snapshot[each.key].name
+#   labels = {
+#     target = "sftp-server-${each.key}-config"
+#     id     = "sftp-server-${each.key}-config"
+#   }
+
+#   zone = each.value.zone
+# }
+
+# resource "google_compute_disk" "minio_pv" {
+#   count = local.minio_count
+
+#   name     = "minio-pv-${count.index}"
+#   size     = data.google_compute_snapshot.minio_tenant_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.minio_tenant_snapshot[count.index].name
+#   type     = "pd-balanced"
+
+#   zone = element([for i in range(local.minio_count) : element(local.zones, i % 3)], count.index)
+
+#   labels = {
+#     target = "minio-tenant"
+#   }
+# }
+
+# resource "google_compute_disk" "postgres_cluster-pv" {
+#   count = local.postgres_count
+
+#   name     = "${local.postgres_prefix}-${count.index}"
+#   size     = data.google_compute_snapshot.postgres_snapshot[count.index].disk_size_gb
+#   snapshot = data.google_compute_snapshot.postgres_snapshot[count.index].name
+#   type     = "pd-balanced"
+
+#   zone = element([for i in range(local.postgres_count) : element(local.zones, i % 3)], count.index)
+
+#   labels = {
+#     target = local.postgres_prefix
+#     id     = "${local.postgres_prefix}-${count.index}"
+#   }
+# }
+
+# resource "google_compute_disk" "postgresql_ha_cluster_pv" {
+#   count = local.postgresql_ha_count
+
+#   name     = "${local.postgresql_ha_prefix}-${count.index}"
+#   size     = local.postgresql_ha_restore ? max(local.postgresql_ha_size, data.google_compute_snapshot.postgresql_ha_snapshot[count.index].disk_size_gb) : local.postgresql_ha_size
+#   snapshot = local.postgresql_ha_restore ? data.google_compute_snapshot.postgresql_ha_snapshot[count.index].name : null
+#   type     = "pd-balanced"
+
+#   zone = element([for i in range(local.postgresql_ha_count) : element(local.zones, i % 3)], count.index)
+
+#   labels = {
+#     target = local.postgresql_ha_prefix
+#     id     = "${local.postgresql_ha_prefix}-${count.index}"
+#   }
+# }
+
+# # We use it now for cvat
+# resource "google_compute_disk" "nfs_pv" {
+#   name  = "nfs-pv"
+#   count = local.tarantool_etcd_count
+#   type  = "pd-balanced"
+#   size  = "20"
+#   labels = {
+#     type = "nfs"
+#   }
+#   zone = "us-east4-a"
+# }

@@ -8,7 +8,7 @@ extraEnvs:
         key: password
 secretMounts: 
   - name: elastic-https-certs
-    secretName: ${settings.elastic_cert_secretname}
+    secretName: ${lookup(settings, "elastic_ca_from_vault", false) ? "${settings.name}-elastic-ca" : settings.elastic_cert_secretname}
     path: /usr/share/elasticsearch/config/https-certs
     defaultMode: 0755
 daemonset:
@@ -48,7 +48,7 @@ filebeatConfig:
               stage: ${cluster}        
     setup:
       kibana.host: '${settings.kibana_service}'
-      dashboards.enabled: true
+      dashboards.enabled: false
       template.enabled: true
       ilm.enabled: false
       template.enabled: true
@@ -72,9 +72,9 @@ filebeatConfig:
       username: ${settings.filebeat_username}_user
       password: $${FILEBEAT_PASSWORD}
       index: "filebeat-%%{[agent.version]}"
-%{ if length(filebeat_groups) > 0 ~}
+%{ if length(settings.log_groups) > 0 ~}
       indices:
-%{ for group in tolist(split(",", filebeat_groups)) ~}
+%{ for group in tolist(split(",", settings.log_groups)) ~}
         - index: "filebeat-%%{[agent.version]}-${group}"
           when.equals:
             kubernetes.labels.log-group-name: "${group}"
