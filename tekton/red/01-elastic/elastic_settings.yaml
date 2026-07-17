@@ -9,6 +9,7 @@ ElasticSettings:
     plugins:
       - "repository-s3"
     volumeExt: false
+    persistentDisksKey: elastic-red
     keystores:
       - aws
     podAnnotations:
@@ -38,7 +39,7 @@ ElasticSettings:
           domain: "kk.regemini.com"
     license:
       vault_path: "secret/red/misc/elasticsearch/license"
-      name: "recorded-future-ab-production-8dfd88a7-11b1-4567-87d3-d41831a65fe5-v5.json"
+      name: "recorded-future-ab-production-dc5e3cf6-80f2-4b3e-83cc-37283cc16f6d-v5.json"
     clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
   nodePools:
     master:

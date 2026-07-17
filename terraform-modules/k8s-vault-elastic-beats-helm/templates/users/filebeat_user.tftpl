@@ -1,3 +1,13 @@
+curl -X PUT "https://elastic:$ES_PASSWORD@${settings.elastic_service}/_security/role/filebeat_role" -H 'Content-Type: application/json' -k -d '
+{
+  "cluster": ["monitor","manage_ilm","manage_ml"],
+  "indices": [
+    {
+      "names": ["filebeat-*"],
+      "privileges": ["read","write","manage"]
+    }
+  ]
+} ' &&\
 curl -X PUT "https://elastic:$ES_PASSWORD@${settings.elastic_service}/_security/user/${settings.filebeat_username}_user" -H 'Content-Type: application/json' -k -d '
 {
     "roles" : ["kibana_admin","ingest_admin","remote_monitoring_agent","filebeat_role"],

@@ -73,6 +73,18 @@ extraVolumeMounts:
     mountPath: /usr/share/elasticsearch/config/transport-certs
 %{ if length(globalSettings.plugins) > 0 ~}
 extraInitContainers:
+  - name: fix-data-permissions
+    image: docker.elastic.co/elasticsearch/elasticsearch:${globalSettings.imageTag}
+    command:
+      - sh
+      - -c
+      - chown -R 1000:1000 /usr/share/elasticsearch/data
+    securityContext:
+      runAsUser: 0
+      runAsNonRoot: false
+    volumeMounts:
+      - name: ${globalSettings.clusterName}-${nodePool}
+        mountPath: /usr/share/elasticsearch/data
   - name: install-plugins
     image: docker.elastic.co/elasticsearch/elasticsearch:${globalSettings.imageTag}
     command:
@@ -113,7 +125,7 @@ secretMounts:
     secretName: elastic-https-certs
     path: /usr/share/elasticsearch/config/https-certs
     defaultMode: 0755
-%{ if length(globalSettings.remotecerts) > 0 ~}
+%{ if length(lookup(globalSettings, "remotecerts", [])) > 0 ~}
   - name: elastic-remote-certs
     secretName: elastic-remote-certs
     path: /usr/share/elasticsearch/config/transport-certs/remote
@@ -169,7 +181,7 @@ esConfig:
       - /usr/share/elasticsearch/config/transport-certs/${cert}/ca.crt
 %{ endif ~}
 %{ endfor ~}   
-%{ if length(globalSettings.remotecerts) > 0 ~}
+%{ if length(lookup(globalSettings, "remotecerts", [])) > 0 ~}
 %{ for cert in globalSettings.remotecerts ~}
       - /usr/share/elasticsearch/config/transport-certs/remote/${cert}
 %{ endfor ~}

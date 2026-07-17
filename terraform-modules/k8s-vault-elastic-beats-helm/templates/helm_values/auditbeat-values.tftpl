@@ -1,14 +1,14 @@
 imageTag: ${imageTag}
-fullnameOverride: auditbeat
+fullnameOverride: ${name}
 extraEnvs:
   - name: AUDITBEAT_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: auditbeat-credentials
+        name: ${name}-credentials
         key: password
 secretMounts:
   - name: elastic-https-certs
-    secretName: elastic-https-certs
+    secretName: ${name}-elastic-ca
     path: /usr/share/elasticsearch/config/https-certs
     defaultMode: 0755
 auditbeatConfig:
@@ -39,13 +39,13 @@ auditbeatConfig:
       #ssl.verification_mode: "none"
       ssl:
         certificate_authorities: /usr/share/elasticsearch/config/https-certs/ca.crt
-      hosts: '${elastic}:9200'
+      hosts: "${settings.elastic_service}"
       protocol: https
-      username: auditbeat_user
+      username: ${name}-user
       password: $${AUDITBEAT_PASSWORD}
 
     setup.kibana:
-      host: "${kibana}:5601"
+      host: "${settings.kibana_service}"
     setup.dashboards.enabled: true
     #setup.ilm.enabled: true
 

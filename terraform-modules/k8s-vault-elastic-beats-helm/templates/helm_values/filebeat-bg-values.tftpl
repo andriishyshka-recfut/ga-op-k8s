@@ -1,0 +1,69 @@
+imageTag: ${imageTag}
+fullnameOverride: ${settings.name}
+extraEnvs:
+  - name: FILEBEAT_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: ${settings.filebeat_pass_secretname}
+        key: password
+secretMounts: 
+  - name: elastic-https-certs
+    secretName: ${lookup(settings, "elastic_ca_from_vault", false) ? "${settings.name}-elastic-ca" : settings.elastic_cert_secretname}
+    path: /usr/share/elasticsearch/config/https-certs
+    defaultMode: 0755
+daemonset:
+  tolerations:
+    - operator: Exists
+filebeatConfig:
+  filebeat.yml: |
+    filebeat.autodiscover.providers:
+      - host: $${HOSTNAME}
+        type: kubernetes
+        node: $${NODE_NAME}
+        hints.enabled: true
+        hints.default_config.enabled: true
+        hints.default_config:
+          type: container
+          paths:
+            - /var/log/containers/*$${data.kubernetes.container.id}.log
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            cluster:
+              color: ${color}
+              stage: ${cluster}        
+    setup:
+      kibana.host: '${settings.kibana_service}'
+      dashboards.enabled: false
+      template.enabled: true
+      ilm.enabled: false
+      template.enabled: true
+      template.name: "filebeat-%%{[agent.version]}"
+      template.pattern: "filebeat-%%{[agent.version]}*"
+      username: ${settings.filebeat_username}_user
+      password: $${FILEBEAT_PASSWORD}
+      template.settings:
+        index.lifecycle.name: filebeat
+    logging:
+      json: true
+    processors:
+    - add_cloud_metadata: null
+    - add_host_metadata: null
+    output.elasticsearch:
+      ssl:
+        certificate_authorities: /usr/share/elasticsearch/config/https-certs/ca.crt
+      host: '$${NODE_NAME}'
+      hosts: '${settings.elastic_service}'
+      protocol: https
+      username: ${settings.filebeat_username}_user
+      password: $${FILEBEAT_PASSWORD}
+      index: "filebeat-%%{[agent.version]}"
+%{ if length(settings.log_groups) > 0 ~}
+      indices:
+%{ for group in tolist(split(",", settings.log_groups)) ~}
+        - index: "filebeat-%%{[agent.version]}-${group}"
+          when.equals:
+            kubernetes.labels.log-group-name: "${group}"
+%{ endfor ~}
+%{ endif ~}
