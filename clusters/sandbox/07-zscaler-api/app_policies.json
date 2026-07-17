@@ -8,16 +8,22 @@
     "apps": [
       "auth",
       "beep",
+      "cvat",
       "datafix",
       "elastic-data",
       "flow",
       "grafana",
       "logs",
       "minio-helm",
+      "mongo-auth",
       "mongo-express",
       "prometheus",
       "rp",
+      "sanitizer",
       "sonar",
+      "swirl",
+      "telegram",
+      "telesrcr",
       "vault"
     ],
     "groups": [ "sandbox-k8s" ]

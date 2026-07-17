@@ -14,10 +14,13 @@
       "minio-helm-api",
       "mongo-express",
       "prometheus",
+      "sanitizer",
+      "telesrcr",
       "red-gitlab",
       "red-grafana",
       "red-harbor",
       "red-kk",
+      "red-minio-api-red",
       "red-mon-elastic",
       "red-sonar",
       "rp"
