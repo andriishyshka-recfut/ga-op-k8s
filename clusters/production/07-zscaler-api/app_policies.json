@@ -64,6 +64,19 @@
       "telegram"
     ]
   },
+  "APP-GA-PM": {
+    "scim_groups": ["APP-GA-PM"],
+    "apps": [
+      "beep",
+      "etl-observer",
+      "flow",
+      "minio-helm-api",
+      "prometheus",
+      "red-kk",
+      "red-sonar",
+      "red-vandelay"
+    ]
+  },
   "www": {
     "scim_groups": [
       "APP-GA-DEV",

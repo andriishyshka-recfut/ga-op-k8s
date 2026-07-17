@@ -60,5 +60,18 @@
       "prometheus",
       "telegram"
     ]
+  },
+  "APP-GA-PM": {
+    "scim_groups": ["APP-GA-PM"],
+    "apps": [
+      "beep",
+      "elastic-data",
+      "etl-observer",
+      "flow",
+      "minio-helm",
+      "prometheus",
+      "sonar",
+      "vandelay"
+    ]
   }
 }
