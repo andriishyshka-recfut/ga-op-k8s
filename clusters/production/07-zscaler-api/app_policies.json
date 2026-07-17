@@ -60,6 +60,7 @@
       "prometheus",
       "red-gitlab",
       "red-kk",
+      "red-minio-api-red",
       "telegram"
     ]
   },
