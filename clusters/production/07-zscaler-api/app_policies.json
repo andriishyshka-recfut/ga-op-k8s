@@ -91,6 +91,21 @@
       "sanitizer"
     ]
   },
+  "APP-GA-SALES": {
+    "scim_groups": ["APP-GA-SALES"],
+    "apps": [
+      "beep",
+      "datafix",
+      "red-kk",
+      "sanitizer"
+    ]
+  },
+  "APP-GA-FRAUD": {
+    "scim_groups": ["APP-GA-FRAUD"],
+    "apps": [
+      "beep"
+    ]
+  },
   "www": {
     "scim_groups": [
       "APP-GA-DEV",
