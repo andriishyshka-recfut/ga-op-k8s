@@ -74,5 +74,16 @@
       "vandelay",
       "vault"
     ]
+  },
+  "APP-GA-AM": {
+    "scim_groups": ["APP-GA-AM"],
+    "apps": [
+      "beep",
+      "datafix",
+      "elastic-data",
+      "etl-observer",
+      "minio-helm",
+      "sanitizer"
+    ]
   }
 }

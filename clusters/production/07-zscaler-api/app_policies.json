@@ -79,6 +79,18 @@
       "vault"
     ]
   },
+  "APP-GA-AM": {
+    "scim_groups": ["APP-GA-AM"],
+    "apps": [
+      "beep",
+      "datafix",
+      "etl-observer",
+      "minio-helm-api",
+      "red-gitlab",
+      "red-kk",
+      "sanitizer"
+    ]
+  },
   "www": {
     "scim_groups": [
       "APP-GA-DEV",
