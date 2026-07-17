@@ -17,7 +17,8 @@
       "mongo-express",
       "prometheus",
       "rp",
-      "sonar"
+      "sonar",
+      "vault"
     ],
     "groups": [ "sandbox-k8s" ]
   },
