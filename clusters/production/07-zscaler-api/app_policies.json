@@ -73,8 +73,10 @@
       "minio-helm-api",
       "prometheus",
       "red-kk",
+      "red-mon-elastic",
       "red-sonar",
-      "red-vandelay"
+      "red-vandelay",
+      "vault"
     ]
   },
   "www": {

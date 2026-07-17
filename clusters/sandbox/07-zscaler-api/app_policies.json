@@ -71,7 +71,8 @@
       "minio-helm",
       "prometheus",
       "sonar",
-      "vandelay"
+      "vandelay",
+      "vault"
     ]
   }
 }
