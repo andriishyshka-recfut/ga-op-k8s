@@ -12,6 +12,9 @@
         { "from": "443", "to": "443" }
       ]
     },
+    "bastion": {
+      "domain": "34.86.109.65/32"
+    },
     "auth": {
       "domain": "auth.p.regemini.io"
     },
