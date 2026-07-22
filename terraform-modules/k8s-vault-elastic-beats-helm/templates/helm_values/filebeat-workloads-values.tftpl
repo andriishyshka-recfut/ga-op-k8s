@@ -54,6 +54,9 @@ filebeatConfig:
       password: $${FILEBEAT_PASSWORD}
       template.settings:
         index.lifecycle.name: filebeat
+      template.append_fields:
+        - name: logstash.error.pipeline_status_code
+          type: long
     logging:
       json: true
     processors:
@@ -65,6 +68,24 @@ filebeatConfig:
             stage: ${cluster} 
     - add_cloud_metadata: null
     - add_host_metadata: null
+    - dissect:
+        when:
+          and:
+            - equals:
+                kubernetes.container.name: logstash
+            - regexp:
+                message: 'message=>"\[4[0-9][0-9]\]'
+        tokenizer: '%%{}message=>"[%%{logstash.error.pipeline_status_code}]%%{}'
+        field: message
+        target_prefix: ""
+        ignore_failure: true
+    - convert:
+        fields:
+          - from: logstash.error.pipeline_status_code
+            to: logstash.error.pipeline_status_code
+            type: long
+        ignore_missing: true
+        fail_on_error: false
     output.elasticsearch:
       ssl:
         certificate_authorities: /usr/share/elasticsearch/config/https-certs/ca.crt
