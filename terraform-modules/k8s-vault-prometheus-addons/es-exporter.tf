@@ -13,20 +13,11 @@ resource "helm_release" "es_exporter" {
   ]
 }
 
-# data "kubectl_file_documents" "es_exporter" {
-#   content = file("${path.module}/es-exporter-servicemonitor.yaml")
-# }
+data "kubectl_file_documents" "es_exporter" {
+  content = file("${path.module}/es-exporter-servicemonitor.yaml")
+}
 
-# resource "kubernetes_manifest" "es_exporter" {
-#   count     = 1
-#   manifest = yamldecode(element(data.kubectl_file_documents.es_exporter.documents, count.index))
-# }
-# data "kubectl_file_documents" "es_exporter_rules" {
-#   # content = file("${path.module}/es-exporter-prometheusrule.yaml")
-#   content = templatefile("${path.module}/es-exporter-prometheusrule.yaml", { cluster_label : var.Cluster })
-# }
-
-# resource "kubernetes_manifest" "es_exporter_rules" {
-#   count     = 1
-#   manifest = yamldecode(element(data.kubectl_file_documents.es_exporter_rules.documents, count.index))
-# }
+resource "kubernetes_manifest" "es_exporter" {
+  count     = 1
+  manifest = yamldecode(element(data.kubectl_file_documents.es_exporter.documents, count.index))
+}
