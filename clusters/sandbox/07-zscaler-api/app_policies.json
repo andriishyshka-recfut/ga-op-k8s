@@ -34,6 +34,7 @@
     "apps": [
       "auth",
       "beep",
+      "cvat",
       "elastic-data",
       "grafana",
       "ka",
@@ -44,6 +45,7 @@
       "rp",
       "sanitizer",
       "telegram",
+      "telesrcr",
       "tile"
     ]
   },
