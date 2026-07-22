@@ -73,10 +73,12 @@
     "scim_groups": ["APP-GA-PM"],
     "apps": [
       "beep",
+      "datafix",
       "etl-observer",
       "flow",
       "minio-helm-api",
       "prometheus",
+      "sanitizer",
       "red-gitlab",
       "red-kk",
       "red-minio-api-red",

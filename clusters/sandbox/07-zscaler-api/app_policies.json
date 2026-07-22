@@ -68,11 +68,13 @@
     "scim_groups": ["APP-GA-PM"],
     "apps": [
       "beep",
+      "datafix",
       "elastic-data",
       "etl-observer",
       "flow",
       "minio-helm",
       "prometheus",
+      "sanitizer",
       "sonar",
       "vandelay",
       "vault"
