@@ -10,6 +10,8 @@ elasticsearch:
 
     [query_logstash_exception]
     QueryJson = {"query":{"bool":{"filter":[{"multi_match":{"type":"best_fields","query":"exception","lenient":true}},{"range":{"@timestamp":{"gte":"now-5m"}}},{"match_phrase":{"kubernetes.namespace":"elastic"}},{"match_phrase":{"kubernetes.labels.chart":"logstash"}}]}}}
+    [query_logstash_4xx_error]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"logstash"}},{"range":{"logstash.error.pipeline_status_code":{"gte":400,"lt":500}}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
 
 container:
   extraEnv:
