@@ -1,5 +1,5 @@
 elasticsearch:
-  cluster: https://mon-es-http:9200
+  cluster: https://mon-coor.monitoring.svc.cluster.local:9200
   queries: |-
     [DEFAULT]
     QueryIntervalSecs = 300
@@ -18,15 +18,15 @@ container:
   - name: ES_EXPORTER_BASIC_PASSWORD
     valueFrom:
           secretKeyRef:
-            name: mon-es-elastic-user
-            key: elastic
+            name: grafana-elastic-creds
+            key: password
   extraVolumeMounts:
     - name: foo
       mountPath: "/etc/ssl/certs/"
       readOnly: true
   extraArgs:
     - --basic-user
-    - elastic
+    - grafana_bg
     - --ca-certs
     - /etc/ssl/certs/ca-certificates.crt
 
@@ -37,7 +37,7 @@ pod:
   extraVolumes:
   - name: foo
     secret:
-      secretName: mon-es-cert
+      secretName: grafana-elastic-ca
       items:
       - key: ca.crt
         path: ca-certificates.crt

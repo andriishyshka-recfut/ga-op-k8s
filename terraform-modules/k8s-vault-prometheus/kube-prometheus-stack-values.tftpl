@@ -15,8 +15,12 @@ grafana:
   envValueFrom:
     ELASTIC_PASSWORD:
       secretKeyRef:
-        name: "mon-es-elastic-user"
-        key: elastic
+        name: "grafana-elastic-creds"
+        key: password
+    ELASTIC_USERNAME:
+      secretKeyRef:
+        name: "grafana-elastic-creds"
+        key: username
     GF_AUTH_OKTA_CLIENT_SECRET:
       secretKeyRef:
         name: "grafana-okta-client-secret"
@@ -24,13 +28,13 @@ grafana:
   additionalDataSources:
     - name: "elastic"
       type:  "elasticsearch"
-      url: "https://mon-es-http:9200"
+      url: "mon-coor.monitoring.svc.cluster.local:9200"
       database: "filebeat-*"
       uid: elastic_uid
       basicAuth: true
       isDefault: false
       access: proxy
-      basicAuthUser: elastic
+      basicAuthUser: "$ELASTIC_USERNAME"
       jsonData:
         esVersion: 70
         timeField: "@timestamp"

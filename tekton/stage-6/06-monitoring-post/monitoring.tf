@@ -1,7 +1,7 @@
 
-locals {
-  monitoringEs = var.Cluster == "production" ? yamldecode(file("../../stage-1/01-monitoring-elastic/monitoring_elastic_settings.yaml")) : yamldecode(file("../../stage-1/01-monitoring-elastic/monitoring_elastic_sandbox.yaml"))
-}
+# locals {
+#   monitoringEs = var.Cluster == "production" ? yamldecode(file("../../stage-1/01-monitoring-elastic/monitoring_elastic_settings.yaml")) : yamldecode(file("../../stage-1/01-monitoring-elastic/monitoring_elastic_sandbox.yaml"))
+# }
 
 # module "monitoring-kibana" {
 #   source                       = "../../../terraform-modules/k8s-vault-kibana"

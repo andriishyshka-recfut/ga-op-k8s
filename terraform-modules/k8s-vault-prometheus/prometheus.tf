@@ -13,7 +13,9 @@ data "vault_generic_secret" "prometheus" {
 data "vault_generic_secret" "minio" {
   path = "secret/minio/users"
 }
-
+data "vault_generic_secret" "grafana_elastic" {
+  path = "secret/mw/grafana-bg"
+}
 resource "kubernetes_secret" "thanos-objstore-config" {
   metadata {
     name      = "thanos-objstore-config"
@@ -40,6 +42,41 @@ resource "kubernetes_secret" "grafana_okta_client_secret" {
   data = {
     client_secret = data.vault_generic_secret.okta_oidc.data.client_secret
   }
+}
+
+data "vault_pki_secret_backend_issuer" "elastic_ca" {
+  backend    = "/pki-elastic-int"
+  issuer_ref = "default"
+}
+
+resource "kubernetes_secret" "grafana_elastic_ca" {
+
+  metadata {
+    name      = "grafana-elastic-ca"
+    namespace = local.prometheusNs
+  }
+
+  data = {
+    "ca.crt" = data.vault_pki_secret_backend_issuer.elastic_ca.certificate
+  }
+
+  depends_on = [
+    data.vault_pki_secret_backend_issuer.elastic_ca
+  ]
+}
+
+resource "kubernetes_secret" "grafana_elastic_creds" {
+
+  metadata {
+    name      = "grafana-elastic-creds"
+    namespace = local.prometheusNs
+  }
+
+  data = {
+    "username" = data.vault_generic_secret.grafana_elastic.data["username"]
+    "password" = data.vault_generic_secret.grafana_elastic.data["password"]
+  }
+
 }
 
 resource "kubernetes_priority_class" "monitoring_high" {
@@ -80,4 +117,5 @@ resource "helm_release" "prometheus" {
       cluster                            = var.Cluster
     })
   ]
+  depends_on = [ kubernetes_secret.grafana_elastic_creds ]
 }

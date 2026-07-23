@@ -1,7 +1,7 @@
 ElasticSettings:
   globalSettings:
     namespace: monitoring
-    imageTag: "8.16.6"
+    imageTag: "8.19.17"
     clusterName: mon
     pvName: mon
     storePassVault: "secret/mw/elastic/red-monitoring"
