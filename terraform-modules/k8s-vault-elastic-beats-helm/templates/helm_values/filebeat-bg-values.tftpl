@@ -25,14 +25,7 @@ filebeatConfig:
         hints.default_config:
           type: container
           paths:
-            - /var/log/containers/*$${data.kubernetes.container.id}.log
-    processors:
-      - add_fields:
-          target: ''
-          fields:
-            cluster:
-              color: ${color}
-              stage: ${cluster}        
+            - /var/log/containers/*$${data.kubernetes.container.id}.log     
     setup:
       kibana.host: '${settings.kibana_service}'
       dashboards.enabled: false
@@ -51,6 +44,12 @@ filebeatConfig:
     logging:
       json: true
     processors:
+    - add_fields:
+        target: ''
+        fields:
+          cluster:
+            color: ${color}
+            stage: ${cluster}   
     - add_cloud_metadata: null
     - add_host_metadata: null
     - dissect:
