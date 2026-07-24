@@ -16,5 +16,14 @@ path "secret/data/misc/sa/amazon/busta" {
 path "secret/data/elasticsearch-admin/elastic7-v2" {
   capabilities = ["read","list"]
 }
+path "secret/data/wl/soda/prompts" {
+  capabilities = ["read","list"]
+}
+path "secret/data/wl/busta/mark/prompts" {
+  capabilities = ["read","list"]
+}
+path "secret/data/clicker/minio" {
+  capabilities = ["read","list"]
+}
 EOT
 }
