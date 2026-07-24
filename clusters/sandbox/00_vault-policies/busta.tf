@@ -25,5 +25,8 @@ path "secret/data/wl/busta/mark/prompts" {
 path "secret/data/clicker/minio" {
   capabilities = ["read","list"]
 }
+path "secret/data/mongo/sandbox" {
+  capabilities = ["read","list"]
+}
 EOT
 }
