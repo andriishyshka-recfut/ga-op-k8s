@@ -1,0 +1,51 @@
+FROM hashicorp/vault:1.21.0 AS vault
+FROM alpine:latest AS ansible
+
+COPY ./references/zscaler/ZscalerRootCertificate-2048-SHA256-Feb2025.crt /usr/local/share/ca-certificates/zscaler-root.crt
+RUN apk add --no-cache ca-certificates && update-ca-certificates
+
+RUN apk add python3 py3-pip unzip py3-virtualenv bash python3-dev libffi-dev build-base rust rustup cargo openssl-dev musl-dev
+RUN cd / && python3 -m venv ansible && \
+    bash -c "source /ansible/bin/activate && pip install --upgrade pip && pip install ansible pyyaml==5.3.1 docker-compose jmespath kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl kafka-python"
+
+FROM alpine:latest
+
+ARG MINIO_PROVIDER_VERSION=3.6.5
+
+COPY ./references/zscaler/ZscalerRootCertificate-2048-SHA256-Feb2025.crt /usr/local/share/ca-certificates/zscaler-root.crt
+RUN apk add --no-cache ca-certificates && update-ca-certificates
+
+RUN apk add --no-cache curl unzip
+RUN curl -fsSL https://storage.googleapis.com/kubernetes-release/release/$(curl -fsSL https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/arm64/kubectl --output /bin/kubectl && \
+    curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v0.99.1/terragrunt_linux_arm64 --output /bin/terragrunt && \
+    curl -fsSL https://github.com/opentofu/opentofu/releases/download/v1.11.4/tofu_1.11.4_arm64.apk --output /tmp/opentofu.apk
+
+COPY --from=vault /bin/vault /bin/vault
+COPY --from=ansible /ansible /ansible
+
+RUN curl -L https://dl.min.io/client/mc/release/linux-arm64/mc -o /bin/mc && \
+    chmod +x /bin/mc
+
+RUN apk add --no-cache tar openssh-client jq bash rsync python3 openssl git && \
+    apk add --allow-untrusted /tmp/opentofu.apk && \
+    chmod +x /bin/kubectl && chmod +x /bin/terragrunt && \
+    adduser -u 10123 executor -S && \
+    mkdir -p /home/runner/workdir && mkdir /home/fake && chmod 777 /home/fake
+
+RUN mkdir -p /usr/share/terraform/plugins/registry.terraform.io/aminueza/minio/${MINIO_PROVIDER_VERSION}/linux_arm64/ && \
+    curl -fsSL https://github.com/aminueza/terraform-provider-minio/releases/download/v${MINIO_PROVIDER_VERSION}/terraform-provider-minio_${MINIO_PROVIDER_VERSION}_linux_arm64.zip --output /tmp/terraform-provider-minio.zip && \
+    unzip -j /tmp/terraform-provider-minio.zip -d /usr/share/terraform/plugins/registry.terraform.io/aminueza/minio/${MINIO_PROVIDER_VERSION}/linux_arm64/ && \
+    mv /usr/share/terraform/plugins/registry.terraform.io/aminueza/minio/${MINIO_PROVIDER_VERSION}/linux_arm64/terraform-provider-minio_v${MINIO_PROVIDER_VERSION} /usr/share/terraform/plugins/registry.terraform.io/aminueza/minio/${MINIO_PROVIDER_VERSION}/linux_arm64/terraform-provider-minio_v.${MINIO_PROVIDER_VERSION} && \
+    chmod +x /usr/share/terraform/plugins/registry.terraform.io/aminueza/minio/${MINIO_PROVIDER_VERSION}/linux_arm64/terraform-provider-minio_v.${MINIO_PROVIDER_VERSION} && \
+    rm -f /tmp/terraform-provider-minio.zip
+COPY ./references/minio-provider/.tofurc /etc/tofurc
+
+
+USER 10123:10123
+
+WORKDIR /home/runner/workdir
+COPY ./dummy-kubecfg /.kubeconfig
+COPY ./docker-entrypoint-tofu.sh /
+COPY ./docker-entrypoint-tg.sh /
+ENTRYPOINT ["/docker-entrypoint-tofu.sh"]
+CMD ["--help"]
