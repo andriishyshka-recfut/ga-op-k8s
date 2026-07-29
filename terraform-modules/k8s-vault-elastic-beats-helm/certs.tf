@@ -45,3 +45,22 @@ resource "kubernetes_secret" "filebeat_elastic_ca" {
     data.vault_pki_secret_backend_issuer.elastic_ca
   ]
 }
+
+
+data "vault_generic_secret" "prod_mon_ca" {
+  count = var.Cluster == "sandbox" ? 1 : 0 
+  path     = "secret/misc/certificates/red-monitoring-ca"
+}
+
+resource "kubernetes_secret" "prod_mon_ca" {
+  count = var.Cluster == "sandbox" ? 1 : 0 
+
+  metadata {
+    name      = "prod-mon-elastic-ca"
+    namespace = "monitoring"
+  }
+
+  data = {
+    "ca.crt" = data.vault_generic_secret.prod_mon_ca[count.index].data["ca.crt"]
+  }
+}

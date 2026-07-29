@@ -121,6 +121,24 @@ resource "kubernetes_secret" "metricbeat_elastic_pass" {
   }
 }
 
+data "vault_generic_secret" "prod_mon_creds" {
+  count = var.Cluster == "sandbox" ? 1 : 0 
+  path     = "secret/misc/red-mon-elasticsearch/credentials"
+}
+
+resource "kubernetes_secret" "prod_mon_creds" {
+  count = var.Cluster == "sandbox" ? 1 : 0 
+
+  metadata {
+    name      = "prod-mon-elastic-creds"
+    namespace = "monitoring"
+  }
+
+  data = {
+    data.vault_generic_secret.prod_mon_creds[count.index].data["username"] = data.vault_generic_secret.prod_mon_creds[count.index].data["password"]
+  }
+}
+
 resource "kubernetes_job" "filebeats_users" {
   for_each = var.filebeats_settings
   metadata {
