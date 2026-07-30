@@ -41,6 +41,45 @@ resource "kubernetes_secret" "minio_creds" {
   }
 }
 
+resource "kubernetes_service_account_v1" "etl_cronjob_reader" {
+  metadata {
+    name      = "etl-cronjob-reader"
+    namespace = "monitoring"
+  }
+}
+
+resource "kubernetes_role_v1" "etl_cronjob_reader" {
+  metadata {
+    name      = "cronjob-reader"
+    namespace = "etl"
+  }
+
+  rule {
+    api_groups = ["batch"]
+    resources  = ["cronjobs"]
+    verbs      = ["get"]
+  }
+}
+
+resource "kubernetes_role_binding_v1" "etl_cronjob_reader" {
+  metadata {
+    name      = "monitoring-cronjob-reader"
+    namespace = "etl"
+  }
+
+  subject {
+    kind      = "ServiceAccount"
+    name      = kubernetes_service_account_v1.etl_cronjob_reader.metadata[0].name
+    namespace = kubernetes_service_account_v1.etl_cronjob_reader.metadata[0].namespace
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "Role"
+    name      = kubernetes_role_v1.etl_cronjob_reader.metadata[0].name
+  }
+}
+
 resource "kubernetes_deployment_v1" "etl_minio_exporter" {
   metadata {
     name      = "etl-minio-exporter"
@@ -220,6 +259,7 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
             failure_threshold     = 3
           }
         }
+        service_account_name = kubernetes_service_account_v1.etl_cronjob_reader.metadata[0].name
         image_pull_secrets {
           name = "harbor"
         }
