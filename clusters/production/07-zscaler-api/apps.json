@@ -14,7 +14,7 @@
       ]
     },
     "bastion": {
-      "domain": "34.86.109.65/32"
+      "domain": "34.86.109.65"
     },
     "auth": {
       "domain": "auth.p.regemini.io"
