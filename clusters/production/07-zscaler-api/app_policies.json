@@ -1,7 +1,7 @@
 {
   "APP-GA-OP": {
     "scim_groups": [ "APP-GA-OP" ],
-    "groups": [ "production-www", "production-k8s", "production-red" ]
+    "groups": [ "production-www", "production-k8s", "production-red", "github" ]
   },
   "APP-GA-DEV": {
     "scim_groups": ["APP-GA-DEV"],
@@ -76,6 +76,7 @@
       "datafix",
       "etl-observer",
       "flow",
+      "jupyter",
       "minio-helm-api",
       "prometheus",
       "sanitizer",
