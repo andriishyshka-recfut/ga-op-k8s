@@ -81,6 +81,7 @@
       "prometheus",
       "sanitizer",
       "red-gitlab",
+      "red-k",
       "red-kk",
       "red-minio-api-red",
       "red-mon-elastic",
