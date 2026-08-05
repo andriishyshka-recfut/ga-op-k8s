@@ -23,5 +23,8 @@ path "/secret/data/mongo/metaGrouper" {
 path "/secret/data/misc/slack/app/grouper" {
   capabilities = ["read","list"]
 }
+path "/secret/data/wl/ai/chatgpt/grouper" {
+  capabilities = ["read","list"]
+}
 EOT
 }

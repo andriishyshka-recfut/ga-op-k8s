@@ -37,6 +37,9 @@ path "secret/data/wl/dome/*" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/wl/ai/chatgpt/dome-dutyfree" {
+   capabilities = ["read","list"]
+}
 EOT
 
 }
