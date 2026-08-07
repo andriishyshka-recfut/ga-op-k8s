@@ -34,6 +34,9 @@ path "secret/data/mw/minio/sa/busta_clicker" {
 path "secret/data/mongo/metaSoda" {
   capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/metaSoda" {
+  capabilities = ["read","list"]
+}
 EOT
 }
 
