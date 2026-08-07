@@ -31,6 +31,9 @@ path "secret/data/mw/monitoring/otel" {
 path "secret/data/mw/minio/sa/busta_clicker" {
   capabilities = ["read","list"]
 }
+path "secret/data/mongo/metaSoda" {
+  capabilities = ["read","list"]
+}
 EOT
 }
 
