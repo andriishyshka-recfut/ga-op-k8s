@@ -40,5 +40,8 @@ path "secret/data/mongo/metaVandelay" {
 path "secret/data/red/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/main_vandelay" {
+   capabilities = ["read","list"]
+}
 EOT
 }

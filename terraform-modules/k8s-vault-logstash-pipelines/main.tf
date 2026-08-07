@@ -38,7 +38,7 @@ resource "kubernetes_secret" "logstash_elastic_ca" {
 }
 
 data "vault_generic_secret" "minio_creds" {
-  path = "secret/minio/users"
+  path = "secret/mw/minio/sa/minio_logstash"
 }
 
 resource "kubernetes_secret" "minio_creds" {
@@ -48,11 +48,12 @@ resource "kubernetes_secret" "minio_creds" {
     namespace = each.value.namespace
   }
   data = {
-    access_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.value.minio_user]).accessKey,
-    secret_key = jsondecode(data.vault_generic_secret.minio_creds.data[each.value.minio_user]).secretKey
+    access_key = data.vault_generic_secret.minio_creds.data.ACCESS_KEY_ID,
+    secret_key = data.vault_generic_secret.minio_creds.data.SECRET_ACCESS_KEY
   }
   depends_on = [data.vault_generic_secret.minio_creds]
 }
+
 
 resource "random_password" "logstash_es_password" {
   length  = 32

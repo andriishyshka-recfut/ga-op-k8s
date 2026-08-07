@@ -15,6 +15,8 @@ resource "kubernetes_config_map" "etl_minio_exporter_config" {
   data = {
     minio_endpoint              = data.vault_generic_secret.etl_minio_exporter_config.data.minio_endpoint,
     minio_etl_bucket_name       = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_bucket_name,
+    minio_secure                = data.vault_generic_secret.etl_minio_exporter_config.data.minio_secure,
+    minio_check_ca              = data.vault_generic_secret.etl_minio_exporter_config.data.minio_check_ca,
     minio_kubescape_bucket_name = data.vault_generic_secret.etl_minio_exporter_config.data.minio_kubescape_bucket_name,
     minio_etl_hourly_delta      = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_hourly_delta,
     minio_etl_bihourly_delta    = data.vault_generic_secret.etl_minio_exporter_config.data.minio_etl_bihourly_delta,
@@ -27,7 +29,7 @@ resource "kubernetes_config_map" "etl_minio_exporter_config" {
 }
 
 data "vault_generic_secret" "minio_creds" {
-  path = "secret/minio/users"
+  path = "secret/mw/minio/sa/etl_etl"
 }
 
 resource "kubernetes_secret" "minio_creds" {
@@ -36,8 +38,23 @@ resource "kubernetes_secret" "minio_creds" {
     namespace = local.prometheusNs
   }
   data = {
-    access_key = jsondecode(data.vault_generic_secret.minio_creds.data["etl_exporter"]).accessKey,
-    secret_key = jsondecode(data.vault_generic_secret.minio_creds.data["etl_exporter"]).secretKey
+    access_key = data.vault_generic_secret.minio_creds.data.ACCESS_KEY_ID
+    secret_key = data.vault_generic_secret.minio_creds.data.SECRET_ACCESS_KEY
+  }
+}
+
+data "vault_generic_secret" "etl_minio_exporter_ca" {
+  path = "pki-minio/cert/ca"
+}
+
+resource "kubernetes_secret" "etl_minio_exporter_ca" {
+  metadata {
+    name      = "etl-minio-exporter-ca"
+    namespace = local.prometheusNs
+  }
+
+  data = {
+    "ca.crt" = data.vault_generic_secret.etl_minio_exporter_ca.data["certificate"]
   }
 }
 
@@ -154,6 +171,10 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
             }
           }
           env {
+            name  = "SSL_CERT_FILE"
+            value = "/etc/minio-ca/ca.crt"
+          }
+          env {
             name = "MINIO_ETL_BUCKET_NAME"
             value_from {
               config_map_key_ref {
@@ -234,6 +255,29 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
               }
             }
           }
+          env {
+            name = "MINIO_SECURE"
+            value_from {
+              config_map_key_ref {
+                key  = "minio_secure"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
+            }
+          }
+          env {
+            name = "MINIO_CHECK_CA"
+            value_from {
+              config_map_key_ref {
+                key  = "minio_check_ca"
+                name = kubernetes_config_map.etl_minio_exporter_config.metadata.0.name
+              }
+            }
+          }
+          volume_mount {
+            name       = "minio-ca"
+            mount_path = "/etc/minio-ca"
+            read_only  = true
+          }
           port {
             container_port = 8000
             name           = "metrics"
@@ -257,6 +301,12 @@ resource "kubernetes_deployment_v1" "etl_minio_exporter" {
             period_seconds        = 10
             success_threshold     = 1
             failure_threshold     = 3
+          }
+        }
+        volume {
+          name = "minio-ca"
+          secret {
+            secret_name = kubernetes_secret.etl_minio_exporter_ca.metadata[0].name
           }
         }
         service_account_name = kubernetes_service_account_v1.etl_cronjob_reader.metadata[0].name
