@@ -37,6 +37,9 @@ path "secret/data/mongo/metaSoda" {
 path "secret/data/es-creds-compose-prod/metaSoda" {
   capabilities = ["read","list"]
 }
+path "secret/data/es-creds-compose-prod/_some.ms" {
+  capabilities = ["read","list"]
+}
 EOT
 }
 
