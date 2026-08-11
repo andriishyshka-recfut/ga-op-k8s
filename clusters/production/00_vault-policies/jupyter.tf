@@ -13,5 +13,8 @@ path "secret/data/red/tls-proxy/certs/recordedfuture-vortex"{
 path "secret/data/red/tls-proxy/basic-auth/recordedfuture-vortex"{
   capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/jupyter_jupyter"{
+  capabilities = ["read","list"]
+}
 EOT
 }
