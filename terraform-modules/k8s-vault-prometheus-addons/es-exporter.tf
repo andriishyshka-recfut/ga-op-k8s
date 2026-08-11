@@ -13,11 +13,19 @@ resource "helm_release" "es_exporter" {
   ]
 }
 
-data "kubectl_file_documents" "es_exporter" {
-  content = file("${path.module}/es-exporter-servicemonitor.yaml")
-}
+# data "kubectl_file_documents" "es_exporter" {
+#   content = file("${path.module}/es-exporter-servicemonitor.yaml")
+# }
 
-resource "kubernetes_manifest" "es_exporter" {
-  count     = 1
-  manifest = yamldecode(element(data.kubectl_file_documents.es_exporter.documents, count.index))
+# resource "kubernetes_manifest" "es_exporter" {
+#   count     = 1
+#   manifest = yamldecode(element(data.kubectl_file_documents.es_exporter.documents, count.index))
+# }
+
+resource "kubectl_manifest" "es_exporter" {
+  yaml_body = file("${path.module}/es-exporter-servicemonitor.yaml")
+
+  depends_on = [
+    helm_release.es_exporter
+  ]
 }

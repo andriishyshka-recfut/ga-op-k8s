@@ -75,11 +75,26 @@ spec:
         - name: branch
           value: "\\${branch}"
 
+    - name: internal-ingress-services
+      taskRef:
+        name: tg-run
+      runAfter:
+        - namespaces
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-1/01-internal-services"
+        - name: branch
+          value: "\\${branch}"
+
     - name: monitoring-elastic
       taskRef:
         name: tg-run
       runAfter:
         - namespaces
+        - internal-ingress-services
       workspaces:
         - name: ws
           workspace: ws
@@ -140,6 +155,7 @@ spec:
         - namespaces
         - fluxcd
         - minio
+        - internal-ingress-services
       workspaces:
         - name: ws
           workspace: ws

@@ -3,6 +3,9 @@ locals {
   additional_providers_path = "${get_terragrunt_dir()}/additional_providers.hcl"
   additional_providers_check = can(read_terragrunt_config(local.additional_providers_path)) ? read_terragrunt_config(local.additional_providers_path) : null
   additional_providers = local.additional_providers_check != null && can(local.additional_providers_check.locals.additional_providers) ? local.additional_providers_check.locals.additional_providers : []
+  default_state_name = element(split("/", get_terragrunt_dir()), length(split("/", get_terragrunt_dir())) - 1)
+  state_config_path = "${get_terragrunt_dir()}/state.hcl"
+  terraform_state_name = fileexists(local.state_config_path) ? read_terragrunt_config(local.state_config_path).locals.terraform_state_name : local.default_state_name
 }
 terraform {
 
@@ -32,6 +35,6 @@ errors {
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
-  contents = templatefile("terragrunt.tftpl",{additional_providers = local.additional_providers, dir = "${element(split("/", get_terragrunt_dir()), length(split("/", get_terragrunt_dir())) - 1)}-state", path = local.additional_providers_path})
+  contents = templatefile("terragrunt.tftpl",{additional_providers = local.additional_providers, dir = "${local.terraform_state_name}-state", path = local.additional_providers_path})
 }
 
