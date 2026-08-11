@@ -185,5 +185,5 @@ resource "null_resource" "stop_nfs" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_nfs
   }
-  depends_on = [null_resource.stop_flux]
+  depends_on = [null_resource.stop_flux, null_resource.stop_cvat]
 }

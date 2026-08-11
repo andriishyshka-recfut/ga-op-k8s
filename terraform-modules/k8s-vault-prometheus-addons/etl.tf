@@ -98,6 +98,7 @@ resource "kubernetes_role_binding_v1" "etl_cronjob_reader" {
 }
 
 resource "kubernetes_deployment_v1" "etl_minio_exporter" {
+  count = var.Cluster == "production" ? 1 : 0
   metadata {
     name      = "etl-minio-exporter"
     namespace = local.prometheusNs
