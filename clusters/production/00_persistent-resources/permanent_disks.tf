@@ -78,6 +78,9 @@ resource "google_compute_disk" "disk" {
     target = each.value.prefix
     id     = "${each.value.prefix}-${each.value.index}"
   }
+  lifecycle {
+    ignore_changes = [snapshot]
+  }
 
   zone = element([for i in range(each.value.count) : element(local.zones, i % 3)], each.value.index)
 }
