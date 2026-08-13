@@ -43,7 +43,7 @@ grafana:
         basicAuthPassword: "$ELASTIC_PASSWORD"
     - name: "ThanosQueryFrontend"
       type:  "prometheus"
-      url: "http://thanos-query-frontend.monitoring:9090/query/"
+      url: "http://thanos-query-frontend.monitoring:9090"
       isDefault: true
       access: proxy
       jsonData:
@@ -59,7 +59,7 @@ grafana:
         incrementalQueryOverlapWindow: "15m"
         disableRecordingRules: true
         httpMethod: POST
-        useSeriesEndpoint: true
+        seriesEndpoint: true
       editable: false
   enabled: true
   namespaceOverride: "monitoring"
