@@ -56,6 +56,7 @@ resource "helm_release" "redis_commander_ro" {
 }
 
 resource "kubernetes_service" "redis_core_nodeport" {
+  count = var.Color == "red" ? 0 : 1
   metadata {
     name      = "redis-core-nodeport"
     namespace = "core"
