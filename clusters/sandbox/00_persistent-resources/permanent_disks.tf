@@ -1,6 +1,5 @@
 locals {
   settings    = jsondecode(file("${path.module}/../../../config.tfvars.json")).Settings.clusters["sandbox"]
-  gcp_project = jsondecode(file("${path.module}/../../../config.tfvars.json")).Settings.gcpProject
 
   zones  = local.settings.persistent_resources.permanentDisks.zones
   region = "us-east4"
@@ -121,7 +120,6 @@ resource "google_compute_disk" "disk" {
 #   count       = local.postgresql_ha_restore ? local.postgresql_ha_count : 0
 #   name        = "${local.postgresql_ha_prefix}-${count.index}-dr-${local.restoreDate}"
 #   most_recent = true
-#   project     = local.gcp_project
 # }
 
 # data "google_compute_snapshot" "tarantool_storage_snapshot" {

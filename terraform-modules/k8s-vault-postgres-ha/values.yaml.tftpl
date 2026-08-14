@@ -50,8 +50,28 @@ postgresql:
 pgpool:
   replicaCount: ${pgpool_replicas}
   srCheckUsername: "repmgr"
-%{ if pgpool_custom_users_secret_name != "" }
-  customUsersSecret: "${pgpool_custom_users_secret_name}"
+%{ if pgpool_passthrough }
+  # Custom pool_hba.conf with a mixed frontend auth model (first match wins):
+  #  - System users pgpool knows via pgpool_passwd (postgres, repmgr/sr_check) keep
+  #    scram-sha-256, so their credentials are authenticated locally by pgpool via
+  #    challenge-response and never transit the network in clear text.
+  #  - Everyone else -- application users, both static <db>-rw|ro AND any dynamic
+  #    role -- falls through to the clear-text `password` method (pass-through):
+  #    pgpool relays the client password to the backend instead of storing it in
+  #    pgpool_passwd, so Vault can rotate app passwords with no pgpool re-sync.
+  # The per-user scram lines MUST precede the catch-all password lines. scram only
+  # works for users present in pgpool_passwd (the system users) -- app users are
+  # deliberately NOT loaded there, which is why they must use password, not scram.
+  # enable_pool_hba stays on and PGPOOL_AUTHENTICATION_METHOD stays scram-sha-256
+  # (Bitnami only allows md5/scram there); this hba overrides the frontend method
+  # per user. NOTE: no TLS -> app passwords transit the pod network in clear text
+  # (system users do not -- they use scram).
+  poolHbaConfiguration: |-
+    local   all   all                        trust
+    host    all   repmgr      all            scram-sha-256
+    host    all   postgres    all            scram-sha-256
+    host    all   all         0.0.0.0/0      password
+    host    all   all         ::/0           password
 %{ endif }
 %{ if pgpool_image_repository != "" || pgpool_image_tag != "" }
   image:
