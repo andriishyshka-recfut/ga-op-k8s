@@ -82,7 +82,7 @@ resource "google_compute_disk" "disk" {
     ignore_changes = [snapshot]
   }
 
-  zone = element([for i in range(each.value.count) : element(local.zones, i % 3)], each.value.index)
+  zone = try(each.value.zones[each.value.index], element([for i in range(each.value.count) : element(local.zones, i % 3)], each.value.index))
 }
 
 

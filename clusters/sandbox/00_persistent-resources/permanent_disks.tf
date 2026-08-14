@@ -83,7 +83,7 @@ resource "google_compute_disk" "disk" {
     id     = "${each.value.prefix}-${each.value.index}"
   }
 
-  zone = element([for i in range(each.value.count) : element(local.zones, i % 3)], each.value.index)
+  zone = try(each.value.zones[each.value.index], element([for i in range(each.value.count) : element(local.zones, i % 3)], each.value.index))
 }
 
 
