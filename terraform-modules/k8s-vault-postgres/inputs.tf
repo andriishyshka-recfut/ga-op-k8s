@@ -31,7 +31,7 @@ locals {
   disk_prefix       = local.persistent_postgres.prefix
   pv_selector_label = local.disk_prefix
   operator_version  = local.postgres_settings.operator_chart_version
-  postgres_uri      = "postgres-rw.postgres:5432"
+  postgres_uri      = local.postgres_settings.postgres_uri
   databases         = nonsensitive(toset(data.vault_kv_secrets_list_v2.db_user_list.names))
   db_user_pass      = { for name in local.databases : name => tomap(data.vault_generic_secret.databases[name].data) }
   minio = {

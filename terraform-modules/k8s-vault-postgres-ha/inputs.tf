@@ -1,16 +1,6 @@
 variable "Cluster" {}
-variable "Color" {}
 variable "Settings" {}
-variable "GkeClusterConnectionSettings" {}
-variable "VaultAddress" {}
-
-data "vault_generic_secret" "root_user" {
-  path = "secret/${local.vault_path}/root-user"
-}
-
-data "vault_generic_secret" "ha_auth" {
-  path = "secret/${local.ha_auth_vault_path}"
-}
+variable "PostgresqlHaProfile" {}
 
 data "vault_kv_secrets_list_v2" "db_user_list" {
   mount = "secret"
@@ -22,30 +12,27 @@ data "vault_generic_secret" "databases" {
   path     = "secret/${local.vault_path}/db-users/${each.value}"
 }
 
+data "vault_generic_secret" "root_user" {
+  path = "secret/${local.vault_path}/root-user"
+}
+
+data "vault_generic_secret" "ha_auth" {
+  path = "secret/${local.ha_auth_vault_path}"
+}
+
 locals {
   cluster_settings     = var.Settings.clusters[var.Cluster]
-  postgres_ha_settings = local.cluster_settings["postgresql-ha"]
-  persistent_postgres  = local.cluster_settings.persistent_resources.permanentDisks.services["postgresql-ha"]["postgresql-ha"]
+  postgres_ha_settings = local.cluster_settings["postgresql-ha"][var.PostgresqlHaProfile]
+  persistent_postgres  = local.cluster_settings.persistent_resources.permanentDisks.services["postgresql-ha"][var.PostgresqlHaProfile]
   zones                = local.cluster_settings.persistent_resources.permanentDisks.zones
 
-  cluster_name                        = endswith(local.postgres_ha_settings.cluster_name, "-ha") ? local.postgres_ha_settings.cluster_name : "${local.postgres_ha_settings.cluster_name}-ha"
-  namespace                           = local.postgres_ha_settings.namespace
-  vault_path                          = local.postgres_ha_settings.vault_path
-  chart_version                       = local.postgres_ha_settings.chart_version
-  database                            = lookup(local.postgres_ha_settings, "database", "postgres")
-  postgres_replicas                   = local.postgres_ha_settings.replicas
-  pgpool_replicas                     = lookup(local.postgres_ha_settings, "pgpool_replicas", 1)
-  storage_size                        = format("%sGi", local.persistent_postgres.size)
-  postgresql_image_registry           = lookup(local.postgres_ha_settings, "postgresql_image_registry", "")
-  postgresql_image_repository         = lookup(local.postgres_ha_settings, "postgresql_image_repository", "")
-  postgresql_image_tag                = lookup(local.postgres_ha_settings, "postgresql_image_tag", "")
-  pgpool_image_registry               = lookup(local.postgres_ha_settings, "pgpool_image_registry", "")
-  pgpool_image_repository             = lookup(local.postgres_ha_settings, "pgpool_image_repository", "")
-  pgpool_image_tag                    = lookup(local.postgres_ha_settings, "pgpool_image_tag", "")
-  postgresql_resources                = lookup(local.postgres_ha_settings, "resources", null)
-  pgpool_resources                    = lookup(local.postgres_ha_settings, "pgpool_resources", null)
-  postgresql_pod_anti_affinity_preset = lookup(local.postgres_ha_settings, "postgresql_pod_anti_affinity_preset", "hard")
-  pgpool_pod_anti_affinity_preset     = lookup(local.postgres_ha_settings, "pgpool_pod_anti_affinity_preset", "hard")
+  cluster_name                = local.postgres_ha_settings.cluster_name
+  namespace                   = local.postgres_ha_settings.namespace
+  vault_path                  = local.postgres_ha_settings.vault_path
+  chart_version               = local.postgres_ha_settings.chart_version
+  postgresql_image_registry   = lookup(local.postgres_ha_settings, "postgresql_image_registry", "")
+  postgresql_image_repository = lookup(local.postgres_ha_settings, "postgresql_image_repository", "")
+  postgresql_image_tag        = lookup(local.postgres_ha_settings, "postgresql_image_tag", "")
   # Full affinity blocks are kept here as a fallback when preset-based anti-affinity
   # is no longer enough and we need custom topology keys or label selectors.
   # postgresql_affinity = lookup(local.postgres_ha_settings, "postgresql_affinity", {
@@ -78,10 +65,6 @@ locals {
   #     ]
   #   }
   # })
-  postgresql_pdb_create        = lookup(local.postgres_ha_settings, "postgresql_pdb_create", true)
-  postgresql_pdb_min_available = lookup(local.postgres_ha_settings, "postgresql_pdb_min_available", 2)
-  pgpool_pdb_create            = lookup(local.postgres_ha_settings, "pgpool_pdb_create", true)
-  pgpool_pdb_min_available     = lookup(local.postgres_ha_settings, "pgpool_pdb_min_available", 1)
 
   /*
   backup_settings          = lookup(local.postgres_ha_settings, "backup", {})
@@ -118,40 +101,107 @@ locals {
   db_bootstrap_image       = lookup(local.postgres_ha_settings, "db_bootstrap_image", local.postgresql_image_repository != "" ? "${local.postgresql_image_registry != "" ? "${local.postgresql_image_registry}/" : ""}${local.postgresql_image_repository}" : "postgres")
   db_bootstrap_tag         = lookup(local.postgres_ha_settings, "db_bootstrap_tag", local.postgresql_image_tag != "" ? local.postgresql_image_tag : "17")
 
-  enable_post_script   = lookup(local.postgres_ha_settings, "enable_post_script", false)
-  post_script_tag      = lookup(local.postgres_ha_settings, "post_script_tag", "v0.0.8")
-  post_script_image    = lookup(local.postgres_ha_settings, "post_script_image", "harbor.regemini.io/op/postgres-script")
-  post_script_job_name = lookup(local.postgres_ha_settings, "post_script_job_name", "post-postgres")
-  vault_role_name      = lookup(local.postgres_ha_settings, "vault_role_name", "postgres")
-  vault_role_path      = lookup(local.postgres_ha_settings, "vault_role_path", "k8s-${var.Cluster}-${var.Color}")
-  ha_auth_vault_path   = lookup(local.postgres_ha_settings, "ha_auth_vault_path", "${local.vault_path}/ha-auth")
+  # pgpool uses the clear-text `password` auth method (pass-through): it relays the
+  # client password to the backend instead of storing it in pgpool_passwd, so Vault
+  # can rotate the static-role passwords with no pgpool re-sync. `password` keeps
+  # pool_hba on (unlike allow_clear_text_frontend_auth) so system users still work.
+  # NOTE: no TLS -> passwords transit the pod network in clear text.
+  # Enabled only when app DB users exist; otherwise the chart default (scram) stays.
+  ha_auth_vault_path = lookup(local.postgres_ha_settings, "ha_auth_vault_path", "${local.vault_path}/ha-auth")
 
-  auth_secret_name                = lookup(local.postgres_ha_settings, "auth_secret_name", "${local.cluster_name}-postgresql-ha-auth")
-  pgpool_custom_users_secret_name = lookup(local.postgres_ha_settings, "pgpool_custom_users_secret_name", "${local.cluster_name}-pgpool-custom-users")
-  root_secret_name                = lookup(local.postgres_ha_settings, "root_secret_name", "${local.cluster_name}-superuser")
-  post_script_secret_name         = lookup(local.postgres_ha_settings, "post_script_secret_name", local.root_secret_name)
+  auth_secret_name = lookup(local.postgres_ha_settings, "auth_secret_name", "${local.cluster_name}-postgresql-ha-auth")
+  root_secret_name = lookup(local.postgres_ha_settings, "root_secret_name", "${local.cluster_name}-superuser")
 
-  databases               = nonsensitive(toset(data.vault_kv_secrets_list_v2.db_user_list.names))
-  db_user_pass            = { for name in local.databases : name => tomap(data.vault_generic_secret.databases[name].data) }
-  db_user_names           = sort(keys(local.db_user_pass))
-  pgpool_custom_usernames = join(";", [for name in local.db_user_names : local.db_user_pass[name].username])
-  pgpool_custom_passwords = join(";", [for name in local.db_user_names : local.db_user_pass[name].password])
+  helm_values_context = {
+    auth_secret_name                    = local.auth_secret_name
+    cluster_name                        = local.cluster_name
+    database                            = lookup(local.postgres_ha_settings, "database", "postgres")
+    pgpool_image_registry               = lookup(local.postgres_ha_settings, "pgpool_image_registry", "")
+    pgpool_image_repository             = lookup(local.postgres_ha_settings, "pgpool_image_repository", "")
+    pgpool_image_tag                    = lookup(local.postgres_ha_settings, "pgpool_image_tag", "")
+    pgpool_passthrough                  = length(local.database_names) > 0
+    pgpool_pod_anti_affinity_preset     = lookup(local.postgres_ha_settings, "pgpool_pod_anti_affinity_preset", "hard")
+    pgpool_replicas                     = lookup(local.postgres_ha_settings, "pgpool_replicas", 1)
+    pgpool_pdb_create                   = lookup(local.postgres_ha_settings, "pgpool_pdb_create", true)
+    pgpool_pdb_min_available            = lookup(local.postgres_ha_settings, "pgpool_pdb_min_available", 1)
+    pgpool_resources                    = lookup(local.postgres_ha_settings, "pgpool_resources", null)
+    postgres_replicas                   = local.postgres_ha_settings.replicas
+    postgresql_image_registry           = local.postgresql_image_registry
+    postgresql_image_repository         = local.postgresql_image_repository
+    postgresql_image_tag                = local.postgresql_image_tag
+    postgresql_pod_anti_affinity_preset = lookup(local.postgres_ha_settings, "postgresql_pod_anti_affinity_preset", "hard")
+    postgresql_pdb_create               = lookup(local.postgres_ha_settings, "postgresql_pdb_create", true)
+    postgresql_pdb_min_available        = lookup(local.postgres_ha_settings, "postgresql_pdb_min_available", 2)
+    postgresql_resources                = lookup(local.postgres_ha_settings, "resources", null)
+    root_username                       = data.vault_generic_secret.root_user.data.username
+    storage_size                        = format("%sGi", local.persistent_postgres.size)
+    pv_selector_label                   = local.pv_selector_label
+  }
 
+  databases      = nonsensitive(toset(data.vault_kv_secrets_list_v2.db_user_list.names))
+  db_user_pass   = { for name in local.databases : name => tomap(data.vault_generic_secret.databases[name].data) }
+  database_names = sort(keys(local.db_user_pass))
+  app_db_users = {
+    for name in local.database_names : name => {
+      owner_username = lookup(local.db_user_pass[name], "username", name)
+      owner_password = lookup(local.db_user_pass[name], "password", "")
+      rw_username    = "${lookup(local.db_user_pass[name], "username", name)}-rw"
+      ro_username    = "${lookup(local.db_user_pass[name], "username", name)}-ro"
+      rw_password    = lookup(local.db_user_pass[name], "password", "")
+      ro_password    = lookup(local.db_user_pass[name], "password", "")
+    }
+  }
   db_bootstrap_sql = join("\n\n", concat(
     ["\\set ON_ERROR_STOP on"],
-    [for db_name, user in local.db_user_pass : <<-EOT
+    [for db_name in local.database_names : <<-EOT
 DO $role$
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${replace(user.username, "'", "''")}') THEN
-    EXECUTE format('CREATE ROLE %I LOGIN PASSWORD %L', '${replace(user.username, "'", "''")}', '${replace(user.password, "'", "''")}');
+  -- The owner role follows the raw KV payload and is reconciled on every run.
+  -- The rw/ro roles are later adopted by Vault static roles, so their password is
+  -- set ONLY on initial CREATE. Re-running bootstrap must NOT reset those passwords
+  -- or it desyncs from Vault and pass-through backend auth via pgpool fails.
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${replace(local.app_db_users[db_name].owner_username, "'", "''")}') THEN
+    EXECUTE format('CREATE ROLE %I LOGIN PASSWORD %L', '${replace(local.app_db_users[db_name].owner_username, "'", "''")}', '${replace(local.app_db_users[db_name].owner_password, "'", "''")}');
+  ELSE
+    EXECUTE format('ALTER ROLE %I WITH LOGIN PASSWORD %L', '${replace(local.app_db_users[db_name].owner_username, "'", "''")}', '${replace(local.app_db_users[db_name].owner_password, "'", "''")}');
   END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${replace(local.app_db_users[db_name].rw_username, "'", "''")}') THEN
+    EXECUTE format('CREATE ROLE %I LOGIN PASSWORD %L', '${replace(local.app_db_users[db_name].rw_username, "'", "''")}', '${replace(local.app_db_users[db_name].rw_password, "'", "''")}');
+  END IF;
+
+  EXECUTE format('ALTER ROLE %I WITH LOGIN', '${replace(local.app_db_users[db_name].rw_username, "'", "''")}');
+
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${replace(local.app_db_users[db_name].ro_username, "'", "''")}') THEN
+    EXECUTE format('CREATE ROLE %I LOGIN PASSWORD %L', '${replace(local.app_db_users[db_name].ro_username, "'", "''")}', '${replace(local.app_db_users[db_name].ro_password, "'", "''")}');
+  END IF;
+
+  EXECUTE format('ALTER ROLE %I WITH LOGIN', '${replace(local.app_db_users[db_name].ro_username, "'", "''")}');
 END
 $role$;
 
-SELECT format('CREATE DATABASE %I OWNER %I', '${replace(db_name, "'", "''")}', '${replace(user.username, "'", "''")}')
+SELECT format('CREATE DATABASE %I OWNER %I', '${replace(db_name, "'", "''")}', '${replace(local.app_db_users[db_name].owner_username, "'", "''")}')
 WHERE NOT EXISTS (
   SELECT 1 FROM pg_database WHERE datname = '${replace(db_name, "'", "''")}'
 )\gexec
+
+\connect ${replace(db_name, "'", "''")}
+
+GRANT ALL PRIVILEGES ON DATABASE "${replace(db_name, "\"", "\"\"")}" TO "${replace(local.app_db_users[db_name].owner_username, "\"", "\"\"")}";
+GRANT CONNECT, TEMPORARY ON DATABASE "${replace(db_name, "\"", "\"\"")}" TO "${replace(local.app_db_users[db_name].rw_username, "\"", "\"\"")}";
+GRANT CONNECT ON DATABASE "${replace(db_name, "\"", "\"\"")}" TO "${replace(local.app_db_users[db_name].ro_username, "\"", "\"\"")}";
+GRANT USAGE, CREATE ON SCHEMA public TO "${replace(local.app_db_users[db_name].rw_username, "\"", "\"\"")}";
+GRANT USAGE ON SCHEMA public TO "${replace(local.app_db_users[db_name].ro_username, "\"", "\"\"")}";
+GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON ALL TABLES IN SCHEMA public TO "${replace(local.app_db_users[db_name].rw_username, "\"", "\"\"")}";
+GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO "${replace(local.app_db_users[db_name].rw_username, "\"", "\"\"")}";
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO "${replace(local.app_db_users[db_name].rw_username, "\"", "\"\"")}";
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO "${replace(local.app_db_users[db_name].ro_username, "\"", "\"\"")}";
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "${replace(local.app_db_users[db_name].ro_username, "\"", "\"\"")}";
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO "${replace(local.app_db_users[db_name].ro_username, "\"", "\"\"")}";
+ALTER DEFAULT PRIVILEGES FOR ROLE "${replace(local.app_db_users[db_name].owner_username, "\"", "\"\"")}" IN SCHEMA public GRANT SELECT ON TABLES TO "${replace(local.app_db_users[db_name].ro_username, "\"", "\"\"")}";
+ALTER DEFAULT PRIVILEGES FOR ROLE "${replace(local.app_db_users[db_name].owner_username, "\"", "\"\"")}" IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO "${replace(local.app_db_users[db_name].ro_username, "\"", "\"\"")}";
+ALTER DEFAULT PRIVILEGES FOR ROLE "${replace(local.app_db_users[db_name].rw_username, "\"", "\"\"")}" IN SCHEMA public GRANT SELECT ON TABLES TO "${replace(local.app_db_users[db_name].ro_username, "\"", "\"\"")}";
+ALTER DEFAULT PRIVILEGES FOR ROLE "${replace(local.app_db_users[db_name].rw_username, "\"", "\"\"")}" IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO "${replace(local.app_db_users[db_name].ro_username, "\"", "\"\"")}";
 EOT
     ]
   ))

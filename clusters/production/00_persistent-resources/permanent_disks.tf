@@ -1,10 +1,16 @@
 locals {
   settings     = jsondecode(file("${path.module}/../../../prod.tfvars.json")).Settings.clusters["production"]
   settings_red = jsondecode(file("${path.module}/../../../prod-red.tfvars.json")).Settings.clusters["production"]
-  service_configs = merge(
-    local.settings.persistent_resources.permanentDisks.services,
-    local.settings_red.persistent_resources.permanentDisks.services
+  service_names = setunion(
+    toset(keys(local.settings.persistent_resources.permanentDisks.services)),
+    toset(keys(local.settings_red.persistent_resources.permanentDisks.services))
   )
+  service_configs = {
+    for service_name in local.service_names : service_name => merge(
+      try(local.settings.persistent_resources.permanentDisks.services[service_name], {}),
+      try(local.settings_red.persistent_resources.permanentDisks.services[service_name], {})
+    )
+  }
   zones = local.settings.persistent_resources.permanentDisks.zones
 
   services = merge([

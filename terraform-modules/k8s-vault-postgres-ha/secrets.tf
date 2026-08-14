@@ -26,36 +26,8 @@ resource "kubernetes_secret" "root" {
   }
 }
 
-resource "kubernetes_secret" "db_users" {
-  for_each = local.db_user_pass
-
-  metadata {
-    name      = "${local.cluster_name}-user-${each.key}"
-    namespace = local.namespace
-  }
-
-  data = {
-    username = each.value.username
-    password = each.value.password
-  }
-}
-
-resource "kubernetes_secret" "pgpool_custom_users" {
-  count = length(local.db_user_names) > 0 ? 1 : 0
-
-  metadata {
-    name      = local.pgpool_custom_users_secret_name
-    namespace = local.namespace
-  }
-
-  data = {
-    usernames = local.pgpool_custom_usernames
-    passwords = local.pgpool_custom_passwords
-  }
-}
-
 resource "kubernetes_secret" "db_bootstrap_sql" {
-  count = local.enable_db_bootstrap && length(local.db_user_pass) > 0 ? 1 : 0
+  count = local.enable_db_bootstrap && length(local.database_names) > 0 ? 1 : 0
 
   metadata {
     name      = local.db_bootstrap_secret_name
