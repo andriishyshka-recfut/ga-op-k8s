@@ -61,6 +61,9 @@ path "sys/mounts/auth/k8s-production-green" {
 path "postgres/*" {
   capabilities = ["create","update","read","list","delete"]
 }
+path "postgres-ha-prod/*" {
+  capabilities = ["create","update","read","list","delete"]
+}
 path "secret/data/mw/elastic/mon" {
   capabilities = ["create","update","read","list","delete"]
 }

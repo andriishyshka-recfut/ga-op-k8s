@@ -392,7 +392,7 @@ resource "null_resource" "stop_postgres_resources" {
 }
 
 resource "null_resource" "stop_postgres_ha_resources" {
-  count = var.Cluster == "sandbox" && length(local.postgres_ha_targets) > 0 ? 1 : 0
+  count = length(local.postgres_ha_targets) > 0 ? 1 : 0
 
   triggers = {
     command = md5(local.stop_postgres_ha_resources)
