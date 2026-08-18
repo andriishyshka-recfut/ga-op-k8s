@@ -2,7 +2,6 @@ data "gitlab_user" "gitlab" {
   username = "dc"
 }
 
-
 resource "gitlab_personal_access_token" "terraform" {
   user_id    = data.gitlab_user.gitlab.user_id
   name       = "terraform-${var.Cluster}-${local.dateNow}"

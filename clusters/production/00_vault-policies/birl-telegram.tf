@@ -55,7 +55,7 @@ path "secret/data/mw/monitoring/otel" {
 path "postgres/creds/*" {
   capabilities = ["read","list","create","update"]
 }
-path "postgres-ha/static-creds/*" {
+path "postgres-ha-prod/static-creds/*" {
   capabilities = ["read","list","create","update"]
 }
 EOT

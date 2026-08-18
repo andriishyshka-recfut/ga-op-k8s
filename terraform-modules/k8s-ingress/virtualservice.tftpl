@@ -22,7 +22,7 @@ spec:
 %{ if lookup(settings,"cert-manager",false) ~}
     - match:
       - withoutHeaders:
-          path:
+          ":path":
             prefix: /.well-known/acme-challenge/
         port: 80
       redirect:
