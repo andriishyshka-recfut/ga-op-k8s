@@ -24,3 +24,11 @@ module "postgres_ha" {
   Settings            = var.Settings
   PostgresqlHaProfile = each.key
 }
+
+module "postgres_ha_backup" {
+  for_each            = local.enabled_postgres_ha_profiles
+  source              = "../../../terraform-modules/k8s-vault-postgres-ha-backup"
+  Cluster             = var.Cluster
+  Settings            = var.Settings
+  PostgresqlHaProfile = each.key
+}

@@ -1,0 +1,104 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${job_name}
+  namespace: ${namespace}
+spec:
+  ttlSecondsAfterFinished: 86400
+  backoffLimit: 1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: harbor
+      containers:
+        - name: database-restore
+          image: ${image}:${tag}
+          imagePullPolicy: Always
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              set -euo pipefail
+              command -v pg_restore >/dev/null 2>&1 || { echo "pg_restore is not installed in the backup image"; exit 1; }
+              command -v psql >/dev/null 2>&1 || { echo "psql is not installed in the backup image"; exit 1; }
+              export PGUSER="$(cat /etc/postgres/root/username)"
+              export PGPASSWORD="$(cat /etc/postgres/root/password)"
+              export PGHOST="${host}"
+              export PGPORT="${port}"
+              export PGDATABASE="postgres"
+              export MINIO_ENDPOINT="${backup_minio_endpoint}"
+              export RESTORE_DATABASE="${restore_database}"
+              export RESTORE_SOURCE_OBJECT="${restore_backup_object}"
+              export RESTORE_OWNER_OBJECT="${restore_owner_object}"
+              export RESTORE_GRANTS_OBJECT="${restore_grants_object}"
+              export ${backup_mc_env}="${backup_mc_host}"
+
+              backup_download() {
+              %{ if backup_cli == "mc" ~}
+                command -v mc >/dev/null 2>&1 || { echo "mc CLI is not installed in the backup image"; exit 1; }
+                mc cp "$1" "$2"
+              %{ else ~}
+                command -v aws >/dev/null 2>&1 || { echo "aws CLI is not installed in the backup image"; exit 1; }
+                aws --endpoint-url "$MINIO_ENDPOINT" s3 cp "$1" "$2"
+              %{ endif ~}
+              }
+
+              timestamp="$(date -u '+%Y%m%dT%H%M%SZ')"
+              restore_file="/tmp/${restore_database}-$timestamp.dump"
+              owner_file="/tmp/${restore_database}-$timestamp.owner"
+              grants_file="/tmp/${restore_database}-$timestamp.grants.sql"
+              target_db="$(printf '%s_%s' "$RESTORE_DATABASE" "$timestamp" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9_' '_')"
+              target_db="$${target_db%_}"
+              target_db="$${target_db:0:63}"
+
+              backup_download "$RESTORE_SOURCE_OBJECT" "$restore_file"
+              backup_download "$RESTORE_OWNER_OBJECT" "$owner_file"
+              backup_download "$RESTORE_GRANTS_OBJECT" "$grants_file"
+              source_owner="$$(tr -d '\r\n' < "$owner_file")"
+
+              if [ -z "$$source_owner" ]; then
+                echo "Restore metadata does not contain a source owner for $$RESTORE_DATABASE"
+                exit 1
+              fi
+
+              if ! psql -v ON_ERROR_STOP=1 -d postgres -c "CREATE DATABASE \"$target_db\" OWNER $$source_owner"; then
+                echo "Failed to create restore target database with owner $$source_owner. Restore roles from globals.sql before running per-database restore."
+                exit 1
+              fi
+              if [ -s "$$grants_file" ]; then
+                sed "s/__RESTORE_TARGET_DB__/$${target_db}/g" "$$grants_file" | psql -v ON_ERROR_STOP=1 -d postgres
+              fi
+              pg_restore --dbname="$target_db" "$restore_file"
+          env:
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ${backup_secret_name}
+                  key: access_key
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ${backup_secret_name}
+                  key: secret_key
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ${backup_secret_name}
+                  key: access_key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ${backup_secret_name}
+                  key: secret_key
+          volumeMounts:
+            - name: root-secret
+              readOnly: true
+              mountPath: /etc/postgres/root
+      volumes:
+        - name: root-secret
+          secret:
+            secretName: ${root_secret_name}

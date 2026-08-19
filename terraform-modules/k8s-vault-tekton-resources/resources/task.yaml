@@ -123,6 +123,84 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
+  name: tg-run-postgres-ha-restore
+  namespace: tekton-tasks
+spec:
+  params:
+    - name: branch
+      type: string
+      description: Git branch to use for deployment
+      default: master
+    - name: path
+      type: string
+      description: path in k8s repo where to run terragrunt
+      default: k8s/tekton/stage-5/05-postgres-ha-restore
+    - name: postgresql_ha_profile
+      type: string
+      description: postgres-ha profile to use from config
+    - name: restore_database
+      type: string
+      description: database name to restore
+    - name: restore_backup_timestamp
+      type: string
+      description: backup timestamp in YYYYMMDDTHHMMSSZ format
+    - name: restore_job_name
+      type: string
+      description: optional custom restore job name
+      default: ""
+  steps:
+    - name: tg-apply-restore
+      image: harbor.regemini.io/op/opentofu
+      env:
+        - name: TF_VAR_Color
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: color
+        - name: CLUSTER
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: cluster
+        - name: CONF_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: configPath
+        - name: VAULT_ADDR
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: vaultAddr
+      script: |
+       set +x
+       set -e
+       workdir=/workspace
+       export VAULT_TOKEN=$(vault write -field=token auth/k8s-${CLUSTER}-${TF_VAR_Color}/login role=tekton jwt=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`)
+       export KUBE_TOKEN=$(vault kv get -field=k8s_sa_token secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
+       export KUBE_HOST=$(vault kv get -field=HOST secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
+       export KUBE_CLUSTER_CA_CERT_DATA=$(vault kv get -field=CLUSTER_CA_CERTIFICATE secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
+       export GIT_USER=$(vault kv get -field=username secret/misc/gitlab/token/read_repo )
+       export GIT_TOKEN=$(vault kv get -field=token secret/misc/gitlab/token/read_repo )
+
+       mkdir -p "$workdir"
+       cd "$workdir"
+       git clone --single-branch --branch $(params.branch) https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
+
+       source /ansible/bin/activate
+       export HOME="$workdir"
+
+       cd "$workdir/$(params.path)"
+       git log -1
+       terragrunt apply -auto-approve \
+         -var="PostgresqlHaProfile=$(params.postgresql_ha_profile)" \
+         -var="RestoreDatabase=$(params.restore_database)" \
+         -var="RestoreBackupTimestamp=$(params.restore_backup_timestamp)" \
+         -var="RestoreJobName=$(params.restore_job_name)"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
   name: tg-run
   namespace: tekton-pipelines
 spec:
@@ -241,3 +319,81 @@ spec:
        cd $(workspaces.ws.path)/$(params.path)
        git log -1
        terragrunt apply -destroy -auto-approve
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: tg-run-postgres-ha-restore
+  namespace: tekton-pipelines
+spec:
+  params:
+    - name: branch
+      type: string
+      description: Git branch to use for deployment
+      default: master
+    - name: path
+      type: string
+      description: path in k8s repo where to run terragrunt
+      default: k8s/tekton/stage-5/05-postgres-ha-restore
+    - name: postgresql_ha_profile
+      type: string
+      description: postgres-ha profile to use from config
+    - name: restore_database
+      type: string
+      description: database name to restore
+    - name: restore_backup_timestamp
+      type: string
+      description: backup timestamp in YYYYMMDDTHHMMSSZ format
+    - name: restore_job_name
+      type: string
+      description: optional custom restore job name
+      default: ""
+  steps:
+    - name: tg-apply-restore
+      image: harbor.regemini.io/op/tf:latest
+      env:
+        - name: TF_VAR_Color
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: color
+        - name: CLUSTER
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: cluster
+        - name: CONF_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: configPath
+        - name: VAULT_ADDR
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: vaultAddr
+      script: |
+       set +x
+       set -e
+       workdir=/workspace
+       export VAULT_TOKEN=$(vault write -field=token auth/k8s-${CLUSTER}-${TF_VAR_Color}/login role=tekton jwt=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`)
+       export KUBE_TOKEN=$(vault kv get -field=k8s_sa_token secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
+       export KUBE_HOST=$(vault kv get -field=HOST secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
+       export KUBE_CLUSTER_CA_CERT_DATA=$(vault kv get -field=CLUSTER_CA_CERTIFICATE secret/kubernetes-${CLUSTER}-${TF_VAR_Color} )
+       export GIT_USER=$(vault kv get -field=username secret/gitlab )
+       export GIT_TOKEN=$(vault kv get -field=token_read_repo secret/gitlab )
+
+       mkdir -p "$workdir"
+       cd "$workdir"
+       git clone --single-branch --branch $(params.branch) https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git
+
+       source /ansible/bin/activate
+       export HOME="$workdir"
+
+       cd "$workdir/$(params.path)"
+       git log -1
+       terragrunt apply -auto-approve \
+         -var="PostgresqlHaProfile=$(params.postgresql_ha_profile)" \
+         -var="RestoreDatabase=$(params.restore_database)" \
+         -var="RestoreBackupTimestamp=$(params.restore_backup_timestamp)" \
+         -var="RestoreJobName=$(params.restore_job_name)"
