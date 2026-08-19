@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: postgres-ha-restore-
+  namespace: tekton-tasks
+spec:
+  taskRef:
+    name: tg-run-postgres-ha-restore
+  params:
+    - name: path
+      value: "k8s/tekton/stage-5/05-postgres-ha-restore"
+    - name: branch
+      value: "master"
+    - name: postgresql_ha_profile
+      value: "sandbox"
+    - name: restore_database
+      value: "birl"
+    - name: restore_backup_timestamp
+      value: "20260729T143850Z"
+    - name: restore_job_name
+      value: ""
