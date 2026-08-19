@@ -66,11 +66,24 @@ extraVolumes:
     emptyDir: {}
   - name: elastic-transport-certificates
     emptyDir: {}
+%{ if lookup(globalSettings, "minio", false) != false ~}
+%{ if lookup(globalSettings.minio, "protocol", "http") == "https" ~}
+  - name: minio-truststore
+    emptyDir: {}
+%{ endif ~}
+%{ endif ~}
 extraVolumeMounts:
   - name: elastic-plugins-local
     mountPath: /usr/share/elasticsearch/plugins
   - name: elastic-transport-certificates
     mountPath: /usr/share/elasticsearch/config/transport-certs
+%{ if lookup(globalSettings, "minio", false) != false ~}
+%{ if lookup(globalSettings.minio, "protocol", "http") == "https" ~}
+  - name: minio-truststore
+    mountPath: /usr/share/elasticsearch/jdk/lib/security/cacerts
+    subPath: cacerts
+%{ endif ~}
+%{ endif ~}
 %{ if length(globalSettings.plugins) > 0 ~}
 extraInitContainers:
   - name: fix-data-permissions
@@ -97,6 +110,36 @@ extraInitContainers:
     volumeMounts:
       - name: elastic-plugins-local
         mountPath: /usr/share/elasticsearch/plugins
+%{ endif ~}
+%{ if lookup(globalSettings, "minio", false) != false ~}
+%{ if lookup(globalSettings.minio, "protocol", "http") == "https" ~}
+  - name: configure-minio-ca
+    image: docker.elastic.co/elasticsearch/elasticsearch:${globalSettings.imageTag}
+    securityContext:
+      runAsUser: 0
+      runAsNonRoot: false
+    command:
+      - sh
+      - -c
+      - |
+        set -eu
+        jdk_home="/usr/share/elasticsearch/jdk"
+
+        cp "$jdk_home/lib/security/cacerts" /minio-truststore/cacerts
+
+        "$jdk_home/bin/keytool" \
+          -importcert -noprompt -trustcacerts \
+          -alias minio-ca \
+          -file /minio-ca/ca.crt \
+          -keystore /minio-truststore/cacerts \
+          -storepass changeit
+    volumeMounts:
+      - name: minio-ca
+        mountPath: /minio-ca
+        readOnly: true
+      - name: minio-truststore
+        mountPath: /minio-truststore
+%{ endif ~}
 %{ endif ~}
 extraEnvs:
   - name: ELASTIC_PASSWORD
@@ -140,6 +183,14 @@ secretMounts:
     defaultMode: 0755
 %{ endif ~}
 %{ endfor ~}
+%{ endif ~}
+%{ if lookup(globalSettings, "minio", false) != false ~}
+%{ if lookup(globalSettings.minio, "protocol", "http") == "https" ~}
+  - name: minio-ca
+    secretName: minio-ca-certs
+    path: /usr/share/elasticsearch/config/minio-ca
+    defaultMode: 0444
+%{ endif ~}
 %{ endif ~}
 keystore: %{ if length(globalSettings.plugins) == 0 } [] %{ endif }
 %{ if contains(globalSettings.plugins, "repository-s3") ~}
