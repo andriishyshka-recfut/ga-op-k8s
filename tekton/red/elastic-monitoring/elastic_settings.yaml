@@ -20,6 +20,11 @@ ElasticSettings:
       active: "mon-2027"
 #default 8880h
       duration: "8030h"
+    minio:
+      vaultPath: "secret/mw/minio/sa/ns_backup"
+      bucket: backup
+      protocol: "https"
+      endpoint: "minio.minio.svc.cluster.local"
     addons:
       notifications:
         slack:
