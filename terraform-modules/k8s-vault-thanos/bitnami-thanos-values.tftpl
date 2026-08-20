@@ -24,15 +24,23 @@ query:
   enabled: true
   replicaCount: 2
   logLevel: info
+
   dnsDiscovery:
     enabled: true
     sidecarsService: "prometheus-operated"
     sidecarsNamespace: "monitoring"
+
   podAnnotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "10902"
+
   replicaLabel:
     - prometheus_replica
+    - thanos_ruler_replica
+
+  stores:
+    - dnssrv+_grpc._tcp.thanos-ruler-operated.monitoring.svc.cluster.local
+
   extraFlags:
     - --query.max-concurrent=20
     - --query.max-concurrent-select=32
@@ -40,7 +48,7 @@ query:
     - --query.auto-downsampling
     - --store.response-timeout=60s
     - --web.route-prefix=/query/
-    - --web.external-prefix=/query/
+    - --web.external-prefix=/query/ 
   extraEnvVars:
     - name: GOMEMLIMIT
       value: 5500MiB
