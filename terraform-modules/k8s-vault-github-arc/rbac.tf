@@ -12,7 +12,7 @@ resource "kubernetes_role" "buildx_github-runner" {
 
   rule {
     api_groups = [""]
-    resources  = ["pods", "pods/log", "services"]
+    resources  = ["pods", "pods/log", "services", "configmaps"]
     verbs      = ["get", "list", "watch", "create", "update", "patch", "delete"]
   }
 }
