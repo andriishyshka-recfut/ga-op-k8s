@@ -597,8 +597,8 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "query_result(count by (severity) (ALERTS{alertstate=\"firing\"}) or label_replace(vector(0), \"severity\", \"etl\", \"__name__\", \".*\") or label_replace(vector(0), \"severity\", \"devs\", \"__name__\", \".*\"))",
-        "description": "Filter the detailed panels by the alert severity label. Values are discovered through Thanos; etl and devs are always available.",
+        "definition": "query_result(count by (severity) (ALERTS{alertstate=\"firing\"}) or label_replace(vector(0), \"severity\", \"critical\", \"__name__\", \".*\") or label_replace(vector(0), \"severity\", \"etl\", \"__name__\", \".*\") or label_replace(vector(0), \"severity\", \"devs\", \"__name__\", \".*\"))",
+        "description": "Filter firing alerts by the severity label. Values are discovered through Thanos; critical, etl, and devs are always available.",
         "hide": 0,
         "includeAll": true,
         "label": "Severity",
@@ -609,6 +609,11 @@
             "selected": true,
             "text": "All",
             "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "critical",
+            "value": "critical"
           },
           {
             "selected": false,
@@ -623,9 +628,9 @@
         ],
         "query": {
           "qryType": 3,
-          "query": "query_result(count by (severity) (ALERTS{alertstate=\"firing\"}) or label_replace(vector(0), \"severity\", \"etl\", \"__name__\", \".*\") or label_replace(vector(0), \"severity\", \"devs\", \"__name__\", \".*\"))",
+          "query": "query_result(count by (severity) (ALERTS{alertstate=\"firing\"}) or label_replace(vector(0), \"severity\", \"critical\", \"__name__\", \".*\") or label_replace(vector(0), \"severity\", \"etl\", \"__name__\", \".*\") or label_replace(vector(0), \"severity\", \"devs\", \"__name__\", \".*\"))",
           "refId": "PrometheusVariableQueryEditor-VariableQuery",
-          "varQuery": "count by (severity) (ALERTS{alertstate=\"firing\"}) or label_replace(vector(0), \"severity\", \"etl\", \"__name__\", \".*\") or label_replace(vector(0), \"severity\", \"devs\", \"__name__\", \".*\")"
+          "varQuery": "count by (severity) (ALERTS{alertstate=\"firing\"}) or label_replace(vector(0), \"severity\", \"critical\", \"__name__\", \".*\") or label_replace(vector(0), \"severity\", \"etl\", \"__name__\", \".*\") or label_replace(vector(0), \"severity\", \"devs\", \"__name__\", \".*\")"
         },
         "refresh": 1,
         "regex": "/.*severity=\"([^\"]+)\".*/",
@@ -663,6 +668,6 @@
   "timezone": "browser",
   "title": "Thanos Alerts by Severity",
   "uid": "prom-alerts-severity",
-  "version": 6,
+  "version": 7,
   "weekStart": ""
 }
