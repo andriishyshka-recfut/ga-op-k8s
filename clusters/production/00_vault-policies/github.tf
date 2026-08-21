@@ -19,5 +19,8 @@ path "secret/data/harbor/*" {
 path "secret/metadata/harbor/*" {
   capabilities = ["list"]
 }
+path "secret/data/misc/artifactory/*" {
+  capabilities = ["read"]
+}
 EOT
 }
