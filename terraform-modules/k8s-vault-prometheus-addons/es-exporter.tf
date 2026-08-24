@@ -1,5 +1,6 @@
 
 resource "helm_release" "es_exporter" {
+  count = var.Cluster == "production" ? 1 : 0
   name              = "es-exporter"
   repository        = "https://braedon.github.io/helm"
   chart             = "prometheus-es-exporter"
