@@ -50,7 +50,9 @@ filebeatConfig:
           cluster:
             color: ${color}
             stage: ${cluster}   
-    - add_cloud_metadata: null
+    - add_cloud_metadata: 
+        providers:
+              - gcp
     - add_host_metadata: null
     - dissect:
         when:

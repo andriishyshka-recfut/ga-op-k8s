@@ -61,7 +61,9 @@ filebeatConfig:
     logging:
       json: true
     processors:
-    - add_cloud_metadata: null
+    - add_cloud_metadata:
+        providers:
+          - gcp
     - add_host_metadata: null
     output.elasticsearch:
       ssl:
