@@ -116,12 +116,6 @@ locals {
     auth_secret_name                    = local.auth_secret_name
     cluster_name                        = local.cluster_name
     database                            = lookup(local.postgres_ha_settings, "database", "postgres")
-    metrics_custom_liveness_probe       = lookup(local.postgres_ha_settings, "metrics_custom_liveness_probe", null)
-    metrics_custom_readiness_probe      = lookup(local.postgres_ha_settings, "metrics_custom_readiness_probe", null)
-    metrics_custom_startup_probe        = lookup(local.postgres_ha_settings, "metrics_custom_startup_probe", null)
-    metrics_liveness_probe              = lookup(local.postgres_ha_settings, "metrics_liveness_probe", null)
-    metrics_readiness_probe             = lookup(local.postgres_ha_settings, "metrics_readiness_probe", null)
-    metrics_startup_probe               = lookup(local.postgres_ha_settings, "metrics_startup_probe", null)
     pgpool_custom_liveness_probe        = lookup(local.postgres_ha_settings, "pgpool_custom_liveness_probe", null)
     pgpool_custom_readiness_probe       = lookup(local.postgres_ha_settings, "pgpool_custom_readiness_probe", null)
     pgpool_custom_startup_probe         = lookup(local.postgres_ha_settings, "pgpool_custom_startup_probe", null)
@@ -154,12 +148,6 @@ locals {
     root_username                       = data.vault_generic_secret.root_user.data.username
     storage_size                        = format("%sGi", local.persistent_postgres.size)
     pv_selector_label                   = local.pv_selector_label
-    witness_custom_liveness_probe       = lookup(local.postgres_ha_settings, "witness_custom_liveness_probe", null)
-    witness_custom_readiness_probe      = lookup(local.postgres_ha_settings, "witness_custom_readiness_probe", null)
-    witness_custom_startup_probe        = lookup(local.postgres_ha_settings, "witness_custom_startup_probe", null)
-    witness_liveness_probe              = lookup(local.postgres_ha_settings, "witness_liveness_probe", null)
-    witness_readiness_probe             = lookup(local.postgres_ha_settings, "witness_readiness_probe", null)
-    witness_startup_probe               = lookup(local.postgres_ha_settings, "witness_startup_probe", null)
   }
 
   databases      = nonsensitive(toset(data.vault_kv_secrets_list_v2.db_user_list.names))

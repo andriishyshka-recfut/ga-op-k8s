@@ -140,18 +140,6 @@ Supported profile keys:
 - `pgpool_custom_liveness_probe`
 - `pgpool_custom_readiness_probe`
 - `pgpool_custom_startup_probe`
-- `witness_liveness_probe`
-- `witness_readiness_probe`
-- `witness_startup_probe`
-- `witness_custom_liveness_probe`
-- `witness_custom_readiness_probe`
-- `witness_custom_startup_probe`
-- `metrics_liveness_probe`
-- `metrics_readiness_probe`
-- `metrics_startup_probe`
-- `metrics_custom_liveness_probe`
-- `metrics_custom_readiness_probe`
-- `metrics_custom_startup_probe`
 
 Example:
 
