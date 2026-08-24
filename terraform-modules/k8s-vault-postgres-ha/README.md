@@ -120,6 +120,69 @@ and would need a `volumePermissions.image` override.
 The module expects precreated GCE persistent disks and creates matching Kubernetes PV/PVC
 resources for the Bitnami chart.
 
+## Probe configuration
+
+The module now passes through Bitnami `postgresql-ha` probe settings when they are present
+in `Settings.clusters[Cluster]["postgresql-ha"][<profile>]`. If a key is omitted, the
+chart keeps its own default.
+
+Supported profile keys:
+
+- `postgresql_liveness_probe`
+- `postgresql_readiness_probe`
+- `postgresql_startup_probe`
+- `postgresql_custom_liveness_probe`
+- `postgresql_custom_readiness_probe`
+- `postgresql_custom_startup_probe`
+- `pgpool_liveness_probe`
+- `pgpool_readiness_probe`
+- `pgpool_startup_probe`
+- `pgpool_custom_liveness_probe`
+- `pgpool_custom_readiness_probe`
+- `pgpool_custom_startup_probe`
+- `witness_liveness_probe`
+- `witness_readiness_probe`
+- `witness_startup_probe`
+- `witness_custom_liveness_probe`
+- `witness_custom_readiness_probe`
+- `witness_custom_startup_probe`
+- `metrics_liveness_probe`
+- `metrics_readiness_probe`
+- `metrics_startup_probe`
+- `metrics_custom_liveness_probe`
+- `metrics_custom_readiness_probe`
+- `metrics_custom_startup_probe`
+
+Example:
+
+```json
+{
+  "postgresql-ha": {
+    "sandbox": {
+      "postgresql_liveness_probe": {
+        "enabled": true,
+        "initialDelaySeconds": 30,
+        "periodSeconds": 10,
+        "timeoutSeconds": 5,
+        "failureThreshold": 6,
+        "successThreshold": 1
+      },
+      "pgpool_readiness_probe": {
+        "enabled": true,
+        "initialDelaySeconds": 5,
+        "periodSeconds": 5,
+        "timeoutSeconds": 5,
+        "failureThreshold": 5,
+        "successThreshold": 1
+      }
+    }
+  }
+}
+```
+
+If you need to replace Bitnami's built-in command entirely, use the matching
+`*_custom_*_probe` key instead of the standard `*_probe` one.
+
 ## Backup
 
 Backup code exists only as commented-out draft and is not active.

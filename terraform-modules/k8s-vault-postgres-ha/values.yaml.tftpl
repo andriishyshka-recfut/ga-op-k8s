@@ -36,6 +36,30 @@ postgresql:
   resources:
     ${replace(yamlencode(postgresql_resources), "\n", "\n    ")}
 %{ endif }
+%{ if postgresql_liveness_probe != null }
+  livenessProbe:
+    ${replace(yamlencode(postgresql_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if postgresql_readiness_probe != null }
+  readinessProbe:
+    ${replace(yamlencode(postgresql_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if postgresql_startup_probe != null }
+  startupProbe:
+    ${replace(yamlencode(postgresql_startup_probe), "\n", "\n    ")}
+%{ endif }
+%{ if postgresql_custom_liveness_probe != null }
+  customLivenessProbe:
+    ${replace(yamlencode(postgresql_custom_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if postgresql_custom_readiness_probe != null }
+  customReadinessProbe:
+    ${replace(yamlencode(postgresql_custom_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if postgresql_custom_startup_probe != null }
+  customStartupProbe:
+    ${replace(yamlencode(postgresql_custom_startup_probe), "\n", "\n    ")}
+%{ endif }
   podAntiAffinityPreset: "${postgresql_pod_anti_affinity_preset}"
   # Keep this block as a fallback when preset-based anti-affinity is too simple
   # and we need custom topology keys or label selectors for postgres pods.
@@ -89,6 +113,30 @@ pgpool:
   resources:
     ${replace(yamlencode(pgpool_resources), "\n", "\n    ")}
 %{ endif }
+%{ if pgpool_liveness_probe != null }
+  livenessProbe:
+    ${replace(yamlencode(pgpool_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if pgpool_readiness_probe != null }
+  readinessProbe:
+    ${replace(yamlencode(pgpool_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if pgpool_startup_probe != null }
+  startupProbe:
+    ${replace(yamlencode(pgpool_startup_probe), "\n", "\n    ")}
+%{ endif }
+%{ if pgpool_custom_liveness_probe != null }
+  customLivenessProbe:
+    ${replace(yamlencode(pgpool_custom_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if pgpool_custom_readiness_probe != null }
+  customReadinessProbe:
+    ${replace(yamlencode(pgpool_custom_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if pgpool_custom_startup_probe != null }
+  customStartupProbe:
+    ${replace(yamlencode(pgpool_custom_startup_probe), "\n", "\n    ")}
+%{ endif }
   podAntiAffinityPreset: "${pgpool_pod_anti_affinity_preset}"
   # Keep this block as a fallback when preset-based anti-affinity is too simple
   # and we need custom topology keys or label selectors for pgpool pods.
@@ -102,3 +150,59 @@ pgpool:
 
 service:
   type: ClusterIP
+
+%{ if witness_liveness_probe != null || witness_readiness_probe != null || witness_startup_probe != null || witness_custom_liveness_probe != null || witness_custom_readiness_probe != null || witness_custom_startup_probe != null }
+witness:
+%{ if witness_liveness_probe != null }
+  livenessProbe:
+    ${replace(yamlencode(witness_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if witness_readiness_probe != null }
+  readinessProbe:
+    ${replace(yamlencode(witness_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if witness_startup_probe != null }
+  startupProbe:
+    ${replace(yamlencode(witness_startup_probe), "\n", "\n    ")}
+%{ endif }
+%{ if witness_custom_liveness_probe != null }
+  customLivenessProbe:
+    ${replace(yamlencode(witness_custom_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if witness_custom_readiness_probe != null }
+  customReadinessProbe:
+    ${replace(yamlencode(witness_custom_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if witness_custom_startup_probe != null }
+  customStartupProbe:
+    ${replace(yamlencode(witness_custom_startup_probe), "\n", "\n    ")}
+%{ endif }
+%{ endif }
+
+%{ if metrics_liveness_probe != null || metrics_readiness_probe != null || metrics_startup_probe != null || metrics_custom_liveness_probe != null || metrics_custom_readiness_probe != null || metrics_custom_startup_probe != null }
+metrics:
+%{ if metrics_liveness_probe != null }
+  livenessProbe:
+    ${replace(yamlencode(metrics_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if metrics_readiness_probe != null }
+  readinessProbe:
+    ${replace(yamlencode(metrics_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if metrics_startup_probe != null }
+  startupProbe:
+    ${replace(yamlencode(metrics_startup_probe), "\n", "\n    ")}
+%{ endif }
+%{ if metrics_custom_liveness_probe != null }
+  customLivenessProbe:
+    ${replace(yamlencode(metrics_custom_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if metrics_custom_readiness_probe != null }
+  customReadinessProbe:
+    ${replace(yamlencode(metrics_custom_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if metrics_custom_startup_probe != null }
+  customStartupProbe:
+    ${replace(yamlencode(metrics_custom_startup_probe), "\n", "\n    ")}
+%{ endif }
+%{ endif }
