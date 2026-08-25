@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${name}
+  namespace: ${namespace}
+  labels:
+    app: ${name}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${name}
+  template:
+    metadata:
+      labels:
+        app: ${name}
+    spec:
+      containers:
+        - name: pgpool2-exporter
+          image: ${image}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: ${root_secret_name}
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ${root_secret_name}
+                  key: password
+            - name: POSTGRES_DATABASE
+              value: postgres
+            - name: PGPOOL_SERVICE
+              value: ${pgpool_service_name}
+            - name: PGPOOL_SERVICE_PORT
+              value: "${pgpool_service_port}"
+            - name: SSLMODE
+              value: disable
+          ports:
+            - name: metrics
+              containerPort: ${metrics_port}
+              protocol: TCP

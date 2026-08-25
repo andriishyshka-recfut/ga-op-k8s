@@ -146,6 +146,13 @@ Supported profile keys:
 - `metrics_service_monitor_namespace`
 - `metrics_service_monitor_interval`
 - `metrics_service_monitor_labels`
+- `pgpool_metrics_enabled`
+- `pgpool_metrics_image`
+- `pgpool_metrics_port`
+- `pgpool_metrics_service_monitor_enabled`
+- `pgpool_metrics_service_monitor_namespace`
+- `pgpool_metrics_service_monitor_interval`
+- `pgpool_metrics_service_monitor_labels`
 
 Default Bitnami values for `postgresql` probes:
 
@@ -240,6 +247,45 @@ Notes:
 - Prometheus Operator CRDs must already exist in the cluster.
 - For this repository, `release: prometheus` matches the label pattern already used by
   existing `ServiceMonitor` resources in `monitoring`.
+
+## Pgpool Metrics
+
+The Bitnami `postgresql-ha` chart does not expose a built-in Prometheus exporter for
+Pgpool. This module deploys a separate official `pgpool2_exporter` when requested.
+
+Supported profile keys:
+
+- `pgpool_metrics_enabled`
+- `pgpool_metrics_image`
+- `pgpool_metrics_port`
+- `pgpool_metrics_service_monitor_enabled`
+- `pgpool_metrics_service_monitor_namespace`
+- `pgpool_metrics_service_monitor_interval`
+- `pgpool_metrics_service_monitor_labels`
+
+Recommended values for this repository:
+
+```json
+{
+  "pgpool_metrics_enabled": true,
+  "pgpool_metrics_image": "pgpool/pgpool2_exporter:1.2.2",
+  "pgpool_metrics_port": 9719,
+  "pgpool_metrics_service_monitor_enabled": true,
+  "pgpool_metrics_service_monitor_namespace": "monitoring",
+  "pgpool_metrics_service_monitor_interval": "30s",
+  "pgpool_metrics_service_monitor_labels": {
+    "release": "prometheus"
+  }
+}
+```
+
+Notes:
+
+- The exporter is the official `pgpool/pgpool2_exporter` image from the Pgpool project.
+- It connects to `${cluster_name}-pgpool` on port `5432` using the root credentials already
+  managed by this module.
+- The exporter service is named `${cluster_name}-pgpool-exporter`.
+- The `ServiceMonitor` has the same name and is created in `monitoring` by default.
 
 ## Backup
 
