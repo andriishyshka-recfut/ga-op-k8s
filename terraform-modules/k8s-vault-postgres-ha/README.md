@@ -140,6 +140,33 @@ Supported profile keys:
 - `pgpool_custom_liveness_probe`
 - `pgpool_custom_readiness_probe`
 - `pgpool_custom_startup_probe`
+- `metrics_enabled`
+- `metrics_service_enabled`
+- `metrics_service_monitor_enabled`
+- `metrics_service_monitor_namespace`
+- `metrics_service_monitor_interval`
+- `metrics_service_monitor_labels`
+
+Default Bitnami values for `postgresql` probes:
+
+- `postgresql.livenessProbe.enabled = true`
+- `postgresql.livenessProbe.initialDelaySeconds = 15`
+- `postgresql.livenessProbe.periodSeconds = 10`
+- `postgresql.livenessProbe.timeoutSeconds = 5`
+- `postgresql.livenessProbe.failureThreshold = 6`
+- `postgresql.livenessProbe.successThreshold = 1`
+- `postgresql.readinessProbe.enabled = true`
+- `postgresql.readinessProbe.initialDelaySeconds = 5`
+- `postgresql.readinessProbe.periodSeconds = 10`
+- `postgresql.readinessProbe.timeoutSeconds = 5`
+- `postgresql.readinessProbe.failureThreshold = 6`
+- `postgresql.readinessProbe.successThreshold = 1`
+- `postgresql.startupProbe.enabled = false`
+- `postgresql.startupProbe.initialDelaySeconds = 5`
+- `postgresql.startupProbe.periodSeconds = 10`
+- `postgresql.startupProbe.timeoutSeconds = 5`
+- `postgresql.startupProbe.failureThreshold = 10`
+- `postgresql.startupProbe.successThreshold = 1`
 
 Example:
 
@@ -149,18 +176,18 @@ Example:
     "sandbox": {
       "postgresql_liveness_probe": {
         "enabled": true,
-        "initialDelaySeconds": 30,
-        "periodSeconds": 10,
+        "initialDelaySeconds": 15,
+        "periodSeconds": 30,
         "timeoutSeconds": 5,
         "failureThreshold": 6,
         "successThreshold": 1
       },
-      "pgpool_readiness_probe": {
+      "postgresql_readiness_probe": {
         "enabled": true,
         "initialDelaySeconds": 5,
-        "periodSeconds": 5,
+        "periodSeconds": 30,
         "timeoutSeconds": 5,
-        "failureThreshold": 5,
+        "failureThreshold": 6,
         "successThreshold": 1
       }
     }
@@ -170,6 +197,49 @@ Example:
 
 If you need to replace Bitnami's built-in command entirely, use the matching
 `*_custom_*_probe` key instead of the standard `*_probe` one.
+
+## Metrics
+
+Bitnami `postgresql-ha` can expose PostgreSQL exporter metrics for Prometheus. In this
+module, metrics are controlled from the `postgresql-ha` profile with these keys:
+
+- `metrics_enabled` — enables the `postgres_exporter` sidecar in PostgreSQL pods
+- `metrics_image_registry` / `metrics_image_repository` / `metrics_image_tag` — override
+  the exporter image when the chart default is not pullable in your registry setup
+- `metrics_service_enabled` — creates the internal metrics `Service`
+- `metrics_service_monitor_enabled` — creates a Prometheus Operator `ServiceMonitor`
+- `metrics_service_monitor_namespace` — namespace for the `ServiceMonitor`
+- `metrics_service_monitor_interval` — scrape interval, for example `30s`
+- `metrics_service_monitor_labels` — extra labels for `ServiceMonitor` discovery
+
+Recommended values for this repository:
+
+```json
+{
+  "metrics_enabled": true,
+  "metrics_image_registry": "docker.io",
+  "metrics_image_repository": "bitnamilegacy/postgres-exporter",
+  "metrics_image_tag": "0.17.1-debian-12-r16",
+  "metrics_service_enabled": true,
+  "metrics_service_monitor_enabled": true,
+  "metrics_service_monitor_namespace": "monitoring",
+  "metrics_service_monitor_interval": "30s",
+  "metrics_service_monitor_labels": {
+    "release": "prometheus"
+  }
+}
+```
+
+Notes:
+
+- Bitnami exporter metrics are disabled by default (`metrics.enabled = false`).
+- The Bitnami chart exposes metrics on its exporter service port `9187`.
+- The upstream chart version in use references
+  `docker.io/bitnami/postgres-exporter:0.17.1-debian-12-r16`, but in this repository
+  the same tag is available via `docker.io/bitnamilegacy/postgres-exporter`.
+- Prometheus Operator CRDs must already exist in the cluster.
+- For this repository, `release: prometheus` matches the label pattern already used by
+  existing `ServiceMonitor` resources in `monitoring`.
 
 ## Backup
 

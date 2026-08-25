@@ -116,6 +116,15 @@ locals {
     auth_secret_name                    = local.auth_secret_name
     cluster_name                        = local.cluster_name
     database                            = lookup(local.postgres_ha_settings, "database", "postgres")
+    metrics_enabled                     = lookup(local.postgres_ha_settings, "metrics_enabled", false)
+    metrics_image_registry              = lookup(local.postgres_ha_settings, "metrics_image_registry", "")
+    metrics_image_repository            = lookup(local.postgres_ha_settings, "metrics_image_repository", "")
+    metrics_image_tag                   = lookup(local.postgres_ha_settings, "metrics_image_tag", "")
+    metrics_service_enabled             = lookup(local.postgres_ha_settings, "metrics_service_enabled", true)
+    metrics_service_monitor_enabled     = lookup(local.postgres_ha_settings, "metrics_service_monitor_enabled", false)
+    metrics_service_monitor_interval    = lookup(local.postgres_ha_settings, "metrics_service_monitor_interval", "")
+    metrics_service_monitor_labels      = lookup(local.postgres_ha_settings, "metrics_service_monitor_labels", { release = "prometheus" })
+    metrics_service_monitor_namespace   = lookup(local.postgres_ha_settings, "metrics_service_monitor_namespace", "monitoring")
     pgpool_custom_liveness_probe        = lookup(local.postgres_ha_settings, "pgpool_custom_liveness_probe", null)
     pgpool_custom_readiness_probe       = lookup(local.postgres_ha_settings, "pgpool_custom_readiness_probe", null)
     pgpool_custom_startup_probe         = lookup(local.postgres_ha_settings, "pgpool_custom_startup_probe", null)

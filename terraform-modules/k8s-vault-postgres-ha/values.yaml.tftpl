@@ -150,3 +150,30 @@ pgpool:
 
 service:
   type: ClusterIP
+
+metrics:
+  enabled: ${metrics_enabled}
+%{ if metrics_image_repository != "" || metrics_image_tag != "" }
+  image:
+%{ if metrics_image_registry != "" }
+    registry: "${metrics_image_registry}"
+%{ endif }
+%{ if metrics_image_repository != "" }
+    repository: "${metrics_image_repository}"
+%{ endif }
+%{ if metrics_image_tag != "" }
+    tag: "${metrics_image_tag}"
+%{ endif }
+%{ endif }
+  service:
+    enabled: ${metrics_service_enabled}
+  serviceMonitor:
+    enabled: ${metrics_service_monitor_enabled}
+    namespace: "${metrics_service_monitor_namespace}"
+%{ if metrics_service_monitor_interval != "" }
+    interval: "${metrics_service_monitor_interval}"
+%{ endif }
+%{ if metrics_service_monitor_labels != null }
+    labels:
+      ${replace(yamlencode(metrics_service_monitor_labels), "\n", "\n      ")}
+%{ endif }
