@@ -56,15 +56,15 @@ locals {
           git_repository     = "gitops"
         }
       },
+      {
+        cluster-wide = {
+          kustomization_path = "./kyverno-policies/cluster-wide"
+          git_repository     = "gitops"
+        }
+      },
       var.Cluster == "sandbox" ? {
         cvat = {
           kustomization_path = "./kyverno-policies/cvat"
-          git_repository     = "gitops"
-        }
-      } : {},
-      var.Cluster == "sandbox" ? {
-        cluster-wide = {
-          kustomization_path = "./kyverno-policies/cluster-wide"
           git_repository     = "gitops"
         }
       } : {}
