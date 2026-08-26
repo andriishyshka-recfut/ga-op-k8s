@@ -71,3 +71,33 @@ resource "kubernetes_cluster_role_binding" "kyverno_admission_nodes_read" {
     namespace = "kyverno"
   }
 }
+
+resource "kubernetes_cluster_role" "kyverno_pdb_generator_background_controller" {
+  metadata {
+    name = "kyverno-pdb-generator:background-controller"
+  }
+
+  rule {
+    api_groups = ["policy"]
+    resources  = ["poddisruptionbudgets"]
+    verbs      = ["create", "get", "list", "watch", "update", "patch", "delete"]
+  }
+}
+
+resource "kubernetes_cluster_role_binding" "kyverno_pdb_generator_background_controller" {
+  metadata {
+    name = "kyverno-pdb-generator:background-controller"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = kubernetes_cluster_role.kyverno_pdb_generator_background_controller.metadata[0].name
+  }
+
+  subject {
+    kind      = "ServiceAccount"
+    name      = "kyverno-background-controller"
+    namespace = "kyverno"
+  }
+}
