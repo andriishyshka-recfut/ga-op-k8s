@@ -120,6 +120,173 @@ and would need a `volumePermissions.image` override.
 The module expects precreated GCE persistent disks and creates matching Kubernetes PV/PVC
 resources for the Bitnami chart.
 
+## Probe configuration
+
+The module now passes through Bitnami `postgresql-ha` probe settings when they are present
+in `Settings.clusters[Cluster]["postgresql-ha"][<profile>]`. If a key is omitted, the
+chart keeps its own default.
+
+Supported profile keys:
+
+- `postgresql_liveness_probe`
+- `postgresql_readiness_probe`
+- `postgresql_startup_probe`
+- `postgresql_custom_liveness_probe`
+- `postgresql_custom_readiness_probe`
+- `postgresql_custom_startup_probe`
+- `pgpool_liveness_probe`
+- `pgpool_readiness_probe`
+- `pgpool_startup_probe`
+- `pgpool_custom_liveness_probe`
+- `pgpool_custom_readiness_probe`
+- `pgpool_custom_startup_probe`
+- `metrics_enabled`
+- `metrics_service_enabled`
+- `metrics_service_monitor_enabled`
+- `metrics_service_monitor_namespace`
+- `metrics_service_monitor_interval`
+- `metrics_service_monitor_labels`
+- `pgpool_metrics_enabled`
+- `pgpool_metrics_image`
+- `pgpool_metrics_port`
+- `pgpool_metrics_service_monitor_enabled`
+- `pgpool_metrics_service_monitor_namespace`
+- `pgpool_metrics_service_monitor_interval`
+- `pgpool_metrics_service_monitor_labels`
+
+Default Bitnami values for `postgresql` probes:
+
+- `postgresql.livenessProbe.enabled = true`
+- `postgresql.livenessProbe.initialDelaySeconds = 15`
+- `postgresql.livenessProbe.periodSeconds = 10`
+- `postgresql.livenessProbe.timeoutSeconds = 5`
+- `postgresql.livenessProbe.failureThreshold = 6`
+- `postgresql.livenessProbe.successThreshold = 1`
+- `postgresql.readinessProbe.enabled = true`
+- `postgresql.readinessProbe.initialDelaySeconds = 5`
+- `postgresql.readinessProbe.periodSeconds = 10`
+- `postgresql.readinessProbe.timeoutSeconds = 5`
+- `postgresql.readinessProbe.failureThreshold = 6`
+- `postgresql.readinessProbe.successThreshold = 1`
+- `postgresql.startupProbe.enabled = false`
+- `postgresql.startupProbe.initialDelaySeconds = 5`
+- `postgresql.startupProbe.periodSeconds = 10`
+- `postgresql.startupProbe.timeoutSeconds = 5`
+- `postgresql.startupProbe.failureThreshold = 10`
+- `postgresql.startupProbe.successThreshold = 1`
+
+Example:
+
+```json
+{
+  "postgresql-ha": {
+    "sandbox": {
+      "postgresql_liveness_probe": {
+        "enabled": true,
+        "initialDelaySeconds": 15,
+        "periodSeconds": 30,
+        "timeoutSeconds": 5,
+        "failureThreshold": 6,
+        "successThreshold": 1
+      },
+      "postgresql_readiness_probe": {
+        "enabled": true,
+        "initialDelaySeconds": 5,
+        "periodSeconds": 30,
+        "timeoutSeconds": 5,
+        "failureThreshold": 6,
+        "successThreshold": 1
+      }
+    }
+  }
+}
+```
+
+If you need to replace Bitnami's built-in command entirely, use the matching
+`*_custom_*_probe` key instead of the standard `*_probe` one.
+
+## Metrics
+
+Bitnami `postgresql-ha` can expose PostgreSQL exporter metrics for Prometheus. In this
+module, metrics are controlled from the `postgresql-ha` profile with these keys:
+
+- `metrics_enabled` — enables the `postgres_exporter` sidecar in PostgreSQL pods
+- `metrics_image_registry` / `metrics_image_repository` / `metrics_image_tag` — override
+  the exporter image when the chart default is not pullable in your registry setup
+- `metrics_service_enabled` — creates the internal metrics `Service`
+- `metrics_service_monitor_enabled` — creates a Prometheus Operator `ServiceMonitor`
+- `metrics_service_monitor_namespace` — namespace for the `ServiceMonitor`
+- `metrics_service_monitor_interval` — scrape interval, for example `30s`
+- `metrics_service_monitor_labels` — extra labels for `ServiceMonitor` discovery
+
+Recommended values for this repository:
+
+```json
+{
+  "metrics_enabled": true,
+  "metrics_image_registry": "docker.io",
+  "metrics_image_repository": "bitnamilegacy/postgres-exporter",
+  "metrics_image_tag": "0.17.1-debian-12-r16",
+  "metrics_service_enabled": true,
+  "metrics_service_monitor_enabled": true,
+  "metrics_service_monitor_namespace": "monitoring",
+  "metrics_service_monitor_interval": "30s",
+  "metrics_service_monitor_labels": {
+    "release": "prometheus"
+  }
+}
+```
+
+Notes:
+
+- Bitnami exporter metrics are disabled by default (`metrics.enabled = false`).
+- The Bitnami chart exposes metrics on its exporter service port `9187`.
+- The upstream chart version in use references
+  `docker.io/bitnami/postgres-exporter:0.17.1-debian-12-r16`, but in this repository
+  the same tag is available via `docker.io/bitnamilegacy/postgres-exporter`.
+- Prometheus Operator CRDs must already exist in the cluster.
+- For this repository, `release: prometheus` matches the label pattern already used by
+  existing `ServiceMonitor` resources in `monitoring`.
+
+## Pgpool Metrics
+
+The Bitnami `postgresql-ha` chart does not expose a built-in Prometheus exporter for
+Pgpool. This module deploys a separate official `pgpool2_exporter` when requested.
+
+Supported profile keys:
+
+- `pgpool_metrics_enabled`
+- `pgpool_metrics_image`
+- `pgpool_metrics_port`
+- `pgpool_metrics_service_monitor_enabled`
+- `pgpool_metrics_service_monitor_namespace`
+- `pgpool_metrics_service_monitor_interval`
+- `pgpool_metrics_service_monitor_labels`
+
+Recommended values for this repository:
+
+```json
+{
+  "pgpool_metrics_enabled": true,
+  "pgpool_metrics_image": "pgpool/pgpool2_exporter:1.2.2",
+  "pgpool_metrics_port": 9719,
+  "pgpool_metrics_service_monitor_enabled": true,
+  "pgpool_metrics_service_monitor_namespace": "monitoring",
+  "pgpool_metrics_service_monitor_interval": "30s",
+  "pgpool_metrics_service_monitor_labels": {
+    "release": "prometheus"
+  }
+}
+```
+
+Notes:
+
+- The exporter is the official `pgpool/pgpool2_exporter` image from the Pgpool project.
+- It connects to `${cluster_name}-pgpool` on port `5432` using the root credentials already
+  managed by this module.
+- The exporter service is named `${cluster_name}-pgpool-exporter`.
+- The `ServiceMonitor` has the same name and is created in `monitoring` by default.
+
 ## Backup
 
 Backup code exists only as commented-out draft and is not active.

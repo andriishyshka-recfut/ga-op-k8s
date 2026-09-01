@@ -36,6 +36,30 @@ postgresql:
   resources:
     ${replace(yamlencode(postgresql_resources), "\n", "\n    ")}
 %{ endif }
+%{ if postgresql_liveness_probe != null }
+  livenessProbe:
+    ${replace(yamlencode(postgresql_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if postgresql_readiness_probe != null }
+  readinessProbe:
+    ${replace(yamlencode(postgresql_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if postgresql_startup_probe != null }
+  startupProbe:
+    ${replace(yamlencode(postgresql_startup_probe), "\n", "\n    ")}
+%{ endif }
+%{ if postgresql_custom_liveness_probe != null }
+  customLivenessProbe:
+    ${replace(yamlencode(postgresql_custom_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if postgresql_custom_readiness_probe != null }
+  customReadinessProbe:
+    ${replace(yamlencode(postgresql_custom_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if postgresql_custom_startup_probe != null }
+  customStartupProbe:
+    ${replace(yamlencode(postgresql_custom_startup_probe), "\n", "\n    ")}
+%{ endif }
   podAntiAffinityPreset: "${postgresql_pod_anti_affinity_preset}"
   # Keep this block as a fallback when preset-based anti-affinity is too simple
   # and we need custom topology keys or label selectors for postgres pods.
@@ -89,6 +113,30 @@ pgpool:
   resources:
     ${replace(yamlencode(pgpool_resources), "\n", "\n    ")}
 %{ endif }
+%{ if pgpool_liveness_probe != null }
+  livenessProbe:
+    ${replace(yamlencode(pgpool_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if pgpool_readiness_probe != null }
+  readinessProbe:
+    ${replace(yamlencode(pgpool_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if pgpool_startup_probe != null }
+  startupProbe:
+    ${replace(yamlencode(pgpool_startup_probe), "\n", "\n    ")}
+%{ endif }
+%{ if pgpool_custom_liveness_probe != null }
+  customLivenessProbe:
+    ${replace(yamlencode(pgpool_custom_liveness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if pgpool_custom_readiness_probe != null }
+  customReadinessProbe:
+    ${replace(yamlencode(pgpool_custom_readiness_probe), "\n", "\n    ")}
+%{ endif }
+%{ if pgpool_custom_startup_probe != null }
+  customStartupProbe:
+    ${replace(yamlencode(pgpool_custom_startup_probe), "\n", "\n    ")}
+%{ endif }
   podAntiAffinityPreset: "${pgpool_pod_anti_affinity_preset}"
   # Keep this block as a fallback when preset-based anti-affinity is too simple
   # and we need custom topology keys or label selectors for pgpool pods.
@@ -102,3 +150,30 @@ pgpool:
 
 service:
   type: ClusterIP
+
+metrics:
+  enabled: ${metrics_enabled}
+%{ if metrics_image_repository != "" || metrics_image_tag != "" }
+  image:
+%{ if metrics_image_registry != "" }
+    registry: "${metrics_image_registry}"
+%{ endif }
+%{ if metrics_image_repository != "" }
+    repository: "${metrics_image_repository}"
+%{ endif }
+%{ if metrics_image_tag != "" }
+    tag: "${metrics_image_tag}"
+%{ endif }
+%{ endif }
+  service:
+    enabled: ${metrics_service_enabled}
+  serviceMonitor:
+    enabled: ${metrics_service_monitor_enabled}
+    namespace: "${metrics_service_monitor_namespace}"
+%{ if metrics_service_monitor_interval != "" }
+    interval: "${metrics_service_monitor_interval}"
+%{ endif }
+%{ if metrics_service_monitor_labels != null }
+    labels:
+      ${replace(yamlencode(metrics_service_monitor_labels), "\n", "\n      ")}
+%{ endif }
