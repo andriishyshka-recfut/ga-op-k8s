@@ -16,7 +16,7 @@ resource "vault_kubernetes_auth_backend_role" "harbor_role" {
 }
 
 resource "vault_kubernetes_auth_backend_role" "dome_role" {
-  count = local.appSpecificVaultRoles
+  count                            = local.appSpecificVaultRoles
   backend                          = data.vault_auth_backend.kubernetes.path
   role_name                        = "dome"
   bound_service_account_names      = ["default"]
@@ -25,7 +25,7 @@ resource "vault_kubernetes_auth_backend_role" "dome_role" {
   token_policies                   = ["dome"]
 }
 resource "vault_kubernetes_auth_backend_role" "minion_role" {
-  count = local.appSpecificVaultRoles
+  count                            = local.appSpecificVaultRoles
   backend                          = data.vault_auth_backend.kubernetes.path
   role_name                        = "minion"
   bound_service_account_names      = ["default"]
@@ -34,7 +34,7 @@ resource "vault_kubernetes_auth_backend_role" "minion_role" {
   token_policies                   = ["minion"]
 }
 resource "vault_kubernetes_auth_backend_role" "paste" {
-  count = local.appSpecificVaultRoles
+  count                            = local.appSpecificVaultRoles
   backend                          = data.vault_auth_backend.kubernetes.path
   role_name                        = "paste"
   bound_service_account_names      = ["default"]

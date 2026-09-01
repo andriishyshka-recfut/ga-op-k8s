@@ -4,7 +4,9 @@ resource "helm_release" "postgresql_ha" {
   repository        = "oci://registry-1.docker.io/bitnamicharts"
   namespace         = local.namespace
   wait              = true
+  wait_for_jobs     = true
   atomic            = true
+  timeout           = 900
   dependency_update = true
   reset_values      = true
   version           = local.chart_version
