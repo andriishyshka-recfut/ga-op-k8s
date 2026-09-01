@@ -1,7 +1,7 @@
 
 data "vault_generic_secret" "users_credentials_from_vault" {
   for_each = local.minioCreds
-  path = "${local.vaultUsersCredentialsPath}/${each.value}"
+  path     = "${local.vaultUsersCredentialsPath}/${each.value}"
 }
 
 resource "kubernetes_secret" "minio_credentials_kubernetes_secret" {

@@ -9,6 +9,14 @@ locals {
   #   for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name]
   #   if can(namespace.skipNsCreation) == false
   # ]))
+  harborEnable      = true
+  artifactoryEnable = true
+
+  enabled_repo_secrets = compact([
+    local.harborEnable ? "harbor" : null,
+    local.artifactoryEnable ? "artifactory-creds" : null,
+  ])
+
 
   namespaceNames = {
     for namespace in var.Settings.clusters[var.Cluster].namespaces : namespace.name => namespace
@@ -21,18 +29,34 @@ locals {
     namespace.name => namespace.admins...
     if can(namespace.admins)
   }
+
   developers = [
     "dev@geminiadvisory.io", "gke-security-groups-rf-dev@geminiadvisory.io"
   ]
+
   namespaceDevAccess = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [
       namespace.name
     ] if can(namespace.devAccess)
   ]))
 
-  injectHarborImagePullSecrets = toset(flatten([
-    for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "injectHarborImagePullSecrets", false)
-  ]))
+  repoSecretNamespaces = toset([
+    for namespace in var.Settings.clusters[var.Cluster].namespaces :
+    namespace.name
+    if lookup(namespace, "repoSecret", false)
+  ])
+
+  injectHarborImagePullSecrets = toset([
+    for namespace in var.Settings.clusters[var.Cluster].namespaces :
+    namespace.name
+    if lookup(namespace, "repoSecret", false) && local.harborEnable
+  ])
+
+  injectArtifactoryImagePullSecrets = toset([
+    for namespace in var.Settings.clusters[var.Cluster].namespaces :
+    namespace.name
+    if lookup(namespace, "repoSecret", false) && local.artifactoryEnable
+  ])
 
   injectHarborUserPassword = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "harborUserPassword", false)

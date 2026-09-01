@@ -49,5 +49,8 @@ path "secret/data/certificates/*" {
 path "secret/metadata/certificates/*" {
 	capabilities=["read","list"]
 }
+path "secret/data/misc/artifactory/creds" {
+  capabilities = ["read"]
+}
 EOT
 }
