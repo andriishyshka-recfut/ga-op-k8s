@@ -26,8 +26,8 @@ path "secret/data/mw/monitoring/otel" {
 path "secret/data/misc/oidc/vault_token" {
    capabilities = ["read","list"]
 }
-path "secret/data/wl/datafix/datafix/birl" {
-   capabilities = ["read","list"]
+path "secret/data/wl/datafix/datafix/*" {
+  capabilities = ["read","list"]
 }
 path "secret/data/mw/postgres/db-users/birl" {
    capabilities = ["read","list"]
