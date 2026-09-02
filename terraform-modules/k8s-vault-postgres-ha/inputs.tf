@@ -132,6 +132,9 @@ locals {
     pgpool_image_repository             = lookup(local.postgres_ha_settings, "pgpool_image_repository", "")
     pgpool_image_tag                    = lookup(local.postgres_ha_settings, "pgpool_image_tag", "")
     pgpool_liveness_probe               = lookup(local.postgres_ha_settings, "pgpool_liveness_probe", null)
+    pgpool_metrics_enabled              = local.pgpool_metrics_enabled
+    pgpool_metrics_image                = local.pgpool_metrics_image
+    pgpool_metrics_port                 = local.pgpool_metrics_port
     pgpool_passthrough                  = length(local.database_names) > 0
     pgpool_pod_anti_affinity_preset     = lookup(local.postgres_ha_settings, "pgpool_pod_anti_affinity_preset", "hard")
     pgpool_replicas                     = lookup(local.postgres_ha_settings, "pgpool_replicas", 1)
@@ -140,6 +143,7 @@ locals {
     pgpool_pdb_min_available            = lookup(local.postgres_ha_settings, "pgpool_pdb_min_available", 1)
     pgpool_resources                    = lookup(local.postgres_ha_settings, "pgpool_resources", null)
     pgpool_startup_probe                = lookup(local.postgres_ha_settings, "pgpool_startup_probe", null)
+    root_secret_name                    = local.root_secret_name
     postgres_replicas                   = local.postgres_ha_settings.replicas
     postgresql_custom_liveness_probe    = lookup(local.postgres_ha_settings, "postgresql_custom_liveness_probe", null)
     postgresql_custom_readiness_probe   = lookup(local.postgres_ha_settings, "postgresql_custom_readiness_probe", null)
