@@ -147,6 +147,49 @@ pgpool:
   pdb:
     create: ${pgpool_pdb_create}
     minAvailable: ${pgpool_pdb_min_available}
+%{ if pgpool_metrics_enabled }
+  # The chart's pgpool NetworkPolicy (enabled + allowExternal by chart default)
+  # only opens ingress on the pgpool port itself (and, incidentally, the
+  # unrelated top-level postgres_exporter port). Since the exporter below is a
+  # sidecar sharing the pgpool pod's network, its port needs its own ingress
+  # rule or Prometheus gets refused/blocked the same way a missing Endpoint
+  # would -- this was invisible while the exporter ran as its own Deployment.
+  networkPolicy:
+    extraIngress:
+      - ports:
+          - port: ${pgpool_metrics_port}
+  # pgpool2_exporter as a sidecar so every pgpool replica has its own exporter,
+  # talking to pgpool over the pod's loopback instead of the shared Service --
+  # this gives per-pod metrics instead of one exporter randomly pinned to
+  # whichever pgpool pod its long-lived connection first landed on.
+  sidecars:
+    - name: pgpool2-exporter
+      image: ${pgpool_metrics_image}
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: POSTGRES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: ${root_secret_name}
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ${root_secret_name}
+              key: password
+        - name: POSTGRES_DATABASE
+          value: postgres
+        - name: PGPOOL_SERVICE
+          value: "127.0.0.1"
+        - name: PGPOOL_SERVICE_PORT
+          value: "5432"
+        - name: SSLMODE
+          value: disable
+      ports:
+        - name: metrics
+          containerPort: ${pgpool_metrics_port}
+          protocol: TCP
+%{ endif }
 
 service:
   type: ClusterIP

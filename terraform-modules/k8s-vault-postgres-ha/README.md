@@ -149,10 +149,10 @@ Supported profile keys:
 - `pgpool_metrics_enabled`
 - `pgpool_metrics_image`
 - `pgpool_metrics_port`
-- `pgpool_metrics_service_monitor_enabled`
-- `pgpool_metrics_service_monitor_namespace`
-- `pgpool_metrics_service_monitor_interval`
-- `pgpool_metrics_service_monitor_labels`
+- `pgpool_metrics_pod_monitor_enabled`
+- `pgpool_metrics_pod_monitor_namespace`
+- `pgpool_metrics_pod_monitor_interval`
+- `pgpool_metrics_pod_monitor_labels`
 
 Default Bitnami values for `postgresql` probes:
 
@@ -251,17 +251,22 @@ Notes:
 ## Pgpool Metrics
 
 The Bitnami `postgresql-ha` chart does not expose a built-in Prometheus exporter for
-Pgpool. This module deploys a separate official `pgpool2_exporter` when requested.
+Pgpool. This module runs the official `pgpool2_exporter` as a **sidecar inside every
+pgpool pod** (via the chart's `pgpool.sidecars`), connecting over the pod's loopback
+(`127.0.0.1:5432`) rather than through the shared pgpool `Service`. This gives one
+metrics target per pgpool replica; an exporter reached only through the Service would
+instead sit on a single long-lived connection pinned to whichever pgpool pod it first
+landed on, hiding the other replicas.
 
 Supported profile keys:
 
 - `pgpool_metrics_enabled`
 - `pgpool_metrics_image`
 - `pgpool_metrics_port`
-- `pgpool_metrics_service_monitor_enabled`
-- `pgpool_metrics_service_monitor_namespace`
-- `pgpool_metrics_service_monitor_interval`
-- `pgpool_metrics_service_monitor_labels`
+- `pgpool_metrics_pod_monitor_enabled`
+- `pgpool_metrics_pod_monitor_namespace`
+- `pgpool_metrics_pod_monitor_interval`
+- `pgpool_metrics_pod_monitor_labels`
 
 Recommended values for this repository:
 
@@ -270,10 +275,10 @@ Recommended values for this repository:
   "pgpool_metrics_enabled": true,
   "pgpool_metrics_image": "pgpool/pgpool2_exporter:1.2.2",
   "pgpool_metrics_port": 9719,
-  "pgpool_metrics_service_monitor_enabled": true,
-  "pgpool_metrics_service_monitor_namespace": "monitoring",
-  "pgpool_metrics_service_monitor_interval": "30s",
-  "pgpool_metrics_service_monitor_labels": {
+  "pgpool_metrics_pod_monitor_enabled": true,
+  "pgpool_metrics_pod_monitor_namespace": "monitoring",
+  "pgpool_metrics_pod_monitor_interval": "30s",
+  "pgpool_metrics_pod_monitor_labels": {
     "release": "prometheus"
   }
 }
@@ -281,11 +286,20 @@ Recommended values for this repository:
 
 Notes:
 
-- The exporter is the official `pgpool/pgpool2_exporter` image from the Pgpool project.
-- It connects to `${cluster_name}-pgpool` on port `5432` using the root credentials already
-  managed by this module.
-- The exporter service is named `${cluster_name}-pgpool-exporter`.
-- The `ServiceMonitor` has the same name and is created in `monitoring` by default.
+- The exporter is the official `pgpool/pgpool2_exporter` image from the Pgpool project,
+  injected as a sidecar container, and authenticates with the root credentials already
+  managed by this module (same secret as `db_bootstrap`/superuser).
+- Scraping uses a Prometheus Operator `PodMonitor` (not a `ServiceMonitor`, since there
+  is no dedicated exporter Service) named `${cluster_name}-pgpool-exporter`, selecting
+  pods by `app.kubernetes.io/instance=${cluster_name}` +
+  `app.kubernetes.io/component=pgpool` in `monitoring` by default.
+- This only covers pgpool-level state (backend node status/role, health checks,
+  replication delay, connection pool saturation). It does not cover: pod/container
+  resource usage (CPU/RAM/OOMKilled — use cAdvisor/kube-state-metrics), why a
+  connection to pgpool is refused at the Kubernetes level (CrashLoopBackOff, missing
+  Endpoints, PVC issues — check pod status/events directly), or Postgres-level
+  internals (locks, vacuum, WAL — that's the separate `postgres_exporter` sidecar under
+  [Metrics](#metrics) above).
 
 ## Backup
 

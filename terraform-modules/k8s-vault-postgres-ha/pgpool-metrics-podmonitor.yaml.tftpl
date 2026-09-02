@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: ${name}
+  namespace: ${pod_monitor_namespace}
+  labels:
+%{ for k, v in pod_monitor_labels ~}
+    ${k}: "${v}"
+%{ endfor ~}
+spec:
+  namespaceSelector:
+    matchNames:
+      - ${namespace}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: ${cluster_name}
+      app.kubernetes.io/component: pgpool
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      interval: ${pod_monitor_interval}
