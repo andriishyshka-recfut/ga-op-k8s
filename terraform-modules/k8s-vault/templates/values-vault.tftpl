@@ -34,7 +34,7 @@ server:
   ha:
     enabled: true
     replicas: ${values.replicas}
-    # disruptionBudget:
-    #   maxUnavailable: 0
+    disruptionBudget:
+      maxUnavailable: 1
 
 
