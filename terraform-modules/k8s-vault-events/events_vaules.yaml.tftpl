@@ -31,7 +31,7 @@ config:
     - name: "elastic"
       elasticsearch:
         hosts:
-          - https://${elastic_prefix}-es-http:9200
+          - https://${elastic_url}
         index: kube-events
         username: kube-events
         password: $${ELASTIC_EVENTS_PASSWORD}

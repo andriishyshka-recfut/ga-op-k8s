@@ -11,3 +11,10 @@ module "beats" {
   auditbeats_setttings  = lookup(var.Settings.clusters[var.Cluster][var.Color], "auditbeats", {})
   logstash_list         = {}
 }
+
+module "events" {
+  source   = "../../../terraform-modules/k8s-vault-events"
+  Cluster  = var.Cluster
+  Color    = var.Color
+  Settings = var.Settings
+}
