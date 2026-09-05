@@ -49,7 +49,7 @@ resource "kubernetes_secret" "filebeat_elastic_ca" {
 
 data "vault_generic_secret" "prod_mon_ca" {
   count = var.Cluster == "sandbox" ? 1 : 0 
-  path     = "secret/misc/certificates/red-monitoring-ca"
+  path     = "secret/misc/ca/red-monitoring-ca"
 }
 
 resource "kubernetes_secret" "prod_mon_ca" {
