@@ -18,6 +18,7 @@ resources:
     ephemeral-storage: 100Mi
     memory: 256Mi
 config:
+  clusterName: ${cluster}-${color}
   logLevel: ${log_level}
   logFormat: pretty
   kubeQPS: 100
@@ -33,7 +34,7 @@ config:
         hosts:
           - https://${elastic_url}
         index: kube-events
-        username: kube-events
+        username: kube-events-${cluster}
         password: $${ELASTIC_EVENTS_PASSWORD}
         useEventID: false
         deDot: true

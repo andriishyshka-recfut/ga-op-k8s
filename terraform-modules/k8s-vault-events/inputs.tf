@@ -3,6 +3,6 @@ variable "Color" {}
 variable "Cluster" {}
 
 locals {
-  namespace = "monitoring"
+  namespace         = "monitoring"
   elasticSecretName = var.Cluster == "production" ? "elastic-credentials" : "prod-mon-elastic-creds"
 }
