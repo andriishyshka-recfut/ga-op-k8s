@@ -19,4 +19,6 @@ locals {
   artifactoryUrl        = "repo-external.recfut.com"
   enableArtifactoryMtls = lookup(var.Settings, "enableArtifactoryMtls", false) != false ? 1 : 0
   dateNow               = formatdate("YYYYMMDD", timestamp())
+  cert_manager_issuers = templatefile(
+    "${path.module}/cert-manager-issuers.tftpl",{ istio = var.Settings.clusters[var.Cluster][var.Color].istio })
 }

@@ -62,6 +62,12 @@ locals {
           git_repository     = "gitops"
         }
       },
+      {
+        cert-manager = {
+          kustomization_path = "./kyverno-policies/cert-manager"
+          git_repository     = "gitops"
+        }
+      },      
       var.Cluster == "sandbox" ? {
         cvat = {
           kustomization_path = "./kyverno-policies/cvat"

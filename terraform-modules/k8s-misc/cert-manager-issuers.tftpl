@@ -1,0 +1,81 @@
+
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+ name: letsencrypt-staging
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+         name: letsencrypt-staging
+    solvers:
+%{for ingress,values in istio ~}
+%{ if ingress != "bastion" ~}
+      - selector:
+          matchLabels:
+            istio-gateway: ingressgateway-${ingress}
+        http01:
+          ingress:
+            class: istio
+            ingressTemplate:
+              metadata:
+                annotations:
+                  istio-gateway: ingressgateway-${ingress}
+%{ endif ~}
+%{ endfor }
+      - http01:
+          ingress:
+            class: istio
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+ name: letsencrypt-prod
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+         name: letsencrypt-prod
+    solvers:
+%{for ingress,values in istio ~}
+%{ if ingress != "bastion" ~}
+      - selector:
+          matchLabels:
+            istio-gateway: ingressgateway-${ingress}
+        http01:
+          ingress:
+            class: istio
+            ingressTemplate:
+              metadata:
+                annotations:
+                  istio-gateway: ingressgateway-${ingress}
+%{ endif ~}
+%{ endfor }
+      - http01:
+          ingress:
+            class: istio
+%{ for ingress, values in istio ~}
+%{ if ingress != "bastion" ~}
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: letsencrypt-access-${ingress}
+  namespace: istio-ingress
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      istio: ingressgateway-${ingress}
+  rules:
+    - to:
+        - operation:
+            methods: ["GET"]
+            paths: ["/.well-known/acme-challenge/*"]
+%{ endif ~}
+%{ endfor ~}

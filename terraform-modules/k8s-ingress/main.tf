@@ -1,6 +1,6 @@
 resource "kubectl_manifest" "ingress_letsencrypt_cert" {
   for_each   = local.certManager
-  yaml_body  = templatefile("${path.module}/letsencrypt.tftpl", merge({ domains = each.value.domain }, { name = each.key }))
+  yaml_body  = templatefile("${path.module}/letsencrypt.tftpl", merge({ values = each.value, name = each.key, }))
   depends_on = [kubectl_manifest.ingress_virtualservice]
 }
 

@@ -18,14 +18,18 @@ resource "helm_release" "cert_manager" {
 
 resource "null_resource" "kubectl_letsencrypt_issuers" {
   triggers = {
-    # playbook_contents  = md5(file("${path.module}/certificates.yaml.tmpl"))
+    manifest_hash = sha256(local.cert_manager_issuers)
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
-    command     = <<COMMAND
+    environment = {
+      ISSUERS_YAML = local.cert_manager_issuers
+    }
+    command = <<COMMAND
+    printf '%s\n' "$ISSUERS_YAML" |\
     kubectl apply --server ${local.gkeClusterEndpoint}  \
      --token ${local.gkeBearerToken}  --insecure-skip-tls-verify=true \
-     -f ${path.module}/cert-manager-issuers.yaml
+     -f -
 COMMAND
   }
   depends_on = [
