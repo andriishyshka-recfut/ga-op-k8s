@@ -36,7 +36,11 @@ locals {
         kustomization_path = "./clusters/${var.Cluster}-${var.Color}",
         git_repository     = "k8s-configs"
       }
-    }
+      cluster-wide-red = {
+        kustomization_path = "./kyverno-policies/cluster-wide-red"
+        git_repository     = "gitops"
+      }
+    },
     notification-providers = {
       slack = {
         type         = "slack",
