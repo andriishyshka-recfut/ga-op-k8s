@@ -59,8 +59,8 @@ COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
-    get pvc -n kafka | grep -e kafka-cluster- | awk '{print $1}'\
-    | xargs -n 1 -I{} \
+    get pvc -n kafka --no-headers | grep -e kafka-cluster- | awk '{print $1}'\
+    | xargs -r -n 1 -I{} \
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
@@ -132,8 +132,8 @@ COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
-    get pvc -n mongo | grep -e data-mongo- | awk '{print $1}'\
-    | xargs -n 1 -I{} \
+    get pvc -n mongo --no-headers | grep -e data-mongo- | awk '{print $1}'\
+    | xargs -r -n 1 -I{} \
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
@@ -148,8 +148,8 @@ COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
-    get pvc -n mongo-auth | grep -e data-mongo- | awk '{print $1}'\
-    | xargs -n 1 -I{} \
+    get pvc -n mongo-auth --no-headers | grep -e data-mongo- | awk '{print $1}'\
+    | xargs -r -n 1 -I{} \
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
@@ -163,8 +163,8 @@ COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
-    get pvc -n minio-helm | grep -e data0-minio- | awk '{print $1}'\
-    | xargs -n 1 -I{} \
+    get pvc -n minio-helm --no-headers | grep -e data0-minio- | awk '{print $1}'\
+    | xargs -r -n 1 -I{} \
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
@@ -197,8 +197,8 @@ COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
-    get pvc -n postgres | grep -e postgres- | awk '{print $1}'\
-    | xargs -n 1 -I{} \
+    get pvc -n postgres --no-headers | grep -e postgres- | awk '{print $1}'\
+    | xargs -r -n 1 -I{} \
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
@@ -251,7 +251,7 @@ ${join("\n\n", [
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
-    get pvc -n ${target.namespace} | grep -e ${target.pvc_prefix}- | awk '{print $1}' \
+    get pvc -n ${target.namespace} --no-headers | grep -e ${target.pvc_prefix}- | awk '{print $1}' \
     | xargs -r -n 1 -I{} \
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
@@ -274,8 +274,8 @@ stop_elastic_resources = <<COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
-    get pvc -n elastic | awk '{print $1}'\
-    | xargs -n 1 -I{} \
+    get pvc -n elastic --no-headers | awk '{print $1}'\
+    | xargs -r -n 1 -I{} \
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
     --insecure-skip-tls-verify=true  \
