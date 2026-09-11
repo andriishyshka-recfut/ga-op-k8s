@@ -143,3 +143,51 @@ resource "kubernetes_cluster_role_binding" "kyverno_cert_manager_istio" {
     namespace = "kyverno"
   }
 }
+
+resource "kubernetes_cluster_role" "kyverno_update_statefulsets" {
+  metadata {
+    name = "kyverno:update-statefulsets"
+  }
+
+  rule {
+    api_groups = ["apps"]
+    resources  = ["statefulsets"]
+    verbs      = ["get", "list", "watch", "update", "patch"]
+  }
+}
+
+resource "kubernetes_cluster_role_binding" "kyverno_update_statefulsets_background_controller" {
+  metadata {
+    name = "kyverno-update-statefulsets:background-controller"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = kubernetes_cluster_role.kyverno_update_statefulsets.metadata[0].name
+  }
+
+  subject {
+    kind      = "ServiceAccount"
+    name      = "kyverno-background-controller"
+    namespace = "kyverno"
+  }
+}
+
+resource "kubernetes_cluster_role_binding" "kyverno_update_statefulsets_reports_controller" {
+  metadata {
+    name = "kyverno-update-statefulsets:reports-controller"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = kubernetes_cluster_role.kyverno_update_statefulsets.metadata[0].name
+  }
+
+  subject {
+    kind      = "ServiceAccount"
+    name      = "kyverno-reports-controller"
+    namespace = "kyverno"
+  }
+}
