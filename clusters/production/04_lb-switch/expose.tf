@@ -14,7 +14,7 @@ data "vault_generic_secret" "k8s_auth" {
   path = local.activeClusterVaultPath
 }
 locals {
-  activeCluster          = "blue" # Change color!!!!
+  activeCluster          = "green" # Change color!!!!
   activeClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
 }
 provider "helm" {
@@ -33,7 +33,7 @@ provider "kubernetes" {
 terraform {
   backend "gcs" {
     bucket = "terraform-state-production111"
-    prefix = "terraform-production-lb-switch/state-2026-08-15" # Change state!!!!
+    prefix = "terraform-production-lb-switch/state-2026-09-12" # Change state!!!!
   }
   required_providers {
     helm = {

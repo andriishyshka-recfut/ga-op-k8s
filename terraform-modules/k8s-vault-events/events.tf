@@ -121,7 +121,7 @@ resource "kubernetes_job" "events_install" {
             name = "ES_PASSWORD"
             value_from {
               secret_key_ref {
-                name = local.elasticSecretName
+                name = "filebeat-${var.Color}-elastic-credentials"
                 key  = "elastic"
               }
             }
