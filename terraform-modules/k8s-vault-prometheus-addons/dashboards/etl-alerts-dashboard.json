@@ -191,7 +191,7 @@
       "id": 3,
       "type": "table",
       "title": "Firing — Current Alerts in namespace=etl",
-      "description": "One row per alert instance. The namespace=etl filter applies to the alert's own label. Active since displays the ActiveAt timestamp reported by Prometheus through ALERTS_FOR_STATE, including time spent pending. For rules with a for duration, this precedes the transition to firing. It is the recorded alert activation time; the underlying container error can have occurred earlier. Unix seconds are converted to milliseconds and displayed with the time zone offset. Unavailable means the matching activation timestamp is missing or invalid; the alert remains visible. All labels are retained to distinguish resources. The sample/query Time and metric name are hidden. ALERTS does not include annotations (summary/description) or silence/inhibition status. Queries are evaluated at the end of the dashboard time range; keep it set to now for the current state. Configure Thanos deduplication for HA replicas.",
+      "description": "One row per alert instance. The namespace=etl filter applies to the alert's own label. Active since displays the ActiveAt timestamp reported by Prometheus through ALERTS_FOR_STATE, including time spent pending. For rules with a for duration, this precedes the transition to firing. It is the recorded alert activation time; the underlying container error can have occurred earlier. Unix seconds are converted to milliseconds and displayed with the time zone offset. Unavailable means the matching activation timestamp is missing or invalid; the alert remains visible. Displayed columns, in order: Active since, job_name, severity, alertstate. job_name is read from the alert label with that exact name. Each alert instance retains a separate row. ALERTS does not include annotations (summary/description) or silence/inhibition status. Queries are evaluated at the end of the dashboard time range; keep it set to now for the current state. Configure Thanos deduplication for HA replicas.",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_THANOS}"
@@ -219,29 +219,27 @@
       ],
       "transformations": [
         {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "job_name",
+                "severity",
+                "alertstate"
+              ]
+            }
+          }
+        },
+        {
           "id": "organize",
           "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true
-            },
+            "excludeByName": {},
             "indexByName": {
-              "alertname": 0,
-              "Value": 1,
+              "Value": 0,
+              "job_name": 1,
               "severity": 2,
-              "cluster": 3,
-              "namespace": 4,
-              "pod": 5,
-              "container": 6,
-              "alertstate": 7,
-              "reason": 8,
-              "node": 9,
-              "deployment": 10,
-              "statefulset": 11,
-              "daemonset": 12,
-              "persistentvolumeclaim": 13,
-              "job": 14,
-              "instance": 15
+              "alertstate": 3
             },
             "renameByName": {
               "Value": "Active since"
@@ -267,72 +265,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "alertname"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 300
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "severity"
             },
             "properties": [
               {
                 "id": "custom.width",
                 "value": 110
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "cluster"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 140
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "namespace"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 110
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "pod"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 600
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "container"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 180
               }
             ]
           },
@@ -484,8 +422,8 @@
         },
         "sortBy": [
           {
-            "displayName": "alertname",
-            "desc": false
+            "displayName": "Active since",
+            "desc": true
           }
         ]
       }
@@ -494,7 +432,7 @@
       "id": 4,
       "type": "table",
       "title": "Pending — Awaiting Activation",
-      "description": "One row per alert instance. The namespace=etl filter applies to the alert's own label. Active since displays the ActiveAt timestamp reported by Prometheus through ALERTS_FOR_STATE, including time spent pending. For rules with a for duration, this precedes the transition to firing. It is the recorded alert activation time; the underlying container error can have occurred earlier. Unix seconds are converted to milliseconds and displayed with the time zone offset. Unavailable means the matching activation timestamp is missing or invalid; the alert remains visible. All labels are retained to distinguish resources. The sample/query Time and metric name are hidden. ALERTS does not include annotations (summary/description) or silence/inhibition status. Queries are evaluated at the end of the dashboard time range; keep it set to now for the current state. Configure Thanos deduplication for HA replicas.",
+      "description": "One row per alert instance. The namespace=etl filter applies to the alert's own label. Active since displays the ActiveAt timestamp reported by Prometheus through ALERTS_FOR_STATE, including time spent pending. For rules with a for duration, this precedes the transition to firing. It is the recorded alert activation time; the underlying container error can have occurred earlier. Unix seconds are converted to milliseconds and displayed with the time zone offset. Unavailable means the matching activation timestamp is missing or invalid; the alert remains visible. Displayed columns, in order: Active since, job_name, severity, alertstate. job_name is read from the alert label with that exact name. Each alert instance retains a separate row. ALERTS does not include annotations (summary/description) or silence/inhibition status. Queries are evaluated at the end of the dashboard time range; keep it set to now for the current state. Configure Thanos deduplication for HA replicas.",
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_THANOS}"
@@ -522,29 +460,27 @@
       ],
       "transformations": [
         {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "job_name",
+                "severity",
+                "alertstate"
+              ]
+            }
+          }
+        },
+        {
           "id": "organize",
           "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true
-            },
+            "excludeByName": {},
             "indexByName": {
-              "alertname": 0,
-              "Value": 1,
+              "Value": 0,
+              "job_name": 1,
               "severity": 2,
-              "cluster": 3,
-              "namespace": 4,
-              "pod": 5,
-              "container": 6,
-              "alertstate": 7,
-              "reason": 8,
-              "node": 9,
-              "deployment": 10,
-              "statefulset": 11,
-              "daemonset": 12,
-              "persistentvolumeclaim": 13,
-              "job": 14,
-              "instance": 15
+              "alertstate": 3
             },
             "renameByName": {
               "Value": "Active since"
@@ -570,72 +506,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "alertname"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 300
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "severity"
             },
             "properties": [
               {
                 "id": "custom.width",
                 "value": 110
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "cluster"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 140
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "namespace"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 110
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "pod"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 600
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "container"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 180
               }
             ]
           },
@@ -787,8 +663,8 @@
         },
         "sortBy": [
           {
-            "displayName": "alertname",
-            "desc": false
+            "displayName": "Active since",
+            "desc": true
           }
         ]
       }
