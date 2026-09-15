@@ -1,0 +1,824 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_THANOS",
+      "label": "Thanos / Prometheus",
+      "description": "Select an existing Prometheus data source that queries your Thanos instance. ALERTS is required to list alerts; ALERTS_FOR_STATE supplies their Active since timestamps.",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.4.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": []
+  },
+  "description": "Current Prometheus/Thanos alerts labeled namespace=etl, including firing and pending states across all alert rules. Uses instant queries and refreshes every 30 seconds. The selected data source must expose ALERTS. ALERTS_FOR_STATE supplies the Active since column, which shows the recorded start of the current active state, including pending time. Missing timestamps are displayed as Unavailable. Counters represent alert instances. Silenced or inhibited alerts remain listed while the rule is firing. For KubernetesPodContainerErrorExit, the rule's [12h] lookback window may keep an alert firing after the container recovers. A zero count does not confirm data source health.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Firing — Alert Count",
+      "description": "Number of alert instances labeled namespace=etl in this state. Counts correspond to table rows. A single alert rule or Slack message can cover multiple instances. 0 means the query returned no matching series; it does not verify data source health.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_THANOS}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_THANOS}"
+          },
+          "editorMode": "code",
+          "expr": "count(ALERTS{namespace=\"etl\", alertstate=\"firing\"} == 1) or vector(0)",
+          "format": "time_series",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "exemplar": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "min": 0,
+          "unit": "short",
+          "mappings": [],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "wideLayout": true
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Pending — Alert Count",
+      "description": "Number of alert instances labeled namespace=etl in this state. Counts correspond to table rows. A single alert rule or Slack message can cover multiple instances. 0 means the query returned no matching series; it does not verify data source health.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_THANOS}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_THANOS}"
+          },
+          "editorMode": "code",
+          "expr": "count(ALERTS{namespace=\"etl\", alertstate=\"pending\"} == 1) or vector(0)",
+          "format": "time_series",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "exemplar": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "min": 0,
+          "unit": "short",
+          "mappings": [],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "wideLayout": true
+      }
+    },
+    {
+      "id": 3,
+      "type": "table",
+      "title": "Firing — Current Alerts in namespace=etl",
+      "description": "One row per alert instance. The namespace=etl filter applies to the alert's own label. Active since displays the ActiveAt timestamp reported by Prometheus through ALERTS_FOR_STATE, including time spent pending. For rules with a for duration, this precedes the transition to firing. It is the recorded alert activation time; the underlying container error can have occurred earlier. Unix seconds are converted to milliseconds and displayed with the time zone offset. Unavailable means the matching activation timestamp is missing or invalid; the alert remains visible. All labels are retained to distinguish resources. The sample/query Time and metric name are hidden. ALERTS does not include annotations (summary/description) or silence/inhibition status. Queries are evaluated at the end of the dashboard time range; keep it set to now for the current state. Configure Thanos deduplication for HA replicas.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_THANOS}"
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_THANOS}"
+          },
+          "editorMode": "code",
+          "expr": "(\n  (ALERTS{namespace=\"etl\", alertstate=\"firing\"} == 1)\n  * ignoring (alertstate) group_left()\n    (ALERTS_FOR_STATE{namespace=\"etl\"} > 0)\n) * 1000\nor\n(\n  (ALERTS{namespace=\"etl\", alertstate=\"firing\"} == 1) * 0\n)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "exemplar": false
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true
+            },
+            "indexByName": {
+              "alertname": 0,
+              "Value": 1,
+              "severity": 2,
+              "cluster": 3,
+              "namespace": 4,
+              "pod": 5,
+              "container": 6,
+              "alertstate": 7,
+              "reason": 8,
+              "node": 9,
+              "deployment": 10,
+              "statefulset": 11,
+              "daemonset": 12,
+              "persistentvolumeclaim": 13,
+              "job": 14,
+              "instance": 15
+            },
+            "renameByName": {
+              "Value": "Active since"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false,
+            "minWidth": 100
+          },
+          "mappings": [],
+          "noValue": "—"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alertname"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "severity"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cluster"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 140
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "namespace"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pod"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 600
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "container"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 180
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alertstate"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "severity"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "critical": {
+                        "color": "red",
+                        "index": 0,
+                        "text": "critical"
+                      },
+                      "warning": {
+                        "color": "orange",
+                        "index": 1,
+                        "text": "warning"
+                      },
+                      "info": {
+                        "color": "blue",
+                        "index": 2,
+                        "text": "info"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alertstate"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "firing": {
+                        "color": "red",
+                        "index": 0,
+                        "text": "firing"
+                      },
+                      "pending": {
+                        "color": "orange",
+                        "index": 1,
+                        "text": "pending"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Active since"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time:YYYY-MM-DD HH:mm:ss Z"
+              },
+              {
+                "id": "custom.width",
+                "value": 260
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
+              },
+              {
+                "id": "noValue",
+                "value": "Unavailable"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Unavailable",
+                        "index": 0
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unavailable",
+                        "index": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "footer": {
+          "show": false,
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ]
+        },
+        "sortBy": [
+          {
+            "displayName": "alertname",
+            "desc": false
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "type": "table",
+      "title": "Pending — Awaiting Activation",
+      "description": "One row per alert instance. The namespace=etl filter applies to the alert's own label. Active since displays the ActiveAt timestamp reported by Prometheus through ALERTS_FOR_STATE, including time spent pending. For rules with a for duration, this precedes the transition to firing. It is the recorded alert activation time; the underlying container error can have occurred earlier. Unix seconds are converted to milliseconds and displayed with the time zone offset. Unavailable means the matching activation timestamp is missing or invalid; the alert remains visible. All labels are retained to distinguish resources. The sample/query Time and metric name are hidden. ALERTS does not include annotations (summary/description) or silence/inhibition status. Queries are evaluated at the end of the dashboard time range; keep it set to now for the current state. Configure Thanos deduplication for HA replicas.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_THANOS}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_THANOS}"
+          },
+          "editorMode": "code",
+          "expr": "(\n  (ALERTS{namespace=\"etl\", alertstate=\"pending\"} == 1)\n  * ignoring (alertstate) group_left()\n    (ALERTS_FOR_STATE{namespace=\"etl\"} > 0)\n) * 1000\nor\n(\n  (ALERTS{namespace=\"etl\", alertstate=\"pending\"} == 1) * 0\n)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "exemplar": false
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true
+            },
+            "indexByName": {
+              "alertname": 0,
+              "Value": 1,
+              "severity": 2,
+              "cluster": 3,
+              "namespace": 4,
+              "pod": 5,
+              "container": 6,
+              "alertstate": 7,
+              "reason": 8,
+              "node": 9,
+              "deployment": 10,
+              "statefulset": 11,
+              "daemonset": 12,
+              "persistentvolumeclaim": 13,
+              "job": 14,
+              "instance": 15
+            },
+            "renameByName": {
+              "Value": "Active since"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false,
+            "minWidth": 100
+          },
+          "mappings": [],
+          "noValue": "—"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alertname"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "severity"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cluster"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 140
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "namespace"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pod"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 600
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "container"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 180
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alertstate"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "severity"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "critical": {
+                        "color": "red",
+                        "index": 0,
+                        "text": "critical"
+                      },
+                      "warning": {
+                        "color": "orange",
+                        "index": 1,
+                        "text": "warning"
+                      },
+                      "info": {
+                        "color": "blue",
+                        "index": 2,
+                        "text": "info"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alertstate"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "firing": {
+                        "color": "red",
+                        "index": 0,
+                        "text": "firing"
+                      },
+                      "pending": {
+                        "color": "orange",
+                        "index": 1,
+                        "text": "pending"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Active since"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time:YYYY-MM-DD HH:mm:ss Z"
+              },
+              {
+                "id": "custom.width",
+                "value": 260
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
+              },
+              {
+                "id": "noValue",
+                "value": "Unavailable"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Unavailable",
+                        "index": 0
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unavailable",
+                        "index": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "footer": {
+          "show": false,
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ]
+        },
+        "sortBy": [
+          {
+            "displayName": "alertname",
+            "desc": false
+          }
+        ]
+      }
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": [
+    "etl",
+    "alerts",
+    "thanos"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "15s",
+      "30s",
+      "1m",
+      "5m"
+    ]
+  },
+  "timezone": "browser",
+  "title": "ETL — Current Alerts",
+  "uid": null,
+  "version": 1,
+  "weekStart": ""
+}
