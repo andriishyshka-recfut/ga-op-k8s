@@ -1,6 +1,10 @@
 {
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
+  "metadata": {
+    "name": "anq2z9d",
+    "namespace": "default"
+  },
   "spec": {
     "annotations": [
       {
@@ -1242,7 +1246,7 @@
     ],
     "timeSettings": {
       "timezone": "browser",
-      "from": "now-1h",
+      "from": "now-5m",
       "to": "now",
       "autoRefresh": "1m",
       "autoRefreshIntervals": [
