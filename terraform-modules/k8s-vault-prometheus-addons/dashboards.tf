@@ -24,6 +24,6 @@ resource "kubernetes_config_map" "custom_dashboards" {
     "k8s-volumes-cluster.json" = file("${path.module}/dashboards/k8s-volumes-cluster.json")
     "k8s-volumes-namespace.json" = file("${path.module}/dashboards/k8s-volumes-namespace.json")
     "thanos-alerts-by-severity.json" = file("${path.module}/dashboards/thanos-alerts-by-severity.json")
-    "etl-alerts-dashboard.json" = file("${path.module}/dashboards/etl-alerts-dashboard.json")
+    "etl-workload-failures.json" = file("${path.module}/dashboards/etl-workload-failures.json")
   }
 }
