@@ -26,7 +26,7 @@ locals {
     bucketsIlm      = local.bucketsIlm
     minioCa         = local.minioCa
     minioSA         = "secret/misc/sa/google/minio-sa"
-    minioBackupUser = "secret/mw/minio/root-helm"
+    minioBackupUser = "secret/mw/minio/root"
   }
 }
 

@@ -1,7 +1,9 @@
 {
-    "buckets": {     
+    "buckets": {  
+        "debug": {"expiration": ["30d"],"gcs_bucket_name": "mng-debug-ardent-rarity-239115","custom_expiration": ["7d","14d"]},
+        "etl-logstash": {"gcs_bucket_name": "mng-etl-logstash-ardent-rarity-239115"},   
+        "reports": {"gcs_bucket_name": "reports-ardent-rarity-239115"},
         "tier-sbx-test": {"expiration": ["30d"],"gcs_tier_name":"GCS_TIER-SBX-TEST","custom_expiration": ["7d","14d"]},
-        "telegram": {"gcs_bucket_name": "mng-telegram-ardent-rarity-239115","custom_expiration": ["14d","30d"]},
-        "debug": {"expiration": ["30d"],"gcs_bucket_name": "mng-debug-ardent-rarity-239115","custom_expiration": ["7d","14d"]}   
+        "telegram": {"gcs_bucket_name": "mng-telegram-ardent-rarity-239115","custom_expiration": ["14d","30d","365d"]}   
         }
 }
