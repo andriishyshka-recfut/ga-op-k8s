@@ -132,6 +132,9 @@ locals {
     pgpool_image_repository             = lookup(local.postgres_ha_settings, "pgpool_image_repository", "")
     pgpool_image_tag                    = lookup(local.postgres_ha_settings, "pgpool_image_tag", "")
     pgpool_liveness_probe               = lookup(local.postgres_ha_settings, "pgpool_liveness_probe", null)
+    pgpool_num_init_children            = local.postgres_ha_settings.pgpool_num_init_children
+    pgpool_max_pool                     = local.postgres_ha_settings.pgpool_max_pool
+    pgpool_update_strategy              = { type = "RollingUpdate", rollingUpdate = { maxSurge = 0, maxUnavailable = 1 } }
     pgpool_metrics_enabled              = local.pgpool_metrics_enabled
     pgpool_metrics_image                = local.pgpool_metrics_image
     pgpool_metrics_port                 = local.pgpool_metrics_port
@@ -144,6 +147,7 @@ locals {
     pgpool_resources                    = lookup(local.postgres_ha_settings, "pgpool_resources", null)
     pgpool_startup_probe                = lookup(local.postgres_ha_settings, "pgpool_startup_probe", null)
     root_secret_name                    = local.root_secret_name
+    postgresql_max_connections          = local.postgres_ha_settings.postgresql_max_connections
     postgres_replicas                   = local.postgres_ha_settings.replicas
     postgresql_custom_liveness_probe    = lookup(local.postgres_ha_settings, "postgresql_custom_liveness_probe", null)
     postgresql_custom_readiness_probe   = lookup(local.postgres_ha_settings, "postgresql_custom_readiness_probe", null)

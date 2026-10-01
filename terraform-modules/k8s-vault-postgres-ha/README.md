@@ -120,6 +120,21 @@ and would need a `volumePermissions.image` override.
 The module expects precreated GCE persistent disks and creates matching Kubernetes PV/PVC
 resources for the Bitnami chart.
 
+## Connection budget
+
+Connection settings are required in each profile, with no fallback defaults:
+
+| Setting | Production | Sandbox / red |
+| --- | --- | --- |
+| `postgresql_max_connections` | 200 | 100 |
+| `pgpool_num_init_children` | 16 | 32 |
+| `pgpool_max_pool` | 4 | 1 |
+| PostgreSQL memory request / limit | 1 GiB / 2 GiB | 256 MiB / 512 MiB |
+
+With two Pgpool replicas, cached backend connections can reach 128 per PostgreSQL
+server in production and 64 in sandbox/red, leaving headroom for other connections.
+Pgpool rollout strategy is hardcoded in locals: `maxSurge=0`, `maxUnavailable=1`.
+
 ## Probe configuration
 
 The module now passes through Bitnami `postgresql-ha` probe settings when they are present
