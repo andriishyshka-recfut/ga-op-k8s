@@ -14,6 +14,7 @@ global:
 
 postgresql:
   replicaCount: ${postgres_replicas}
+  maxConnections: "${postgresql_max_connections}"
 %{ if postgresql_image_repository != "" || postgresql_image_tag != "" }
   image:
 %{ if postgresql_image_registry != "" }
@@ -73,6 +74,11 @@ postgresql:
 
 pgpool:
   replicaCount: ${pgpool_replicas}
+  numInitChildren: "${pgpool_num_init_children}"
+  maxPool: "${pgpool_max_pool}"
+  # Avoid an extra active pool consuming backend connection headroom on rollout.
+  updateStrategy:
+    ${replace(yamlencode(pgpool_update_strategy), "\n", "\n    ")}
   srCheckUsername: "repmgr"
 %{ if pgpool_passthrough }
   # Custom pool_hba.conf with a mixed frontend auth model (first match wins):
