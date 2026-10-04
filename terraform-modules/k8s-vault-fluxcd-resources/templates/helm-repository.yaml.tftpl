@@ -7,5 +7,12 @@ spec:
   interval: 30s
   type: ${ values.type}
   url: ${ values.url}
+%{ if lookup(values, "secret_ref", false) != false ~}
   secretRef:
-    name: ${ lookup(values ,"helm_credentials", globals.helm_credentials) }
+    name: ${values.secret_ref}
+%{ endif ~}
+%{ if lookup(values, "cert_secret_ref", false) != false ~}
+  certSecretRef:
+    name: ${values.cert_secret_ref}
+%{ endif ~}
+

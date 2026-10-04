@@ -34,6 +34,17 @@ locals {
   gkeKmsVolumeKey = var.Settings.clusters[var.Cluster].persistent_resources.gke_kms_volume_key
   gkeRegion       = var.Settings.clusters[var.Cluster].region
   subnetIps       = [for color in var.ClusterColors : var.Settings.clusters[var.Cluster][color].subnets.pods_secondary_range]
+  k8s_additional_subnets = { for subnet_name, subnet in lookup(var.Settings, "additional_subnets", {}) :
+    subnet_name => [
+      for range_name, range in lookup(subnet, "secondary_ip_ranges", {}) :
+      range_name
+      if try(range.color, null) == var.Color
+    ]
+    if anytrue([
+      for range in values(lookup(subnet, "secondary_ip_ranges", {})) :
+      try(range.color, null) == var.Color
+    ])
+  }
 }
 
 

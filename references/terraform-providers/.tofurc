@@ -1,0 +1,15 @@
+provider_installation {
+  filesystem_mirror {
+    path = "/usr/share/terraform/plugins"
+    include = [
+      "registry.opentofu.org/aminueza/minio",
+      "registry.opentofu.org/hashicorp/helm",
+    ]
+  }
+  direct {
+    exclude = [
+      "registry.opentofu.org/aminueza/minio",
+      "registry.opentofu.org/hashicorp/helm",
+    ]
+  }
+}

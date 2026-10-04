@@ -78,11 +78,9 @@ hostAliases: []
 #  - "foo.local"
 #  - "bar.local"
 
-image: "harbor.regemini.io/op/logstash-custom"
+image: "${artifactory_repo}/logstash-custom"
 imageTag: ${values.logstash_version}
 imagePullPolicy: "Always"
-imagePullSecrets:
-  - name: harbor
 httpPort: 9600
 
 podAnnotations:

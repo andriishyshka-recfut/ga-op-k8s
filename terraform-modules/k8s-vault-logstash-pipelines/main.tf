@@ -9,12 +9,13 @@ resource "helm_release" "logstash" {
   force_update = true
   replace      = true
   values = [
-    templatefile("${path.module}/templates/logstash.tftpl",{
-      name = each.key
-      values = each.value
+    templatefile("${path.module}/templates/logstash.tftpl", {
+      name             = each.key
+      values           = each.value
+      artifactory_repo = local.artifactory_repo
     })
   ]
-  
+
 
   depends_on = [kubernetes_secret.logstash_elastic_ca, kubernetes_secret.logstash_es_creds, kubernetes_secret.minio_creds, kubernetes_manifest.tmp_logstash, kubernetes_job.logstash_user]
 }

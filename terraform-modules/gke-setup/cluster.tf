@@ -100,6 +100,13 @@ resource "google_container_cluster" "cluster" {
   ip_allocation_policy {
     cluster_secondary_range_name  = element(google_compute_subnetwork.net.secondary_ip_range, 0).range_name
     services_secondary_range_name = element(google_compute_subnetwork.net.secondary_ip_range, 1).range_name
+    dynamic "additional_ip_ranges_config" {
+      for_each = local.k8s_additional_subnets
+      content {
+        subnetwork           = additional_ip_ranges_config.key
+        pod_ipv4_range_names = additional_ip_ranges_config.value
+      }
+    }
   }
 
   network_policy {
@@ -142,6 +149,7 @@ resource "google_container_cluster" "cluster" {
   }
   lifecycle {
     ignore_changes = all
+    # ignore_changes = [node_config[0].tags]
   }
 
   workload_identity_config {
@@ -239,15 +247,19 @@ resource "google_container_node_pool" "nodepool_additional" {
     }
   }
   dynamic "network_config" {
-    for_each = lookup(each.value, "pod_ip_subnetwork_name", false) != false ? [0] : []
+    for_each = try(each.value.network_config, null) != null ? [each.value.network_config] : []
     content {
-      pod_range            = local.additionalNodepools[each.key].pod_ip_subnetwork_name
+      pod_range = lookup(network_config.value, "subnetwork", null) == null ? network_config.value.pod_range : one([
+        for range_name, range in lookup(
+          var.Settings.additional_subnets[network_config.value.subnetwork],
+          "secondary_ip_ranges",
+          {}
+        ) :
+        range_name
+        if try(range.color, null) == var.Color
+      ])
       enable_private_nodes = true
-      # additional_pod_network_configs {
-      #   subnetwork          = "${var.Cluster}-${var.Color}-subnetwork"
-      #   secondary_pod_range = local.additionalNodepools[each.key].pod_ip_subnetwork_name
-      #   max_pods_per_node   = each.value.maxPodsPerNode
-      # }
+      subnetwork           = lookup(network_config.value, "subnetwork", null)
     }
   }
   management {

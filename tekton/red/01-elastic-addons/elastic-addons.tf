@@ -27,6 +27,7 @@ module "logstash" {
   Cluster          = var.Cluster
   Color            = var.Color
   depends_on       = [module.kibana]
+  RepositoryDomain = local.artifactoryRepoDomain
 }
 
 module "beats" {

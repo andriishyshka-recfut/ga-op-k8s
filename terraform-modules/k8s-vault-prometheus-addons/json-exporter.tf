@@ -38,7 +38,7 @@ resource "kubernetes_deployment_v1" "json_exporter" {
 
       spec {
         container {
-          image = "harbor.regemini.io/op/json-exporter:${local.json_exporter_version}"
+          image = "${var.artifactoryRepoDomain}/ga-op-docker-local/json-exporter:${local.json_exporter_version}"
           name  = "json-exporter"
           args = ["/workspace/json-exporter-config.yaml"]
           resources {

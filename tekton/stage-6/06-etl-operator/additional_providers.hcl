@@ -1,3 +1,3 @@
 locals {
-  additional_providers = ["kubectl"]
+  additional_providers = ["kubectl","artifactory_mtls"]
 }

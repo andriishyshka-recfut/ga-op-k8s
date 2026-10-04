@@ -6,8 +6,10 @@ locals {
   namespace = "flux-system"
   globals = {
     gitlab_token     = "gitlab-token",
+    github_token     = "github-token",
     helm_credentials = "helm-credentials",
     namespace        = "flux-system"
+    provider         = "generic"
   }
   git-repositories       = lookup(var.Values, "git-repositories", {})
   helm-repositories      = lookup(var.Values, "helm-repositories", {})
