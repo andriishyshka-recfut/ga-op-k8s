@@ -1,6 +1,7 @@
 variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
+variable "artifactoryRepoDomain" {}
 
 variable "OidcSecretVaultPath" {
   default = "secret/oidc_google_prod"

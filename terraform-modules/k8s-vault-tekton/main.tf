@@ -69,6 +69,7 @@ resource "kubernetes_config_map" "cluster-settings" {
     color      = var.Color
     configPath = local.configPath
     vaultAddr  = var.VaultAddress
+    runtimeContext = "tekton"
   }
 }
 

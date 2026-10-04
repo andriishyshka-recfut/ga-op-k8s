@@ -6,6 +6,14 @@ resource "google_compute_subnetwork" "net" {
   network                  = data.google_compute_network.vpc.self_link
   purpose                  = try(each.value.purpose, null)
   private_ip_google_access = try(each.value.private_ip_google_access, true)
+  dynamic "secondary_ip_range" {
+    for_each = try(each.value.secondary_ip_ranges, {})
+
+    content {
+      range_name    = secondary_ip_range.key
+      ip_cidr_range = secondary_ip_range.value.range
+    }
+  }
 }
 
 resource "google_compute_address" "internal_ingress" {

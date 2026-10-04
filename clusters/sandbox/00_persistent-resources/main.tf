@@ -12,9 +12,10 @@ provider "google" {
 }
 
 module "infra-persistent" {
-  source   = "../../../terraform-modules/cluster-persistent-resources"
-  Settings = var.Settings
-  Cluster  = "sandbox"
+  source             = "../../../terraform-modules/cluster-persistent-resources"
+  Settings           = var.Settings
+  Cluster            = "sandbox"
+  destination_ranges = {}
 
   # providers = {
   #   google = google

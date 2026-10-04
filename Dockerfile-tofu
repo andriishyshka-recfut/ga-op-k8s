@@ -31,8 +31,10 @@ RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git && 
     mkdir -p /home/runner/workdir && mkdir /home/fake && chmod 777 /home/fake
 
 RUN mkdir -p /usr/share/terraform/plugins/registry.opentofu.org/aminueza/minio/3.40.1/linux_amd64/
-COPY ./references/minio-provider/terraform-provider-minio /usr/share/terraform/plugins/registry.opentofu.org/aminueza/minio/3.40.1/linux_amd64/terraform-provider-minio_v.3.40.1
-COPY ./references/minio-provider/.tofurc /etc/tofurc
+RUN mkdir -p /usr/share/terraform/plugins/registry.opentofu.org/hashicorp/helm/3.3.0/linux_amd64/
+COPY ./references/terraform-providers/terraform-provider-minio /usr/share/terraform/plugins/registry.opentofu.org/aminueza/minio/3.40.1/linux_amd64/terraform-provider-minio_v.3.40.1
+COPY ./references/terraform-providers/terraform-provider-helm /usr/share/terraform/plugins/registry.opentofu.org/hashicorp/helm/3.3.0/linux_amd64/terraform-provider-helm_v3.3.0
+COPY ./references/terraform-providers/.tofurc /etc/tofurc
 
 
 USER 10123:10123

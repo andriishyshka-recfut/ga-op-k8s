@@ -6,4 +6,5 @@ module "logstash" {
   Color            = var.Color
   Settings         = var.Settings
   depends_on       = [module.kibana]
+  RepositoryDomain = local.artifactoryRepoDomain
 }

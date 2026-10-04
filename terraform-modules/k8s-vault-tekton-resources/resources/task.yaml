@@ -39,6 +39,11 @@ spec:
             configMapKeyRef:
               name: cluster-settings
               key: vaultAddr
+        - name: TF_VAR_RuntimeContext
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: runtimeContext
       script: |
        set +x
        set -e
@@ -172,6 +177,11 @@ spec:
             configMapKeyRef:
               name: cluster-settings
               key: vaultAddr
+        - name: TF_VAR_RuntimeContext
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: runtimeContext
       script: |
        set +x
        set -e
@@ -239,6 +249,11 @@ spec:
             configMapKeyRef:
               name: cluster-settings
               key: vaultAddr
+        - name: TF_VAR_RuntimeContext
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: runtimeContext
       script: |
        set +x
        set -e
@@ -372,6 +387,11 @@ spec:
             configMapKeyRef:
               name: cluster-settings
               key: vaultAddr
+        - name: TF_VAR_RuntimeContext
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: runtimeContext
       script: |
        set +x
        set -e

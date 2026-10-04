@@ -6,6 +6,8 @@ variable "logstash_list" {
   default = { logstash : {} }
 }
 variable "logstash_version" {}
+variable "RepositoryDomain" {}
+
 locals {
   es_user             = "elastic"
   es_creds_secretname = "elastic-credentials"
@@ -32,6 +34,7 @@ locals {
   vault_url = var.Color == "red" ? "https://vault.p.regemini.io" : "http://vault-active.vault:8200"   
 
   logstash_list = { for name, value  in var.logstash_list : name => merge(local.valuesDefault, value)}
+  artifactory_repo = "${var.RepositoryDomain}/ga-op-docker-local"
 
   valuesDefault = {
     namespace = local.namespace

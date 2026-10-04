@@ -49,5 +49,14 @@ path "secret/data/red/mw/logstash/*" {
 path "secret/data/wl/reports/minio"{
    capabilities = ["read","list"]
 }
+path "secret/data/misc/github/app/recfut-gemini-fluxcd" {
+  capabilities = ["read"]
+}
+path "secret/data/misc/artifactory/creds" {
+  capabilities = ["read"]
+}
+path "secret/data/misc/artifactory/certs" {
+  capabilities = ["read"]
+}
 EOT
 }

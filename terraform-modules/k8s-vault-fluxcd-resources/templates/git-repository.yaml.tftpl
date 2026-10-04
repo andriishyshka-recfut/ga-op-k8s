@@ -6,7 +6,8 @@ metadata:
 spec:
   interval: 30s
   url: ${ values.url }
+  provider: ${lookup (values, "provider", globals.provider )}
   ref:
     branch: ${ values.git_branch }
   secretRef:
-    name: ${ lookup(values ,"gitlab_token", globals.gitlab_token) }
+    name: ${ lookup(values, "provider", globals.provider ) == "github" ? globals.github_token : globals.gitlab_token }

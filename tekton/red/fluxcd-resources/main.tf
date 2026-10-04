@@ -9,22 +9,32 @@ locals {
   values = {
     git-repositories = {
       k8s-configs = {
+        # url      = "https://github.com/recfut/ga-op-k8s-configs.git"
+        # provider = "github"
         url        = "https://gitlab.regemini.com/op/k8s-configs.git",
         git_branch = var.Cluster
       },
       op-charts = {
+        # url      = "https://github.com/recfut/ga-op-k8s-configs.git"
+        # provider = "github"
         url        = "https://gitlab.regemini.com/op/charts.git",
         git_branch = "main"
       },
       gitops = {
+        # url      = "https://github.com/recfut/ga-op-k8s-configs.git"
+        # provider = "github"
         url        = "https://gitlab.regemini.com/op/gitops.git",
         git_branch = var.Cluster
       }
     },
     helm-repositories = {
       op = {
-        type = "oci",
-        url  = "oci://harbor.regemini.io/helm"
+        type       = "oci",
+        url        = "oci://harbor.regemini.io/helm"
+        secret_ref = "helm-credentials"
+        # url             = "oci://${local.artifactoryRepoDomain}/ga-helm-local/charts",
+        # secret_ref      = "artifactory-client-creds",
+        # cert_secret_ref = "artifactory-client-mtls"
       },
       ww-gitops = {
         type = "oci",

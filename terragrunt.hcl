@@ -6,9 +6,18 @@ locals {
   default_state_name = element(split("/", get_terragrunt_dir()), length(split("/", get_terragrunt_dir())) - 1)
   state_config_path = "${get_terragrunt_dir()}/state.hcl"
   terraform_state_name = fileexists(local.state_config_path) ? read_terragrunt_config(local.state_config_path).locals.terraform_state_name : local.default_state_name
+  prepare_artifactory_mtls = contains(local.additional_providers, "artifactory_mtls") && get_env("TF_VAR_RuntimeContext", "local") == "tekton"
 }
 terraform {
+  before_hook "prepare_artifactory_mtls" {
+    commands = ["plan", "apply"]
 
+    execute = local.prepare_artifactory_mtls? [
+      "sh",
+      "-c",
+      "terragrunt --working-dir '${get_parent_terragrunt_dir()}/terraform-modules/k8s-vault-artifactory-mtls' apply -auto-approve"
+    ] : ["true"]
+  }
   extra_arguments "custom_vars" {
     commands = [
       "init",

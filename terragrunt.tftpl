@@ -2,6 +2,7 @@ variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
 variable "VaultAddress" {}
+variable "RuntimeContext" {}
 
 
 provider "vault" {
@@ -19,6 +20,7 @@ locals {
     API_KEY                = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
     CLUSTER_CA_CERTIFICATE = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
   }
+  artifactoryRepoDomain = var.RuntimeContext == "tekton" ? "repo-external.recfut.com" : "repo.recfut.com"
 }
 
 data "vault_generic_secret" "k8s_auth" {
@@ -27,6 +29,11 @@ data "vault_generic_secret" "k8s_auth" {
 
 data "vault_generic_secret" "harbor_token" {
   path = "secret/goharbor/docker_login"
+}
+
+data "vault_kv_secret_v2" "artifactory_creds" {
+  mount = "secret"
+  name  = "misc/artifactory/creds"
 }
 
 provider "helm"  {
@@ -67,15 +74,19 @@ terraform {
     namespace = "tekton-pipelines"
     config_path = "./kubeconfig" 
   }
-%{ if contains(additional_providers,"kubectl") ~}
   required_providers {
+    helm = {
+      source  = "hashicorp/helm"
+      version = "= 3.3.0"
+    }
+
+%{ if contains(additional_providers, "kubectl") ~}
     kubectl = {
       source  = "gavinbunney/kubectl"
       version = ">= 1.7.0"
     }
-  }
 %{ endif ~}
+  }
 }
-
 provider "random" {}
 
