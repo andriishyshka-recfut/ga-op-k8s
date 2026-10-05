@@ -50,5 +50,8 @@ path "secret/data/mw/monitoring/otel" {
 path "secret/data/misc/slack/app/SANDBOX" {
    capabilities = ["read","list"]
 }
+path "secret/data/mw/postgres/db-users/census" {
+   capabilities = ["read","list"]
+}
 EOT
 }
