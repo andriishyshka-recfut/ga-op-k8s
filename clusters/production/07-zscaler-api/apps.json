@@ -170,6 +170,10 @@
     "red-vandelay": {
       "domain": "vandelay.regemini.com",
       "segment_group": "production-red"
+    },
+    "github": {
+      "domain": "github.com",
+      "segment_group": "github"
     }
   }
 }
