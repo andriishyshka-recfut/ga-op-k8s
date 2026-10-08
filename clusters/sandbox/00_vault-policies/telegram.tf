@@ -20,5 +20,8 @@ path "secret/data/telegram/os3/minio-attachment" {
 path "secret/data/wl/datafix/datafix/birl" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/postgres/db-users/census" {
+   capabilities = ["read","list"]
+}
 EOT
 }
