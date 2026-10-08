@@ -1,7 +1,7 @@
 {
   "APP-GA-OP": {
     "scim_groups": [ "APP-GA-OP" ],
-    "groups": [ "production-www", "production-k8s", "production-red", "github" ]
+    "groups": [ "production-www", "production-k8s", "production-red", "github", "recordedfuture" ]
   },
   "APP-GA-DEV": {
     "scim_groups": ["APP-GA-DEV"],
@@ -24,6 +24,7 @@
       "red-minio-api-red",
       "red-mon-elastic",
       "red-sonar",
+      "repo-recfut",
       "rp"
     ]
   },
@@ -90,6 +91,7 @@
       "red-pfi",
       "red-sonar",
       "red-vandelay",
+      "repo-recfut",
       "vault"
     ]
   },

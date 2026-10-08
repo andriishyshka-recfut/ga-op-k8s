@@ -3,7 +3,8 @@
     "production-www",
     "production-k8s",
     "production-red",
-    "github"
+    "github",
+    "recordedfuture"
   ],
   "applications": {
     "kubernetes-cluster": {
@@ -174,6 +175,13 @@
     "github": {
       "domain": "github.com",
       "segment_group": "github"
+    },
+    "repo-recfut": {
+      "domain": "repo-external.recfut.com",
+      "segment_group": "recordedfuture",
+      "tcp_port_range": [
+        { "from": "443", "to": "443" }
+      ]
     }
   }
 }
