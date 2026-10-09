@@ -55,7 +55,7 @@ resource "kubernetes_job" "configure_users_access" {
       spec {
         container {
           name    = "mc"
-          image   = "minio/mc:${local.mcImageTag}"
+          image   = "harbor.regemini.io/mirror/mc:${local.mcImageTag}"
           command = ["bash", "/etc/secret/users.sh"]
           env {
             name = "accesskey"

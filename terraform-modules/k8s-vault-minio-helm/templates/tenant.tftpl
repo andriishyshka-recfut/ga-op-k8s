@@ -10,6 +10,13 @@ tenant:
   ##  configuration:
   ##    name: minio-cluster
   ## Specification for MinIO Pool(s) in this Tenant.
+
+  image:
+    repository: ${values.repository}
+    pullPolicy: IfNotPresent
+  imagePullSecret:
+    name: ${values.pull_secret}
+
   pools:
     - servers: 4
       ## custom name for the pool

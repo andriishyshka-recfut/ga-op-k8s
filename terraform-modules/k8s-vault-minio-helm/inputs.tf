@@ -25,7 +25,7 @@ locals {
   })
 
   vaultUsersCredentialsPath = "${var.Settings.clusters[var.Cluster][var.Color].minio.vault_users_config_path}/users"
-  vaultRootCredentialsPath  = "${var.Settings.clusters[var.Cluster][var.Color].minio.vault_root_config_path}"
+  vaultRootCredentialsPath  = var.Settings.clusters[var.Cluster][var.Color].minio.vault_root_config_path
   vaultOidcConfigPath       = var.Settings.clusters[var.Cluster][var.Color].minio.vault_oidc_config_path
   minioFqdn                 = var.Cluster == "production" ? "minio-helm.p.regemini.io" : "minio-helm.t.regemini.io"
   vaultFqdn                 = var.Cluster == "production" ? "https://vault.p.regemini.io" : "https://vault.t.regemini.io"
@@ -47,6 +47,8 @@ locals {
       client_id     = data.vault_generic_secret.okta.data["client_id"]
       client_secret = data.vault_generic_secret.okta.data["client_secret"]
     }
-    root = data.vault_generic_secret.root_credentials_from_vault.data
+    root        = data.vault_generic_secret.root_credentials_from_vault.data
+    repository  = "harbor.regemini.io/mirror/minio"
+    pull_secret = "harbor"
   }
 }

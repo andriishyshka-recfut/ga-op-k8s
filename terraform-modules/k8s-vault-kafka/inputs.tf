@@ -2,6 +2,7 @@ variable "GkeClusterConnectionSettings" {}
 variable "Cluster" {}
 variable "Color" {}
 variable "Settings" {}
+variable "artifactoryRepoDomain" {}
 
 
 locals {

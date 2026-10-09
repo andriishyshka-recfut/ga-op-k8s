@@ -5,4 +5,5 @@ module "kafka" {
   Cluster                      = var.Cluster
   Settings                     = var.Settings
   Color                        = var.Color
+  artifactoryRepoDomain        = local.artifactoryRepoDomain
 }

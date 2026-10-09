@@ -1,19 +1,7 @@
-# #
-# # resource "null_resource" "ansible_istio_playbook" {
-# #   triggers = {
-# #     //always_run = "${timestamp()}"
-# #     // istio_version_change = var.Settings.clusters[var.Cluster].istio_version
-# #     playbook_contents = md5(file("${path.module}/../../ansible/istio.yml"))
-# #   }
-# #   provisioner "local-exec" {
-# #     command     = <<COMMAND
-# #     cd  ${path.module}/../../ansible && \
-# #     ansible-playbook istio.yml \
-# #       -e 'ansible_python_interpreter=/usr/bin/python3'
-# # COMMAND
-# #     environment = local.ansibleEnvs
-# #   }
-# # }
+data "vault_kv_secret_v2" "artifactory_creds" {
+  mount = "secret"
+  name  = "misc/artifactory/creds"
+}
 resource "kubernetes_namespace_v1" "istio_system" {
   metadata {
     name = "istio-system"
@@ -35,13 +23,17 @@ resource "kubernetes_namespace" "istio_ingress" {
 
 
 resource "helm_release" "istio_base" {
-  name       = "istio-base"
-  chart      = "base"
-  repository = "https://istio-release.storage.googleapis.com/charts"
-  version    = var.Settings.clusters[var.Cluster].versions.istio.helm_version
-  wait       = true
-  atomic     = true
-  namespace  = "istio-system"
+  name                 = "istio-base"
+  chart                = "base"
+  repository           = "oci://${var.RepositoryDomain}/ga-helm-virtual/istio/release/charts"
+  version              = var.Settings.clusters[var.Cluster].versions.istio.helm_version
+  wait                 = true
+  atomic               = true
+  namespace            = "istio-system"
+  repository_username  = data.vault_kv_secret_v2.artifactory_creds.data["user"]
+  repository_password  = data.vault_kv_secret_v2.artifactory_creds.data["password"]
+  repository_cert_file = var.RepositoryDomain == "repo-external.recfut.com" ? "/tmp/artifactory-client.crt" : null
+  repository_key_file  = var.RepositoryDomain == "repo-external.recfut.com" ? "/tmp/artifactory-client.key" : null
 
   depends_on = [
     kubernetes_namespace_v1.istio_system
@@ -49,42 +41,54 @@ resource "helm_release" "istio_base" {
 }
 
 resource "helm_release" "istiod" {
-  name       = "istiod"
-  chart      = "istiod"
-  repository = "https://istio-release.storage.googleapis.com/charts"
-  version    = var.Settings.clusters[var.Cluster].versions.istio.helm_version
-  wait       = true
-  atomic     = true
-  namespace  = "istio-system"
-  values     = [templatefile("${path.module}/templates/istiod.tftpl", {})]
+  name                 = "istiod"
+  chart                = "istiod"
+  repository           = "oci://${var.RepositoryDomain}/ga-helm-virtual/istio/release/charts"
+  version              = var.Settings.clusters[var.Cluster].versions.istio.helm_version
+  wait                 = true
+  atomic               = true
+  namespace            = "istio-system"
+  repository_username  = data.vault_kv_secret_v2.artifactory_creds.data["user"]
+  repository_password  = data.vault_kv_secret_v2.artifactory_creds.data["password"]
+  repository_cert_file = var.RepositoryDomain == "repo-external.recfut.com" ? "/tmp/artifactory-client.crt" : null
+  repository_key_file  = var.RepositoryDomain == "repo-external.recfut.com" ? "/tmp/artifactory-client.key" : null
+  values               = [templatefile("${path.module}/templates/istiod.tftpl", {})]
   depends_on = [
     helm_release.istio_base
   ]
 }
 
 resource "helm_release" "istio_cni" {
-  name       = "istio-cni"
-  chart      = "cni"
-  repository = "https://istio-release.storage.googleapis.com/charts"
-  version    = var.Settings.clusters[var.Cluster].versions.istio.helm_version
-  wait       = true
-  atomic     = true
-  namespace  = "kube-system"
-  values     = [templatefile("${path.module}/templates/istio-cni.tftpl", {})]
+  name                 = "istio-cni"
+  chart                = "cni"
+  repository           = "oci://${var.RepositoryDomain}/ga-helm-virtual/istio/release/charts"
+  version              = var.Settings.clusters[var.Cluster].versions.istio.helm_version
+  wait                 = true
+  atomic               = true
+  namespace            = "kube-system"
+  repository_username  = data.vault_kv_secret_v2.artifactory_creds.data["user"]
+  repository_password  = data.vault_kv_secret_v2.artifactory_creds.data["password"]
+  repository_cert_file = var.RepositoryDomain == "repo-external.recfut.com" ? "/tmp/artifactory-client.crt" : null
+  repository_key_file  = var.RepositoryDomain == "repo-external.recfut.com" ? "/tmp/artifactory-client.key" : null
+  values               = [templatefile("${path.module}/templates/istio-cni.tftpl", {})]
   depends_on = [
     helm_release.istiod
   ]
 }
 
 resource "helm_release" "istio_ingress" {
-  name       = "istio-ingressgateway"
-  chart      = "gateway"
-  repository = "https://istio-release.storage.googleapis.com/charts"
-  version    = var.Settings.clusters[var.Cluster].versions.istio.helm_version
-  wait       = true
-  atomic     = true
-  namespace  = "istio-ingress"
-  values     = [templatefile("${path.module}/templates/ingress.tftpl", { ports = local.ports })]
+  name                 = "istio-ingressgateway"
+  chart                = "gateway"
+  repository           = "oci://${var.RepositoryDomain}/ga-helm-virtual/istio/release/charts"
+  version              = var.Settings.clusters[var.Cluster].versions.istio.helm_version
+  wait                 = true
+  atomic               = true
+  namespace            = "istio-ingress"
+  repository_username  = data.vault_kv_secret_v2.artifactory_creds.data["user"]
+  repository_password  = data.vault_kv_secret_v2.artifactory_creds.data["password"]
+  repository_cert_file = var.RepositoryDomain == "repo-external.recfut.com" ? "/tmp/artifactory-client.crt" : null
+  repository_key_file  = var.RepositoryDomain == "repo-external.recfut.com" ? "/tmp/artifactory-client.key" : null
+  values               = [templatefile("${path.module}/templates/ingress.tftpl", { ports = local.ports })]
   depends_on = [
     helm_release.istio_cni
   ]

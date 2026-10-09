@@ -1,6 +1,7 @@
 variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
+variable "artifactoryRepoDomain" {}
 
 locals {
   helmVersion             = lookup(var.Settings.clusters[var.Cluster].versions.thanos, "chart_version", "17.3.1")
