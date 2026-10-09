@@ -164,7 +164,7 @@ resource "google_container_cluster" "cluster" {
 
 resource "google_container_node_pool" "nodepool_default" {
   lifecycle {
-    ignore_changes = all
+#    ignore_changes = all
   }
 
   provider = google-beta
@@ -196,6 +196,13 @@ resource "google_container_node_pool" "nodepool_default" {
       "https://www.googleapis.com/auth/monitoring",
     ]
   }
+
+  network_config {
+    enable_private_nodes = true
+    subnetwork           = google_compute_subnetwork.net.self_link
+    pod_range            = "pods-secondary-range"
+  }
+
   management {
     auto_repair  = "true"
     auto_upgrade = "false"

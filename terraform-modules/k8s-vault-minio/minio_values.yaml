@@ -31,8 +31,8 @@ etcd:
 
 
 image:
-  repository: minio/minio
-  tag: RELEASE.2020-10-28T08-16-50Z-20-g38f12c984
+  repository: harbor.regemini.io/mirror/minio
+  tag: RELEASE.2020-10-28T08-16-50Z
   pullPolicy: IfNotPresent
 
 gcsgateway:

@@ -35,7 +35,7 @@ resource "helm_release" "tarantool_cartridge" {
 
   values = [file("${path.module}/cartridge-values.yaml")]
 
-  set  [
+  set  = [
     {
       name  = "tarantool.image.repository"
       value = "harbor.regemini.io/dev/tarantool"
