@@ -1,6 +1,6 @@
 
 data "vault_generic_secret" "slack" {
-  path = "secret/slack/fluxcd-${var.Cluster}"
+  path = "secret/misc/slack/app/FluxCD"
 }
 
 resource "kubernetes_secret" "slack" {
@@ -10,6 +10,6 @@ resource "kubernetes_secret" "slack" {
   }
 
   data = {
-    "address" = data.vault_generic_secret.slack.data.address
+    "address" = data.vault_generic_secret.slack.data[local.vault_slack_key]
   }
 }

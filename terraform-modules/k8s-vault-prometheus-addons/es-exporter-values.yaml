@@ -1,5 +1,5 @@
 elasticsearch:
-  cluster: https://mon-es-http:9200
+  cluster: https://mon-coor.monitoring.svc.cluster.local:9200
   queries: |-
     [DEFAULT]
     QueryIntervalSecs = 300
@@ -8,46 +8,25 @@ elasticsearch:
     QueryOnError = drop
     QueryOnMissing = drop
 
-    [query_urlscan_public]
-    QueryJson = {"size": 0,"query":{"bool": {"filter":[{"bool":{"filter":[{"bool":{"should":[{"match_phrase":{"kubernetes.container.name":"urlscan-public"}}],"minimum_should_match":1}},{"bool":{"should":[{"match":{"json.action":"PREP"}}],"minimum_should_match":1}}]}},{"range":{"@timestamp":{"gte":"now-24h"}}}]}}}
-    [query_urlscan_private]
-    QueryJson = {"size": 0,"query":{"bool":{"filter":[{"bool":{"filter":[{"bool":{"should":[{"match_phrase":{"kubernetes.container.name":"urlscan-private"}}],"minimum_should_match":1}},{"bool":{"should":[{"match":{"json.action":"PREP"}}],"minimum_should_match":1}}]}},{"range":{"@timestamp":{"gte":"now-48h"}}}]}}}
-    [query_syncmage_attacker_url]
-    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"syncmage-attacker-url"}},{"term":{"json.action":"UPDATE"}},{"exists":{"field":"json.inserted"}},{"range":{"@timestamp":{"gte":"now-12h"}}}]}}}
-    [query_syncmage_attacker_script]
-    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"syncmage-attacker-script"}},{"term":{"json.action":"UPDATE"}},{"exists":{"field":"json.inserted"}},{"range":{"@timestamp":{"gte":"now-12h"}}}]}}}
-    [query_syncmage_attacker_test]
-    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"syncmage-attacker-script-test"}},{"term":{"json.action":"UPDATE"}},{"exists":{"field":"json.inserted"}},{"range":{ "@timestamp":{"gte":"now-12h"}}}]}}}
-    [query_syncmage_skip_rule]
-    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"syncmage-skip-rule"}},{"term":{"json.action":"UPDATE"}},{"exists":{"field":"json.inserted"}},{"range":{"@timestamp":{"gte":"now-12h"}}}]}}}
-    [query_geo]
-    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"geo"}},{"term":{"json.action":"GO"}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
-    [query_challenger]
-    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"challenger"}},{"terms":{"json.msg":["Challenge is resolved successfully","Failed to resolve the challenge"]}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
-    [query_shout]
-    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"shout"}},{"wildcard":{"json.msg":"Task completed successfully*"}},{"range":{"@timestamp":{"gte":"now-24h"}}}]}}}
-    [query_upsertdome_unauthorized]
-    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"upsertdome"}},{"term":{"json.err": "action [indices:admin/create] is unauthorized for user [_upsertDome.ms]"}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
-    [query_upsertminion_unauthorized]
-    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"upsertminion"}},{"term":{"json.err": "action [indices:data/write/bulk[s]] is unauthorized for user [_upsertMinion.ms]"}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
-    [query_dome_mapping]
-    QueryJson = {"query":{"bool":{"filter":[{"terms":{"json.err":["mapping group not found"]}},{"range":{"@timestamp":{"gte":"now-24h"}}}]}},"aggs":{"langs" : { "terms" : { "field" : "json.sourceId",  "size" : 500 }}}}    
-
+    [query_logstash_exception]
+    QueryJson = {"query":{"bool":{"filter":[{"multi_match":{"type":"best_fields","query":"exception","lenient":true}},{"range":{"@timestamp":{"gte":"now-5m"}}},{"match_phrase":{"kubernetes.namespace":"elastic"}},{"match_phrase":{"kubernetes.labels.chart":"logstash"}}]}}}
+    [query_logstash_4xx_error]
+    QueryJson = {"query":{"bool":{"filter":[{"term":{"kubernetes.container.name":"logstash"}},{"range":{"logstash.error.pipeline_status_code":{"gte":400,"lt":500}}},{"range":{"@timestamp":{"gte":"now-5m"}}}]}}}
 
 container:
   extraEnv:
   - name: ES_EXPORTER_BASIC_PASSWORD
     valueFrom:
           secretKeyRef:
-            name: mon-es-elastic-user
-            key: elastic
+            name: grafana-elastic-creds
+            key: password
   extraVolumeMounts:
     - name: foo
       mountPath: "/etc/ssl/certs/"
       readOnly: true
   extraArgs:
     - --basic-user
-    - elastic
+    - grafana_bg
     - --ca-certs
     - /etc/ssl/certs/ca-certificates.crt
 
@@ -58,7 +37,7 @@ pod:
   extraVolumes:
   - name: foo
     secret:
-      secretName: mon-es-cert
+      secretName: grafana-elastic-ca
       items:
       - key: ca.crt
         path: ca-certificates.crt

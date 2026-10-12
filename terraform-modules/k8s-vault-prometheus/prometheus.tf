@@ -7,20 +7,27 @@ data "vault_generic_secret" "grafana" {
 }
 
 data "vault_generic_secret" "prometheus" {
-  path = "secret/slack/prometheus"
+  path = local.slackSecretPath
 }
 
 data "vault_generic_secret" "minio" {
   path = "secret/minio/users"
 }
-
+data "vault_generic_secret" "grafana_elastic" {
+  path = "secret/mw/grafana-bg"
+}
+data "vault_kv_secret_v2" "artifactory_creds" {
+  mount = "secret"
+  name  = "misc/artifactory/creds"
+}
 resource "kubernetes_secret" "thanos-objstore-config" {
   metadata {
     name      = "thanos-objstore-config"
     namespace = local.prometheusNs
   }
 
-  data = { "thanos.yaml" = <<EOF
+  data = { 
+    "objstore.yml" = <<EOF
 type: s3
 config:
   bucket: ${local.thanosBucket}
@@ -29,7 +36,6 @@ config:
   access_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).accessKey}
   secret_key: ${jsondecode(data.vault_generic_secret.minio.data[local.thanosMinioUser]).secretKey}
 EOF
-
   }
 }
 resource "kubernetes_secret" "grafana_okta_client_secret" {
@@ -42,15 +48,67 @@ resource "kubernetes_secret" "grafana_okta_client_secret" {
   }
 }
 
+data "vault_pki_secret_backend_issuer" "elastic_ca" {
+  backend    = "/pki-elastic-int"
+  issuer_ref = "default"
+}
+
+resource "kubernetes_secret" "grafana_elastic_ca" {
+
+  metadata {
+    name      = "grafana-elastic-ca"
+    namespace = local.prometheusNs
+  }
+
+  data = {
+    "ca.crt" = data.vault_pki_secret_backend_issuer.elastic_ca.certificate
+  }
+
+  depends_on = [
+    data.vault_pki_secret_backend_issuer.elastic_ca
+  ]
+}
+
+resource "kubernetes_secret" "grafana_elastic_creds" {
+
+  metadata {
+    name      = "grafana-elastic-creds"
+    namespace = local.prometheusNs
+  }
+
+  data = {
+    "username" = data.vault_generic_secret.grafana_elastic.data["username"]
+    "password" = data.vault_generic_secret.grafana_elastic.data["password"]
+  }
+
+}
+
+resource "kubernetes_priority_class" "monitoring_high" {
+  metadata {
+    name = "monitoring-high"
+  }
+
+  value              = 1000000
+  description        = "High priority for monitoring exporters"
+  global_default     = false
+  preemption_policy  = "PreemptLowerPriority"
+}
+
 resource "helm_release" "prometheus" {
   name              = "prometheus"
-  repository        = "https://prometheus-community.github.io/helm-charts"
+  repository        = "oci://${var.artifactoryRepoDomain}/ga-helm-virtual/prometheus-community/charts"
   chart             = "kube-prometheus-stack"
   wait              = true
   atomic            = true
   namespace         = local.prometheusNs
   dependency_update = true
   version           = local.helmVersion
+  take_ownership    = false
+  upgrade_install   = false
+  repository_username  = data.vault_kv_secret_v2.artifactory_creds.data["user"]
+  repository_password  = data.vault_kv_secret_v2.artifactory_creds.data["password"]
+  repository_cert_file = var.artifactoryRepoDomain == "repo-external.recfut.com" ? "/tmp/artifactory-client.crt" : null
+  repository_key_file  = var.artifactoryRepoDomain == "repo-external.recfut.com" ? "/tmp/artifactory-client.key" : null
   values = [
     templatefile("${path.module}/${local.prometheusConfigFile}", {
       prometheus_slack_webhooks          = local.prometheusSlackWebHooks,
@@ -60,7 +118,12 @@ resource "helm_release" "prometheus" {
       prometheus_external_url            = local.prometheusExtUrl,
       additional_rule_labels             = var.Cluster,
       thanos_version                     = local.thanosSidecarVersion,
-      okta                               = local.grafana_okta
+      prometheus_query_url               = local.prometheusQueryUrl,
+      prometheus_resources               = local.prometheusResources,
+      priority_class                     = kubernetes_priority_class.monitoring_high.metadata.0.name,
+      okta                               = local.grafana_okta,
+      cluster                            = var.Cluster
     })
   ]
+  depends_on = [ kubernetes_secret.grafana_elastic_creds ]
 }

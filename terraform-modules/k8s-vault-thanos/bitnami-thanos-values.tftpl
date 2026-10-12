@@ -1,0 +1,187 @@
+global:
+#  storageClass: gp2
+  imageRegistry: ""
+  security:
+    allowInsecureImages: true
+
+image:
+#  registry: docker.io
+#  repository: bitnami/thanos
+#  tag: 0.39.2-debian-12-r2
+  registry: quay.io
+  repository: thanos/thanos
+  tag: ${thanos_version}
+  pullPolicy: IfNotPresent
+
+existingObjstoreSecret: "thanos-objstore-config"
+# next one is optional because defined by default 
+# and can/need to be redefined in Arg/ExtraArg
+#existingObjstoreSecretItems:
+# next one is optional becaus by default
+#  key: objstore.yml
+
+query:
+  enabled: true
+  replicaCount: 2
+  logLevel: info
+
+  dnsDiscovery:
+    enabled: true
+    sidecarsService: "prometheus-operated"
+    sidecarsNamespace: "monitoring"
+
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10902"
+
+  replicaLabel:
+    - prometheus_replica
+    - thanos_ruler_replica
+
+  stores:
+    - dnssrv+_grpc._tcp.thanos-ruler-operated.monitoring.svc.cluster.local
+
+  extraFlags:
+    - --query.max-concurrent=20
+    - --query.max-concurrent-select=32
+    - --query.partial-response
+    - --query.auto-downsampling
+    - --store.response-timeout=60s
+    - --web.route-prefix=/query/
+    - --web.external-prefix=/query/ 
+  extraEnvVars:
+    - name: GOMEMLIMIT
+      value: 5500MiB
+  resources:
+    requests:
+      cpu: 1500m
+      memory: 5000Mi
+    limits:
+      cpu: 1700m
+      memory: 5300Mi
+
+queryFrontend:
+  enabled: true
+  replicaCount: 2
+  cache:
+    enabled: true
+  extraFlags:
+    - --query-range.max-retries-per-request=5
+    - --query-range.split-interval=6h
+    - --labels.default-time-range=6h
+    - --labels.split-interval=15m
+    - --labels.max-query-parallelism=32
+  resources:
+    limits:
+      cpu: 400m
+      ephemeral-storage: 2Gi
+      memory: 1Gi
+    requests:
+      cpu: 300m
+      ephemeral-storage: 50Mi
+      memory: 1Gi
+
+storegateway:
+  enabled: true
+  replicaCount: 2
+#  sharded: "true"
+#  shardIndex: 0
+#  shards: 2
+#  extraFlags:
+#    - --max-time=-7d
+#    - --min-time=-365d
+  podManagementPolicy: "Parallel"
+
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 60
+
+  persistence:
+    enabled: true
+    size: 200Gi
+  resources:
+    requests:
+      cpu: 400m
+      memory: 2000Mi
+    limits:
+      cpu: 800m
+      memory: 2200Mi
+
+compactor:
+  enabled: true
+  retentionResolutionRaw: 30d
+  retentionResolution5m: 120d
+  retentionResolution1h: 180d
+  consistencyDelay: 30m
+  extraFlags:
+#    - --compact.concurrency=4
+#    - --delete-delay=2h
+#    - --block-sync-concurrency=40
+    - --deduplication.replica-label=prometheus_replica
+  persistence:
+    enabled: true
+    size: 200Gi
+  resources:
+    requests:
+      cpu: 400m
+      memory: 2000Mi
+    limits:
+      cpu: 800m
+      memory: 2200Mi
+
+ruler:
+  enabled: false
+  rulerSpec:
+    ruleSelector:
+      matchLabels:
+        ruler: thanos
+
+# strange, but used by thanos query with --alert.query-url switch
+  queryURL: http://thanos-query.monitoring.svc:9090/query/
+
+  queryEndpoints:
+    - http://thanos-query.monitoring.svc:9090/query/
+
+  alertmanagers:
+    - http://alertmanager-operated.monitoring.svc:9093
+#  alertmanagersConfig:
+#    alertmanagers:
+#    - api_version: v2
+#      static_configs:
+#        - alertmanager-operated.monitoring.svc:9093
+
+  config:
+    groups: []
+
+  replicaCount: 2
+  persistence:
+    enabled: true
+    size: 50Gi
+
+receive:
+  enabled: false
+  replicaCount: 1
+  hashRing:
+    enabled: true
+    memberlist:
+      secretName: thanos-receive-memberlist
+  persistence:
+    enabled: true
+    size: 100Gi
+
+bucketweb:
+  enabled: true
+  replicaCount: 1
+
+metrics:
+  enabled: true
+
+serviceMonitor:
+  enabled: true
+  namespace: monitoring
+
+prometheusRule:
+  enabled: true

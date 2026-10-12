@@ -94,6 +94,7 @@ prometheusRule:
   additionalLabels:
       app: prometheus
       release: prometheus
+      ruler: thanos
   namespace: "monitoring"
   rules:
     - alert: webServiceUnavailible

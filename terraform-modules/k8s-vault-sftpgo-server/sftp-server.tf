@@ -15,150 +15,6 @@ resource "helm_release" "sftp-server" {
       vaultValues = data.vault_generic_secret.db_creds["${each.key}"].data
     })
   ]
-  # set {
-  #   name  = "fullnameOverride"
-  #   value = "sftp-server-${each.key}"
-  # }
-  # set {
-  #   name  = "image.tag"
-  #   value = try(each.value.image_tag, local.image_tag)
-  # }
-  # set {
-  #   name  = "volumes[0].name"
-  #   value = "host-keys"
-  # }
-  # set {
-  #   name  = "volumes[0].configMap.name"
-  #   value = "sftp-server-${each.key}-host-keys"
-  # }
-  # set {
-  #   name  = "volumes[1].name"
-  #   value = "sftp-config"
-  # }
-  # set {
-  #   name  = "volumes[1].configMap.name"
-  #   value = "sftp-server-${each.key}-config"
-  # }
-  # set {
-  #   name  = "volumeMounts[0].mountPath"
-  #   value = "/var/lib/sftpgo/id_ed25519"
-  # }
-  # set {
-  #   name  = "volumeMounts[0].subPath"
-  #   value = "id_ed25519"
-  # }
-  # set {
-  #   name  = "volumeMounts[0].name"
-  #   value = "host-keys"
-  # }
-  # set {
-  #   name  = "volumeMounts[1].mountPath"
-  #   value = "/var/lib/sftpgo/id_ed25519.pub"
-  # }
-  # set {
-  #   name  = "volumeMounts[1].subPath"
-  #   value = "id_ed25519.pub"
-  # }
-  # set {
-  #   name  = "volumeMounts[1].name"
-  #   value = "host-keys"
-  # }
-  # set {
-  #   name  = "volumeMounts[2].mountPath"
-  #   value = "/var/lib/sftpgo/id_rsa"
-  # }
-  # set {
-  #   name  = "volumeMounts[2].subPath"
-  #   value = "id_rsa"
-  # }
-  # set {
-  #   name  = "volumeMounts[2].name"
-  #   value = "host-keys"
-  # }
-  # set {
-  #   name  = "volumeMounts[3].mountPath"
-  #   value = "/var/lib/sftpgo/id_rsa.pub"
-  # }
-  # set {
-  #   name  = "volumeMounts[3].subPath"
-  #   value = "id_rsa.pub"
-  # }
-  # set {
-  #   name  = "volumeMounts[3].name"
-  #   value = "host-keys"
-  # }
-  # set {
-  #   name  = "volumeMounts[4].name"
-  #   value = "sftp-config"
-  # }
-  # set {
-  #   name  = "volumeMounts[4].mountPath"
-  #   value = "/var/lib/sftpgo/config.json"
-  # }
-  # set {
-  #   name  = "volumeMounts[4].subPath"
-  #   value = "config.json"
-  # }
-  # set {
-  #   name  = "env.SFTPGO_LOADDATA_FROM"
-  #   value = "/var/lib/sftpgo/config.json"
-  # } 
-  /*
-  set {
-    name  = "volumeMounts[5].name"
-    value = "sftpgo"
-  }
-  set {
-    name  = "volumeMounts[5].mountPath"
-    value = "/var/lib/sftpgo/sftpgo.json"
-  }
-  set {
-    name  = "volumeMounts[5].subPath"
-    value = "sftpgo.json"
-  }*/
-  # set {
-  #   name  = "env.SFTPGO_DATA_PROVIDER__DRIVER"
-  #   value = "postgresql"
-  # }
-  # set {
-  #   name  = "env.SFTPGO_DATA_PROVIDER__NAME"
-  #   value = data.vault_generic_secret.db_creds["${each.key}"].data["db_name"]
-  # }
-  # set {
-  #   name  = "env.SFTPGO_DATA_PROVIDER__HOST"
-  #   value = try(each.value.postgres_url, local.postgres_url)
-  # }
-  # set {
-  #   name  = "env.SFTPGO_DATA_PROVIDER__PORT"
-  #   value = local.postgres_port
-  # }
-  # set {
-  #   name  = "env.SFTPGO_DATA_PROVIDER__USERNAME"
-  #   value = data.vault_generic_secret.db_creds["${each.key}"].data["username"]
-  # }
-  # set {
-  #   name  = "envVars[0].name"
-  #   value = "SFTPGO_DATA_PROVIDER__PASSWORD"
-  # }
-  # set {
-  #   name  = "envVars[0].valueFrom.secretKeyRef.name"
-  #   value = "sftp-server-${each.key}-db-creds"
-  # }
-  # set {
-  #   name  = "envVars[0].valueFrom.secretKeyRef.key"
-  #   value = "PGPASSWORD"
-  # }
-  # set {
-  #   name  = "podAnnotations.co\\.elastic\\.logs/enabled"
-  #   value = "true"
-  #   type  = "string"
-  # }
-
-  # set {
-  #   name  = "podAnnotations.co\\.elastic\\.logs/json\\.add_error_key"
-  #   value = "true"
-  #   type  = "string"
-  # }
 
   depends_on = [kubernetes_config_map.ssh_host_keys, kubernetes_config_map.config, kubernetes_secret.db_creds]
 }
@@ -179,10 +35,11 @@ resource "kubernetes_secret" "db_creds" {
     "PGPASSWORD" = data.vault_generic_secret.db_creds["${each.key}"].data["password"]
   }
 }
-
+#I'm not sure that we use this
 data "vault_generic_secret" "minio_creds" {
   path = "secret/minio/users"
 }
+
 
 resource "kubernetes_secret" "minio_creds" {
   for_each = { "${local.minio_user}" : {} }
@@ -196,6 +53,21 @@ resource "kubernetes_secret" "minio_creds" {
   }
 }
 
+#CA from minio
+data "vault_pki_secret_backend_issuer" "pki_minio" {
+  backend    = "pki-minio"
+  issuer_ref = "default"
+}
+resource "kubernetes_secret" "minio_ca_cert" {
+  metadata {
+    name      = "minio-ca-certs"
+    namespace = local.namespace
+  }
+  data = {
+    "ca.crt" = data.vault_pki_secret_backend_issuer.pki_minio.certificate
+  }
+  depends_on = [data.vault_pki_secret_backend_issuer.pki_minio]
+}
 ### Mount host keys
 data "vault_generic_secret" "ssh_host_keys" {
   for_each = var.server_list

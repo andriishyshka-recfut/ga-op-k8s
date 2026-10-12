@@ -31,5 +31,11 @@ path "secret/data/misc/oidc/okta/maid" {
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
+path "secret/data/misc/slack/app/MAID" {
+   capabilities = ["read","list"]
+}
+path "secret/data/mw/minio/sa/clean_maid" {
+   capabilities = ["read","list"]
+}
 EOT
 }

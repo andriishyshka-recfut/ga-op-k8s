@@ -1,16 +1,24 @@
 
 resource "helm_release" "auditbeat" {
-  name      = "auditbeat"
+  for_each  = var.auditbeats_setttings
+  name      = lookup(each.value, "name", each.key)
   chart     = "${path.module}/charts/auditbeat"
   wait      = true
   atomic    = true
   timeout   = 360
   namespace = local.elasticSettings.globalSettings.namespace
   values = [
-    templatefile("${path.module}/templates/helm_values/auditbeat-values.tftpl", merge(local.elasticSettings.globalSettings, { kibana = local.BeatKibanaService, elastic = local.BeatElasticService }))
+    templatefile("${path.module}/templates/helm_values/auditbeat-values.tftpl",
+      merge(local.elasticSettings.globalSettings, {
+        name     = lookup(each.value, "name", each.key),
+        settings = each.value
+    }))
   ]
   depends_on = [
-    kubernetes_job.beats_users
+    kubernetes_secret.auditbeat_creds,
+    kubernetes_secret.auditbeat_elastic_ca,
+    kubernetes_secret.auditbeat_elastic_pass,
+    kubernetes_job.auditbeat_users
   ]
   set = [{
     name  = "priorityClassName"

@@ -45,7 +45,7 @@ resource "kubernetes_job" "kafka_collect_stats" {
       spec {
         container {
           name              = "kafka-checker"
-          image             = "harbor.regemini.io/op/kafka-checker:v0.0.1"
+          image             = "${local.artifactoryRepoDomain}/ga-op-docker-local/kafka-checker:v0.0.1"
           image_pull_policy = "Always"
           command           = ["sh", "-c", "./after_switch.sh"]
           # command = ["tail", "-f", "/dev/null"]
@@ -76,11 +76,6 @@ resource "kubernetes_job" "kafka_collect_stats" {
             name  = "MC_BUCKET"
             value = local.bucket_name
           }
-        }
-
-
-        image_pull_secrets {
-          name = "harbor"
         }
       }
     }

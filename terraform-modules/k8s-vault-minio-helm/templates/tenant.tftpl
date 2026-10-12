@@ -3,10 +3,20 @@
 
 tenant:
   name: minio-tenant
-
+  configSecret: 
+    name: myminio-env-configuration
+    accessKey: ${values.root.accessKey}
+    secretKey: ${values.root.secretKey}
   ##  configuration:
   ##    name: minio-cluster
   ## Specification for MinIO Pool(s) in this Tenant.
+
+  image:
+    repository: ${values.repository}
+    pullPolicy: IfNotPresent
+  imagePullSecret:
+    name: ${values.pull_secret}
+
   pools:
     - servers: 4
       ## custom name for the pool

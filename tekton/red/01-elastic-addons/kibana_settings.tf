@@ -24,4 +24,21 @@ locals {
       kibana_xpack_secrets = "secret/mw/kibana/xpack_secrets/recordedfuture"
     }
   }
+  MonKibanaSettings = {
+    monitoring = {
+      replicas            = 2,
+      publicBaseUrl       = "https://mon.regemini.io"
+      maxImportExportSize = 105000
+      namespace           = "monitoring"
+      basic_auth           = true,
+      authorizations = {
+        okta = {
+          type        = "okta",
+          realm       = "recordedfuture"
+          description = "Log in with OKTA/RecordedFuture"
+        }
+      }
+      kibana_xpack_secrets = "secret/mw/kibana/xpack_secrets/monitoring"
+    }
+  }
 }

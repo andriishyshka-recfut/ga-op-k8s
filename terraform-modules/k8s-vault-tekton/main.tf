@@ -69,6 +69,7 @@ resource "kubernetes_config_map" "cluster-settings" {
     color      = var.Color
     configPath = local.configPath
     vaultAddr  = var.VaultAddress
+    runtimeContext = "tekton"
   }
 }
 
@@ -133,65 +134,62 @@ COMMAND
   ]
 }
 
-resource "local_file" "pipeline" {
-  content  = templatefile("${path.module}/pipeline.yaml.tftpl", { branch = var.Settings.DRBranch })
-  filename = "${path.module}/pipeline.yaml"
-}
-resource "null_resource" "crds" {
-  triggers = {
-    task        = md5(file("${path.module}/task.yaml"))
-    pipeline    = md5(file("${path.module}/pipeline.yaml"))
-    pipelinerun = md5(file("${path.module}/pipelinerun.yaml"))
-    bots        = md5(file("${path.module}/bots.yaml"))
-    crashloop   = md5(file("${path.module}/pods-cleanup.yaml"))
-    etl         = md5(file("${path.module}/etl.yaml"))
-    telegram    = md5(file("${path.module}/telegram.yaml"))
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = <<COMMAND
-    set -x
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/task.yaml && \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipeline.yaml && \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pipelinerun.yaml && \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/bots.yaml && \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/pods-cleanup.yaml && \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/etl.yaml && \
-    kubectl --server ${local.gkeClusterEndpoint} \
-     --token ${local.gkeBearerToken}  \
-     --insecure-skip-tls-verify=true  \
-     apply -f ${path.module}/telegram.yaml
 
-COMMAND
-  }
-  depends_on = [
-    null_resource.deploy_tekton,
-    null_resource.harbor_creds,
-    kubernetes_secret.harbor_creds_main,
-    kubernetes_secret.harbor_creds,
-    kubernetes_namespace.tekton,
-    kubernetes_namespace.tektonMain,
-    local_file.pipeline
-  ]
-}
+# resource "null_resource" "crds" {
+#   triggers = {
+#     task        = md5(file("${path.module}/task.yaml"))
+#     pipeline    = md5(file("${path.module}/pipeline.yaml"))
+#     pipelinerun = md5(file("${path.module}/pipelinerun.yaml"))
+#     bots        = md5(file("${path.module}/bots.yaml"))
+#     crashloop   = md5(file("${path.module}/pods-cleanup.yaml"))
+#     etl         = md5(file("${path.module}/etl.yaml"))
+#     telegram    = md5(file("${path.module}/telegram.yaml"))
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = <<COMMAND
+#     set -x
+#     kubectl --server ${local.gkeClusterEndpoint} \
+#      --token ${local.gkeBearerToken}  \
+#      --insecure-skip-tls-verify=true  \
+#      apply -f ${path.module}/task.yaml && \
+#     kubectl --server ${local.gkeClusterEndpoint} \
+#      --token ${local.gkeBearerToken}  \
+#      --insecure-skip-tls-verify=true  \
+#      apply -f ${path.module}/pipeline.yaml && \
+#     kubectl --server ${local.gkeClusterEndpoint} \
+#      --token ${local.gkeBearerToken}  \
+#      --insecure-skip-tls-verify=true  \
+#      apply -f ${path.module}/pipelinerun.yaml && \
+#     kubectl --server ${local.gkeClusterEndpoint} \
+#      --token ${local.gkeBearerToken}  \
+#      --insecure-skip-tls-verify=true  \
+#      apply -f ${path.module}/bots.yaml && \
+#     kubectl --server ${local.gkeClusterEndpoint} \
+#      --token ${local.gkeBearerToken}  \
+#      --insecure-skip-tls-verify=true  \
+#      apply -f ${path.module}/pods-cleanup.yaml && \
+#     kubectl --server ${local.gkeClusterEndpoint} \
+#      --token ${local.gkeBearerToken}  \
+#      --insecure-skip-tls-verify=true  \
+#      apply -f ${path.module}/etl.yaml && \
+#     kubectl --server ${local.gkeClusterEndpoint} \
+#      --token ${local.gkeBearerToken}  \
+#      --insecure-skip-tls-verify=true  \
+#      apply -f ${path.module}/telegram.yaml
+
+# COMMAND
+#   }
+#   depends_on = [
+#     null_resource.deploy_tekton,
+#     null_resource.harbor_creds,
+#     kubernetes_secret.harbor_creds_main,
+#     kubernetes_secret.harbor_creds,
+#     kubernetes_namespace.tekton,
+#     kubernetes_namespace.tektonMain,
+#     local_file.pipeline
+#   ]
+# }
 
 # ### For Bots-mongo-restart
 #  data "vault_generic_secret" "mongo_creds" {

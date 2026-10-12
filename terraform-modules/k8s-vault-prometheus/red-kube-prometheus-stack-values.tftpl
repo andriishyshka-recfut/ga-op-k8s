@@ -22,7 +22,7 @@ grafana:
     sidecar.istio.io/inject: "false"
   grafana.ini:
     auth.google:
-      enabled: true
+      enabled: false
       scopes: https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
       auth_url: https://accounts.google.com/o/oauth2/auth
       token_url: https://accounts.google.com/o/oauth2/token
@@ -64,6 +64,7 @@ kube-state-metrics:
 
 prometheus-node-exporter:
   namespaceOverride: "monitoring"
+#  priorityClassName: ${priority_class}
 
 prometheusOperator:
   # nodeSelector:
@@ -96,13 +97,13 @@ prometheus:
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
-    retention: 60d
+    retention: 30d
     storageSpec:
       volumeClaimTemplate:
         spec:
           resources:
             requests:
-              storage: 180Gi
+              storage: 250Gi
     thanos:
       version: ${thanos_version}
       baseImage: quay.io/thanos/thanos
@@ -145,8 +146,8 @@ alertmanager:
     - name: "null"
     - name: "slack-critical"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_critical}
-          channel: '#prometheus-critical'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-critical}
+          channel: '#gemini_prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "tekton-logstash-inodes-webhook-notifications-and-slack"
@@ -154,14 +155,14 @@ alertmanager:
         - send_resolved: false
           url: "http://el-logstash-inodes-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_critical}
-          channel: '#prometheus'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-live}
+          channel: '#emini_prometheus-live'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-notifications"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url}
-          channel: '#prometheus'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-live}
+          channel: '#gemini_prometheus-live'
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     route:

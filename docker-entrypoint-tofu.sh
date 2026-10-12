@@ -13,4 +13,5 @@ export HOME=/home/fake
 # ansible --version
 # cat /etc/resolv.conf
 # export TF_LOG=debug
+export TF_CLI_CONFIG_FILE=/etc/tofurc
 exec /usr/bin/tofu $@

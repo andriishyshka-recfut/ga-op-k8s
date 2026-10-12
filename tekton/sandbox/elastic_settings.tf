@@ -20,10 +20,16 @@ locals {
         "sidecar.istio.io/inject" : "false",
         "co.elastic.logs/exclude_lines" : "^.*\"event.type\":\"transport\""
       }
+      transport = {
+        verification_mode = "certificate"
+        certs             = ["monthly"]
+        active            = "monthly"
+        duration          = "1080h"
+      }
       addons = {
         notifications = {
           slack = {
-            vault_path = "secret/elastic-notification-accounts"
+            vault_path = "secret/misc/slack/app/X-Pack"
           }
         },
         authorizations = {

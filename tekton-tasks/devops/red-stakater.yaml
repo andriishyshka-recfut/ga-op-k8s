@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: red-stakater-update-
+  namespace: tekton-tasks
+spec:
+  taskRef:
+    name: tg-run
+  workspaces:
+    - name: ws # this workspace name must be declared in the Task
+      emptyDir: {}
+  params:
+    - name: path
+      value: "k8s/tekton/red/01-stakater"
+    - name: branch
+      value: "\\1077-Prod-20260912"

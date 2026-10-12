@@ -58,6 +58,29 @@ replsets:
       sidecar.istio.io/proxyCPU: 5m
       sidecar.istio.io/proxyMemory: 30M
       co.elastic.logs/exclude_lines: ^.*"s":"I".*
+      
+
+    sidecars:
+    - name: mongodb-exporter
+      image: percona/mongodb_exporter:latest
+      args:
+        - "--mongodb.uri=mongodb://$(MONGODB_USER):$(MONGODB_PASSWORD)@$(MONGODB_URI)"
+        - "--collect-all"
+        - "--compatible-mode"
+        - "--mongodb.direct-connect=true"
+      env:
+        - name: MONGODB_URI
+          value: "127.0.0.1:27017"
+        - name: MONGODB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongo
+              key: MONGODB_DATABASE_ADMIN_USER
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo
+              key: MONGODB_DATABASE_ADMIN_PASSWORD
 
     nodeSelector:
       workloadsType: data

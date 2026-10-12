@@ -2,7 +2,7 @@ resource "vault_policy" "vortex" {
   name = "vortex"
 
   policy = <<EOT
-path "secret/data/vortex/*" {
+path "secret/data/wl/vortex/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/elasticsearch-admin/*" {

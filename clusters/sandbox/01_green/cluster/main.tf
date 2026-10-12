@@ -19,3 +19,4 @@ output "GkeClusterConnectionSettings" {
   value     = module.gke-setup-green.GkeClusterConnectionSettings
   sensitive = true
 }
+

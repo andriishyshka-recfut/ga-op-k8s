@@ -6,8 +6,8 @@ resource "random_string" "minion" {
 resource "grafana_library_panel" "minion_graph" {
   provider  = grafana.elastic
   org_id    = local.org_id
-  count     = length(local.index_minion)
-  name      = "minion-${element(local.index_minion, count.index)}-${random_string.minion.id}"
+  for_each   = local.index_minion_map
+  name       = "minion-${each.key}-${random_string.minion.id}"
   folder_uid = grafana_folder.minion.uid
   depends_on = [
     grafana_data_source.minion
@@ -17,8 +17,8 @@ resource "grafana_library_panel" "minion_graph" {
     "bars" : false,
     "dashLength" : 10,
     "dashes" : false,
-    "datasource" : "minion-${element(local.index_minion, count.index)}",
-    "description" : "${element(local.index_minion, count.index)}",
+    "datasource" : "${grafana_data_source.minion[each.key].name}",
+    "description" : "${each.key}",
     "fieldConfig" : {
       "defaults" : {
         "links" : []
@@ -95,7 +95,7 @@ resource "grafana_library_panel" "minion_graph" {
     ],
     "thresholds" : [],
     "timeRegions" : [],
-    "title" : "${element(local.index_minion, count.index)}",
+    "title" : "${each.key}",
     "tooltip" : {
       "shared" : true,
       "sort" : 0,
@@ -128,13 +128,14 @@ resource "grafana_library_panel" "minion_graph" {
 
 locals {
   grafana_library_minion_graph = [
-    for i in grafana_library_panel.minion_graph[*] :
-    merge(jsondecode(i.model_json), {
+    for name in local.index_minion :
+    merge(jsondecode(grafana_library_panel.minion_graph[name].model_json), {
       libraryPanel = {
-        name = i.name
-        uid  = i.uid
+        name = grafana_library_panel.minion_graph[name].name
+        uid  = grafana_library_panel.minion_graph[name].uid
       }
-  })]
+    })
+  ]
 }
 
 resource "grafana_dashboard" "minion_library_panel" {

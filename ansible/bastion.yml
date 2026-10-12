@@ -93,6 +93,38 @@
           with_items: "{{ (nodeport_red_mapping.stdout | from_json).spec.ports }}"
           when: item.name == 'http2'
 
+    - name: Get bastion token from k8s secret
+      shell: |
+        kubectl --server {{ k8s_host_url }} \
+          --token {{ k8s_api_key }} --certificate-authority {{ temp_dir }}/{{ cluster_name }}_clstr_ca.crt \
+          get secret bastion-token -n kube-system -o json
+      register: bastion_secret
+      delegate_to: localhost
+      become: False
+      changed_when: False
+
+    - name: Set token and ca_cert
+      set_fact:
+        token: "{{ (bastion_secret.stdout | from_json).data.token | b64decode }}"
+        ca_cert: "{{ (bastion_secret.stdout | from_json).data['ca.crt'] | b64decode }}"
+
+    - name: Get bastion red token from k8s secret
+      shell: |
+        kubectl --server {{ k8s_red_host_url }} \
+          --token {{ k8s_red_api_key }} --certificate-authority {{ temp_dir }}/production-red_clstr_ca.crt \
+          get secret bastion-token -n kube-system -o json
+      register: bastion_red_secret
+      delegate_to: localhost
+      become: False
+      changed_when: False
+      when: cluster_name == "production"
+
+    - name: Set red token and ca_cert from bastion secret
+      set_fact:
+        token_red: "{{ (bastion_red_secret.stdout | from_json).data.token | b64decode }}"
+        ca_cert_red: "{{ (bastion_red_secret.stdout | from_json).data['ca.crt'] | b64decode }}"
+      when: cluster_name == "production"
+
     - name: update xds config
       template:
         src: xds-config-{{ cluster_name }}.yaml.j2

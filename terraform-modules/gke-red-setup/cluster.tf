@@ -26,6 +26,9 @@ resource "google_container_cluster" "cluster" {
   #     issue_client_certificate = false
   #   }
   # }
+  logging_config {
+    enable_components = ["SYSTEM_COMPONENTS"]
+  }  
   node_config {
     preemptible     = local.isPreemptible
     tags            = [var.Cluster]

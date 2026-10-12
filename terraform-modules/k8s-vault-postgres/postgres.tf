@@ -13,7 +13,7 @@ resource "helm_release" "postgres_crds" {
   repository_password = data.vault_generic_secret.harbor_token.data.password
   values = [
     templatefile("${path.module}/values.yaml.tftpl", { settings = var.Settings.clusters[var.Cluster].postgres,
-    users = local.db_user_pass, minio = local.minio })
+    users = local.db_user_pass, minio = local.minio, pv_selector_label = local.pv_selector_label })
   ]
   depends_on = [helm_release.cnpg]
 }

@@ -11,14 +11,14 @@ terraform {
       "destroy"
     ]
 
-    required_var_files = ["${get_parent_terragrunt_dir()}/../../../../${get_env("CONF_PATH")}"]
+    required_var_files = [find_in_parent_folders(get_env("CONF_PATH"))]
   }
 }
 
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
-  contents = templatefile("${get_parent_terragrunt_dir()}/../../../../terragrunt-cluster.tftpl",
+  contents = templatefile(find_in_parent_folders("terragrunt-cluster.tftpl"),
     { 
       Color = get_env("TF_VAR_Color")
       Cluster = get_env("CLUSTER")

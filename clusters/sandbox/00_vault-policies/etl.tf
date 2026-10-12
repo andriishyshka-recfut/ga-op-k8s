@@ -1,14 +1,16 @@
-resource "vault_policy" "camino" {
-  name = "camino"
-
+resource "vault_policy" "etl" {
+  name   = "etl"
   policy = <<EOT
-path "secret/data/etl/*" {
+path "secret/data/wl/etl/*" {
   capabilities = ["read","list"]
 }
-path "secret/data/etl/clients/*" {
+path "secret/data/wl/etl/clients/*" {
+  capabilities = ["read","list","create","update"]
+}
+path "secret/metadata/wl/etl/*" {
   capabilities = ["read","list"]
 }
-path "secret/data/logstash/logstash-*" {
+path "secret/metadata/wl/etl/clients/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/mw/monitoring/otel" {

@@ -6,6 +6,13 @@ helmController:
     requests:
       cpu: 50m
       memory: 128Mi
+  nodeSelector:
+    workloadsType: fluxcd
+  tolerations:
+    - key: workloadsType
+      operator: Equal
+      value: fluxcd
+      effect: NoSchedule
 imageAutomationController:
   resources:
     limits:
@@ -14,6 +21,13 @@ imageAutomationController:
     requests:
       cpu: 50m
       memory: 64Mi
+  nodeSelector:
+    workloadsType: fluxcd
+  tolerations:
+    - key: workloadsType
+      operator: Equal
+      value: fluxcd
+      effect: NoSchedule
 imageReflectionController:
   resources:
     limits:
@@ -22,6 +36,13 @@ imageReflectionController:
     requests:
       cpu: 70m
       memory: 128Mi
+  nodeSelector:
+    workloadsType: fluxcd
+  tolerations:
+    - key: workloadsType
+      operator: Equal
+      value: fluxcd
+      effect: NoSchedule
 kustomizeController:
   resources:
     limits:
@@ -30,6 +51,13 @@ kustomizeController:
     requests:
       cpu: 50m
       memory: 128Mi
+  nodeSelector:
+    workloadsType: fluxcd
+  tolerations:
+    - key: workloadsType
+      operator: Equal
+      value: fluxcd
+      effect: NoSchedule
 notificationController:
   resources:
     limits:
@@ -38,6 +66,13 @@ notificationController:
     requests:
       cpu: 50m
       memory: 64Mi
+  nodeSelector:
+    workloadsType: fluxcd
+  tolerations:
+    - key: workloadsType
+      operator: Equal
+      value: fluxcd
+      effect: NoSchedule
 sourceController:
   resources:
     limits:
@@ -46,3 +81,10 @@ sourceController:
     requests:
       cpu: 50m
       memory: 128Mi
+  nodeSelector:
+    workloadsType: fluxcd
+  tolerations:
+    - key: workloadsType
+      operator: Equal
+      value: fluxcd
+      effect: NoSchedule

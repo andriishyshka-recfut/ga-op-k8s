@@ -1,0 +1,117 @@
+{
+  "APP-GA-OP": {
+    "scim_groups": [ "APP-GA-OP" ],
+    "groups": [ "production-www", "production-k8s", "production-red", "github", "recordedfuture" ]
+  },
+  "APP-GA-DEV": {
+    "scim_groups": ["APP-GA-DEV"],
+    "apps": [
+      "beep",
+      "clicker",
+      "datafix",
+      "flow",
+      "github",
+      "grafana",
+      "minio-helm-api",
+      "mongo-express",
+      "prometheus",
+      "sanitizer",
+      "telesrcr",
+      "red-gitlab",
+      "red-grafana",
+      "red-harbor",
+      "red-kk",
+      "red-minio-api-red",
+      "red-mon-elastic",
+      "red-sonar",
+      "repo-recfut",
+      "rp"
+    ]
+  },
+  "APP-GA-COLLECT": {
+    "scim_groups": ["APP-GA-COLLECT"],
+    "apps": [
+      "auth",
+      "beep",
+      "clicker",
+      "datafix",
+      "grafana",
+      "ka",
+      "mageui",
+      "maid",
+      "minio-helm-api",
+      "prometheus",
+      "red-g",
+      "red-gitlab",
+      "red-grafana",
+      "red-kk",
+      "red-minio-api-red",
+      "red-mon-elastic",
+      "rp",
+      "sanitizer",
+      "telegram",
+      "telesrcr",
+      "tile"
+    ]
+  },
+  "APP-GA-HUNT": {
+    "scim_groups": ["APP-GA-HUNT"],
+    "apps": [
+      "auth",
+      "beep",
+      "clicker",
+      "datafix",
+      "mageui",
+      "minio-helm-api",
+      "mongo-auth",
+      "prometheus",
+      "red-gitlab",
+      "red-kk",
+      "red-minio-api-red",
+      "telegram"
+    ]
+  },
+  "APP-GA-PM": {
+    "scim_groups": ["APP-GA-PM"],
+    "apps": [
+      "beep",
+      "datafix",
+      "etl-observer",
+      "flow",
+      "github",
+      "jupyter",
+      "minio-helm-api",
+      "prometheus",
+      "sanitizer",
+      "red-gitlab",
+      "red-k",
+      "red-kk",
+      "red-minio-api-red",
+      "red-mon-elastic",
+      "red-pfi",
+      "red-sonar",
+      "red-vandelay",
+      "repo-recfut",
+      "vault"
+    ]
+  },
+  "www": {
+    "scim_groups": [
+      "APP-GA-DEV",
+      "APP-GA-OP"
+    ],
+    "apps": [],
+    "groups": [
+      "production-www"
+    ]
+  },
+  "k8s": {
+    "scim_groups": [
+      "APP-GA-OP"
+    ],
+    "apps": [],
+    "groups": [
+      "production-k8s"
+    ]
+  }
+}

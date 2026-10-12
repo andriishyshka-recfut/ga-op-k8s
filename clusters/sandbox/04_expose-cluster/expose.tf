@@ -18,7 +18,7 @@ locals {
   activeClusterVaultPath = "secret/kubernetes-${var.Cluster}-${local.activeCluster}"
 }
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host                   = data.vault_generic_secret.k8s_auth.data.HOST
     cluster_ca_certificate = data.vault_generic_secret.k8s_auth.data.CLUSTER_CA_CERTIFICATE
     token                  = data.vault_generic_secret.k8s_auth.data.k8s_sa_token
@@ -33,12 +33,12 @@ provider "kubernetes" {
 terraform {
   backend "gcs" {
     bucket = "terraform-state-222"
-    prefix = "tf-lb-switch/state-2025-11-01"
+    prefix = "tf-lb-switch/state-2026-10-02"
   }
   required_providers {
     helm = {
       source  = "hashicorp/helm"
-      version = "2.17.0"
+      version = "3.3.0"
     }
   }
 

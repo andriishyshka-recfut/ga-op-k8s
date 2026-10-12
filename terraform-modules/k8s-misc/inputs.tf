@@ -16,9 +16,9 @@ locals {
     ANSIBLE_STDOUT_CALLBACK = "debug"
     BASTION_DNS             = var.Settings.bastion_dns
   })
-
-  trial_licenses = var.Color == "red" ? 0 : 1
-  eck_installs = var.Color == "red" ? 0 : 1
-  eckVersion =  var.Color == "red" ? "" : var.Settings.clusters[var.Cluster].versions.elasticsearch.eck_version
-  dateNow = formatdate("YYYYMMDD",timestamp())
+  artifactoryUrl        = "repo-external.recfut.com"
+  enableArtifactoryMtls = lookup(var.Settings, "enableArtifactoryMtls", false) != false ? 1 : 0
+  dateNow               = formatdate("YYYYMMDD", timestamp())
+  cert_manager_issuers = templatefile(
+    "${path.module}/cert-manager-issuers.tftpl",{ istio = var.Settings.clusters[var.Cluster][var.Color].istio })
 }

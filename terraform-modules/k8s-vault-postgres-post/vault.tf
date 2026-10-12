@@ -1,11 +1,6 @@
-# resource "vault_mount" "db" {
-#   path = "postgres"
-#   type = "database"
-# }
-
 resource "vault_database_secret_backend_connection" "Connection" {
-  for_each      = local.databases
-  backend       = "postgres"
+  for_each      = toset(local.database_names)
+  backend       = local.vault_backend_path
   name          = each.key
   allowed_roles = ["${each.key}-rw", "${each.key}-ro"]
 
@@ -18,8 +13,8 @@ resource "vault_database_secret_backend_connection" "Connection" {
 }
 
 resource "vault_database_secret_backend_role" "Postgres_rw_role" {
-  for_each        = local.databases
-  backend         = "postgres"
+  for_each        = local.credential_mode == "dynamic" ? toset(local.database_names) : toset([])
+  backend         = local.vault_backend_path
   name            = "${each.key}-rw"
   db_name         = each.key
   default_ttl     = 2592000
@@ -37,8 +32,8 @@ resource "vault_database_secret_backend_role" "Postgres_rw_role" {
 }
 
 resource "vault_database_secret_backend_role" "Postgres_ro_role" {
-  for_each        = local.databases
-  backend         = "postgres"
+  for_each        = local.credential_mode == "dynamic" ? toset(local.database_names) : toset([])
+  backend         = local.vault_backend_path
   name            = "${each.key}-ro"
   db_name         = each.key
   default_ttl     = 2592000
@@ -52,5 +47,42 @@ resource "vault_database_secret_backend_role" "Postgres_ro_role" {
   revocation_statements = [
     "REVOKE SELECT ON ALL TABLES IN SCHEMA public FROM \"{{name}}\"; DROP OWNED BY \"{{name}}\"; DROP ROLE \"{{name}}\";"
   ]
+  depends_on = [vault_database_secret_backend_connection.Connection]
+}
+
+resource "vault_database_secret_backend_static_role" "Postgres_static_rw_role" {
+  for_each             = local.credential_mode == "static" ? toset(local.database_names) : toset([])
+  backend              = local.vault_backend_path
+  name                 = "${each.key}-rw"
+  db_name              = each.key
+  username             = local.app_db_users[each.key].rw_username
+  password_wo          = local.app_db_users[each.key].rw_password
+  password_wo_version  = local.app_db_users[each.key].rw_version
+  skip_import_rotation = var.StaticRoleSkipImportRotation
+  credential_type      = "password"
+  credential_config = {
+    password_policy = "main32"
+  }
+  rotation_period = local.static_role_rotation_period
+
+  depends_on = [vault_database_secret_backend_connection.Connection]
+}
+
+resource "vault_database_secret_backend_static_role" "Postgres_static_ro_role" {
+  for_each = local.credential_mode == "static" ? toset(local.database_names) : toset([])
+
+  backend              = local.vault_backend_path
+  name                 = "${each.key}-ro"
+  db_name              = each.key
+  username             = local.app_db_users[each.key].ro_username
+  password_wo          = local.app_db_users[each.key].ro_password
+  password_wo_version  = local.app_db_users[each.key].ro_version
+  skip_import_rotation = var.StaticRoleSkipImportRotation
+  credential_type      = "password"
+  credential_config = {
+    password_policy = "main32"
+  }
+  rotation_period = local.static_role_rotation_period
+
   depends_on = [vault_database_secret_backend_connection.Connection]
 }

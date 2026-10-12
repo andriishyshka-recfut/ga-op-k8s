@@ -22,6 +22,7 @@ module "mongo6" {
   Settings                     = var.Settings
   ImageTag                     = each.value.imageTag
   Repository                   = each.value.repository
+  Resources                    = try(each.value.resources, null)
   GkeClusterConnectionSettings = local.gkeClusterConnectionSettings
 }
 
@@ -58,4 +59,3 @@ resource "null_resource" "create_mongo_crd" {
     command     = local.clone_mongo_backups
   }
 }
-

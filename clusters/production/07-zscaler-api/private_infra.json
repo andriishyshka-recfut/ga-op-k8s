@@ -1,0 +1,55 @@
+{
+  "defaults": {
+    "server_group": "production-zpa-server-group",
+    "segment_group": "production-www",
+    "tcp_port_range": [
+      {
+        "from": "80",
+        "to": "80"
+      },
+      {
+        "from": "443",
+        "to": "443"
+      },
+      {
+        "from": "8080",
+        "to": "8080"
+      },
+      {
+        "from": "22",
+        "to": "22"
+      }
+    ],
+    "udp_port_range": []
+  },
+  "timeout_policy": {
+    "reauth_timeout_hours": 20,
+    "reauth_idle_timeout_hours": 2
+  },
+  "app_connector_groups": {
+    "production-zpa-connector": {
+      "city_country": "Ashburn, US",
+      "country_code": "US",
+      "latitude": "39.0438",
+      "longitude": "-77.4874",
+      "location": "Ashburn, VA, US"
+    }
+  },
+  "server_groups": {
+    "production-zpa-server-group": {
+      "app_connector_group": "production-zpa-connector"
+    }
+  },
+  "provisioning_keys": {
+    "enrollment_cert_name": "Connector",
+    "vault_path": "secret/misc/zscaler/server-keys",
+    "keys": {
+      "key": {
+        "name": "production-zpa-key",
+        "app_connector_group": "production-zpa-connector",
+        "association_type": "CONNECTOR_GRP",
+        "max_usage": "10"
+      }
+    }
+  }
+}

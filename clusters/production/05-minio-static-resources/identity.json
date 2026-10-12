@@ -1,58 +1,66 @@
 {
   "users": {
-    "backup": {"groups": ["backup-rw", "xbackup-rw"]},
+    "acr": {
+      "policies": ["telegram-attachments-rw","telegram-yolo-rw"],
+      "sa": [
+        {"name": "ocr", "bucket":"telegram", "template": "int"},
+        {"name": "swirl", "bucket":"telegram", "template": "int"},
+        {"name": "os3", "bucket":"telegram", "template": "int"}
+      ]
+    },
+    "backup": {
+      "policies": ["backup-rw"], 
+      "sa": [{"name": "ns", "bucket":"backup", "template": "int"}]
+    },
+    "birl": {
+      "policies": ["telegram-attachments-rw"],
+      "sa":[
+        {"name": "draft", "bucket":"telegram", "template": "int"},
+        {"name": "base", "bucket":"telegram", "template": "int"},
+        {"name": "plastic", "bucket":"telegram", "template": "int"},
+        {"name": "mbase", "bucket":"telegram", "template": "int"},
+        {"name": "slip", "bucket":"telegram", "template": "int"},
+        {"name": "upsert", "bucket":"telegram", "template": "int"}
+      ]
+    },
+    "busta": {"groups": ["xdebug-rw", "clicker-rw"]},    
     "elastic-backup": {"groups": ["backup-rw", "minio-es7-rw"]},
     "etherpad": {"groups": ["xbackup-rw"]},
     "etl": {
-      "groups": [
-        "logstash-rw",
-        "etl-logstash-feeds-rw",
-        "birl-images-rw",
-        "mycop-images-rw"
-      ],
-      "sa": [
-        "etl"
-      ]
+      "policies": [ "logstash-rw", "etl-logstash-feeds-rw", "birl-images-rw", "mycop-images-rw", "mon-rw" ],
+      "sa": [{"name": "etl", "bucket":"etl-logstash-feeds", "template": "int", "port": 9000}]
     },
     "etl_exporter": {"groups": ["logstash-rw", "kubescape-reports-rw"]},
     "gitlab": {"groups": ["gitlab-rw"]},
     "gitlab-runner": {"groups": ["gitlab-runner-rw"]},
+    "gs2es": {
+      "policies": ["telegram-images-rw"],
+      "sa": [{"name": "gs2es", "bucket":"telegram", "template": "int"}]
+    },
     "sftpgo": {"groups": ["sftpgo-rw"]},
     "harbor": {"groups": ["harbor-rw", "xbackup-rw"]},
     "kubescape": {"groups": ["kubescape-reports-rw"]},
     "kafka-checker": {"groups": ["kafka-backups-rw"]},
     "logstash_red": {
-      "groups": ["logstash-rw", "etl-logstash-feeds-rw", "vandelay-rw", "mon-rw"],
-      "sa": [
-        "logstash_red"
-      ]
+      "policies": ["mon-rw","logstash-rw","etl-logstash-feeds-rw","vandelay-rw"],
+      "sa": [{"name": "logstash_red", "bucket":"etl-logstash-feeds", "template": "int"}]
     },
-    "telegram": {
-      "groups": ["telegram-rw"],
-      "sa": [
-        "birl",
-        "birl-api",
-        "os3c",
-        "os3t",
-        "telegram-rw",
-        "upsertbirl",
-        "whirl-telegram"
-      ]
-    },
-    "xdebug": {"groups": ["xdebug-rw"], "sa": ["mapper", "os3d"]},
-    "maid": {"groups": ["maid-rw"], "sa": ["clean"]},
+    "xdebug": {"groups": ["xdebug-rw"]},
+    "maid": {"groups": ["maid-rw"]},
     "clicker": {"groups": ["clicker-rw"]},
-    "magescanner": {"groups": ["magescanner-rw"]},
+    "magescanner": {
+      "policies": ["backup-rw"],
+      "sa": [{"name": "ns", "bucket":"backup", "template": "int"}]
+    },
     "ocr": {"groups": ["telegram-rw", "dome-attachements-rw"]},
     "swirl": {"groups": ["telegram-rw", "dome-attachements-rw"]},
     "similarweb": {"groups": ["similarweb-rw"]},
     "minifier": {
-      "groups": [
-        "telegram-rw",
-        "birl-images-rw",
-        "mycop-images-rw",
-        "xdebug-rw"
-      ]
+      "groups": [ "telegram-rw", "birl-images-rw", "mycop-images-rw", "xdebug-rw" ]
+    },
+    "minion-telegram": {
+      "policies": ["telegram-sessions-rw"],
+      "sa": [{"name": "unitedfullz","bucket":"telegram", "template": "int"}]
     },
     "attachements": {"groups": ["dome-attachements-rw"]},
     "tarantool": {"groups": ["tarantool-rw"]},
@@ -61,77 +69,20 @@
       "groups": ["datafix-rw", "telegram-rw", "xdebug-rw", "mycop-images-rw"]
     },
     "aws2kafka": {"groups": ["telegram-rw"]},
+    "telegram": {
+      "policies": ["telegram-rw"],
+      "sa": [
+        {"name": "telegram","bucket":"telegram", "template": "int"},
+        {"name": "os3","bucket":"telegram", "template": "int"}
+      ]
+    },
     "vandelay": {
       "groups": ["vandelay-rw", "logstash-ro", "xdebug-rw"],
-      "sa": ["vandelay"]
+      "sa": [{"name": "vandelay", "bucket":"vandelay", "template": "int", "port": 9000}]
     }
-  },
-
-  "policies": {
-    "APP-GA-OP": {"admin": ["*"]},
-    "APP-GA-DEV": {
-      "minio-dome-attachements": ["GetObject", "ListBucket"],
-      "minio-xdebug": ["GetObject", "ListBucket"],
-      "minio-maid": ["GetObject", "ListBucket"],
-      "minio-telegram": ["GetObject", "ListBucket"],
-      "minio-os3-attachements": ["GetObject", "ListBucket"],
-      "minio-datafix": ["GetObject", "ListBucket"],
-      "minio-birl-images-rw": ["GetObject", "ListBucket"],
-      "minio-mycop-images": ["GetObject", "ListBucket"]
-    },
-    "APP-GA-HUNT": {
-      "minio-meganz": ["GetObject", "ListBucket"],
-      "minio-os3-attachements": ["GetObject", "ListBucket"],
-      "minio-maid": ["GetObject", "ListBucket"],
-      "minio-telegram": ["GetObject", "ListBucket"],
-      "minio-clicker": ["GetObject", "ListBucket"],
-      "orbital-wording-tox": ["GetObject", "ListBucket"]
-    },
-    "APP-GA-COLLECTIONS": {
-      "minio-os3-attachements": ["GetObject", "ListBucket"],
-      "minio-dome-attachements": ["GetObject", "ListBucket"],
-      "minio-maid": ["GetObject", "ListBucket"],
-      "minio-meganz": ["GetObject", "ListBucket"],
-      "minio-telegram": ["GetObject", "ListBucket"],
-      "minio-xdebug": ["GetObject", "ListBucket"],
-      "minio-datafix": ["GetObject", "ListBucket"]
-    },
-    "APP-GA-PM":{
-      "etl-logstash-feeds": ["GetObject", "ListBucket"],
-      "vandelay": ["GetObject", "ListBucket"]
-    },
-    "mon-rw": {"mon-rw": ["*"]},
-    "telegram-rw": {"minio-telegram": ["*"]},
-    "maid-rw": {"minio-maid": ["*"]},
-    "clicker-rw": {"minio-clicker": ["*"]},
-    "magescanner-rw": {"minio-magescanner": ["*"]},
-    "xdebug-rw": {"minio-xdebug": ["*"]},
-    "dome-attachements-rw": {"minio-dome-attachements": ["*"]},
-    "similarweb-rw": {"minio-similarweb": ["*"]},
-    "logstash-rw": {"minio-logstash": ["*"]},
-    "logstash-ro": {"minio-logstash": ["GetObject", "ListBucket"]},
-    "etl-logstash-feeds-rw": {"etl-logstash-feeds": ["*"]},
-    "birl-images-rw": {"minio-birl-images": ["*"]},
-    "mycop-images-rw": {"minio-mycop-images": ["*"]},
-    "backup-rw": {"minio-backup": ["*"]},
-    "xbackup-rw": {"minio-xbackup": ["*"]},
-    "minio-es7-rw": {"minio-es7": ["*"]},
-    "kubescape-reports-rw": {"kubescape-reports": ["*"]},
-    "gitlab-backup-storage-rw": {"minio-gitlab-backup-storage": ["*"]},
-    "gitlab-tmp-storage-rw": {"minio-gitlab-tmp-storage": ["*"]},
-    "gitlab-lfs-storage-rw": {"minio-gitlab-lfs-storage": ["*"]},
-    "gitlab-runner-rw": {"minio-gitlab-runner-cache": ["*"]},
-    "sftpgo-rw": {"minio-sftpgo": ["*"]},
-    "harbor-rw": {"harbor": ["*"]},
-    "kafka-backups-rw": {"minio-kafka-backups": ["*"]},
-    "datafix-rw": {"minio-datafix": ["*"]},
-    "tarantool-rw": {"tarantool-backup": ["*"]},
-    "vandelay-rw": {"vandelay": ["*"]},
-    "thanos-rw": {"thanos": ["*"]}
   },
   "groups": {
     "mon-rw": ["mon-rw"],
-    "telegram-rw": ["telegram-rw"],
     "maid-rw": ["maid-rw"],
     "clicker-rw": ["clicker-rw"],
     "magescanner-rw": ["magescanner-rw"],
@@ -143,7 +94,6 @@
     "etl-logstash-feeds-rw": ["etl-logstash-feeds-rw"],
     "birl-images-rw": ["birl-images-rw"],
     "mycop-images-rw": ["mycop-images-rw"],
-    "backup-rw": ["backup-rw"],
     "xbackup-rw": ["xbackup-rw"],
     "minio-es7-rw": ["minio-es7-rw"],
     "kubescape-reports-rw": ["kubescape-reports-rw"],
@@ -160,5 +110,71 @@
     "tarantool-rw": ["tarantool-rw"],
     "vandelay-rw": ["vandelay-rw"],
     "thanos-rw": ["thanos-rw"]
+  },
+  "policies": {
+    "APP-GA-OP": [{"type": "admin"}],
+    "APP-GA-DEV": [
+      { "bucket": "minio-dome-attachements", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "debug", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-maid", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "telegram", "access": ["GetObject", "ListBucket","GetObjectTagging"] },
+      { "bucket": "minio-os3-attachements", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-datafix", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-birl-images-rw", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-mycop-images", "access": ["GetObject", "ListBucket"] }
+    ],
+    "APP-GA-HUNT": [
+      { "bucket": "minio-meganz", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-os3-attachements", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-maid", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-telegram", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-clicker", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "orbital-wording-tox", "access": ["GetObject", "ListBucket"] }
+    ],
+    "APP-GA-COLLECTIONS": [
+      { "bucket": "minio-os3-attachements", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-dome-attachements", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-maid", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-meganz", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-telegram", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-xdebug", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "minio-datafix", "access": ["GetObject", "ListBucket"] }
+    ],
+    "APP-GA-PM":[
+      { "bucket": "etl-logstash-feeds", "access": ["GetObject", "ListBucket"] },
+      { "bucket": "vandelay", "access": ["GetObject", "ListBucket"] }
+    ],
+    "backup-rw": [{ "bucket": "minio-backup", "access": ["*"] }],
+    "mon-rw": [{ "bucket": "mon", "access": ["*"] }],
+    "maid-rw": [{ "bucket": "minio-maid", "access": ["*"] }],
+    "clicker-rw": [{ "bucket": "minio-clicker", "access": ["*"] }],
+    "magescanner-rw": [{ "bucket": "minio-magescanner", "access": ["*"] }],
+    "xdebug-rw": [{ "bucket": "minio-xdebug", "access": ["*"] }],
+    "dome-attachements-rw": [{ "bucket": "minio-dome-attachements", "access": ["*"] }],
+    "similarweb-rw": [{ "bucket": "minio-similarweb", "access": ["*"] }],
+    "logstash-rw": [{ "bucket": "minio-logstash", "access": ["*"] }],
+    "logstash-ro": [{ "bucket": "minio-logstash", "access": ["GetObject", "ListBucket"] }],
+    "etl-logstash-feeds-rw": [{ "bucket": "etl-logstash-feeds", "access": ["*"] }],
+    "birl-images-rw": [{ "bucket": "minio-birl-images", "access": ["*"] }],
+    "mycop-images-rw": [{ "bucket": "minio-mycop-images", "access": ["*"] }],
+    "xbackup-rw": [{ "bucket": "minio-xbackup", "access": ["*"] }],
+    "minio-es7-rw": [{ "bucket": "minio-es7", "access": ["*"] }],
+    "kubescape-reports-rw": [{ "bucket": "kubescape-reports", "access": ["*"] }],
+    "gitlab-backup-storage-rw": [{ "bucket": "minio-gitlab-backup-storage", "access": ["*"] }],
+    "gitlab-tmp-storage-rw": [{ "bucket": "minio-gitlab-tmp-storage", "access": ["*"] }],
+    "gitlab-lfs-storage-rw": [{ "bucket": "minio-gitlab-lfs-storage", "access": ["*"] }],
+    "gitlab-runner-rw": [{ "bucket": "minio-gitlab-runner-cache", "access": ["*"] }],
+    "sftpgo-rw": [{ "bucket": "minio-sftpgo", "access": ["*"] }],
+    "harbor-rw": [{ "bucket": "harbor", "access": ["*"] }],
+    "kafka-backups-rw": [{ "bucket": "minio-kafka-backups", "access": ["*"] }],
+    "datafix-rw": [{ "bucket": "minio-datafix", "access": ["*"] }],
+    "tarantool-rw": [{ "bucket": "tarantool-backup", "access": ["*"] }],
+    "vandelay-rw": [{ "bucket": "vandelay", "access": ["*"] }],
+    "telegram-rw": [{ "bucket": "telegram", "access": ["*"] }],
+    "telegram-attachments-rw": [{"bucket": "telegram", "access": ["*"], "folder": "attachments"}],
+    "telegram-images-rw": [{"bucket": "telegram", "access": ["*"], "folder": "ds_check_images"}],
+    "telegram-sessions-rw": [{"bucket": "telegram", "access": ["*"], "folder": "sessions"}],
+    "telegram-yolo-rw": [{"bucket": "telegram", "access": ["*"], "folder": "yolo_models"}],
+    "thanos-rw": [{ "bucket": "thanos", "access": ["*"] }]
   }
 }

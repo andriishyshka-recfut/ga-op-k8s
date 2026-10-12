@@ -19,7 +19,7 @@ resource "kubernetes_secret" "elastic_secret" {
 resource "helm_release" "elastic" {
   for_each  = local.nodePools
   name      = each.key
-  chart     = "${path.module}/charts/elasticsearch"
+  chart     = "${path.module}/charts/elasticsearch8"
   wait      = true
   atomic    = false
   timeout   = 28800
@@ -43,9 +43,11 @@ resource "helm_release" "elastic" {
   ]
   depends_on = [
     kubernetes_secret.elastic_secret,
-    kubernetes_persistent_volume_claim.elsticsearch,
+    kubernetes_persistent_volume_claim.elasticsearch,
     kubernetes_secret.keystores,
-    kubernetes_config_map.reboot_date
+    kubernetes_config_map.reboot_date,
+    kubernetes_manifest.certificate_elastic_es_cert,
+    kubernetes_manifest.certificate_elastic_elastic_transport_certs
   ]
 }
 

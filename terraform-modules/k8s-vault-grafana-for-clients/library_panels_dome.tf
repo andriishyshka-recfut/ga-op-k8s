@@ -6,8 +6,8 @@ resource "random_string" "dome" {
 resource "grafana_library_panel" "dome_graph" {
   provider  = grafana.elastic
   org_id    = local.org_id
-  count     = length(local.index_dome)
-  name      = "dome-${element(local.index_dome, count.index)}-${random_string.dome.id}"
+  for_each   = local.index_dome_map
+  name       = "dome-${each.key}-${random_string.dome.id}"
   folder_uid = grafana_folder.dome.uid
   depends_on = [
     grafana_data_source.dome
@@ -18,7 +18,7 @@ resource "grafana_library_panel" "dome_graph" {
     "bars" : false,
     "dashLength" : 10,
     "dashes" : false,
-    "datasource" : "dome-${element(local.index_dome, count.index)}",
+    "datasource" : "${grafana_data_source.dome[each.key].name}",
     "fill" : 1,
     "fillGradient" : 0,
     "gridPos" : {
@@ -139,7 +139,7 @@ resource "grafana_library_panel" "dome_graph" {
     ],
     "thresholds" : [],
     "timeRegions" : [],
-    "title" : "${element(local.index_dome, count.index)}",
+    "title" : "${each.key}",
     "tooltip" : {
       "shared" : true,
       "sort" : 0,
@@ -172,15 +172,15 @@ resource "grafana_library_panel" "dome_graph" {
 resource "grafana_library_panel" "dome_table_old" {
   provider  = grafana.elastic
   org_id    = local.org_id
-  count     = length(local.index_dome)
-  name      = "dome-table-${element(local.index_dome, count.index)}-${random_string.dome.id}"
+  for_each   = local.index_dome_map
+  name       = "dome-table-${each.key}-${random_string.dome.id}"
   folder_uid = grafana_folder.dome.uid
   depends_on = [
     grafana_data_source.dome
   ]
   model_json = jsonencode({
     "columns" : [],
-    "datasource" : "dome-${element(local.index_dome, count.index)}",
+    "datasource" : "${grafana_data_source.dome[each.key].name}",
     "fontSize" : "100%",
     "gridPos" : {
       "h" : 6,
@@ -271,7 +271,7 @@ resource "grafana_library_panel" "dome_table_old" {
         "timeField" : "@timestamp"
       }
     ],
-    "title" : "${element(local.index_dome, count.index)}",
+    "title" : "${each.key}",
     "transform" : "table",
     "type" : "table-old"
   })
@@ -279,22 +279,24 @@ resource "grafana_library_panel" "dome_table_old" {
 
 locals {
   grafana_library_dome_graph = [
-    for i in grafana_library_panel.dome_graph[*] :
-    merge(jsondecode(i.model_json), {
+    for name in local.index_dome :
+    merge(jsondecode(grafana_library_panel.dome_graph[name].model_json), {
       libraryPanel = {
-        name = i.name
-        uid  = i.uid
+        name = grafana_library_panel.dome_graph[name].name
+        uid  = grafana_library_panel.dome_graph[name].uid
       }
-  })]
+    })
+  ]
 
   grafana_library_table = [
-    for j in grafana_library_panel.dome_table_old[*] :
-    merge(jsondecode(j.model_json), {
+    for name in local.index_dome :
+    merge(jsondecode(grafana_library_panel.dome_table_old[name].model_json), {
       libraryPanel = {
-        name = j.name
-        uid  = j.uid
+        name = grafana_library_panel.dome_table_old[name].name
+        uid  = grafana_library_panel.dome_table_old[name].uid
       }
-  })]
+    })
+  ]
 }
 
 resource "grafana_dashboard" "dome_library_panel" {

@@ -20,9 +20,6 @@ path "secret/data/challenger" {
 path "secret/data/wl/core/*" {
   capabilities = ["read","list"]
 }
-path "secret/data/pi/*" {
-  capabilities = ["read","list"]
-}
 path "secret/data/geo/*" {
   capabilities = ["read","list"]
 }
@@ -38,16 +35,19 @@ path "secret/data/apm/*" {
 path "sys/leases/renew" {
   capabilities = ["read","list","create","update"]
 }
-path "secret/data/ching/*" {
+path "secret/data/oidc_google_test" {
   capabilities = ["read","list"]
 }
-path "secret/data/oidc_google_test" {
+path "secret/data/core/*" {
   capabilities = ["read","list"]
 }
 path "secret/data/core/auth/*" {
   capabilities = ["read","list","create","update"]
 }
 path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
+path "secret/data/misc/slack/app/SANDBOX" {
    capabilities = ["read","list"]
 }
 EOT

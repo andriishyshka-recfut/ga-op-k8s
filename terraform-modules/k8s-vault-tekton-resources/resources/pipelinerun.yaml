@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: workloads
+  namespace: tekton-tasks
+spec:
+  # timeouts:
+  #   pipeline: "24h0m0s"
+  #   tasks: "20h0m0s"
+  pipelineRef:
+    name: 01-core-components
+  workspaces:
+    - name: ws
+      emptyDir: {}

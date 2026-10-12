@@ -1,0 +1,15 @@
+curl -X PUT "https://elastic:$ES_PASSWORD@${settings.elastic_service}/_security/role/auditbeat_role" -H 'Content-Type: application/json' -k -d '
+{
+  "cluster": ["monitor","manage_ilm"],
+  "indices": [
+    {
+      "names": ["auditbeat-*"],
+      "privileges": ["write","manage"]
+    }
+  ]
+} ' &&\
+curl -X PUT "https://elastic:$ES_PASSWORD@${settings.elastic_service}/_security/user/${user}" -H 'Content-Type: application/json' -k -d '
+{
+    "roles" : ["kibana_admin","ingest_admin","remote_monitoring_agent","auditbeat_role"],
+    "password": "${password}"
+}'

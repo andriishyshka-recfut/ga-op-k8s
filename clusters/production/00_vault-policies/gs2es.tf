@@ -31,6 +31,9 @@ path "secret/data/es-creds-compose-prod/metaEs2gs-twirlMs" {
 path "secret/data/wl/aws2kafka-check/*" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/aws2kafka-check_telegram-images" {
+   capabilities = ["read","list"]
+}
 path "secret/data/gs2es/es2gs-magecart-similarweb/spreadsheet" {
   capabilities = ["read","list"]
 }
@@ -84,6 +87,18 @@ path "secret/data/wl/clicker/engine-definer" {
 }
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
+}
+path "secret/data/misc/slack/app/gs2es" {
+   capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/metaGs2esTtdMs" {
+  capabilities = ["read","list"]
+}
+path "secret/data/es-creds-compose-prod/_gs2es-ttd.ms" {
+  capabilities = ["read","list"]
+}
+path "secret/data/misc/sa/google/ttd" {
+  capabilities = ["read","list"]
 }
 EOT
 }

@@ -2,8 +2,8 @@
   "Version":"2012-10-17",
   "Statement": [
 
-%{ for bucket,action_list in values ~}
-%{ if bucket == "admin" ~}
+%{ for policy in values ~}
+%{ if lookup(policy, "type", "no_admin" ) == "admin" ~}
     {
         "Effect": "Allow",
         "Action": [
@@ -24,19 +24,29 @@
         "Resource": [
             "arn:aws:s3:::*"
         ]
-    },
+    }
 %{ else ~}
     {
-      "Sid":"${uuid()}",
+      "Sid":"${uuid}-${index(values,policy) + 1}",
       "Effect": "Allow",
-      "Action": [%{ for action in action_list ~}"s3:${action}"%{if index(action_list,action) != length(action_list)-1},%{ endif } %{ endfor ~}],
+      "Action": [%{ for action in policy.access ~}"s3:${action}"%{if index(policy.access,action) != length(policy.access)-1},%{ endif } %{ endfor ~}],
       "Principal":"*",
-      "Resource": "arn:aws:s3:::${bucket}*/*"
+      "Resource": "arn:aws:s3:::${policy.bucket}/%{ if lookup(policy, "folder", false ) != false ~}${policy.folder}/*%{ else ~}*%{ endif ~}"
+    },
+%{ endif ~}
+%{ if lookup(policy, "folder", false ) != false ~}
+    {
+      "Sid": "${uuid}-${index(values,policy) + 1}-0",
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket","s3:GetBucketLocation"],
+      "Principal":"*",
+      "Resource": "arn:aws:s3:::${policy.bucket}/*"
     },
 %{ endif ~}
 %{ endfor ~}
+%{ if lookup(element(values,0), "type", "no_admin" ) != "admin" ~}
     {
-      "Sid":"DenyAll",
+      "Sid":"${uuid}-0",
       "Effect": "Deny",
       "Action": [
         "s3:DeleteBucket",
@@ -45,5 +55,6 @@
       "Principal":"*",
       "Resource": "arn:aws:s3:::*"
     }
+%{ endif ~}
   ]
 }

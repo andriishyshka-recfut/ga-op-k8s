@@ -1,18 +1,21 @@
-data "vault_generic_secret" "minio_creds" {
-  path = "secret/minio/users"
-}
 locals {
-  accessKey               = jsondecode(data.vault_generic_secret.minio_creds.data["elastic-backup"]).accessKey
-  secretKey               = jsondecode(data.vault_generic_secret.minio_creds.data["elastic-backup"]).secretKey
+  minioSecretPath         = try(local.globalSettings.minio.vaultPath, "secret/minio/users")
+  legacyMinioCreds        = try(jsondecode(data.vault_generic_secret.minio_creds.data["elastic-backup"]), {})
+  accessKey               = try(data.vault_generic_secret.minio_creds.data["ACCESS_KEY_ID"], local.legacyMinioCreds.accessKey)
+  secretKey               = try(data.vault_generic_secret.minio_creds.data["SECRET_ACCESS_KEY"], local.legacyMinioCreds.secretKey)
+  backupBucketName        = try(local.globalSettings.minio.bucket, "minio-${var.BackupBucketName}-${local.currentProject}")
+  minioProtocol           = try(local.globalSettings.minio.protocol, "http")
+  minioEndpoint           = try(local.globalSettings.minio.endpoint, var.MinioAddress)
+  minioCa                 = try(data.vault_generic_secret.minio_creds.data["CA_CRT"], null)
   minioIntegrationCommand = <<EOT
 
   curl -X PUT "https://elastic:$ES_PASSWORD@${local.httpServive}:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
 {
      "type": "s3",
       "settings": {
-         "bucket": "minio-${var.BackupBucketName}-${local.currentProject}",
-         "endpoint": "${var.MinioAddress}",
-         "protocol": "http",
+         "bucket": "${local.backupBucketName}",
+         "endpoint": "${local.minioEndpoint}",
+         "protocol": "${local.minioProtocol}",
          "path_style_access": true,
          "base_path": "${var.BackupBucketBasePath}"
       }
@@ -21,31 +24,22 @@ locals {
 EOT
 }
 
+data "vault_generic_secret" "minio_creds" {
+  path = local.minioSecretPath
+}
 
-# data "vault_generic_secret" "minio_creds" {
-#   path = "secret/minio/users"
-# }
-# locals {
-#   accessKey               = jsondecode(data.vault_generic_secret.minio_creds.data["elastic-backup"]).accessKey
-#   secretKey               = jsondecode(data.vault_generic_secret.minio_creds.data["elastic-backup"]).secretKey
-#   minioIntegrationCommand = <<EOT
+resource "kubernetes_secret" "minio_ca" {
+  count = try(local.globalSettings.minio.vaultPath, null) != null ? 1 : 0
 
-#   curl -X PUT "https://elastic:$ES_PASSWORD@elasticsearch-coor:9200/_snapshot/minio" -H 'Content-Type: application/json' -k -d '
-# {
-#      "type": "s3",
-#       "settings": {
-#          "bucket": "minio-es7-ardent-rarity-239115",
-#          "endpoint": "minio.minio:9000",
-#          "protocol": "http",
-#          "path_style_access": true,
-#          "base_path": "test"
-#       }
-#   }
-#   '
-# EOT
-# }
+  metadata {
+    name      = "minio-ca-certs"
+    namespace = local.globalSettings.namespace
+  }
 
-
+  data = {
+    "ca.crt" = local.minioCa
+  }
+}
 
 resource "kubernetes_secret" "minio_credentials" {
   count = contains(local.globalSettings.plugins, "repository-s3") ? 1 : 0

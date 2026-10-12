@@ -1,7 +1,7 @@
 ElasticSettings:
   globalSettings:
     namespace: elastic
-    imageTag: "7.17.29"
+    imageTag: "8.16.6"
     clusterName: red
     remotecerts:
       - "remote.ca.crt"
@@ -9,6 +9,7 @@ ElasticSettings:
     plugins:
       - "repository-s3"
     volumeExt: false
+    persistentDisksKey: elastic-red
     keystores:
       - aws
     podAnnotations:
@@ -16,10 +17,17 @@ ElasticSettings:
       co.elastic.logs/module: "elasticsearch"
       sidecar.istio.io/inject: "false"
       co.elastic.logs/exclude_lines: '^.*"event.type":"transport",^.*metricbeat_user,^.*filebeat_user'
+    transport:
+      verification_mode: certificate
+      certs:
+        - "2027"
+      active: "2027"
+#default 8880h
+      duration: "8800h"
     addons:
       notifications:
         slack:
-          vault_path: "secret/red/elastic-notification-accounts"
+          vault_path: "secret/misc/slack/app/X-Pack"
         email:
           vault_path: "secret/red/elastic-notification-accounts"
       authorizations:
@@ -31,7 +39,7 @@ ElasticSettings:
           domain: "kk.regemini.com"
     license:
       vault_path: "secret/red/misc/elasticsearch/license"
-      name: "recorded-future-ab-production-8dfd88a7-11b1-4567-87d3-d41831a65fe5-v5.json"
+      name: "recorded-future-ab-production-dc5e3cf6-80f2-4b3e-83cc-37283cc16f6d-v5.json"
     clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
   nodePools:
     master:

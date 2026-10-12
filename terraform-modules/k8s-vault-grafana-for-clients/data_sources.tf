@@ -1,20 +1,49 @@
+# locals {
+#   index_dome     = split("\n", file("${path.module}/dome.txt"))
+#   index_minion   = split("\n", file("${path.module}/minion.txt"))
+#   index_artifact = split("\n", file("${path.module}/artifact.txt"))
+# }
+
 locals {
-  index_dome     = split("\n", file("${path.module}/dome.txt"))
-  index_minion   = split("\n", file("${path.module}/minion.txt"))
-  index_artifact = split("\n", file("${path.module}/artifact.txt"))
+  index_dome = [
+    for name in split("\n", trimspace(file("${path.module}/dome.txt"))) :
+    trimspace(name)
+    if trimspace(name) != ""
+  ]
+  index_dome_map = {
+    for name in local.index_dome : name => name
+  }
+
+  index_minion = [
+    for name in split("\n", trimspace(file("${path.module}/minion.txt"))) :
+    trimspace(name)
+    if trimspace(name) != ""
+  ]
+    index_minion_map = {
+    for name in local.index_minion : name => name
+  }
+
+  index_artifact = [
+    for name in split("\n", trimspace(file("${path.module}/artifact.txt"))) :
+    trimspace(name)
+    if trimspace(name) != ""
+  ]
+    index_artifact_map = {
+    for name in local.index_artifact : name => name
+  }  
 }
 
 resource "grafana_data_source" "dome" {
   provider            = grafana.elastic
   org_id              = local.org_id
-  count               = length(local.index_dome)
+  for_each            = local.index_dome_map
   type                = "elasticsearch"
-  name                = "dome-${element(local.index_dome, count.index)}"
+  name                = "dome-${each.key}"
   url                 = "http://red-coor.elastic.svc:9200"
   basic_auth_enabled  = "true"
   basic_auth_username = local.elasticUsername
   access_mode         = "proxy"
-  database_name       = "dome-${element(local.index_dome, count.index)}*"
+  database_name       = "dome-${each.key}*"
   is_default          = false
   json_data_encoded = jsonencode({
     timeField                  = "@timestamp"
@@ -30,14 +59,14 @@ resource "grafana_data_source" "dome" {
 resource "grafana_data_source" "minion" {
   provider            = grafana.elastic
   org_id              = local.org_id
-  count               = length(local.index_minion)
+  for_each            = local.index_minion_map
   type                = "elasticsearch"
-  name                = "minion-${element(local.index_minion, count.index)}"
+  name                = "minion-${each.key}"
   url                 = "http://red-coor.elastic.svc:9200"
   basic_auth_enabled  = "true"
   basic_auth_username = local.elasticUsername
   access_mode         = "proxy"
-  database_name       = "${element(local.index_minion, count.index)}*"
+  database_name       = "minion-${each.key}*"
   is_default          = false
   json_data_encoded = jsonencode({
     timeField                  = "timeStampLastSeen"
@@ -53,14 +82,14 @@ resource "grafana_data_source" "minion" {
 resource "grafana_data_source" "artifact" {
   provider            = grafana.elastic
   org_id              = local.org_id
-  count               = length(local.index_artifact)
+  for_each            = local.index_artifact_map
   type                = "elasticsearch"
-  name                = "artifact-${element(local.index_artifact, count.index)}"
+  name                = "artifact-${each.key}"
   url                 = "http://red-coor.elastic.svc:9200"
   basic_auth_enabled  = "true"
   basic_auth_username = local.elasticUsername
   access_mode         = "proxy"
-  database_name       = "${element(local.index_artifact, count.index)}*"
+  database_name       = "artifact-${each.key}*"
   is_default          = false
   json_data_encoded = jsonencode({
     timeField                  = "@timestamp"

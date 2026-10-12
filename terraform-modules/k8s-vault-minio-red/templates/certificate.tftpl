@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ${name}
+  namespace: ${namespace}
+spec:
+  commonName: ${element(domain_list,0)}
+  dnsNames:
+%{ for domain in domain_list ~}
+    - '${domain}'
+%{ endfor ~}
+  issuerRef:
+    kind: ClusterIssuer
+    name: vault-minio
+  secretName: tls-ssl-minio
+  duration: 1080h

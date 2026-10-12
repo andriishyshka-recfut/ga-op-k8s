@@ -34,6 +34,19 @@ resource "kubernetes_secret" "kibana_elastic_user" {
   }
 }
 
+resource "kubernetes_secret" "kibana_es_credentials" {
+  for_each = local.kibanaSettings
+  metadata {
+    name      = "kibana-${each.key}-es-credentials"
+    namespace = each.value.namespace
+  }
+
+  data = {
+    username = "elastic"
+    password = data.kubernetes_secret.elastic_pass.data.elastic
+  }
+}
+
 locals {
   setupUser = <<EOF
 curl -X PUT "https://elastic:$ES_PASSWORD@${local.httpServive}:9200/_security/user/kibana_system/_password" -H 'Content-Type: application/json' -k -d '

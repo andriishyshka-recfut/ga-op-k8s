@@ -29,7 +29,7 @@ locals {
      kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
-     scale statefulset --replicas=0 -n $1 
+     scale statefulset --replicas=0 -n $1
     sleep 29
   COMMAND
 
@@ -38,6 +38,26 @@ locals {
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
      scale deploy -n etl --replicas=0 --all
+  COMMAND
+
+  stop_prometheus_thanos = <<COMMAND
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     get deployment -l app.kubernetes.io/name=thanos -n monitoring |awk 'NR>1 {print $1,$2}'| xargs -n 2 \
+     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     scale deploy --replicas=0 -n $1 && \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     get statefulset -l 'app.kubernetes.io/name in (prometheus, thanos, thanos-ruler)' -n monitoring |awk 'NR>1 {print $1,$2}'| xargs -n 2 \
+     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     scale statefulset --replicas=0 -n $1
+    sleep 29
   COMMAND
 
   delete_zero_cronjobs = <<COMMAND
@@ -99,6 +119,18 @@ resource "null_resource" "stop_zero_services" {
   depends_on = [null_resource.stop_flux]
 }
 
+resource "null_resource" "stop_prometheus_thanos" {
+
+  triggers = {
+    command = md5(local.stop_prometheus_thanos)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_prometheus_thanos
+  }
+  depends_on = [null_resource.stop_flux]
+}
+
 resource "null_resource" "delete_zero_cronjobs" {
 
   triggers = {
@@ -108,7 +140,7 @@ resource "null_resource" "delete_zero_cronjobs" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.delete_zero_cronjobs
   }
-  depends_on = [null_resource.stop_flux]
+  depends_on = [null_resource.stop_flux, null_resource.stop_etl_operator]
 }
 
 resource "null_resource" "stop_etl_operator" {
@@ -120,20 +152,6 @@ resource "null_resource" "stop_etl_operator" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_etl_operator
   }
-}
-
-resource "null_resource" "delete_etl_jobs" {
-
-  triggers = {
-    command = md5(local.delete_etl_jobs)
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.delete_etl_jobs
-  }
-  depends_on = [
-    null_resource.stop_etl_operator
-  ]
 }
 
 resource "null_resource" "stop_cvat" {
@@ -157,5 +175,5 @@ resource "null_resource" "stop_nfs" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_nfs
   }
-  depends_on = [null_resource.stop_flux]
+  depends_on = [null_resource.stop_flux, null_resource.stop_cvat]
 }

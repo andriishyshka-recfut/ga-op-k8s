@@ -1,6 +1,5 @@
 altcoinstalks
 altenen
-antichat
 antimigalki
 ascarding
 bdf
@@ -10,7 +9,6 @@ blackbones
 blackhatprotools
 blackhatworld
 blasthack
-carderone
 carder
 carders
 cardingmafia
@@ -28,6 +26,7 @@ cryptbb
 cyberbreach
 cweb
 dark2web
+darkforums
 darkmarket
 darkmoney
 darktime
@@ -39,7 +38,6 @@ elhacker
 enclave
 exploit.in
 forumteam
-freehack
 gerki
 hackforums
 hak5
@@ -49,7 +47,6 @@ instanthack
 korovka
 lcp
 leakbase
-leakzone
 legitcarders
 lolzteam
 migalki
@@ -57,7 +54,6 @@ mmgp
 mpgh
 navigator
 niflheim
-nulled
 nulledbb
 nohide
 ogusers
@@ -66,8 +62,10 @@ patched
 piratebuhta
 probiv
 procrd
+pwnforums
 ramp
 rstforums
+rehub
 runion
 rutor
 shadowcarders

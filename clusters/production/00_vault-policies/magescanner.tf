@@ -35,13 +35,16 @@ path "secret/data/oidc_google_prod" {
 path "secret/data/minio/similarweb" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/similarweb_similarweb" {
+  capabilities = ["read","list"]
+}
 path "secret/data/mongo/similarweb" {
 	capabilities = ["read","list"]
 }
 path "secret/data/mongo/metaBeat" {
 	capabilities = ["read","list"]
 }
-path "secret/magescanner/splash_vpn" {
+path "secret/magescanner/whoer_vpn" {
   capabilities = ["read","list"]
 }
 path "secret/magescanner/surfshark_creds" {
@@ -49,6 +52,12 @@ path "secret/magescanner/surfshark_creds" {
 }
 path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
+}
+path "secret/data/mw/minio/sa/magescanner_mgscn" {
+   capabilities = ["read","list"]
+}
+path "pki-minio/cert/ca" {
+  capabilities = ["read"]
 }
 EOT
 }

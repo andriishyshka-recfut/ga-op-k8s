@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio-mirror
+  namespace: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio-mirror
+  template:
+    metadata:
+      labels:
+        app: minio-mirror
+    spec:
+      containers:
+        - name: mc
+          image: minio/mc:latest
+          envFrom:
+            - secretRef:
+                name: migration-creds
+          env:
+            - name: OLD_ENDPOINT
+              value: "http://10.203.0.13:9000"
+            - name: NEW_ENDPOINT
+              value: "https://minio.minio.svc.cluster.local"
+            - name: SRC_BUCKET
+              value: "minio-xdebug-orbital-wording-233917"
+            - name: DST_BUCKET
+              value: "mng-debug"
+          resources:
+            requests:
+              cpu: "1"
+              memory: "256Mi"
+            limits:
+              cpu: "2"
+              memory: "512Mi"
+          volumeMounts:
+            - name: mc-ca
+              mountPath: /root/.mc/certs/CAs
+              readOnly: true
+          # command: ["sh", "-c", "tail -f /dev/null"]
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              mc alias set oldminio ${OLD_ENDPOINT} ${OLD_ACCESS_KEY} ${OLD_SECRET_KEY}
+              mc alias set newminio ${NEW_ENDPOINT} ${NEW_ACCESS_KEY} ${NEW_SECRET_KEY}
+              mc mirror oldminio/${SRC_BUCKET} newminio/${DST_BUCKET}
+      volumes:
+        - name: mc-ca
+          secret:
+            secretName: tls-ssl-minio
+            items:
+              - key: ca.crt
+                path: ca.crt
+      restartPolicy: Always

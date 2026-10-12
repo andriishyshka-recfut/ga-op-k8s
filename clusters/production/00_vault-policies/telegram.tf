@@ -19,6 +19,12 @@ path "secret/data/mongo/telegram" {
 path "secret/data/telegram/*" {
  capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/telegram_telegram-sessions" {
+   capabilities = ["read","list"]
+}
+path "secret/data/mw/minio/sa/os3_telegram-attachments" {
+   capabilities = ["read","list"]
+}
 path "secret/data/mongo/metaBeat" {
  capabilities = ["read","list"]
 }
@@ -41,6 +47,9 @@ path "secret/data/es-creds-compose-prod/telegram" {
   capabilities = ["read","list"]
 }
 path "secret/data/mw/monitoring/otel" {
+   capabilities = ["read","list"]
+}
+path "secret/data/wl/telegram/*" {
    capabilities = ["read","list"]
 }
 EOT

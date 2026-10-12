@@ -20,7 +20,20 @@ resources:
 %{ endif ~}
     memory: ${ resources.memLimit }
 esJavaOpts: ${esJavaOpts}
-%{ if  globalSettings.volumeExt ~}
+roles:
+%{ if lookup(roles, "master", "false") == "true" ~}
+  - master
+%{ endif ~}
+%{ if lookup(roles, "ingest", "false") == "true" ~}
+  - ingest
+%{ endif ~}
+%{ if lookup(roles, "data", "false") == "true" ~}
+  - data
+%{ endif ~}
+%{ if lookup(roles, "remote_cluster_client", "false") == "true" ~}
+  - remote_cluster_client
+%{ endif ~}
+%{ if lookup(globalSettings, "volumeExt", false) ~}
 persistence:
   enabled: false
 %{ else ~}
@@ -30,12 +43,6 @@ volumeClaimTemplate:
     requests:
       storage: ${storage}
 %{ endif ~}
-roles:
-  master: "${ lookup(roles, "master","false")}"
-  ingest: "${ lookup(roles, "ingest","false")}"
-  data: "${ lookup(roles, "data","false")}"
-  remote_cluster_client: "${ lookup(roles, "remote_cluster_client","false")}"
-  ml: "false"
 nodeSelector:
   workloadsType: "${workloadsType}"
 tolerations:
@@ -55,22 +62,42 @@ readinessProbe:
   successThreshold: 3
   timeoutSeconds: 5
 extraVolumes:
-%{ if  globalSettings.volumeExt ~}
-  - name: ${globalSettings.clusterName}-${nodePool}
-    persistentVolumeClaim:
-      claimName: ${globalSettings.clusterName}-${nodePool}
-%{ endif ~}
   - name: elastic-plugins-local
     emptyDir: {}
   - name: elastic-transport-certificates
     emptyDir: {}
+%{ if lookup(globalSettings, "minio", false) != false ~}
+%{ if lookup(globalSettings.minio, "protocol", "http") == "https" ~}
+  - name: minio-truststore
+    emptyDir: {}
+%{ endif ~}
+%{ endif ~}
 extraVolumeMounts:
   - name: elastic-plugins-local
     mountPath: /usr/share/elasticsearch/plugins
   - name: elastic-transport-certificates
     mountPath: /usr/share/elasticsearch/config/transport-certs
+%{ if lookup(globalSettings, "minio", false) != false ~}
+%{ if lookup(globalSettings.minio, "protocol", "http") == "https" ~}
+  - name: minio-truststore
+    mountPath: /usr/share/elasticsearch/jdk/lib/security/cacerts
+    subPath: cacerts
+%{ endif ~}
+%{ endif ~}
 %{ if length(globalSettings.plugins) > 0 ~}
 extraInitContainers:
+  - name: fix-data-permissions
+    image: docker.elastic.co/elasticsearch/elasticsearch:${globalSettings.imageTag}
+    command:
+      - sh
+      - -c
+      - chown -R 1000:1000 /usr/share/elasticsearch/data
+    securityContext:
+      runAsUser: 0
+      runAsNonRoot: false
+    volumeMounts:
+      - name: ${globalSettings.clusterName}-${nodePool}
+        mountPath: /usr/share/elasticsearch/data
   - name: install-plugins
     image: docker.elastic.co/elasticsearch/elasticsearch:${globalSettings.imageTag}
     command:
@@ -84,61 +111,67 @@ extraInitContainers:
       - name: elastic-plugins-local
         mountPath: /usr/share/elasticsearch/plugins
 %{ endif ~}
-  - name: setup-tls-cert
-    image: "docker.elastic.co/elasticsearch/elasticsearch:${globalSettings.imageTag}"
+%{ if lookup(globalSettings, "minio", false) != false ~}
+%{ if lookup(globalSettings.minio, "protocol", "http") == "https" ~}
+  - name: configure-minio-ca
+    image: docker.elastic.co/elasticsearch/elasticsearch:${globalSettings.imageTag}
+    securityContext:
+      runAsUser: 0
+      runAsNonRoot: false
     command:
       - sh
       - -c
       - |
-        #!/usr/bin/env bash
-        set -euo pipefail
-        elasticsearch-certutil cert \
-          --pem \
-          --name transportcert \
-          --days 1000 \
-          --ip $POD_IP \
-          --dns $NODE_NAME,$POD_SERVICE_NAME,$POD_SERVICE_NAME_HEADLESS,$NODE_NAME.$POD_SERVICE_NAME,$NODE_NAME.$POD_SERVICE_NAME_HEADLESS \
-          --ca-cert /usr/share/elasticsearch/config/transport-ca/tls.crt \
-          --ca-key /usr/share/elasticsearch/config/transport-ca/tls.key  \
-          --out /usr/share/elasticsearch/config/transport-certs/certs.zip
-          unzip /usr/share/elasticsearch/config/transport-certs/certs.zip -d /usr/share/elasticsearch/config/transport-certs 
-    env:
-      - name: NODE_NAME
-        valueFrom:
-          fieldRef:
-            fieldPath: metadata.name
-      - name: POD_IP
-        valueFrom:
-          fieldRef:
-            fieldPath: status.podIP
-      - name: POD_SERVICE_NAME
-        value: "${nodePool}"
-      - name: POD_SERVICE_NAME_HEADLESS
-        value: "${nodePool}-headless"
+        set -eu
+        jdk_home="/usr/share/elasticsearch/jdk"
+
+        cp "$jdk_home/lib/security/cacerts" /minio-truststore/cacerts
+
+        "$jdk_home/bin/keytool" \
+          -importcert -noprompt -trustcacerts \
+          -alias minio-ca \
+          -file /minio-ca/ca.crt \
+          -keystore /minio-truststore/cacerts \
+          -storepass changeit
     volumeMounts:
-    - name: elastic-transport-certificates
-      mountPath: /usr/share/elasticsearch/config/transport-certs
-    - name: elastic-transport-ca
-      mountPath: /usr/share/elasticsearch/config/transport-ca
+      - name: minio-ca
+        mountPath: /minio-ca
+        readOnly: true
+      - name: minio-truststore
+        mountPath: /minio-truststore
+%{ endif ~}
+%{ endif ~}
 extraEnvs:
   - name: ELASTIC_PASSWORD
     valueFrom:
       secretKeyRef:
         name: elastic-credentials
         key: elastic
-secretMounts: 
+secret:
+  enabled: false
+createCert: false
+secretMounts:
+%{ for cert in globalSettings.transport.certs ~}
+%{ if cert == globalSettings.transport.active ~}
   - name: elastic-transport-ca
-    secretName: elastic-transport-certs
-    path: /usr/share/elasticsearch/config/ca
+    secretName: elastic-transport-certs-${cert}
+    path: /usr/share/elasticsearch/config/transport-certs/active
     defaultMode: 0755
+%{ else ~}
+  - name: elastic-transport-ca-${cert}
+    secretName: elastic-transport-certs-${cert}
+    path: /usr/share/elasticsearch/config/transport-certs/${cert}
+    defaultMode: 0755
+%{ endif ~}
+%{ endfor ~}
   - name: elastic-https-certs
     secretName: elastic-https-certs
     path: /usr/share/elasticsearch/config/https-certs
     defaultMode: 0755
-%{ if length(globalSettings.remotecerts) > 0 ~}
+%{ if length(lookup(globalSettings, "remotecerts", [])) > 0 ~}
   - name: elastic-remote-certs
     secretName: elastic-remote-certs
-    path: /usr/share/elasticsearch/config/remote-certs
+    path: /usr/share/elasticsearch/config/transport-certs/remote
     defaultMode: 0755
 %{ endif ~}
 %{ if lookup(globalSettings.addons, "authorizations", 0) != 0 ~}
@@ -150,6 +183,14 @@ secretMounts:
     defaultMode: 0755
 %{ endif ~}
 %{ endfor ~}
+%{ endif ~}
+%{ if lookup(globalSettings, "minio", false) != false ~}
+%{ if lookup(globalSettings.minio, "protocol", "http") == "https" ~}
+  - name: minio-ca
+    secretName: minio-ca-certs
+    path: /usr/share/elasticsearch/config/minio-ca
+    defaultMode: 0444
+%{ endif ~}
 %{ endif ~}
 keystore: %{ if length(globalSettings.plugins) == 0 } [] %{ endif }
 %{ if contains(globalSettings.plugins, "repository-s3") ~}
@@ -181,14 +222,19 @@ esConfig:
   elasticsearch.yml: |
     xpack.security.enabled: true
     xpack.security.transport.ssl.enabled: true
-    xpack.security.transport.ssl.verification_mode : certificate
-    xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/transport-certs/transportcert/transportcert.key
-    xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/transport-certs/transportcert/transportcert.crt
+    xpack.security.transport.ssl.verification_mode : ${ globalSettings.transport.verification_mode }
+    xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/transport-certs/active/tls.key
+    xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/transport-certs/active/tls.crt
     xpack.security.transport.ssl.certificate_authorities:
-      - /usr/share/elasticsearch/config/ca/ca.crt
-%{ if length(globalSettings.remotecerts) > 0 ~}
+      - /usr/share/elasticsearch/config/transport-certs/active/ca.crt
+%{ for cert in globalSettings.transport.certs ~}
+%{ if cert != globalSettings.transport.active ~}
+      - /usr/share/elasticsearch/config/transport-certs/${cert}/ca.crt
+%{ endif ~}
+%{ endfor ~}   
+%{ if length(lookup(globalSettings, "remotecerts", [])) > 0 ~}
 %{ for cert in globalSettings.remotecerts ~}
-      - /usr/share/elasticsearch/config/remote-certs/${cert}
+      - /usr/share/elasticsearch/config/transport-certs/remote/${cert}
 %{ endfor ~}
 %{ endif ~}
     xpack.security.http.ssl.enabled: true
@@ -203,6 +249,21 @@ ${ emailNotification }
 %{ endif ~}
 %{ if lookup(globalSettings.addons, "authorizations", 0) != 0 ~}
 ${ configAuth }
+%{ endif ~}
+%{ if lookup(globalSettings, "newCCR", false) ~}
+    remote_cluster_server.enabled: true
+    remote_cluster.host: 0.0.0.0
+    remote_cluster.port: 9443
+    xpack.security.remote_cluster_server.ssl.enabled: true
+    xpack.security.remote_cluster_server.ssl.key: /usr/share/elasticsearch/config/transport-certs/active/tls.key
+    xpack.security.remote_cluster_server.ssl.certificate: /usr/share/elasticsearch/config/transport-certs/active/tls.crt
+    xpack.security.remote_cluster_server.ssl.certificate_authorities:
+      - /usr/share/elasticsearch/config/transport-certs/active/ca.crt
+%{ for cert in globalSettings.transport.certs ~}
+%{ if cert != globalSettings.transport.active ~}
+      - /usr/share/elasticsearch/config/transport-certs/${cert}/ca.crt
+%{ endif ~}
+%{ endfor ~}
 %{ endif ~}
     xpack.security.audit.enabled: true
     xpack.security.audit.logfile.events.include: "access_denied, access_granted, anonymous_access_denied, authentication_success, authentication_failed"

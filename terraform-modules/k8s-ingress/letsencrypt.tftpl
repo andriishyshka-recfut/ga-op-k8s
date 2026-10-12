@@ -3,15 +3,19 @@ kind: Certificate
 metadata:
   name: "${name}-cert"
   namespace: istio-ingress
+%{ if lookup(values, "ingressgateway",false) != false ~}
+  labels:
+    istio-gateway: ${ values.ingressgateway }
+%{ endif ~}
   annotations:
     "kubernetes.io/ingress.class": istio
 spec:
-  commonName: "${element(domains,0)}"
+  commonName: "${element(values.domain,0)}"
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt-prod
   secretName: "${name}-cert"
   dnsNames: 
- %{ for domain in domains ~} 
+ %{ for domain in values.domain ~} 
   - ${ domain ~}
  %{ endfor ~}

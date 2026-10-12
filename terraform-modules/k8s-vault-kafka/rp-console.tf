@@ -16,16 +16,16 @@ resource "helm_release" "red_panda_console" {
       value = local.rp_image_tag
     },
     {
-      name  = "image.repository"
-      value = "mirror/rp"
+      name  = "image.registry"
+      value = "repo-external.recfut.com"
     },
     {
-      name  = "image.registry"
-      value = "harbor.regemini.io"
+      name  = "image.repository"
+      value = "ga-docker-virtual/redpandadata/console"
     },
     {
       name  = "imagePullSecrets[0].name"
-      value = "harbor"
+      value = "artifactory-creds"
     }
   ]
   depends_on = [

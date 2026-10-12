@@ -1,23 +1,28 @@
-FROM --platform=linux/amd64 vault:1.13.3 as vault
-FROM --platform=linux/amd64 curlimages/curl as curl
-RUN curl https://storage.googleapis.com/kubernetes-release/release/$(wget -q -O- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /tmp/kubectl &&\
-    curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v0.54.10/terragrunt_linux_amd64 --output /tmp/terragrunt &&\
-    curl -L https://github.com/opentofu/opentofu/releases/download/v1.6.1/tofu_1.6.1_amd64.apk --output /tmp/opentofu.apk
+FROM --platform=linux/amd64 hashicorp/vault:1.21.0 AS vault
+FROM --platform=linux/amd64 alpine:latest AS ansible
 
-FROM --platform=linux/amd64 alpine:latest as ansible
+COPY ./references/zscaler/ZscalerRootCertificate-2048-SHA256-Feb2025.crt /usr/local/share/ca-certificates/zscaler-root.crt
+RUN apk add --no-cache ca-certificates && update-ca-certificates
+
 RUN apk add python3 py3-pip unzip py3-virtualenv bash python3-dev libffi-dev build-base rust rustup cargo openssl-dev musl-dev
 RUN cd / && python3 -m venv ansible && \
     bash -c "source /ansible/bin/activate && pip install --upgrade pip && pip install ansible pyyaml==5.3.1 docker-compose jmespath kubernetes openshift requests google-auth ansible-modules-hashivault pyopenssl kafka-python"
 
 FROM --platform=linux/amd64 alpine:latest
 
+COPY ./references/zscaler/ZscalerRootCertificate-2048-SHA256-Feb2025.crt /usr/local/share/ca-certificates/zscaler-root.crt
+RUN apk add --no-cache ca-certificates && update-ca-certificates
+
+RUN apk add --no-cache curl
+RUN curl -fsSL https://storage.googleapis.com/kubernetes-release/release/$(curl -fsSL https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl --output /bin/kubectl && \
+    curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v0.99.1/terragrunt_linux_amd64 --output /bin/terragrunt && \
+    curl -fsSL https://github.com/opentofu/opentofu/releases/download/v1.11.4/tofu_1.11.4_amd64.apk --output /tmp/opentofu.apk
 
 COPY --from=vault /bin/vault /bin/vault
-COPY --from=curl /tmp/kubectl /bin/kubectl
-COPY --from=curl /tmp/terragrunt /bin/terragrunt
-COPY --from=curl /tmp/opentofu.apk /tmp/opentofu.apk
 COPY --from=ansible /ansible /ansible
 
+RUN curl -L https://dl.min.io/client/mc/release/linux-amd64/mc -o /bin/mc && \
+    chmod +x /bin/mc
 
 RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git && \
     apk add --allow-untrusted /tmp/opentofu.apk && \
@@ -25,7 +30,15 @@ RUN apk add  --no-cache tar openssh-client jq bash rsync python3 openssl git && 
     adduser -u 10123 executor -S && \
     mkdir -p /home/runner/workdir && mkdir /home/fake && chmod 777 /home/fake
 
-USER 10123
+RUN mkdir -p /usr/share/terraform/plugins/registry.opentofu.org/aminueza/minio/3.40.1/linux_amd64/
+RUN mkdir -p /usr/share/terraform/plugins/registry.opentofu.org/hashicorp/helm/3.3.0/linux_amd64/
+COPY ./references/terraform-providers/terraform-provider-minio /usr/share/terraform/plugins/registry.opentofu.org/aminueza/minio/3.40.1/linux_amd64/terraform-provider-minio_v.3.40.1
+COPY ./references/terraform-providers/terraform-provider-helm /usr/share/terraform/plugins/registry.opentofu.org/hashicorp/helm/3.3.0/linux_amd64/terraform-provider-helm_v3.3.0
+COPY ./references/terraform-providers/.tofurc /etc/tofurc
+
+
+USER 10123:10123
+
 WORKDIR /home/runner/workdir
 COPY ./dummy-kubecfg /.kubeconfig
 COPY ./docker-entrypoint-tofu.sh /

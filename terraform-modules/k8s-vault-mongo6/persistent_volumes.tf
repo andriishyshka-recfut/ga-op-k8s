@@ -1,6 +1,6 @@
 data "google_compute_disk" "mongo_data_pv" {
   count = local.pv_disk_count
-  name    = "${local.target_label}-${count.index}"
+  name    = "${var.PvcPrefix}-${count.index}"
   project = var.Settings.gcpProject
   zone = element([for i in range(local.pv_disk_count) : element(local.zones, i % 3)], count.index)
 }
@@ -10,9 +10,9 @@ data "google_compute_disk" "mongo_data_pv" {
 resource "kubernetes_persistent_volume" "mongo_data_pv" {
   count = local.pv_disk_count
   metadata {
-    name = "${local.target_label}-${count.index}-pv"
+    name = "${var.PvcPrefix}-${count.index}-pv"
     labels = {
-      target = local.target_label
+      target = var.PvcPrefix
     }
   }
   spec {
@@ -27,7 +27,7 @@ resource "kubernetes_persistent_volume" "mongo_data_pv" {
     persistent_volume_source{
       csi {
         driver = "pd.csi.storage.gke.io"
-        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.mongo_data_pv[count.index].zone}/disks/${local.target_label}-${count.index}"
+        volume_handle = "projects/${var.Settings.gcpProject}/zones/${data.google_compute_disk.mongo_data_pv[count.index].zone}/disks/${var.PvcPrefix}-${count.index}"
       }
     }
   node_affinity {

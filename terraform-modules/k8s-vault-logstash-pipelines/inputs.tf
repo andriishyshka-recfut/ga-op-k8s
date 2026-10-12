@@ -6,6 +6,8 @@ variable "logstash_list" {
   default = { logstash : {} }
 }
 variable "logstash_version" {}
+variable "RepositoryDomain" {}
+
 locals {
   es_user             = "elastic"
   es_creds_secretname = "elastic-credentials"
@@ -14,15 +16,15 @@ locals {
   minio_user          = "logstash-red"
   minio_endpoint      = "http://minio:9000"
   minio_bucket        = "minio-logstash-pipelines-orbital-wording-233917"
-  es_host             = "red-coor.${local.namespace}.svc:9200"
+  es_host             = "red-coor.${local.namespace}.svc.cluster.local:9200"
   pipeline_id         = "testing"
   cluster_uuid        = "gOn3ZMirSsyBqRx7koiPOQ"
   poll_interval       = "5s"
   log_level           = "info"
-  cpu_request         = "100m"
+  cpu_request         = "1400m"
   mem_request         = "256Mi"
-  cpu_limit           = "800m"
-  mem_limit           = "1536Mi"
+  cpu_limit           = "1100m"
+  mem_limit           = "1700Mi"
   java_opts           = "-Xmx4g -Xms4g"
 
   minio_users = { for k, v in { for k, v in var.logstash_list : lookup(v, "minio_user", local.minio_user) => lookup(v, "namespace", local.namespace)... } : k => distinct(v) }
@@ -30,6 +32,9 @@ locals {
 
   logstash_user = "logstash"
   vault_url = var.Color == "red" ? "https://vault.p.regemini.io" : "http://vault-active.vault:8200"   
+
+  logstash_list = { for name, value  in var.logstash_list : name => merge(local.valuesDefault, value)}
+  artifactory_repo = "${var.RepositoryDomain}/ga-op-docker-local"
 
   valuesDefault = {
     namespace = local.namespace

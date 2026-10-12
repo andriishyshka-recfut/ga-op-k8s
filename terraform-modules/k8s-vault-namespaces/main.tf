@@ -8,7 +8,7 @@ resource "kubernetes_namespace" "ns" {
     }
   }
 }
- 
+
 resource "kubernetes_limit_range" "limit" {
   for_each = local.namespaceNames
   metadata {
@@ -76,15 +76,15 @@ resource "kubernetes_cluster_role" "developers_access_role" {
     resources  = ["pods/exec"]
     verbs      = ["create", "delete"]
   }
-    rule {
+  rule {
     api_groups = ["batch"]
     resources  = ["cronjobs"]
-    verbs      = ["get","list"]
+    verbs      = ["get", "list"]
   }
   rule {
     api_groups = ["batch"]
     resources  = ["jobs"]
-    verbs      = ["create","get","list"]
+    verbs      = ["create", "get", "list"]
   }
 }
 
@@ -114,7 +114,7 @@ resource "kubernetes_cluster_role_binding" "developers_groups_binding" {
   dynamic "subject" {
     for_each = toset(flatten(local.developers))
     content {
-      kind      = "User"
+      kind      = "Group"
       name      = subject.key
       api_group = "rbac.authorization.k8s.io"
     }
@@ -160,8 +160,8 @@ resource "kubernetes_cluster_role_binding" "op_recordedfuture_cluster_admin_bind
     name      = "cluster-admin"
   }
   subject {
-    kind = "Group"
+    kind      = "Group"
     api_group = "rbac.authorization.k8s.io"
-    name = "gke-security-groups-rf-op@geminiadvisory.io"
+    name      = "gke-security-groups-rf-op@geminiadvisory.io"
   }
 }

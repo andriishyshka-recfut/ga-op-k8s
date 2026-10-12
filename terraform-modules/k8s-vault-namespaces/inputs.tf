@@ -9,6 +9,14 @@ locals {
   #   for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name]
   #   if can(namespace.skipNsCreation) == false
   # ]))
+  harborEnable      = true
+  artifactoryEnable = true
+
+  enabled_repo_secrets = compact([
+    local.harborEnable ? "harbor" : null,
+    local.artifactoryEnable ? "artifactory-creds" : null,
+  ])
+
 
   namespaceNames = {
     for namespace in var.Settings.clusters[var.Cluster].namespaces : namespace.name => namespace
@@ -21,18 +29,34 @@ locals {
     namespace.name => namespace.admins...
     if can(namespace.admins)
   }
+
   developers = [
     "dev@geminiadvisory.io", "gke-security-groups-rf-dev@geminiadvisory.io"
   ]
+
   namespaceDevAccess = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [
       namespace.name
     ] if can(namespace.devAccess)
   ]))
 
-  injectHarborImagePullSecrets = toset(flatten([
-    for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "injectHarborImagePullSecrets", false)
-  ]))
+  repoSecretNamespaces = toset([
+    for namespace in var.Settings.clusters[var.Cluster].namespaces :
+    namespace.name
+    if lookup(namespace, "repoSecret", false)
+  ])
+
+  injectHarborImagePullSecrets = toset([
+    for namespace in var.Settings.clusters[var.Cluster].namespaces :
+    namespace.name
+    if lookup(namespace, "repoSecret", false) && local.harborEnable
+  ])
+
+  injectArtifactoryImagePullSecrets = toset([
+    for namespace in var.Settings.clusters[var.Cluster].namespaces :
+    namespace.name
+    if lookup(namespace, "repoSecret", false) && local.artifactoryEnable
+  ])
 
   injectHarborUserPassword = toset(flatten([
     for namespace in var.Settings.clusters[var.Cluster].namespaces : [namespace.name] if lookup(namespace, "harborUserPassword", false)
@@ -46,10 +70,10 @@ locals {
 
   minioCreds = {
     for namespace in var.Settings.clusters[var.Cluster].namespaces :
-    namespace.name => namespace.minioCreds...
+    namespace.name => namespace.minioCreds
     if can(namespace.minioCreds)
   }
-  vaultUsersCredentialsPath = "${var.Settings.clusters[var.Cluster][var.Color].minio.vault_users_config_path}/users"
+  vaultUsersCredentialsPath = var.Settings.clusters[var.Cluster][var.Color].minio.vault_mng_users_config_path
 
   devAccessAllowed      = var.Cluster == "production" ? 0 : 1
   appSpecificVaultRoles = var.Color == "red" ? 0 : 1

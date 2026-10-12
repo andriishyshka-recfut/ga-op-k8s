@@ -1,0 +1,83 @@
+{
+  "APP-GA-OP": {
+    "scim_groups": [ "APP-GA-OP" ],
+    "groups": [ "sandbox-www", "sandbox-k8s","sandbox-bastion" ]
+  },
+  "APP-GA-DEV": {
+    "scim_groups": ["APP-GA-DEV"],
+    "apps": [
+      "auth",
+      "beep",
+      "cvat",
+      "datafix",
+      "elastic-data",
+      "flow",
+      "grafana",
+      "logs",
+      "minio-old",
+      "minio-helm",
+      "mongo-auth",
+      "mongo-express",
+      "prometheus",
+      "rp",
+      "sanitizer",
+      "sonar",
+      "swirl",
+      "telegram",
+      "telesrcr",
+      "vault"
+    ],
+    "groups": [ "sandbox-k8s" ]
+  },
+  "APP-GA-COLLECT": {
+    "scim_groups": ["APP-GA-COLLECT"],
+    "apps": [
+      "auth",
+      "beep",
+      "cvat",
+      "elastic-data",
+      "grafana",
+      "ka",
+      "logs",
+      "mageui",
+      "minio-helm",
+      "prometheus",
+      "rp",
+      "sanitizer",
+      "telegram",
+      "telesrcr",
+      "tile"
+    ]
+  },
+  "APP-GA-HUNT": {
+    "scim_groups": ["APP-GA-HUNT"],
+    "apps": [
+      "auth",
+      "beep",
+      "datafix",
+      "elastic-data",
+      "logs",
+      "mageui",
+      "minio-helm",
+      "mongo-auth",
+      "prometheus",
+      "telegram"
+    ]
+  },
+  "APP-GA-PM": {
+    "scim_groups": ["APP-GA-PM"],
+    "apps": [
+      "beep",
+      "datafix",
+      "elastic-data",
+      "etl-observer",
+      "flow",
+      "minio-helm",
+      "prometheus",
+      "sanitizer",
+      "sonar",
+      "vandelay",
+      "vault"
+    ]
+  }
+}

@@ -1,0 +1,91 @@
+imageTag: ${imageTag}
+fullnameOverride: ${settings.name}
+extraEnvs:
+  - name: FILEBEAT_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: ${settings.filebeat_pass_secretname}
+        key: password
+secretMounts: 
+  - name: elastic-https-certs
+    secretName: ${lookup(settings, "elastic_ca_from_vault", false) ? "${settings.name}-elastic-ca" : settings.elastic_cert_secretname}
+    path: /usr/share/elasticsearch/config/https-certs
+    defaultMode: 0755
+daemonset:
+  tolerations:
+    - operator: Exists
+filebeatConfig:
+  filebeat.yml: |
+    filebeat.autodiscover.providers:
+      - host: $${HOSTNAME}
+        type: kubernetes
+        node: $${NODE_NAME}
+        hints.enabled: true
+        hints.default_config.enabled: true
+        hints.default_config:
+          type: container
+          paths:
+            - /var/log/containers/*$${data.kubernetes.container.id}.log     
+    setup:
+      kibana.host: '${settings.kibana_service}'
+      dashboards.enabled: false
+      template.enabled: true
+      ilm.enabled: false
+      template.enabled: true
+      template.name: "filebeat-%%{[agent.version]}"
+      template.pattern: "filebeat-%%{[agent.version]}*"
+      username: ${settings.filebeat_username}_user
+      password: $${FILEBEAT_PASSWORD}
+      template.settings:
+        index.lifecycle.name: filebeat
+      template.append_fields:
+        - name: logstash.error.pipeline_status_code
+          type: long
+    logging:
+      json: true
+    processors:
+    - add_fields:
+        target: ''
+        fields:
+          cluster:
+            color: ${color}
+            stage: ${cluster}   
+    - add_cloud_metadata: 
+        providers:
+              - gcp
+    - add_host_metadata: null
+    - dissect:
+        when:
+          and:
+            - equals:
+                kubernetes.container.name: logstash
+            - regexp:
+                message: 'message=>"\[4[0-9][0-9]\]'
+        tokenizer: '%%{}message=>"[%%{logstash.error.pipeline_status_code}]%%{}'
+        field: message
+        target_prefix: ""
+        ignore_failure: true
+    - convert:
+        fields:
+          - from: logstash.error.pipeline_status_code
+            to: logstash.error.pipeline_status_code
+            type: long
+        ignore_missing: true
+        fail_on_error: false
+    output.elasticsearch:
+      ssl:
+        certificate_authorities: /usr/share/elasticsearch/config/https-certs/ca.crt
+      host: '$${NODE_NAME}'
+      hosts: '${settings.elastic_service}'
+      protocol: https
+      username: ${settings.filebeat_username}_user
+      password: $${FILEBEAT_PASSWORD}
+      index: "filebeat-%%{[agent.version]}"
+%{ if length(settings.log_groups) > 0 ~}
+      indices:
+%{ for group in tolist(split(",", settings.log_groups)) ~}
+        - index: "filebeat-%%{[agent.version]}-${group}"
+          when.equals:
+            kubernetes.labels.log-group-name: "${group}"
+%{ endfor ~}
+%{ endif ~}

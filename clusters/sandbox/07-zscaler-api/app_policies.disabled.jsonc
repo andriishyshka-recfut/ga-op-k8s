@@ -1,0 +1,18 @@
+{
+  // Temporarily disabled because these SCIM groups are not present in ZPA yet.
+  "APP-GA-SALES": {
+    "scim_groups": ["APP-GA-SALES"],
+    "apps": [
+      "beep",
+      "datafix",
+      "elastic-data",
+      "sanitizer"
+    ]
+  },
+  "APP-GA-FRAUD": {
+    "scim_groups": ["APP-GA-FRAUD"],
+    "apps": [
+      "beep"
+    ]
+  }
+}

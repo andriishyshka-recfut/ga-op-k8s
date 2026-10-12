@@ -34,8 +34,6 @@ savedObjects.maxImportExportSize: "100000"
 server.ssl.supportedProtocols: ["TLSv1.2","TLSv1.3"]
 server.publicBaseUrl: "https://${local.kibanaValues.istio_gateway_fqdn}"
 xpack.reporting.roles.enabled: false
-xpack.reporting.index: ".reporting-re"
-xpack.task_manager.index: ".kibana_task_manager-re"
 monitoring.kibana.collection.enabled: "false"
 monitoring.ui.container.elasticsearch.enabled: "true"
 csp.strict: "false"

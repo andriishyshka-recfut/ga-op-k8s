@@ -17,9 +17,9 @@ resource "kubernetes_config_map" "scan_settings" {
 }
 
 
-resource "kubernetes_cron_job_v1" "nightly_html" {
+resource "kubernetes_cron_job_v1" "nightly_scan" {
   metadata {
-    name      = "nightly-kubescape-scan-html"
+    name      = "nightly-kubescape-scan"
     namespace = "kubescape"
   }
 
@@ -27,7 +27,7 @@ resource "kubernetes_cron_job_v1" "nightly_html" {
     schedule = "0 2 * * *"
     job_template {
       metadata {
-        name = "nightly-kubescape-job-html"
+        name = "nightly-kubescape-job"
         namespace = "kubescape"
       }
 
@@ -47,96 +47,9 @@ resource "kubernetes_cron_job_v1" "nightly_html" {
                 name      = "results"
                 mount_path = "/home/nonroot/results"
               }
-            }
-            container {
-              name    = "kubescape"
-              image   = "quay.io/kubescape/kubescape-cli:${local.version}"
-              command = [ "sh", "-c" ]
-              args = [
-                 <<-EOT
-                      kubescape scan framework nsa,mitre,cis-v1.23-t1.0.1,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format html --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).html --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
-                      /home/nonroot/results/mc cp /home/nonroot/results/*.html minio/${local.minioBucket}
-                  EOT
-              ]
-              env {
-                name = "MINIO_ACCESS_KEY"
-                value_from {
-                  secret_key_ref {
-                    name = "minio-credentials"
-                    key  = "accesskey"
-                  }
-                }
-              }
-              env {
-                name = "MINIO_SECRET_KEY"
-                value_from {
-                  secret_key_ref {
-                    name = "minio-credentials"
-                    key  = "secretkey"
-                  }
-                }
-              }
-              env {
-                name  = "MC_HOST_minio"
-                value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
-              }
               volume_mount {
-                name       = "results"
-                mount_path = "/home/nonroot/results"
-              }
-              volume_mount {
-                name       = "scan-settings"
-                mount_path = "/home/nonroot/config"
-              }
-            }
-            restart_policy = "OnFailure"
-            volume {
-              name = "results"
-              empty_dir {}
-            }
-            volume {
-              name = "scan-settings"
-              config_map {
-                name = "scan-settings"
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-
-resource "kubernetes_cron_job_v1" "nightly_json" {
-  metadata {
-    name      = "nightly-kubescape-scan-json"
-    namespace = "kubescape"
-  }
-
-  spec {
-    schedule = "0 2 * * *"
-    job_template {
-      metadata {
-        name = "nightly-kubescape-job-json"
-        namespace = "kubescape"
-      }
-
-      spec {
-        template {
-        metadata {}
-          spec {
-            service_account_name = "kubescape"
-            init_container {
-              name  = "init-mc"
-              image = "alpine:latest"
-              command = [ "sh", "-c" ]
-              args = [
-                "cd /home/nonroot/results/ && wget https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x ./mc"
-              ]
-              volume_mount {
-                name      = "results"
-                mount_path = "/home/nonroot/results"
+                name       = "mc-config"
+                mount_path = "/home/nonroot/.mc"
               }
             }
             container {
@@ -145,8 +58,9 @@ resource "kubernetes_cron_job_v1" "nightly_json" {
               command = [ "sh", "-c" ]
               args = [
                  <<-EOT
-                      kubescape scan framework nsa,mitre,cis-v1.23-t1.0.1,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format json --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m).json --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
-                      /home/nonroot/results/mc cp /home/nonroot/results/*.json minio/${local.minioBucket}
+                      kubescape scan framework nsa,mitre,cis-v1.10.0,allcontrols --exclude-namespaces kubescape,kube-system,gmp-system --format json,html --keep-local -o /home/nonroot/results/${local.report_prefix}_$(date +%d-%m-%Y_%H%m) --controls-config /home/nonroot/config/controls-inputs.json --exceptions /home/nonroot/config/exceptions.json
+                      /home/nonroot/results/mc cp /home/nonroot/results/*.json minio/${local.minioBucket}/
+                      /home/nonroot/results/mc cp /home/nonroot/results/*.html minio/${local.minioBucket}/
                   EOT
               ]
               resources {
@@ -179,15 +93,28 @@ resource "kubernetes_cron_job_v1" "nightly_json" {
               }
               env {
                 name  = "MC_HOST_minio"
-                value = "http://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio.minio:9000"
+                value = "https://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@minio-red.minio-mng.svc.cluster.local:9000"
+              }
+              env {
+                name  = "MC_CONFIG_DIR"
+                value = "/home/nonroot/.mc"
               }
               volume_mount {
                 name       = "results"
                 mount_path = "/home/nonroot/results"
               }
               volume_mount {
+                name       = "mc-config"
+                mount_path = "/home/nonroot/.mc"
+              }
+              volume_mount {
                 name       = "scan-settings"
                 mount_path = "/home/nonroot/config"
+              }
+              volume_mount {
+                name       = "mc-ca"
+                mount_path = "/home/nonroot/.mc/certs/CAs"
+                read_only = true
               }
             }
             restart_policy = "OnFailure"
@@ -196,9 +123,23 @@ resource "kubernetes_cron_job_v1" "nightly_json" {
               empty_dir {}
             }
             volume {
+              name = "mc-config"
+              empty_dir {}
+            }
+            volume {
               name = "scan-settings"
               config_map {
                 name = "scan-settings"
+              }
+            }
+            volume {
+              name = "mc-ca"
+              secret {
+                secret_name = "minio-credentials"
+                items {
+                  key = "ca.crt"
+                  path = "ca.crt"
+                }
               }
             }
           }

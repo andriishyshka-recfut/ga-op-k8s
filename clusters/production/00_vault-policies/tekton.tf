@@ -61,11 +61,17 @@ path "sys/mounts/auth/k8s-production-green" {
 path "postgres/*" {
   capabilities = ["create","update","read","list","delete"]
 }
+path "postgres-ha-prod/*" {
+  capabilities = ["create","update","read","list","delete"]
+}
 path "secret/data/mw/elastic/mon" {
   capabilities = ["create","update","read","list","delete"]
 }
 path "secret/data/misc/gitlab/token/read_repo" {
   capabilities = ["read","list"]
+}
+path "secret/data/misc/artifactory/creds" {
+  capabilities = ["read"]
 }
 EOT
 }

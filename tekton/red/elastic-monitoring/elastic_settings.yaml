@@ -1,0 +1,93 @@
+ElasticSettings:
+  globalSettings:
+    namespace: monitoring
+    imageTag: "8.19.17"
+    clusterName: mon
+    pvName: mon
+    storePassVault: "secret/mw/elastic/red-monitoring"
+    plugins:
+      - "repository-s3"
+    volumeExt: false
+    persistentDisksKey: elastic-mon
+    podAnnotations:
+      co.elastic.logs/enabled: "true"
+      co.elastic.logs/module: "elasticsearch"
+      sidecar.istio.io/inject: "false"
+    transport:
+      verification_mode: certificate
+      certs:
+        - "mon-2027"
+      active: "mon-2027"
+#default 8880h
+      duration: "8030h"
+    minio:
+      vaultPath: "secret/mw/minio/sa/ns_backup"
+      bucket: backup
+      protocol: "https"
+      endpoint: "minio.minio.svc.cluster.local"
+    addons:
+      notifications:
+        slack:
+          vault_path: "secret/misc/slack/app/X-Pack"
+        email:
+          vault_path: "secret/red/elastic-notification-accounts"
+      authorizations:
+        recordedfuture:
+          vault_path: "secret/misc/oidc/okta/monitoring_kibana"
+          oidc_realm_name: "recordedfuture"
+          secret_name: "oidc-recordedfuture"
+          type: "okta"
+          domain: "mon.regemini.io"
+    license:
+      vault_path: "secret/red/misc/elasticsearch/license"
+      name: "recorded-future-ab-production-dc5e3cf6-80f2-4b3e-83cc-37283cc16f6d-v5.json"
+    clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
+  nodePools:
+    master:
+      replicas: 3
+      workloadsType: mstr
+      roles:
+        master: "true"
+      resources:
+        cpuReq: "3"
+        cpuLimit: "3"
+        memReq: "8Gi"
+        memLimit: "8Gi"
+      storage: "30Gi"
+      esJavaOpts: "-Xms4g -Xmx4g"
+    data:
+      replicas: 5
+      workloadsType: data
+      roles:
+        data: "true"
+      resources:
+        cpuReq: "7"
+        cpuLimit: "7"
+        memReq: "16Gi"
+        memLimit: "16Gi"
+      storage: "2300Gi"
+      esJavaOpts: "-Xms8g -Xmx8g"
+    coor:
+      replicas: 2
+      workloadsType: coor
+      roles:
+        remote_cluster_client: "true"
+      resources:
+        cpuReq: "3"
+        cpuLimit: "3"
+        memReq: "8Gi"
+        memLimit: "8Gi"
+      storage: "30Gi"
+      esJavaOpts: "-Xms4g -Xmx4g"
+    ingest:
+      replicas: 1
+      workloadsType: coor
+      roles:
+        ingest: "true"
+      resources:
+        cpuReq: "3"
+        cpuLimit: "3"
+        memReq: "8Gi"
+        memLimit: "8Gi"
+      storage: "30Gi"
+      esJavaOpts: "-Xms4g -Xmx4g"

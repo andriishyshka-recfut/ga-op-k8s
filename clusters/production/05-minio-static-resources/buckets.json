@@ -1,5 +1,9 @@
 {
     "buckets": {
-        "mon": {"gcs_bucket_name": "mon-orbital-wording-233917"}            
+        "debug": {"expiration": ["30d"],"gcs_bucket_name": "mng-debug-orbital-wording-233917","custom_expiration": ["7d","14d"]},
+        "etl-logstash-feeds": {"expiration": ["7d"],"gcs_bucket_name": "etl-logstash-feeds-orbital-wording-233917","gcs_tier_name": "GCS_TIER"},
+        "mon": {"gcs_bucket_name": "mon-orbital-wording-233917"}  ,
+        "telegram": {"gcs_bucket_name": "mng-telegram-orbital-wording-233917","custom_expiration": ["7d","14d","30d"]},
+        "vandelay":{"gcs_bucket_name": "vandelay-orbital-wording-233917","gcs_tier_name": "GCS_VANDELEY_TIER"}
     }
 }

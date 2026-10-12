@@ -1,0 +1,25 @@
+# Logstash pipeline check
+
+Run the script from the repository root:
+
+```bash
+export ELASTICSEARCH_URL="https://elasticsearch:9200"
+export ELASTICSEARCH_USERNAME="elastic"
+export ELASTICSEARCH_PASSWORD="password"
+
+./references/scripts/check-logstash-pipelines.py \
+  "minion-*-partial-* minion-*-sold-* nr-* nre-* birl-*" \
+  "test-* tester-* mule-* magecart-* maid-* minion-*-account-* minion-*-full-* minion-*-cpp-* dome-*"
+```
+
+The two pattern strings are the `pipeline_id` values for `logstash-1` and
+`logstash-2` in `prod-red.tfvars.json`:
+
+```text
+Settings.clusters.production.red.logstash.logstash-1.pipeline_id
+Settings.clusters.production.red.logstash.logstash-2.pipeline_id
+```
+
+Copy the complete value inside quotes after each `pipeline_id`. The script gets
+all pipeline names from Elasticsearch and reports any name that does not match
+either pattern string.

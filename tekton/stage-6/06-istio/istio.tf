@@ -3,5 +3,6 @@ module "k8s-istio" {
   Settings = var.Settings
   Cluster  = var.Cluster
   Color    = var.Color
+  RepositoryDomain = local.artifactoryRepoDomain
 }
 

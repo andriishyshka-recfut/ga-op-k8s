@@ -13,5 +13,5 @@ spec:
   issuerRef:
     name: vault-issuer
     kind: ClusterIssuer
-  duration: 840h
+  duration: 600h
 {{- end}}

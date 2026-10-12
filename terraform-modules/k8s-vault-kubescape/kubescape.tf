@@ -1,26 +1,14 @@
 
 data "vault_generic_secret" "minio_credentials" {
-  path = "secret/minio/users"
+  path = "secret/mw/minio/sa/kubescape-reports_kubescape"
 }
 
 
 locals {
-  accessKey               = jsondecode(data.vault_generic_secret.minio_credentials.data["kubescape"]).accessKey
-  secretKey               = jsondecode(data.vault_generic_secret.minio_credentials.data["kubescape"]).secretKey
+  accessKey               = data.vault_generic_secret.minio_credentials.data.ACCESS_KEY_ID
+  secretKey               = data.vault_generic_secret.minio_credentials.data.SECRET_ACCESS_KEY
 }
 
-
-resource "kubernetes_secret" "minio_credentials" {
-  metadata {
-    name      = "minio-credentials"
-    namespace = "kubescape"
-  }
-
-  data = {
-    "accesskey" = local.accessKey
-    "secretkey" = local.secretKey
-  }
-}
 
 
 resource "helm_release" "kubescape" {
@@ -33,6 +21,5 @@ resource "helm_release" "kubescape" {
   values = [templatefile("${path.module}/templates/values.tftpl",{values = local.values})]
   timeout = 60
 
-  depends_on = [kubernetes_secret.minio_credentials]
 }
 

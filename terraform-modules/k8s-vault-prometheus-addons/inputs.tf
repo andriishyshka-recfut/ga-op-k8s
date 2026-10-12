@@ -1,6 +1,7 @@
 variable "Settings" {}
 variable "Cluster" {}
 variable "Color" {}
+variable "artifactoryRepoDomain" {}
 
 variable "OidcSecretVaultPath" {
   default = "secret/oidc_google_prod"
@@ -13,13 +14,4 @@ locals {
   grafanaRole      = var.Cluster == "production" ? "Viewer" : "Editor"
   prometheusExtUrl = lookup(var.Settings.clusters[var.Cluster][var.Color].prometheus, "prometheusExtUrl", "http://localhost:9090")
   vortex           = var.Cluster == "production" ? 1 : 0
-}
-
-terraform {
-  required_providers {
-    kubectl = {
-      source  = "registry.terraform.io/gavinbunney/kubectl"
-      version = ">= 1.10.0"
-    }
-  }
 }

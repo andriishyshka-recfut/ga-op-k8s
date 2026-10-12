@@ -3,13 +3,24 @@ nameOverride: "prometheus"
 fullnameOverride: "prometheus"
 
 grafana:
+
+  sidecar:
+    datasources:
+      enabled: true
+      defaultDatasourceEnabled: true
+      isDefaultDatasource: false
+  
   assertNoLeakedSecrets: false
   adminPassword: ${grafana_creds.adminPassword}
   envValueFrom:
     ELASTIC_PASSWORD:
       secretKeyRef:
-        name: "mon-es-elastic-user"
-        key: elastic
+        name: "grafana-elastic-creds"
+        key: password
+    ELASTIC_USERNAME:
+      secretKeyRef:
+        name: "grafana-elastic-creds"
+        key: username
     GF_AUTH_OKTA_CLIENT_SECRET:
       secretKeyRef:
         name: "grafana-okta-client-secret"
@@ -17,33 +28,53 @@ grafana:
   additionalDataSources:
     - name: "elastic"
       type:  "elasticsearch"
-      url: "https://mon-es-http:9200"
+      url: "mon-coor.monitoring.svc.cluster.local:9200"
       database: "filebeat-*"
       uid: elastic_uid
       basicAuth: true
       isDefault: false
       access: proxy
-      basicAuthUser: elastic
+      basicAuthUser: "$ELASTIC_USERNAME"
       jsonData:
         esVersion: 70
         timeField: "@timestamp"
         tlsSkipVerify: true
       secureJsonData:
         basicAuthPassword: "$ELASTIC_PASSWORD"
+    - name: "ThanosQueryFrontend"
+      type:  "prometheus"
+      url: "http://thanos-query-frontend.monitoring:9090/query/"
+      isDefault: true
+      access: proxy
+      jsonData:
+        tlsSkipVerify: true
+        timeInterval: "15s"
+        queryTimeout: "60s"
+        defaultEditor: "code"
+        disableMetricsLookup: false 
+        prometheusType: "Thanos"
+        prometheusVersion: "0.31.0"
+        cacheLevel: "None"
+        incrementalQuerying: true
+        incrementalQueryOverlapWindow: "15m"
+        disableRecordingRules: true
+        httpMethod: POST
+        useSeriesEndpoint: true
+      editable: false
   enabled: true
   namespaceOverride: "monitoring"
   resources:
     requests:
-      memory: 50Mi
-      cpu: 20m
+      memory: 1024Mi
+      cpu: 500m
     limits:
-      memory: 200Mi
-      cpu: 100m
+      memory: 1200Mi
+      cpu: 600m
   podAnnotations:
     sidecar.istio.io/inject: "false"
   grafana.ini:
     auth.google:
-      enabled: true
+      enabled: false
       scopes: https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
       auth_url: https://accounts.google.com/o/oauth2/auth
       token_url: https://accounts.google.com/o/oauth2/token
@@ -85,6 +116,7 @@ kube-state-metrics:
 
 prometheus-node-exporter:
   namespaceOverride: "monitoring"
+  priorityClassName: ${priority_class}
   resources:
     requests:
       memory: 30Mi
@@ -115,14 +147,27 @@ prometheusOperator:
       cpu: 100m
 
 prometheus:
-  nodeSelector:
-    workloadsType: data
-  tolerations:
-    - key: "workloadsType"
-      operator: "Exists"
-      effect: "NoSchedule"
   prometheusSpec:
+    replicas: 2
+    shards: 2
     prometheusRulesExcludedFromEnforce: false
+    terminationGracePeriodSeconds: 1800
+    ruleSelector:
+      matchLabels:
+        release: prometheus
+      matchExpressions:
+        - key: ruler
+          operator: NotIn
+          values:
+            - thanos
+
+    nodeSelector:
+      workloadsType: data
+    tolerations:
+      - key: "workloadsType"
+        operator: "Exists"
+        effect: "NoSchedule"
+
     ###  Url for replace internal cluster domain name for generated url in slack messages
     # externalUrl: "https://prometheus.t.regemini.io"
     # externalUrl: "http://localhost:9090"
@@ -131,26 +176,65 @@ prometheus:
     podMetadata:
       annotations:
         sidecar.istio.io/inject: "false"
+    retention: 7d
+    retentionSize: 100GB
     storageSpec:
       volumeClaimTemplate:
         spec:
           resources:
             requests:
               storage: 120Gi
+    
     resources:
       requests:
-        memory: 5G
-        cpu: 500m
+        memory: ${prometheus_resources.RAMreq}
+        cpu: ${prometheus_resources.CPUreq}
       limits:
-        memory: 5G
-        cpu: 1600m
+        memory: ${prometheus_resources.RAMlim}
+        cpu: ${prometheus_resources.CPUlim}
+
+    containers:
+      - name: prometheus
+        startupProbe:
+          httpGet:
+            path: /-/ready
+            port: http-web
+            scheme: HTTP
+          timeoutSeconds: 15
+          periodSeconds: 10
+          failureThreshold: 360
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /-/healthy
+            port: http-web
+            scheme: HTTP
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+        readinessProbe:
+          httpGet:
+            path: /-/ready
+            port: http-web
+            scheme: HTTP
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+
     thanos:
       version: ${thanos_version}
       baseImage: quay.io/thanos/thanos
       objectStorageConfig:
         existingSecret:
-          key: thanos.yaml
+          key: objstore.yml
           name: thanos-objstore-config
+      resources:
+        requests:
+          memory: 0.75Gi
+          cpu: 500m
+        limits:
+          memory: 1Gi
+          cpu: 1
     additionalScrapeConfigs:
       - job_name: 'kubernetes-pods'
         kubernetes_sd_configs:
@@ -220,7 +304,40 @@ prometheus:
 
   thanosServiceMonitor:
     enabled: false
-    
+
+thanosRuler:
+  enabled: true
+
+  thanosRulerSpec:
+    ruleSelector:
+      matchLabels:
+        ruler: thanos
+
+    replicas: 2
+
+    objectStorageConfig:
+      existingSecret:
+        key: objstore.yml
+        name: thanos-objstore-config
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 1Gi
+        cpu: 2
+  
+    queryEndpoints:
+      - http://thanos-query.monitoring.svc:9090/query/
+  
+    alertmanagersConfig:
+      secret:
+        alertmanagers:
+        - api_version: v2
+          static_configs:
+            - alertmanager-operated.monitoring.svc:9093
+
+    alertQueryUrl: ${prometheus_query_url}
 
 # Fix for used with istio
 alertmanager:
@@ -244,58 +361,56 @@ alertmanager:
     - name: "null"
     - name: "slack-critical"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_critical}
-          channel: '#prometheus-critical'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-critical}
+          channel: '#gemini_prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-etl"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_etl}
-          channel: '#prometheus-etl'
+        - api_url: ${prometheus_slack_webhooks.gemini_prometheus-critical}
+          channel: '#gemini_prometheus-critical'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
-%{ if additional_rule_labels == "production" ~}
-    - name: "slack-ccr"
-      slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_ccr}
-          channel: '#_ccr'
-          text: '{{ template "slack.custom.text" . }}'
-          send_resolved: true         
-%{ endif ~}
     - name: "slack-dome-bots"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_bots_dome}
-          channel: '#prometheus-dome'
+        - api_url: ${prometheus_slack_webhooks.gemini-dome}
+          channel: '#gemini-dome'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true         
     - name: "slack-minion-bots"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_bots_minion}
-          channel: '#prometheus-minion'
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-live'" : "'#gemini_prometheus-test'" }
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-dome-mapping"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_dome_mapping}
-          channel: '#dome-mapping'
+        - api_url: ${prometheus_slack_webhooks.gemini-dome}
+          channel: '#gemini-dome'
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "slack-paste"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url_paste}
-          channel: '#paste'
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini-artifact : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini-artifact'" : "'#gemini_prometheus-test'" }
+          text: '{{ template "slack.custom.text" . }}'
+          send_resolved: true
+    - name: "slack-devs"
+      slack_configs:
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-dev : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-dev'" : "'#gemini_prometheus-test'" }
           text: '{{ template "slack.custom.text" . }}'
           send_resolved: true
     - name: "tekton-webhook-notifications-and-slack"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url}
-          channel: '#prometheus'
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-live'" : "'#gemini_prometheus-test'" }
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     - name: "tekton-and-slack-woresolve"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url}
-          channel: '#prometheus'
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-live'" : "'#gemini_prometheus-test'" }
           send_resolved: false
           text: '{{ template "slack.custom.text" . }}'
     - name: "tekton-fail-bots-webhook-notifications-and-slack"
@@ -303,8 +418,8 @@ alertmanager:
         - send_resolved: false
           url: "http://el-fail-bots-webhook-alertmanager-listener.tekton-pipelines:8080"
       slack_configs:
-        - api_url: ${prometheus_slack_webhooks.url}
-          channel: '#prometheus'
+        - api_url: ${ cluster == "production" ? prometheus_slack_webhooks.gemini_prometheus-live : prometheus_slack_webhooks.gemini_prometheus-test }
+          channel: ${ cluster == "production" ? "'#gemini_prometheus-live'" : "'#gemini_prometheus-test'" }
           send_resolved: true
           text: '{{ template "slack.custom.text" . }}'
     - name: "tekton-failed-etl-jobs-webhook-notifications-and-slack"
@@ -343,10 +458,6 @@ alertmanager:
           - alertname=~"DomeMappingChanged"
           receiver: "slack-dome-mapping"
         - matchers:
-          - alertname=~"CCRReplicationLag|CCRReadExceptions|CCRIndexPaused"
-          - cluster=~"production"
-          receiver: "slack-ccr"
-        - matchers:
           - alertname=~"BotsDomeHealthchekScraperRunRequests|BotsDomeHealthchekQueueReaderActiveWorkers"
           receiver: "slack-dome-bots"
         - matchers:
@@ -376,6 +487,9 @@ alertmanager:
           - cluster=~"production"
           receiver: "slack-paste"
         - matchers:
+          - severity=~"devs"
+          receiver: "slack-devs"
+        - matchers:
           - alertname=~".*"
           receiver: "tekton-webhook-notifications-and-slack"
           routes:
@@ -385,6 +499,7 @@ alertmanager:
           - matchers:
             - severity=~"critical"
             - severity!~"etl"
+            - severity!~"devs"
             - cluster=~"production"
             receiver: "slack-critical"
     templates:
@@ -415,6 +530,8 @@ defaultRules:
     kubernetesResources: false
     kubeApiserver: false
     kubeProxy: false
+  labels:
+    ruler: thanos
   additionalRuleLabels:
     cluster: ${additional_rule_labels}
 

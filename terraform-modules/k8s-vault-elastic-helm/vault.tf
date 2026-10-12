@@ -25,3 +25,12 @@ resource "vault_generic_secret" "vault_es_update" {
   )
   depends_on = [ random_password.elastic_password, data.vault_generic_secret.vault_es_secret ]
 }
+
+resource "vault_generic_secret" "vault_gb_es_store" {
+  count = lookup(local.globalSettings, "storePassVault", false) != false ? 1 : 0
+  path  = local.globalSettings.storePassVault
+
+  data_json = jsonencode({
+    elastic = random_password.elastic_password.result
+  })
+}

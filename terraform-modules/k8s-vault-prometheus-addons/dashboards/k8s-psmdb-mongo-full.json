@@ -1,0 +1,677 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus / Thanos",
+      "description": "Prometheus or Thanos QueryFrontend datasource",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    { "type": "grafana",    "id": "grafana",      "name": "Grafana",      "version": "10.0.0" },
+    { "type": "datasource", "id": "prometheus",   "name": "Prometheus",   "version": "1.0.0"  },
+    { "type": "panel",      "id": "stat",          "name": "Stat"                              },
+    { "type": "panel",      "id": "timeseries",    "name": "Time series"                       },
+    { "type": "panel",      "id": "table",         "name": "Table"                             },
+    { "type": "panel",      "id": "state-timeline","name": "State timeline"                    },
+    { "type": "panel",      "id": "gauge",         "name": "Gauge"                             },
+    { "type": "panel",      "id": "bargauge",      "name": "Bar gauge"                         }
+  ],
+  "annotations": { "list": [] },
+  "description": "PSMDB Operator full-stack monitoring: MongoDB metrics (percona/mongodb_exporter) + Kubernetes layer (kube-state-metrics, cAdvisor, node-exporter). No PMM required.",
+  "editable": true,
+  "graphTooltip": 1,
+  "links": [],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": ["mongodb","psmdb","kubernetes"],
+  "time": { "from": "now-3h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "PSMDB Operator — Full Stack",
+  "uid": "psmdb-operator-fullstack",
+  "version": 2,
+
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {},
+        "label": "Datasource",
+        "hide": 0,
+        "refresh": 1,
+        "regex": ""
+      },
+      {
+        "name": "namespace",
+        "label": "Namespace",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "query": { "query": "label_values(mongodb_up, namespace)", "refId": "Q" },
+        "refresh": 2,
+        "sort": 1,
+        "multi": false,
+        "includeAll": false,
+        "hide": 0
+      },
+      {
+        "name": "statefulset",
+        "label": "StatefulSet (ReplicaSet)",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "query": { "query": "label_values(kube_statefulset_status_replicas{namespace=~\"$namespace\"}, statefulset)", "refId": "Q" },
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "hide": 0
+      },
+      {
+        "name": "pod",
+        "label": "Pod",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "query": { "query": "label_values(mongodb_up{namespace=~\"$namespace\"}, pod)", "refId": "Q" },
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "hide": 0
+      }
+    ]
+  },
+
+  "panels": [
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 200, "title": "☸️  Kubernetes Health", "type": "row"
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "id": 1, "title": "Pods Running",
+      "type": "stat",
+      "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [{
+        "expr": "count(kube_pod_status_phase{namespace=~\"$namespace\", pod=~\"$pod\", phase=\"Running\"})",
+        "legendFormat": "running", "refId": "A"
+      }]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "id": 2, "title": "StatefulSet Ready",
+      "type": "stat",
+      "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "reduceOptions": { "calcs": ["lastNotNull"] }, "textMode": "value_and_name" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [
+        { "expr": "sum(kube_statefulset_status_replicas_ready{namespace=~\"$namespace\", statefulset=~\"$statefulset\"})", "legendFormat": "ready", "refId": "A" },
+        { "expr": "sum(kube_statefulset_status_replicas{namespace=~\"$namespace\", statefulset=~\"$statefulset\"})",       "legendFormat": "desired", "refId": "B" }
+      ]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "id": 3, "title": "Container Restarts (1h)",
+      "type": "stat",
+      "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 3 }] }
+        }
+      },
+      "targets": [{
+        "expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=~\"$namespace\", pod=~\"$pod\", container=\"mongod\"}[1h]))",
+        "legendFormat": "restarts", "refId": "A"
+      }]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "id": 4, "title": "PVCs Bound",
+      "type": "stat",
+      "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [{
+        "expr": "count(kube_persistentvolumeclaim_status_phase{namespace=~\"$namespace\", phase=\"Bound\"})",
+        "legendFormat": "bound", "refId": "A"
+      }]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "id": 5, "title": "MongoDB Up",
+      "type": "stat",
+      "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [{ "options": { "0": { "text": "DOWN" }, "1": { "text": "UP" } }, "type": "value" }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [{
+        "expr": "min(mongodb_up{namespace=~\"$namespace\", pod=~\"$pod\"})",
+        "legendFormat": "status", "refId": "A"
+      }]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "id": 6, "title": "Max Replication Lag",
+      "type": "stat",
+      "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 10 }, { "color": "red", "value": 30 }] }
+        }
+      },
+      "targets": [{
+        "expr": "max(mongodb_mongod_replset_oplog_head_timestamp{namespace=~\"$namespace\", rs_state=\"1\"}) - min(mongodb_mongod_replset_oplog_head_timestamp{namespace=~\"$namespace\", rs_state=\"2\"})",
+        "legendFormat": "lag", "refId": "A"
+      }]
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "id": 201, "title": "🔄 ReplicaSet Status", "type": "row"
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 6, "w": 14, "x": 0, "y": 6 },
+      "id": 10, "title": "RS Member States Timeline",
+      "type": "state-timeline",
+      "options": { "mergeValues": false, "rowHeight": 0.85, "showValue": "always", "alignValue": "center" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "fillOpacity": 90, "lineWidth": 0, "spanNulls": false },
+          "mappings": [{
+            "type": "value",
+            "options": {
+              "0":  { "color": "#808080", "text": "STARTUP"   },
+              "1":  { "color": "green",   "text": "PRIMARY"   },
+              "2":  { "color": "#5794F2", "text": "SECONDARY" },
+              "3":  { "color": "yellow",  "text": "RECOVERING"},
+              "5":  { "color": "#808080", "text": "STARTUP2"  },
+              "6":  { "color": "red",     "text": "UNKNOWN"   },
+              "7":  { "color": "purple",  "text": "ARBITER"   },
+              "8":  { "color": "red",     "text": "DOWN"      },
+              "9":  { "color": "orange",  "text": "ROLLBACK"  },
+              "10": { "color": "red",     "text": "REMOVED"   }
+            }
+          }],
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }] }
+        }
+      },
+      "targets": [{
+        "expr": "mongodb_rs_members_state{namespace=~\"$namespace\", pod=~\"$pod\"}",
+        "legendFormat": "{{pod}}", "refId": "A"
+      }]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 6, "w": 10, "x": 14, "y": 6 },
+      "id": 11, "title": "RS Members Detail",
+      "type": "table",
+      "options": { "cellHeight": "sm", "footer": { "show": false }, "showHeader": true },
+      "fieldConfig": {
+        "defaults": { "custom": { "align": "auto", "cellOptions": { "type": "auto" } } },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "State" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              { "id": "mappings", "value": [{ "type": "value", "options": {
+                "1": {"color":"green","text":"PRIMARY"},
+                "2": {"color":"#5794F2","text":"SECONDARY"},
+                "7": {"color":"purple","text":"ARBITER"},
+                "8": {"color":"red","text":"DOWN"}
+              }}]}
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Health" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              { "id": "mappings", "value": [{ "type": "value", "options": {
+                "0": {"color":"red","text":"UNHEALTHY"},
+                "1": {"color":"green","text":"HEALTHY"}
+              }}]}
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        { "id": "merge", "options": {} },
+        { "id": "organize", "options": {
+          "renameByName": { "pod": "Pod", "Value #A": "State", "Value #B": "Health" },
+          "excludeByName": { "Time": true, "__name__": true, "namespace": true, "instance": true, "job": true }
+        }}
+      ],
+      "targets": [
+        { "expr": "mongodb_rs_members_state{namespace=~\"$namespace\", pod=~\"$pod\"}", "legendFormat": "", "refId": "A", "instant": true, "format": "table" },
+        { "expr": "mongodb_rs_members_health{namespace=~\"$namespace\", pod=~\"$pod\"}", "legendFormat": "", "refId": "B", "instant": true, "format": "table" }
+      ]
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 12 },
+      "id": 202, "title": "⚡ Operations & Documents", "type": "row"
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 13 },
+      "id": 20, "title": "Opcounters rate (2m)",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "ops", "custom": { "lineWidth": 1, "fillOpacity": 8, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        { "expr": "rate(mongodb_ss_opcounters{namespace=~\"$namespace\", pod=~\"$pod\", legacy_op_type=\"insert\"}[2m])",  "legendFormat": "insert — {{pod}}",  "refId": "A" },
+        { "expr": "rate(mongodb_ss_opcounters{namespace=~\"$namespace\", pod=~\"$pod\", legacy_op_type=\"query\"}[2m])",   "legendFormat": "query — {{pod}}",   "refId": "B" },
+        { "expr": "rate(mongodb_ss_opcounters{namespace=~\"$namespace\", pod=~\"$pod\", legacy_op_type=\"update\"}[2m])",  "legendFormat": "update — {{pod}}",  "refId": "C" },
+        { "expr": "rate(mongodb_ss_opcounters{namespace=~\"$namespace\", pod=~\"$pod\", legacy_op_type=\"delete\"}[2m])",  "legendFormat": "delete — {{pod}}",  "refId": "D" },
+        { "expr": "rate(mongodb_ss_opcounters{namespace=~\"$namespace\", pod=~\"$pod\", legacy_op_type=\"command\"}[2m])", "legendFormat": "command — {{pod}}", "refId": "E" },
+        { "expr": "rate(mongodb_ss_opcounters{namespace=~\"$namespace\", pod=~\"$pod\", legacy_op_type=\"getmore\"}[2m])", "legendFormat": "getmore — {{pod}}", "refId": "F" }
+      ]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 13 },
+      "id": 21, "title": "Document Operations rate (2m)",
+      "description": "More granular than opcounters — shows actual documents affected",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "ops", "custom": { "lineWidth": 1, "fillOpacity": 8, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        { "expr": "rate(mongodb_ss_metrics_document{namespace=~\"$namespace\", pod=~\"$pod\", doc_op_type=\"inserted\"}[2m])",  "legendFormat": "inserted — {{pod}}",  "refId": "A" },
+        { "expr": "rate(mongodb_ss_metrics_document{namespace=~\"$namespace\", pod=~\"$pod\", doc_op_type=\"returned\"}[2m])",  "legendFormat": "returned — {{pod}}",  "refId": "B" },
+        { "expr": "rate(mongodb_ss_metrics_document{namespace=~\"$namespace\", pod=~\"$pod\", doc_op_type=\"updated\"}[2m])",   "legendFormat": "updated — {{pod}}",   "refId": "C" },
+        { "expr": "rate(mongodb_ss_metrics_document{namespace=~\"$namespace\", pod=~\"$pod\", doc_op_type=\"deleted\"}[2m])",   "legendFormat": "deleted — {{pod}}",   "refId": "D" }
+      ]
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 20 },
+      "id": 203, "title": "🔁 Replication & Oplog", "type": "row"
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 8, "x": 0, "y": 21 },
+      "id": 30, "title": "Replication Lag per Secondary",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s", "custom": { "lineWidth": 2, "fillOpacity": 10, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 10 }, { "color": "red", "value": 30 }] }
+        }
+      },
+      "targets": [{
+        "expr": "max(mongodb_mongod_replset_oplog_head_timestamp{namespace=~\"$namespace\", rs_state=\"1\"}) - mongodb_mongod_replset_oplog_head_timestamp{namespace=~\"$namespace\", rs_state=\"2\"}",
+        "legendFormat": "{{pod}}", "refId": "A"
+      }]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 8, "x": 8, "y": 21 },
+      "id": 31, "title": "Oplog Window",
+      "description": "Time covered by oplog — how far back a secondary can fall before needing resync",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s", "custom": { "lineWidth": 1, "fillOpacity": 10, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "orange", "value": 3600 }, { "color": "green", "value": 86400 }] }
+        }
+      },
+      "targets": [{
+        "expr": "mongodb_mongod_replset_oplog_head_timestamp{namespace=~\"$namespace\", pod=~\"$pod\"} - mongodb_mongod_replset_oplog_tail_timestamp{namespace=~\"$namespace\", pod=~\"$pod\"}",
+        "legendFormat": "{{pod}}", "refId": "A"
+      }]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 8, "x": 16, "y": 21 },
+      "id": 32, "title": "Replication Apply Batch Latency (rate 2m)",
+      "description": "Time secondary spends applying oplog batches — high value = secondary falling behind",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "ms", "custom": { "lineWidth": 1, "fillOpacity": 8, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [{
+        "expr": "rate(mongodb_ss_metrics_repl_apply_batches_totalMillis{namespace=~\"$namespace\", pod=~\"$pod\"}[2m]) / rate(mongodb_ss_metrics_repl_apply_batches_num{namespace=~\"$namespace\", pod=~\"$pod\"}[2m])",
+        "legendFormat": "apply latency — {{pod}}", "refId": "A"
+      }]
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 28 },
+      "id": 204, "title": "🖥️  CPU (cAdvisor)", "type": "row"
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 29 },
+      "id": 40, "title": "CPU Usage vs Limits per Pod",
+      "description": "container_cpu_usage from cAdvisor vs kube-state-metrics limits",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "cores", "custom": { "lineWidth": 1, "fillOpacity": 8, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        {
+          "expr": "rate(container_cpu_usage_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\", container=\"mongod\"}[2m])",
+          "legendFormat": "used — {{pod}}", "refId": "A"
+        },
+        {
+          "expr": "kube_pod_container_resource_limits{namespace=~\"$namespace\", pod=~\"$pod\", container=\"mongod\", resource=\"cpu\"}",
+          "legendFormat": "limit — {{pod}}", "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 29 },
+      "id": 41, "title": "CPU Throttling % per Pod",
+      "description": "High throttling = container hitting CPU limit → latency spikes. Threshold: >25% is concerning",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0, "max": 1,
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "showPoints": "never", "spanNulls": true },
+          "color": { "mode": "palette-classic" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 0.25 }, { "color": "red", "value": 0.5 }] }
+        }
+      },
+      "targets": [{
+        "expr": "rate(container_cpu_cfs_throttled_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\", container!=\"\", container!=\"POD\"}[2m]) / clamp_min(rate(container_cpu_usage_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\", container!=\"\", container!=\"POD\"}[2m]) + rate(container_cpu_cfs_throttled_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\", container!=\"\", container!=\"POD\"}[2m]), 0.001)",
+        "legendFormat": "throttle% — {{pod}} / {{container}}", "refId": "A"
+      }]
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 36 },
+      "id": 205, "title": "💾 Memory (cAdvisor + MongoDB)", "type": "row"
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 37 },
+      "id": 50, "title": "Container Memory: Working Set vs Limit",
+      "description": "working_set = RSS + cache evictable. OOM kill happens when working_set >= limit",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "bytes", "custom": { "lineWidth": 1, "fillOpacity": 10, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        {
+          "expr": "container_memory_working_set_bytes{namespace=~\"$namespace\", pod=~\"$pod\", container=\"mongod\"}",
+          "legendFormat": "working_set — {{pod}}", "refId": "A"
+        },
+        {
+          "expr": "kube_pod_container_resource_limits{namespace=~\"$namespace\", pod=~\"$pod\", container=\"mongod\", resource=\"memory\"}",
+          "legendFormat": "limit — {{pod}}", "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 37 },
+      "id": 51, "title": "WiredTiger Cache: Used / Dirty / Max",
+      "description": "Dirty bytes > 20% of cache max → eviction pressure. Used near max → consider increasing cache",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "bytes", "custom": { "lineWidth": 1, "fillOpacity": 10, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        {
+          "expr": "mongodb_ss_wt_cache_bytes_currently_in_the_cache{namespace=~\"$namespace\", pod=~\"$pod\"}",
+          "legendFormat": "in cache — {{pod}}", "refId": "A"
+        },
+        {
+          "expr": "mongodb_ss_wt_cache_tracked_dirty_bytes_in_the_cache{namespace=~\"$namespace\", pod=~\"$pod\"}",
+          "legendFormat": "dirty — {{pod}}", "refId": "B"
+        },
+        {
+          "expr": "mongodb_ss_wt_cache_maximum_bytes_configured{namespace=~\"$namespace\", pod=~\"$pod\"}",
+          "legendFormat": "max — {{pod}}", "refId": "C"
+        }
+      ]
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 44 },
+      "id": 206, "title": "💿 Storage & I/O (cAdvisor + PVC)", "type": "row"
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 45 },
+      "id": 60, "title": "PVC Usage per Pod",
+      "description": "kubelet_volume_stats — actual disk usage of MongoDB data volumes",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "bytes", "custom": { "lineWidth": 1, "fillOpacity": 15, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        {
+          "expr": "kubelet_volume_stats_used_bytes{namespace=~\"$namespace\"} * on(persistentvolumeclaim, namespace) group_left(pod) kube_pod_spec_volumes_persistentvolumeclaims_info{namespace=~\"$namespace\", pod=~\"$pod\"}",
+          "legendFormat": "used — {{pod}} / {{persistentvolumeclaim}}", "refId": "A"
+        },
+        {
+          "expr": "kubelet_volume_stats_capacity_bytes{namespace=~\"$namespace\"} * on(persistentvolumeclaim, namespace) group_left(pod) kube_pod_spec_volumes_persistentvolumeclaims_info{namespace=~\"$namespace\", pod=~\"$pod\"}",
+          "legendFormat": "capacity — {{pod}} / {{persistentvolumeclaim}}", "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 45 },
+      "id": 61, "title": "Container Disk I/O (cAdvisor, rate 2m)",
+      "description": "Reads and writes at container level. Helps identify I/O saturation",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "Bps", "custom": { "lineWidth": 1, "fillOpacity": 8, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        {
+          "expr": "rate(container_fs_reads_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\", container=\"mongod\"}[2m])",
+          "legendFormat": "read — {{pod}}", "refId": "A"
+        },
+        {
+          "expr": "rate(container_fs_writes_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\", container=\"mongod\"}[2m])",
+          "legendFormat": "write — {{pod}}", "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 52 },
+      "id": 207, "title": "🌐 Network (cAdvisor + MongoDB)", "type": "row"
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 53 },
+      "id": 70, "title": "Container Network I/O per Pod (rate 2m)",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "Bps", "custom": { "lineWidth": 1, "fillOpacity": 8, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        {
+          "expr": "rate(container_network_receive_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[2m])",
+          "legendFormat": "rx — {{pod}}", "refId": "A"
+        },
+        {
+          "expr": "rate(container_network_transmit_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[2m])",
+          "legendFormat": "tx — {{pod}}", "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 53 },
+      "id": 71, "title": "MongoDB Network Bytes In/Out (rate 2m)",
+      "description": "MongoDB-level network — shows actual client traffic separate from replication",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "Bps", "custom": { "lineWidth": 1, "fillOpacity": 8, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        {
+          "expr": "rate(mongodb_ss_network_bytesIn{namespace=~\"$namespace\", pod=~\"$pod\"}[2m])",
+          "legendFormat": "in — {{pod}}", "refId": "A"
+        },
+        {
+          "expr": "rate(mongodb_ss_network_bytesOut{namespace=~\"$namespace\", pod=~\"$pod\"}[2m])",
+          "legendFormat": "out — {{pod}}", "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 60 },
+      "id": 208, "title": "🔌 Connections & WiredTiger Tickets", "type": "row"
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 8, "x": 0, "y": 61 },
+      "id": 80, "title": "Connections per Pod",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "custom": { "lineWidth": 1, "fillOpacity": 15, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        { "expr": "mongodb_ss_connections{namespace=~\"$namespace\", pod=~\"$pod\", conn_type=\"current\"}",   "legendFormat": "current — {{pod}}",   "refId": "A" },
+        { "expr": "mongodb_ss_connections{namespace=~\"$namespace\", pod=~\"$pod\", conn_type=\"available\"}", "legendFormat": "available — {{pod}}", "refId": "B" }
+      ]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 8, "x": 8, "y": 61 },
+      "id": 81, "title": "WiredTiger Read/Write Tickets",
+      "description": "WiredTiger uses 128 read+write tickets by default. Near 0 available = severe contention",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","min"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 1, "fillOpacity": 10, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "orange", "value": 10 }, { "color": "green", "value": 50 }] }
+        }
+      },
+      "targets": [
+        { "expr": "mongodb_ss_wt_concurrentTransactions_available{namespace=~\"$namespace\", pod=~\"$pod\", txn_rw_type=\"read\"}",  "legendFormat": "read avail — {{pod}}",  "refId": "A" },
+        { "expr": "mongodb_ss_wt_concurrentTransactions_available{namespace=~\"$namespace\", pod=~\"$pod\", txn_rw_type=\"write\"}", "legendFormat": "write avail — {{pod}}", "refId": "B" },
+        { "expr": "mongodb_ss_wt_concurrentTransactions_out{namespace=~\"$namespace\", pod=~\"$pod\", txn_rw_type=\"read\"}",        "legendFormat": "read used — {{pod}}",    "refId": "C" },
+        { "expr": "mongodb_ss_wt_concurrentTransactions_out{namespace=~\"$namespace\", pod=~\"$pod\", txn_rw_type=\"write\"}",       "legendFormat": "write used — {{pod}}",   "refId": "D" }
+      ]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 7, "w": 8, "x": 16, "y": 61 },
+      "id": 82, "title": "Active Clients & Queue",
+      "description": "Queue length > 0 = concurrent request limit hit",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "custom": { "lineWidth": 1, "fillOpacity": 10, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        { "expr": "mongodb_ss_globalLock_activeClients{namespace=~\"$namespace\", pod=~\"$pod\", conn_type=\"readers\"}", "legendFormat": "active readers — {{pod}}", "refId": "A" },
+        { "expr": "mongodb_ss_globalLock_activeClients{namespace=~\"$namespace\", pod=~\"$pod\", conn_type=\"writers\"}", "legendFormat": "active writers — {{pod}}", "refId": "B" },
+        { "expr": "mongodb_ss_globalLock_currentQueue{namespace=~\"$namespace\", pod=~\"$pod\", count_type=\"readers\"}",  "legendFormat": "queued readers — {{pod}}", "refId": "C" },
+        { "expr": "mongodb_ss_globalLock_currentQueue{namespace=~\"$namespace\", pod=~\"$pod\", count_type=\"writers\"}",  "legendFormat": "queued writers — {{pod}}", "refId": "D" }
+      ]
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 68 },
+      "id": 209, "title": "🚨 Errors & Assertions", "type": "row"
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 69 },
+      "id": 90, "title": "MongoDB Assertions (rate 2m)",
+      "description": "User assertions = app errors. Msg/warning = server-side issues. Any rate > 0 needs attention",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["mean","max"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "ops", "custom": { "lineWidth": 1, "fillOpacity": 10, "showPoints": "never", "spanNulls": true }, "color": { "mode": "palette-classic" } } },
+      "targets": [
+        { "expr": "rate(mongodb_ss_asserts{namespace=~\"$namespace\", pod=~\"$pod\", assert_type=\"user\"}[2m])",    "legendFormat": "user — {{pod}}",    "refId": "A" },
+        { "expr": "rate(mongodb_ss_asserts{namespace=~\"$namespace\", pod=~\"$pod\", assert_type=\"msg\"}[2m])",     "legendFormat": "msg — {{pod}}",     "refId": "B" },
+        { "expr": "rate(mongodb_ss_asserts{namespace=~\"$namespace\", pod=~\"$pod\", assert_type=\"warning\"}[2m])", "legendFormat": "warning — {{pod}}", "refId": "C" },
+        { "expr": "rate(mongodb_ss_asserts{namespace=~\"$namespace\", pod=~\"$pod\", assert_type=\"rollovers\"}[2m])","legendFormat": "rollover — {{pod}}","refId": "D" }
+      ]
+    },
+
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 69 },
+      "id": 91, "title": "Container Restarts over Time",
+      "description": "Sudden increase = crash loop. Track against MongoDB assertions and memory limits",
+      "type": "timeseries",
+      "options": { "legend": { "calcs": ["max","lastNotNull"], "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "showPoints": "auto", "spanNulls": false }, "color": { "mode": "palette-classic" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 5 }] }
+        }
+      },
+      "targets": [{
+        "expr": "kube_pod_container_status_restarts_total{namespace=~\"$namespace\", pod=~\"$pod\", container=\"mongod\"}",
+        "legendFormat": "{{pod}}", "refId": "A"
+      }]
+    }
+
+  ]
+}

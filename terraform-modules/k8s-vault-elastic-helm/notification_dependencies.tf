@@ -9,6 +9,7 @@ resource "kubernetes_secret" "slackNotification" {
     name      = "slack-notification"
     namespace = local.globalSettings.namespace
   }
+  wait_for_service_account_token = true
   data = {
     "xpack.notification.slack.account.monitoring.secure_url" = data.vault_generic_secret.slackNotification.0.data.slack_account_monitoring_secure_url
   }
@@ -25,7 +26,7 @@ resource "kubernetes_secret" "smtpNotification" {
     name      = "email-notification"
     namespace = local.globalSettings.namespace
   }
-
+  wait_for_service_account_token = true
   data = {
     "xpack.notification.email.account.gmail_account.smtp.secure_password" = data.vault_generic_secret.smtpNotification.0.data.gmail_account_smtp_secure_password
   }

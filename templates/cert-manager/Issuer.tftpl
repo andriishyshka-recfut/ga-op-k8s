@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: ${lookup(values,"name","vault-issuer")}
+  namespace: ${values.namespace}
+spec:
+  vault:
+    path: ${values.pki.name}/sign/${values.pki.role}
+    server: ${values.vault_addr}
+    auth:
+      kubernetes:
+        role: ${values.kube_auth.role}
+        mountPath: /v1/auth/k8s-${values.cluster}-${values.color}
+        serviceAccountRef:
+          name: ${lookup(values.kube_auth, "service_account","default")}

@@ -13,6 +13,9 @@ path "secret/data/mongo/metaBeat" {
 path "secret/data/es-creds-compose-prod/metaBirl" {
   capabilities = ["read","list"]
 }
+path "secret/data/mw/minio/sa/birl_telegram-attachments" {
+  capabilities = ["read","list"]
+}
 path "secret/data/es-creds-compose-prod/metaBirlApi" {
   capabilities = ["read","list"]
 }
@@ -50,6 +53,9 @@ path "secret/data/mw/monitoring/otel" {
    capabilities = ["read","list"]
 }
 path "postgres/creds/*" {
+  capabilities = ["read","list","create","update"]
+}
+path "postgres-ha-prod/static-creds/*" {
   capabilities = ["read","list","create","update"]
 }
 EOT
