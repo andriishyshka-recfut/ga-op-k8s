@@ -29,8 +29,15 @@ locals {
      kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
-     scale statefulset --replicas=0 -n $1 
+     scale statefulset --replicas=0 -n $1
     sleep 29
+  COMMAND
+
+  stop_etl_operator = <<COMMAND
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+     --insecure-skip-tls-verify=true  \
+     scale deploy -n etl --replicas=0 --all
   COMMAND
 
   stop_prometheus_thanos = <<COMMAND
@@ -49,7 +56,7 @@ locals {
      kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
      --insecure-skip-tls-verify=true  \
-     scale statefulset --replicas=0 -n $1 
+     scale statefulset --replicas=0 -n $1
     sleep 29
   COMMAND
 
@@ -60,23 +67,6 @@ locals {
      delete cronjobs -l zero=true --all-namespaces
     sleep 29
   COMMAND
-
-  stop_etl_operator = <<COMMAND
-    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-     --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-     --insecure-skip-tls-verify=true  \
-     scale deploy -n etl --replicas=0 --all
-COMMAND
-
-  delete_etl_jobs = <<COMMAND
-    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-      --insecure-skip-tls-verify=true  \
-      delete cronjobs `kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
-      --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
-      --insecure-skip-tls-verify=true  \
-      get cronjobs -o custom-columns=:.metadata.name -n etl` -n etl
-COMMAND
 
   stop_cvat = <<COMMAND
     kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
