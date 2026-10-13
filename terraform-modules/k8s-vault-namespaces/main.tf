@@ -6,6 +6,7 @@ resource "kubernetes_namespace" "ns" {
       istio-injection                      = lookup(each.value, "istio", "enabled")
       "pod-security.kubernetes.io/enforce" = lookup(each.value, "podSecurityPolicy", "baseline")
     }
+    annotations = local.repoSecretServiceAccountsByNamespace[each.key]
   }
 }
 

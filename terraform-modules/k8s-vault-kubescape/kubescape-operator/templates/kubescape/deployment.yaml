@@ -194,7 +194,7 @@ spec:
 
      {{- if .Values.kubescape.minioBucket }}
       - name: minio-sidecar
-        image: minio/mc
+        image: {{ .Values.kubescape.minioSidecar | quote }}
         securityContext:
           runAsUser: 0
         args: 

@@ -46,6 +46,12 @@ locals {
     if lookup(namespace, "repoSecret", false)
   ])
 
+  repoSecretServiceAccountsByNamespace = {
+    for name, namespace in local.namespaceNames :
+    name => try(namespace.repoSecretSA, "") != "" ? { "registry/service-accounts": namespace.repoSecretSA, "registry/image-pull-secrets": join(",",local.enabled_repo_secrets) } : null
+    
+  }
+
   injectHarborImagePullSecrets = toset([
     for namespace in var.Settings.clusters[var.Cluster].namespaces :
     namespace.name
