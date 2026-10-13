@@ -1,3 +1,5 @@
+variable "RuntimeContext" {}
+
 provider "google" {
 }
 
@@ -18,6 +20,7 @@ locals {
   gkeClusterEndpoint   = local.GkeClusterConnectionSettings.HOST
   gkeBearerToken       = local.GkeClusterConnectionSettings.API_KEY
   clusterCaCertificate = local.GkeClusterConnectionSettings.CLUSTER_CA_CERTIFICATE
+  artifactoryRepoDomain = var.RuntimeContext == "tekton" ? "repo-external.recfut.com" : "repo.recfut.com"
 }
 provider "helm" {
   kubernetes = {

@@ -182,7 +182,8 @@ resource "google_container_node_pool" "nodepool_default" {
   node_config {
     preemptible = local.isPreemptible
 
-    machine_type    = local.defaultMachineType
+    machine_type    = local.defaultMachineType    
+    disk_size_gb    = local.defaultNPdiskSizeGB
     tags            = [var.Cluster, "${var.Cluster}-${var.Color}"]
     service_account = google_service_account.gke_sa.unique_id
 
@@ -235,6 +236,7 @@ resource "google_container_node_pool" "nodepool_additional" {
   node_config {
     preemptible     = each.value.preemptible
     machine_type    = each.value.machineType
+    disk_size_gb    = lookup(each.value, "diskSizeGb", local.defaultNPdiskSizeGB)
     tags            = [var.Cluster, "${var.Cluster}-${var.Color}", "${var.Cluster}-${var.Color}-${each.key}"]
     service_account = google_service_account.gke_sa.unique_id
     metadata = {

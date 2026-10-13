@@ -17,4 +17,5 @@ module "events" {
   Cluster  = var.Cluster
   Color    = var.Color
   Settings = var.Settings
+  depends_on = [ module.beats ]
 }

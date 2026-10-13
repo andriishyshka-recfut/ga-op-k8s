@@ -16,14 +16,6 @@ resource "random_password" "auditbeat_password" {
   special  = false
 }
 
-
-data "kubernetes_secret" "elastic_pass" {
-  metadata {
-    name      = "elastic-credentials"
-    namespace = local.elasticSettings.globalSettings.namespace
-  }
-}
-
 data "vault_generic_secret" "logstash_es_creds" {
   for_each = var.logstash_list
   path     = "secret/logstash/${each.key}"

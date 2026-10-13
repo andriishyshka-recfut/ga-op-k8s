@@ -19,6 +19,7 @@ module "k8s-istio" {
   Settings                     = var.Settings
   Cluster                      = "production"
   Color                        = "blue"
+  RepositoryDomain             = local.artifactoryRepoDomain
 }
 
 module "k8s-misc-operators" {

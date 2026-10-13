@@ -21,6 +21,7 @@ module "k8s-istio" {
   Settings                     = var.Settings
   Cluster                      = "sandbox"
   Color                        = "green"
+  RepositoryDomain             = local.artifactoryRepoDomain
 }
 
 

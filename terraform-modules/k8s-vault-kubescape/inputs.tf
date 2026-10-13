@@ -11,6 +11,7 @@ locals {
   values = {
     tag = local.version
     minioBucket = local.minioBucket
+    minioSidecar = lookup(var.Settings.clusters[var.Cluster].versions.kubescape, "minio_sidecar", "minio/mc")
     schedulerTag = "v0.2.2"
     clusterName = "${var.Cluster}-${var.Color}"
   }

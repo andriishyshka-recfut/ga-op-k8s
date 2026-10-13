@@ -4,5 +4,5 @@ variable "Cluster" {}
 
 locals {
   namespace         = "monitoring"
-  elasticSecretName = var.Cluster == "production" ? "elastic-credentials" : "prod-mon-elastic-creds"
-}
+  elasticSecretName = var.Cluster == "production" ? "filebeat-${var.Color}-elastic-credentials" : "prod-mon-elastic-creds"
+ }
