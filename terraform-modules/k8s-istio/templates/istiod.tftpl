@@ -8,3 +8,17 @@ resources:
     memory: "3500Mi"
 cni:
   enabled: true
+# A second replica keeps the istiod admission webhooks (failurePolicy=Fail) available
+# when one pod's node is preempted or drained. With min > 1 the chart also creates a PDB.
+autoscaleMin: 2
+# Keep replicas on different nodes, so a single node loss can't take them all down.
+# pod-template-hash limits the spread check to one ReplicaSet, so rollouts aren't blocked.
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app: istiod
+    matchLabelKeys:
+      - pod-template-hash
