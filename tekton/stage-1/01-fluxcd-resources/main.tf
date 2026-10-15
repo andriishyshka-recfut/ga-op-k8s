@@ -21,9 +21,9 @@ locals {
         git_branch = "main"
       },
       gitops = {
-        # url = "https://github.com/recfut/ga-op-gitops.git",
-        # provider = "github",
-        url        = "https://gitlab.regemini.com/op/gitops.git",
+        url = "https://github.com/recfut/ga-op-gitops.git",
+        provider = "github",
+        #url        = "https://gitlab.regemini.com/op/gitops.git",
         git_branch = var.Cluster
       }
     },
