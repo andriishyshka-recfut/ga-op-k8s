@@ -6,7 +6,7 @@ resource "kubernetes_default_service_account_v1" "default" {
   }
 
   dynamic "image_pull_secret" {
-    for_each = toset(local.enabled_repo_secrets)
+    for_each = local.enabled_repo_secrets
 
     content {
       name = image_pull_secret.value

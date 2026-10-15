@@ -48,7 +48,7 @@ locals {
 
   repoSecretServiceAccountsByNamespace = {
     for name, namespace in local.namespaceNames :
-    name => try(namespace.repoSecretSA, "") != "" ? { "registry/service-accounts": namespace.repoSecretSA, "registry/image-pull-secrets": join(",",local.enabled_repo_secrets) } : null
+    name => try(namespace.repoSecretSA, "") != "" ? { "registry/service-accounts": join(",",namespace.repoSecretSA), "registry/image-pull-secrets": join(",",local.enabled_repo_secrets) } : null
     
   }
 
