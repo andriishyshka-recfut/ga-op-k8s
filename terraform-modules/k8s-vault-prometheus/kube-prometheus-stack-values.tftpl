@@ -312,6 +312,18 @@ thanosRuler:
     ruleSelector:
       matchLabels:
         ruler: thanos
+    containers:
+      - name: thanos-ruler
+        readinessProbe:
+          httpGet:
+            path: /-/ready
+            port: 10902
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
 
     replicas: 2
 
