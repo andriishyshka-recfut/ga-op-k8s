@@ -417,3 +417,78 @@ spec:
          -var="RestoreDatabase=$(params.restore_database)" \
          -var="RestoreBackupTimestamp=$(params.restore_backup_timestamp)" \
          -var="RestoreJobName=$(params.restore_job_name)"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: tg-run-clickhouse-restore
+  namespace: tekton-tasks
+spec:
+  params:
+    - name: branch
+      type: string
+      description: Git branch containing the restore module
+      default: master
+    - name: restore_backup_name
+      type: string
+      description: Backup directory name in full-YYYYMMDDTHHMMSSZ format
+    - name: restore_database
+      type: string
+      description: Database to restore; empty restores all databases
+      default: ""
+    - name: restore_run_id
+      type: string
+      description: Unique lowercase DNS label for this restore, at most 24 characters
+  workspaces:
+    - name: ws
+      mountPath: /workspace
+  steps:
+    - name: tg-apply-restore
+      image: harbor.regemini.io/op/opentofu
+      env:
+        - name: TF_VAR_Color
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: color
+        - name: CLUSTER
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: cluster
+        - name: CONF_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: configPath
+        - name: VAULT_ADDR
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-settings
+              key: vaultAddr
+        - name: TF_VAR_RestoreBackupName
+          value: $(params.restore_backup_name)
+        - name: TF_VAR_RestoreDatabase
+          value: $(params.restore_database)
+        - name: TF_VAR_RestoreRunId
+          value: $(params.restore_run_id)
+        - name: RESTORE_GIT_BRANCH
+          value: $(params.branch)
+        - name: RESTORE_WORKDIR
+          value: $(workspaces.ws.path)
+      script: |
+        set +x
+        set -eu
+        export VAULT_TOKEN=$(vault write -field=token "auth/k8s-${CLUSTER}-${TF_VAR_Color}/login" role=tekton jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)")
+        export KUBE_TOKEN=$(vault kv get -field=k8s_sa_token "secret/kubernetes-${CLUSTER}-${TF_VAR_Color}")
+        export KUBE_HOST=$(vault kv get -field=HOST "secret/kubernetes-${CLUSTER}-${TF_VAR_Color}")
+        export KUBE_CLUSTER_CA_CERT_DATA=$(vault kv get -field=CLUSTER_CA_CERTIFICATE "secret/kubernetes-${CLUSTER}-${TF_VAR_Color}")
+        export GIT_USER=$(vault kv get -field=username secret/misc/gitlab/token/read_repo)
+        export GIT_TOKEN=$(vault kv get -field=token secret/misc/gitlab/token/read_repo)
+
+        cd "$RESTORE_WORKDIR"
+        git clone --single-branch --branch "$RESTORE_GIT_BRANCH" "https://${GIT_USER}:${GIT_TOKEN}@gitlab.regemini.com/op/k8s.git"
+        source /ansible/bin/activate
+        cd "$RESTORE_WORKDIR/k8s/tekton/stage-5/05-clickhouse-restore"
+        git log -1
+        terragrunt apply -auto-approve -input=false

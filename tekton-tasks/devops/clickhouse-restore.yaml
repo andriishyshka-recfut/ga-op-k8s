@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: clickhouse-restore-
+  namespace: tekton-tasks
+spec:
+  taskRef:
+    name: tg-run-clickhouse-restore
+  workspaces:
+    - name: ws
+      emptyDir: {}
+  params:
+    - name: branch
+      value: "master"
+    - name: restore_backup_name
+      value: "" # Required. Name can be found on backup disk.
+    - name: restore_run_id
+      value: "" # Required. Uniq name for restore.
+    - name: restore_database
+      value: "" # Empty restores all databases.
