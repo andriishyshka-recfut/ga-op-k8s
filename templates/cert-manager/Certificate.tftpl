@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "${Values.name}"
+  namespace: "${Values.namespace}"
+spec:
+  secretName: "${Values.secretName}"
+  commonName: "${Values.commonName}"
+  duration: "${Values.duration}"
+  renewBefore: "${Values.renewBefore}"
+  privateKey:
+    algorithm: RSA
+    size: 2048
+    rotationPolicy: Always
+  dnsNames:
+%{ for name in Values.dnsNames ~}
+    - "${name}"
+%{ endfor ~}
+  issuerRef:
+    kind: "${Values.issuerKind}"
+    name: "${Values.issuerName}"

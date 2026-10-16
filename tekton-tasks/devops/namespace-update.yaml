@@ -13,4 +13,4 @@ spec:
     - name: path
       value: "k8s/tekton/stage-1/01-namespaces"
     - name: branch
-      value: "master"
+      value: "1075-clickhouse-module"

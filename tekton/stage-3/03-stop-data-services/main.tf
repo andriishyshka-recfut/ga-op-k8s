@@ -7,7 +7,8 @@ data "vault_generic_secret" "k8s_auth_active" {
 }
 
 locals {
-  cluster_settings = var.Settings.clusters[var.Cluster]
+  cluster_settings   = var.Settings.clusters[var.Cluster]
+  clickhouse_enabled = try(local.cluster_settings.clickhouse.enabled, false)
 
   postgres_ha_profiles = try(local.cluster_settings["postgresql-ha"], {})
   enabled_postgres_ha_profiles = {
@@ -22,6 +23,83 @@ locals {
       pvc_prefix   = "data-${try(local.enabled_postgres_ha_profiles[profile_name].cluster_name, "postgresql-ha")}-postgresql"
     }
   ]
+
+  stop_clickhouse = <<COMMAND
+    set -x
+
+    echo "Suspending ClickHouse backups"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get cronjob -n clickhouse --field-selector metadata.name=clickhouse-backup -o name \
+    | xargs -r -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    patch -n clickhouse {} --type=merge -p '{"spec":{"suspend":true}}'
+
+    echo "Stopping ClickHouse operator"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get deployment -n clickhouse-operator-system -l app.kubernetes.io/instance=clickhouse-operator -o name \
+    | xargs -r -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    scale -n clickhouse-operator-system --replicas=0 {}
+    sleep 29
+
+    echo "Stopping ClickHouse replicas"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get statefulset -n clickhouse -l app=clickhouse-clickhouse -o name \
+    | xargs -r -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    scale -n clickhouse --replicas=0 {}
+    sleep 29
+
+    echo "Stopping Keeper replicas"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get statefulset -n clickhouse -l app=clickhouse-keeper-keeper -o name \
+    | xargs -r -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    scale -n clickhouse --replicas=0 {}
+    sleep 29
+COMMAND
+
+  delete_clickhouse_resources = <<COMMAND
+    set -x
+
+    echo "Deleting ClickHouse and Keeper PVCs"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get pvc -n clickhouse -l 'app in (clickhouse-clickhouse,clickhouse-keeper-keeper)' -o name \
+    | xargs -r -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    delete -n clickhouse {}
+
+    echo "Deleting retained ClickHouse and Keeper PVs"
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    get pv -l 'target in (clickhouse-data,clickhouse-keeper-data)' -o name \
+    | xargs -r -n 1 -I{} \
+    kubectl --server ${data.vault_generic_secret.k8s_auth_inactive.data.HOST}  \
+    --token ${data.vault_generic_secret.k8s_auth_inactive.data.k8s_sa_token}  \
+    --insecure-skip-tls-verify=true  \
+    delete {}
+COMMAND
 
   stop_kafka = <<COMMAND
     set -x
@@ -412,4 +490,29 @@ resource "null_resource" "stop_elastic_resources" {
     interpreter = ["/bin/bash", "-c"]
     command     = local.stop_elastic_resources
   }
+}
+
+resource "null_resource" "stop_clickhouse" {
+  count = local.clickhouse_enabled ? 1 : 0
+
+  triggers = {
+    command = md5(local.stop_clickhouse)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.stop_clickhouse
+  }
+}
+
+resource "null_resource" "delete_clickhouse_resources" {
+  count = local.clickhouse_enabled ? 1 : 0
+
+  triggers = {
+    command = md5(local.delete_clickhouse_resources)
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.delete_clickhouse_resources
+  }
+  depends_on = [null_resource.stop_clickhouse]
 }

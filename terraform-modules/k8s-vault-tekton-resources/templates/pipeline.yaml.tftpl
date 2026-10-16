@@ -292,6 +292,18 @@ spec:
   workspaces:
     - name: ws
   tasks:
+    - name: clickhouse
+      taskRef:
+        name: tg-run
+      workspaces:
+        - name: ws
+          workspace: ws
+      params:
+        - name: path
+          value: "k8s/tekton/stage-5/05-clickhouse"
+        - name: branch
+          value: "\\${branch}"
+
     - name: mongo
       taskRef:
         name: tg-run
