@@ -1,0 +1,15 @@
+{
+  "defaults": {
+    "default_ttl_seconds": 900,
+    "max_ttl_seconds": 3600
+  },
+  "applications": {
+    "auth": {
+      "databases": {
+        "auth": {
+          "role_type": "readWrite"
+        }
+      }
+    }
+  }
+}

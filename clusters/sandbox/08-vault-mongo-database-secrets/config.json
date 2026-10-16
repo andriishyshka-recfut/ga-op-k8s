@@ -1,0 +1,254 @@
+{
+  "defaults": {
+    "default_ttl_seconds": 900,
+    "max_ttl_seconds": 3600
+  },
+  "applications": {
+    "ai": {
+      "databases": {
+        "ai": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "artifact": {
+      "databases": {
+        "artifact": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "beat": {
+      "databases": {
+        "beat": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "beep": {
+      "databases": {
+        "beep": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "binsight": {
+      "databases": {
+        "binsight": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "birl": {
+      "databases": {
+        "birl": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "broomer": {
+      "databases": {
+        "broomer": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "clicker": {
+      "databases": {
+        "clicker": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "datafix": {
+      "databases": {
+        "artifact": { "role_type": "readWrite" },
+        "beat": { "role_type": "readWrite" },
+        "beep": { "role_type": "readWrite" },
+        "binsight": { "role_type": "readWrite" },
+        "birl": { "role_type": "readWrite" },
+        "broomer": { "role_type": "readWrite" },
+        "clicker": { "role_type": "readWrite" },
+        "dome": { "role_type": "readWrite" },
+        "es2gs": { "role_type": "readWrite" },
+        "geo": { "role_type": "readWrite" },
+        "grouper": { "role_type": "readWrite" },
+        "kaching": { "role_type": "readWrite" },
+        "lumberjack": { "role_type": "readWrite" },
+        "minion": { "role_type": "readWrite" },
+        "os3": { "role_type": "readWrite" },
+        "os3c": { "role_type": "readWrite" },
+        "os3t": { "role_type": "readWrite" },
+        "pans_upload": { "role_type": "readWrite" },
+        "rail": { "role_type": "readWrite" },
+        "review": { "role_type": "readWrite" },
+        "sanitizer": { "role_type": "readWrite" },
+        "telegram": { "role_type": "readWrite" },
+        "twirl": { "role_type": "readWrite" },
+        "vandelay": { "role_type": "readWrite" },
+        "whirl": { "role_type": "readWrite" }
+      }
+    },
+    "dome": {
+      "databases": {
+        "dome": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "es2gs": {
+      "databases": {
+        "es2gs": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "geo": {
+      "databases": {
+        "geo": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "grouper": {
+      "databases": {
+        "grouper": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "insta": {
+      "databases": {
+        "insta": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "kaching": {
+      "databases": {
+        "kaching": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "lumberjack": {
+      "databases": {
+        "lumberjack": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "maid": {
+      "databases": {
+        "maid": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "minion": {
+      "databases": {
+        "minion": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "os3": {
+      "databases": {
+        "os3": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "os3c": {
+      "databases": {
+        "os3c": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "os3t": {
+      "databases": {
+        "os3t": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "pans_upload": {
+      "databases": {
+        "pans_upload": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "rail": {
+      "databases": {
+        "rail": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "review": {
+      "databases": {
+        "review": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "sanitizer": {
+      "databases": {
+        "sanitizer": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "telegram": {
+      "databases": {
+        "telegram": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "telegram-new": {
+      "databases": {
+        "telegram-new": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "tmp": {
+      "databases": {
+        "tmp": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "twirl": {
+      "databases": {
+        "twirl": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "upsertMinion": {
+      "databases": {
+        "upsertMinion": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "vandelay": {
+      "databases": {
+        "vandelay": {
+          "role_type": "readWrite"
+        }
+      }
+    },
+    "vortex": {
+      "databases": {
+        "vortex": {
+          "role_type": "readWrite"
+        }
+      }
+    }
+  }
+}
