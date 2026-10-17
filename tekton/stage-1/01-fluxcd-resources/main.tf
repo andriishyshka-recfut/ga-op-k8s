@@ -9,9 +9,9 @@ locals {
   values = {
     git-repositories = {
       k8s-configs = {
-        # url = "https://github.com/recfut/ga-op-k8s-configs.git",
-        # provider = "github",
-        url        = "https://gitlab.regemini.com/op/k8s-configs.git",
+        url = "https://github.com/recfut/ga-op-k8s-configs.git",
+        provider = "github",
+        # url        = "https://gitlab.regemini.com/op/k8s-configs.git",
         git_branch = var.Cluster
       },
       op-charts = {
