@@ -46,7 +46,8 @@ locals {
   values = {
     git-repositories = {
       kafka-topics = {
-        url        = "https://gitlab.regemini.com/op/kafka-topics.git",
+        url = "https://github.com/recfut/ga-op-kafka-topics.git",
+        provider = "github",
         git_branch = "main"
       }
     },
