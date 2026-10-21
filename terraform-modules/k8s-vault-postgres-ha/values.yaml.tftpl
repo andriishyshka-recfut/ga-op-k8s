@@ -13,6 +13,29 @@ global:
     srCheckUsername: "repmgr"
 
 postgresql:
+%{ if tls_enforce }
+  # Keep socket and loopback access for local probes/exporters.
+  # Reject non-TLS remote connections, including physical replication.
+  pgHbaConfiguration: |-
+    local     all           all                          trust
+    host      all           all       127.0.0.1/32       scram-sha-256
+    host      all           all       ::1/128            scram-sha-256
+    hostnossl all           all       0.0.0.0/0          reject
+    hostnossl all           all       ::/0               reject
+    hostnossl replication   all       0.0.0.0/0          reject
+    hostnossl replication   all       ::/0               reject
+    hostssl   all           all       0.0.0.0/0          scram-sha-256
+    hostssl   all           all       ::/0               scram-sha-256
+    hostssl   replication   repmgr    0.0.0.0/0          scram-sha-256
+    hostssl   replication   repmgr    ::/0               scram-sha-256
+%{ endif }
+%{ if tls_enabled }
+  tls:
+    enabled: true
+    certificatesSecret: "${postgresql_tls_secret_name}"
+    certFilename: tls.crt
+    certKeyFilename: tls.key
+%{ endif }
   replicaCount: ${postgres_replicas}
   maxConnections: "${postgresql_max_connections}"
 %{ if postgresql_image_repository != "" || postgresql_image_tag != "" }
@@ -73,6 +96,13 @@ postgresql:
     minAvailable: ${postgresql_pdb_min_available}
 
 pgpool:
+%{ if tls_enabled }
+  tls:
+    enabled: true
+    certificatesSecret: "${pgpool_tls_secret_name}"
+    certFilename: tls.crt
+    certKeyFilename: tls.key
+%{ endif }
   replicaCount: ${pgpool_replicas}
   numInitChildren: "${pgpool_num_init_children}"
   maxPool: "${pgpool_max_pool}"
@@ -80,7 +110,7 @@ pgpool:
   updateStrategy:
     ${replace(yamlencode(pgpool_update_strategy), "\n", "\n    ")}
   srCheckUsername: "repmgr"
-%{ if pgpool_passthrough }
+%{ if pgpool_passthrough || tls_enforce }
   # Custom pool_hba.conf with a mixed frontend auth model (first match wins):
   #  - System users pgpool knows via pgpool_passwd (postgres, repmgr/sr_check) keep
   #    scram-sha-256, so their credentials are authenticated locally by pgpool via
@@ -94,14 +124,25 @@ pgpool:
   # deliberately NOT loaded there, which is why they must use password, not scram.
   # enable_pool_hba stays on and PGPOOL_AUTHENTICATION_METHOD stays scram-sha-256
   # (Bitnami only allows md5/scram there); this hba overrides the frontend method
-  # per user. NOTE: no TLS -> app passwords transit the pod network in clear text
-  # (system users do not -- they use scram).
+  # per user. TLS is optional during migration; clients must explicitly require
+  # TLS to protect pass-through passwords.
   poolHbaConfiguration: |-
     local   all   all                        trust
+%{ if tls_enforce }
+    host    all   ${root_username} 127.0.0.1/32 scram-sha-256
+    host    all   ${root_username} ::1/128      scram-sha-256
+    hostnossl all all         0.0.0.0/0      reject
+    hostnossl all all         ::/0           reject
+%{ endif }
     host    all   repmgr      all            scram-sha-256
-    host    all   postgres    all            scram-sha-256
+    host    all   ${root_username} all       scram-sha-256
+%{ if pgpool_passthrough }
     host    all   all         0.0.0.0/0      password
     host    all   all         ::/0           password
+%{ else }
+    host    all   all         0.0.0.0/0      scram-sha-256
+    host    all   all         ::/0           scram-sha-256
+%{ endif }
 %{ endif }
 %{ if pgpool_image_repository != "" || pgpool_image_tag != "" }
   image:
@@ -225,4 +266,14 @@ metrics:
 %{ if metrics_service_monitor_labels != null }
     labels:
       ${replace(yamlencode(metrics_service_monitor_labels), "\n", "\n      ")}
+%{ endif }
+
+%{ if tls_enabled }
+# TLS certificate permissions init containers use this image even when
+# volumePermissions.enabled is false.
+volumePermissions:
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/os-shell
+    tag: 12-debian-12-r51
 %{ endif }

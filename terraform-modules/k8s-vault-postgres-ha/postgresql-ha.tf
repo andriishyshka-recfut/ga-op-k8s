@@ -15,7 +15,15 @@ resource "helm_release" "postgresql_ha" {
     templatefile("${path.module}/values.yaml.tftpl", local.helm_values_context)
   ]
 
+  lifecycle {
+    precondition {
+      condition     = !local.tls.enforce || local.tls.enabled
+      error_message = "tls.enforce requires tls.enabled=true."
+    }
+  }
+
   depends_on = [
+    kubernetes_manifest.certificate,
     kubernetes_secret.postgresql_ha_auth,
     kubernetes_secret.root,
     kubernetes_persistent_volume.postgresql_ha_pv,

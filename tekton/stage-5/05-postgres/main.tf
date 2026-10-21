@@ -23,6 +23,8 @@ module "postgres_ha" {
   Cluster             = var.Cluster
   Settings            = var.Settings
   PostgresqlHaProfile = each.key
+  Color               = var.Color
+  VaultAddress        = var.VaultAddress
 }
 
 module "postgres_ha_backup" {

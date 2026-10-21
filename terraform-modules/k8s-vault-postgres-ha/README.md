@@ -104,16 +104,59 @@ ONLY accepts `md5`/`scram-sha-256` there — `password` is rejected at startup) 
 (`allow_clear_text_frontend_auth` needs `pool_hba` OFF, which broke the scram backend
 connection).
 
-## No TLS on pgpool (deliberate)
+## TLS
 
-Passwords transit the pod network in clear text (client->pgpool and pgpool->backend).
-Acceptable only for in-cluster traffic guarded by NetworkPolicy; istio is disabled for the
-postgres namespace so there is no mesh mTLS.
+TLS is opt-in per profile under `postgresql-ha.<profile>.tls`. Sandbox enables it
+with Vault PKI mount `pki-postgres`, signing role `postgres`, and ClusterIssuer
+`postgres-sandbox`. Other profiles retain the chart defaults (TLS disabled).
 
-Because TLS is off, the chart does NOT inject the os-shell volume-permissions init
-container — so no os-shell image override is needed. If TLS is ever enabled, the chart will
-pull `docker.io/bitnami/os-shell`, which no longer exists post bitnami->bitnamilegacy move,
-and would need a `volumePermissions.image` override.
+```json
+"tls": {
+  "enabled": true,
+  "enforce": false,
+  "pki_mount": "pki-postgres",
+  "pki_role": "postgres",
+  "issuer_name": "postgres-sandbox"
+}
+```
+
+Like the ClickHouse module, this module creates a Vault-backed ClusterIssuer and
+Certificate resources using the shared cert-manager templates. It does not create
+or initialize the Vault PKI engine. Before applying, provision `pki-postgres` with
+a CA and role `postgres`, permitting the service and pod DNS names in `certs.tf`.
+The role must allow the requested 720h lifetime (configurable with `tls.duration`).
+The existing Vault Kubernetes auth role `cert-manager` must permit signing at
+`pki-postgres/sign/postgres`; its service-account token is
+`sa-<Cluster>-cert-manager`. cert-manager and its CRDs must already be installed.
+Issuer names must be unique across profiles in the same Kubernetes cluster.
+
+Certificates are stored in `<cluster_name>-pgpool-tls` and
+`<cluster_name>-postgresql-tls`. Helm waits for both Certificates to become Ready.
+Both Pgpool and PostgreSQL receive `tls.crt` and `tls.key`. The TLS permissions
+init containers use the explicit `bitnamilegacy/os-shell` image override.
+
+Sandbox uses `tls.enforce = false` (the default): TLS is available, but existing HBA rules still
+allow non-TLS connections. Clients should use `sslmode=verify-full` with a trusted
+CA bundle and a hostname listed in the certificate SANs. Merely enabling server
+TLS does not enforce encryption, configure backend identity verification, or
+prove that repmgr/streaming replication uses TLS. Those checks and client changes
+must precede a subsequent TLS-only HBA rollout. The local Pgpool exporter retains
+its loopback connection with `SSLMODE=disable`.
+
+Set `tls.enforce = true` only after migrating clients and verifying replication.
+It requires `tls.enabled = true`. This installs HBA rules in both Pgpool and
+PostgreSQL that reject non-TLS remote connections for IPv4 and IPv6, including
+physical replication. Unix sockets and local PostgreSQL loopback connections
+remain available; Pgpool permits the configured root user over loopback for its
+exporter. Enforcement also works when no application users exist, retaining
+SCRAM rather than enabling password pass-through in that case. This setting
+requires encryption; it does not configure client CA/hostname verification.
+
+cert-manager renews certificates (default `tls.renew_before = "48h"`). The chart
+copies certificates in init containers, so Secret renewal alone does not update
+the running processes' certificate files. Plan controlled pod restarts after
+renewal, accounting for the PostgreSQL primary and failover; this module does not
+yet automate these restarts. Verify the presented certificate after rotation.
 
 ## Storage
 

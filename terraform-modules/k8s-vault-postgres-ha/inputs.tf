@@ -1,4 +1,6 @@
 variable "Cluster" {}
+variable "Color" {}
+variable "VaultAddress" {}
 variable "Settings" {}
 variable "PostgresqlHaProfile" {}
 
@@ -25,6 +27,18 @@ locals {
   postgres_ha_settings = local.cluster_settings["postgresql-ha"][var.PostgresqlHaProfile]
   persistent_postgres  = local.cluster_settings.persistent_resources.permanentDisks.services["postgresql-ha"][var.PostgresqlHaProfile]
   zones                = local.cluster_settings.persistent_resources.permanentDisks.zones
+
+  tls = merge({
+    enabled      = false
+    enforce      = false
+    pki_mount    = "pki-postgres"
+    pki_role     = "postgres"
+    issuer_name  = "postgres-${var.Cluster}"
+    duration     = "720h"
+    renew_before = "48h"
+  }, lookup(local.postgres_ha_settings, "tls", {}))
+  pgpool_tls_secret_name     = "${local.cluster_name}-pgpool-tls"
+  postgresql_tls_secret_name = "${local.cluster_name}-postgresql-tls"
 
   cluster_name                = local.postgres_ha_settings.cluster_name
   namespace                   = local.postgres_ha_settings.namespace
@@ -105,7 +119,7 @@ locals {
   # client password to the backend instead of storing it in pgpool_passwd, so Vault
   # can rotate the static-role passwords with no pgpool re-sync. `password` keeps
   # pool_hba on (unlike allow_clear_text_frontend_auth) so system users still work.
-  # NOTE: no TLS -> passwords transit the pod network in clear text.
+  # Clients must require TLS to protect pass-through passwords on the network.
   # Enabled only when app DB users exist; otherwise the chart default (scram) stays.
   ha_auth_vault_path = lookup(local.postgres_ha_settings, "ha_auth_vault_path", "${local.vault_path}/ha-auth")
 
@@ -113,6 +127,10 @@ locals {
   root_secret_name = lookup(local.postgres_ha_settings, "root_secret_name", "${local.cluster_name}-superuser")
 
   helm_values_context = {
+    tls_enforce                         = local.tls.enabled && local.tls.enforce
+    tls_enabled                         = local.tls.enabled
+    pgpool_tls_secret_name              = local.pgpool_tls_secret_name
+    postgresql_tls_secret_name          = local.postgresql_tls_secret_name
     auth_secret_name                    = local.auth_secret_name
     cluster_name                        = local.cluster_name
     database                            = lookup(local.postgres_ha_settings, "database", "postgres")
